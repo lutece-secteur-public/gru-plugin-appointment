@@ -1,0 +1,52 @@
+<#macro getTextAreaContent responseContent has_error entry field>
+	<!#-- 	fieldInLine means use rich text -->
+	<#if has_error>
+		<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field.width}" rows="${field.height}" class="alert alert-error<#if entry.fieldInLine> richtext</#if>">${responseContent}</textarea>
+	<#else>
+		<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field.width}" rows="${field.height}" class="${entry.CSSClass!}<#if entry.fieldInLine> richtext</#if>" >${responseContent}</textarea>
+	</#if>
+</#macro>
+
+<div class="control-group">
+<label class="control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
+<div class="controls">
+	<#list entry.fields as field>
+		<#if list_responses??>
+			<#list list_responses as response>
+				<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
+					<#if response.entry.error??>
+						<@getTextAreaContent responseContent=response.toStringValueResponse has_error=true entry=entry field=field/>
+					<#else>
+						<@getTextAreaContent responseContent=response.toStringValueResponse has_error=false entry=entry field=field/>
+					</#if>
+				</#if>
+			</#list>
+		<#else>
+			<#if field.value?exists>
+				<@getTextAreaContent responseContent=field.value has_error=false entry=entry field=field/>
+			<#else>
+				<@getTextAreaContent responseContent="" has_error=false entry=entry field=field/>
+			</#if>
+		</#if>
+	</#list>
+	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
+		<p class="help-block">${entry.helpMessage}</p>
+	</#if>
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+				<div class="alert alert-error">
+					<#assign error = response.entry.error>
+					<#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if>
+				</div>
+			</#if>
+		</#list>
+	</#if>
+	</div>
+</div>
+
+<#if entry.fieldInLine>
+	<#include "/util/editor/editor.html" />
+	<@initEditor />
+</#if>
+		

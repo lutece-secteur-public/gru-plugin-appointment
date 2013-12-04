@@ -1,0 +1,111 @@
+<#--
+-- Check if the checkbox must be checked or not
+-- @param code the checkbox code
+-- @param referecen_list the default values list
+-- @return the String 'checked="checked" if the checkbox must be checked, an empty String otherwise
+-->
+<#function getChecked code reference_list>
+	<#if reference_list?has_content>
+		<#list reference_list as reference_item>
+			<#if reference_item.code = code>
+				<#if reference_item.checked>
+  					<#return "checked='checked'">
+  				<#else>
+  					<#return "">
+  				</#if>
+  			</#if>
+  		</#list>
+	</#if>
+	<#return "">
+</#function>
+
+<#--
+-- Get the value of the parameter
+-- @param code the code of the parameter
+-- @param referecen_list the default values list
+-- @return the value of the parameter
+-->
+<#function getName code reference_list>
+	<#if reference_list?has_content>
+		<#list reference_list as reference_item>
+			<#if reference_item.code = code>
+  				<#return reference_item.name>
+  			</#if>
+  		</#list>
+	</#if>
+	<#return "">
+</#function>
+
+<#--
+-- Get the field from a given title
+-- @param entry the entry
+-- @param fieldTitle the title
+-- @return the field
+-->
+<#function getField entry fieldTitle>
+	<#if entry.fields?? && entry.fields?has_content>
+		<#list entry.fields as field>
+			<#if field?? && field.title?? && field.title == fieldTitle>
+				<#return field>
+			</#if>
+		</#list>
+	</#if>
+</#function>
+
+<#-- 
+-- Get the field value from a given entry and a given title
+-- @param entry the entry
+-- @param fieldTitle the title
+-- @return the field
+-->
+<#function getFieldValue entry fieldTitle>
+	<#if getField( entry, fieldTitle )??>
+		<#assign field = getField( entry, fieldTitle )>
+		<#return field.value>
+	</#if>
+	<#return "">
+</#function>
+
+<#-- 
+-- Get the max files value of an entry
+-- @param entry the entry
+-- @return the number of max authorized uploaded files
+-->
+<#function getMaxFiles entry>
+	<#assign fieldMaxFiles = getFieldValue( entry, "max_files" )>
+	<#if fieldMaxFiles?? && fieldMaxFiles != "">
+		<#return fieldMaxFiles>
+	</#if>
+	<#return "1">
+</#function>
+
+<#-- 
+-- Get the max size an uploaded file is authorized to have
+-- @param entry the entry
+-- @return the max size
+-->
+<#function getFileMaxSize entry>
+	<#assign fieldFileMaxSize = getFieldValue( entry, "file_max_size" )>
+	<#if fieldFileMaxSize?? && fieldFileMaxSize != "">
+		<#return fieldFileMaxSize>
+	<#else>
+		<#if getField( entry, "option" )??>
+			<#assign fieldFileMaxSize = getField( entry, "option" )>
+			<#return fieldFileMaxSize.width> 
+		</#if>
+	</#if>
+	<#return "5242880">
+</#function>
+
+<#--
+-- Check if the given entry must export the binary
+-- @param entry the entry
+-- @return true if it must export the binaries, false otherwise
+-->
+<#function exportBinary entry>
+	<#assign field = getFieldValue( entry, "export_binary" ) />
+	<#if field?? && field = "true">
+		<#return true />
+	</#if>
+	<#return false />
+</#function>

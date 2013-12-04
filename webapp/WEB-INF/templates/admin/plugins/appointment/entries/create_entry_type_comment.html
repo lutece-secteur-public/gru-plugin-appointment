@@ -1,0 +1,37 @@
+<#include "/admin/plugins/appointment/commons.html" />
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
+			<fieldset>
+				<legend>#i18n{appointment.createEntry.titleComment} : '${form.title}'</legend>
+				<input name="id_form" value="${form.idForm}" type="hidden" />
+				<input name="action" value="doCreateEntry" type="hidden" />
+				<input name="id_type" value="${entry.entryType.idType}" type="hidden" />
+				<#if entry.fieldDepend?exists>
+					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden" />
+				</#if>
+				<div class="control-group">
+					<label class="control-label" for="comment"> #i18n{appointment.createEntry.labelComment} * : </label>
+					<div class="controls">
+						<textarea name="comment" id="comment" rows="5" class="richtext"></textarea>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+					<div class="controls">
+						<input type="text" name="css_class" value="" maxlength="255"class="input-large"/>
+						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
+					<button class="btn btn-primary btn-small" type="button" onclick="javascript:window.history.back();" ><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+<#include "/admin/util/editor/editor.html" />
+<@initEditor />
+
+ 

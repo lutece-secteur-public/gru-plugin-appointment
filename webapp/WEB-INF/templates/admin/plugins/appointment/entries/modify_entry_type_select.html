@@ -1,0 +1,105 @@
+<#include "/admin/util/editor/editor.html" />
+<div class="row-fluid">
+	<fieldset>
+		<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+		<div class="span4">
+			<form class="form" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
+				<input name="action" value="doModifyEntry" type="hidden" />
+				<input name="id_entry" value="${entry.idEntry}" type="hidden" />
+				<div class="control-group">
+				<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
+					<div class="controls">
+						<input type="text" name="title" id="title" class="input-xlarge" value="${entry.title}"  maxlength="255"/>
+						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} :  </label>
+					<div class="controls">
+						<textarea  name="help_message" id="help_message" rows="2" class="span8">${entry.helpMessage}</textarea>
+						<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
+					<div class="controls">
+						<textarea  name="comment" class="span8" rows="2">${entry.comment}</textarea>
+					</div>
+				</div>
+				<div class="control-group">
+				<label class="control-label" for="">#i18n{appointment.createEntry.labelType}</label>
+					<div class="controls">
+						${entry.entryType.title}
+					</div>
+				</div>
+				<div class="control-group">
+				<label class="control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory}</label>
+					<div class="controls">
+						<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked" </#if>	 />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+					<div class="controls">
+						<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="span3" />
+						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary btn-small" name="save" type="submit">
+						<i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
+					</button>
+					<button class="btn btn-primary btn-small" name="apply" type="submit">
+						<i class="icon-ok-circle icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
+					</button>
+					<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
+						<i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+					</button>
+				</div>
+			</form>
+		</div>
+		<div class="span8">
+			<fieldset>
+				<legend>#i18n{appointment.createEntry.manageField.title}
+					<a class="btn btn-primary btn-small pull-right" type="submit" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getCreateField&id_entry=${entry.idEntry}" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{appointment.createEntry.manageField.buttonInsert}</a>
+				</legend>
+				<table class="table table-striped">
+					<tr> 
+						<th>#i18n{appointment.createEntry.manageField.rowTitle}</th>
+						<th>#i18n{appointment.createEntry.manageField.rowValue}</th>
+						<th>#i18n{appointment.createEntry.manageField.rowDefaultValue}</th>
+						<th> #i18n{appointment.createEntry.manageField.rowActions}</th>
+					</tr>
+					<#assign cpt=0>
+					<#list list as field>
+						<#assign cpt=cpt+1>
+						<tr>
+							<td>${field.title}</td>
+							<td>${field.value}</td>
+							<td><#if field.defaultValue><span class="label label-success"><i class="icon-ok icon-white"></i></span></#if></td>
+							<td>
+								<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyField&id_field=${field.idField}" title="#i18n{portal.util.labelModify}" >
+									<i class="icon-edit icon-white"></i>
+								</a>
+							<#if cpt!=1>
+								<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list" title="#i18n{appointment.createEntry.manageField.titleMoveUp}" >
+									<i class="icon-chevron-up icon-white"></i>
+								</a>
+							</#if> 
+							<#if field_has_next >
+								<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list" title="#i18n{appointment.createEntry.manageField.titleMoveDown}" >
+									<i class="icon-chevron-down icon-white"></i>
+								</a>
+							</#if>
+								<a class="btn btn-danger btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveFieldid_field=${field.idField}#list" title="#i18n{appointment.createEntry.manageField.titleDelete}" >
+									<i class="icon-trash icon-white"></i>
+								</a>
+							</td>
+						</tr>
+					</#list> 
+				</table>
+			</fieldset>
+		</div>
+	</fieldset>	
+</div>
+ <@initEditor />

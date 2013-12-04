@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>Plugin appointment</title>
+    </properties>
+    <body>
+        <section name="Plugin appointment">
+            <!--
+            <p>
+                <img src="images/appointment.png" />
+            </p>
+            -->
+            <subsection name="Introduction">
+                <p></p>
+            </subsection>
+            <subsection name="Configuration">
+                <p></p>
+            </subsection>
+            <subsection name="Usage">
+                <p></p>
+            </subsection>
+        </section>
+    </body>
+</document>
+

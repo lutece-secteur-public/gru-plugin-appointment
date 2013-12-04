@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="appointment.appointmentDAO"  class="fr.paris.lutece.plugins.appointment.business.AppointmentDAO" />  
+    <bean id="appointment.appointmentFormDAO"  class="fr.paris.lutece.plugins.appointment.business.AppointmentFormDAO" />  
+    <bean id="appointment.AppointmentPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletDAO" />
+    
+	<bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />
+	<bean id="appointment.entryTypeComment" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeComment" />
+	<bean id="appointment.entryTypeDate" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeDate" />
+	<bean id="appointment.entryTypeGeolocation" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeGeolocation" />
+	<bean id="appointment.entryTypeGroup" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeGroup" />
+	<bean id="appointment.entryTypeMyLuteceUser" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeMyLuteceUser" />
+	<bean id="appointment.entryTypeNumbering" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeNumbering" />
+	<bean id="appointment.entryTypeRadioButton" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeRadioButton" />
+	<bean id="appointment.entryTypeSelect" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSelect" />
+	<bean id="appointment.entryTypeSelectSQL" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSelectSQL" />
+	<bean id="appointment.entryTypeSession" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSession" />
+	<bean id="appointment.entryTypeText" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeText" />
+	<bean id="appointment.entryTypeTextArea" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeTextArea" />    
+</beans>

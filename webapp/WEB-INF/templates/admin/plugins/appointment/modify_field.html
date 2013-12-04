@@ -1,0 +1,46 @@
+<div class="row-fluid">
+	<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp" method="post" name="" id=""  >
+		<fieldset>
+			<legend>#i18n{appointment.modifyField.title} : '${field.parentEntry.title}'</legend>
+ 			<input type="hidden" name="action" value="doModifyField" />
+			<input name="id_field" value="${field.idField}" type="hidden" />
+    		<div class="control-group">
+				<label class="control-label" for="title">#i18n{appointment.createField.labelTitle} * : </label>
+		    	<div class="controls">
+					<input type="text" name="title" id="title" size="80" value="${field.title}" class="input-xlarge" maxlength="255" />
+				</div>
+			</div>
+	    	<div class="control-group">
+				<label class="control-label" for="value">#i18n{appointment.createField.labelValue} * : </label>
+	    		<div class="controls">
+					<input type="text" name="value" id="value" size="80" class="input-xlarge" value="${field.value}"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="value">#i18n{appointment.createField.labelComment} : </label>
+		    	<div class="controls">
+					<textarea name="comment" id="comment" >${field.comment!}</textarea>
+				</div>
+			</div>
+	    	<div class="control-group">
+				<label class="control-label" for="default_value">#i18n{appointment.createField.labelDefaultValue}</label>
+		    	<#if field.defaultValue>
+		    		<div class="controls">
+						<input name="default_value" value="1" type="checkbox"  checked="checked">
+					</div>
+		  		<#else>
+		  			<div class="controls">
+						<input name="default_value" value="1" type="checkbox">
+					</div>
+		  		</#if>
+			</div>
+			<div class="form-actions">
+	  			<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
+	  			<button class="btn btn-small" type="submit" ><i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{appointment.createEntry.buttonCancel}</button>
+	  		</div>
+		</fieldset>
+	</form>
+</div>
+
+
+ 

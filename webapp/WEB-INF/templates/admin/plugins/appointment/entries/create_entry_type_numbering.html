@@ -1,0 +1,36 @@
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
+			<fieldset>
+				<legend>#i18n{appointment.createEntry.titleQuestion} : '${form.title}' - #i18n{appointment.createEntry.labelEntryType} : ${entry.entryType.title}</legend>
+				<input name="id_form" value="${form.idForm}" type="hidden" />
+				<input name="action" value="doCreateEntry" type="hidden" />
+				<input name="id_type" value="${entry.entryType.idType}" type="hidden">
+				<#if entry.fieldDepend?exists>
+					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
+				</#if>
+				<div class="control-group">
+					<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} *:</label>
+					<div class="controls">
+						<input type="text" name="title" id="title" class="input-large" value=""  maxlength="255">
+					</div>
+				</div>
+			 	<div class="control-group">
+					<label class="control-label" for="prefix">#i18n{appointment.createEntry.labelPrefix} :</label>
+					<div class="controls">
+						<input name="prefix" id="prefix" value="" type="text" maxlength="255" class="input-small"/>
+						<span class="help-block">#i18n{appointment.createEntry.labelPrefixComment}</span>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary btn-small" name="save" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
+					<button class="btn btn-primary btn-small" name="apply" type="submit" ><i class="icon-ok-circle icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonApplyAndManageVerification}</button>
+					<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
+						<i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+					</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+ </div>
+ 

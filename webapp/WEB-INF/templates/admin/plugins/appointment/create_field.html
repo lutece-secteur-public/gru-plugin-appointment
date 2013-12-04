@@ -1,0 +1,48 @@
+<div class="row-fluid">
+	<div class="span12">
+		<fieldset>
+			<legend>#i18n{appointment.createField.title} : '${field.parentEntry.title}'</legend>
+			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp" method="post" name="" id=""  >
+				<input type="hidden" name="action" value="doCreateField" />
+				<input type="hidden" name="id_entry" value="${field.parentEntry.idEntry}" />
+				<div class="control-group">
+					<label class="control-label" for="title">#i18n{appointment.createField.labelTitle} * :</label>
+			    	<div class="controls">
+						<input type="text" name="title" id="title" class="input-xlarge" value=""  maxlength="255" />
+					</div>
+				</div>
+			    <div class="control-group">
+					<label class="control-label" for="value">#i18n{appointment.createField.labelValue} * :</label>
+			    	<div class="controls">
+						<input type="text" name="value" id="value" class="input-xlarge" value="" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="value">#i18n{appointment.createField.labelComment} : </label>
+			    	<div class="controls">
+						<textarea name="comment" id="comment" ></textarea>
+					</div>
+				</div>
+			    <div class="control-group">
+					<label class="control-label" for="">#i18n{appointment.createField.labelDefaultValue} :</label>
+			    	<div class="controls">
+						<input name="default_value" value="1" type="checkbox" >
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="">#i18n{appointment.createField.labelNoDisplayTitle} :</label>
+					<div class="controls">
+						<input name="no_display_title" value="1" type="checkbox" >
+					</div>
+				</div>
+			  	<div class="form-actions">
+			  		<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
+			  		<button class="btn btn-primary btn-small" type="button" onclick="javascript:window.history.back();" ><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}</button>
+				</div>
+			</form>
+		</fieldset>
+	</div>
+</div>
+
+
+ 

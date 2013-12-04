@@ -1,0 +1,65 @@
+<#include "/admin/util/editor/editor.html" />
+<div class="row-fluid">
+	<div class="span12">
+		<fieldset>
+		<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
+			<input name="action" value="doModifyEntry" type="hidden" />
+			<input name="id_entry" value="${entry.idEntry}" type="hidden" />
+				<div class="control-group">
+				<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} *</label>
+					<div class="controls">
+						<input type="text" name="title" id="title" value="${entry.title}"  maxlength="255"/>
+						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
+					</div>
+				</div>
+				<div class="control-group">
+				<label class="control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} </label>
+					<div class="controls">
+						<textarea  name="help_message"  id="help_message" rows="10" class="span4">${entry.helpMessage}</textarea>
+						<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="comment"> #i18n{appointment.createEntry.labelComment} </label>
+					<div class="controls">
+						<textarea  name="comment" class="input-xlarge" rows="2">${entry.comment}</textarea>
+					</div>
+				</div>
+				<div class="control-group">
+				<label class="control-label" for="">#i18n{appointment.createEntry.labelType} : ${entry.entryType.title}</label>
+					<div class="controls">
+						<label for="map_provider">#i18n{appointment.createEntry.mapProvider}</label>
+						<#if entry.mapProvider?has_content && entry.mapProvider.key?has_content>
+							<@combo name="map_provider" items=entryTypeService.mapProvidersRefList default_value="${entry.mapProvider.key}"/>
+						<#else>
+							<@combo name="map_provider" items=entryTypeService.mapProvidersRefList default_value="-1"/>
+						</#if>
+					</div>
+				</div>
+				<div class="control-group">
+				<label class="control-label" for="">&nbsp;</label>
+					<div class="controls">
+						<label class="checkbox" for="mandatory">
+							<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked"</#if> />
+							&nbsp;#i18n{appointment.createEntry.labelMandatory} 
+						</label>
+					</div>
+				</div>
+				<div class="control-group">
+				<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass}</label>
+					<div class="controls">
+						<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" />
+						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}</button>
+					<button class="btn btn-small" type="button" onclick="javascript:window.history.back();" ><i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.modifyEntry.buttonCancel}</button>
+				</div>
+			   </form>
+		  </fieldset>
+	 </div>
+ </div>
+
+ <@initEditor />

@@ -1,0 +1,86 @@
+<#include "/admin/plugins/appointment/commons.html" />
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
+			<fieldset>
+				<legend>#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
+				<input name="id_form" value="${form.idForm}" type="hidden" />
+				<input name="action" value="doCreateEntry" type="hidden" />
+				<input name="id_type" value="${entry.entryType.idType}" type="hidden" />
+				<#if entry.fieldDepend?exists>
+					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden" />
+				</#if>
+				<div class="control-group">
+				<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
+					<div class="controls">
+						<input type="text" name="title" id="title"class="input-large"value=""  maxlength="255"/>
+						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" >  #i18n{appointment.createEntry.labelHelpMessage} :  </label>
+					<div class="controls">						<textarea  name="help_message" id="help_message"  rows="5" class="span4"></textarea>
+						<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
+					<div class="controls">						<textarea  name="comment" class="span4" rows="2"></textarea>					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="value">#i18n{appointment.createEntry.labelValueDefault} : </label>
+					<div class="controls">
+						<textarea name="value" id="value" rows="5" class="span4"></textarea>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
+					<div class="controls">	
+						<input name="mandatory" value="1" type="checkbox" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="width">#i18n{appointment.createEntry.labelWidth} * : </label>
+					<div class="controls">
+						<input  type="text" name="width" id="width" size="5" value="" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="height">#i18n{appointment.createEntry.labelHeight} * : </label>
+					<div class="controls">
+						<input  type="text" name="height" id="height" value="" />
+					</div>
+				</div>
+				<div class="control-group">
+				<label class="control-label" for="max_size_enter">#i18n{appointment.createEntry.labelMaxSizeEnter}  : </label>
+					 <div class="controls">
+						<input type="text" name="max_size_enter" id="max_size_enter" value="" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+					<div class="controls">
+						<input type="text" name="css_class" value="" maxlength="255" />
+						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelUseRichText} : </label>
+					<div class="controls">
+						<input type="checkbox" name="useRichText" value="true"/>
+						<span class="help-block">#i18n{appointment.createEntry.labelUseRichTextComment}</span>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
+					<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
+						<i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+					</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+ <#include "/admin/util/editor/editor.html" />
+ <@initEditor />
+ 

@@ -1,0 +1,61 @@
+<#if entry.fields?has_content>
+	<#list entry.fields as field>
+		<#if field.title?has_content>
+			<#if field.title == "X">
+				<#assign xField = field />
+			<#elseif field.title == "Y">
+				<#assign yField = field />
+			<#elseif field.title == "address">
+				<#assign addressField = field />
+			</#if>
+		</#if>
+	</#list>
+</#if>
+<div class="control-group">
+	<label class="control-label" for="form${entry.idEntry}_address" id="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
+	<div class="controls">
+    <#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
+				<#if response.field.title == "X">
+					<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value="${response.toStringValueResponse!}"/>
+				<#elseif response.field.title == "Y">
+					<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value="${response.toStringValueResponse!}"/>
+				<#elseif response.field.title == "idAddress">
+					<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value="${response.toStringValueResponse!}"/>
+				<#else>
+					<input type="text" name="${entry.idEntry}_address" id="${entry.idEntry}_address" <#if response.entry.error??>class="error"<#else>class="${entry.CSSClass!}"</#if> value="${response.toStringValueResponse!}" />
+				</#if>
+			</#if>
+		</#list>
+	<#else>
+		<input type="text" value="" name="${entry.idEntry}_address" id="${entry.idEntry}_address" size="50" />
+		<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value=""/>
+		<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value=""/>
+		<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value=""/>
+	</#if>
+	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
+		<p class="help-block">${entry.helpMessage}</p>
+	</#if>
+	
+	<#if list_responses??>
+	<#assign show_error = 0>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && show_error == 0>
+			<#assign show_error = 1>
+				<div class="alert alert-error">
+					<#assign error = response.entry.error>
+					<#if error.mandatoryError>
+						#i18n{appointment.message.mandatory.entry}
+					<#else>
+						${error.errorMessage}
+					</#if>
+				</div>
+			</#if>
+		</#list>
+	</#if>
+	<#if entry.mapProvider?has_content>
+		<#include entry.mapProvider.htmlCode />
+	</#if>
+	</div>
+</div>

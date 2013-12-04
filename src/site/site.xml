@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <body>
+        <links>
+            <item name="FR" href="/fr/index.html" />
+        </links>
+        
+        <menu name="Plugin appointment">
+            <item name="Home" href="index.html"/>
+        </menu>
+        
+        <menu name="Downloads" inherit="bottom">
+            <item name="Released versions" href="../../stable_builds/plugins/plugin-appointment/"/>
+            <item name="Nightly builds" href="../../nightly_builds/plugins/plugin-appointment/" />
+        </menu>
+
+    <!--
+        <menu name="Other links">
+            <item name="" href="" target="_blank"/>
+        </menu>	    
+    -->
+        <menu ref="reports" />
+    </body>
+</project>
+

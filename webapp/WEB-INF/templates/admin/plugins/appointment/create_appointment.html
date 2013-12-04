@@ -1,0 +1,65 @@
+<div class="row" >
+    <div class="span12">
+
+    <form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointments.jsp">
+        <fieldset>
+            <legend>#i18n{appointment.create_appointment.pageTitle}</legend>
+
+            <@messages errors=errors />
+
+            <input type="hidden" id="id_appointment" name="id_appointment"  />
+            <div class="control-group">
+                <label class="control-label" for="first_name" >#i18n{appointment.create_appointment.labelFirstName} * :</label>
+                <div class="controls">
+                    <input type="text" id="first_name" name="first_name" value="${appointment.FirstName!''}" maxlength="255" tabindex="1" />
+                    <span class="help-block">#i18n{appointment.create_appointment.labelFirstName.help}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="last_name" >#i18n{appointment.create_appointment.labelLastName} * :</label>
+                <div class="controls">
+                    <input type="text" id="last_name" name="last_name" value="${appointment.LastName!''}" maxlength="255" tabindex="2" />
+                    <span class="help-block">#i18n{appointment.create_appointment.labelLastName.help}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="email" >#i18n{appointment.create_appointment.labelEmail} * :</label>
+                <div class="controls">
+                    <input type="text" id="email" name="email" value="${appointment.Email!''}" maxlength="255" tabindex="3" />
+                    <span class="help-block">#i18n{appointment.create_appointment.labelEmail.help}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="id_user" >#i18n{appointment.create_appointment.labelIdUser} * :</label>
+                <div class="controls">
+                    <input type="text" id="id_user" name="id_user" value="${appointment.IdUser!''}" maxlength="255" tabindex="4" />
+                    <span class="help-block">#i18n{appointment.create_appointment.labelIdUser.help}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="time_appointment" >#i18n{appointment.create_appointment.labelTimeAppointment} * :</label>
+                <div class="controls">
+                    <input type="text" id="time_appointment" name="time_appointment" value="${appointment.TimeAppointment!''}" maxlength="0" tabindex="5" />
+                    <span class="help-block">#i18n{appointment.create_appointment.labelTimeAppointment.help}</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="date_appointment" >#i18n{appointment.create_appointment.labelDateAppointment} * :</label>
+                <div class="controls">
+                    <input type="text" id="date_appointment" name="date_appointment" value="${appointment.DateAppointment!''}" maxlength="0" tabindex="6" />
+                    <span class="help-block">#i18n{appointment.create_appointment.labelDateAppointment.help}</span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button name="action_createAppointment" class="btn btn-primary btn-small" type="submit" tabindex="7">
+                    <i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelCreate}
+                </button>
+                <button name="view_manageAppointments" class="btn btn-small" type="submit" >
+                    <i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
+                </button>
+            </div>
+        </fieldset>
+    </form>
+    </div>
+</div>
+

@@ -1,0 +1,41 @@
+<a class="btn btn-primary pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm">
+	<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointmentforms.buttonAdd}
+</a>
+<legend>#i18n{appointment.manage_appointmentforms.pageTitle}</legend>	
+<div class="row-fluid" >
+	<div class="span12">
+		<@messages infos=infos />
+		<@paginationAdmin paginator=paginator combo=1 />
+		<table class="table table-condensed table-striped">
+			<tr>
+				<th>#i18n{appointment.manage_appointmentforms.columnTitle}</th>
+				<th>#i18n{portal.util.labelActions}</th>
+			</tr>
+			<#list appointmentform_list as appointmentform >
+				<tr>
+					<td>
+						<#if appointmentform.isActive>
+							<span class="label label-success">
+								<i class="icon-ok-sign icon-white">&nbsp;</i>
+							</span>
+						<#else>
+							<span class="label label-important">
+								<i class="icon-remove-circle icon-white">&nbsp;</i>
+							</span>
+						</#if>
+						&nbsp;${appointmentform.title}
+					</td>
+					<td>
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
+							<i class="icon-edit icon-white">&nbsp;</i>
+						</a>
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >
+							<i class="icon-trash icon-white">&nbsp;</i>
+						</a>
+					</td>
+				</tr>
+			</#list>
+		</table>
+		<@paginationAdmin paginator=paginator />
+	</div>
+</div>

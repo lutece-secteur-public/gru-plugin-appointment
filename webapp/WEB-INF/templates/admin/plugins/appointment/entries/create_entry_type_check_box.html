@@ -1,0 +1,73 @@
+<#include "/admin/plugins/appointment/commons.html" />
+<div class="row-fluid">
+	<div class="span12">
+		<fieldset>
+			<legend>#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
+			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" >
+				<input name="id_form" value="${form.idForm}" type="hidden" />
+				<input name="action" value="doCreateEntry" type="hidden" />
+				<input name="id_type" value="${entry.entryType.idType}" type="hidden" />
+				<#if entry.fieldDepend?exists>
+					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden" />
+				</#if>
+				<div class="control-group">
+					<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
+    				<div class="controls">
+						<input type="text" name="title" id="title" value="" maxlength="255" />
+						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
+					</div>
+				</div>
+    			<div class="control-group">
+					<label class="control-label" >  #i18n{appointment.createEntry.labelHelpMessage} :</label>
+			   		<div class="controls">
+						<textarea  name="help_message" id="help_message" rows="5" class="span4"></textarea>
+			   			<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
+			   		</div>
+			    </div>
+				<div class="control-group">
+					<label class="control-label" for="comment"> #i18n{appointment.createEntry.labelComment} :</label>
+					<div class="controls">						<textarea  name="comment" class="span4" rows="2"></textarea>					</div>
+	    		</div>
+			    <div class="control-group">
+					<label class="control-label" for="width">#i18n{appointment.createEntry.labelPresentation} :</label>
+					<div class="controls">
+						<select id="field_in_line" name="field_in_line">
+							<option value=1>#i18n{appointment.createEntry.selectPresentationInLine}</option>
+							<option value=0>#i18n{appointment.createEntry.selectPresentationNotInLine}</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory}</label>
+			        <div class="controls">
+						<input name="mandatory" value="1" type="checkbox" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="errorMessage"> #i18n{appointment.createEntry.labelMandatoryErrorMessage} : </label>
+					<div class="controls">
+						<textarea name="errorMessage" class="input-xlarge" rows="2"></textarea>
+						<span class="help-block">#i18n{appointment.createEntry.labelMandatoryErrorMessageHelp}</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+					<div class="controls">
+						<input type="text" name="css_class" value="" maxlength="255"  />
+						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary btn-small" name="save" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
+					<button class="btn btn-primary btn-small" name="apply" type="submit" ><i class="icon-ok-circle icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonApplyAndManageResponse}</button>
+					<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
+						<i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+					</button>
+				</div>
+			</form>
+		</fieldset>
+	</div>
+</div>
+ <#include "/admin/util/editor/editor.html" />
+ <@initEditor />
+ 

@@ -1,0 +1,42 @@
+<div class="row-fluid">
+	<div class="span12">
+		<fieldset>
+		<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
+			<input name="id_entry" value="${entry.idEntry}" type="hidden" />
+			<input name="action" value="doModifyEntry" type="hidden" />
+			<div class="control-group">
+			<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} *</label>
+				<div class="controls">
+					<input type="text" name="title" id="title" class="input-xlarge" value="${entry.title}" maxlength="255" />
+					<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
+				</div>
+			</div>
+			<#if entry.fields?? && entry.fields?has_content>
+				<#assign prefix = "">
+				<#if entry.fields[0].title??>
+						<#assign prefix = entry.fields[0].title>
+				</#if>
+				<div class="control-group">
+					<label class="control-label" for="prefix">#i18n{appointment.createEntry.labelPrefix}</label>
+					<div class="controls">
+						<input type="text" name="prefix" value="${prefix}" maxlength="255" class="input-xlarge" />
+						<span class="help-block">#i18n{appointment.createEntry.labelPrefixComment}</span>
+					</div>
+				</div>
+			</#if>
+			<div class="form-actions">
+				<button class="btn btn-primary btn-small" name="save" type="submit" >
+					<i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
+				</button>
+				<button class="btn btn-primary btn-small" name="apply" type="submit" >
+					<i class="icon-ok-sign icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
+				</button>
+				<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
+					<i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+				</button>
+			</div>
+			</form>
+		</fieldset>
+	</div>
+</div>	

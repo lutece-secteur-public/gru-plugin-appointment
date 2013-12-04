@@ -1,0 +1,258 @@
+<div class="row-fluid" >
+    <div class="span4 well">
+	    <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
+	        <fieldset>
+	            <@messages errors=errors />
+	            <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
+	            <div class="control-group">
+	                <label class="control-label" for="title" >#i18n{appointment.create_appointmentform.labelTitle} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="title" name="title" maxlength="255" value="${appointmentform.title}" tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="time_start" >#i18n{appointment.create_appointmentform.labelTimeStart} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="time_start" name="time_start" value="${appointmentform.timeStart}" tabindex="1" />
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelTimeStart.help}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="time_end" >#i18n{appointment.create_appointmentform.labelTimeEnd} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="time_end" name="time_end" value="${appointmentform.timeEnd}" tabindex="1" />
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelTimeEnd.help}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="duration_appointments" >#i18n{appointment.create_appointmentform.labelDurationAppointments} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="duration_appointments" name="duration_appointments" value="${appointmentform.durationAppointments}" tabindex="1" />
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDurationAppointments.help}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="date_start_validity" >#i18n{appointment.create_appointmentform.labelDateStartValidity} :</label>
+	                <div class="controls">
+	                   <div class="input-prepend">
+	                   		<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
+							<input class="input-small" type="text" id="date_start_validity" name="date_start_validity" value="${appointmentform.dateStartValidity!}" tabindex="1" />
+						</div>
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDateStartValidity}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="date_end_validity" >#i18n{appointment.create_appointmentform.labelDateEndValidity} :</label>
+	                <div class="controls">
+	                    <div class="input-prepend">
+	                    	<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
+							<input type="text" id="date_end_validity" name="date_end_validity" value="${appointmentform.dateEndValidity!}" tabindex="1" />
+						</div>
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDateEndValidity}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} * :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="display_title_fo" name="display_title_fo" value="true" <#if appointmentform.displayTitleFo>checked="checked"</#if> tabindex="1" />
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDisplayTitleFo}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="nb_weeks_to_display" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay}" tabindex="1" />
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="people_per_appointment" >#i18n{appointment.create_appointmentform.labelPeoplePerAppointment} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="people_per_appointment" name="people_per_appointment" value="${appointmentform.peoplePerAppointment}" tabindex="1" />
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelPeoplePerAppointment}</span>
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="is_open_monday" >#i18n{appointment.create_appointmentform.labelIsOpenMonday} :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="is_open_monday" name="is_open_monday" value="true" <#if appointmentform.isOpenMonday>checked="checked" </#if> tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="is_open_tuesday" >#i18n{appointment.create_appointmentform.labelIsOpenTuesday} :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="is_open_tuesday" name="is_open_tuesday" value="true" <#if appointmentform.isOpenTuesday>checked="checked" </#if> tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="is_open_wednesday" >#i18n{appointment.create_appointmentform.labelIsOpenWednesday} :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="is_open_wednesday" name="is_open_wednesday" value="true" <#if appointmentform.isOpenWednesday>checked="checked" </#if> tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="is_open_thursday" >#i18n{appointment.create_appointmentform.labelIsOpenThursday} :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="is_open_thursday" name="is_open_thursday" value="true" <#if appointmentform.isOpenThursday>checked="checked" </#if> tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="is_open_friday" >#i18n{appointment.create_appointmentform.labelIsOpenFriday} :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="is_open_friday" name="is_open_friday" value="true" <#if appointmentform.isOpenFriday>checked="checked" </#if> tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="is_open_saturday" >#i18n{appointment.create_appointmentform.labelIsOpenSaturday} :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="is_open_saturday" name="is_open_saturday" value="true" <#if appointmentform.isOpenSaturday>checked="checked" </#if> tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="is_open_sunday" >#i18n{appointment.create_appointmentform.labelIsOpenSunday} :</label>
+	                <div class="controls">
+	                    <input type="checkbox" id="is_open_sunday" name="is_open_sunday" value="true" <#if appointmentform.isOpenSunday>checked="checked" </#if> tabindex="1" />
+	                </div>
+	            </div>
+	            <div class="form-actions">   
+	                <button name="action_modifyAppointmentForm" class="btn btn-primary btn-small" type="submit" tabindex="18" >
+	                    <i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
+	                </button>
+	                <button name="view_manageAppointmentForms" class="btn btn-small" type="submit" >
+	                    <i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
+	                </button>	
+	            </div>
+	        </fieldset>
+	    </form>
+    </div>
+    <div class="span8">
+    	<fieldset>
+    		<legend>#i18n{appointment.modify_appointmentform.pageTitle}</legend>
+			<form method="get" class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
+				<input type="hidden" value="getCreateEntry" name="view" >
+				<input type="hidden" name="id_form" value="${appointmentform.idForm}" />
+				<label for="id_type">#i18n{appointment.modify_appointmentform.labelInsertEntry} :</label>
+				<@combo name="id_type" items=entry_type_list default_value=-1 />
+				<button type="submit" class="btn btn-primary btn-small" title="#i18n{appointment.modify_appointmentform.buttonInsertEntry}">
+					<i class="icon-plus icon-white">&nbsp;</i>
+				</button>
+			</form>
+			<form method="post"	action="jsp/admin/plugins/form/DoChangeOrderEntry.jsp" 	class="form-inline">
+				<#if entry_group_list?has_content>
+					<div>
+						<input type="hidden" name="id_form" value="${appointmentform.idForm}" />
+						<!-- List all entry of type group  -->
+						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"input-xlarge\"" items=entry_group_list />  
+						<button type="submit" class="btn btn-small" title="#i18n{form.modifyForm.moveAll}" name="move.x" value="#i18n{form.modifyForm.moveAll}">
+							<i class="icon-resize-vertical"></i>
+						</button>
+					</div>
+				</#if>
+				<table class="table table-striped">
+					<thead>
+						<tr> 
+							<th>
+								#i18n{appointment.createEntry.manageField.rowTitle} #i18n{appointment.modifyField.manageConditionalQuestion.rowType}
+							</th>
+							<th>
+								<i class="icon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>
+							</th>
+							<th>
+								#i18n{appointment.createEntry.manageField.rowOrder}
+							</th>
+							<th>
+								#i18n{appointment.createEntry.manageField.rowActions}&nbsp;
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list entry_list as entry>
+							<tr>
+								<td>
+									<#if entry.entryType.group>
+										${entry.title}
+									<#elseif entry.parent?exists>
+										<#if entry.entryType.comment>
+											<blockquote>${entry.comment}</blockquote>
+										<#else>
+											<blockquote>${entry.title}</blockquote>
+										</#if>
+									<#elseif entry.entryType.myLuteceUser>
+											${entry.title}
+									<#else>
+										<#if entry.entryType.comment>
+											${entry.comment}
+										<#else>
+											${entry.title}
+										</#if>
+									</#if>
+									<#if !entry.entryType.group>
+										<span class="badge">${entry.entryType.title}</span>
+									</#if>
+								</td>
+								<td>
+									<#if entry.numberConditionalQuestion!=0>
+										${entry.numberConditionalQuestion}
+									</#if>
+								</td>
+								<!--  Change the order of the attribute -->
+								<#if entry.parent?exists>
+									<td>
+										<blockquote>
+											<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
+											<button class="btn btn-primary btn-small" type="submit"	name="move_${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.move}" value="#i18n{appointment.modify_appointmentform.move}"><i class="icon-resize-vertical icon-white"></i></button>
+										</blockquote>
+									</td>
+								<#else>
+									<td>
+										<@comboOrders name="order_id_${entry.idEntry!}"	default_value=entry.position idParent=0 />
+										<button class="btn btn-primary btn-small" type="submit" name="move_${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.move}" value="#i18n{appointment.modify_appointmentform.move}">
+											<i class="icon-ok icon-white"></i>
+										</button>
+									</td>
+								</#if>
+								<td>
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}" class="btn btn-primary btn-small">
+										<i class="icon-edit icon-white">&nbsp;</i>
+									</a>
+									<#if entry.parent?exists>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry?id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}" class="btn btn-primary btn-small">
+											<i class="icon-chevron-right icon-white">&nbsp;</i>
+										</a>
+									<#elseif !entry.entryType.group && !entry.entryType.myLuteceUser>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getMoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleMove}" class="btn btn-primary btn-small">
+											<i class="icon-user icon-white">&nbsp;</i>
+										</a>
+									</#if>
+									<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.createEntry.manageField.titleCopy}" class="btn btn-primary btn-small">
+											<i class="icon-plus-sign icon-white">&nbsp;</i>
+										</a>
+									</#if>
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleDelete}" class="btn btn-danger btn-small">
+										<i class="icon-trash icon-white">&nbsp;</i>
+									</a>
+								</td>
+							</tr>
+						</#list>
+					</tbody>
+				</table>
+			</form>
+    	</fieldset>
+    </div>
+</div>
+
+<#macro comboOrders name default_value idParent >
+	<#if mapChild?exists>
+	<select id="${name}" name="${name}" class="input-mini"> 
+		<#list mapChild[idParent!?string] as i> <#if default_value == i>
+			<option selected="selected" value="${i}">${i}</option> <#else>
+			<option value="${i}">${i}</option> </#if>
+		</#list>
+	</select>
+	</#if>
+</#macro>
+<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
+<@getDatePicker idField="date_start_validity" language='fr' />
+<@getDatePicker idField="date_end_validity" language='fr' />

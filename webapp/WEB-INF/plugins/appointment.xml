@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<plug-in>
+    <name>appointment</name>
+    <class>fr.paris.lutece.plugins.appointment.service.AppointmentPlugin</class>
+    <version>1.0.0</version>
+    <documentation></documentation>
+    <installation></installation>
+    <changes></changes>
+    <user-guide></user-guide>
+    <description>appointment.plugin.description</description>
+    <provider>appointment.plugin.provider</provider>
+    <provider-url>http://dev.lutece.paris.fr</provider-url>
+    <icon-url>images/admin/skin/feature_default_icon.png</icon-url>
+    <copyright>Copyright (c) 2013 Mairie de Paris</copyright>
+    <db-pool-required>1</db-pool-required>
+    
+    <!-- Admin features parameters -->
+    <admin-features>
+        <admin-feature>
+            <feature-id>APPOINTMENT_MANAGEMENT</feature-id>
+            <feature-title>appointment.adminFeature.ManageAppointment.name</feature-title>
+            <feature-description>appointment.adminFeature.ManageAppointment.description</feature-description>
+            <feature-level>1</feature-level>
+            <feature-url>jsp/admin/plugins/appointment/ManageAppointments.jsp</feature-url>
+            <feature-icon-url></feature-icon-url>
+      </admin-feature>
+        <admin-feature>
+            <feature-id>APPOINTMENT_FORM_MANAGEMENT</feature-id>
+            <feature-title>appointment.adminFeature.ManageAppointmentForm.name</feature-title>
+            <feature-description>appointment.adminFeature.ManageAppointmentForm.description</feature-description>
+            <feature-level>0</feature-level>
+            <feature-url>jsp/admin/plugins/appointment/ManageAppointmentForms.jsp</feature-url>
+            <feature-icon-url></feature-icon-url>
+      </admin-feature>
+    </admin-features>    
+  	<!-- XPages parameters -->
+    <applications>
+        <application>
+            <application-id>appointment</application-id>
+            <application-class>fr.paris.lutece.plugins.appointment.web.AppointmentApp</application-class>
+        </application>
+    </applications>
+	<!-- Portlet parameters -->
+    <portlets>
+     <portlet>
+       <portlet-class>fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletHome</portlet-class>
+	   <portlet-type-id>APPOINTMENT_PORTLET</portlet-type-id>
+	   <portlet-type-name>appointment.portlet.appointmentAppointmentPortlet.name</portlet-type-name>
+	   <portlet-creation-url>plugins/appointment/CreatePortletAppointment.jsp</portlet-creation-url>
+	   <portlet-update-url>plugins/appointment/ModifyPortletAppointment.jsp</portlet-update-url>
+	   <portlet-create-action-url>plugins/appointment/DoCreatePortletAppointment.jsp</portlet-create-action-url>
+      <portlet-modify-action-url>plugins/appointment/DoModifyPortletAppointment.jsp</portlet-modify-action-url>
+	    <!-- optional entries -->
+        <portlet-create-script-template>/admin/portlet/script_create_portlet.html</portlet-create-script-template>
+        <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
+        <portlet-create-specific-template>/admin/plugins/appointment/portlet/create_portletappointment.html</portlet-create-specific-template>
+        <portlet-modify-specific-template>/admin/plugins/appointment/portlet/modify_portletappointment.html</portlet-modify-specific-template>
+        <portlet-create-specific-form-template></portlet-create-specific-form-template>
+        <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
+     </portlet>
+   </portlets>
+</plug-in>

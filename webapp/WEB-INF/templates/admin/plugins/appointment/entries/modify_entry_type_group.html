@@ -1,0 +1,30 @@
+<#include "/admin/util/editor/editor.html" />
+<div class="row-fluid">
+	<div class="span12">
+		<fieldset>
+		<legend>#i18n{appointment.modifyEntry.titleGroup} : '${form.title}'</legend>
+		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
+			<input name="id_entry" value="${entry.idEntry}" type="hidden" />
+			<input name="action" value="doModifyEntry" type="hidden" />
+			<div class="control-group">
+			<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
+				<div class="controls">
+					<input type="text" name="title" id="title" value="${entry.title}"  maxlength="255" />
+				</div>
+			</div>
+			<div class="control-group">
+			<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+				<div class="controls">
+					<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" />
+					<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.createForm.buttonSave}</button>
+				<button class="btn btn-small" type="button" onclick="javascript:window.history.back();" ><i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createForm.buttonCancel}</button>
+			</div>	
+		</form>
+		</fieldset>
+	</div>
+</div>
+  <@initEditor />
