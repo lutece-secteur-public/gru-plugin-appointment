@@ -30,165 +30,192 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * License 1.0
- */ 
+ */
 package fr.paris.lutece.plugins.appointment.business;
-
-import javax.validation.constraints.*;
-import org.hibernate.validator.constraints.*;
 
 import java.sql.Date;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
+
 /**
  * This is the business class for the object Appointment
- */ 
+ */
 public class Appointment
 {
-	// Variables declarations 
-        
-	private int _nIdAppointment;
-        // @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
-        @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
-        // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.FirstName.size}" ) 
-        @Size( max = 255 , message = "#i18n{portal.validation.message.sizeMax}" ) 
-        
-	private String _strFirstName;
-        // @NotEmpty( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
-        @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
-        // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.LastName.size}" ) 
-        @Size( max = 255 , message = "#i18n{portal.validation.message.sizeMax}" ) 
-        
-	private String _strLastName;
-        // @NotEmpty( message = "#i18n{appointment.validation.appointment.Email.notEmpty}" )
-        @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
-        // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.Email.size}" ) 
-        @Size( max = 255 , message = "#i18n{portal.validation.message.sizeMax}" ) 
-        @Email(message = "#i18n{portal.validation.message.email}")
-	private String _strEmail;
-        // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
-        @Size( max = 255 , message = "#i18n{portal.validation.message.sizeMax}" ) 
-        
-	private String _strIdUser;
-        
-	private int _nTimeAppointment;
-        
-	private Date _dateDateAppointment;
-	/**
-	 * Returns the IdAppointment
-	 * @return The IdAppointment
-	 */
-	public int getIdAppointment()
-	{
-		return _nIdAppointment;
-	}
 
-	/**
-	 * Sets the IdAppointment
-	 * @param nIdAppointment The IdAppointment
-	 */ 
-	public void setIdAppointment( int nIdAppointment )
-	{
-		_nIdAppointment = nIdAppointment;
-	}
-	/**
-	 * Returns the FirstName
-	 * @return The FirstName
-	 */
-	public String getFirstName()
-	{
-		return _strFirstName;
-	}
+    private static final int STATUS_REJECTED = -10;
+    private static final int STATUS_NOT_VALIDATED = 0;
+    private static final int STATUS_VALIDATED = 10;
 
-	/**
-	 * Sets the FirstName
-	 * @param strFirstName The FirstName
-	 */ 
-	public void setFirstName( String strFirstName )
-	{
-		_strFirstName = strFirstName;
-	}
-	/**
-	 * Returns the LastName
-	 * @return The LastName
-	 */
-	public String getLastName()
-	{
-		return _strLastName;
-	}
+    private int _nIdAppointment;
+    // @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
+    @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
+    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.FirstName.size}" ) 
+    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
+    private String _strFirstName;
+    // @NotEmpty( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
+    @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
+    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.LastName.size}" ) 
+    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
+    private String _strLastName;
+    // @NotEmpty( message = "#i18n{appointment.validation.appointment.Email.notEmpty}" )
+    @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
+    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.Email.size}" ) 
+    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
+    @Email( message = "#i18n{portal.validation.message.email}" )
+    private String _strEmail;
+    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
+    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
+    private String _strIdUser;
+    private String _strTimeAppointment;
+    private Date _dateDateAppointment;
+    private int _nStatus;
 
-	/**
-	 * Sets the LastName
-	 * @param strLastName The LastName
-	 */ 
-	public void setLastName( String strLastName )
-	{
-		_strLastName = strLastName;
-	}
-	/**
-	 * Returns the Email
-	 * @return The Email
-	 */
-	public String getEmail()
-	{
-		return _strEmail;
-	}
+    /**
+     * Returns the IdAppointment
+     * @return The IdAppointment
+     */
+    public int getIdAppointment( )
+    {
+        return _nIdAppointment;
+    }
 
-	/**
-	 * Sets the Email
-	 * @param strEmail The Email
-	 */ 
-	public void setEmail( String strEmail )
-	{
-		_strEmail = strEmail;
-	}
-	/**
-	 * Returns the IdUser
-	 * @return The IdUser
-	 */
-	public String getIdUser()
-	{
-		return _strIdUser;
-	}
+    /**
+     * Sets the IdAppointment
+     * @param nIdAppointment The IdAppointment
+     */
+    public void setIdAppointment( int nIdAppointment )
+    {
+        _nIdAppointment = nIdAppointment;
+    }
 
-	/**
-	 * Sets the IdUser
-	 * @param strIdUser The IdUser
-	 */ 
-	public void setIdUser( String strIdUser )
-	{
-		_strIdUser = strIdUser;
-	}
-	/**
-	 * Returns the TimeAppointment
-	 * @return The TimeAppointment
-	 */
-	public int getTimeAppointment()
-	{
-		return _nTimeAppointment;
-	}
+    /**
+     * Returns the FirstName
+     * @return The FirstName
+     */
+    public String getFirstName( )
+    {
+        return _strFirstName;
+    }
 
-	/**
-	 * Sets the TimeAppointment
-	 * @param nTimeAppointment The TimeAppointment
-	 */ 
-	public void setTimeAppointment( int nTimeAppointment )
-	{
-		_nTimeAppointment = nTimeAppointment;
-	}
-	/**
-	 * Returns the DateAppointment
-	 * @return The DateAppointment
-	 */
-	public Date getDateAppointment()
-	{
-		return _dateDateAppointment;
-	}
+    /**
+     * Sets the FirstName
+     * @param strFirstName The FirstName
+     */
+    public void setFirstName( String strFirstName )
+    {
+        _strFirstName = strFirstName;
+    }
 
-	/**
-	 * Sets the DateAppointment
-	 * @param dateDateAppointment The DateAppointment
-	 */ 
-	public void setDateAppointment( Date dateDateAppointment )
-	{
-		_dateDateAppointment = dateDateAppointment;
-	}
+    /**
+     * Returns the LastName
+     * @return The LastName
+     */
+    public String getLastName( )
+    {
+        return _strLastName;
+    }
+
+    /**
+     * Sets the LastName
+     * @param strLastName The LastName
+     */
+    public void setLastName( String strLastName )
+    {
+        _strLastName = strLastName;
+    }
+
+    /**
+     * Returns the Email
+     * @return The Email
+     */
+    public String getEmail( )
+    {
+        return _strEmail;
+    }
+
+    /**
+     * Sets the Email
+     * @param strEmail The Email
+     */
+    public void setEmail( String strEmail )
+    {
+        _strEmail = strEmail;
+    }
+
+    /**
+     * Returns the IdUser
+     * @return The IdUser
+     */
+    public String getIdUser( )
+    {
+        return _strIdUser;
+    }
+
+    /**
+     * Sets the IdUser
+     * @param strIdUser The IdUser
+     */
+    public void setIdUser( String strIdUser )
+    {
+        _strIdUser = strIdUser;
+    }
+
+    /**
+     * Returns the TimeAppointment
+     * @return The TimeAppointment
+     */
+    public String getTimeAppointment( )
+    {
+        return _strTimeAppointment;
+    }
+
+    /**
+     * Sets the TimeAppointment
+     * @param nTimeAppointment The TimeAppointment
+     */
+    public void setTimeAppointment( String nTimeAppointment )
+    {
+        _strTimeAppointment = nTimeAppointment;
+    }
+
+    /**
+     * Returns the DateAppointment
+     * @return The DateAppointment
+     */
+    public Date getDateAppointment( )
+    {
+        return _dateDateAppointment;
+    }
+
+    /**
+     * Sets the DateAppointment
+     * @param dateDateAppointment The DateAppointment
+     */
+    public void setDateAppointment( Date dateDateAppointment )
+    {
+        _dateDateAppointment = dateDateAppointment;
+    }
+
+    /**
+     * Get the status of the appointment
+     * @return The status of the appointment
+     */
+    public int getStatus( )
+    {
+        return _nStatus;
+    }
+
+    /**
+     * Set the status of the appointment
+     * @param nStatus The status of the appointment
+     */
+    public void setStatus( int nStatus )
+    {
+        this.setStatus( nStatus );
+    }
 }

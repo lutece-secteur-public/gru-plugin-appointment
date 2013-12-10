@@ -176,6 +176,90 @@ public class EntryService extends RemovalListenerService
     }
 
     /**
+     * Change the attribute's order to a lower one (move up in the list)
+     * @param plugin the plugin
+     * @param nOrderToSet the new order for the attribute
+     * @param entryToChangeOrder the attribute which will change
+     * @param nIdForm the id of the form
+     */
+    public void moveUpEntryOrder( Plugin plugin, int nOrderToSet, Entry entryToChangeOrder, int nIdForm )
+    {
+        EntryFilter filter = new EntryFilter( );
+        filter.setIdResource( nIdForm );
+        filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+
+        if ( entryToChangeOrder.getParent( ) == null )
+        {
+            filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
+            List<Integer> orderFirstLevel = new ArrayList<Integer>( );
+
+            int nNbChild = 0;
+            int nNewOrder = nOrderToSet;
+            int nEntryToMoveOrder = entryToChangeOrder.getPosition( );
+
+            List<Entry> listEntryFirstLevel = EntryHome.findEntriesWithoutParent( entryToChangeOrder.getIdResource( ),
+                    entryToChangeOrder.getResourceType( ) );
+            //the list of all the orders in the first level
+            initOrderFirstLevel( listEntryFirstLevel, orderFirstLevel );
+
+            for ( Entry entry : listEntryFirstLevel )
+            {
+                Integer entryInitialPosition = entry.getPosition( );
+
+                for ( int i = 0; i < orderFirstLevel.size( ); i++ )
+                {
+                    if ( ( orderFirstLevel.get( i ) == entryInitialPosition )
+                            && ( entryInitialPosition < nEntryToMoveOrder ) && ( entryInitialPosition >= nOrderToSet ) )
+                    {
+                        if ( entryToChangeOrder.getPosition( ) == nEntryToMoveOrder )
+                        {
+                            entryToChangeOrder.setPosition( nNewOrder );
+                            EntryHome.update( entryToChangeOrder );
+
+                            for ( Entry child : entryToChangeOrder.getChildren( ) )
+                            {
+                                nNbChild++;
+                                child.setPosition( entryToChangeOrder.getPosition( ) + nNbChild );
+                                EntryHome.update( child );
+                            }
+                        }
+
+                        nNewOrder = nNewOrder + nNbChild + 1;
+                        entry.setPosition( nNewOrder );
+                        EntryHome.update( entry );
+                        nNbChild = 0;
+
+                        for ( Entry child : entry.getChildren( ) )
+                        {
+                            nNbChild++;
+                            child.setPosition( nNewOrder + nNbChild );
+                            EntryHome.update( child );
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            List<Entry> listAllEntry = EntryHome.getEntryList( filter );
+
+            for ( Entry entry : listAllEntry )
+            {
+                if ( ( entry.getPosition( ) < entryToChangeOrder.getPosition( ) )
+                        && ( entry.getPosition( ) >= nOrderToSet ) )
+                {
+                    entry.setPosition( entry.getPosition( ) + 1 );
+                    EntryHome.update( entry );
+                }
+            }
+
+            entryToChangeOrder.setPosition( nOrderToSet );
+            EntryHome.update( entryToChangeOrder );
+        }
+    }
+
+    /**
      * Init the list of the attribute's orders (first level only)
      * @param listEntryFirstLevel the list of all the attributes of the first
      *            level

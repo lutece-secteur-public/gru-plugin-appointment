@@ -31,90 +31,94 @@
  *
  * License 1.0
  */
- 
+
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+
 import java.util.Collection;
 
+
 /**
- * This class provides instances management methods (create, find, ...) for Appointment objects
+ * This class provides instances management methods (create, find, ...) for
+ * Appointment objects
  */
 
 public final class AppointmentHome
 {
 
-	// Static variable pointed at the DAO instance
+    // Static variable pointed at the DAO instance
 
-	private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
-	private static Plugin _plugin = PluginService.getPlugin( "appointment" );
+    private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
+    private static Plugin _plugin = PluginService.getPlugin( "appointment" );
 
-	/**
-	 * Private constructor - this class need not be instantiated
-	 */
-	private AppointmentHome(  )
-	{
-	}
+    /**
+     * Private constructor - this class need not be instantiated
+     */
+    private AppointmentHome( )
+    {
+    }
 
-	/**
-	 * Create an instance of the appointment class
-	 * @param appointment The instance of the Appointment which contains the informations to store
-	 * @return The  instance of appointment which has been created with its primary key.
-	 */
-	public static Appointment create( Appointment appointment )
-	{
-		_dao.insert( appointment, _plugin );
+    /**
+     * Create an instance of the appointment class
+     * @param appointment The instance of the Appointment which contains the
+     *            informations to store
+     * @return The instance of appointment which has been created with its
+     *         primary key.
+     */
+    public static Appointment create( Appointment appointment )
+    {
+        _dao.insert( appointment, _plugin );
 
-		return appointment;
-	}
+        return appointment;
+    }
 
+    /**
+     * Update of the appointment which is specified in parameter
+     * @param appointment The instance of the Appointment which contains the
+     *            data to store
+     * @return The instance of the appointment which has been updated
+     */
+    public static Appointment update( Appointment appointment )
+    {
+        _dao.store( appointment, _plugin );
 
-	/**
-	 * Update of the appointment which is specified in parameter
-	 * @param appointment The instance of the Appointment which contains the data to store
-	 * @return The instance of the  appointment which has been updated
-	 */
-	public static Appointment update( Appointment appointment )
-	{
-		_dao.store( appointment, _plugin );
+        return appointment;
+    }
 
-		return appointment;
-	}
+    /**
+     * Remove the appointment whose identifier is specified in parameter
+     * @param nAppointmentId The appointment Id
+     */
+    public static void remove( int nAppointmentId )
+    {
+        _dao.delete( nAppointmentId, _plugin );
+    }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Finders
 
-	/**
-	 * Remove the appointment whose identifier is specified in parameter
-	 * @param nAppointmentId The appointment Id
-	 */
-	public static void remove( int nAppointmentId )
-	{
-		_dao.delete( nAppointmentId, _plugin );
-	}
+    /**
+     * Returns an instance of a appointment whose identifier is specified in
+     * parameter
+     * @param nKey The appointment primary key
+     * @return an instance of Appointment
+     */
+    public static Appointment findByPrimaryKey( int nKey )
+    {
+        return _dao.load( nKey, _plugin );
+    }
 
-
-	///////////////////////////////////////////////////////////////////////////
-	// Finders
-
-	/**
-	 * Returns an instance of a appointment whose identifier is specified in parameter
-	 * @param nKey The appointment primary key
-	 * @return an instance of Appointment
-	 */
-	public static Appointment findByPrimaryKey( int nKey )
-	{
-		return _dao.load( nKey, _plugin);
-	}
-
-
-	/**
-	 * Load the data of all the appointment objects and returns them in form of a collection
-	 * @return the collection which contains the data of all the appointment objects
-	 */
-	public static Collection<Appointment> getAppointmentsList( )
-	{
-		return _dao.selectAppointmentsList( _plugin );
-	}
+    /**
+     * Load the data of all the appointment objects and returns them in form of
+     * a collection
+     * @return the collection which contains the data of all the appointment
+     *         objects
+     */
+    public static Collection<Appointment> getAppointmentsList( )
+    {
+        return _dao.selectAppointmentsList( _plugin );
+    }
 }
-

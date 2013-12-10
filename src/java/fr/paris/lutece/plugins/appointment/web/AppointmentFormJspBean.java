@@ -50,14 +50,19 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -94,7 +99,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     private static final String MARK_ENTRY_LIST = "entry_list";
     private static final String MARK_ENTRY_TYPE_LIST = "entry_type_list";
-    private static final String MARK_LOCALE = "locale";
+    private static final String MARK_MAP_CHILD = "mapChild";
+    private static final String MARK_GROUP_ENTRY_LIST = "entry_group_list";
 
     private static final String PARAMETER_PAGE_INDEX = "page_index";
 
@@ -116,6 +122,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String ACTION_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
     private static final String ACTION_REMOVE_APPOINTMENTFORM = "removeAppointmentForm";
     private static final String ACTION_CONFIRM_REMOVE_APPOINTMENTFORM = "confirmRemoveAppointmentForm";
+    private static final String ACTION_DO_CHANGE_FORM_ACTIVATION = "doChangeFormActivation";
 
     // Infos
     private static final String INFO_APPOINTMENTFORM_CREATED = "appointment.info.appointmentform.created";
@@ -273,21 +280,45 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                 SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         if ( appointmentForm == null )
         {
-            int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-            appointmentForm = AppointmentFormHome.findByPrimaryKey( nId );
+            int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+            appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
         }
 
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( appointmentForm.getIdForm( ) );
         entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
+        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
-        List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
+        List<Entry> listEntryFirstLevel = EntryHome.getEntryList( entryFilter );
+        List<Entry> listEntry = new ArrayList<Entry>( listEntryFirstLevel.size( ) );
+        Map<Integer, Integer> mapGroupItemsNumber = new HashMap<Integer, Integer>( );
+        for ( Entry entry : listEntryFirstLevel )
+        {
+            listEntry.add( entry );
+            // If the entry is a group, we add entries associated with this group
+            if ( entry.getEntryType( ).getGroup( ) )
+            {
+                entryFilter = new EntryFilter( );
+                entryFilter.setIdResource( appointmentForm.getIdForm( ) );
+                entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+                entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+                entryFilter.setIdEntryParent( entry.getIdEntry( ) );
+                List<Entry> listEntryGroup = EntryHome.getEntryList( entryFilter );
+
+                mapGroupItemsNumber.put( entry.getIdEntry( ), listEntryGroup.size( ) );
+
+                listEntry.addAll( listEntryGroup );
+            }
+        }
 
         Map<String, Object> model = getModel( );
+        model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( appointmentForm.getIdForm( ) ) );
         model.put( MARK_APPOINTMENTFORM, appointmentForm );
         model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
+        model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
@@ -315,6 +346,26 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
 
+        return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+    }
+
+    /**
+     * Change the enabling of an appointment form
+     * @param request The request
+     * @return The next URL to redirect to
+     */
+    @Action( ACTION_DO_CHANGE_FORM_ACTIVATION )
+    public String doChangeFormActivation( HttpServletRequest request )
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
+        if ( strIdForm != null && StringUtils.isNumeric( strIdForm ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            form.setIsActive( !form.getIsActive( ) );
+            AppointmentFormHome.update( form );
+        }
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
 
@@ -349,6 +400,22 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         appointmentForm.setIsOpenFriday( false );
         appointmentForm.setIsOpenSaturday( false );
         appointmentForm.setIsOpenSunday( false );
+    }
+
+    private static final ReferenceList getRefListGroups( int nIdForm )
+    {
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( nIdForm );
+        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setIdIsGroup( 1 );
+        List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
+
+        ReferenceList refListGroups = new ReferenceList( );
+        for ( Entry entry : listEntry )
+        {
+            refListGroups.addItem( entry.getIdEntry( ), entry.getTitle( ) );
+        }
+        return refListGroups;
     }
 
     /**

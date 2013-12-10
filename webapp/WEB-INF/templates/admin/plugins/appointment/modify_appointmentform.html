@@ -1,3 +1,16 @@
+<script>
+	$(document).ready(function() {
+		$("#selectAll").change( function() {
+	    if ( $(this).attr("checked") ){
+			// check all
+	        $("input[name='entry_id']").prop( "checked", "checked");
+			} else {
+	        // uncheck all
+	        $("input[name='entry_id']").prop( "checked", "");
+			}
+	    });
+	});
+</script>
 <div class="row-fluid" >
     <div class="span4 well">
 	    <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
@@ -38,7 +51,7 @@
 	                   		<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
 							<input class="input-small" type="text" id="date_start_validity" name="date_start_validity" value="${appointmentform.dateStartValidity!}" tabindex="1" />
 						</div>
-	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDateStartValidity}</span>
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDateStartValidity.help}</span>
 	                </div>
 	            </div>
 	            <div class="control-group">
@@ -48,28 +61,28 @@
 	                    	<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
 							<input type="text" id="date_end_validity" name="date_end_validity" value="${appointmentform.dateEndValidity!}" tabindex="1" />
 						</div>
-	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDateEndValidity}</span>
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDateEndValidity.help}</span>
 	                </div>
 	            </div>
 	            <div class="control-group">
 	                <label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} * :</label>
 	                <div class="controls">
 	                    <input type="checkbox" id="display_title_fo" name="display_title_fo" value="true" <#if appointmentform.displayTitleFo>checked="checked"</#if> tabindex="1" />
-	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDisplayTitleFo}</span>
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDisplayTitleFo.help}</span>
 	                </div>
 	            </div>
 	            <div class="control-group">
 	                <label class="control-label" for="nb_weeks_to_display" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} * :</label>
 	                <div class="controls">
 	                    <input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay}" tabindex="1" />
-	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay}</span>
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</span>
 	                </div>
 	            </div>
 	            <div class="control-group">
 	                <label class="control-label" for="people_per_appointment" >#i18n{appointment.create_appointmentform.labelPeoplePerAppointment} * :</label>
 	                <div class="controls">
 	                    <input type="text" id="people_per_appointment" name="people_per_appointment" value="${appointmentform.peoplePerAppointment}" tabindex="1" />
-	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelPeoplePerAppointment}</span>
+	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelPeoplePerAppointment.help}</span>
 	                </div>
 	            </div>
 	            <div class="control-group">
@@ -137,20 +150,24 @@
 					<i class="icon-plus icon-white">&nbsp;</i>
 				</button>
 			</form>
-			<form method="post"	action="jsp/admin/plugins/form/DoChangeOrderEntry.jsp" 	class="form-inline">
+			<form method="post"	action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" class="form-inline">
+				<input type="hidden" name="action" value="doChangeOrderEntry" />
+				<input type="hidden" name="id_form" value="${appointmentform.idForm}" />
 				<#if entry_group_list?has_content>
 					<div>
-						<input type="hidden" name="id_form" value="${appointmentform.idForm}" />
 						<!-- List all entry of type group  -->
 						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"input-xlarge\"" items=entry_group_list />  
-						<button type="submit" class="btn btn-small" title="#i18n{form.modifyForm.moveAll}" name="move.x" value="#i18n{form.modifyForm.moveAll}">
+						<button type="submit" class="btn btn-small" title="#i18n{appointment.modify_appointmentform.moveAll}" name="move.x" value="#i18n{appointment.modify_appointmentform.moveAll}">
 							<i class="icon-resize-vertical"></i>
 						</button>
 					</div>
 				</#if>
 				<table class="table table-striped">
 					<thead>
-						<tr> 
+						<tr>
+							<th>
+								<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modify_appointmentform.selectAll}" />
+							</th>
 							<th>
 								#i18n{appointment.createEntry.manageField.rowTitle} #i18n{appointment.modifyField.manageConditionalQuestion.rowType}
 							</th>
@@ -168,6 +185,12 @@
 					<tbody>
 						<#list entry_list as entry>
 							<tr>
+								<td>
+									<!--  add checkbox if entry isn't a group --> 
+									<#if !entry.entryType.group>
+										<input type="checkbox" name="entry_id"value="${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.select}" />
+									</#if>
+								</td>
 								<td>
 									<#if entry.entryType.group>
 										${entry.title}
@@ -199,14 +222,16 @@
 								<#if entry.parent?exists>
 									<td>
 										<blockquote>
-											<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
-											<button class="btn btn-primary btn-small" type="submit"	name="move_${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.move}" value="#i18n{appointment.modify_appointmentform.move}"><i class="icon-resize-vertical icon-white"></i></button>
+											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=entry.parent.idEntry />
+											<button class="btn btn-primary btn-small" type="submit"	name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+												<i class="icon-resize-vertical icon-white">&nbsp;</i>
+											</button>
 										</blockquote>
 									</td>
 								<#else>
 									<td>
-										<@comboOrders name="order_id_${entry.idEntry!}"	default_value=entry.position idParent=0 />
-										<button class="btn btn-primary btn-small" type="submit" name="move_${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.move}" value="#i18n{appointment.modify_appointmentform.move}">
+										<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
+										<button class="btn btn-primary btn-small" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="_${entry.idEntry}">
 											<i class="icon-ok icon-white"></i>
 										</button>
 									</td>
@@ -244,12 +269,20 @@
 
 <#macro comboOrders name default_value idParent >
 	<#if mapChild?exists>
-	<select id="${name}" name="${name}" class="input-mini"> 
-		<#list mapChild[idParent!?string] as i> <#if default_value == i>
-			<option selected="selected" value="${i}">${i}</option> <#else>
-			<option value="${i}">${i}</option> </#if>
-		</#list>
-	</select>
+		<select id="${name}" name="${name}" class="input-mini">
+			<#if idParent &gt; 0 && mapChild??>
+				<#assign nb_entries = mapChild[idParent] >
+			<#else>
+				<#assign nb_entries = entry_list?size >
+			</#if>
+			<#list 1..nb_entries as i>
+				<#if default_value == i>
+					<option selected="selected" value="${i}">${i}</option>
+				<#else>
+					<option value="${i}">${i}</option>
+				</#if>
+			</#list>
+		</select>
 	</#if>
 </#macro>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>

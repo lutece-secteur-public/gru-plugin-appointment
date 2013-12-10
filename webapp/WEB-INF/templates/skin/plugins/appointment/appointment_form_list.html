@@ -1,0 +1,16 @@
+<div class="row-fluid">
+	<div class="span12">
+		<fieldset>
+			<legend>#i18n{appointment.xpage.formList.labelFormList}</legend>
+			<ul>
+				<#list form_list as form>
+					<li>
+						<a href="jsp/site/Portal.jsp?view=viewForm&id_form=form.idForm">
+							${form.title}
+						</a>
+					</li>
+				</#list>
+			</ul>
+		</fieldset>
+	</div>
+</div>

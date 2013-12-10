@@ -32,7 +32,6 @@
  * License 1.0
  */
 
-
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -48,157 +47,147 @@ import java.util.Collection;
 
 public final class AppointmentDAO implements IAppointmentDAO
 {
-	
-	// Constants
-	private static final String SQL_QUERY_NEW_PK = "SELECT max( id_appointment ) FROM appointment_appointment";
-	private static final String SQL_QUERY_SELECT = "SELECT id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment FROM appointment_appointment WHERE id_appointment = ?";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) ";
-	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_appointment = ?, first_name = ?, last_name = ?, email = ?, id_user = ?, time_appointment = ?, date_appointment = ? WHERE id_appointment = ?";
-	private static final String SQL_QUERY_SELECTALL = "SELECT id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment FROM appointment_appointment";
 
+    // Constants
+    private static final String SQL_QUERY_NEW_PK = "SELECT max( id_appointment ) FROM appointment_appointment";
+    private static final String SQL_QUERY_SELECT = "SELECT id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment FROM appointment_appointment WHERE id_appointment = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_appointment = ?, first_name = ?, last_name = ?, email = ?, id_user = ?, time_appointment = ?, date_appointment = ? WHERE id_appointment = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment FROM appointment_appointment";
 
-	
-	/**
-	 * Generates a new primary key
-	 * @param plugin The Plugin
-	 * @return The new primary key
-	 */
-	public int newPrimaryKey( Plugin plugin)
-	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK , plugin  );
-		daoUtil.executeQuery( );
+    /**
+     * Generates a new primary key
+     * @param plugin The Plugin
+     * @return The new primary key
+     */
+    public int newPrimaryKey( Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
+        daoUtil.executeQuery( );
 
-		int nKey = 1;
+        int nKey = 1;
 
-		if( daoUtil.next( ) )
-		{
-			nKey = daoUtil.getInt( 1 ) + 1;
-		}
+        if ( daoUtil.next( ) )
+        {
+            nKey = daoUtil.getInt( 1 ) + 1;
+        }
 
-		daoUtil.free();
+        daoUtil.free( );
 
-		return nKey;
-	}
+        return nKey;
+    }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void insert( Appointment appointment, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
 
+        appointment.setIdAppointment( newPrimaryKey( plugin ) );
 
+        daoUtil.setInt( 1, appointment.getIdAppointment( ) );
+        daoUtil.setString( 2, appointment.getFirstName( ) );
+        daoUtil.setString( 3, appointment.getLastName( ) );
+        daoUtil.setString( 4, appointment.getEmail( ) );
+        daoUtil.setString( 5, appointment.getIdUser( ) );
+        daoUtil.setString( 6, appointment.getTimeAppointment( ) );
+        daoUtil.setDate( 7, appointment.getDateAppointment( ) );
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public void insert( Appointment appointment, Plugin plugin )
-	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-				
-		appointment.setIdAppointment( newPrimaryKey( plugin ) );
-				
-		daoUtil.setInt( 1, appointment.getIdAppointment( ) );
-		daoUtil.setString( 2, appointment.getFirstName( ) );
-		daoUtil.setString( 3, appointment.getLastName( ) );
-		daoUtil.setString( 4, appointment.getEmail( ) );
-		daoUtil.setString( 5, appointment.getIdUser( ) );
-		daoUtil.setInt( 6, appointment.getTimeAppointment( ) );
-		daoUtil.setDate( 7, appointment.getDateAppointment( ) );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
+    }
 
-		daoUtil.executeUpdate( );
-		daoUtil.free( );
-	}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Appointment load( int nKey, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
+        daoUtil.setInt( 1, nKey );
+        daoUtil.executeQuery( );
 
+        Appointment appointment = null;
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public Appointment load( int nKey, Plugin plugin )
-	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
-		daoUtil.setInt( 1 , nKey );
-		daoUtil.executeQuery( );
+        if ( daoUtil.next( ) )
+        {
+            appointment = new Appointment( );
+            appointment.setIdAppointment( daoUtil.getInt( 1 ) );
+            appointment.setFirstName( daoUtil.getString( 2 ) );
+            appointment.setLastName( daoUtil.getString( 3 ) );
+            appointment.setEmail( daoUtil.getString( 4 ) );
+            appointment.setIdUser( daoUtil.getString( 5 ) );
+            appointment.setTimeAppointment( daoUtil.getString( 6 ) );
+            appointment.setDateAppointment( daoUtil.getDate( 7 ) );
+        }
 
-		Appointment appointment = null;
+        daoUtil.free( );
+        return appointment;
+    }
 
-		if ( daoUtil.next( ) )
-		{
-			appointment = new Appointment();
-			appointment.setIdAppointment( daoUtil.getInt(  1 ) );
-			appointment.setFirstName( daoUtil.getString(  2 ) );
-			appointment.setLastName( daoUtil.getString(  3 ) );
-			appointment.setEmail( daoUtil.getString(  4 ) );
-			appointment.setIdUser( daoUtil.getString(  5 ) );
-			appointment.setTimeAppointment( daoUtil.getInt(  6 ) );
-			appointment.setDateAppointment( daoUtil.getDate(  7 ) );
-		}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void delete( int nAppointmentId, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
+        daoUtil.setInt( 1, nAppointmentId );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
+    }
 
-		daoUtil.free( );
-		return appointment;
-	}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void store( Appointment appointment, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
 
+        daoUtil.setInt( 1, appointment.getIdAppointment( ) );
+        daoUtil.setString( 2, appointment.getFirstName( ) );
+        daoUtil.setString( 3, appointment.getLastName( ) );
+        daoUtil.setString( 4, appointment.getEmail( ) );
+        daoUtil.setString( 5, appointment.getIdUser( ) );
+        daoUtil.setString( 6, appointment.getTimeAppointment( ) );
+        daoUtil.setDate( 7, appointment.getDateAppointment( ) );
+        daoUtil.setInt( 8, appointment.getIdAppointment( ) );
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public void delete( int nAppointmentId, Plugin plugin )
-	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-		daoUtil.setInt( 1 , nAppointmentId );
-		daoUtil.executeUpdate( );
-		daoUtil.free( );
-	}
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
+    }
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Collection<Appointment> selectAppointmentsList( Plugin plugin )
+    {
+        Collection<Appointment> appointmentList = new ArrayList<Appointment>( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
+        daoUtil.executeQuery( );
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public void store( Appointment appointment, Plugin plugin )
-	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
-				
-		daoUtil.setInt( 1, appointment.getIdAppointment( ) );
-		daoUtil.setString( 2, appointment.getFirstName( ) );
-		daoUtil.setString( 3, appointment.getLastName( ) );
-		daoUtil.setString( 4, appointment.getEmail( ) );
-		daoUtil.setString( 5, appointment.getIdUser( ) );
-		daoUtil.setInt( 6, appointment.getTimeAppointment( ) );
-		daoUtil.setDate( 7, appointment.getDateAppointment( ) );
-		daoUtil.setInt( 8, appointment.getIdAppointment( ) );
-				
-		daoUtil.executeUpdate( );
-		daoUtil.free( );
-	}
+        while ( daoUtil.next( ) )
+        {
+            Appointment appointment = new Appointment( );
 
+            appointment.setIdAppointment( daoUtil.getInt( 1 ) );
+            appointment.setFirstName( daoUtil.getString( 2 ) );
+            appointment.setLastName( daoUtil.getString( 3 ) );
+            appointment.setEmail( daoUtil.getString( 4 ) );
+            appointment.setIdUser( daoUtil.getString( 5 ) );
+            appointment.setTimeAppointment( daoUtil.getString( 6 ) );
+            appointment.setDateAppointment( daoUtil.getDate( 7 ) );
 
+            appointmentList.add( appointment );
+        }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public Collection<Appointment> selectAppointmentsList( Plugin plugin )
-	{
-		Collection<Appointment> appointmentList = new ArrayList<Appointment>(  );
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-		daoUtil.executeQuery(  );
-
-		while ( daoUtil.next(  ) )
-		{
-				Appointment appointment = new Appointment(  );
-
-					appointment.setIdAppointment( daoUtil.getInt( 1 ) );
-					appointment.setFirstName( daoUtil.getString( 2 ) );
-					appointment.setLastName( daoUtil.getString( 3 ) );
-					appointment.setEmail( daoUtil.getString( 4 ) );
-					appointment.setIdUser( daoUtil.getString( 5 ) );
-					appointment.setTimeAppointment( daoUtil.getInt( 6 ) );
-					appointment.setDateAppointment( daoUtil.getDate( 7 ) );
-
-				appointmentList.add( appointment );
-		}
-
-		daoUtil.free( );
-		return appointmentList;
-	}
+        daoUtil.free( );
+        return appointmentList;
+    }
 
 }

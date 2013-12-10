@@ -24,11 +24,25 @@
 							</span>
 						</#if>
 						&nbsp;${appointmentform.title}
+						<#if appointmentform.isActive>
+							<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=getViewForm&id_form=1">
+								<i class="icon-globe">&nbsp;</i>
+							</a>
+						</#if>
 					</td>
 					<td>
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
 							<i class="icon-edit icon-white">&nbsp;</i>
 						</a>
+						<#if appointmentform.isActive>
+							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-small" title="#i18n{appointment.manage_appointmentforms.labelDisable}">
+								<i class="icon-stop icon-white">&nbsp;</i>
+							</a>
+						<#else>
+							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-success btn-small" title="#i18n{appointment.manage_appointmentforms.labelEnable}">
+								<i class="icon-ok icon-white">&nbsp;</i>
+							</a>
+						</#if>
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >
 							<i class="icon-trash icon-white">&nbsp;</i>
 						</a>

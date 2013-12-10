@@ -8,46 +8,46 @@
 				<div class="control-group">
 					<label class="control-label" for="title" >#i18n{appointment.create_appointmentform.labelTitle} * :</label>
 					<div class="controls">
-						<input type="text" id="title" name="title" value="${appointmentform.Title!''}" maxlength="255" tabindex="1" />
+						<input type="text" id="title" name="title" value="${appointmentform.title!''}" maxlength="255" tabindex="1" />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="time_start" >#i18n{appointment.create_appointmentform.labelTimeStart} * :</label>
 					<div class="controls">
-						<input type="text" id="time_start" name="time_start" value="${appointmentform.TimeStart!''}" tabindex="2" />
+						<input type="text" id="time_start" name="time_start" value="${appointmentform.timeStart!''}" tabindex="2" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeStart.help}</span>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="time_end" >#i18n{appointment.create_appointmentform.labelTimeEnd} * :</label>
 					<div class="controls">
-						<input type="text" id="time_end" name="time_end" value="${appointmentform.TimeEnd!''}" tabindex="3" />
+						<input type="text" id="time_end" name="time_end" value="${appointmentform.timeEnd!''}" tabindex="3" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeEnd.help}</span>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="duration_appointments" >#i18n{appointment.create_appointmentform.labelDurationAppointments} * :</label>
 					<div class="controls">
-						<input type="text" id="duration_appointments" name="duration_appointments" value="${appointmentform.DurationAppointments!''}" tabindex="4" />
+						<input type="text" id="duration_appointments" name="duration_appointments" value="${appointmentform.durationAppointments!''}" tabindex="4" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelDurationAppointments.help}</span>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="date_start_validity" >#i18n{appointment.create_appointmentform.labelDateStartValidity} * :</label>
+					<label class="control-label" for="date_start_validity" >#i18n{appointment.create_appointmentform.labelDateStartValidity} :</label>
 					<div class="controls">
 						<div class="input-prepend">
 							<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
-							<input class="input-small" type="text" id="date_start_validity" name="date_start_validity" value="${appointmentform.DateStartValidity!''}" tabindex="12" />
+							<input class="input-small" type="text" id="date_start_validity" name="date_start_validity" value="${appointmentform.dateStartValidity!''}" tabindex="12" />
 						</div>
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelDateStartValidity.help}</span>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="date_end_validity" >#i18n{appointment.create_appointmentform.labelDateEndValidity} * :</label>
+					<label class="control-label" for="date_end_validity" >#i18n{appointment.create_appointmentform.labelDateEndValidity} :</label>
 					<div class="controls">
 						<div class="input-prepend">
 							<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
-							<input class="input-small" type="text" id="date_end_validity" name="date_end_validity" value="${appointmentform.DateEndValidity!''}" tabindex="13" />
+							<input class="input-small" type="text" id="date_end_validity" name="date_end_validity" value="${appointmentform.dateEndValidity!''}" tabindex="13" />
 						</div>
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelDateEndValidity.help}</span>
 					</div>
@@ -62,14 +62,14 @@
 				<div class="control-group">
 					<label class="control-label" for="nb_weeks_to_display" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} * :</label>
 					<div class="controls">
-						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.NbWeeksToDisplay!''}" tabindex="16" />
+						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" tabindex="16" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</span>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="people_per_appointment" >#i18n{appointment.create_appointmentform.labelPeoplePerAppointment} * :</label>
 					<div class="controls">
-						<input type="text" class="input-small" id="people_per_appointment" name="people_per_appointment" value="${appointmentform.PeoplePerAppointment!''}" tabindex="17" />
+						<input type="text" class="input-small" id="people_per_appointment" name="people_per_appointment" value="${appointmentform.peoplePerAppointment!''}" tabindex="17" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelPeoplePerAppointment.help}</span>
 					</div>
 				</div>
@@ -77,43 +77,43 @@
 				<div class="control-group">
 					<label class="control-label" for="is_open_monday" >#i18n{appointment.create_appointmentform.labelIsOpenMonday} :</label>
 					<div class="controls">
-						<input type="checkbox" id="is_open_monday" name="is_open_monday" value="true" tabindex="5" />
+						<input type="checkbox" id="is_open_monday" name="is_open_monday" value="true" tabindex="5" <#if appointmentform?? && appointmentform.isOpenMonday>checked="checked" </#if> />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="is_open_tuesday" >#i18n{appointment.create_appointmentform.labelIsOpenTuesday} :</label>
 					<div class="controls">
-						<input type="checkbox" id="is_open_tuesday" name="is_open_tuesday" value="true" tabindex="6" />
+						<input type="checkbox" id="is_open_tuesday" name="is_open_tuesday" value="true" tabindex="6" <#if appointmentform?? && appointmentform.isOpenTuesday>checked="checked" </#if> />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="is_open_wednesday" >#i18n{appointment.create_appointmentform.labelIsOpenWednesday} :</label>
 					<div class="controls">
-						<input type="checkbox" id="is_open_wednesday" name="is_open_wednesday" value="true" tabindex="7" />
+						<input type="checkbox" id="is_open_wednesday" name="is_open_wednesday" value="true" tabindex="7" <#if appointmentform?? && appointmentform.isOpenWednesday>checked="checked" </#if> />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="is_open_thursday" >#i18n{appointment.create_appointmentform.labelIsOpenThursday} :</label>
 					<div class="controls">
-						<input type="checkbox" id="is_open_thursday" name="is_open_thursday" value="true" tabindex="8" />
+						<input type="checkbox" id="is_open_thursday" name="is_open_thursday" value="true" tabindex="8" <#if appointmentform?? && appointmentform.isOpenThursday>checked="checked" </#if> />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="is_open_friday" >#i18n{appointment.create_appointmentform.labelIsOpenFriday} :</label>
 					<div class="controls">
-						<input type="checkbox" id="is_open_friday" name="is_open_friday" value="true" tabindex="9" />
+						<input type="checkbox" id="is_open_friday" name="is_open_friday" value="true" tabindex="9" <#if appointmentform?? && appointmentform.isOpenFriday>checked="checked" </#if> />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="is_open_saturday" >#i18n{appointment.create_appointmentform.labelIsOpenSaturday} :</label>
 					<div class="controls">
-						<input type="checkbox" id="is_open_saturday" name="is_open_saturday" value="true" tabindex="10" />
+						<input type="checkbox" id="is_open_saturday" name="is_open_saturday" value="true" tabindex="10" <#if appointmentform?? && appointmentform.isOpenSaturday>checked="checked" </#if> />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="is_open_sunday" >#i18n{appointment.create_appointmentform.labelIsOpenSunday} :</label>
 					<div class="controls">
-						<input type="checkbox" id="is_open_sunday" name="is_open_sunday" value="true" tabindex="11" />
+						<input type="checkbox" id="is_open_sunday" name="is_open_sunday" value="true" tabindex="11" <#if appointmentform?? && appointmentform.isOpenSunday>checked="checked" </#if> />
 					</div>
 				</div>
 				<div class="form-actions">

@@ -35,7 +35,9 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import java.sql.Date;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -58,10 +60,13 @@ public class AppointmentForm
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
     private String _strTitle;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nTimeStart;
+    @Pattern( regexp = "[0-2][0-9]:[0-6][0-9]", message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
+    private String _strTimeStart;
+    @Pattern( regexp = "[0-2][0-9]:[0-6][0-9]", message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nTimeEnd;
+    private String _strTimeEnd;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nDurationAppointments;
     private boolean _bIsOpenMonday;
     private boolean _bIsOpenTuesday;
@@ -74,9 +79,9 @@ public class AppointmentForm
     private Date _dateDateEndValidity;
     private boolean _bIsActive;
     private boolean _bDisplayTitleFo;
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nNbWeeksToDisplay;
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nPeoplePerAppointment;
 
     /**
@@ -119,36 +124,36 @@ public class AppointmentForm
      * Returns the TimeStart
      * @return The TimeStart
      */
-    public int getTimeStart( )
+    public String getTimeStart( )
     {
-        return _nTimeStart;
+        return _strTimeStart;
     }
 
     /**
      * Sets the TimeStart
      * @param nTimeStart The TimeStart
      */
-    public void setTimeStart( int nTimeStart )
+    public void setTimeStart( String nTimeStart )
     {
-        _nTimeStart = nTimeStart;
+        _strTimeStart = nTimeStart;
     }
 
     /**
      * Returns the TimeEnd
      * @return The TimeEnd
      */
-    public int getTimeEnd( )
+    public String getTimeEnd( )
     {
-        return _nTimeEnd;
+        return _strTimeEnd;
     }
 
     /**
      * Sets the TimeEnd
      * @param nTimeEnd The TimeEnd
      */
-    public void setTimeEnd( int nTimeEnd )
+    public void setTimeEnd( String nTimeEnd )
     {
-        _nTimeEnd = nTimeEnd;
+        _strTimeEnd = nTimeEnd;
     }
 
     /**

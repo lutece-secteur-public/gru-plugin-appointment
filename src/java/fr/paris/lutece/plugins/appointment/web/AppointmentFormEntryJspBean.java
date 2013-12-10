@@ -84,6 +84,9 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_ENTRY = "id_entry";
     private static final String PARAMETER_CANCEL = "cancel";
     private static final String PARAMETER_APPLY = "apply";
+    private static final String PARAMETER_ORDER_ID = "order_id";
+    private static final String PARAMETER_MOVE_X = "move.x";
+    private static final String PARAMETER_ID_ENTRY_GROUP = "id_entry_group";
 
     private static final String JSP_URL_MANAGE_APPOINTMENT_FORM_ENTRIES = "jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp";
 
@@ -92,28 +95,23 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
     private static final String PROPERTY_MODIFY_QUESTION_TITLE = "appointment.modifyEntry.titleQuestion";
-    private static final String PROPERTY_COPY_ENTRY_TITLE = "form.copyEntry.title";
+    private static final String PROPERTY_COPY_ENTRY_TITLE = "appointment.copyEntry.title";
 
     private static final String VIEW_GET_CREATE_ENTRY = "getCreateEntry";
     private static final String VIEW_GET_MODIFY_ENTRY = "getModifyEntry";
     private static final String VIEW_CONFIRM_REMOVE_ENTRY = "confirmRemoveEntry";
-    private static final String VIEW_GET_MOVE_ENTRY = "getMoveEntry";
 
     private static final String ACTION_DO_CREATE_ENTRY = "doCreateEntry";
     private static final String ACTION_DO_MODIFY_ENTRY = "doModifyEntry";
     private static final String ACTION_DO_REMOVE_ENTRY = "doRemoveEntry";
     private static final String ACTION_DO_COPY_ENTRY = "doCopyEntry";
-    private static final String ACTION_DO_MOVE_OUT_ENTRY = "doMoveOutEntry";
+    private static final String ACTION_DO_CHANGE_ORDER_ENTRY = "doChangeOrderEntry";
 
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "locale";
-    private static final String MARK_ENTRY_TYPE_REF_LIST = "entry_type_list";
     private static final String MARK_REGULAR_EXPRESSION_LIST_REF_LIST = "regular_expression_list";
     private static final String MARK_ENTRY = "entry";
-    private static final String MARK_ENTRY_LIST = "entry_list";
     private static final String MARK_LIST = "list";
-    private static final String MARK_OPTION_NO_DISPLAY_TITLE = "option_no_display_title";
-    private static final String MARK_LIST_PARAM_DEFAULT_VALUES = "list_param_default_values";
     private static final String MARK_FORM = "form";
     private static final String MARK_ENTRY_TYPE_SERVICE = "entryTypeService";
 
@@ -460,6 +458,9 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 return redirect( request,
                         AppointmentFormFieldJspBean.getUrlModifyField( request, entry.getFieldDepend( ).getIdField( ) ) );
             }
+
+            return redirect( request,
+                    AppointmentFormJspBean.getURLModifyAppointmentForm( request, entry.getIdResource( ) ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
@@ -507,6 +508,61 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                     AppointmentFormJspBean.getURLModifyAppointmentForm( request, entry.getIdResource( ) ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+
+    /**
+     * Change the attribute's order (move up or move down in the list)
+     * @param request the request
+     * @return The URL of the form management page
+     */
+    @Action( ACTION_DO_CHANGE_ORDER_ENTRY )
+    public String doChangeOrderEntry( HttpServletRequest request )
+    {
+        //gets the entry which needs to be changed (order)
+        Plugin plugin = getPlugin( );
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
+
+        // If the parameter move.x has been set, then we have to add entries to a group
+        if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_MOVE_X ) ) )
+        {
+            String strIdEntryGroup = request.getParameter( PARAMETER_ID_ENTRY_GROUP );
+            if ( strIdEntryGroup != null && StringUtils.isNumeric( strIdEntryGroup ) )
+            {
+                //TODO : implement me !
+            }
+        }
+        else
+        {
+            Integer nEntryId = 0;
+            Integer nOrderToSet = 1;
+
+            nEntryId = Integer.parseInt( request.getParameter( PARAMETER_ID_ENTRY ) );
+            nOrderToSet = Integer.parseInt( request.getParameter( PARAMETER_ORDER_ID ) );
+
+            Entry entryToChangeOrder = EntryHome.findByPrimaryKey( nEntryId );
+            int nActualOrder = entryToChangeOrder.getPosition( );
+
+            // does nothing if the order to set is equal to the actual order
+            if ( nOrderToSet != nActualOrder )
+            {
+                // entry goes up in the list 
+                if ( nOrderToSet < entryToChangeOrder.getPosition( ) )
+                {
+                    EntryService.getInstance( ).moveUpEntryOrder( plugin, nOrderToSet, entryToChangeOrder,
+                            entryToChangeOrder.getIdResource( ) );
+                }
+
+                // entry goes down in the list
+                else
+                {
+                    EntryService.getInstance( ).moveDownEntryOrder( plugin, nOrderToSet, entryToChangeOrder,
+                            entryToChangeOrder.getIdResource( ) );
+                }
+            }
+        }
+
+        return redirect( request, AppointmentFormJspBean.getURLModifyAppointmentForm( request, nIdForm ) );
     }
 
     /**

@@ -34,32 +34,82 @@
 
 package fr.paris.lutece.plugins.appointment.web;
 
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
  * This class provides a simple implementation of an XPage
  */
-
 @Controller( xpageName = "appointment", pageTitleProperty = "myplugin.pageTitle", pagePathProperty = "myplugin.pagePathLabel" )
 public class AppointmentApp extends MVCApplication
 {
     private static final String TEMPLATE_XPAGE = "/skin/plugins/appointment/appointment.html";
+    private static final String TEMPLATE_APPOINTMENT_FORM_LIST = "/skin/pluigins/appointment/appointment_form_list.html";
+    private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/pluigins/appointment/appointment_form.html";
+
     private static final String VIEW_HOME = "home";
+    private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
+    private static final String VIEW_GET_FORM = "viewForm";
+
+    private static final String PARAMETER_ID_FORM = "id_form";
+
+    private static final String MARK_FORM_LIST = "form_list";
 
     /**
      * Returns the content of the page appointment.
      * @param request The HTTP request
      * @return The view
      */
-    @View( value = VIEW_HOME, defaultView = true )
+    @View( VIEW_HOME )
     public XPage viewHome( HttpServletRequest request )
     {
         return getXPage( TEMPLATE_XPAGE, request.getLocale( ) );
+    }
+
+    /**
+     * Get the list of appointment form list
+     * @param request The request
+     * @return The XPage to display
+     */
+    @View( value = VIEW_APPOINTMENT_FORM_LIST, defaultView = true )
+    public XPage getFormList( HttpServletRequest request )
+    {
+        Map<String, Object> model = new HashMap<String, Object>( );
+
+        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getAppointmentFormsList( );
+        model.put( MARK_FORM_LIST, listAppointmentForm );
+        return getXPage( TEMPLATE_APPOINTMENT_FORM_LIST, request.getLocale( ), model );
+    }
+
+    @View( VIEW_GET_FORM )
+    public XPage getViewForm( HttpServletRequest request )
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( strIdForm != null && StringUtils.isNumeric( PARAMETER_ID_FORM ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+
+            // TODO : implement me !
+
+            Map<String, Object> model = new HashMap<String, Object>( );
+
+            Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getAppointmentFormsList( );
+            model.put( MARK_FORM_LIST, listAppointmentForm );
+            return getXPage( TEMPLATE_APPOINTMENT_FORM, request.getLocale( ), model );
+        }
+        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 }
