@@ -94,6 +94,11 @@ public class AppointmentApp extends MVCApplication
         return getXPage( TEMPLATE_APPOINTMENT_FORM_LIST, request.getLocale( ), model );
     }
 
+    /**
+     * Get the page to complete a form
+     * @param request The request
+     * @return The XPage to display
+     */
     @View( VIEW_GET_FORM )
     public XPage getViewForm( HttpServletRequest request )
     {

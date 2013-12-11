@@ -83,6 +83,7 @@ public class AppointmentForm
     private int _nNbWeeksToDisplay;
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nPeoplePerAppointment;
+    private int _nIdWorkflow;
 
     /**
      * Returns the IdForm
@@ -406,5 +407,23 @@ public class AppointmentForm
     public void setPeoplePerAppointment( int nPeoplePerAppointment )
     {
         _nPeoplePerAppointment = nPeoplePerAppointment;
+    }
+
+    /**
+     * Get the id of the workflow associated with this appointment form
+     * @return The id of the workflow
+     */
+    public int getIdWorkflow( )
+    {
+        return _nIdWorkflow;
+    }
+
+    /**
+     * Set the id of the workflow associated with this appointment form
+     * @param nIdWorkflow The id of the workflow
+     */
+    public void setIdWorkflow( int nIdWorkflow )
+    {
+        _nIdWorkflow = nIdWorkflow;
     }
 }

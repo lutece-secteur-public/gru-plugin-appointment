@@ -53,27 +53,26 @@
 				<div class="control-group">
 				<label class="control-label" for="width">#i18n{appointment.createEntry.labelWidth} * : </label>
 					<#list entry.fields as field>
-					<div class="controls">
-						<input  type="text" name="width" id="width" value="${field.width}" />
-					</div>
-					<#assign id_field=field.idField> 
+						<div class="controls">
+							<input  type="text" name="width" id="width" value="${field.width}" />
+						</div>
+						<#assign id_field=field.idField> 
 					</#list>
 				</div>
 				<div class="control-group">
 				<label class="control-label" for="max_size_enter">#i18n{appointment.createEntry.labelMaxSizeEnter} : </label>
 					<div class="controls">
-					<#list entry.fields as field>
-						<#if field.maxSizeEnter!=-1>
-							<input type="text" name="max_size_enter" id="max_size_enter" size="5" value="${field.maxSizeEnter}" />
-						<#else>
-							<input type="text" name="max_size_enter" id="max_size_enter" size="5" value="" />
-						</#if>	
+						<#list entry.fields as field>
+							<#if field.maxSizeEnter!=-1>
+								<input type="text" name="max_size_enter" id="max_size_enter" size="5" value="${field.maxSizeEnter}" />
+							<#else>
+								<input type="text" name="max_size_enter" id="max_size_enter" size="5" value="" />
+							</#if>
+						</#list>	
 					</div>
-				</div>
-				</#list>	
-				
+				</div>	
 				<div class="control-group">
-				<label class="control-label" for="">&nbsp; </label>
+					<label class="control-label" for="">&nbsp; </label>
 					<div class="controls">
 						<label class="checkbox" for="confirm_field">
 							<input name="confirm_field" id="confirm_field" value="1" type="checkbox" onchange="javascript:changeVisilityConfirmFieldTitle();" <#if entry.confirmField> 	checked="checked"</#if>/>
@@ -88,7 +87,7 @@
 					</div>
 				</div>
 				<div class="control-group">
-				<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+					<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
 					<div class="controls">
 						<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="span3" />
 						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
@@ -107,6 +106,47 @@
 				</div>
 			</form>
 		</fieldset>
+		<#if regular_expression_list?exists>
+			<fieldset> 
+				<legend>#i18n{appointment.createEntry.manageRegularExpression.title}</legend>
+				<div class="well">
+					<form class="form-horizontal"  method="post"  action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
+						<input name="id_field" value="${id_field}" type="hidden" />
+						<input name="action" value="doInsertRegularExpression" type="hidden" />
+						<div class="control-group">
+							<label class="control-label" for="id_expression">#i18n{appointment.createEntry.manageRegularExpression.labelInsert} :</label>
+							<div class="controls">
+								<@combo name="id_expression" items=regular_expression_list default_value=-1 />
+								<button class="btn btn-primary btn-small" type="submit" >#i18n{appointment.createEntry.manageRegularExpression.buttonInsert}</button>
+								<span class="help-block">#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}</span>
+							</div>
+						</div>
+					</form>
+					<table class="table table-striped">
+						<tr> 
+							<th>#i18n{appointment.createEntry.manageRegularExpression.rowTitle}</th>
+							<th>#i18n{appointment.createEntry.manageRegularExpression.rowInformationMessage}</th>
+							<th>#i18n{appointment.createEntry.manageRegularExpression.rowValidExemple}</th>
+							<th>#i18n{appointment.createEntry.manageField.rowActions}</th>
+						</tr>
+						<#list list as field>
+							<#list field.regularExpressionList as expression>
+								<tr>
+									<td>${expression.title}</td>
+									<td>${expression.informationMessage}</td>
+									<td>${expression.validExemple}</td>
+									<td>
+										<a class="btn btn-danger btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${id_field}" title="#i18n{appointment.createEntry.manageField.titleDelete}" >
+											<i class="icon-trash icon-white"></i>
+										</a>
+									</td>
+								</tr>
+							</#list>
+						</#list>
+					</table>
+				</div>
+			</fieldset>
+		</#if>
 	</div>
 </div>
 <script type="text/javascript">

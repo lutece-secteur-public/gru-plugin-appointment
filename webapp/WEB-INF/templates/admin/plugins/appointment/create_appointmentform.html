@@ -53,7 +53,7 @@
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} * :</label>
+					<label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} :</label>
 					<div class="controls">
 						<input type="checkbox" id="display_title_fo" name="display_title_fo" value="true" tabindex="15" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelDisplayTitleFo.help}</span>
@@ -116,6 +116,14 @@
 						<input type="checkbox" id="is_open_sunday" name="is_open_sunday" value="true" tabindex="11" <#if appointmentform?? && appointmentform.isOpenSunday>checked="checked" </#if> />
 					</div>
 				</div>
+				<#if listWorkflows??>
+					<div class="control-group">
+						<label class="control-label" for="idWorkflow" >#i18n{appointment.create_appointmentform.labelWorkflow} :</label>
+						<div class="controls">
+							<@combo name="idWorkflow" items=listWorkflows default_value="" />
+						</div>
+					</div>
+				</#if>
 				<div class="form-actions">
 					<button name="action_createAppointmentForm" class="btn btn-primary btn-small" type="submit" tabindex="18">
 						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelCreate}

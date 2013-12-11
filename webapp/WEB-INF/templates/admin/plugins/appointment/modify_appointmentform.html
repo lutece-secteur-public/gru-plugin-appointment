@@ -3,10 +3,10 @@
 		$("#selectAll").change( function() {
 	    if ( $(this).attr("checked") ){
 			// check all
-	        $("input[name='entry_id']").prop( "checked", "checked");
+	        $("input[name='entry_id_move']").prop( "checked", "checked");
 			} else {
 	        // uncheck all
-	        $("input[name='entry_id']").prop( "checked", "");
+	        $("input[name='entry_id_move']").prop( "checked", "");
 			}
 	    });
 	});
@@ -65,7 +65,7 @@
 	                </div>
 	            </div>
 	            <div class="control-group">
-	                <label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} * :</label>
+	                <label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} :</label>
 	                <div class="controls">
 	                    <input type="checkbox" id="display_title_fo" name="display_title_fo" value="true" <#if appointmentform.displayTitleFo>checked="checked"</#if> tabindex="1" />
 	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDisplayTitleFo.help}</span>
@@ -127,6 +127,14 @@
 	                    <input type="checkbox" id="is_open_sunday" name="is_open_sunday" value="true" <#if appointmentform.isOpenSunday>checked="checked" </#if> tabindex="1" />
 	                </div>
 	            </div>
+	            <#if listWorkflows??>
+					<div class="control-group">
+						<label class="control-label" for="idWorkflow" >#i18n{appointment.create_appointmentform.labelWorkflow} :</label>
+						<div class="controls">
+							<@combo name="idWorkflow" items=listWorkflows default_value=appointmentform.idWorkflow />
+						</div>
+					</div>
+				</#if>
 	            <div class="form-actions">   
 	                <button name="action_modifyAppointmentForm" class="btn btn-primary btn-small" type="submit" tabindex="18" >
 	                    <i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
@@ -157,7 +165,7 @@
 					<div>
 						<!-- List all entry of type group  -->
 						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"input-xlarge\"" items=entry_group_list />  
-						<button type="submit" class="btn btn-small" title="#i18n{appointment.modify_appointmentform.moveAll}" name="move.x" value="#i18n{appointment.modify_appointmentform.moveAll}">
+						<button type="submit" class="btn btn-small" title="#i18n{appointment.modify_appointmentform.move}" name="add_to_group" value="#i18n{appointment.modify_appointmentform.moveAll}">
 							<i class="icon-resize-vertical"></i>
 						</button>
 					</div>
@@ -184,11 +192,14 @@
 					</thead>
 					<tbody>
 						<#list entry_list as entry>
+							<#if entry.entryType.group>
+								<#assign lastGroup = entry>
+							</#if>
 							<tr>
 								<td>
 									<!--  add checkbox if entry isn't a group --> 
 									<#if !entry.entryType.group>
-										<input type="checkbox" name="entry_id"value="${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.select}" />
+										<input type="checkbox" name="entry_id_move" value="${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.select}" />
 									</#if>
 								</td>
 								<td>
@@ -224,29 +235,27 @@
 										<blockquote>
 											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=entry.parent.idEntry />
 											<button class="btn btn-primary btn-small" type="submit"	name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
-												<i class="icon-resize-vertical icon-white">&nbsp;</i>
+												<i class="icon-ok icon-white">&nbsp;</i>
 											</button>
 										</blockquote>
 									</td>
 								<#else>
 									<td>
 										<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
-										<button class="btn btn-primary btn-small" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="_${entry.idEntry}">
+										<button class="btn btn-primary btn-small" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
 											<i class="icon-ok icon-white"></i>
 										</button>
 									</td>
 								</#if>
 								<td>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}" class="btn btn-primary btn-small">
-										<i class="icon-edit icon-white">&nbsp;</i>
-									</a>
-									<#if entry.parent?exists>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry?id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}" class="btn btn-primary btn-small">
-											<i class="icon-chevron-right icon-white">&nbsp;</i>
+									<#if !entry.entryType.myLuteceUser>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}" class="btn btn-primary btn-small">
+											<i class="icon-edit icon-white">&nbsp;</i>
 										</a>
-									<#elseif !entry.entryType.group && !entry.entryType.myLuteceUser>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getMoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleMove}" class="btn btn-primary btn-small">
-											<i class="icon-user icon-white">&nbsp;</i>
+									</#if>
+									<#if entry.parent?exists>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}" class="btn btn-primary btn-small">
+											<i class="icon-chevron-right icon-white">&nbsp;</i>
 										</a>
 									</#if>
 									<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
@@ -268,22 +277,27 @@
 </div>
 
 <#macro comboOrders name default_value idParent >
-	<#if mapChild?exists>
 		<select id="${name}" name="${name}" class="input-mini">
-			<#if idParent &gt; 0 && mapChild??>
-				<#assign nb_entries = mapChild[idParent] >
+			<#if idParent &gt; 0 && lastGroup??>
+				<#assign start_enum = lastGroup.position + 1 >
+				<#assign nb_entries = lastGroup.position + lastGroup.children?size >
+				<#list start_enum..nb_entries as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
 			<#else>
-				<#assign nb_entries = entry_list?size >
+				<#list listOrderFirstLevel as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
 			</#if>
-			<#list 1..nb_entries as i>
-				<#if default_value == i>
-					<option selected="selected" value="${i}">${i}</option>
-				<#else>
-					<option value="${i}">${i}</option>
-				</#if>
-			</#list>
 		</select>
-	</#if>
 </#macro>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>

@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -44,6 +45,7 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -55,7 +57,6 @@ import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,8 +100,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     private static final String MARK_ENTRY_LIST = "entry_list";
     private static final String MARK_ENTRY_TYPE_LIST = "entry_type_list";
-    private static final String MARK_MAP_CHILD = "mapChild";
     private static final String MARK_GROUP_ENTRY_LIST = "entry_group_list";
+    private static final String MARK_LIST_ORDER_FIRST_LEVEL = "listOrderFirstLevel";
+    private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
 
     private static final String PARAMETER_PAGE_INDEX = "page_index";
 
@@ -204,6 +206,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         Map<String, Object> model = getModel( );
         model.put( MARK_APPOINTMENTFORM, appointmentForm );
+        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( getUser( ), getLocale( ) ) );
         //        model.put( MARK_LOCALE, AppointmentPlugin.getPluginLocale( getLocale( ) ) );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model );
     }
@@ -262,6 +265,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     public String doRemoveAppointmentForm( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+
+        EntryService.getInstance( ).removeEntriesByIdAppointmentForm( nId );
+
         AppointmentFormHome.remove( nId );
         addInfo( INFO_APPOINTMENTFORM_REMOVED, getLocale( ) );
 
@@ -293,11 +299,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( entryFilter );
         List<Entry> listEntry = new ArrayList<Entry>( listEntryFirstLevel.size( ) );
-        Map<Integer, Integer> mapGroupItemsNumber = new HashMap<Integer, Integer>( );
+        //        Map<Integer, Integer> mapGroupItemsNumber = new HashMap<Integer, Integer>( );
+        List<Integer> listOrderFirstLevel = new ArrayList<Integer>( listEntryFirstLevel.size( ) );
         for ( Entry entry : listEntryFirstLevel )
         {
             listEntry.add( entry );
             // If the entry is a group, we add entries associated with this group
+
+            listOrderFirstLevel.add( listEntry.size( ) );
             if ( entry.getEntryType( ).getGroup( ) )
             {
                 entryFilter = new EntryFilter( );
@@ -306,8 +315,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                 entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
                 entryFilter.setIdEntryParent( entry.getIdEntry( ) );
                 List<Entry> listEntryGroup = EntryHome.getEntryList( entryFilter );
-
-                mapGroupItemsNumber.put( entry.getIdEntry( ), listEntryGroup.size( ) );
+                entry.setChildren( listEntryGroup );
+                //                mapGroupItemsNumber.put( entry.getIdEntry( ), listEntryGroup.size( ) );
 
                 listEntry.addAll( listEntryGroup );
             }
@@ -318,7 +327,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_APPOINTMENTFORM, appointmentForm );
         model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
-        model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
+        model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
+        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( getUser( ), getLocale( ) ) );
+        //        model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
@@ -359,7 +370,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
-        if ( strIdForm != null && StringUtils.isNumeric( strIdForm ) )
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
@@ -402,6 +413,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         appointmentForm.setIsOpenSunday( false );
     }
 
+    /**
+     * Get the reference list of groups
+     * @param nIdForm the id of the appointment form
+     * @return The reference list of groups of the given form
+     */
     private static final ReferenceList getRefListGroups( int nIdForm )
     {
         EntryFilter entryFilter = new EntryFilter( );

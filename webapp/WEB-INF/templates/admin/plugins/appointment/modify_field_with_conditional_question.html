@@ -83,16 +83,16 @@
 							<i class="icon-edit icon-white"></i>
 						</a>
 			        <#if cpt!=1>
-						<a class="btn btn-small" href="jsp/admin/plugins/appointment/DoMoveUpEntryConditional.jsp?id_entry=${entry.idEntry}&idField=${field.idField}"  title="#i18n{appointment.modifyForm.manageEnter.titleMoveUp}" >
+						<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveUpEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}"  title="#i18n{appointment.modifyForm.manageEnter.titleMoveUp}" >
 							<i class="icon-chevron-up"></i>
 						</a>
 					</#if>	
 			        <#if entry_has_next>
-						<a class="btn btn-small" href="jsp/admin/plugins/appointment/DoMoveDownEntryConditional.jsp?id_entry=${entry.idEntry}&idField=${field.idField}"  title="#i18n{appointment.modifyForm.manageEnter.titleMoveDown}" >
+						<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveDownEntryConditional&id_entry=${entry.idEntry}&id_field=${field.idField}"  title="#i18n{appointment.modifyForm.manageEnter.titleMoveDown}" >
 							<i class="icon-chevron-down"></i>
 						</a>
 					</#if>	
-						<a class="btn btn-danger btn-small" href="jsp/admin/plugins/appointment/ConfirmRemoveEntry.jsp?id_entry=${entry.idEntry}&idField=${field.idField}"  title="#i18n{appointment.modifyForm.manageEnter.titleDelete}" >
+						<a class="btn btn-danger btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries?view=confirmRemoveEntry&id_entry=${entry.idEntry}&id_field=${field.idField}"  title="#i18n{appointment.modifyForm.manageEnter.titleDelete}" >
 							<i class="icon-trash icon-white"></i>
 						</a>
 					</td>

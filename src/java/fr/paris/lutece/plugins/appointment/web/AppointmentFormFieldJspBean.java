@@ -159,7 +159,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      */
     private String getModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
-        if ( request.getParameter( PARAMETER_ID_FIELD ) == null
+        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_FIELD ) )
                 || !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_FIELD ) ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -197,7 +197,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     @Action( ACTION_DO_CREATE_FIELD )
     public String doCreateField( HttpServletRequest request )
     {
-        if ( request.getParameter( PARAMETER_ID_ENTRY ) == null
+        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_ENTRY ) )
                 || !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_ENTRY ) ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -255,7 +255,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     private String doModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
-        if ( strIdField == null || !StringUtils.isNumeric( strIdField ) )
+        if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
@@ -296,7 +296,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     public String getConfirmRemoveField( HttpServletRequest request )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
-        if ( strIdField == null || !StringUtils.isNumeric( strIdField ) )
+        if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
@@ -318,7 +318,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     public String doRemoveField( HttpServletRequest request )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
-        if ( strIdField == null || !StringUtils.isNumeric( strIdField ) )
+        if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
@@ -369,7 +369,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     public String doMoveField( HttpServletRequest request, boolean bMoveUp )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
-        if ( strIdField == null || !StringUtils.isNumeric( strIdField ) )
+        if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }

@@ -36,5 +36,6 @@ CREATE TABLE appointment_form (
 	dispolay_title_fo SMALLINT NOT NULL,
 	nb_weeks_to_display int(11) NOT NULL default '0',
 	people_per_appointment int(11) NOT NULL default '0',
+	id_workflow int(11) NOT NULL default '0',
 	PRIMARY KEY (id_form)
 );

@@ -37,7 +37,6 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.util.RemovalListenerService;
 
 import java.util.ArrayList;
@@ -70,12 +69,10 @@ public class EntryService extends RemovalListenerService
 
     /**
      * Change the attribute's order to a greater one (move down in the list)
-     * @param plugin the plugin
      * @param nOrderToSet the new order for the attribute
      * @param entryToChangeOrder the attribute which will change
-     * @param nIdForm the id of the form
      */
-    public void moveDownEntryOrder( Plugin plugin, int nOrderToSet, Entry entryToChangeOrder, int nIdForm )
+    public void moveDownEntryOrder( int nOrderToSet, Entry entryToChangeOrder )
     {
         if ( entryToChangeOrder.getParent( ) == null )
         {
@@ -83,7 +80,7 @@ public class EntryService extends RemovalListenerService
             int nNewOrder = 0;
 
             EntryFilter filter = new EntryFilter( );
-            filter.setIdResource( nIdForm );
+            filter.setIdResource( entryToChangeOrder.getIdResource( ) );
             filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
             filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
             filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
@@ -154,7 +151,7 @@ public class EntryService extends RemovalListenerService
         else
         {
             EntryFilter filter = new EntryFilter( );
-            filter.setIdResource( nIdForm );
+            filter.setIdResource( entryToChangeOrder.getIdResource( ) );
             filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
             filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
@@ -177,15 +174,13 @@ public class EntryService extends RemovalListenerService
 
     /**
      * Change the attribute's order to a lower one (move up in the list)
-     * @param plugin the plugin
      * @param nOrderToSet the new order for the attribute
      * @param entryToChangeOrder the attribute which will change
-     * @param nIdForm the id of the form
      */
-    public void moveUpEntryOrder( Plugin plugin, int nOrderToSet, Entry entryToChangeOrder, int nIdForm )
+    public void moveUpEntryOrder( int nOrderToSet, Entry entryToChangeOrder )
     {
         EntryFilter filter = new EntryFilter( );
-        filter.setIdResource( nIdForm );
+        filter.setIdResource( entryToChangeOrder.getIdResource( ) );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
@@ -260,6 +255,53 @@ public class EntryService extends RemovalListenerService
     }
 
     /**
+     * Move EntryToMove into entryGroup
+     * @param entryToMove the entry which will be moved
+     * @param entryGroup the entry group
+     */
+    public void moveEntryIntoGroup( Entry entryToMove, Entry entryGroup )
+    {
+        if ( entryToMove != null && entryGroup != null )
+        {
+            // If the entry already has a parent, we must remove it before adding it to a new one
+            if ( entryToMove.getParent( ) != null )
+            {
+                moveOutEntryFromGroup( entryToMove );
+            }
+
+            int nPosition;
+
+            if ( entryToMove.getPosition( ) < entryGroup.getPosition( ) )
+            {
+                nPosition = entryGroup.getPosition( );
+                moveDownEntryOrder( nPosition, entryToMove );
+            }
+            else
+            {
+                nPosition = entryGroup.getPosition( ) + entryGroup.getChildren( ).size( ) + 1;
+                moveUpEntryOrder( nPosition, entryToMove );
+            }
+
+            entryToMove.setParent( entryGroup );
+            EntryHome.update( entryToMove );
+        }
+    }
+
+    /**
+     * Remove an entry from a group
+     * @param entryToMove the entry to remove from a group
+     */
+    public void moveOutEntryFromGroup( Entry entryToMove )
+    {
+        Entry parent = EntryHome.findByPrimaryKey( entryToMove.getParent( ).getIdEntry( ) );
+
+        // The new position of the entry is the position of the group plus the number of entries in the group (including this entry)
+        moveDownEntryOrder( parent.getPosition( ) + parent.getChildren( ).size( ), entryToMove );
+        entryToMove.setParent( null );
+        EntryHome.update( entryToMove );
+    }
+
+    /**
      * Init the list of the attribute's orders (first level only)
      * @param listEntryFirstLevel the list of all the attributes of the first
      *            level
@@ -270,6 +312,25 @@ public class EntryService extends RemovalListenerService
         for ( Entry entry : listEntryFirstLevel )
         {
             orderFirstLevel.add( entry.getPosition( ) );
+        }
+    }
+
+    /**
+     * Remove every entries associated with a given appointment form
+     * @param nIdForm The id of the appointment to remove entries of
+     */
+    public void removeEntriesByIdAppointmentForm( int nIdForm )
+    {
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( nIdForm );
+        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
+        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+        List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
+
+        for ( Entry entry : listEntry )
+        {
+            EntryHome.remove( entry.getIdEntry( ) );
         }
     }
 }

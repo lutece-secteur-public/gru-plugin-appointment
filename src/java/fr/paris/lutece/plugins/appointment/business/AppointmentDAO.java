@@ -50,11 +50,11 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_appointment ) FROM appointment_appointment";
-    private static final String SQL_QUERY_SELECT = "SELECT id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment FROM appointment_appointment WHERE id_appointment = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment FROM appointment_appointment";
+    private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE id_appointment = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_appointment = ?, first_name = ?, last_name = ?, email = ?, id_user = ?, time_appointment = ?, date_appointment = ? WHERE id_appointment = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_appointment, first_name, last_name, email, id_user, time_appointment, date_appointment FROM appointment_appointment";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, time_appointment = ?, date_appointment = ? WHERE id_appointment = ?";
 
     /**
      * Generates a new primary key
@@ -114,14 +114,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
         if ( daoUtil.next( ) )
         {
-            appointment = new Appointment( );
-            appointment.setIdAppointment( daoUtil.getInt( 1 ) );
-            appointment.setFirstName( daoUtil.getString( 2 ) );
-            appointment.setLastName( daoUtil.getString( 3 ) );
-            appointment.setEmail( daoUtil.getString( 4 ) );
-            appointment.setIdUser( daoUtil.getString( 5 ) );
-            appointment.setTimeAppointment( daoUtil.getString( 6 ) );
-            appointment.setDateAppointment( daoUtil.getDate( 7 ) );
+            appointment = getAppointmentFormValues( daoUtil );
         }
 
         daoUtil.free( );
@@ -148,14 +141,13 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
 
-        daoUtil.setInt( 1, appointment.getIdAppointment( ) );
-        daoUtil.setString( 2, appointment.getFirstName( ) );
-        daoUtil.setString( 3, appointment.getLastName( ) );
-        daoUtil.setString( 4, appointment.getEmail( ) );
-        daoUtil.setString( 5, appointment.getIdUser( ) );
-        daoUtil.setString( 6, appointment.getTimeAppointment( ) );
-        daoUtil.setDate( 7, appointment.getDateAppointment( ) );
-        daoUtil.setInt( 8, appointment.getIdAppointment( ) );
+        daoUtil.setString( 1, appointment.getFirstName( ) );
+        daoUtil.setString( 2, appointment.getLastName( ) );
+        daoUtil.setString( 3, appointment.getEmail( ) );
+        daoUtil.setString( 4, appointment.getIdUser( ) );
+        daoUtil.setString( 5, appointment.getTimeAppointment( ) );
+        daoUtil.setDate( 6, appointment.getDateAppointment( ) );
+        daoUtil.setInt( 7, appointment.getIdAppointment( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -173,21 +165,30 @@ public final class AppointmentDAO implements IAppointmentDAO
 
         while ( daoUtil.next( ) )
         {
-            Appointment appointment = new Appointment( );
-
-            appointment.setIdAppointment( daoUtil.getInt( 1 ) );
-            appointment.setFirstName( daoUtil.getString( 2 ) );
-            appointment.setLastName( daoUtil.getString( 3 ) );
-            appointment.setEmail( daoUtil.getString( 4 ) );
-            appointment.setIdUser( daoUtil.getString( 5 ) );
-            appointment.setTimeAppointment( daoUtil.getString( 6 ) );
-            appointment.setDateAppointment( daoUtil.getDate( 7 ) );
-
-            appointmentList.add( appointment );
+            appointmentList.add( getAppointmentFormValues( daoUtil ) );
         }
 
         daoUtil.free( );
         return appointmentList;
     }
 
+    /**
+     * Get data of an appointment from a daoUtil
+     * @param daoUtil The daoUtil to get data from
+     * @return The appointment with data of the current row of the daoUtil
+     */
+    private Appointment getAppointmentFormValues( DAOUtil daoUtil )
+    {
+        Appointment appointment = new Appointment( );
+
+        appointment.setIdAppointment( daoUtil.getInt( 1 ) );
+        appointment.setFirstName( daoUtil.getString( 2 ) );
+        appointment.setLastName( daoUtil.getString( 3 ) );
+        appointment.setEmail( daoUtil.getString( 4 ) );
+        appointment.setIdUser( daoUtil.getString( 5 ) );
+        appointment.setTimeAppointment( daoUtil.getString( 6 ) );
+        appointment.setDateAppointment( daoUtil.getDate( 7 ) );
+
+        return appointment;
+    }
 }
