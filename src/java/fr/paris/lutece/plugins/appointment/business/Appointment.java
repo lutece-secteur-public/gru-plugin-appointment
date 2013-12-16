@@ -216,6 +216,6 @@ public class Appointment
      */
     public void setStatus( int nStatus )
     {
-        this.setStatus( nStatus );
+        _nStatus = nStatus;
     }
 }

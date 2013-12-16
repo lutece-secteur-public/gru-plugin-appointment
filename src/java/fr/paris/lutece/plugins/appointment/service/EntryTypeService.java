@@ -48,7 +48,7 @@ import java.util.Map;
  */
 public final class EntryTypeService
 {
-    private static EntryTypeService _instance;
+    private static volatile EntryTypeService _instance;
     private Map<Integer, EntryType> _mapEntryTypes;
 
     /**

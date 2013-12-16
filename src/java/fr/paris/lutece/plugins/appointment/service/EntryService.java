@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.RemovalListenerService;
 
 import java.util.ArrayList;
@@ -48,23 +49,18 @@ import java.util.List;
  */
 public class EntryService extends RemovalListenerService
 {
-    private static EntryService _instance = new EntryService( );
+    /**
+     * Name of the bean of this service
+     */
+    public static final String BEAN_NAME = "appointment.entryService";
 
     /**
-     * Default constructor
+     * Get an instance of the service
+     * @return An instance of the service
      */
-    private EntryService( )
+    public static EntryService getService( )
     {
-        // Do nothing
-    }
-
-    /**
-     * Get the instance of the service
-     * @return The instance of the service
-     */
-    public static EntryService getInstance( )
-    {
-        return _instance;
+        return SpringContextService.getBean( BEAN_NAME );
     }
 
     /**

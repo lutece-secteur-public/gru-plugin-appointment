@@ -6,6 +6,7 @@
     <bean id="appointment.AppointmentPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletDAO" />
     
     <bean id="appointment.appointmentFormService" class="fr.paris.lutece.plugins.appointment.service.AppointmentFormService" />    
+    <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />    
     
     <bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />
 	<bean id="appointment.entryTypeComment" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeComment" />

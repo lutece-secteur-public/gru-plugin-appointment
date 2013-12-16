@@ -137,6 +137,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.appointmentForm.itemsPerPage";
     private static final String DEFAULT_CURRENT_PAGE = "1";
 
+    private EntryService _entryService = EntryService.getService( );
     private int _nDefaultItemsPerPage;
 
     /**
@@ -266,7 +267,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
 
-        EntryService.getInstance( ).removeEntriesByIdAppointmentForm( nId );
+        _entryService.removeEntriesByIdAppointmentForm( nId );
 
         AppointmentFormHome.remove( nId );
         addInfo( INFO_APPOINTMENTFORM_REMOVED, getLocale( ) );
@@ -418,7 +419,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * @param nIdForm the id of the appointment form
      * @return The reference list of groups of the given form
      */
-    private static final ReferenceList getRefListGroups( int nIdForm )
+    private static ReferenceList getRefListGroups( int nIdForm )
     {
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( nIdForm );

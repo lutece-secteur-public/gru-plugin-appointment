@@ -250,6 +250,8 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     /**
      * Perform modification field
      * @param request The HTTP request
+     * @param bWithConditionalQuestion True if the field to modify accepts
+     *            conditional questions
      * @return The URL to go after performing the action
      */
     private String doModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
