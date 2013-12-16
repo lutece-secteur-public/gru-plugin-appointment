@@ -40,20 +40,21 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 
 /**
- * This class provides instances management methods for AppointmentPortlet objects
+ * This class provides instances management methods for AppointmentPortlet
+ * objects
  */
 public class AppointmentPortletHome extends PortletHome
 {
     // Static variable pointed at the DAO instance
-    private static IAppointmentPortletDAO _dao = (IAppointmentPortletDAO) SpringContextService.getBean( "appointment.AppointmentPortletDAO" );
+    private static IAppointmentPortletDAO _dao = SpringContextService.getBean( "appointment.AppointmentPortletDAO" );
 
     /* This class implements the Singleton design pattern. */
-    private static AppointmentPortletHome _singleton;
+    private static volatile AppointmentPortletHome _singleton;
 
     /**
      * Constructor
      */
-    public AppointmentPortletHome(  )
+    public AppointmentPortletHome( )
     {
         if ( _singleton == null )
         {
@@ -63,12 +64,12 @@ public class AppointmentPortletHome extends PortletHome
 
     /**
      * Returns the identifier of the portlet type
-     *
+     * 
      * @return the portlet type identifier
      */
-    public String getPortletTypeId(  )
+    public String getPortletTypeId( )
     {
-        String strCurrentClassName = this.getClass(  ).getName(  );
+        String strCurrentClassName = this.getClass( ).getName( );
         String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
         return strPortletTypeId;
@@ -76,14 +77,14 @@ public class AppointmentPortletHome extends PortletHome
 
     /**
      * Returns the instance of AppointmentPortlet Portlet
-     *
+     * 
      * @return the AppointmentPortlet Portlet instance
      */
-    public static PortletHome getInstance(  )
+    public static PortletHome getInstance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new AppointmentPortletHome(  );
+            _singleton = new AppointmentPortletHome( );
         }
 
         return _singleton;
@@ -91,13 +92,12 @@ public class AppointmentPortletHome extends PortletHome
 
     /**
      * Returns the instance of the portlet DAO singleton
-     *
+     * 
      * @return the instance of the DAO singleton
      */
-    public IPortletInterfaceDAO getDAO(  )
+    public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
     }
 
 }
-
