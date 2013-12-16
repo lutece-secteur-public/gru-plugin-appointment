@@ -42,4 +42,9 @@
         <jiraProjectName>APPOINTMENT</jiraProjectName>
         <jiraComponentId></jiraComponentId>
     </properties>
+    <scm>
+        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/applications/plugin-appointment</connection>
+        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/applications/plugin-appointment</developerConnection>
+        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/applications/plugin-appointment</url>
+    </scm>
 </project>

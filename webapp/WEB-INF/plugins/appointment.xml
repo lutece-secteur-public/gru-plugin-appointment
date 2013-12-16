@@ -59,4 +59,9 @@
         <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
      </portlet>
    </portlets>
+   
+   <javascript-files>
+        <javascript-files-scope>portal</javascript-files-scope>
+        <javascript-file>appointment/appointment.js</javascript-file>
+    </javascript-files>
 </plug-in>

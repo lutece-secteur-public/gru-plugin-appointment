@@ -1,7 +1,7 @@
 <#include "/admin/util/editor/editor.html" />
-<div class="row-fluid">
-	<fieldset>
-		<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+<fieldset>
+	<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+	<div class="row-fluid">
 		<div class="span4">
 			<form class="form" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
 				<input name="id_entry" value="${entry.idEntry}" type="hidden" />
@@ -30,7 +30,7 @@
 					<button class="btn btn-primary btn-small" type="submit">
 						<i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
 					</button>
-					<button class="btn btn-primary btn-small" type="submit">
+					<button class="btn btn-primary btn-small" type="submit" name="apply" value="apply">
 						<i class="icon-ok-circle icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
 					</button>
 					<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
@@ -92,6 +92,6 @@
 				</table>
 			</fieldset>
 		</div>
-	</fieldset>
-</div>
+	</div>
+</fieldset>
 <@initEditor />

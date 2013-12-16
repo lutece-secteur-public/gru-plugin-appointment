@@ -1,0 +1,28 @@
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
+			<input name="page" value="appointment" type="hidden" />
+			<input name="action" value="doValidateForm" type="hidden" />
+			<input name="id_form" value="${form.idForm}" type="hidden" />
+			<input name="session" value="session" type="hidden" />
+			<fieldset>
+				<legend>
+					<#if form.displayTitleFo && form.title != "" >
+						${form.title} 
+					<#else>
+						#i18n{appointment.appointmentApp.defaultTitle}
+					</#if>
+				</legend>
+				${str_entry}
+				<div class="form-actions form-steps">
+					<button class="btn btn-primary btn-small" type="submit" name="save" >
+						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+					</button>
+					<button type="reset" name="reset" class="btn btn-primary btn-small">
+						<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelReset}
+					</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

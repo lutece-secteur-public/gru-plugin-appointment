@@ -36,6 +36,8 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
@@ -53,12 +55,12 @@ import org.apache.commons.lang.StringUtils;
 /**
  * This class provides a simple implementation of an XPage
  */
-@Controller( xpageName = "appointment", pageTitleProperty = "myplugin.pageTitle", pagePathProperty = "myplugin.pagePathLabel" )
+@Controller( xpageName = "appointment", pageTitleProperty = "appointment.appointmentApp.defaultTitle", pagePathProperty = "appointment.appointmentApp.defaultPath" )
 public class AppointmentApp extends MVCApplication
 {
     private static final String TEMPLATE_XPAGE = "/skin/plugins/appointment/appointment.html";
-    private static final String TEMPLATE_APPOINTMENT_FORM_LIST = "/skin/pluigins/appointment/appointment_form_list.html";
-    private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/pluigins/appointment/appointment_form.html";
+    private static final String TEMPLATE_APPOINTMENT_FORM_LIST = "/skin/plugins/appointment/appointment_form_list.html";
+    private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/plugins/appointment/appointment_form.html";
 
     private static final String VIEW_HOME = "home";
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
@@ -67,6 +69,10 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_ID_FORM = "id_form";
 
     private static final String MARK_FORM_LIST = "form_list";
+    private static final String MARK_FORM_HTML = "form_html";
+
+    private final AppointmentFormService _appointmentformService = SpringContextService
+            .getBean( AppointmentFormService.BEAN_NAME );
 
     /**
      * Returns the content of the page appointment.
@@ -103,17 +109,28 @@ public class AppointmentApp extends MVCApplication
     public XPage getViewForm( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        if ( strIdForm != null && StringUtils.isNumeric( PARAMETER_ID_FORM ) )
+        if ( strIdForm != null && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
-            // TODO : implement me !
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+
+            if ( form == null || !form.getIsActive( ) )
+            {
+                return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+            }
+
+            _appointmentformService.removeResponsesFromSession( request.getSession( ) );
 
             Map<String, Object> model = new HashMap<String, Object>( );
 
-            Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getAppointmentFormsList( );
-            model.put( MARK_FORM_LIST, listAppointmentForm );
-            return getXPage( TEMPLATE_APPOINTMENT_FORM, request.getLocale( ), model );
+            model.put( MARK_FORM_HTML, _appointmentformService.getHtmlForm( form, getLocale( request ), true, request ) );
+            XPage page = getXPage( TEMPLATE_APPOINTMENT_FORM, request.getLocale( ), model );
+            if ( form.getDisplayTitleFo( ) )
+            {
+                page.setTitle( form.getTitle( ) );
+            }
+            return page;
         }
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
