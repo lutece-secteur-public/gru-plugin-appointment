@@ -37,14 +37,22 @@ package fr.paris.lutece.plugins.appointment.web;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
+import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
+import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,32 +66,25 @@ import org.apache.commons.lang.StringUtils;
 @Controller( xpageName = "appointment", pageTitleProperty = "appointment.appointmentApp.defaultTitle", pagePathProperty = "appointment.appointmentApp.defaultPath" )
 public class AppointmentApp extends MVCApplication
 {
-    private static final String TEMPLATE_XPAGE = "/skin/plugins/appointment/appointment.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_LIST = "/skin/plugins/appointment/appointment_form_list.html";
     private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/plugins/appointment/appointment_form.html";
 
-    private static final String VIEW_HOME = "home";
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
     private static final String VIEW_GET_FORM = "viewForm";
+    private static final String VIEW_GET_APPOINTMENT_CALENDAR = "getAppointmentCalendar";
+
+    private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
 
     private static final String PARAMETER_ID_FORM = "id_form";
 
     private static final String MARK_FORM_LIST = "form_list";
     private static final String MARK_FORM_HTML = "form_html";
+    private static final String MARK_FORM_ERRORS = "form_errors";
 
-    private final AppointmentFormService _appointmentformService = SpringContextService
+    private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
+
+    private final AppointmentFormService _appointmentFormService = SpringContextService
             .getBean( AppointmentFormService.BEAN_NAME );
-
-    /**
-     * Returns the content of the page appointment.
-     * @param request The HTTP request
-     * @return The view
-     */
-    @View( VIEW_HOME )
-    public XPage viewHome( HttpServletRequest request )
-    {
-        return getXPage( TEMPLATE_XPAGE, request.getLocale( ) );
-    }
 
     /**
      * Get the list of appointment form list
@@ -93,6 +94,7 @@ public class AppointmentApp extends MVCApplication
     @View( value = VIEW_APPOINTMENT_FORM_LIST, defaultView = true )
     public XPage getFormList( HttpServletRequest request )
     {
+        _appointmentFormService.removeResponsesFromSession( request.getSession( ) );
         Map<String, Object> model = new HashMap<String, Object>( );
 
         Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getAppointmentFormsList( );
@@ -120,17 +122,89 @@ public class AppointmentApp extends MVCApplication
                 return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
             }
 
-            _appointmentformService.removeResponsesFromSession( request.getSession( ) );
-
             Map<String, Object> model = new HashMap<String, Object>( );
 
-            model.put( MARK_FORM_HTML, _appointmentformService.getHtmlForm( form, getLocale( request ), true, request ) );
+            model.put( MARK_FORM_HTML, _appointmentFormService.getHtmlForm( form, getLocale( request ), true, request ) );
+            List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute(
+                    SESSION_APPOINTMENT_FORM_ERRORS );
+            if ( listErrors != null )
+            {
+                model.put( MARK_FORM_ERRORS, listErrors );
+                request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+            }
+
+            _appointmentFormService.removeResponsesFromSession( request.getSession( ) );
+
             XPage page = getXPage( TEMPLATE_APPOINTMENT_FORM, request.getLocale( ), model );
             if ( form.getDisplayTitleFo( ) )
             {
                 page.setTitle( form.getTitle( ) );
             }
             return page;
+        }
+        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+    }
+
+    /**
+     * Do validate data entered by a user to fill a form
+     * @param request The request
+     * @return The next URL to redirect to
+     */
+    @Action( ACTION_DO_VALIDATE_FORM )
+    public XPage doValidateForm( HttpServletRequest request )
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( strIdForm != null && StringUtils.isNumeric( strIdForm ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+
+            EntryFilter filter = new EntryFilter( );
+            filter.setIdResource( nIdForm );
+            filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+            filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
+            filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+            filter.setIdIsComment( EntryFilter.FILTER_FALSE );
+
+            List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
+
+            _appointmentFormService.removeResponsesFromSession( request.getSession( ) );
+
+            List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
+            Locale locale = request.getLocale( );
+            for ( Entry entry : listEntryFirstLevel )
+            {
+                listFormErrors.addAll( _appointmentFormService.getResponseEntry( request, entry.getIdEntry( ), false,
+                        locale ) );
+            }
+
+            // If there is some errors, we redirect the user to the form page
+            if ( listFormErrors.size( ) > 0 )
+            {
+                request.getSession( ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
+                return redirect( request, VIEW_GET_FORM, PARAMETER_ID_FORM, nIdForm );
+            }
+
+            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+        }
+        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+    }
+
+    /**
+     * Get the page with the calendar with opened and closed days for an
+     * appointment form
+     * @param request The request
+     * @return The XPage to display
+     */
+    @View( VIEW_GET_APPOINTMENT_CALENDAR )
+    public XPage getAppointmentCalendar( HttpServletRequest request )
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( strIdForm != null && StringUtils.isNumeric( strIdForm ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+
+
         }
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }

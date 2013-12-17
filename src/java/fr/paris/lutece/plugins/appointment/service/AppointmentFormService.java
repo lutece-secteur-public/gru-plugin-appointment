@@ -39,15 +39,21 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
+import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
+import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.util.url.UrlItem;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +75,11 @@ public class AppointmentFormService implements Serializable
 
     private static final long serialVersionUID = 6197939507943704211L;
 
+    private static final String VIEW_GET_FORM = "viewForm";
+
+    private static final String PARAMETER_ID_FORM = "id_form";
+    private static final String PREFIX_ATTRIBUTE = "attribute";
+
     // marks
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_ENTRY = "entry";
@@ -77,6 +88,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_FORM = "form";
     private static final String MARK_STR_ENTRY = "str_entry";
     private static final String MARK_USER = "user";
+    private static final String MARK_LIST_RESPONSES = "list_responses";
 
     private static final String SESSION_KEY_RESPONSES = "appointment.appointmentFormService.responses";
 
@@ -94,17 +106,14 @@ public class AppointmentFormService implements Serializable
      */
     public String getHtmlForm( AppointmentForm form, Locale locale, boolean bDisplayFront, HttpServletRequest request )
     {
-        List<Entry> listEntryFirstLevel;
         Map<String, Object> model = new HashMap<String, Object>( );
-        HtmlTemplate template;
-        EntryFilter filter;
         StringBuffer strBuffer = new StringBuffer( );
-        filter = new EntryFilter( );
+        EntryFilter filter = new EntryFilter( );
         filter.setIdResource( form.getIdForm( ) );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
-        listEntryFirstLevel = EntryHome.getEntryList( filter );
+        List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
 
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -115,8 +124,7 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
         model.put( MARK_LOCALE, locale );
 
-        template = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
-
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
         return template.getHtml( );
     }
 
@@ -207,20 +215,16 @@ public class AppointmentFormService implements Serializable
 
         model.put( MARK_USER, user );
 
-        //        if ( ( request != null ) && ( request.getSession( ) != null ) )
-        //        {
-        //            Map<Integer, List<Response>> listSubmittedResponses = getResponses( request.getSession( ) );
-        //
-        //            if ( listSubmittedResponses != null )
-        //            {
-        //                List<Response> listResponses = listSubmittedResponses.get( entry.getIdEntry( ) );
-        //
-        //                if ( listResponses != null )
-        //                {
-        //                    model.put( MARK_LIST_RESPONSES, listResponses );
-        //                }
-        //            }
-        //        }
+        if ( request != null )
+        {
+            Map<Integer, List<Response>> listSubmittedResponses = getResponsesFromSession( request.getSession( ) );
+
+            if ( listSubmittedResponses != null )
+            {
+                List<Response> listResponses = listSubmittedResponses.get( entry.getIdEntry( ) );
+                model.put( MARK_LIST_RESPONSES, listResponses );
+            }
+        }
 
         template = AppTemplateService
                 .getTemplate( EntryTypeServiceManager.getEntryTypeService( entry ).getHtmlCode( entry, bDisplayFront ),
@@ -229,13 +233,170 @@ public class AppointmentFormService implements Serializable
     }
 
     /**
+     * Perform in the object formSubmit the responses associates with a entry
+     * specify in parameter.<br />
+     * Response creates are stored in session and can be get by calling the
+     * method {@link #getResponsesFromSession(HttpSession)}
+     * @param request the request
+     * @param nIdEntry the key of the entry
+     * @param bResponseNull true if the response created must be null
+     * @param locale the locale
+     * @return null if there is no error in the response or the list of errors
+     *         found
+     */
+    public List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry,
+            boolean bResponseNull, Locale locale )
+    {
+        List<Response> listResponse = new ArrayList<Response>( );
+        Map<Integer, List<Response>> listSubmittedResponses = getResponsesFromSession( request.getSession( ) );
+
+        if ( listSubmittedResponses == null )
+        {
+            listSubmittedResponses = new HashMap<Integer, List<Response>>( );
+            saveResponseInSession( request.getSession( ), listSubmittedResponses );
+        }
+        listSubmittedResponses.put( nIdEntry, listResponse );
+        return getResponseEntry( request, nIdEntry, listResponse, bResponseNull, locale );
+    }
+
+    /**
+     * Perform in the object formSubmit the responses associates with a entry
+     * specify in parameter.<br />
+     * Return null if there is no error in the response else return a FormError
+     * Object
+     * @param request the request
+     * @param nIdEntry the key of the entry
+     * @param listResponse The list of response to add responses found in
+     * @param bResponseNull true if the response created must be null
+     * @param locale the locale
+     * @return null if there is no error in the response or the list of errors
+     *         found
+     */
+    private List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry,
+            List<Response> listResponse, boolean bResponseNull, Locale locale )
+    {
+        List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
+        Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
+
+        List<Field> listField = new ArrayList<Field>( );
+
+        for ( Field field : entry.getFields( ) )
+        {
+            field = FieldHome.findByPrimaryKey( field.getIdField( ) );
+            listField.add( field );
+        }
+
+        entry.setFields( listField );
+
+        if ( entry.getEntryType( ).getGroup( ) )
+        {
+            for ( Entry entryChild : entry.getChildren( ) )
+            {
+                listFormErrors
+                        .addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponse, false, locale ) );
+            }
+        }
+        else if ( !entry.getEntryType( ).getComment( ) )
+        {
+            GenericAttributeError formError = null;
+
+            if ( !bResponseNull )
+            {
+                formError = EntryTypeServiceManager.getEntryTypeService( entry ).getResponseData( entry, request,
+                        listResponse, locale );
+
+                if ( formError != null )
+                {
+                    formError.setUrl( getEntryUrl( entry ) );
+                }
+            }
+            else
+            {
+                Response response = new Response( );
+                response.setEntry( entry );
+                listResponse.add( response );
+            }
+
+            if ( formError != null )
+            {
+                entry.setError( formError );
+                listFormErrors.add( formError );
+            }
+
+            if ( entry.getNumberConditionalQuestion( ) != 0 )
+            {
+                for ( Field field : entry.getFields( ) )
+                {
+                    boolean bIsFieldInResponseList = isFieldInTheResponseList( field.getIdField( ), listResponse );
+                    for ( Entry conditionalEntry : field.getConditionalQuestions( ) )
+                    {
+                        listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry( ), listResponse,
+                                !bIsFieldInResponseList, locale ) );
+                    }
+                }
+            }
+        }
+
+        return listFormErrors;
+    }
+
+    /**
+     * Check if a field is in a response list
+     * @param nIdField the id of the field to search
+     * @param listResponse the list of responses
+     * @return true if the field is in the response list, false otherwise
+     */
+    public Boolean isFieldInTheResponseList( int nIdField, List<Response> listResponse )
+    {
+        for ( Response response : listResponse )
+        {
+            if ( ( response.getField( ) != null ) && ( response.getField( ).getIdField( ) == nIdField ) )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the URL to modify an entry of the form in front office
+     * @param entry the entry
+     * @return The URL to modify the entry in front office
+     */
+    public String getEntryUrl( Entry entry )
+    {
+        UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
+        url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
+        url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_FORM );
+        if ( ( entry != null ) && ( entry.getIdResource( ) > 0 ) )
+        {
+            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource( ) );
+            url.setAnchor( PREFIX_ATTRIBUTE + entry.getIdEntry( ) );
+        }
+        return url.getUrl( );
+    }
+
+    /**
      * Save appointment form responses in the session of the user
      * @param session The session
-     * @param listResponses The list of responses to save
+     * @param listResponsesByIdEntry A map containing lists of responses
+     *            associated with the id of the corresponding entry
      */
-    public void saveResponseInSession( HttpSession session, List<Response> listResponses )
+    public void saveResponseInSession( HttpSession session, Map<Integer, List<Response>> listResponsesByIdEntry )
     {
-        session.setAttribute( SESSION_KEY_RESPONSES, listResponses );
+        session.setAttribute( SESSION_KEY_RESPONSES, listResponsesByIdEntry );
+    }
+
+    /**
+     * Get responses saved in session
+     * @param session The session of the user
+     * @return A map containing lists of responses associated with the id of the
+     *         corresponding entry
+     */
+    public Map<Integer, List<Response>> getResponsesFromSession( HttpSession session )
+    {
+        return (Map<Integer, List<Response>>) session.getAttribute( SESSION_KEY_RESPONSES );
     }
 
     /**
