@@ -121,4 +121,15 @@ public final class AppointmentFormHome
     {
         return _dao.selectAppointmentFormsList( _plugin );
     }
+
+    /**
+     * Load the data of all the appointmentForm objects and returns them in form
+     * of a collection
+     * @return the collection which contains the data of all the appointmentForm
+     *         objects
+     */
+    public static Collection<AppointmentForm> getActiveAppointmentFormsList( )
+    {
+        return _dao.selectActiveAppointmentFormsList( _plugin );
+    }
 }

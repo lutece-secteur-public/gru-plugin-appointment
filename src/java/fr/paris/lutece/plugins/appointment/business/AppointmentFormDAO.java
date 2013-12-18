@@ -51,6 +51,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_form ) FROM appointment_form";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_form, title, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow FROM appointment_form";
+    private static final String SQL_QUERY_SELECTALL_ENABLED = SQL_QUERY_SELECTALL + " WHERE is_active = 1";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE id_form = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
@@ -187,6 +188,25 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     {
         Collection<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
+        daoUtil.executeQuery( );
+
+        while ( daoUtil.next( ) )
+        {
+            appointmentFormList.add( getAppointmentFormData( daoUtil ) );
+        }
+
+        daoUtil.free( );
+        return appointmentFormList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin )
+    {
+        Collection<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ENABLED, plugin );
         daoUtil.executeQuery( );
 
         while ( daoUtil.next( ) )

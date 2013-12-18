@@ -97,7 +97,7 @@ public class AppointmentApp extends MVCApplication
         _appointmentFormService.removeResponsesFromSession( request.getSession( ) );
         Map<String, Object> model = new HashMap<String, Object>( );
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getAppointmentFormsList( );
+        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
         model.put( MARK_FORM_LIST, listAppointmentForm );
         return getXPage( TEMPLATE_APPOINTMENT_FORM_LIST, request.getLocale( ), model );
     }

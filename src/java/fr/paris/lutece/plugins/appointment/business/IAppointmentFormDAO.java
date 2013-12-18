@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2002-2013, Mairie de Paris
  * All rights reserved.
@@ -32,12 +31,12 @@
  *
  * License 1.0
  */
- 
+
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
-import java.util.Collection;
 
+import java.util.Collection;
 
 
 /**
@@ -46,50 +45,54 @@ import java.util.Collection;
 public interface IAppointmentFormDAO
 {
 
+    /**
+     * Insert a new record in the table.
+     * @param appointmentForm instance of the AppointmentForm object to insert
+     * @param plugin the Plugin
+     */
+    void insert( AppointmentForm appointmentForm, Plugin plugin );
 
-	/**
-	 * Insert a new record in the table.
-	 * @param appointmentForm instance of the AppointmentForm object to insert
-	 * @param plugin the Plugin
-	 */
-	void insert( AppointmentForm appointmentForm, Plugin plugin );
+    /**
+     * Update the record in the table
+     * @param appointmentForm the reference of the AppointmentForm
+     * @param plugin the Plugin
+     */
+    void store( AppointmentForm appointmentForm, Plugin plugin );
 
+    /**
+     * Delete a record from the table
+     * @param nIdAppointmentForm int identifier of the AppointmentForm to delete
+     * @param plugin the Plugin
+     */
+    void delete( int nIdAppointmentForm, Plugin plugin );
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Finders
 
-	/**
-	 * Update the record in the table
-	 * @param appointmentForm the reference of the AppointmentForm
-	 * @param plugin the Plugin
-	 */
-	void store( AppointmentForm appointmentForm, Plugin plugin );
+    /**
+     * Load the data from the table
+     * @param nKey The identifier of the appointmentForm
+     * @param plugin the Plugin
+     * @return The instance of the appointmentForm
+     */
+    AppointmentForm load( int nKey, Plugin plugin );
 
+    /**
+     * Load the data of all the appointmentForm objects and returns them as a
+     * collection
+     * @param plugin the Plugin
+     * @return The collection which contains the data of all the appointmentForm
+     *         objects
+     */
+    Collection<AppointmentForm> selectAppointmentFormsList( Plugin plugin );
 
-	/**
-	 * Delete a record from the table
-	 * @param nIdAppointmentForm int identifier of the AppointmentForm to delete
-	 * @param plugin the Plugin
-	 */
-	void delete( int nIdAppointmentForm, Plugin plugin );
+    /**
+     * Load the data of all active appointmentForm objects and returns them as a
+     * collection
+     * @param plugin the Plugin
+     * @return The collection which contains the data of all the appointmentForm
+     *         objects
+     */
+    Collection<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin );
 
-	///////////////////////////////////////////////////////////////////////////
-	// Finders
-
-	/**
-	 * Load the data from the table
-	 * @param nKey The identifier of the appointmentForm
-	 * @param plugin the Plugin
-	 * @return The instance of the appointmentForm
-	 */
-	AppointmentForm load( int nKey, Plugin plugin );
-
-
-
-	/**
-	 * Load the data of all the appointmentForm objects and returns them as a collection
-	 * @param plugin the Plugin
-	 * @return The collection which contains the data of all the appointmentForm objects
-	 */
-	Collection<AppointmentForm> selectAppointmentFormsList( Plugin plugin );
-	
 }
-

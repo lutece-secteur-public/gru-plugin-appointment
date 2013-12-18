@@ -2,10 +2,10 @@
 	<div class="span12">
 		<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp">
 			<fieldset>
-				<legend>#i18n{appointment.createDay.pageTitle}</legend>
+				<legend>#i18n{appointment.modifyDay.pageTitle}</legend>
 				<@messages errors=errors />
-				<input type="hidden" id="id_form" name="id_form" value="${id_form}" />
-				<input type="hidden" id="action" name="action" value="doCreateDay" />
+				<input type="hidden" id="action" name="action" value="doModifyDay" />
+				<input type="hidden" id="id_day" name="id_day" value="${day.idDay}" />
 				<div class="control-group">
 					<label class="control-label" for="date" >#i18n{appointment.modify_appointmentformDays.labelDate} * :</label>
 					<div class="controls">
@@ -22,14 +22,14 @@
 				<div class="control-group" id="divOpeningTime">
 					<label class="control-label" for="openingTime" >#i18n{appointment.create_appointmentform.labelTimeStart} * :</label>
 					<div class="controls">
-						<input type="text" id="openingTime" name="openingTime" value="<#if day??><#if day.openingHour &lt; 10>0</#if>${day.openingHour}h<#if day.openingMinutes &lt; 10>0</#if>${day.openingMinutes}</#if>" />
+						<input type="text" id="openingTime" name="openingTime" value="<#if day.openingHour &lt; 10>0</#if>${day.openingHour}h<#if day.openingMinutes &lt; 10>0</#if>${day.openingMinutes}" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeStart.help}</span>
 					</div>
 				</div>
 				<div class="control-group" id="divClosingTime">
 					<label class="control-label" for="closingTime" >#i18n{appointment.create_appointmentform.labelTimeEnd} * :</label>
 					<div class="controls">
-						<input type="text" id="closingTime" name="closingTime" value="<#if day??><#if day.closingHour &lt; 10>0</#if>${day.closingHour}h<#if day.closingMinutes &lt; 10>0</#if>${day.closingMinutes}</#if>" />
+						<input type="text" id="closingTime" name="closingTime" value="<#if day.closingHour &lt; 10>0</#if>${day.closingHour}h<#if day.closingMinutes &lt; 10>0</#if>${day.closingMinutes}" />
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeEnd.help}</span>
 					</div>
 				</div>
@@ -48,8 +48,8 @@
 					</div>
 				</div>
 				<div class="form-actions">
-					<button class="btn btn-primary btn-small" name="save" value="save" title="#i18n{portal.util.labelCreate}">
-						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelCreate}
+					<button class="btn btn-primary btn-small" name="save" value="save" title="#i18n{portal.util.labelModify}">
+						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
 					</button>
 					<button class="btn btn-small" name="cancel" value="cancel" title="#i18n{portal.util.labelBack}">
 						<i class="icon-remove-circle">&nbsp;</i>#i18n{portal.util.labelBack}

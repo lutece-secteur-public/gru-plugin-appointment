@@ -81,11 +81,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_DATE_FORMAT = "appointment.message.error.dayDateFormat";
     private static final String MESSAGE_ERROR_FORMAT_APPOINTMENT_DURATION = "appointment.message.error.formatNumberAppointmentDuration";
     private static final String MESSAGE_ERROR_FORMAT_PEOPLE_PER_APPOINTMENT = "appointment.message.error.formatPeoplePerAppointmentDuration";
+    private static final String MESSAGE_ERROR_DAY_ALREADY_EXIST = "appointment.message.error.dayAlreadyExist";
 
     private static final String PROPERTY_CREATE_DAY_TITLE = "appointment.createDay.pageTitle";
     private static final String PROPERTY_MODIFY_DAY_TITLE = "appointment.modifyDay.pageTitle";
 
-    private static final String VIEW_GET_MANAGE_DAYS = "getManageDays";
     private static final String VIEW_GET_CREATE_DAY = "getCreateDay";
     private static final String VIEW_GET_MODIFY_DAY = "getModifyDay";
     private static final String VIEW_CONFIRM_REMOVE_DAY = "confirmRemoveDay";
@@ -100,7 +100,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String TEMPLATE_MODIFY_DAY = "/admin/plugins/appointment/modify_days.html";
 
     private static final String CONSTANT_H = "h";
-    private static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]h[0-6][0-9]$";
+    private static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]h[0-5][0-9]$";
 
     private DateConverter _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT,
             Locale.FRANCE ) );
@@ -145,11 +145,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         {
             if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
             {
-                return redirect( request, AppointmentFormJspBean.getURLManageAppointmentFormDays( request ) );
+                return redirect( request, AppointmentFormJspBean.getURLManageAppointmentFormDays( request, strIdForm ) );
             }
 
             AppointmentDay day = new AppointmentDay( );
-
+            day.setIdForm( Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) ) );
             List<String> listErrors = populateDay( day, request );
 
             if ( listErrors != null && listErrors.size( ) > 0 )
@@ -164,7 +164,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
             AppointmentDayHome.create( day );
 
-            return redirect( request, VIEW_GET_MANAGE_DAYS, PARAMETER_ID_FORM, day.getIdForm( ) );
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentFormDays( request, strIdForm ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
@@ -201,7 +201,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             Map<String, Object> model = new HashMap<String, Object>( );
             model.put( MARK_DAY, day );
-
+            fillCommons( model );
             return getPage( PROPERTY_MODIFY_DAY_TITLE, TEMPLATE_MODIFY_DAY, model );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -227,20 +227,24 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
 
             AppointmentDay day = AppointmentDayHome.findByPrimaryKey( nIdDay );
-            List<String> listErrors = populateDay( day, request );
-            if ( listErrors != null && listErrors.size( ) > 0 )
-            {
-                Locale locale = request.getLocale( );
-                for ( String strError : listErrors )
-                {
-                    addError( strError, locale );
-                }
-                _appointmentDay = day;
-                return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_FORM, day.getIdForm( ) );
-            }
-            AppointmentDayHome.create( day );
 
-            return redirect( request, VIEW_GET_MANAGE_DAYS, PARAMETER_ID_FORM, day.getIdForm( ) );
+            if ( StringUtils.isEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
+            {
+                List<String> listErrors = populateDay( day, request );
+                if ( listErrors != null && listErrors.size( ) > 0 )
+                {
+                    Locale locale = request.getLocale( );
+                    for ( String strError : listErrors )
+                    {
+                        addError( strError, locale );
+                    }
+                    _appointmentDay = day;
+                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+                }
+                AppointmentDayHome.update( day );
+            }
+            return redirect( request,
+                    AppointmentFormJspBean.getURLManageAppointmentFormDays( request, day.getIdForm( ) ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
@@ -286,7 +290,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             if ( day != null )
             {
                 AppointmentDayHome.remove( nIdDay );
-                return redirect( request, VIEW_GET_MANAGE_DAYS, PARAMETER_ID_FORM, day.getIdForm( ) );
+                return redirect( request,
+                        AppointmentFormJspBean.getURLManageAppointmentFormDays( request, day.getIdForm( ) ) );
             }
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -299,16 +304,39 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      */
     private List<String> populateDay( AppointmentDay day, HttpServletRequest request )
     {
-        day.setIdForm( Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) ) );
-
         List<String> listErrors = new ArrayList<String>( );
         String strDate = request.getParameter( PARAMETER_DATE );
-        Date date = (Date) _dateConverter.convert( java.util.Date.class, strDate );
+        Date date = (Date) _dateConverter.convert( java.sql.Date.class, strDate );
 
         if ( date == null )
         {
             listErrors.add( MESSAGE_ERROR_DATE_FORMAT );
         }
+        else
+        {
+            // We check that the day does not already exist
+            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( day.getIdForm( ), date, date );
+            if ( listDays != null && listDays.size( ) > 0 )
+            {
+                if ( day.getIdDay( ) == 0 )
+                {
+                    listErrors.add( MESSAGE_ERROR_DAY_ALREADY_EXIST );
+                }
+                else
+                {
+                    // If there is a day for this form that has the same date but a different id, we add an error
+                    for ( AppointmentDay dayFound : listDays )
+                    {
+                        if ( dayFound.getIdDay( ) != day.getIdDay( ) )
+                        {
+                            listErrors.add( MESSAGE_ERROR_DAY_ALREADY_EXIST );
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        day.setDate( date );
 
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
         day.setIsOpen( bIsOpen );

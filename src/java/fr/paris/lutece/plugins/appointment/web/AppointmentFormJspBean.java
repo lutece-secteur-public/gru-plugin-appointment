@@ -510,12 +510,25 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     /**
      * Get the URL to manage appointment forms
      * @param request The request
+     * @param nIdForm The id of the form to manage days of
      * @return The URL to manage appointment forms
      */
-    public static String getURLManageAppointmentFormDays( HttpServletRequest request )
+    public static String getURLManageAppointmentFormDays( HttpServletRequest request, int nIdForm )
+    {
+        return getURLManageAppointmentFormDays( request, Integer.toString( nIdForm ) );
+    }
+
+    /**
+     * Get the URL to manage appointment forms
+     * @param request The request
+     * @param strIdForm The id of the form to manage days of
+     * @return The URL to manage appointment forms
+     */
+    public static String getURLManageAppointmentFormDays( HttpServletRequest request, String strIdForm )
     {
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_APPOINTMENTFORM_DAYS );
+        urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
         return urlItem.getUrl( );
     }
 }
