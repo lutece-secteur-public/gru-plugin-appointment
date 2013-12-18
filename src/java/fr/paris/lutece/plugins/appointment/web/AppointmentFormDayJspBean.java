@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -102,8 +103,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String CONSTANT_H = "h";
     private static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]h[0-5][0-9]$";
 
-    private DateConverter _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT,
-            Locale.FRANCE ) );
+    @Transient
+    private DateConverter _dateConverter;
+    @Transient
     private AppointmentDay _appointmentDay;
 
     /**
@@ -301,12 +303,13 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      * Populate a day from data in an HTTP request
      * @param day The day to populate
      * @param request The request
+     * @return The list of error, or an empty list if no error was found
      */
     private List<String> populateDay( AppointmentDay day, HttpServletRequest request )
     {
         List<String> listErrors = new ArrayList<String>( );
         String strDate = request.getParameter( PARAMETER_DATE );
-        Date date = (Date) _dateConverter.convert( java.sql.Date.class, strDate );
+        Date date = (Date) getDateConverter( ).convert( java.sql.Date.class, strDate );
 
         if ( date == null )
         {
@@ -396,5 +399,18 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         }
 
         return listErrors;
+    }
+
+    /**
+     * Get the converter to convert string to java.sql.Date.
+     * @return The converter to convert String to java.sql.Date.
+     */
+    private DateConverter getDateConverter( )
+    {
+        if ( _dateConverter == null )
+        {
+            _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE ) );
+        }
+        return _dateConverter;
     }
 }
