@@ -39,11 +39,92 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
  */
 public class AppointmentSlot
 {
+    private int _nIdSlot;
+    private int _nIdForm;
+    private int _nIdDay;
+    private int _nDayOfWeek;
     private int _nNbFreePlaces;
     private int _nStartingHour;
     private int _nStartingMinute;
     private int _nEndingHour;
     private int _nEndingMinute;
+    private boolean _bIsEnabled;
+
+    /**
+     * Get the id of the slot
+     * @return The id of the slot
+     */
+    public int getIdSlot( )
+    {
+        return _nIdSlot;
+    }
+
+    /**
+     * Set the id of the slot
+     * @param nIdSlot The id of the slot
+     */
+    public void setIdSlot( int nIdSlot )
+    {
+        this._nIdSlot = nIdSlot;
+    }
+
+    /**
+     * Get the id of the form
+     * @return The id of the form
+     */
+    public int getIdForm( )
+    {
+        return _nIdForm;
+    }
+
+    /**
+     * Set the id of the form
+     * @param nIdForm The id of the form
+     */
+    public void setIdForm( int nIdForm )
+    {
+        this._nIdForm = nIdForm;
+    }
+
+    /**
+     * Get the id of the day, or 0 if this slot is not associated with a day but
+     * only with a form
+     * @return The of the day
+     */
+    public int getIdDay( )
+    {
+        return _nIdDay;
+    }
+
+    /**
+     * Set the id of the day
+     * @param nIdDay The of the day, or 0 if this slot is not associated with a
+     *            day but only with a form
+     */
+    public void setIdDay( int nIdDay )
+    {
+        this._nIdDay = nIdDay;
+    }
+
+    /**
+     * Get the number of the day in the week.
+     * @return The number of the day in the week. Returns 1 for Monday, 2 for
+     *         Tuesday, ..., 7 for Sunday.
+     */
+    public int getDayOfWeek( )
+    {
+        return _nDayOfWeek;
+    }
+
+    /**
+     * Set the day of the week
+     * @param nDayOfWeek The number of the day in the week : 1 for Monday, 2 for
+     *            Tuesday, ..., 7 for Sunday.
+     */
+    public void setDayOfWeek( int nDayOfWeek )
+    {
+        this._nDayOfWeek = nDayOfWeek;
+    }
 
     /**
      * Get the number of free places for this slot
@@ -135,4 +216,22 @@ public class AppointmentSlot
         this._nEndingMinute = nEndingMinute;
     }
 
+    /**
+     * Check if this slot is enabled for appointments or not
+     * @return True if this slot is enabled, false otherwise
+     */
+    public boolean getIsEnabled( )
+    {
+        return _bIsEnabled;
+    }
+
+    /**
+     * Enable or disable this slot for appointments
+     * @param bIsEnabled True to enable this slot for appointments, false
+     *            otherwise
+     */
+    public void setIsEnabled( boolean bIsEnabled )
+    {
+        this._bIsEnabled = bIsEnabled;
+    }
 }

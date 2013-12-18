@@ -36,7 +36,9 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
+import fr.paris.lutece.plugins.appointment.service.CalendarService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -76,10 +78,13 @@ public class AppointmentApp extends MVCApplication
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
 
     private static final String PARAMETER_ID_FORM = "id_form";
+    private static final String PARAMETER_NB_WEEK = "nb_week";
 
     private static final String MARK_FORM_LIST = "form_list";
     private static final String MARK_FORM_HTML = "form_html";
     private static final String MARK_FORM_ERRORS = "form_errors";
+    private static final String MARK_LIST_DAYS = "listDays";
+    private static final String MARK_FORM = "form";
 
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
@@ -204,6 +209,23 @@ public class AppointmentApp extends MVCApplication
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
+            Map<String, Object> model = new HashMap<String, Object>( );
+
+            String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
+            int nNbWeek = 0;
+            if ( StringUtils.isNotEmpty( strNbWeek ) && StringUtils.isNumeric( strNbWeek ) )
+            {
+                nNbWeek = Integer.parseInt( strNbWeek );
+                if ( nNbWeek > form.getNbWeeksToDisplay( ) )
+                {
+                    nNbWeek = form.getNbWeeksToDisplay( );
+                }
+            }
+
+            List<AppointmentDay> listDays = CalendarService.getService( ).getDayListforCalendar( form, nNbWeek );
+
+            model.put( MARK_FORM, form );
+            model.put( MARK_LIST_DAYS, listDays );
         }
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }

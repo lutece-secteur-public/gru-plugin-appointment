@@ -11,6 +11,11 @@
 					#i18n{appointment.modify_appointmentformDays.pageTitle}
 				</a>
             </li>
+            <li <#if tab="slots">class="active"</#if>>
+				<a href="jsp/admin/plugins/appointment/ManageCalendarSlots.jsp?view=manageAppointmentSlots&id_form=${appointmentform.idForm}">
+					#i18n{appointment.manageCalendarSlots.pageTitle}
+				</a>
+            </li>
         </ul>
     </div>
 </#macro>

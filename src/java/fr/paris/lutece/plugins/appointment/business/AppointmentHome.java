@@ -34,6 +34,7 @@
 
 package fr.paris.lutece.plugins.appointment.business;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -52,7 +53,7 @@ public final class AppointmentHome
     // Static variable pointed at the DAO instance
 
     private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
-    private static Plugin _plugin = PluginService.getPlugin( "appointment" );
+    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
      * Private constructor - this class need not be instantiated

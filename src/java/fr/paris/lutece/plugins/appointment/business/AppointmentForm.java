@@ -52,6 +52,7 @@ public class AppointmentForm
      * Name of the resource type of Appointment Forms
      */
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+    private static final String CONSTANT_H = "h";
 
     // Variables declarations 
 
@@ -60,9 +61,9 @@ public class AppointmentForm
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
     private String _strTitle;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    @Pattern( regexp = "^[0-2][0-9]h[0-5][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
+    @Pattern( regexp = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
     private String _strTimeStart;
-    @Pattern( regexp = "^[0-2][0-9]h[0-5][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
+    @Pattern( regexp = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeEnd;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
@@ -84,6 +85,10 @@ public class AppointmentForm
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nPeoplePerAppointment;
     private int _nIdWorkflow;
+    private int _nOpeningHour;
+    private int _nOpeningMinutes;
+    private int _nClosingHour;
+    private int _nClosingMinutes;
 
     /**
      * Returns the IdForm
@@ -426,4 +431,77 @@ public class AppointmentForm
     {
         _nIdWorkflow = nIdWorkflow;
     }
+
+    /**
+     * Get the opening hour
+     * @return the opening hour
+     */
+    public int getOpeningHour( )
+    {
+        return _nOpeningHour;
+    }
+
+    /**
+     * Set the opening hour
+     * @param nOpeningHour The opening hour
+     */
+    public void setOpeningHour( int nOpeningHour )
+    {
+        this._nOpeningHour = nOpeningHour;
+    }
+
+    /**
+     * Get the opening minutes
+     * @return The opening minutes
+     */
+    public int getOpeningMinutes( )
+    {
+        return _nOpeningMinutes;
+    }
+
+    /**
+     * Set the opening minutes
+     * @param nOpeningMinutes The opening minutes
+     */
+    public void setOpeningMinutes( int nOpeningMinutes )
+    {
+        this._nOpeningMinutes = nOpeningMinutes;
+    }
+
+    /**
+     * Get the closing hour
+     * @return the closing hour
+     */
+    public int getClosingHour( )
+    {
+        return _nClosingHour;
+    }
+
+    /**
+     * Set the closing hour
+     * @param nClosingHour The closing hour
+     */
+    public void setClosingHour( int nClosingHour )
+    {
+        this._nClosingHour = nClosingHour;
+    }
+
+    /**
+     * Get the closing minutes
+     * @return the closing minutes
+     */
+    public int getClosingMinutes( )
+    {
+        return _nClosingMinutes;
+    }
+
+    /**
+     * Set the closing minutes
+     * @param nClosingMinutes the closing minutes
+     */
+    public void setClosingMinutes( int nClosingMinutes )
+    {
+        this._nClosingMinutes = nClosingMinutes;
+    }
+
 }

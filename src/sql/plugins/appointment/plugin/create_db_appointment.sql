@@ -56,3 +56,17 @@ CREATE TABLE appointment_day (
 	PRIMARY KEY (id_day)
 );
 
+DROP TABLE IF EXISTS appointment_slot;
+CREATE TABLE appointment_slot (
+	id_slot INT(11) NOT NULL,
+	id_form INT(11) NOT NULL,
+	id_day INT(11) NOT NULL,
+	day_of_week INT(11) NOT NULL,
+	nb_free_places INT(11) NOT NULL,
+	starting_hour INT(11) NOT NULL,
+	starting_minute INT(11) NOT NULL,
+	ending_hour INT(11) NOT NULL,
+	ending_minute INT(11) NOT NULL,
+	is_enabled SMALLINT NOT NULL,
+	PRIMARY KEY (id_slot)
+);

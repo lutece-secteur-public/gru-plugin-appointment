@@ -38,6 +38,9 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.service.CalendarService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -239,6 +242,18 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
 
         AppointmentFormHome.create( appointmentForm );
+
+        CalendarService calendarService = CalendarService.getService( );
+        List<AppointmentDay> listAppointmentDay = calendarService.getDayListforCalendar( appointmentForm, 0 );
+
+        for ( AppointmentDay day : listAppointmentDay )
+        {
+            for ( AppointmentSlot slot : day.getListSlots( ) )
+            {
+                AppointmentSlotHome.create( slot );
+            }
+        }
+
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale( ) );
 

@@ -5,8 +5,11 @@
     <bean id="appointment.appointmentFormDAO"  class="fr.paris.lutece.plugins.appointment.business.AppointmentFormDAO" />  
     <bean id="appointment.appointmentPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletDAO" />
     <bean id="appointment.appointmentDayDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayDAO" />
+   	<bean id="appointment.appointmentSlotDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDAO" />
     
     <bean id="appointment.appointmentFormService" class="fr.paris.lutece.plugins.appointment.service.AppointmentFormService" />    
+    <bean id="appointment.calendarService" class="fr.paris.lutece.plugins.appointment.service.CalendarService" />
+    
     <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />    
     <bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />
 	<bean id="appointment.entryTypeComment" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeComment" />
