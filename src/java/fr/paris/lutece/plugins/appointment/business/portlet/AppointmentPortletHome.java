@@ -46,7 +46,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public class AppointmentPortletHome extends PortletHome
 {
     // Static variable pointed at the DAO instance
-    private static IAppointmentPortletDAO _dao = SpringContextService.getBean( "appointment.AppointmentPortletDAO" );
+    private static IAppointmentPortletDAO _dao = SpringContextService.getBean( "appointment.appointmentPortletDAO" );
 
     /* This class implements the Singleton design pattern. */
     private static volatile AppointmentPortletHome _singleton;

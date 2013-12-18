@@ -1,0 +1,101 @@
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<script>
+	$(document).ready(function() {
+		$("#selectAll").change( function() {
+	    if ( $(this).attr("checked") ){
+			// check all
+	        $("input[name='entry_id_move']").prop( "checked", "checked");
+			} else {
+	        // uncheck all
+	        $("input[name='entry_id_move']").prop( "checked", "");
+			}
+	    });
+	});
+</script>
+<div class="row-fluid" >
+	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform listWorkflows=listWorkflows />
+    <div class="span8">
+    	<@tabs tab="days" appointmentform=appointmentform />
+    	<fieldset>
+    		<legend>
+    			#i18n{appointment.modify_appointmentformDays.pageTitle}
+    			<div class="pull-right">
+    				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.addDay}">
+    					<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.modify_appointmentformDays.addDay}
+    				</a>
+    			</div>
+    		</legend>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>
+							#i18n{appointment.modify_appointmentformDays.labelDate}
+						</th>
+						<th>
+							#i18n{appointment.modify_appointmentformDays.labelOpen}
+						</th>
+						<th>
+							#i18n{appointment.createEntry.manageField.rowActions}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<#list listDays as day>
+						<tr>
+							<td>
+								${day.date}
+							</td>
+							<td>
+								<#if day.isOpen>
+									<span class="label label-success">
+										<i class="icon-ok-sign icon-white">&nbsp;</i>
+									</span>
+								<#else>
+									<span class="label label-important">
+										<i class="icon-remove-circle icon-white">&nbsp;</i>
+									</span>
+								</#if>
+							</td>
+							<td>
+								<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
+									<i class="icon-edit icon-white">&nbsp;</i>
+								</a>
+								<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getConfirmRemoveDay&id_day=${day.idDay}" title="#i18n{portal.util.labelDelete}" class="btn btn-danger btn-small">
+									<i class="icon-trash icon-white">&nbsp;</i>
+								</a>
+							</td>
+						</tr>
+					</#list>
+				</tbody>
+			</table>
+    	</fieldset>
+    </div>
+</div>
+
+<#macro comboOrders name default_value idParent >
+		<select id="${name}" name="${name}" class="input-mini">
+			<#if idParent &gt; 0 && lastGroup??>
+				<#assign start_enum = lastGroup.position + 1 >
+				<#assign nb_entries = lastGroup.position + lastGroup.children?size >
+				<#list start_enum..nb_entries as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
+			<#else>
+				<#list listOrderFirstLevel as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
+			</#if>
+		</select>
+</#macro>
+<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
+<@getDatePicker idField="date_start_validity" language='fr' />
+<@getDatePicker idField="date_end_validity" language='fr' />

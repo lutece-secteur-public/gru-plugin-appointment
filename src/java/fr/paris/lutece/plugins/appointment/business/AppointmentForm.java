@@ -60,9 +60,9 @@ public class AppointmentForm
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
     private String _strTitle;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    @Pattern( regexp = "[0-2][0-9]:[0-6][0-9]", message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
+    @Pattern( regexp = "^[0-2][0-9]h[0-6][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
     private String _strTimeStart;
-    @Pattern( regexp = "[0-2][0-9]:[0-6][0-9]", message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
+    @Pattern( regexp = "^[0-2][0-9]h[0-6][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeEnd;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
@@ -392,8 +392,8 @@ public class AppointmentForm
     }
 
     /**
-     * Returns the PeoplePerAppointment
-     * @return The PeoplePerAppointment
+     * Returns the number of person per appointment
+     * @return The number of person per appointment
      */
     public int getPeoplePerAppointment( )
     {
@@ -401,8 +401,8 @@ public class AppointmentForm
     }
 
     /**
-     * Sets the PeoplePerAppointment
-     * @param nPeoplePerAppointment The PeoplePerAppointment
+     * Sets the number of person per appointment
+     * @param nPeoplePerAppointment The number of person per appointment
      */
     public void setPeoplePerAppointment( int nPeoplePerAppointment )
     {

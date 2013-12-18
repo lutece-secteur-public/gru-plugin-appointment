@@ -204,7 +204,6 @@ public class AppointmentApp extends MVCApplication
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
-
         }
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }

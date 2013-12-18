@@ -1,70 +1,69 @@
 <div class="row" >
     <div class="span12">
 
-    <form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointments.jsp">
-        <fieldset>
-            <legend>#i18n{appointment.modify_appointment.pageTitle}</legend>
-
-            <@messages errors=errors />
-
-
-            <input type="hidden" id="id_appointment" name="id_appointment" value="${appointment.idAppointment}"/>
-
-            <div class="control-group">
-                <label class="control-label" for="first_name" >#i18n{appointment.modify_appointment.labelFirstName} * :</label>
-                <div class="controls">
-                    <input type="text" id="first_name" name="first_name" maxlength="255" value="${appointment.firstName}" tabindex="1" />
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="last_name" >#i18n{appointment.modify_appointment.labelLastName} * :</label>
-                <div class="controls">
-                    <input type="text" id="last_name" name="last_name" maxlength="255" value="${appointment.lastName}" tabindex="1" />
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="email" >#i18n{appointment.modify_appointment.labelEmail} * :</label>
-                <div class="controls">
-                    <input type="text" id="email" name="email" maxlength="255" value="${appointment.email}" tabindex="1" />
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="id_user" >#i18n{appointment.modify_appointment.labelIdUser} * :</label>
-                <div class="controls">
-                    <input type="text" id="id_user" name="id_user" maxlength="255" value="${appointment.idUser}" tabindex="1" />
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="time_appointment" >#i18n{appointment.modify_appointment.labelTimeAppointment} * :</label>
-                <div class="controls">
-                    <input type="text" id="time_appointment" name="time_appointment" maxlength="0" value="${appointment.timeAppointment}" tabindex="1" />
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="date_appointment" >#i18n{appointment.modify_appointment.labelDateAppointment} * :</label>
-                <div class="controls">
-                    <input type="text" id="date_appointment" name="date_appointment" maxlength="0" value="${appointment.dateAppointment}" tabindex="1" />
-                </div>
-            </div>
-
-
-            <div class="form-actions">   
-                <button name="action_modifyAppointment" class="btn btn-primary btn-small" type="submit" tabindex="7" >
-                    <i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
-                </button>
-                <button name="view_manageAppointments" class="btn btn-small" type="submit" >
-                    <i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
-                </button>	
-            </div>
-
-        </fieldset>
-    </form>
+	    <form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointments.jsp">
+	        <fieldset>
+	            <legend>#i18n{appointment.modify_appointment.pageTitle}</legend>
+	
+	            <@messages errors=errors />
+	
+	
+	            <input type="hidden" id="id_appointment" name="id_appointment" value="${appointment.idAppointment}"/>
+	
+	            <div class="control-group">
+	                <label class="control-label" for="first_name" >#i18n{appointment.modify_appointment.labelFirstName} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="first_name" name="first_name" maxlength="255" value="${appointment.firstName}" tabindex="1" />
+	                </div>
+	            </div>
+	
+	            <div class="control-group">
+	                <label class="control-label" for="last_name" >#i18n{appointment.modify_appointment.labelLastName} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="last_name" name="last_name" maxlength="255" value="${appointment.lastName}" tabindex="1" />
+	                </div>
+	            </div>
+	
+	            <div class="control-group">
+	                <label class="control-label" for="email" >#i18n{appointment.modify_appointment.labelEmail} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="email" name="email" maxlength="255" value="${appointment.email}" tabindex="1" />
+	                </div>
+	            </div>
+	
+	            <div class="control-group">
+	                <label class="control-label" for="id_user" >#i18n{appointment.modify_appointment.labelIdUser} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="id_user" name="id_user" maxlength="255" value="${appointment.idUser}" tabindex="1" />
+	                </div>
+	            </div>
+	
+	            <div class="control-group">
+	                <label class="control-label" for="time_appointment" >#i18n{appointment.modify_appointment.labelTimeAppointment} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="time_appointment" name="time_appointment" maxlength="0" value="${appointment.timeAppointment}" tabindex="1" />
+	                </div>
+	            </div>
+	
+	            <div class="control-group">
+	                <label class="control-label" for="date_appointment" >#i18n{appointment.modify_appointment.labelDateAppointment} * :</label>
+	                <div class="controls">
+	                    <input type="text" id="date_appointment" name="date_appointment" maxlength="0" value="${appointment.dateAppointment}" tabindex="1" />
+	                </div>
+	            </div>
+	
+	
+	            <div class="form-actions">   
+	                <button name="action_modifyAppointment" class="btn btn-primary btn-small" type="submit" tabindex="7" >
+	                    <i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
+	                </button>
+	                <button name="view_manageAppointments" class="btn btn-small" type="submit" >
+	                    <i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
+	                </button>	
+	            </div>
+	
+	        </fieldset>
+	    </form>
     </div>  
-
 </div>
 

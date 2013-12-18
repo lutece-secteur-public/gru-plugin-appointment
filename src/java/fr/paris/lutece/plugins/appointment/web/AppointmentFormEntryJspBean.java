@@ -264,21 +264,18 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     public String getModifyEntry( HttpServletRequest request )
     {
         Plugin plugin = getPlugin( );
-        Entry entry;
-        ReferenceList refListRegularExpression;
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
-        int nIdEntry = -1;
 
         if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
         {
-            nIdEntry = Integer.parseInt( strIdEntry );
+            int nIdEntry = Integer.parseInt( strIdEntry );
 
             if ( nIdEntry <= 0 )
             {
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
             }
 
-            entry = EntryHome.findByPrimaryKey( nIdEntry );
+            Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
             List<Field> listField = new ArrayList<Field>( entry.getFields( ).size( ) );
 
@@ -300,7 +297,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 
             model.put( MARK_LIST, entry.getFields( ) );
 
-            refListRegularExpression = entryTypeService.getReferenceListRegularExpression( entry, plugin );
+            ReferenceList refListRegularExpression = entryTypeService.getReferenceListRegularExpression( entry, plugin );
 
             if ( refListRegularExpression != null )
             {
@@ -324,20 +321,18 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     @Action( ACTION_DO_MODIFY_ENTRY )
     public String doModifyEntry( HttpServletRequest request )
     {
-        Entry entry;
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
-        int nIdEntry = -1;
 
         if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
         {
-            nIdEntry = Integer.parseInt( strIdEntry );
+            int nIdEntry = Integer.parseInt( strIdEntry );
 
             if ( nIdEntry <= 0 )
             {
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
             }
 
-            entry = EntryHome.findByPrimaryKey( nIdEntry );
+            Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
             if ( request.getParameter( PARAMETER_CANCEL ) == null )
             {
@@ -416,19 +411,17 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     public String doRemoveEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
-        Entry entry;
-        int nIdEntry = -1;
 
         if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
         {
-            nIdEntry = Integer.parseInt( strIdEntry );
+            int nIdEntry = Integer.parseInt( strIdEntry );
 
             if ( nIdEntry <= 0 )
             {
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
             }
 
-            entry = EntryHome.findByPrimaryKey( nIdEntry );
+            Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
             List<String> listErrors = new ArrayList<String>( );
 
@@ -537,19 +530,16 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     public String doCopyEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
-        Entry entry;
-        int nIdEntry = -1;
-
         if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
         {
-            nIdEntry = Integer.parseInt( strIdEntry );
+            int nIdEntry = Integer.parseInt( strIdEntry );
 
             if ( nIdEntry == -1 )
             {
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
             }
 
-            entry = EntryHome.findByPrimaryKey( nIdEntry );
+            Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
             Object[] tabEntryTileCopy = { entry.getTitle( ) };
             String strTitleCopyEntry = I18nService.getLocalizedString( PROPERTY_COPY_ENTRY_TITLE, tabEntryTileCopy,
@@ -569,8 +559,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 // The id of the entry is the id of the copy. It has been set by the create method of EntryDAO 
                 entry = EntryHome.findByPrimaryKey( entry.getIdEntry( ) );
                 Entry entryParent = EntryHome.findByPrimaryKey( entry.getParent( ).getIdEntry( ) );
-                _entryService.moveUpEntryOrder(
-                        entryParent.getPosition( ) + entryParent.getChildren( ).size( ), entry );
+                _entryService.moveUpEntryOrder( entryParent.getPosition( ) + entryParent.getChildren( ).size( ), entry );
             }
 
             if ( entry.getFieldDepend( ) != null )
@@ -611,8 +600,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                     if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
                     {
                         int nIdEntry = Integer.parseInt( strIdEntry );
-                        _entryService.moveEntryIntoGroup( EntryHome.findByPrimaryKey( nIdEntry ),
-                                entryParent );
+                        _entryService.moveEntryIntoGroup( EntryHome.findByPrimaryKey( nIdEntry ), entryParent );
                     }
                 }
             }
@@ -679,14 +667,12 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     {
         String strIdExpression = request.getParameter( PARAMETER_ID_EXPRESSION );
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
-        int nIdField = -1;
-        int nIdExpression = -1;
 
         if ( StringUtils.isNotEmpty( strIdExpression ) && StringUtils.isNotEmpty( strIdField )
                 && StringUtils.isNumeric( strIdExpression ) && StringUtils.isNumeric( strIdField ) )
         {
-            nIdField = Integer.parseInt( strIdField );
-            nIdExpression = Integer.parseInt( strIdExpression );
+            int nIdField = Integer.parseInt( strIdField );
+            int nIdExpression = Integer.parseInt( strIdExpression );
             FieldHome.removeVerifyBy( nIdField, nIdExpression );
 
             Field field = FieldHome.findByPrimaryKey( nIdField );
@@ -707,14 +693,12 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     {
         String strIdExpression = request.getParameter( PARAMETER_ID_EXPRESSION );
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
-        int nIdField = -1;
-        int nIdExpression = -1;
 
         if ( StringUtils.isNotEmpty( strIdExpression ) && StringUtils.isNotEmpty( strIdField )
                 && StringUtils.isNumeric( strIdExpression ) && StringUtils.isNumeric( strIdField ) )
         {
-            nIdField = Integer.parseInt( strIdField );
-            nIdExpression = Integer.parseInt( strIdExpression );
+            int nIdField = Integer.parseInt( strIdField );
+            int nIdExpression = Integer.parseInt( strIdExpression );
 
             FieldHome.createVerifyBy( nIdField, nIdExpression );
             Field field = FieldHome.findByPrimaryKey( nIdField );
