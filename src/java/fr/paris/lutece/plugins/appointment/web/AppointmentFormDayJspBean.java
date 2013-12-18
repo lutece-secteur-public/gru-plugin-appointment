@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -103,10 +102,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String CONSTANT_H = "h";
     private static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]h[0-5][0-9]$";
 
-    @Transient
-    private DateConverter _dateConverter;
-    @Transient
-    private AppointmentDay _appointmentDay;
+    private transient DateConverter _dateConverter;
+    private transient AppointmentDay _appointmentDay;
 
     /**
      * Get the HTML code to create an entry
