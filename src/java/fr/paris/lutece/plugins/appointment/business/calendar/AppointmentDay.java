@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -46,6 +47,7 @@ public class AppointmentDay
     private int _nIdForm;
     private boolean _bIsOpen;
     private Date _date;
+
     //    private int _nYear;
     //    private int _nMonth;
     //    private int _nDay;
@@ -61,7 +63,7 @@ public class AppointmentDay
      * Get the id of the day
      * @return The id of the day
      */
-    public int getIdDay( )
+    public int getIdDay(  )
     {
         return _nIdDay;
     }
@@ -79,7 +81,7 @@ public class AppointmentDay
      * Get the id of the appointment form associated with this day
      * @return The id of the appointment form associated with this day
      */
-    public int getIdForm( )
+    public int getIdForm(  )
     {
         return _nIdForm;
     }
@@ -97,7 +99,7 @@ public class AppointmentDay
      * Check if the day is an opened day or a closed day
      * @return True if the day is open, false otherwise
      */
-    public boolean getIsOpen( )
+    public boolean getIsOpen(  )
     {
         return _bIsOpen;
     }
@@ -115,7 +117,7 @@ public class AppointmentDay
      * Get the date of the day
      * @return The date of the day
      */
-    public Date getDate( )
+    public Date getDate(  )
     {
         return _date;
     }
@@ -187,7 +189,7 @@ public class AppointmentDay
      * Get the opening hour of the day
      * @return The opening hour of the day
      */
-    public int getOpeningHour( )
+    public int getOpeningHour(  )
     {
         return _nOpeningHour;
     }
@@ -205,7 +207,7 @@ public class AppointmentDay
      * Get the opening minute of the day
      * @return The opening minute of the day
      */
-    public int getOpeningMinutes( )
+    public int getOpeningMinutes(  )
     {
         return _nOpeningMinutes;
     }
@@ -223,7 +225,7 @@ public class AppointmentDay
      * Get the closing hour of the day
      * @return The closing hour of the day
      */
-    public int getClosingHour( )
+    public int getClosingHour(  )
     {
         return _nClosingHour;
     }
@@ -241,7 +243,7 @@ public class AppointmentDay
      * Get the closing minute of the day
      * @return The closing minute of the day
      */
-    public int getClosingMinutes( )
+    public int getClosingMinutes(  )
     {
         return _nClosingMinutes;
     }
@@ -259,7 +261,7 @@ public class AppointmentDay
      * Get the duration of appointments in minutes
      * @return The duration of appointments in minutes
      */
-    public int getAppointmentDuration( )
+    public int getAppointmentDuration(  )
     {
         return _nAppointmentDuration;
     }
@@ -277,7 +279,7 @@ public class AppointmentDay
      * Returns the number of person per appointment
      * @return The number of person per appointment
      */
-    public int getPeoplePerAppointment( )
+    public int getPeoplePerAppointment(  )
     {
         return _nPeoplePerAppointment;
     }
@@ -295,7 +297,7 @@ public class AppointmentDay
      * Get the list of slots of this day, if any
      * @return The list of slots of this day, if any
      */
-    public List<AppointmentSlot> getListSlots( )
+    public List<AppointmentSlot> getListSlots(  )
     {
         return _listSlots;
     }
@@ -308,5 +310,4 @@ public class AppointmentDay
     {
         this._listSlots = listSlots;
     }
-
 }

@@ -38,7 +38,7 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 
 
 /**
- * 
+ *
  * Interface for DAO of Appointment portlet
  */
 public interface IAppointmentPortletDAO extends IPortletInterfaceDAO
@@ -67,5 +67,4 @@ public interface IAppointmentPortletDAO extends IPortletInterfaceDAO
      * @param portlet The reference of the portlet
      */
     void store( Portlet portlet );
-
 }

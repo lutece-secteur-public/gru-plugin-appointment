@@ -36,10 +36,11 @@ package fr.paris.lutece.plugins.appointment.service.entrytype;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeDate;
 
+
 /**
- * 
+ *
  * class EntryTypeDate
- * 
+ *
  */
 public class EntryTypeDate extends AbstractEntryTypeDate
 {
@@ -73,5 +74,4 @@ public class EntryTypeDate extends AbstractEntryTypeDate
     {
         return TEMPLATE_MODIFY;
     }
-
 }

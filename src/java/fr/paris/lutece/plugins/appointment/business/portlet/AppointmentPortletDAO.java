@@ -120,5 +120,4 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
 
         return portlet;
     }
-
 }

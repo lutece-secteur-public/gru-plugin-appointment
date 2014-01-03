@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.service.entrytype;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeGeolocation;
 
+
 /**
  * The Class EntryTypeGeolocation.
  */
@@ -72,5 +73,4 @@ public class EntryTypeGeolocation extends AbstractEntryTypeGeolocation
     {
         return TEMPLATE_HTML_CODE;
     }
-
 }

@@ -33,12 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.sql.Date;
 
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -46,28 +46,30 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class Appointment
 {
-
     private static final int STATUS_REJECTED = -10;
     private static final int STATUS_NOT_VALIDATED = 0;
     private static final int STATUS_VALIDATED = 10;
-
     private int _nIdAppointment;
+
     // @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
     @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.FirstName.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strFirstName;
+
     // @NotEmpty( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
     @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.LastName.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strLastName;
+
     // @NotEmpty( message = "#i18n{appointment.validation.appointment.Email.notEmpty}" )
     @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.Email.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     @Email( message = "#i18n{portal.validation.message.email}" )
     private String _strEmail;
+
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strIdUser;
@@ -79,7 +81,7 @@ public class Appointment
      * Returns the IdAppointment
      * @return The IdAppointment
      */
-    public int getIdAppointment( )
+    public int getIdAppointment(  )
     {
         return _nIdAppointment;
     }
@@ -97,7 +99,7 @@ public class Appointment
      * Returns the FirstName
      * @return The FirstName
      */
-    public String getFirstName( )
+    public String getFirstName(  )
     {
         return _strFirstName;
     }
@@ -115,7 +117,7 @@ public class Appointment
      * Returns the LastName
      * @return The LastName
      */
-    public String getLastName( )
+    public String getLastName(  )
     {
         return _strLastName;
     }
@@ -133,7 +135,7 @@ public class Appointment
      * Returns the Email
      * @return The Email
      */
-    public String getEmail( )
+    public String getEmail(  )
     {
         return _strEmail;
     }
@@ -151,7 +153,7 @@ public class Appointment
      * Returns the IdUser
      * @return The IdUser
      */
-    public String getIdUser( )
+    public String getIdUser(  )
     {
         return _strIdUser;
     }
@@ -169,7 +171,7 @@ public class Appointment
      * Returns the TimeAppointment
      * @return The TimeAppointment
      */
-    public String getTimeAppointment( )
+    public String getTimeAppointment(  )
     {
         return _strTimeAppointment;
     }
@@ -187,7 +189,7 @@ public class Appointment
      * Returns the DateAppointment
      * @return The DateAppointment
      */
-    public Date getDateAppointment( )
+    public Date getDateAppointment(  )
     {
         return _dateDateAppointment;
     }
@@ -205,7 +207,7 @@ public class Appointment
      * Get the status of the appointment
      * @return The status of the appointment
      */
-    public int getStatus( )
+    public int getStatus(  )
     {
         return _nStatus;
     }

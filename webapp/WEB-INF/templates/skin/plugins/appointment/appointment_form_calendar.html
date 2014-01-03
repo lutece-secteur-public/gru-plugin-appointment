@@ -1,0 +1,120 @@
+<div class="row-fluid">
+	<div class="span12 hidden-phone">
+		<table class="table">
+			<tr>
+				<td>
+					<table class="table table-stripped appointment-inner-table">
+						<tr>
+							<td>
+								<#if nb_week &gt; 0>
+									<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week - 1}">
+										<i class="icon-arrow-left">&nbsp;</i>
+									</a>
+								</#if>
+								<#if nb_week &lt; form.nbWeeksToDisplay>
+									<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}">
+										<i class="icon-arrow-right">&nbsp;</i>
+									</a>
+								</#if>
+							</td>
+						</tr>
+						<#list list_time_begin as time_begin>
+							<tr>
+								<td class="appointment-row1">
+									${time_begin}
+								</td>
+							</tr>
+						</#list>
+					</table>
+				</td>
+				<#list listDays as day>
+					<td>
+						<table class="table table-stripped appointment-inner-table">
+							<tr>
+								<th>
+									${day.date}
+								</th>
+							</tr>
+							<#if day.isOpen>
+								<#assign rowspan=day.appointmentDuration/min_duration_appointments>
+								<#list day.listSlots as slot>
+									<tr>
+										<#if slot.isEnabled>
+											<#if slot.nbFreePlaces &gt; 0>
+												<td class="appointment-slot-avaiable appointment-row${rowspan}">
+													<a href="jsp/site/Portal.jsp?page=appointment&action=confirmMakeAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+												</td>
+											<#else>
+												<td class="appointment-slot-full appointment-row${rowspan}">
+													#i18n{appointment.appointmentCalendar.labelSlotFull}
+												</td>
+											</#if>
+										<#else>
+											<td class="appointment-slot-closed appointment-row${rowspan}">
+											</td>
+										</#if>
+									</tr>
+								</#list>
+							<#else>
+								<#list list_time_begin as time_begin>
+									<tr>
+										<td class="appointment-slot-closed appointment-row1">
+										</td>
+									</tr>
+								</#list>
+							</#if>
+						</table>
+					</td>
+				</#list>
+			</tr>
+		</table>
+	</div>
+	<div class="visible-phone">
+		<#list listDays as day>
+			<#if day.isOpen>
+				<div class="span1">
+					<table class="table table-stripped appointment-inner-table">
+						<tr>
+							<th>
+								<#if nb_week &gt; 0>
+									<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week - 1}">
+										<i class="icon-arrow-left">&nbsp;</i>
+									</a>
+								</#if>
+								<#if nb_week &lt; form.nbWeeksToDisplay>
+									<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}">
+										<i class="icon-arrow-right">&nbsp;</i>
+									</a>
+								</#if>
+							</th>
+							<th>
+								${day.date}
+							</th>
+						</tr>
+						<#list day.listSlots as slot>
+							<tr>
+								<td>
+									<#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
+								</td>
+								<#if slot.isEnabled>
+									<#if slot.nbFreePlaces &gt; 0>
+										<td class="appointment-slot-avaiable">
+											<a href="jsp/site/Portal.jsp?page=appointment&action=confirmMakeAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+										</td>
+									<#else>
+										<td class="appointment-slot-full">
+											#i18n{appointment.appointmentCalendar.labelSlotFull}
+										</td>
+									</#if>
+								<#else>
+									<td class="appointment-slot-closed">
+									</td>
+								</#if>
+							</tr>
+						</#list>
+					</table>
+				</div>
+			</#if>
+		</#list>
+	</div>
+</div>

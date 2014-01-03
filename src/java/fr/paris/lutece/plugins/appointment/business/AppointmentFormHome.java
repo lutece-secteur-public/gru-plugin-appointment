@@ -7,15 +7,15 @@
  * are met:
  *
  *  1. Redistributions of source code must retain the above copyright notice
- *	 and the following disclaimer.
+ *         and the following disclaimer.
  *
  *  2. Redistributions in binary form must reproduce the above copyright notice
- *	 and the following disclaimer in the documentation and/or other materials
- *	 provided with the distribution.
+ *         and the following disclaimer in the documentation and/or other materials
+ *         provided with the distribution.
  *
  *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
- *	 contributors may be used to endorse or promote products derived from
- *	 this software without specific prior written permission.
+ *         contributors may be used to endorse or promote products derived from
+ *         this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
@@ -48,19 +47,16 @@ import java.util.Collection;
  * This class provides instances management methods (create, find, ...) for
  * AppointmentForm objects
  */
-
 public final class AppointmentFormHome
 {
-
     // Static variable pointed at the DAO instance
-
     private static IAppointmentFormDAO _dao = SpringContextService.getBean( "appointment.appointmentFormDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentFormHome( )
+    private AppointmentFormHome(  )
     {
     }
 
@@ -98,7 +94,7 @@ public final class AppointmentFormHome
     public static void remove( int nAppointmentFormId )
     {
         AppointmentDayHome.removeByIdForm( nAppointmentFormId );
-        AppointmentSlotHome.deleteByIdForm( nAppointmentFormId );
+        AppointmentSlotHome.deleteAllByIdForm( nAppointmentFormId );
         _dao.delete( nAppointmentFormId, _plugin );
     }
 
@@ -122,7 +118,7 @@ public final class AppointmentFormHome
      * @return the collection which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getAppointmentFormsList( )
+    public static Collection<AppointmentForm> getAppointmentFormsList(  )
     {
         return _dao.selectAppointmentFormsList( _plugin );
     }
@@ -133,7 +129,7 @@ public final class AppointmentFormHome
      * @return the collection which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getActiveAppointmentFormsList( )
+    public static Collection<AppointmentForm> getActiveAppointmentFormsList(  )
     {
         return _dao.selectActiveAppointmentFormsList( _plugin );
     }

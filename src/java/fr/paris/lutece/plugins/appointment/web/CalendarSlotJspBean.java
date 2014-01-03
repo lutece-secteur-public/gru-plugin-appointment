@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
@@ -43,13 +45,13 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -59,23 +61,17 @@ import org.apache.commons.lang.StringUtils;
 public class CalendarSlotJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = 2376721852596997810L;
-
     private static final String MESSAGE_MANAGE_SLOTS_PAGE_TITLE = "appointment.manageCalendarSlots.pageTitle";
-
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_DAY = "id_day";
     private static final String PARAMETER_ID_SLOT = "id_slot";
-
     private static final String MARK_LIST_SLOTS = "listSlots";
     private static final String MARK_APPOINTMENTFORM = "appointmentform";
     private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
     private static final String MARK_DAY = "day";
-
     private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
     private static final String ACTION_DO_CHANGE_SLOT_ENABLING = "doChangeSlotEnabling";
-
-    private static final String TEMPLATE_MANAGE_FORM_SLOTS = "admin/plugins/appointment/manage_form_slots.html";
-    private static final String TEMPLATE_MANAGE_DAY_SLOTS = "admin/plugins/appointment/manage_day_slots.html";
+    private static final String TEMPLATE_MANAGE_SLOTS = "admin/plugins/appointment/manage_slots.html";
 
     /**
      * Get the page to manage slots of a form or a day
@@ -87,25 +83,33 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         List<AppointmentSlot> listSlots = null;
-        String strTemplate;
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
             listSlots = AppointmentSlotHome.findByIdForm( nIdForm );
-            strTemplate = TEMPLATE_MANAGE_FORM_SLOTS;
             model.put( MARK_APPOINTMENTFORM, AppointmentFormHome.findByPrimaryKey( nIdForm ) );
         }
         else
         {
             String strIdDay = request.getParameter( PARAMETER_ID_DAY );
+
             if ( StringUtils.isNotBlank( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
             {
                 int nIdDay = Integer.parseInt( strIdDay );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( nIdDay );
+
+                if ( !day.getIsOpen(  ) )
+                {
+                    return redirect( request,
+                        AppointmentFormJspBean.getURLManageAppointmentFormDays( request, strIdDay ) );
+                }
+
                 listSlots = AppointmentSlotHome.findByIdDay( nIdDay );
-                model.put( MARK_DAY, AppointmentDayHome.findByPrimaryKey( nIdDay ) );
+                model.put( MARK_DAY, day );
+                model.put( MARK_APPOINTMENTFORM, AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) ) );
             }
-            strTemplate = TEMPLATE_MANAGE_DAY_SLOTS;
         }
 
         if ( listSlots == null )
@@ -114,8 +118,10 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
         }
 
         model.put( MARK_LIST_SLOTS, listSlots );
-        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( getUser( ), getLocale( ) ) );
-        return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, strTemplate, model );
+        model.put( MARK_LIST_WORKFLOWS,
+            WorkflowService.getInstance(  ).getWorkflowsEnabled( getUser(  ), getLocale(  ) ) );
+
+        return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
     }
 
     /**
@@ -127,19 +133,43 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
     public String doChangeSlotEnabling( HttpServletRequest request )
     {
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
+
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
         {
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
-            slot.setIsEnabled( !slot.getIsEnabled( ) );
-            AppointmentSlotHome.update( slot );
-            String strIdDay = request.getParameter( PARAMETER_ID_DAY );
-            if ( StringUtils.isNotEmpty( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
+
+            if ( slot.getIdDay(  ) > 0 )
             {
-                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_DAY, slot.getIdDay( ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
+
+                if ( day.getIsOpen(  ) )
+                {
+                    // we can only change enabling of opened days
+                    slot.setIsEnabled( !slot.getIsEnabled(  ) );
+                }
             }
-            return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm( ) );
+            else
+            {
+                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
+
+                if ( form.isDayOfWeekOpened( slot.getDayOfWeek(  ) ) )
+                {
+                    // we can only change enabling of opened days
+                    slot.setIsEnabled( !slot.getIsEnabled(  ) );
+                }
+            }
+
+            AppointmentSlotHome.update( slot );
+
+            if ( slot.getIdDay(  ) > 0 )
+            {
+                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_DAY, slot.getIdDay(  ) );
+            }
+
+            return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(  ) );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 }

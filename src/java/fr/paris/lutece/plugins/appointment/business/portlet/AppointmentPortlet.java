@@ -49,14 +49,14 @@ public class AppointmentPortlet extends PortletHtmlContent
     /**
      * Sets the identifier of the portlet type to value specified
      */
-    public AppointmentPortlet( )
+    public AppointmentPortlet(  )
     {
-        setPortletTypeId( AppointmentPortletHome.getInstance( ).getPortletTypeId( ) );
+        setPortletTypeId( AppointmentPortletHome.getInstance(  ).getPortletTypeId(  ) );
     }
 
     /**
      * Returns the HTML code of the AppointmentPortlet portlet with XML heading
-     * 
+     *
      * @param request The HTTP servlet request
      * @return the HTML code of the AppointmentPortlet portlet
      */
@@ -69,17 +69,17 @@ public class AppointmentPortlet extends PortletHtmlContent
     /**
      * Updates the current instance of the AppointmentPortlet object
      */
-    public void update( )
+    public void update(  )
     {
-        AppointmentPortletHome.getInstance( ).update( this );
+        AppointmentPortletHome.getInstance(  ).update( this );
     }
 
     /**
      * Removes the current instance of the AppointmentPortlet object
      */
     @Override
-    public void remove( )
+    public void remove(  )
     {
-        AppointmentPortletHome.getInstance( ).remove( this );
+        AppointmentPortletHome.getInstance(  ).remove( this );
     }
 }

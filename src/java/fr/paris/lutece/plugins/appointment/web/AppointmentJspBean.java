@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.Appointment;
@@ -65,9 +64,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Right to manage appointments
      */
     public static final String RIGHT_MANAGEAPPOINTMENT = "APPOINTMENT_MANAGEMENT";
-
     private static final long serialVersionUID = 1978001810468444844L;
-
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
@@ -91,13 +88,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
     private static final String MARK_APPOINTMENT = "appointment";
-
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
 
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENT = "appointment.message.confirmRemoveAppointment";
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
-
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointment.attribute.";
 
     // Views
@@ -115,19 +110,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENT_CREATED = "appointment.info.appointment.created";
     private static final String INFO_APPOINTMENT_UPDATED = "appointment.info.appointment.updated";
     private static final String INFO_APPOINTMENT_REMOVED = "appointment.info.appointment.removed";
-
     private static final String SESSION_ATTRIBUTE_APPOINTMENT = "appointment.session.appointment";
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
     private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.itemsPerPage";
     private static final String DEFAULT_CURRENT_PAGE = "1";
-    // Session variable to store working values
 
+    // Session variable to store working values
     private int _nDefaultItemsPerPage;
 
     /**
      * Default constructor
      */
-    public AppointmentJspBean( )
+    public AppointmentJspBean(  )
     {
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 );
     }
@@ -140,32 +134,35 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @View( value = VIEW_MANAGE_APPOINTMENTS, defaultView = true )
     public String getManageAppointments( HttpServletRequest request )
     {
-        String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX, (String) request
-                .getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
+        String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
+                (String) request.getSession(  ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
+
         if ( strCurrentPageIndex == null )
         {
             strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
         }
-        request.getSession( ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
-        int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
-                getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
-        request.getSession( ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
 
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+        request.getSession(  ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
+
+        int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
+                getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
+        request.getSession(  ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
+
+        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
 
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
-        String strUrl = url.getUrl( );
-        List<Appointment> listAppointments = (List<Appointment>) AppointmentHome.getAppointmentsList( );
+        String strUrl = url.getUrl(  );
+        List<Appointment> listAppointments = (List<Appointment>) AppointmentHome.getAppointmentsList(  );
 
         // PAGINATOR
         LocalizedPaginator<Appointment> paginator = new LocalizedPaginator<Appointment>( listAppointments,
-                nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
+                nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
 
-        Map<String, Object> model = getModel( );
+        Map<String, Object> model = getModel(  );
 
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_APPOINTMENT_LIST, paginator.getPageItems( ) );
+        model.put( MARK_APPOINTMENT_LIST, paginator.getPageItems(  ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS, TEMPLATE_MANAGE_APPOINTMENTS, model );
     }
@@ -178,15 +175,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @View( VIEW_CREATE_APPOINTMENT )
     public String getCreateAppointment( HttpServletRequest request )
     {
-        Appointment appointment = (Appointment) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+        Appointment appointment = (Appointment) request.getSession(  ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+
         if ( appointment == null )
         {
-            appointment = new Appointment( );
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
+            appointment = new Appointment(  );
+            request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
         }
-        Map<String, Object> model = getModel( );
+
+        Map<String, Object> model = getModel(  );
         model.put( MARK_APPOINTMENT, appointment );
-        request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
+        request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENT, TEMPLATE_CREATE_APPOINTMENT, model );
     }
@@ -199,7 +198,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @Action( ACTION_CREATE_APPOINTMENT )
     public String doCreateAppointment( HttpServletRequest request )
     {
-        Appointment appointment = (Appointment) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+        Appointment appointment = (Appointment) request.getSession(  ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
         populate( appointment, request );
 
         // Check constraints
@@ -209,8 +208,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         AppointmentHome.create( appointment );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
-        addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
+        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+        addInfo( INFO_APPOINTMENT_CREATED, getLocale(  ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTS );
     }
@@ -229,7 +228,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         url.addParameter( PARAMETER_ID_APPOINTMENT, nId );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_APPOINTMENT,
-                url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+                url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
 
         return redirect( request, strMessageUrl );
     }
@@ -244,7 +243,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
         AppointmentHome.remove( nId );
-        addInfo( INFO_APPOINTMENT_REMOVED, getLocale( ) );
+        addInfo( INFO_APPOINTMENT_REMOVED, getLocale(  ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTS );
     }
@@ -257,16 +256,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @View( VIEW_MODIFY_APPOINTMENT )
     public String getModifyAppointment( HttpServletRequest request )
     {
-        Appointment appointment = (Appointment) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+        Appointment appointment = (Appointment) request.getSession(  ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
 
         if ( appointment == null )
         {
             int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
             appointment = AppointmentHome.findByPrimaryKey( nId );
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
+            request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
         }
 
-        Map<String, Object> model = getModel( );
+        Map<String, Object> model = getModel(  );
         model.put( MARK_APPOINTMENT, appointment );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENT, TEMPLATE_MODIFY_APPOINTMENT, model );
@@ -280,18 +279,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @Action( ACTION_MODIFY_APPOINTMENT )
     public String doModifyAppointment( HttpServletRequest request )
     {
-        Appointment appointment = (Appointment) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+        Appointment appointment = (Appointment) request.getSession(  ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
         populate( appointment, request );
 
         // Check constraints
         if ( !validateBean( appointment, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            return redirect( request, VIEW_MODIFY_APPOINTMENT, PARAMETER_ID_APPOINTMENT, appointment.getIdAppointment( ) );
+            return redirect( request, VIEW_MODIFY_APPOINTMENT, PARAMETER_ID_APPOINTMENT,
+                appointment.getIdAppointment(  ) );
         }
 
         AppointmentHome.update( appointment );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
-        addInfo( INFO_APPOINTMENT_UPDATED, getLocale( ) );
+        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+        addInfo( INFO_APPOINTMENT_UPDATED, getLocale(  ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTS );
     }
@@ -306,10 +306,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private int getIntSessionAttribute( HttpSession session, String strSessionKey )
     {
         Integer nAttr = (Integer) session.getAttribute( strSessionKey );
+
         if ( nAttr != null )
         {
             return nAttr;
         }
+
         return 0;
     }
 }

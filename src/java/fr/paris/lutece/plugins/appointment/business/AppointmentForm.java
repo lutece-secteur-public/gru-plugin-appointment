@@ -33,14 +33,14 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -55,7 +55,6 @@ public class AppointmentForm
     private static final String CONSTANT_H = "h";
 
     // Variables declarations 
-
     private int _nIdForm;
     @NotEmpty( message = "#i18n{appointment.validation.appointmentform.Title.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
@@ -89,12 +88,16 @@ public class AppointmentForm
     private int _nOpeningMinutes;
     private int _nClosingHour;
     private int _nClosingMinutes;
+    private boolean _bOpeningHourInitialized;
+    private boolean _bOpeningMinutesInitialized;
+    private boolean _bClosingHourInitialized;
+    private boolean _bClosingMinutesInitialized;
 
     /**
      * Returns the IdForm
      * @return The IdForm
      */
-    public int getIdForm( )
+    public int getIdForm(  )
     {
         return _nIdForm;
     }
@@ -112,7 +115,7 @@ public class AppointmentForm
      * Returns the Title
      * @return The Title
      */
-    public String getTitle( )
+    public String getTitle(  )
     {
         return _strTitle;
     }
@@ -130,7 +133,7 @@ public class AppointmentForm
      * Returns the TimeStart
      * @return The TimeStart
      */
-    public String getTimeStart( )
+    public String getTimeStart(  )
     {
         return _strTimeStart;
     }
@@ -142,13 +145,15 @@ public class AppointmentForm
     public void setTimeStart( String nTimeStart )
     {
         _strTimeStart = nTimeStart;
+        _bOpeningHourInitialized = false;
+        _bOpeningMinutesInitialized = false;
     }
 
     /**
      * Returns the TimeEnd
      * @return The TimeEnd
      */
-    public String getTimeEnd( )
+    public String getTimeEnd(  )
     {
         return _strTimeEnd;
     }
@@ -160,13 +165,15 @@ public class AppointmentForm
     public void setTimeEnd( String nTimeEnd )
     {
         _strTimeEnd = nTimeEnd;
+        _bClosingHourInitialized = false;
+        _bClosingMinutesInitialized = false;
     }
 
     /**
      * Returns the DurationAppointments
      * @return The DurationAppointments
      */
-    public int getDurationAppointments( )
+    public int getDurationAppointments(  )
     {
         return _nDurationAppointments;
     }
@@ -184,7 +191,7 @@ public class AppointmentForm
      * Returns the IsOpenMonday
      * @return The IsOpenMonday
      */
-    public boolean getIsOpenMonday( )
+    public boolean getIsOpenMonday(  )
     {
         return _bIsOpenMonday;
     }
@@ -202,7 +209,7 @@ public class AppointmentForm
      * Returns the IsOpenTuesday
      * @return The IsOpenTuesday
      */
-    public boolean getIsOpenTuesday( )
+    public boolean getIsOpenTuesday(  )
     {
         return _bIsOpenTuesday;
     }
@@ -220,7 +227,7 @@ public class AppointmentForm
      * Returns the IsOpenWednesday
      * @return The IsOpenWednesday
      */
-    public boolean getIsOpenWednesday( )
+    public boolean getIsOpenWednesday(  )
     {
         return _bIsOpenWednesday;
     }
@@ -238,7 +245,7 @@ public class AppointmentForm
      * Returns the IsOpenThursday
      * @return The IsOpenThursday
      */
-    public boolean getIsOpenThursday( )
+    public boolean getIsOpenThursday(  )
     {
         return _bIsOpenThursday;
     }
@@ -256,7 +263,7 @@ public class AppointmentForm
      * Returns the IsOpenFriday
      * @return The IsOpenFriday
      */
-    public boolean getIsOpenFriday( )
+    public boolean getIsOpenFriday(  )
     {
         return _bIsOpenFriday;
     }
@@ -274,7 +281,7 @@ public class AppointmentForm
      * Returns the IsOpenSaturday
      * @return The IsOpenSaturday
      */
-    public boolean getIsOpenSaturday( )
+    public boolean getIsOpenSaturday(  )
     {
         return _bIsOpenSaturday;
     }
@@ -292,7 +299,7 @@ public class AppointmentForm
      * Returns the IsOpenSunday
      * @return The IsOpenSunday
      */
-    public boolean getIsOpenSunday( )
+    public boolean getIsOpenSunday(  )
     {
         return _bIsOpenSunday;
     }
@@ -310,7 +317,7 @@ public class AppointmentForm
      * Returns the DateStartValidity
      * @return The DateStartValidity
      */
-    public Date getDateStartValidity( )
+    public Date getDateStartValidity(  )
     {
         return _dateDateStartValidity;
     }
@@ -328,7 +335,7 @@ public class AppointmentForm
      * Returns the DateEndValidity
      * @return The DateEndValidity
      */
-    public Date getDateEndValidity( )
+    public Date getDateEndValidity(  )
     {
         return _dateDateEndValidity;
     }
@@ -346,7 +353,7 @@ public class AppointmentForm
      * Returns the IsActive
      * @return The IsActive
      */
-    public boolean getIsActive( )
+    public boolean getIsActive(  )
     {
         return _bIsActive;
     }
@@ -364,7 +371,7 @@ public class AppointmentForm
      * Returns the DisplayTitleFo
      * @return The DisplayTitleFo
      */
-    public boolean getDisplayTitleFo( )
+    public boolean getDisplayTitleFo(  )
     {
         return _bDisplayTitleFo;
     }
@@ -382,7 +389,7 @@ public class AppointmentForm
      * Returns the NbWeeksToDisplay
      * @return The NbWeeksToDisplay
      */
-    public int getNbWeeksToDisplay( )
+    public int getNbWeeksToDisplay(  )
     {
         return _nNbWeeksToDisplay;
     }
@@ -400,7 +407,7 @@ public class AppointmentForm
      * Returns the number of person per appointment
      * @return The number of person per appointment
      */
-    public int getPeoplePerAppointment( )
+    public int getPeoplePerAppointment(  )
     {
         return _nPeoplePerAppointment;
     }
@@ -418,7 +425,7 @@ public class AppointmentForm
      * Get the id of the workflow associated with this appointment form
      * @return The id of the workflow
      */
-    public int getIdWorkflow( )
+    public int getIdWorkflow(  )
     {
         return _nIdWorkflow;
     }
@@ -436,8 +443,14 @@ public class AppointmentForm
      * Get the opening hour
      * @return the opening hour
      */
-    public int getOpeningHour( )
+    public int getOpeningHour(  )
     {
+        if ( !_bOpeningHourInitialized )
+        {
+            _nOpeningHour = Integer.parseInt( _strTimeStart.split( CONSTANT_H )[0] );
+            _bOpeningHourInitialized = true;
+        }
+
         return _nOpeningHour;
     }
 
@@ -448,14 +461,21 @@ public class AppointmentForm
     public void setOpeningHour( int nOpeningHour )
     {
         this._nOpeningHour = nOpeningHour;
+        _bOpeningHourInitialized = true;
     }
 
     /**
      * Get the opening minutes
      * @return The opening minutes
      */
-    public int getOpeningMinutes( )
+    public int getOpeningMinutes(  )
     {
+        if ( !_bOpeningMinutesInitialized )
+        {
+            _nOpeningMinutes = Integer.parseInt( _strTimeStart.split( CONSTANT_H )[1] );
+            _bOpeningMinutesInitialized = true;
+        }
+
         return _nOpeningMinutes;
     }
 
@@ -466,14 +486,21 @@ public class AppointmentForm
     public void setOpeningMinutes( int nOpeningMinutes )
     {
         this._nOpeningMinutes = nOpeningMinutes;
+        _bOpeningMinutesInitialized = true;
     }
 
     /**
      * Get the closing hour
      * @return the closing hour
      */
-    public int getClosingHour( )
+    public int getClosingHour(  )
     {
+        if ( !_bClosingHourInitialized )
+        {
+            _nClosingHour = Integer.parseInt( _strTimeEnd.split( CONSTANT_H )[0] );
+            _bClosingHourInitialized = true;
+        }
+
         return _nClosingHour;
     }
 
@@ -484,14 +511,21 @@ public class AppointmentForm
     public void setClosingHour( int nClosingHour )
     {
         this._nClosingHour = nClosingHour;
+        _bClosingHourInitialized = true;
     }
 
     /**
      * Get the closing minutes
      * @return the closing minutes
      */
-    public int getClosingMinutes( )
+    public int getClosingMinutes(  )
     {
+        if ( !_bClosingMinutesInitialized )
+        {
+            _nClosingHour = Integer.parseInt( _strTimeEnd.split( CONSTANT_H )[1] );
+            _bClosingMinutesInitialized = true;
+        }
+
         return _nClosingMinutes;
     }
 
@@ -502,6 +536,24 @@ public class AppointmentForm
     public void setClosingMinutes( int nClosingMinutes )
     {
         this._nClosingMinutes = nClosingMinutes;
+        _bClosingMinutesInitialized = true;
     }
 
+    /**
+     * Check if a day of the week is opened or not
+     * @param nDayOfWeek The number of the day of the week : 1 for Monday, 2 for
+     *            Tuesday, ...
+     * @return True if the requested day of the week is open, false otherwise
+     */
+    public boolean isDayOfWeekOpened( int nDayOfWeek )
+    {
+        boolean[] bArrayDaysOpened = 
+            {
+                _bIsOpenMonday, _bIsOpenTuesday, _bIsOpenWednesday, _bIsOpenThursday, _bIsOpenFriday, _bIsOpenSaturday,
+                _bIsOpenSunday
+            };
+
+        return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened[nDayOfWeek - 1]
+                                                                                  : false;
+    }
 }

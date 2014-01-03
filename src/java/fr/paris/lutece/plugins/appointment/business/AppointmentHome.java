@@ -7,15 +7,15 @@
  * are met:
  *
  *  1. Redistributions of source code must retain the above copyright notice
- *	 and the following disclaimer.
+ *         and the following disclaimer.
  *
  *  2. Redistributions in binary form must reproduce the above copyright notice
- *	 and the following disclaimer in the documentation and/or other materials
- *	 provided with the distribution.
+ *         and the following disclaimer in the documentation and/or other materials
+ *         provided with the distribution.
  *
  *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
- *	 contributors may be used to endorse or promote products derived from
- *	 this software without specific prior written permission.
+ *         contributors may be used to endorse or promote products derived from
+ *         this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
@@ -46,19 +45,16 @@ import java.util.Collection;
  * This class provides instances management methods (create, find, ...) for
  * Appointment objects
  */
-
 public final class AppointmentHome
 {
-
     // Static variable pointed at the DAO instance
-
     private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentHome( )
+    private AppointmentHome(  )
     {
     }
 
@@ -118,7 +114,7 @@ public final class AppointmentHome
      * @return the collection which contains the data of all the appointment
      *         objects
      */
-    public static Collection<Appointment> getAppointmentsList( )
+    public static Collection<Appointment> getAppointmentsList(  )
     {
         return _dao.selectAppointmentsList( _plugin );
     }

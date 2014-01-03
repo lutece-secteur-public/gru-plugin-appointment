@@ -72,8 +72,16 @@ public interface IAppointmentSlotDAO
     void deleteByIdDay( int nIdDay, Plugin plugin );
 
     /**
-     * Remove appointment slots associated with a given form. Slots that are
-     * associated with a day are also removed
+     * Remove appointment slots associated with a given form. <b>Slots that are
+     * associated with a day are also removed</b>
+     * @param nIdForm The id of the form to remove slots from
+     * @param plugin The plugin
+     */
+    void deleteAllByIdForm( int nIdForm, Plugin plugin );
+
+    /**
+     * Remove appointment slots associated with a given form. <b>Slots that are
+     * associated with a day are NOT removed</b>
      * @param nIdForm The id of the form to remove slots from
      * @param plugin The plugin
      */
@@ -103,4 +111,40 @@ public interface IAppointmentSlotDAO
      * @return The list of slots
      */
     List<AppointmentSlot> findByIdDay( int nIdDay, Plugin plugin );
+
+    //    /**
+    //     * Change the enabling of slots associated with a given form and a given day
+    //     * of the week
+    //     * @param nIdForm The id of the form to update
+    //     * @param bEnable True to enable slots, false to disable them
+    //     * @param nDayOfWeek The day of the week of slots to update
+    //     * @param plugin the plugin
+    //     */
+    //    void updateByIdFormAndDayOfWeek( int nIdForm, boolean bEnable, int nDayOfWeek, Plugin plugin );
+
+    /**
+     * Get the list of slots associated with a given form for a given day of
+     * week.
+     * @param nIdForm the if of the form
+     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
+     * @param plugin The plugin
+     * @return the list of slots
+     */
+    List<AppointmentSlot> findByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin );
+
+    /**
+     * Delete every slots associated with a given form and a given day of week
+     * @param nIdForm The id of the form
+     * @param nDayOfWeek The day of the week
+     * @param plugin The plugin
+     */
+    void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin );
+
+    //    /**
+    //     * Update the status of slots associated with a given day.
+    //     * @param nIdDay The id of the day
+    //     * @param bEnable True to enable slots, false to disable them
+    //     * @param plugin The plugin
+    //     */
+    //    void updateByIdDay( int nIdDay, boolean bEnable, Plugin plugin );
 }

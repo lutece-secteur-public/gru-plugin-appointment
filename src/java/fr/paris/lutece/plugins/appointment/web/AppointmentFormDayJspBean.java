@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
@@ -43,8 +44,14 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.dozer.converters.DateConverter;
+
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,9 +59,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.dozer.converters.DateConverter;
 
 
 /**
@@ -64,7 +68,6 @@ import org.dozer.converters.DateConverter;
 public class AppointmentFormDayJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = -4951787792196104967L;
-
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_DAY = "id_day";
     private static final String PARAMETER_CANCEL = "cancel";
@@ -74,7 +77,6 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String PARAMETER_DATE = "date";
     private static final String PARAMETER_APPOINTMENT_DURATION = "appointmentDuration";
     private static final String PARAMETER_PEOPLE_PER_APPOINTMENT = "peoplePerAppointment";
-
     private static final String MESSAGE_CONFIRM_REMOVE_DAY = "appointment.message.confirmRemoveDay";
     private static final String MESSAGE_ERROR_OPENING_TIME_FORMAT = "appointment.modify_appointmentForm.patternTimeStart";
     private static final String MESSAGE_ERROR_CLOSING_TIME_FORMAT = "appointment.modify_appointmentForm.patternTimeEnd";
@@ -82,26 +84,20 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_FORMAT_APPOINTMENT_DURATION = "appointment.message.error.formatNumberAppointmentDuration";
     private static final String MESSAGE_ERROR_FORMAT_PEOPLE_PER_APPOINTMENT = "appointment.message.error.formatPeoplePerAppointmentDuration";
     private static final String MESSAGE_ERROR_DAY_ALREADY_EXIST = "appointment.message.error.dayAlreadyExist";
-
+    private static final String INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED = "appointment.info.appointmentDay.slotsUpdated";
     private static final String PROPERTY_CREATE_DAY_TITLE = "appointment.createDay.pageTitle";
     private static final String PROPERTY_MODIFY_DAY_TITLE = "appointment.modifyDay.pageTitle";
-
     private static final String VIEW_GET_CREATE_DAY = "getCreateDay";
     private static final String VIEW_GET_MODIFY_DAY = "getModifyDay";
     private static final String VIEW_CONFIRM_REMOVE_DAY = "confirmRemoveDay";
-
     private static final String ACTION_DO_CREATE_DAY = "doCreateDay";
     private static final String ACTION_DO_MODIFY_DAY = "doModifyDay";
     private static final String ACTION_DO_REMOVE_DAY = "doRemoveDay";
-
     private static final String MARK_DAY = "day";
-
     private static final String TEMPLATE_CREATE_DAY = "/admin/plugins/appointment/create_days.html";
     private static final String TEMPLATE_MODIFY_DAY = "/admin/plugins/appointment/modify_days.html";
-
     private static final String CONSTANT_H = "h";
     private static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]h[0-5][0-9]$";
-
     private transient DateConverter _dateConverter;
     private transient AppointmentDay _appointmentDay;
 
@@ -114,20 +110,24 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     public String getCreateDay( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
         if ( StringUtils.isEmpty( strIdForm ) || !StringUtils.isNumeric( strIdForm ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
         // Default Values
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( PARAMETER_ID_FORM, strIdForm );
+
         if ( _appointmentDay != null )
         {
             model.put( MARK_DAY, _appointmentDay );
             _appointmentDay = null;
         }
+
         fillCommons( model );
+
         return getPage( PROPERTY_CREATE_DAY_TITLE, TEMPLATE_CREATE_DAY, model );
     }
 
@@ -140,6 +140,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     public String doCreateDay( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
@@ -147,24 +148,31 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentFormDays( request, strIdForm ) );
             }
 
-            AppointmentDay day = new AppointmentDay( );
+            AppointmentDay day = new AppointmentDay(  );
             day.setIdForm( Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) ) );
+
             List<String> listErrors = populateDay( day, request );
 
-            if ( listErrors != null && listErrors.size( ) > 0 )
+            if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
             {
-                Locale locale = request.getLocale( );
+                Locale locale = request.getLocale(  );
+
                 for ( String strError : listErrors )
                 {
                     addError( strError, locale );
                 }
+
                 _appointmentDay = day;
-                return redirect( request, VIEW_GET_CREATE_DAY, PARAMETER_ID_FORM, day.getIdForm( ) );
+
+                return redirect( request, VIEW_GET_CREATE_DAY, PARAMETER_ID_FORM, day.getIdForm(  ) );
             }
+
             AppointmentDayHome.create( day );
+            AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForDay( day );
 
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentFormDays( request, strIdForm ) );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -183,7 +191,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             int nIdDay = Integer.parseInt( strIdDay );
 
             AppointmentDay day;
-            if ( _appointmentDay != null && _appointmentDay.getIdDay( ) == nIdDay )
+
+            if ( ( _appointmentDay != null ) && ( _appointmentDay.getIdDay(  ) == nIdDay ) )
             {
                 day = _appointmentDay;
                 _appointmentDay = null;
@@ -198,11 +207,13 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
             }
 
-            Map<String, Object> model = new HashMap<String, Object>( );
+            Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_DAY, day );
             fillCommons( model );
+
             return getPage( PROPERTY_MODIFY_DAY_TITLE, TEMPLATE_MODIFY_DAY, model );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -230,21 +241,34 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             if ( StringUtils.isEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
             {
                 List<String> listErrors = populateDay( day, request );
-                if ( listErrors != null && listErrors.size( ) > 0 )
+
+                if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
                 {
-                    Locale locale = request.getLocale( );
+                    Locale locale = request.getLocale(  );
+
                     for ( String strError : listErrors )
                     {
                         addError( strError, locale );
                     }
+
                     _appointmentDay = day;
-                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+
+                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
                 }
+
+                AppointmentDay dayFromDb = AppointmentDayHome.findByPrimaryKey( day.getIdDay(  ) );
                 AppointmentDayHome.update( day );
+
+                if ( AppointmentSlotService.getInstance(  ).checkForDayModification( day, dayFromDb ) )
+                {
+                    addInfo( INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED, getLocale(  ) );
+                }
             }
+
             return redirect( request,
-                    AppointmentFormJspBean.getURLManageAppointmentFormDays( request, day.getIdForm( ) ) );
+                AppointmentFormJspBean.getURLManageAppointmentFormDays( request, day.getIdForm(  ) ) );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -260,8 +284,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_DAY ) );
         url.addParameter( PARAMETER_ID_DAY, strIdDay );
 
-        return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_DAY,
-                url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
+        return redirect( request,
+            AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_DAY, url.getUrl(  ),
+                AdminMessage.TYPE_CONFIRMATION ) );
     }
 
     /**
@@ -286,13 +311,16 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
 
             day = AppointmentDayHome.findByPrimaryKey( nIdDay );
+
             if ( day != null )
             {
                 AppointmentDayHome.remove( nIdDay );
+
                 return redirect( request,
-                        AppointmentFormJspBean.getURLManageAppointmentFormDays( request, day.getIdForm( ) ) );
+                    AppointmentFormJspBean.getURLManageAppointmentFormDays( request, day.getIdForm(  ) ) );
             }
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -304,9 +332,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      */
     private List<String> populateDay( AppointmentDay day, HttpServletRequest request )
     {
-        List<String> listErrors = new ArrayList<String>( );
+        List<String> listErrors = new ArrayList<String>(  );
         String strDate = request.getParameter( PARAMETER_DATE );
-        Date date = (Date) getDateConverter( ).convert( java.sql.Date.class, strDate );
+        Date date = (Date) getDateConverter(  ).convert( java.sql.Date.class, strDate );
 
         if ( date == null )
         {
@@ -315,10 +343,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         else
         {
             // We check that the day does not already exist
-            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( day.getIdForm( ), date, date );
-            if ( listDays != null && listDays.size( ) > 0 )
+            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( day.getIdForm(  ), date, date );
+
+            if ( ( listDays != null ) && ( listDays.size(  ) > 0 ) )
             {
-                if ( day.getIdDay( ) == 0 )
+                if ( day.getIdDay(  ) == 0 )
                 {
                     listErrors.add( MESSAGE_ERROR_DAY_ALREADY_EXIST );
                 }
@@ -327,23 +356,27 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                     // If there is a day for this form that has the same date but a different id, we add an error
                     for ( AppointmentDay dayFound : listDays )
                     {
-                        if ( dayFound.getIdDay( ) != day.getIdDay( ) )
+                        if ( dayFound.getIdDay(  ) != day.getIdDay(  ) )
                         {
                             listErrors.add( MESSAGE_ERROR_DAY_ALREADY_EXIST );
+
                             break;
                         }
                     }
                 }
             }
         }
+
         day.setDate( date );
 
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
         day.setIsOpen( bIsOpen );
+
         if ( bIsOpen )
         {
             String strOpeningTime = request.getParameter( PARAMETER_OPENING_TIME );
-            if ( strOpeningTime != null && strOpeningTime.matches( CONSTANT_TIME_REGEX ) )
+
+            if ( ( strOpeningTime != null ) && strOpeningTime.matches( CONSTANT_TIME_REGEX ) )
             {
                 String[] strArrayOpeningTime = strOpeningTime.split( CONSTANT_H );
                 day.setOpeningHour( Integer.parseInt( strArrayOpeningTime[0] ) );
@@ -353,9 +386,10 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             {
                 listErrors.add( MESSAGE_ERROR_OPENING_TIME_FORMAT );
             }
+
             String strClosingTime = request.getParameter( PARAMETER_CLOSING_TIME );
 
-            if ( strClosingTime != null && strClosingTime.matches( CONSTANT_TIME_REGEX ) )
+            if ( ( strClosingTime != null ) && strClosingTime.matches( CONSTANT_TIME_REGEX ) )
             {
                 String[] strArrayClosingTime = strClosingTime.split( CONSTANT_H );
                 day.setClosingHour( Integer.parseInt( strArrayClosingTime[0] ) );
@@ -367,6 +401,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
 
             String strDuration = request.getParameter( PARAMETER_APPOINTMENT_DURATION );
+
             if ( StringUtils.isNotEmpty( strDuration ) && StringUtils.isNumeric( strDuration ) )
             {
                 day.setAppointmentDuration( Integer.parseInt( strDuration ) );
@@ -375,7 +410,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             {
                 listErrors.add( MESSAGE_ERROR_FORMAT_APPOINTMENT_DURATION );
             }
+
             String strPeoplePerAppointment = request.getParameter( PARAMETER_PEOPLE_PER_APPOINTMENT );
+
             if ( StringUtils.isNotEmpty( strPeoplePerAppointment ) && StringUtils.isNumeric( strPeoplePerAppointment ) )
             {
                 day.setPeoplePerAppointment( Integer.parseInt( strPeoplePerAppointment ) );
@@ -402,12 +439,13 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      * Get the converter to convert string to java.sql.Date.
      * @return The converter to convert String to java.sql.Date.
      */
-    private DateConverter getDateConverter( )
+    private DateConverter getDateConverter(  )
     {
         if ( _dateConverter == null )
         {
             _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE ) );
         }
+
         return _dateConverter;
     }
 }

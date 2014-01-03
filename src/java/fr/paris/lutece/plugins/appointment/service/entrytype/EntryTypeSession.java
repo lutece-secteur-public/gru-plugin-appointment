@@ -42,7 +42,6 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  */
 public class EntryTypeSession extends AbstractEntryTypeSession
 {
-
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_session.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_session.html";
     private static final String TEMPLATE_HTML_CODE = "admin/plugins/appointment/entries/html_code_entry_type_session.html";

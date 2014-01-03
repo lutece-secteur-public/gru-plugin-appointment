@@ -7,15 +7,15 @@
  * are met:
  *
  *  1. Redistributions of source code must retain the above copyright notice
- *	 and the following disclaimer.
+ *         and the following disclaimer.
  *
  *  2. Redistributions in binary form must reproduce the above copyright notice
- *	 and the following disclaimer in the documentation and/or other materials
- *	 provided with the distribution.
+ *         and the following disclaimer in the documentation and/or other materials
+ *         provided with the distribution.
  *
  *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
- *	 contributors may be used to endorse or promote products derived from
- *	 this software without specific prior written permission.
+ *         contributors may be used to endorse or promote products derived from
+ *         this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -31,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
@@ -40,6 +39,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -47,10 +47,8 @@ import java.util.List;
  * This class provides instances management methods (create, find, ...) for
  * AppointmentDay objects
  */
-
 public final class AppointmentDayHome
 {
-
     // Static variable pointed at the DAO instance
     private static IAppointmentDayDAO _dao = SpringContextService.getBean( "appointment.appointmentDayDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
@@ -58,7 +56,7 @@ public final class AppointmentDayHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentDayHome( )
+    private AppointmentDayHome(  )
     {
     }
 

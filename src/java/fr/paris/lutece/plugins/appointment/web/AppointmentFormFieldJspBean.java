@@ -50,13 +50,13 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -66,32 +66,25 @@ import org.apache.commons.lang.StringUtils;
 public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = -1505164256619633838L;
-
     private static final String PROPERTY_CREATE_FIELD_TITLE = "appointment.createField.title";
     private static final String PROPERTY_MODIFY_FIELD_TITLE = "appointment.modifyField.title";
-
     private static final String JSP_URL_MANAGE_APPOINTMENT_FORM_FIELDS = "jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp";
-
     private static final String MARK_FIELD = "field";
     private static final String MARK_ENTRY_LIST = "entry_list";
     private static final String MARK_ENTRY_TYPE_LIST = "entry_type_list";
-
     private static final String MESSAGE_CONFIRM_REMOVE_FIELD = "appointment.message.confirmRemoveField";
     private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
     private static final String MESSAGE_FIELD_VALUE_FIELD = "directory.message.field_value_field";
-
     private static final String VIEW_GET_CREATE_FIELD = "getCreateField";
     private static final String VIEW_GET_MODIFY_FIELD = "getModifyField";
     private static final String VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS = "getModifyFieldCC";
     private static final String VIEW_GET_CONFIRM_REMOVE_FIELD = "getConfirmRemoveField";
-
     private static final String ACTION_DO_CREATE_FIELD = "doCreateField";
     private static final String ACTION_DO_MODIFY_FIELD = "doModifyField";
     private static final String ACTION_DO_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS = "doModifyFieldCC";
     private static final String ACTION_DO_MOVE_FIELD_UP = "doMoveFieldUp";
     private static final String ACTION_DO_MOVE_FIELD_DOWN = "doMoveFieldDown";
     private static final String ACTION_DO_REMOVE_FIELD = "doRemoveField";
-
     private static final String PARAMETER_ID_ENTRY = "id_entry";
     private static final String PARAMETER_ID_FIELD = "id_field";
     private static final String PARAMETER_CANCEL = "cancel";
@@ -101,10 +94,8 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     private static final String PARAMETER_DEFAULT_VALUE = "default_value";
     private static final String PARAMETER_NO_DISPLAY_TITLE = "no_display_title";
     private static final String PARAMETER_COMMENT = "comment";
-
     private static final String FIELD_TITLE_FIELD = "form.createField.labelTitle";
     private static final String FIELD_VALUE_FIELD = "directory.create_field.label_value";
-
     private static final String TEMPLATE_CREATE_FIELD = "admin/plugins/appointment/create_field.html";
     private static final String TEMPLATE_MODIFY_FIELD_WITH_CONDITIONAL_QUESTION = "admin/plugins/appointment/modify_field_with_conditional_question.html";
     private static final String TEMPLATE_MODIFY_FIELD = "admin/plugins/appointment/modify_field.html";
@@ -118,10 +109,10 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     public String getCreateField( HttpServletRequest request )
     {
         Entry entry = EntryHome.findByPrimaryKey( Integer.parseInt( request.getParameter( PARAMETER_ID_ENTRY ) ) );
-        Field field = new Field( );
+        Field field = new Field(  );
         field.setParentEntry( entry );
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_FIELD, field );
 
         return getPage( PROPERTY_CREATE_FIELD_TITLE, TEMPLATE_CREATE_FIELD, model );
@@ -159,26 +150,27 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      */
     private String getModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
-        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_FIELD ) )
-                || !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_FIELD ) ) )
+        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_FIELD ) ) ||
+                !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_FIELD ) ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
+
         int nIdField = Integer.parseInt( request.getParameter( PARAMETER_ID_FIELD ) );
         Field field = FieldHome.findByPrimaryKey( nIdField );
-        Entry entry = EntryHome.findByPrimaryKey( field.getParentEntry( ).getIdEntry( ) );
+        Entry entry = EntryHome.findByPrimaryKey( field.getParentEntry(  ).getIdEntry(  ) );
 
         field.setParentEntry( entry );
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_FIELD, field );
 
         String strTemplateName;
 
         if ( bWithConditionalQuestion )
         {
-            model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
-            model.put( MARK_ENTRY_LIST, field.getConditionalQuestions( ) );
+            model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance(  ).getEntryTypeReferenceList(  ) );
+            model.put( MARK_ENTRY_LIST, field.getConditionalQuestions(  ) );
             strTemplateName = TEMPLATE_MODIFY_FIELD_WITH_CONDITIONAL_QUESTION;
         }
         else
@@ -197,19 +189,20 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     @Action( ACTION_DO_CREATE_FIELD )
     public String doCreateField( HttpServletRequest request )
     {
-        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_ENTRY ) )
-                || !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_ENTRY ) ) )
+        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_ENTRY ) ) ||
+                !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_ENTRY ) ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
         int nIdEntry = Integer.parseInt( request.getParameter( PARAMETER_ID_ENTRY ) );
+
         if ( request.getParameter( PARAMETER_CANCEL ) == null )
         {
-            Entry entry = new Entry( );
+            Entry entry = new Entry(  );
             entry.setIdEntry( nIdEntry );
 
-            Field field = new Field( );
+            Field field = new Field(  );
             field.setParentEntry( entry );
 
             String strError = getFieldData( request, field );
@@ -257,6 +250,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     private String doModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
+
         if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -282,11 +276,12 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         if ( request.getParameter( PARAMETER_APPLY ) == null )
         {
             return redirect( request,
-                    AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry( ).getIdEntry( ) ) );
+                AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
         }
 
-        return redirect( request, bWithConditionalQuestion ? VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS
-                : VIEW_GET_MODIFY_FIELD, PARAMETER_ID_FIELD, nIdField );
+        return redirect( request,
+            bWithConditionalQuestion ? VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS : VIEW_GET_MODIFY_FIELD,
+            PARAMETER_ID_FIELD, nIdField );
     }
 
     /**
@@ -298,6 +293,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     public String getConfirmRemoveField( HttpServletRequest request )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
+
         if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -307,8 +303,9 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         url.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_REMOVE_FIELD );
         url.addParameter( PARAMETER_ID_FIELD, strIdField );
 
-        return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_FIELD,
-                url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
+        return redirect( request,
+            AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_FIELD, url.getUrl(  ),
+                AdminMessage.TYPE_CONFIRMATION ) );
     }
 
     /**
@@ -320,20 +317,24 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     public String doRemoveField( HttpServletRequest request )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
+
         if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
+
         int nIdField = Integer.parseInt( strIdField );
 
         if ( nIdField != -1 )
         {
             Field field = FieldHome.findByPrimaryKey( nIdField );
+
             if ( field != null )
             {
                 FieldHome.remove( nIdField );
+
                 return redirect( request,
-                        AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry( ).getIdEntry( ) ) );
+                    AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
             }
         }
 
@@ -371,32 +372,36 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     public String doMoveField( HttpServletRequest request, boolean bMoveUp )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
+
         if ( StringUtils.isEmpty( strIdField ) || !StringUtils.isNumeric( strIdField ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
+
         int nIdField = Integer.parseInt( strIdField );
 
         List<Field> listField;
         Field field = FieldHome.findByPrimaryKey( nIdField );
 
-        listField = FieldHome.getFieldListByIdEntry( field.getParentEntry( ).getIdEntry( ) );
+        listField = FieldHome.getFieldListByIdEntry( field.getParentEntry(  ).getIdEntry(  ) );
 
         int nIndexField = getIndexFieldInFieldList( nIdField, listField );
 
-        if ( nIndexField != ( listField.size( ) - 1 ) )
+        if ( nIndexField != ( listField.size(  ) - 1 ) )
         {
             int nNewPosition;
             Field fieldToInversePosition;
             fieldToInversePosition = listField.get( bMoveUp ? ( nIndexField - 1 ) : ( nIndexField + 1 ) );
-            nNewPosition = fieldToInversePosition.getPosition( );
-            fieldToInversePosition.setPosition( field.getPosition( ) );
+            nNewPosition = fieldToInversePosition.getPosition(  );
+            fieldToInversePosition.setPosition( field.getPosition(  ) );
             field.setPosition( nNewPosition );
             FieldHome.update( field );
             FieldHome.update( fieldToInversePosition );
+
             return redirect( request,
-                    AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry( ).getIdEntry( ) ) );
+                AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -433,10 +438,10 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         if ( strFieldError != null )
         {
-            Object[] tabRequiredFields = { I18nService.getLocalizedString( strFieldError, getLocale( ) ) };
+            Object[] tabRequiredFields = { I18nService.getLocalizedString( strFieldError, getLocale(  ) ) };
 
             return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields,
-                    AdminMessage.TYPE_STOP );
+                AdminMessage.TYPE_STOP );
         }
 
         field.setTitle( strTitle );
@@ -463,10 +468,11 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         for ( Field field : listField )
         {
-            if ( field.getIdField( ) == nIdField )
+            if ( field.getIdField(  ) == nIdField )
             {
                 return nIndex;
             }
+
             nIndex++;
         }
 
@@ -485,6 +491,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_APPOINTMENT_FORM_FIELDS );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS );
         urlItem.addParameter( PARAMETER_ID_FIELD, nIdField );
-        return urlItem.getUrl( );
+
+        return urlItem.getUrl(  );
     }
 }

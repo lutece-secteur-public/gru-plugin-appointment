@@ -36,10 +36,11 @@ package fr.paris.lutece.plugins.appointment.service.entrytype;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeTextArea;
 
+
 /**
- * 
+ *
  * class EntryTypeTextArea
- * 
+ *
  */
 public class EntryTypeTextArea extends AbstractEntryTypeTextArea
 {

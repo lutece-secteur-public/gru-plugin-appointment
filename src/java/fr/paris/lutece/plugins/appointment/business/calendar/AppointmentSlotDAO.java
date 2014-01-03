@@ -49,14 +49,22 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     private static final String SQL_QUERY_CREATE = "INSERT INTO appointment_slot (id_slot, id_form, id_day, day_of_week, nb_free_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled) VALUES (?,?,?,?,?,?,?,?,?,?) ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET id_form = ?, id_day = ?, day_of_week = ?, nb_free_places = ?, starting_hour = ?, starting_minute = ?, ending_hour = ?, ending_minute = ?, is_enabled = ? WHERE id_slot = ? ";
     private static final String SQL_QUERY_DELETE_BY_ID = " DELETE FROM appointment_slot WHERE id_slot = ?";
-    private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_slot WHERE id_form = ?";
+    private static final String SQL_QUERY_DELETE_ALL_BY_ID_FORM = "DELETE FROM appointment_slot WHERE id_form = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM = SQL_QUERY_DELETE_ALL_BY_ID_FORM + " AND id_day = 0";
     private static final String SQL_QUERY_DELETE_BY_ID_DAY = "DELETE FROM appointment_slot WHERE id_day = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM_AND_DAY_OF_WEEK = SQL_QUERY_DELETE_BY_ID_FORM +
+        " AND day_of_week = ?";
     private static final String SQL_QUERY_SELECT = "SELECT id_slot, id_form, id_day, day_of_week, nb_free_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled FROM appointment_slot";
     private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY = SQL_QUERY_SELECT + " WHERE id_slot = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT
-            + " WHERE id_form = ? AND id_day = 0 ORDER BY day_of_week ASC";
-    private static final String SQL_QUERY_SELECT_BY_ID_DAY = SQL_QUERY_SELECT
-            + " WHERE id_day = ? ORDER BY day_of_week ASC";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT +
+        " WHERE id_form = ? AND id_day = 0 ORDER BY starting_hour, starting_minute, day_of_week ASC";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DAY_OF_WEEK = SQL_QUERY_SELECT +
+        " WHERE id_form = ? AND id_day = 0 AND day_of_week = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
+    private static final String SQL_QUERY_SELECT_BY_ID_DAY = SQL_QUERY_SELECT +
+        " WHERE id_day = ? ORDER BY day_of_week ASC";
+
+    //    private static final String SQL_QUERY_UPDATE_BY_ID_FORM_AND_DAY_OF_WEEK = "UPDATE appointment_slot SET is_enabled = ? WHERE id_form = ? AND id_day = 0 AND day_of_week = ?";
+    //    private static final String SQL_QUERY_UPDATE_BY_ID_DAY = "UPDATE appointment_slot SET is_enabled = ? WHERE id_day = ? ";
 
     /**
      * Get a new primary key for a slot
@@ -66,13 +74,17 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     private int newPrimaryKey( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PRIMARY_KEY, plugin );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
+
         int nKey = 1;
-        if ( daoUtil.next( ) )
+
+        if ( daoUtil.next(  ) )
         {
             nKey = daoUtil.getInt( 1 ) + 1;
         }
-        daoUtil.free( );
+
+        daoUtil.free(  );
+
         return nKey;
     }
 
@@ -85,18 +97,18 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CREATE, plugin );
         int nIndex = 1;
         slot.setIdSlot( newPrimaryKey( plugin ) );
-        daoUtil.setInt( nIndex++, slot.getIdSlot( ) );
-        daoUtil.setInt( nIndex++, slot.getIdForm( ) );
-        daoUtil.setInt( nIndex++, slot.getIdDay( ) );
-        daoUtil.setInt( nIndex++, slot.getDayOfWeek( ) );
-        daoUtil.setInt( nIndex++, slot.getNbFreePlaces( ) );
-        daoUtil.setInt( nIndex++, slot.getStartingHour( ) );
-        daoUtil.setInt( nIndex++, slot.getStartingMinute( ) );
-        daoUtil.setInt( nIndex++, slot.getEndingHour( ) );
-        daoUtil.setInt( nIndex++, slot.getEndingMinute( ) );
-        daoUtil.setBoolean( nIndex, slot.getIsEnabled( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.setInt( nIndex++, slot.getIdSlot(  ) );
+        daoUtil.setInt( nIndex++, slot.getIdForm(  ) );
+        daoUtil.setInt( nIndex++, slot.getIdDay(  ) );
+        daoUtil.setInt( nIndex++, slot.getDayOfWeek(  ) );
+        daoUtil.setInt( nIndex++, slot.getNbFreePlaces(  ) );
+        daoUtil.setInt( nIndex++, slot.getStartingHour(  ) );
+        daoUtil.setInt( nIndex++, slot.getStartingMinute(  ) );
+        daoUtil.setInt( nIndex++, slot.getEndingHour(  ) );
+        daoUtil.setInt( nIndex++, slot.getEndingMinute(  ) );
+        daoUtil.setBoolean( nIndex, slot.getIsEnabled(  ) );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -107,18 +119,18 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
         int nIndex = 1;
-        daoUtil.setInt( nIndex++, slot.getIdForm( ) );
-        daoUtil.setInt( nIndex++, slot.getIdDay( ) );
-        daoUtil.setInt( nIndex++, slot.getDayOfWeek( ) );
-        daoUtil.setInt( nIndex++, slot.getNbFreePlaces( ) );
-        daoUtil.setInt( nIndex++, slot.getStartingHour( ) );
-        daoUtil.setInt( nIndex++, slot.getStartingMinute( ) );
-        daoUtil.setInt( nIndex++, slot.getEndingHour( ) );
-        daoUtil.setInt( nIndex++, slot.getEndingMinute( ) );
-        daoUtil.setBoolean( nIndex++, slot.getIsEnabled( ) );
-        daoUtil.setInt( nIndex, slot.getIdSlot( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.setInt( nIndex++, slot.getIdForm(  ) );
+        daoUtil.setInt( nIndex++, slot.getIdDay(  ) );
+        daoUtil.setInt( nIndex++, slot.getDayOfWeek(  ) );
+        daoUtil.setInt( nIndex++, slot.getNbFreePlaces(  ) );
+        daoUtil.setInt( nIndex++, slot.getStartingHour(  ) );
+        daoUtil.setInt( nIndex++, slot.getStartingMinute(  ) );
+        daoUtil.setInt( nIndex++, slot.getEndingHour(  ) );
+        daoUtil.setInt( nIndex++, slot.getEndingMinute(  ) );
+        daoUtil.setBoolean( nIndex++, slot.getIsEnabled(  ) );
+        daoUtil.setInt( nIndex, slot.getIdSlot(  ) );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -129,8 +141,20 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID, plugin );
         daoUtil.setInt( 1, nIdSlot );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteAllByIdForm( int nIdForm, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL_BY_ID_FORM, plugin );
+        daoUtil.setInt( 1, nIdForm );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -141,8 +165,8 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_DAY, plugin );
         daoUtil.setInt( 1, nIdDay );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -153,8 +177,8 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM, plugin );
         daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -165,13 +189,16 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, nIdSlot );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
+
         AppointmentSlot slot = null;
-        if ( daoUtil.next( ) )
+
+        if ( daoUtil.next(  ) )
         {
             slot = getSlotDataFromDAOUtil( daoUtil );
         }
-        daoUtil.free( );
+
+        daoUtil.free(  );
 
         return slot;
     }
@@ -184,13 +211,39 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
         daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeQuery( );
-        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( );
-        while ( daoUtil.next( ) )
+        daoUtil.executeQuery(  );
+
+        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+
+        while ( daoUtil.next(  ) )
         {
             listSlots.add( getSlotDataFromDAOUtil( daoUtil ) );
         }
-        daoUtil.free( );
+
+        daoUtil.free(  );
+
+        return listSlots;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<AppointmentSlot> findByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DAY_OF_WEEK, plugin );
+        daoUtil.setInt( 1, nIdForm );
+        daoUtil.setInt( 2, nDayOfWeek );
+        daoUtil.executeQuery(  );
+
+        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+
+        while ( daoUtil.next(  ) )
+        {
+            listSlots.add( getSlotDataFromDAOUtil( daoUtil ) );
+        }
+
+        daoUtil.free(  );
 
         return listSlots;
     }
@@ -203,15 +256,58 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_DAY, plugin );
         daoUtil.setInt( 1, nIdDay );
-        daoUtil.executeQuery( );
-        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( );
-        while ( daoUtil.next( ) )
+        daoUtil.executeQuery(  );
+
+        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+
+        while ( daoUtil.next(  ) )
         {
             listSlots.add( getSlotDataFromDAOUtil( daoUtil ) );
         }
-        daoUtil.free( );
+
+        daoUtil.free(  );
 
         return listSlots;
+    }
+
+    //    /**
+    //     * {@inheritDoc}
+    //     */
+    //    @Override
+    //    public void updateByIdFormAndDayOfWeek( int nIdForm, boolean bEnable, int nDayOfWeek, Plugin plugin )
+    //    {
+    //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_BY_ID_FORM_AND_DAY_OF_WEEK, plugin );
+    //        daoUtil.setBoolean( 1, bEnable );
+    //        daoUtil.setInt( 2, nIdForm );
+    //        daoUtil.setInt( 3, nDayOfWeek );
+    //        daoUtil.executeUpdate( );
+    //        daoUtil.free( );
+    //    }
+    //
+    //    /**
+    //     * {@inheritDoc}
+    //     */
+    //    @Override
+    //    public void updateByIdDay( int nIdDay, boolean bEnable, Plugin plugin )
+    //    {
+    //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_BY_ID_DAY, plugin );
+    //        daoUtil.setBoolean( 1, bEnable );
+    //        daoUtil.setInt( 2, nIdDay );
+    //        daoUtil.executeUpdate( );
+    //        daoUtil.free( );
+    //    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM_AND_DAY_OF_WEEK, plugin );
+        daoUtil.setInt( 1, nIdForm );
+        daoUtil.setInt( 2, nDayOfWeek );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -224,7 +320,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
      */
     private AppointmentSlot getSlotDataFromDAOUtil( DAOUtil daoUtil )
     {
-        AppointmentSlot slot = new AppointmentSlot( );
+        AppointmentSlot slot = new AppointmentSlot(  );
         int nIndex = 1;
         slot.setIdSlot( daoUtil.getInt( nIndex++ ) );
         slot.setIdForm( daoUtil.getInt( nIndex++ ) );
@@ -236,6 +332,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         slot.setEndingHour( daoUtil.getInt( nIndex++ ) );
         slot.setEndingMinute( daoUtil.getInt( nIndex++ ) );
         slot.setIsEnabled( daoUtil.getBoolean( nIndex ) );
+
         return slot;
     }
 }

@@ -86,8 +86,18 @@ public class AppointmentSlotHome
     }
 
     /**
-     * Remove appointment slots associated with a given form. Slots that are
-     * associated with a day are also removed
+     * Remove appointment slots associated with a given form. <b>Slots that are
+     * associated with a day are also removed</b>
+     * @param nIdForm The id of the form to remove slots from
+     */
+    public static void deleteAllByIdForm( int nIdForm )
+    {
+        _dao.deleteAllByIdForm( nIdForm, _plugin );
+    }
+
+    /**
+     * Remove appointment slots associated with a given form. <b>Slots that are
+     * associated with a day are NOT removed</b>
      * @param nIdForm The id of the form to remove slots from
      */
     public static void deleteByIdForm( int nIdForm )
@@ -125,4 +135,48 @@ public class AppointmentSlotHome
     {
         return _dao.findByIdDay( nIdDay, _plugin );
     }
+
+    //    /**
+    //     * Change the enabling of slots associated with a given form and a given day
+    //     * of the week
+    //     * @param nIdForm The id of the form to update
+    //     * @param bEnable True to enable slots, false to disable them
+    //     * @param nDayOfWeek The day of the week of slots to update
+    //     */
+    //    public static void updateByIdFormAndDayOfWeek( int nIdForm, boolean bEnable, int nDayOfWeek )
+    //    {
+    //        _dao.updateByIdFormAndDayOfWeek( nIdForm, bEnable, nDayOfWeek, _plugin );
+    //    }
+
+    /**
+     * Get the list of slots associated with a given form for a given day of
+     * week.
+     * @param nIdForm the if of the form
+     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
+     * @return the list of slots
+     */
+    public static List<AppointmentSlot> findByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek )
+    {
+        return _dao.findByIdFormAndDayOfWeek( nIdForm, nDayOfWeek, _plugin );
+    }
+
+    /**
+     * Delete every slots associated with a given form and a given day of week
+     * @param nIdForm The id of the form
+     * @param nDayOfWeek The day of the week
+     */
+    public static void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek )
+    {
+        _dao.deleteByIdFormAndDayOfWeek( nIdForm, nDayOfWeek, _plugin );
+    }
+
+    //    /**
+    //     * Update the status of slots associated with a given day.
+    //     * @param nIdDay The id of the day
+    //     * @param bEnable True to enable slots, false to disable them
+    //     */
+    //    public static void updateByIdDay( int nIdDay, boolean bEnable )
+    //    {
+    //        _dao.updateByIdDay( nIdDay, bEnable, _plugin );
+    //    }
 }

@@ -54,7 +54,7 @@ public class AppointmentPortletHome extends PortletHome
     /**
      * Constructor
      */
-    public AppointmentPortletHome( )
+    public AppointmentPortletHome(  )
     {
         if ( _singleton == null )
         {
@@ -64,12 +64,12 @@ public class AppointmentPortletHome extends PortletHome
 
     /**
      * Returns the identifier of the portlet type
-     * 
+     *
      * @return the portlet type identifier
      */
-    public String getPortletTypeId( )
+    public String getPortletTypeId(  )
     {
-        String strCurrentClassName = this.getClass( ).getName( );
+        String strCurrentClassName = this.getClass(  ).getName(  );
         String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
         return strPortletTypeId;
@@ -77,14 +77,14 @@ public class AppointmentPortletHome extends PortletHome
 
     /**
      * Returns the instance of AppointmentPortlet Portlet
-     * 
+     *
      * @return the AppointmentPortlet Portlet instance
      */
-    public static PortletHome getInstance( )
+    public static PortletHome getInstance(  )
     {
         if ( _singleton == null )
         {
-            _singleton = new AppointmentPortletHome( );
+            _singleton = new AppointmentPortletHome(  );
         }
 
         return _singleton;
@@ -92,12 +92,11 @@ public class AppointmentPortletHome extends PortletHome
 
     /**
      * Returns the instance of the portlet DAO singleton
-     * 
+     *
      * @return the instance of the DAO singleton
      */
-    public IPortletInterfaceDAO getDAO( )
+    public IPortletInterfaceDAO getDAO(  )
     {
         return _dao;
     }
-
 }

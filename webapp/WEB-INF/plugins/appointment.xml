@@ -64,4 +64,8 @@
         <javascript-files-scope>portal</javascript-files-scope>
         <javascript-file>appointment/appointment.js</javascript-file>
     </javascript-files>
+    <css-stylesheets>
+        <css-stylesheets-scope>portal</css-stylesheets-scope>
+        <css-stylesheet>appointment/appointment.css</css-stylesheet>
+    </css-stylesheets>
 </plug-in>

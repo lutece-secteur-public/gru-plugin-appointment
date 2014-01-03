@@ -16,6 +16,7 @@
 	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform listWorkflows=listWorkflows />
     <div class="span8">
     	<@tabs tab="days" appointmentform=appointmentform />
+    	<@messages infos=infos />
     	<fieldset>
     		<legend>
     			#i18n{appointment.modify_appointmentformDays.pageTitle}
@@ -60,6 +61,11 @@
 								<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
 									<i class="icon-edit icon-white">&nbsp;</i>
 								</a>
+								<#if day.isOpen>
+									<a href="jsp/admin/plugins/appointment/ManageCalendarSlots.jsp?view=manageAppointmentSlots&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{appointment.modify_appointmentformDays.labelManageSlots}">
+										<i class="fa fa-calendar"></i>
+									</a>
+								</#if>
 								<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=confirmRemoveDay&id_day=${day.idDay}" title="#i18n{portal.util.labelDelete}" class="btn btn-danger btn-small">
 									<i class="icon-trash icon-white">&nbsp;</i>
 								</a>
