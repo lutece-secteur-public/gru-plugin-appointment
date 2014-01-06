@@ -49,8 +49,6 @@ import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -60,6 +58,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * This class provides a simple implementation of an XPage
@@ -67,6 +67,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "appointment", pageTitleProperty = "appointment.appointmentApp.defaultTitle", pagePathProperty = "appointment.appointmentApp.defaultPath" )
 public class AppointmentApp extends MVCApplication
 {
+    /**
+     * Generated serial version UID
+     */
+    private static final long serialVersionUID = 5741361182728887387L;
+
     private static final String TEMPLATE_APPOINTMENT_FORM_LIST = "/skin/plugins/appointment/appointment_form_list.html";
     private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/plugins/appointment/appointment_form.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_CALENDAR = "/skin/plugins/appointment/appointment_form_calendar.html";

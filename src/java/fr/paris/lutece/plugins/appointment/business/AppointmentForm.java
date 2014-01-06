@@ -550,7 +550,7 @@ public class AppointmentForm
         boolean[] bArrayDaysOpened = 
             {
                 _bIsOpenMonday, _bIsOpenTuesday, _bIsOpenWednesday, _bIsOpenThursday, _bIsOpenFriday, _bIsOpenSaturday,
-                _bIsOpenSunday
+                _bIsOpenSunday,
             };
 
         return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened[nDayOfWeek - 1]

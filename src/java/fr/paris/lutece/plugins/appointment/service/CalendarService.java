@@ -41,7 +41,6 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -62,7 +61,7 @@ public class CalendarService
     private static final String CONSTANT_ZERO = "0";
     private static final int CONSTANT_MINUTES_IN_HOUR = 60;
     private static final long CONSTANT_MILISECONDS_IN_DAY = 86400000L;
-    private static CalendarService _instance;
+    private static volatile CalendarService _instance;
 
     /**
      * Get an instance of the service
@@ -122,7 +121,7 @@ public class CalendarService
             {
                 form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
                 form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
-                form.getIsOpenSunday(  )
+                form.getIsOpenSunday(  ),
             };
         long lMilisecDate = dateMin.getTime(  );
         List<AppointmentDay> listDays = new ArrayList<AppointmentDay>( bArrayIsOpen.length );

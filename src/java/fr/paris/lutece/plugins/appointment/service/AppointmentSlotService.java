@@ -48,7 +48,7 @@ import java.util.List;
 public class AppointmentSlotService
 {
     private static final String BEAN_NAME = "appointment.appointmentSlotService";
-    private static AppointmentSlotService _instance;
+    private static volatile AppointmentSlotService _instance;
 
     /**
      * Get the instance of the service
@@ -169,14 +169,14 @@ public class AppointmentSlotService
             {
                 formFromDb.getIsOpenMonday(  ), formFromDb.getIsOpenTuesday(  ), formFromDb.getIsOpenWednesday(  ),
                 formFromDb.getIsOpenThursday(  ), formFromDb.getIsOpenFriday(  ), formFromDb.getIsOpenSaturday(  ),
-                formFromDb.getIsOpenSunday(  )
+                formFromDb.getIsOpenSunday(  ),
             };
         boolean[] bArrayDayOpened = 
             {
                 appointmentForm.getIsOpenMonday(  ), appointmentForm.getIsOpenTuesday(  ),
                 appointmentForm.getIsOpenWednesday(  ), appointmentForm.getIsOpenThursday(  ),
                 appointmentForm.getIsOpenFriday(  ), appointmentForm.getIsOpenSaturday(  ),
-                appointmentForm.getIsOpenSunday(  )
+                appointmentForm.getIsOpenSunday(  ),
             };
         boolean bHasModifications = false;
 

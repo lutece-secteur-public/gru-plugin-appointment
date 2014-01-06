@@ -44,10 +44,18 @@ import java.util.List;
 /**
  * Home for appointment slots
  */
-public class AppointmentSlotHome
+public final class AppointmentSlotHome
 {
     private static IAppointmentSlotDAO _dao = SpringContextService.getBean( "appointment.appointmentSlotDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+
+    /**
+     * Default constructor
+     */
+    private AppointmentSlotHome( )
+    {
+        // Private constructor
+    }
 
     /**
      * Create a new appointment slot
