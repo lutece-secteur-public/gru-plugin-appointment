@@ -112,16 +112,6 @@ public interface IAppointmentSlotDAO
      */
     List<AppointmentSlot> findByIdDay( int nIdDay, Plugin plugin );
 
-    //    /**
-    //     * Change the enabling of slots associated with a given form and a given day
-    //     * of the week
-    //     * @param nIdForm The id of the form to update
-    //     * @param bEnable True to enable slots, false to disable them
-    //     * @param nDayOfWeek The day of the week of slots to update
-    //     * @param plugin the plugin
-    //     */
-    //    void updateByIdFormAndDayOfWeek( int nIdForm, boolean bEnable, int nDayOfWeek, Plugin plugin );
-
     /**
      * Get the list of slots associated with a given form for a given day of
      * week.
@@ -139,12 +129,4 @@ public interface IAppointmentSlotDAO
      * @param plugin The plugin
      */
     void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin );
-
-    //    /**
-    //     * Update the status of slots associated with a given day.
-    //     * @param nIdDay The id of the day
-    //     * @param bEnable True to enable slots, false to disable them
-    //     * @param plugin The plugin
-    //     */
-    //    void updateByIdDay( int nIdDay, boolean bEnable, Plugin plugin );
 }

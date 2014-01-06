@@ -39,7 +39,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
-import fr.paris.lutece.portal.service.workflow.WorkflowService;
+import fr.paris.lutece.plugins.appointment.service.CalendarService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -47,6 +47,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,6 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_DAY = "id_day";
     private static final String PARAMETER_ID_SLOT = "id_slot";
     private static final String MARK_LIST_SLOTS = "listSlots";
-    private static final String MARK_APPOINTMENTFORM = "appointmentform";
-    private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
     private static final String MARK_DAY = "day";
     private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
     private static final String ACTION_DO_CHANGE_SLOT_ENABLING = "doChangeSlotEnabling";
@@ -85,11 +84,38 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
         List<AppointmentSlot> listSlots = null;
         Map<String, Object> model = new HashMap<String, Object>(  );
 
+        AppointmentForm form = null;
+
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
             listSlots = AppointmentSlotHome.findByIdForm( nIdForm );
-            model.put( MARK_APPOINTMENTFORM, AppointmentFormHome.findByPrimaryKey( nIdForm ) );
+            form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+
+            boolean[] bArrayListDays = 
+                {
+                    form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
+                    form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
+                    form.getIsOpenSunday(  ),
+                };
+            AppointmentDay day = CalendarService.getService(  ).getAppointmentDayFromForm( form );
+            day.setIsOpen( false );
+
+            boolean bHasClosedDay = false;
+
+            for ( int i = 0; i < bArrayListDays.length; i++ )
+            {
+                if ( !bArrayListDays[i] )
+                {
+                    listSlots.addAll( CalendarService.getService(  ).computeDaySlots( day, i + 1 ) );
+                    bHasClosedDay = true;
+                }
+            }
+
+            if ( bHasClosedDay )
+            {
+                Collections.sort( listSlots );
+            }
         }
         else
         {
@@ -108,7 +134,7 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
 
                 listSlots = AppointmentSlotHome.findByIdDay( nIdDay );
                 model.put( MARK_DAY, day );
-                model.put( MARK_APPOINTMENTFORM, AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) ) );
+                form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
             }
         }
 
@@ -118,8 +144,7 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
         }
 
         model.put( MARK_LIST_SLOTS, listSlots );
-        model.put( MARK_LIST_WORKFLOWS,
-            WorkflowService.getInstance(  ).getWorkflowsEnabled( getUser(  ), getLocale(  ) ) );
+        AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
 
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
     }

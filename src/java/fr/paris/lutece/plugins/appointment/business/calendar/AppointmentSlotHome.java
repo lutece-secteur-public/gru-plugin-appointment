@@ -52,7 +52,7 @@ public final class AppointmentSlotHome
     /**
      * Default constructor
      */
-    private AppointmentSlotHome( )
+    private AppointmentSlotHome(  )
     {
         // Private constructor
     }

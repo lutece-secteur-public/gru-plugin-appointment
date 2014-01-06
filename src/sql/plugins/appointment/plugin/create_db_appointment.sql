@@ -8,8 +8,7 @@ CREATE TABLE appointment_appointment (
 	last_name varchar(255) NOT NULL default '',
 	email varchar(255) NOT NULL default '',
 	id_user varchar(255) NOT NULL default '',
-	time_appointment varchar(10) NOT NULL default '0',
-	date_appointment date NOT NULL,
+	id_slot int(11) NOT NULL,
 	PRIMARY KEY (id_appointment)
 );
 
@@ -20,6 +19,7 @@ DROP TABLE IF EXISTS appointment_form;
 CREATE TABLE appointment_form (
 	id_form int(11) NOT NULL,
 	title varchar(255) NOT NULL default '',
+	description long varchar NOT NULL,
 	time_start varchar(10) NOT NULL default '0',
 	time_end varchar(10) NOT NULL default '0',
 	duration_appointments INT(11) NOT NULL default '0',
@@ -37,6 +37,7 @@ CREATE TABLE appointment_form (
 	nb_weeks_to_display INT(11) NOT NULL default '0',
 	people_per_appointment INT(11) NOT NULL default '0',
 	id_workflow INT(11) NOT NULL default '0',
+	is_captcha_enabled SMALLINT NOT NULL,
 	PRIMARY KEY (id_form)
 );
 

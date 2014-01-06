@@ -61,7 +61,8 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DAY_OF_WEEK = SQL_QUERY_SELECT +
         " WHERE id_form = ? AND id_day = 0 AND day_of_week = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_SELECT_BY_ID_DAY = SQL_QUERY_SELECT +
-        " WHERE id_day = ? ORDER BY day_of_week ASC";
+        " WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
+    private int _nDefaultSlotListSize;
 
     //    private static final String SQL_QUERY_UPDATE_BY_ID_FORM_AND_DAY_OF_WEEK = "UPDATE appointment_slot SET is_enabled = ? WHERE id_form = ? AND id_day = 0 AND day_of_week = ?";
     //    private static final String SQL_QUERY_UPDATE_BY_ID_DAY = "UPDATE appointment_slot SET is_enabled = ? WHERE id_day = ? ";
@@ -213,7 +214,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         daoUtil.setInt( 1, nIdForm );
         daoUtil.executeQuery(  );
 
-        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( _nDefaultSlotListSize );
 
         while ( daoUtil.next(  ) )
         {
@@ -236,7 +237,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         daoUtil.setInt( 2, nDayOfWeek );
         daoUtil.executeQuery(  );
 
-        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( _nDefaultSlotListSize );
 
         while ( daoUtil.next(  ) )
         {
@@ -258,7 +259,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         daoUtil.setInt( 1, nIdDay );
         daoUtil.executeQuery(  );
 
-        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( _nDefaultSlotListSize );
 
         while ( daoUtil.next(  ) )
         {
@@ -269,33 +270,6 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
 
         return listSlots;
     }
-
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public void updateByIdFormAndDayOfWeek( int nIdForm, boolean bEnable, int nDayOfWeek, Plugin plugin )
-    //    {
-    //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_BY_ID_FORM_AND_DAY_OF_WEEK, plugin );
-    //        daoUtil.setBoolean( 1, bEnable );
-    //        daoUtil.setInt( 2, nIdForm );
-    //        daoUtil.setInt( 3, nDayOfWeek );
-    //        daoUtil.executeUpdate( );
-    //        daoUtil.free( );
-    //    }
-    //
-    //    /**
-    //     * {@inheritDoc}
-    //     */
-    //    @Override
-    //    public void updateByIdDay( int nIdDay, boolean bEnable, Plugin plugin )
-    //    {
-    //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_BY_ID_DAY, plugin );
-    //        daoUtil.setBoolean( 1, bEnable );
-    //        daoUtil.setInt( 2, nIdDay );
-    //        daoUtil.executeUpdate( );
-    //        daoUtil.free( );
-    //    }
 
     /**
      * {@inheritDoc}
@@ -334,5 +308,14 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         slot.setIsEnabled( daoUtil.getBoolean( nIndex ) );
 
         return slot;
+    }
+
+    /**
+     * Set the default size of slot lists
+     * @param nDefaultSlotListSize the default size of slot list
+     */
+    public void setDefaultSlotListSize( int nDefaultSlotListSize )
+    {
+        this._nDefaultSlotListSize = nDefaultSlotListSize;
     }
 }

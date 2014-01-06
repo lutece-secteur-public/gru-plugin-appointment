@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
@@ -84,6 +86,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_FORMAT_APPOINTMENT_DURATION = "appointment.message.error.formatNumberAppointmentDuration";
     private static final String MESSAGE_ERROR_FORMAT_PEOPLE_PER_APPOINTMENT = "appointment.message.error.formatPeoplePerAppointmentDuration";
     private static final String MESSAGE_ERROR_DAY_ALREADY_EXIST = "appointment.message.error.dayAlreadyExist";
+    private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED = "appointment.info.appointmentDay.slotsUpdated";
     private static final String PROPERTY_CREATE_DAY_TITLE = "appointment.createDay.pageTitle";
     private static final String PROPERTY_MODIFY_DAY_TITLE = "appointment.modifyDay.pageTitle";
@@ -151,7 +154,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             AppointmentDay day = new AppointmentDay(  );
             day.setIdForm( Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) ) );
 
-            List<String> listErrors = populateDay( day, request );
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
+            List<String> listErrors = populateDay( day, form, request );
 
             if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
             {
@@ -240,7 +244,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             if ( StringUtils.isEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
             {
-                List<String> listErrors = populateDay( day, request );
+                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
+                List<String> listErrors = populateDay( day, form, request );
 
                 if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
                 {
@@ -330,7 +335,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      * @param request The request
      * @return The list of error, or an empty list if no error was found
      */
-    private List<String> populateDay( AppointmentDay day, HttpServletRequest request )
+    private List<String> populateDay( AppointmentDay day, AppointmentForm form, HttpServletRequest request )
     {
         List<String> listErrors = new ArrayList<String>(  );
         String strDate = request.getParameter( PARAMETER_DATE );
@@ -405,6 +410,22 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             if ( StringUtils.isNotEmpty( strDuration ) && StringUtils.isNumeric( strDuration ) )
             {
                 day.setAppointmentDuration( Integer.parseInt( strDuration ) );
+
+                if ( ( form.getDurationAppointments(  ) != day.getAppointmentDuration(  ) ) &&
+                        ( form.getDurationAppointments(  ) > day.getAppointmentDuration(  ) ) )
+                {
+                    if ( ( form.getDurationAppointments(  ) % day.getAppointmentDuration(  ) ) != 0 )
+                    {
+                        listErrors.add( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM );
+                    }
+                }
+                else
+                {
+                    if ( ( day.getAppointmentDuration(  ) % form.getDurationAppointments(  ) ) != 0 )
+                    {
+                        listErrors.add( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM );
+                    }
+                }
             }
             else
             {

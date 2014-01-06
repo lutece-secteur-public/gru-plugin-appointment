@@ -37,12 +37,33 @@
 							</tr>
 							<#if day.isOpen>
 								<#assign rowspan=day.appointmentDuration/min_duration_appointments>
+								<#assign first_slot = day.listSlots?first>
+								<#if first_slot.startingHour &lt; 10>
+									<#assign first_time = '0' + first_slot.startingHour + 'h'>
+								<#else>
+									<#assign first_time = first_slot.startingHour + 'h'>
+								</#if>
+								<#if first_slot.startingMinute &lt; 10>
+									<#assign first_time = first_time + '0' + first_slot.startingMinute>
+								<#else>
+									<#assign first_time = first_time + first_slot.startingMinute>
+								</#if>
+								<#list list_time_begin as time_begin>
+									<#if time_begin != first_time>
+										<tr>
+											<td class="appointment-slot-closed appointment-row1">
+											</td>
+										</tr>
+									<#else>
+										<#break>
+									</#if>
+								</#list>
 								<#list day.listSlots as slot>
 									<tr>
 										<#if slot.isEnabled>
 											<#if slot.nbFreePlaces &gt; 0>
 												<td class="appointment-slot-avaiable appointment-row${rowspan}">
-													<a href="jsp/site/Portal.jsp?page=appointment&action=confirmMakeAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+													<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
 												</td>
 											<#else>
 												<td class="appointment-slot-full appointment-row${rowspan}">

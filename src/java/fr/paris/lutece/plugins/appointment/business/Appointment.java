@@ -33,12 +33,15 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import fr.paris.lutece.plugins.genericattributes.business.Response;
 
-import java.sql.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -46,9 +49,9 @@ import javax.validation.constraints.Size;
  */
 public class Appointment
 {
-    private static final int STATUS_REJECTED = -10;
-    private static final int STATUS_NOT_VALIDATED = 0;
-    private static final int STATUS_VALIDATED = 10;
+    public static final int STATUS_REJECTED = -10;
+    public static final int STATUS_NOT_VALIDATED = 0;
+    public static final int STATUS_VALIDATED = 10;
     private int _nIdAppointment;
 
     // @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
@@ -73,15 +76,15 @@ public class Appointment
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strIdUser;
-    private String _strTimeAppointment;
-    private Date _dateDateAppointment;
+    private int _nIdSlot;
     private int _nStatus;
+    Map<Integer, List<Response>> _mapResponsesByIdEntry;
 
     /**
      * Returns the IdAppointment
      * @return The IdAppointment
      */
-    public int getIdAppointment(  )
+    public int getIdAppointment( )
     {
         return _nIdAppointment;
     }
@@ -99,7 +102,7 @@ public class Appointment
      * Returns the FirstName
      * @return The FirstName
      */
-    public String getFirstName(  )
+    public String getFirstName( )
     {
         return _strFirstName;
     }
@@ -117,7 +120,7 @@ public class Appointment
      * Returns the LastName
      * @return The LastName
      */
-    public String getLastName(  )
+    public String getLastName( )
     {
         return _strLastName;
     }
@@ -135,7 +138,7 @@ public class Appointment
      * Returns the Email
      * @return The Email
      */
-    public String getEmail(  )
+    public String getEmail( )
     {
         return _strEmail;
     }
@@ -153,7 +156,7 @@ public class Appointment
      * Returns the IdUser
      * @return The IdUser
      */
-    public String getIdUser(  )
+    public String getIdUser( )
     {
         return _strIdUser;
     }
@@ -168,46 +171,28 @@ public class Appointment
     }
 
     /**
-     * Returns the TimeAppointment
-     * @return The TimeAppointment
+     * Get the id of the slot
+     * @return The id of the slot
      */
-    public String getTimeAppointment(  )
+    public int getIdSlot( )
     {
-        return _strTimeAppointment;
+        return _nIdSlot;
     }
 
     /**
-     * Sets the TimeAppointment
-     * @param nTimeAppointment The TimeAppointment
+     * Set the id of the slot
+     * @param nIdSlot The id of the slot
      */
-    public void setTimeAppointment( String nTimeAppointment )
+    public void setIdSlot( int nIdSlot )
     {
-        _strTimeAppointment = nTimeAppointment;
-    }
-
-    /**
-     * Returns the DateAppointment
-     * @return The DateAppointment
-     */
-    public Date getDateAppointment(  )
-    {
-        return _dateDateAppointment;
-    }
-
-    /**
-     * Sets the DateAppointment
-     * @param dateDateAppointment The DateAppointment
-     */
-    public void setDateAppointment( Date dateDateAppointment )
-    {
-        _dateDateAppointment = dateDateAppointment;
+        this._nIdSlot = nIdSlot;
     }
 
     /**
      * Get the status of the appointment
      * @return The status of the appointment
      */
-    public int getStatus(  )
+    public int getStatus( )
     {
         return _nStatus;
     }
@@ -219,5 +204,27 @@ public class Appointment
     public void setStatus( int nStatus )
     {
         _nStatus = nStatus;
+    }
+
+    /**
+     * Get the map containing an association between entries of the form and the
+     * id of the associated entry
+     * @return The map containing an association between entries of the form and
+     *         the
+     *         id of the associated entry
+     */
+    public Map<Integer, List<Response>> getMapResponsesByIdEntry( )
+    {
+        return _mapResponsesByIdEntry;
+    }
+
+    /**
+     * Set the map containing an association between entries of the form and the
+     * id of the associated entry
+     * @param mapResponsesByIdEntry The map
+     */
+    public void setMapResponsesByIdEntry( Map<Integer, List<Response>> mapResponsesByIdEntry )
+    {
+        this._mapResponsesByIdEntry = mapResponsesByIdEntry;
     }
 }

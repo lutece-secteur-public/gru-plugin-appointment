@@ -8,11 +8,34 @@
 			<fieldset>
 				<legend>
 					<#if form.displayTitleFo && form.title != "" >
-						${form.title} 
+						${form.title}
 					<#else>
 						#i18n{appointment.appointmentApp.defaultTitle}
 					</#if>
 				</legend>
+				<span class="help-block">
+					${form.description!}
+				</span>
+				<br />
+				<br />
+				<div class="control-group">
+					<label for="lastname" class="control-label">#i18n{appointment.appointmentApp.labelLastName}</label>
+					<div class="controls">
+						<input type="text" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="firstname" class="control-label">#i18n{appointment.appointmentApp.labelFirstName}</label>
+					<div class="controls">
+						<input type="text" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="email" class="control-label">#i18n{appointment.appointmentApp.labelEmail}</label>
+					<div class="controls">
+						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
+					</div>
+				</div>
 				${str_entry}
 				<div class="form-actions form-steps">
 					<button class="btn btn-primary btn-small" type="submit" name="save" >

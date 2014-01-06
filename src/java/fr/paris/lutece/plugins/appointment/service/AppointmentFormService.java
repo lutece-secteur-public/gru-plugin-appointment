@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -53,7 +54,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +87,12 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_STR_ENTRY = "str_entry";
     private static final String MARK_USER = "user";
     private static final String MARK_LIST_RESPONSES = "list_responses";
+    private static final String MARK_APPOINTMENT = "appointment";
+
+    // Session keys
     private static final String SESSION_KEY_RESPONSES = "appointment.appointmentFormService.responses";
+    
+    // Templates
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
     private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
 
@@ -102,10 +107,10 @@ public class AppointmentFormService implements Serializable
      */
     public String getHtmlForm( AppointmentForm form, Locale locale, boolean bDisplayFront, HttpServletRequest request )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        StringBuffer strBuffer = new StringBuffer(  );
-        EntryFilter filter = new EntryFilter(  );
-        filter.setIdResource( form.getIdForm(  ) );
+        Map<String, Object> model = new HashMap<String, Object>( );
+        StringBuffer strBuffer = new StringBuffer( );
+        EntryFilter filter = new EntryFilter( );
+        filter.setIdResource( form.getIdForm( ) );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
@@ -114,16 +119,17 @@ public class AppointmentFormService implements Serializable
 
         for ( Entry entry : listEntryFirstLevel )
         {
-            getHtmlEntry( entry.getIdEntry(  ), strBuffer, locale, bDisplayFront, request );
+            getHtmlEntry( entry.getIdEntry( ), strBuffer, locale, bDisplayFront, request );
         }
 
         model.put( MARK_FORM, form );
-        model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
+        model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
         model.put( MARK_LOCALE, locale );
+        model.put( MARK_APPOINTMENT, getAppointmentFromSession( request.getSession( ) ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -137,73 +143,73 @@ public class AppointmentFormService implements Serializable
      * @param request HttpServletRequest
      */
     public void getHtmlEntry( int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
-        HttpServletRequest request )
+            HttpServletRequest request )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         StringBuffer strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
-        if ( entry.getEntryType(  ).getGroup(  ) )
+        if ( entry.getEntryType( ).getGroup( ) )
         {
-            StringBuffer strGroupStringBuffer = new StringBuffer(  );
+            StringBuffer strGroupStringBuffer = new StringBuffer( );
 
-            for ( Entry entryChild : entry.getChildren(  ) )
+            for ( Entry entryChild : entry.getChildren( ) )
             {
-                getHtmlEntry( entryChild.getIdEntry(  ), strGroupStringBuffer, locale, bDisplayFront, request );
+                getHtmlEntry( entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );
             }
 
-            model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString(  ) );
+            model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
         }
         else
         {
-            if ( entry.getNumberConditionalQuestion(  ) != 0 )
+            if ( entry.getNumberConditionalQuestion( ) != 0 )
             {
-                for ( Field field : entry.getFields(  ) )
+                for ( Field field : entry.getFields( ) )
                 {
-                    field.setConditionalQuestions( FieldHome.findByPrimaryKey( field.getIdField(  ) )
-                                                            .getConditionalQuestions(  ) );
+                    field.setConditionalQuestions( FieldHome.findByPrimaryKey( field.getIdField( ) )
+                            .getConditionalQuestions( ) );
                 }
             }
         }
 
-        if ( entry.getNumberConditionalQuestion(  ) != 0 )
+        if ( entry.getNumberConditionalQuestion( ) != 0 )
         {
-            strConditionalQuestionStringBuffer = new StringBuffer(  );
+            strConditionalQuestionStringBuffer = new StringBuffer( );
 
-            for ( Field field : entry.getFields(  ) )
+            for ( Field field : entry.getFields( ) )
             {
-                if ( field.getConditionalQuestions(  ).size(  ) != 0 )
+                if ( field.getConditionalQuestions( ).size( ) != 0 )
                 {
-                    StringBuffer strGroupStringBuffer = new StringBuffer(  );
+                    StringBuffer strGroupStringBuffer = new StringBuffer( );
 
-                    for ( Entry entryConditional : field.getConditionalQuestions(  ) )
+                    for ( Entry entryConditional : field.getConditionalQuestions( ) )
                     {
-                        getHtmlEntry( entryConditional.getIdEntry(  ), strGroupStringBuffer, locale, bDisplayFront,
-                            request );
+                        getHtmlEntry( entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront,
+                                request );
                     }
 
-                    model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString(  ) );
+                    model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
                     model.put( MARK_FIELD, field );
                     template = AppTemplateService.getTemplate( TEMPLATE_DIV_CONDITIONAL_ENTRY, locale, model );
-                    strConditionalQuestionStringBuffer.append( template.getHtml(  ) );
+                    strConditionalQuestionStringBuffer.append( template.getHtml( ) );
                 }
             }
 
-            model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString(  ) );
+            model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString( ) );
         }
 
         model.put( MARK_ENTRY, entry );
         model.put( MARK_LOCALE, locale );
 
-        LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
+        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 
-        if ( ( user == null ) && SecurityService.isAuthenticationEnable(  ) &&
-                SecurityService.getInstance(  ).isExternalAuthentication(  ) )
+        if ( ( user == null ) && SecurityService.isAuthenticationEnable( )
+                && SecurityService.getInstance( ).isExternalAuthentication( ) )
         {
             try
             {
-                user = SecurityService.getInstance(  ).getRemoteUser( request );
+                user = SecurityService.getInstance( ).getRemoteUser( request );
             }
             catch ( UserNotSignedException e )
             {
@@ -215,48 +221,47 @@ public class AppointmentFormService implements Serializable
 
         if ( request != null )
         {
-            Map<Integer, List<Response>> listSubmittedResponses = getResponsesFromSession( request.getSession(  ) );
+            Appointment appointment = getAppointmentFromSession( request.getSession( ) );
 
-            if ( listSubmittedResponses != null )
+            if ( appointment != null && appointment.getMapResponsesByIdEntry( ) != null )
             {
-                List<Response> listResponses = listSubmittedResponses.get( entry.getIdEntry(  ) );
+                List<Response> listResponses = appointment.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
                 model.put( MARK_LIST_RESPONSES, listResponses );
             }
         }
 
-        template = AppTemplateService.getTemplate( EntryTypeServiceManager.getEntryTypeService( entry )
-                                                                          .getHtmlCode( entry, bDisplayFront ), locale,
-                model );
-        stringBuffer.append( template.getHtml(  ) );
+        template = AppTemplateService
+                .getTemplate( EntryTypeServiceManager.getEntryTypeService( entry ).getHtmlCode( entry, bDisplayFront ),
+                        locale, model );
+        stringBuffer.append( template.getHtml( ) );
     }
 
     /**
      * Perform in the object formSubmit the responses associates with a entry
      * specify in parameter.<br />
      * Response creates are stored in session and can be get by calling the
-     * method {@link #getResponsesFromSession(HttpSession)}
+     * method {@link #getAppointmentFromSession(HttpSession)}
      * @param request the request
      * @param nIdEntry the key of the entry
      * @param bResponseNull true if the response created must be null
      * @param locale the locale
+     * @param appointment The appointment
      * @return null if there is no error in the response or the list of errors
      *         found
      */
     public List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry,
-        boolean bResponseNull, Locale locale )
+            boolean bResponseNull, Locale locale, Appointment appointment )
     {
-        List<Response> listResponse = new ArrayList<Response>(  );
-        Map<Integer, List<Response>> listSubmittedResponses = getResponsesFromSession( request.getSession(  ) );
+        List<Response> listResponse = new ArrayList<Response>( );
 
-        if ( listSubmittedResponses == null )
+        if ( appointment.getMapResponsesByIdEntry( ) == null )
         {
-            listSubmittedResponses = new HashMap<Integer, List<Response>>(  );
-            saveResponseInSession( request.getSession(  ), listSubmittedResponses );
+            appointment.setMapResponsesByIdEntry( new HashMap<Integer, List<Response>>( ) );
         }
 
-        listSubmittedResponses.put( nIdEntry, listResponse );
+        appointment.getMapResponsesByIdEntry( ).put( nIdEntry, listResponse );
 
-        return getResponseEntry( request, nIdEntry, listResponse, bResponseNull, locale );
+        return getResponseEntry( request, nIdEntry, listResponse, bResponseNull, locale, appointment );
     }
 
     /**
@@ -269,40 +274,45 @@ public class AppointmentFormService implements Serializable
      * @param listResponse The list of response to add responses found in
      * @param bResponseNull true if the response created must be null
      * @param locale the locale
+     * @param appointment The appointment
      * @return null if there is no error in the response or the list of errors
      *         found
      */
     private List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry,
-        List<Response> listResponse, boolean bResponseNull, Locale locale )
+            List<Response> listResponse, boolean bResponseNull, Locale locale, Appointment appointment )
     {
-        List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>(  );
+        List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
-        List<Field> listField = new ArrayList<Field>(  );
+        List<Field> listField = new ArrayList<Field>( );
 
-        for ( Field field : entry.getFields(  ) )
+        for ( Field field : entry.getFields( ) )
         {
-            field = FieldHome.findByPrimaryKey( field.getIdField(  ) );
+            field = FieldHome.findByPrimaryKey( field.getIdField( ) );
             listField.add( field );
         }
 
         entry.setFields( listField );
 
-        if ( entry.getEntryType(  ).getGroup(  ) )
+        if ( entry.getEntryType( ).getGroup( ) )
         {
-            for ( Entry entryChild : entry.getChildren(  ) )
+            for ( Entry entryChild : entry.getChildren( ) )
             {
-                listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry(  ), listResponse, false, locale ) );
+                List<Response> listResponseChild = new ArrayList<Response>( );
+                appointment.getMapResponsesByIdEntry( ).put( entryChild.getIdEntry( ), listResponseChild );
+
+                listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponseChild, false,
+                        locale, appointment ) );
             }
         }
-        else if ( !entry.getEntryType(  ).getComment(  ) )
+        else if ( !entry.getEntryType( ).getComment( ) )
         {
             GenericAttributeError formError = null;
 
             if ( !bResponseNull )
             {
-                formError = EntryTypeServiceManager.getEntryTypeService( entry )
-                                                   .getResponseData( entry, request, listResponse, locale );
+                formError = EntryTypeServiceManager.getEntryTypeService( entry ).getResponseData( entry, request,
+                        listResponse, locale );
 
                 if ( formError != null )
                 {
@@ -311,7 +321,7 @@ public class AppointmentFormService implements Serializable
             }
             else
             {
-                Response response = new Response(  );
+                Response response = new Response( );
                 response.setEntry( entry );
                 listResponse.add( response );
             }
@@ -322,16 +332,16 @@ public class AppointmentFormService implements Serializable
                 listFormErrors.add( formError );
             }
 
-            if ( entry.getNumberConditionalQuestion(  ) != 0 )
+            if ( entry.getNumberConditionalQuestion( ) != 0 )
             {
-                for ( Field field : entry.getFields(  ) )
+                for ( Field field : entry.getFields( ) )
                 {
-                    boolean bIsFieldInResponseList = isFieldInTheResponseList( field.getIdField(  ), listResponse );
+                    boolean bIsFieldInResponseList = isFieldInTheResponseList( field.getIdField( ), listResponse );
 
-                    for ( Entry conditionalEntry : field.getConditionalQuestions(  ) )
+                    for ( Entry conditionalEntry : field.getConditionalQuestions( ) )
                     {
-                        listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry(  ),
-                                listResponse, !bIsFieldInResponseList, locale ) );
+                        listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry( ), listResponse,
+                                !bIsFieldInResponseList, locale, appointment ) );
                     }
                 }
             }
@@ -350,7 +360,7 @@ public class AppointmentFormService implements Serializable
     {
         for ( Response response : listResponse )
         {
-            if ( ( response.getField(  ) != null ) && ( response.getField(  ).getIdField(  ) == nIdField ) )
+            if ( ( response.getField( ) != null ) && ( response.getField( ).getIdField( ) == nIdField ) )
             {
                 return true;
             }
@@ -366,28 +376,27 @@ public class AppointmentFormService implements Serializable
      */
     public String getEntryUrl( Entry entry )
     {
-        UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
+        UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_FORM );
 
-        if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
+        if ( ( entry != null ) && ( entry.getIdResource( ) > 0 ) )
         {
-            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource(  ) );
-            url.setAnchor( PREFIX_ATTRIBUTE + entry.getIdEntry(  ) );
+            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource( ) );
+            url.setAnchor( PREFIX_ATTRIBUTE + entry.getIdEntry( ) );
         }
 
-        return url.getUrl(  );
+        return url.getUrl( );
     }
 
     /**
-     * Save appointment form responses in the session of the user
+     * Save an appointment in the session of the user
      * @param session The session
-     * @param listResponsesByIdEntry A map containing lists of responses
-     *            associated with the id of the corresponding entry
+     * @param appointment The appointment to save
      */
-    public void saveResponseInSession( HttpSession session, Map<Integer, List<Response>> listResponsesByIdEntry )
+    public void saveAppointmentInSession( HttpSession session, Appointment appointment )
     {
-        session.setAttribute( SESSION_KEY_RESPONSES, listResponsesByIdEntry );
+        session.setAttribute( SESSION_KEY_RESPONSES, appointment );
     }
 
     /**
@@ -396,16 +405,16 @@ public class AppointmentFormService implements Serializable
      * @return A map containing lists of responses associated with the id of the
      *         corresponding entry
      */
-    public Map<Integer, List<Response>> getResponsesFromSession( HttpSession session )
+    public Appointment getAppointmentFromSession( HttpSession session )
     {
-        return (Map<Integer, List<Response>>) session.getAttribute( SESSION_KEY_RESPONSES );
+        return (Appointment) session.getAttribute( SESSION_KEY_RESPONSES );
     }
 
     /**
      * Remove any appointment form responses stored in the session of the user
      * @param session The session
      */
-    public void removeResponsesFromSession( HttpSession session )
+    public void removeAppointmentFromSession( HttpSession session )
     {
         session.removeAttribute( SESSION_KEY_RESPONSES );
     }

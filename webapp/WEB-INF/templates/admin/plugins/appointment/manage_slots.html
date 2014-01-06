@@ -60,7 +60,11 @@
 									</td>
 							</#if>
 								<td>
-									<a id="${slot.idSlot}" class="btn btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" href="jsp/admin/plugins/appointment/ManageCalendarSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}#${slot.idSlot}"><#if slot.isEnabled>#i18n{appointment.manageCalendarSlots.labelOpened}<#else>#i18n{appointment.manageCalendarSlots.labelClosed}</#if></a>
+									<#if slot.idSlot &gt; 0>
+										<a id="${slot.idSlot}" class="btn btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" href="jsp/admin/plugins/appointment/ManageCalendarSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}#${slot.idSlot}"><#if slot.isEnabled>#i18n{appointment.manageCalendarSlots.labelOpened}<#else>#i18n{appointment.manageCalendarSlots.labelClosed}</#if></a>
+									<#else>
+										<button type="button" class="btn btn-primary btn-danger" >#i18n{appointment.manageCalendarSlots.labelClosed}</button>
+									</#if>
 								</td>
 							<#assign lastStartingTime = slot.startingHour * 1000 + slot.startingMinute>
 						</#list>

@@ -59,6 +59,8 @@ public class AppointmentForm
     @NotEmpty( message = "#i18n{appointment.validation.appointmentform.Title.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
     private String _strTitle;
+    @NotEmpty( message = "#i18n{appointment.validation.appointmentform.Description.notEmpty}" )
+    private String _strDescription;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     @Pattern( regexp = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
     private String _strTimeStart;
@@ -88,6 +90,7 @@ public class AppointmentForm
     private int _nOpeningMinutes;
     private int _nClosingHour;
     private int _nClosingMinutes;
+    private boolean _bEnableCaptcha;
     private boolean _bOpeningHourInitialized;
     private boolean _bOpeningMinutesInitialized;
     private boolean _bClosingHourInitialized;
@@ -127,6 +130,24 @@ public class AppointmentForm
     public void setTitle( String strTitle )
     {
         _strTitle = strTitle;
+    }
+
+    /**
+     * Get the description of the appointment form
+     * @return The description of the appointment form
+     */
+    public String getDescription(  )
+    {
+        return _strDescription;
+    }
+
+    /**
+     * Set the description of the appointment form
+     * @param strDescription The description of the appointment form
+     */
+    public void setDescription( String strDescription )
+    {
+        this._strDescription = strDescription;
     }
 
     /**
@@ -522,7 +543,7 @@ public class AppointmentForm
     {
         if ( !_bClosingMinutesInitialized )
         {
-            _nClosingHour = Integer.parseInt( _strTimeEnd.split( CONSTANT_H )[1] );
+            _nClosingMinutes = Integer.parseInt( _strTimeEnd.split( CONSTANT_H )[1] );
             _bClosingMinutesInitialized = true;
         }
 
@@ -537,6 +558,24 @@ public class AppointmentForm
     {
         this._nClosingMinutes = nClosingMinutes;
         _bClosingMinutesInitialized = true;
+    }
+
+    /**
+     * Check if the captcha is enabled for this appointment form
+     * @return True if the captcha is enabled, false otherwise
+     */
+    public boolean getEnableCaptcha(  )
+    {
+        return _bEnableCaptcha;
+    }
+
+    /**
+     * Enable or disable the captcha for this appointment form
+     * @param bEnableCaptcha True to enable the captcha, false to disable it
+     */
+    public void setEnableCaptcha( boolean bEnableCaptcha )
+    {
+        this._bEnableCaptcha = bEnableCaptcha;
     }
 
     /**

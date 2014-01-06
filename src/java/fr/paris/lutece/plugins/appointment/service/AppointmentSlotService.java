@@ -109,7 +109,12 @@ public class AppointmentSlotService
      */
     public boolean checkForDayModification( AppointmentDay day, AppointmentDay dayFromDb )
     {
-        if ( dayFromDb.getAppointmentDuration(  ) != day.getAppointmentDuration(  ) )
+        // If the appointment duration or the opening or closing time of the day has changed, we reinitialized slots
+        if ( ( dayFromDb.getAppointmentDuration(  ) != day.getAppointmentDuration(  ) ) ||
+                ( ( ( dayFromDb.getOpeningHour(  ) * 60 ) + dayFromDb.getOpeningMinutes(  ) ) != ( ( day.getOpeningHour(  ) * 60 ) +
+                day.getOpeningMinutes(  ) ) ) ||
+                ( ( ( dayFromDb.getClosingHour(  ) * 60 ) + dayFromDb.getClosingMinutes(  ) ) != ( ( day.getClosingHour(  ) * 60 ) +
+                day.getClosingMinutes(  ) ) ) )
         {
             AppointmentSlotHome.deleteByIdDay( day.getIdDay(  ) );
             AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForDay( day );
@@ -131,6 +136,24 @@ public class AppointmentSlotService
             }
 
             return true;
+        }
+
+        if ( day.getDate(  ).getTime(  ) != dayFromDb.getDate(  ).getTime(  ) )
+        {
+            // If the date changed, we must update the day of week of each slot.
+            int nDayOfWeek = CalendarService.getService(  ).getDayOfWeek( day.getDate(  ) );
+            int nOldDayOfWeek = CalendarService.getService(  ).getDayOfWeek( dayFromDb.getDate(  ) );
+
+            if ( nDayOfWeek != nOldDayOfWeek )
+            {
+                List<AppointmentSlot> listSlots = AppointmentSlotHome.findByIdDay( day.getIdDay(  ) );
+
+                for ( AppointmentSlot slot : listSlots )
+                {
+                    slot.setDayOfWeek( nDayOfWeek );
+                    AppointmentSlotHome.update( slot );
+                }
+            }
         }
 
         return false;
@@ -187,6 +210,8 @@ public class AppointmentSlotService
                 if ( bArrayDayOpened[i] )
                 {
                     AppointmentDay day = CalendarService.getService(  ).getAppointmentDayFromForm( appointmentForm );
+                    day.setIsOpen( true );
+
                     List<AppointmentSlot> listSlots = CalendarService.getService(  ).computeDaySlots( day, i + 1 );
 
                     for ( AppointmentSlot slot : listSlots )

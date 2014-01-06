@@ -43,6 +43,8 @@ import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -63,6 +65,7 @@ import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -108,6 +111,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_ORDER_FIRST_LEVEL = "listOrderFirstLevel";
     private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
     private static final String MARK_LIST_DAYS = "listDays";
+    private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
@@ -133,7 +137,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENTFORM_CREATED = "appointment.info.appointmentform.created";
     private static final String INFO_APPOINTMENTFORM_UPDATED = "appointment.info.appointmentform.updated";
     private static final String INFO_APPOINTMENTFORM_REMOVED = "appointment.info.appointmentform.removed";
-    private static final String INFO_MODIFY_APPOINTMENTFORM_SLOTS_REMOVED = "appointment.info.appointmentform.updated.slotsRemoved";
     private static final String INFO_MODIFY_APPOINTMENTFORM_SLOTS_UPDATED = "appointment.info.appointmentform.updated.slotsUpdated";
 
     // Session variable to store working values
@@ -141,6 +144,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.appointmentForm.currentPageIndex";
     private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.appointmentForm.itemsPerPage";
     private static final String DEFAULT_CURRENT_PAGE = "1";
+    private static CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService(  );
     private EntryService _entryService = EntryService.getService(  );
     private int _nDefaultItemsPerPage;
 
@@ -212,9 +216,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
 
         Map<String, Object> model = getModel(  );
-        model.put( MARK_APPOINTMENTFORM, appointmentForm );
-        model.put( MARK_LIST_WORKFLOWS,
-            WorkflowService.getInstance(  ).getWorkflowsEnabled( getUser(  ), getLocale(  ) ) );
+        addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
 
         //        model.put( MARK_LOCALE, AppointmentPlugin.getPluginLocale( getLocale( ) ) );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model );
@@ -339,12 +341,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         Map<String, Object> model = getModel(  );
         model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( appointmentForm.getIdForm(  ) ) );
-        model.put( MARK_APPOINTMENTFORM, appointmentForm );
         model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance(  ).getEntryTypeReferenceList(  ) );
         model.put( MARK_ENTRY_LIST, listEntry );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
-        model.put( MARK_LIST_WORKFLOWS,
-            WorkflowService.getInstance(  ).getWorkflowsEnabled( getUser(  ), getLocale(  ) ) );
+        addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
 
         //        model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
@@ -423,10 +423,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             List<AppointmentDay> listDays = AppointmentDayHome.getAppointmentDayListByIdForm( nIdForm );
 
             Map<String, Object> model = new HashMap<String, Object>(  );
-            model.put( MARK_APPOINTMENTFORM, appointmentForm );
-            model.put( MARK_LIST_WORKFLOWS,
-                WorkflowService.getInstance(  ).getWorkflowsEnabled( getUser(  ), getLocale(  ) ) );
             model.put( MARK_LIST_DAYS, listDays );
+            addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
 
             return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS, TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS, model );
         }
@@ -467,6 +465,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         appointmentForm.setIsOpenFriday( false );
         appointmentForm.setIsOpenSaturday( false );
         appointmentForm.setIsOpenSunday( false );
+        appointmentForm.setEnableCaptcha( false );
     }
 
     /**
@@ -556,5 +555,23 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
         return urlItem.getUrl(  );
+    }
+
+    /**
+     * Add elements to the model to display the left column to modify an
+     * appointment form
+     * @param request The request to store the appointment form in session
+     * @param appointmentForm The appointment form
+     * @param user The user
+     * @param locale The locale
+     * @param model the model to add elements in
+     */
+    public static void addElementsToModelForLeftColumn( HttpServletRequest request, AppointmentForm appointmentForm,
+        AdminUser user, Locale locale, Map<String, Object> model )
+    {
+        model.put( MARK_APPOINTMENTFORM, appointmentForm );
+        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance(  ).getWorkflowsEnabled( user, locale ) );
+        model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable(  ) );
+        request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
     }
 }

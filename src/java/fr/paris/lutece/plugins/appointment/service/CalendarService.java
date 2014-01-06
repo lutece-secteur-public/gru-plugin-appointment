@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -134,7 +135,8 @@ public class CalendarService
             {
                 for ( AppointmentDay dayFound : listDaysFound )
                 {
-                    if ( dayFound.getDate(  ).getTime(  ) == lMilisecDate )
+                    if ( ( dayFound.getDate(  ).getTime(  ) <= lMilisecDate ) &&
+                            ( ( dayFound.getDate(  ).getTime(  ) + CONSTANT_MILISECONDS_IN_DAY ) > lMilisecDate ) )
                     {
                         day = dayFound;
 
@@ -151,20 +153,27 @@ public class CalendarService
                 day.setIdForm( form.getIdForm(  ) );
             }
 
-            if ( bLoadSlotsFromDb && day.getIsOpen(  ) )
+            if ( day.getIsOpen(  ) )
             {
-                if ( day.getIdDay(  ) > 0 )
+                if ( bLoadSlotsFromDb )
                 {
-                    day.setListSlots( AppointmentSlotHome.findByIdDay( day.getIdDay(  ) ) );
+                    if ( day.getIdDay(  ) > 0 )
+                    {
+                        day.setListSlots( AppointmentSlotHome.findByIdDay( day.getIdDay(  ) ) );
+                    }
+                    else
+                    {
+                        day.setListSlots( AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), i + 1 ) );
+                    }
                 }
                 else
                 {
-                    day.setListSlots( AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), i + 1 ) );
+                    day.setListSlots( computeDaySlots( day ) );
                 }
             }
             else
             {
-                day.setListSlots( computeDaySlots( day ) );
+                day.setListSlots( new ArrayList<AppointmentSlot>(  ) );
             }
 
             listDays.add( day );
@@ -199,11 +208,6 @@ public class CalendarService
     {
         List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
 
-        if ( !day.getIsOpen(  ) )
-        {
-            return listSlots;
-        }
-
         // We compute the total number of minutes the service is opened this day
         int nOpeningDuration = ( ( day.getClosingHour(  ) * 60 ) + day.getClosingMinutes(  ) ) -
             ( ( day.getOpeningHour(  ) * 60 ) + day.getOpeningMinutes(  ) );
@@ -224,8 +228,8 @@ public class CalendarService
                 slot.setIdDay( day.getIdDay(  ) );
                 slot.setDayOfWeek( nDayOfWeek );
                 // We compute the next starting minutes and hours
-                nStartingMinutes = nStartingMinutes + day.getAppointmentDuration(  );
-                nStartingHour = nStartingHour + ( nStartingMinutes / CONSTANT_MINUTES_IN_HOUR );
+                nStartingMinutes += day.getAppointmentDuration(  );
+                nStartingHour += ( nStartingMinutes / CONSTANT_MINUTES_IN_HOUR );
                 nStartingMinutes = nStartingMinutes % CONSTANT_MINUTES_IN_HOUR;
                 slot.setEndingHour( nStartingHour );
                 slot.setEndingMinute( nStartingMinutes );
@@ -326,7 +330,7 @@ public class CalendarService
      * @param date The date to get the day of the week of
      * @return 1 for Monday, 2 for Tuesday, ..., 7 for Sunday
      */
-    private int getDayOfWeek( Date date )
+    public int getDayOfWeek( Date date )
     {
         Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
         calendar.setTime( date );

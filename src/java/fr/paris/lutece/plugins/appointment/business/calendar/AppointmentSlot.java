@@ -38,7 +38,7 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
  * Slot for an appointment in a day. The slot may have 3 states : free,
  * partially free or occupied.
  */
-public class AppointmentSlot
+public class AppointmentSlot implements Comparable<AppointmentSlot>
 {
     private int _nIdSlot;
     private int _nIdForm;
@@ -234,5 +234,41 @@ public class AppointmentSlot
     public void setIsEnabled( boolean bIsEnabled )
     {
         this._bIsEnabled = bIsEnabled;
+    }
+
+    /**
+     * Compare a slot to another one. Slots are compared by theire staring hour,
+     * starting minute, ending hour, ending minute and day of week.
+     * @param o Slot to compare this slot to
+     */
+    @Override
+    public int compareTo( AppointmentSlot o )
+    {
+        if ( getStartingHour(  ) != o.getStartingHour(  ) )
+        {
+            return ( getStartingHour(  ) > o.getStartingHour(  ) ) ? 1 : ( -1 );
+        }
+
+        if ( getStartingMinute(  ) != o.getStartingMinute(  ) )
+        {
+            return ( getStartingMinute(  ) > o.getStartingMinute(  ) ) ? 1 : ( -1 );
+        }
+
+        if ( getDayOfWeek(  ) != o.getDayOfWeek(  ) )
+        {
+            return ( getDayOfWeek(  ) > o.getDayOfWeek(  ) ) ? 1 : ( -1 );
+        }
+
+        if ( getEndingHour(  ) != o.getEndingHour(  ) )
+        {
+            return ( getEndingHour(  ) > o.getEndingHour(  ) ) ? 1 : ( -1 );
+        }
+
+        if ( getEndingMinute(  ) != o.getEndingMinute(  ) )
+        {
+            return ( getEndingMinute(  ) > o.getEndingMinute(  ) ) ? 1 : ( -1 );
+        }
+
+        return 0;
     }
 }
