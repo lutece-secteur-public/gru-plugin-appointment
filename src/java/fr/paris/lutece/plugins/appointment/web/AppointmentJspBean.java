@@ -99,6 +99,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String VIEW_MANAGE_APPOINTMENTS = "manageAppointments";
     private static final String VIEW_CREATE_APPOINTMENT = "createAppointment";
     private static final String VIEW_MODIFY_APPOINTMENT = "modifyAppointment";
+    private static final String VIEW_VIEW_APPOINTMENT = "viewAppointment";
 
     // Actions
     private static final String ACTION_CREATE_APPOINTMENT = "createAppointment";

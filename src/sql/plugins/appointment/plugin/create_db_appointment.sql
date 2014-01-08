@@ -7,8 +7,10 @@ CREATE TABLE appointment_appointment (
 	first_name varchar(255) NOT NULL default '',
 	last_name varchar(255) NOT NULL default '',
 	email varchar(255) NOT NULL default '',
-	id_user varchar(255) NOT NULL default '',
+	id_user varchar(255) NULL default '',
+	date_appointment DATE NOT NULL,
 	id_slot int(11) NOT NULL,
+	status smallint NOT NULL,
 	PRIMARY KEY (id_appointment)
 );
 
@@ -63,11 +65,18 @@ CREATE TABLE appointment_slot (
 	id_form INT(11) NOT NULL,
 	id_day INT(11) NOT NULL,
 	day_of_week INT(11) NOT NULL,
-	nb_free_places INT(11) NOT NULL,
+	nb_places INT(11) NOT NULL,
 	starting_hour INT(11) NOT NULL,
 	starting_minute INT(11) NOT NULL,
 	ending_hour INT(11) NOT NULL,
 	ending_minute INT(11) NOT NULL,
 	is_enabled SMALLINT NOT NULL,
 	PRIMARY KEY (id_slot)
+);
+
+DROP TABLE IF EXISTS appointment_appointment_response;
+CREATE TABLE appointment_appointment_response (
+	id_appointment INT(11) NOT NULL,
+	id_response INT(11) NOT NULL,
+	PRIMARY KEY (id_appointment,id_response)
 );

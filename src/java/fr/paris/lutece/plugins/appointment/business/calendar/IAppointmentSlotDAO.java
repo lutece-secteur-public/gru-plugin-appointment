@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
+import java.sql.Date;
 import java.util.List;
 
 
@@ -96,6 +97,16 @@ public interface IAppointmentSlotDAO
     AppointmentSlot findByPrimaryKey( int nIdSlot, Plugin plugin );
 
     /**
+     * Find a slot from its primary key. Also load the number of free places for
+     * a given date
+     * @param nIdSlot The id of the slot
+     * @param date The date of the day to check for places
+     * @param plugin The plugin
+     * @return The slot, or null if no slot was found
+     */
+    AppointmentSlot findByPrimaryKeyWithFreePlaces( int nIdSlot, Date date, Plugin plugin );
+
+    /**
      * Find every slots associated with a given form and not associated with any
      * day
      * @param nIdForm the id of the form
@@ -129,4 +140,24 @@ public interface IAppointmentSlotDAO
      * @param plugin The plugin
      */
     void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin );
+
+    /**
+     * Get the list of slots associated with a given day, and compute for each
+     * slot the number of free places
+     * @param nIdDay The id of the day
+     * @param plugin The plugin
+     * @return The list of slots
+     */
+    List<AppointmentSlot> findByIdDayWithFreePlaces( int nIdDay, Plugin plugin );
+
+    /**
+     * Get the list of slots associated with a given form for a given day of
+     * week. Also compute the number of free places for each slot
+     * @param nIdForm the if of the form
+     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
+     * @param dateDay The date of the day
+     * @param plugin The plugin
+     * @return the list of slots
+     */
+    List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin _plugin );
 }

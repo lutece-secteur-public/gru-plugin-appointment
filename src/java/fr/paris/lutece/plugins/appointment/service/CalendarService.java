@@ -41,7 +41,6 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -68,7 +67,7 @@ public class CalendarService
      * Get an instance of the service
      * @return An instance of the service
      */
-    public static CalendarService getService(  )
+    public static CalendarService getService( )
     {
         if ( _instance == null )
         {
@@ -85,11 +84,14 @@ public class CalendarService
      * @param nOffsetWeeks The offset of the week to get
      * @param bLoadSlotsFromDb True to load slots from the database, false to
      *            compute them
+     * @param bLoadSlotsFreePlaces True to load free places of slots, false to
+     *            only load the total number of places of slots
      * @return The list of days
      */
-    public List<AppointmentDay> getDayListforCalendar( AppointmentForm form, int nOffsetWeeks, boolean bLoadSlotsFromDb )
+    public List<AppointmentDay> getDayListforCalendar( AppointmentForm form, int nOffsetWeeks,
+            boolean bLoadSlotsFromDb, boolean bLoadSlotsFreePlaces )
     {
-        Date date = new Date( System.currentTimeMillis(  ) );
+        Date date = new Date( System.currentTimeMillis( ) );
         Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
         calendar.setTime( date );
         // We set the week to the requested one 
@@ -100,15 +102,15 @@ public class CalendarService
         // We add the day of the week to Monday on the calendar
         calendar.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
 
-        Date dateMin = new Date( calendar.getTimeInMillis(  ) );
+        Date dateMin = new Date( calendar.getTimeInMillis( ) );
         calendar.add( Calendar.DAY_OF_MONTH, 6 );
 
-        Date dateMax = new Date( calendar.getTimeInMillis(  ) );
+        Date dateMax = new Date( calendar.getTimeInMillis( ) );
 
-        List<AppointmentDay> listDaysFound = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
+        List<AppointmentDay> listDaysFound = AppointmentDayHome.getDaysBetween( form.getIdForm( ), dateMin, dateMax );
 
-        String[] strOpeningTime = form.getTimeStart(  ).split( CONSTANT_H );
-        String[] strClosingTime = form.getTimeEnd(  ).split( CONSTANT_H );
+        String[] strOpeningTime = form.getTimeStart( ).split( CONSTANT_H );
+        String[] strClosingTime = form.getTimeEnd( ).split( CONSTANT_H );
         int nOpeningHour = Integer.parseInt( strOpeningTime[0] );
         int nOpeningMinutes = Integer.parseInt( strOpeningTime[1] );
         int nClosingHour = Integer.parseInt( strClosingTime[0] );
@@ -118,25 +120,21 @@ public class CalendarService
         form.setClosingHour( nClosingHour );
         form.setClosingMinutes( nClosingMinutes );
 
-        boolean[] bArrayIsOpen = 
-            {
-                form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
-                form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
-                form.getIsOpenSunday(  ),
-            };
-        long lMilisecDate = dateMin.getTime(  );
+        boolean[] bArrayIsOpen = { form.getIsOpenMonday( ), form.getIsOpenTuesday( ), form.getIsOpenWednesday( ),
+                form.getIsOpenThursday( ), form.getIsOpenFriday( ), form.getIsOpenSaturday( ), form.getIsOpenSunday( ), };
+        long lMilisecDate = dateMin.getTime( );
         List<AppointmentDay> listDays = new ArrayList<AppointmentDay>( bArrayIsOpen.length );
 
         for ( int i = 0; i < bArrayIsOpen.length; i++ )
         {
             AppointmentDay day = null;
 
-            if ( ( listDaysFound != null ) && ( listDaysFound.size(  ) > 0 ) )
+            if ( ( listDaysFound != null ) && ( listDaysFound.size( ) > 0 ) )
             {
                 for ( AppointmentDay dayFound : listDaysFound )
                 {
-                    if ( ( dayFound.getDate(  ).getTime(  ) <= lMilisecDate ) &&
-                            ( ( dayFound.getDate(  ).getTime(  ) + CONSTANT_MILISECONDS_IN_DAY ) > lMilisecDate ) )
+                    if ( ( dayFound.getDate( ).getTime( ) <= lMilisecDate )
+                            && ( ( dayFound.getDate( ).getTime( ) + CONSTANT_MILISECONDS_IN_DAY ) > lMilisecDate ) )
                     {
                         day = dayFound;
 
@@ -150,20 +148,23 @@ public class CalendarService
                 day = getAppointmentDayFromForm( form, nOpeningHour, nOpeningMinutes, nClosingHour, nClosingMinutes );
                 day.setDate( new Date( lMilisecDate ) );
                 day.setIsOpen( bArrayIsOpen[i] );
-                day.setIdForm( form.getIdForm(  ) );
+                day.setIdForm( form.getIdForm( ) );
             }
 
-            if ( day.getIsOpen(  ) )
+            if ( day.getIsOpen( ) )
             {
                 if ( bLoadSlotsFromDb )
                 {
-                    if ( day.getIdDay(  ) > 0 )
+                    if ( day.getIdDay( ) > 0 )
                     {
-                        day.setListSlots( AppointmentSlotHome.findByIdDay( day.getIdDay(  ) ) );
+                        day.setListSlots( bLoadSlotsFreePlaces ? AppointmentSlotHome.findByIdDayWithFreePlaces( day
+                                .getIdDay( ) ) : AppointmentSlotHome.findByIdDay( day.getIdDay( ) ) );
                     }
                     else
                     {
-                        day.setListSlots( AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), i + 1 ) );
+                        day.setListSlots( bLoadSlotsFreePlaces ? AppointmentSlotHome.findByIdFormWithFreePlaces(
+                                form.getIdForm( ), i + 1, day.getDate( ) ) : AppointmentSlotHome
+                                .findByIdFormAndDayOfWeek( form.getIdForm( ), i + 1 ) );
                     }
                 }
                 else
@@ -173,7 +174,7 @@ public class CalendarService
             }
             else
             {
-                day.setListSlots( new ArrayList<AppointmentSlot>(  ) );
+                day.setListSlots( new ArrayList<AppointmentSlot>( ) );
             }
 
             listDays.add( day );
@@ -190,12 +191,12 @@ public class CalendarService
      */
     public List<AppointmentSlot> computeDaySlots( AppointmentDay day )
     {
-        if ( !day.getIsOpen(  ) )
+        if ( !day.getIsOpen( ) )
         {
-            return new ArrayList<AppointmentSlot>(  );
+            return new ArrayList<AppointmentSlot>( );
         }
 
-        return computeDaySlots( day, getDayOfWeek( day.getDate(  ) ) );
+        return computeDaySlots( day, getDayOfWeek( day.getDate( ) ) );
     }
 
     /**
@@ -206,34 +207,34 @@ public class CalendarService
      */
     public List<AppointmentSlot> computeDaySlots( AppointmentDay day, int nDayOfWeek )
     {
-        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( );
 
         // We compute the total number of minutes the service is opened this day
-        int nOpeningDuration = ( ( day.getClosingHour(  ) * 60 ) + day.getClosingMinutes(  ) ) -
-            ( ( day.getOpeningHour(  ) * 60 ) + day.getOpeningMinutes(  ) );
+        int nOpeningDuration = ( ( day.getClosingHour( ) * 60 ) + day.getClosingMinutes( ) )
+                - ( ( day.getOpeningHour( ) * 60 ) + day.getOpeningMinutes( ) );
 
         if ( nOpeningDuration > 0 )
         {
-            int nNbSlots = nOpeningDuration / day.getAppointmentDuration(  );
-            int nStartingHour = day.getOpeningHour(  );
-            int nStartingMinutes = day.getOpeningMinutes(  );
+            int nNbSlots = nOpeningDuration / day.getAppointmentDuration( );
+            int nStartingHour = day.getOpeningHour( );
+            int nStartingMinutes = day.getOpeningMinutes( );
 
             for ( int i = 0; i < nNbSlots; i++ )
             {
-                AppointmentSlot slot = new AppointmentSlot(  );
+                AppointmentSlot slot = new AppointmentSlot( );
                 slot.setStartingHour( nStartingHour );
                 slot.setStartingMinute( nStartingMinutes );
-                slot.setNbFreePlaces( day.getPeoplePerAppointment(  ) );
-                slot.setIdForm( day.getIdForm(  ) );
-                slot.setIdDay( day.getIdDay(  ) );
+                slot.setNbPlaces( day.getPeoplePerAppointment( ) );
+                slot.setIdForm( day.getIdForm( ) );
+                slot.setIdDay( day.getIdDay( ) );
                 slot.setDayOfWeek( nDayOfWeek );
                 // We compute the next starting minutes and hours
-                nStartingMinutes += day.getAppointmentDuration(  );
+                nStartingMinutes += day.getAppointmentDuration( );
                 nStartingHour += ( nStartingMinutes / CONSTANT_MINUTES_IN_HOUR );
                 nStartingMinutes = nStartingMinutes % CONSTANT_MINUTES_IN_HOUR;
                 slot.setEndingHour( nStartingHour );
                 slot.setEndingMinute( nStartingMinutes );
-                slot.setIsEnabled( day.getIsOpen(  ) );
+                slot.setIsEnabled( day.getIsOpen( ) );
 
                 listSlots.add( slot );
             }
@@ -254,9 +255,9 @@ public class CalendarService
      *         time is not included in the list.
      */
     public List<String> getListAppointmentTimes( int nAppointmentDuration, int nOpeningHour, int nOpeningMinutes,
-        int nClosingHour, int nClosingMinutes )
+            int nClosingHour, int nClosingMinutes )
     {
-        List<String> listTimes = new ArrayList<String>(  );
+        List<String> listTimes = new ArrayList<String>( );
         int nOpeningDuration = ( ( nClosingHour * 60 ) + nClosingMinutes ) - ( ( nOpeningHour * 60 ) + nOpeningMinutes );
         int nNbSlots = nOpeningDuration / nAppointmentDuration;
         int nStartingHour = nOpeningHour;
@@ -264,7 +265,7 @@ public class CalendarService
 
         for ( int i = 0; i < nNbSlots; i++ )
         {
-            StringBuilder sbTime = new StringBuilder(  );
+            StringBuilder sbTime = new StringBuilder( );
 
             if ( nStartingHour < 10 )
             {
@@ -280,7 +281,7 @@ public class CalendarService
             }
 
             sbTime.append( nStartingMinutes );
-            listTimes.add( sbTime.toString(  ) );
+            listTimes.add( sbTime.toString( ) );
             nStartingMinutes = nStartingMinutes + nAppointmentDuration;
             nStartingHour = nStartingHour + ( nStartingMinutes / CONSTANT_MINUTES_IN_HOUR );
             nStartingMinutes = nStartingMinutes % CONSTANT_MINUTES_IN_HOUR;
@@ -297,9 +298,9 @@ public class CalendarService
      */
     public AppointmentDay getAppointmentDayFromForm( AppointmentForm appointmentForm )
     {
-        return getAppointmentDayFromForm( appointmentForm, appointmentForm.getOpeningHour(  ),
-            appointmentForm.getOpeningMinutes(  ), appointmentForm.getClosingHour(  ),
-            appointmentForm.getClosingMinutes(  ) );
+        return getAppointmentDayFromForm( appointmentForm, appointmentForm.getOpeningHour( ),
+                appointmentForm.getOpeningMinutes( ), appointmentForm.getClosingHour( ),
+                appointmentForm.getClosingMinutes( ) );
     }
 
     /**
@@ -312,15 +313,15 @@ public class CalendarService
      * @return The day
      */
     private AppointmentDay getAppointmentDayFromForm( AppointmentForm form, int nOpeningHour, int nOpeningMinutes,
-        int nClosingHour, int nClosingMinutes )
+            int nClosingHour, int nClosingMinutes )
     {
-        AppointmentDay day = new AppointmentDay(  );
+        AppointmentDay day = new AppointmentDay( );
         day.setOpeningHour( nOpeningHour );
         day.setOpeningMinutes( nOpeningMinutes );
         day.setClosingHour( nClosingHour );
         day.setClosingMinutes( nClosingMinutes );
-        day.setAppointmentDuration( form.getDurationAppointments(  ) );
-        day.setPeoplePerAppointment( form.getPeoplePerAppointment(  ) );
+        day.setAppointmentDuration( form.getDurationAppointments( ) );
+        day.setPeoplePerAppointment( form.getPeoplePerAppointment( ) );
 
         return day;
     }

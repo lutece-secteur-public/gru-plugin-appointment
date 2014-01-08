@@ -35,8 +35,8 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
+import java.sql.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.constraints.Size;
 
@@ -54,31 +54,26 @@ public class Appointment
     public static final int STATUS_VALIDATED = 10;
     private int _nIdAppointment;
 
-    // @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
-    @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
-    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.FirstName.size}" ) 
-    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
+    @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.appointment.FirstName.size}" )
     private String _strFirstName;
 
-    // @NotEmpty( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
-    @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
-    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.LastName.size}" ) 
-    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
+    @NotEmpty( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.appointment.LastName.size}" )
     private String _strLastName;
 
-    // @NotEmpty( message = "#i18n{appointment.validation.appointment.Email.notEmpty}" )
-    @NotEmpty( message = "#i18n{portal.validation.message.notEmpty}" )
-    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.Email.size}" ) 
-    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
-    @Email( message = "#i18n{portal.validation.message.email}" )
+    @NotEmpty( message = "#i18n{appointment.validation.appointment.Email.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.appointment.Email.size}" )
+    @Email( message = "#i18n{appointment.validation.appointment.Email.email}" )
     private String _strEmail;
 
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strIdUser;
+    private Date _dateAppointment;
     private int _nIdSlot;
     private int _nStatus;
-    Map<Integer, List<Response>> _mapResponsesByIdEntry;
+    private List<Response> _listResponse;
 
     /**
      * Returns the IdAppointment
@@ -171,6 +166,24 @@ public class Appointment
     }
 
     /**
+     * Get the date of the appointment
+     * @return The date of the appointment
+     */
+    public Date getDateAppointment( )
+    {
+        return _dateAppointment;
+    }
+
+    /**
+     * Set the date of the appointment
+     * @param dateAppointment The date of the appointment
+     */
+    public void setDateAppointment( Date dateAppointment )
+    {
+        this._dateAppointment = dateAppointment;
+    }
+
+    /**
      * Get the id of the slot
      * @return The id of the slot
      */
@@ -207,24 +220,20 @@ public class Appointment
     }
 
     /**
-     * Get the map containing an association between entries of the form and the
-     * id of the associated entry
-     * @return The map containing an association between entries of the form and
-     *         the
-     *         id of the associated entry
+     * Get the list of response of this appointment
+     * @return the list of response of this appointment
      */
-    public Map<Integer, List<Response>> getMapResponsesByIdEntry( )
+    public List<Response> getlistResponse( )
     {
-        return _mapResponsesByIdEntry;
+        return _listResponse;
     }
 
     /**
-     * Set the map containing an association between entries of the form and the
-     * id of the associated entry
-     * @param mapResponsesByIdEntry The map
+     * Set the list of responses of this appointment
+     * @param listResponse The list of responses
      */
-    public void setMapResponsesByIdEntry( Map<Integer, List<Response>> mapResponsesByIdEntry )
+    public void setListResponse( List<Response> listResponse )
     {
-        this._mapResponsesByIdEntry = mapResponsesByIdEntry;
+        this._listResponse = listResponse;
     }
 }

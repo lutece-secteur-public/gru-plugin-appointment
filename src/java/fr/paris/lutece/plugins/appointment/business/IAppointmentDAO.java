@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -76,9 +77,34 @@ public interface IAppointmentDAO
     Appointment load( int nKey, Plugin plugin );
 
     /**
-     * Load the data of all the appointment objects and returns them as a collection
+     * Load the data of all the appointment objects and returns them as a
+     * collection
      * @param plugin the Plugin
-     * @return The collection which contains the data of all the appointment objects
+     * @return The collection which contains the data of all the appointment
+     *         objects
      */
     Collection<Appointment> selectAppointmentsList( Plugin plugin );
+
+    /**
+     * Associates a response to an appointment
+     * @param nIdAppointment The id of the appointment
+     * @param nIdResponse The id of the response
+     * @param plugin The plugin
+     */
+    void insertAppointmentResponse( int nIdAppointment, int nIdResponse, Plugin plugin );
+
+    /**
+     * Get the list of id of responses associated with an appointment
+     * @param nIdAppointment the id of the appointment
+     * @param plugin the plugin
+     * @return the list of response, or an empty list if no response was found
+     */
+    List<Integer> findListResponse( int nIdAppointment, Plugin plugin );
+
+    /**
+     * Remove the association between an appointment and responses
+     * @param nIdAppointment The id of the appointment
+     * @param plugin The plugin
+     */
+    void deleteAppointmentResponse( int nIdAppointment, Plugin plugin );
 }

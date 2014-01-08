@@ -34,11 +34,13 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -54,7 +56,7 @@ public final class AppointmentHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentHome(  )
+    private AppointmentHome( )
     {
     }
 
@@ -86,11 +88,17 @@ public final class AppointmentHome
     }
 
     /**
-     * Remove the appointment whose identifier is specified in parameter
+     * Remove the appointment whose identifier is specified in parameter, and
+     * removed any associated response
      * @param nAppointmentId The appointment Id
      */
     public static void remove( int nAppointmentId )
     {
+        for ( int nIdResponse : _dao.findListResponse( nAppointmentId, _plugin ) )
+        {
+            ResponseHome.remove( nIdResponse );
+        }
+        _dao.deleteAppointmentResponse( nAppointmentId, _plugin );
         _dao.delete( nAppointmentId, _plugin );
     }
 
@@ -114,8 +122,30 @@ public final class AppointmentHome
      * @return the collection which contains the data of all the appointment
      *         objects
      */
-    public static Collection<Appointment> getAppointmentsList(  )
+    public static Collection<Appointment> getAppointmentsList( )
     {
         return _dao.selectAppointmentsList( _plugin );
+    }
+
+    // Appointment response management
+
+    /**
+     * Associates a response to an appointment
+     * @param nIdAppointment The id of the appointment
+     * @param nIdResponse The id of the response
+     */
+    public static void insertAppointmentResponse( int nIdAppointment, int nIdResponse )
+    {
+        _dao.insertAppointmentResponse( nIdAppointment, nIdResponse, _plugin );
+    }
+
+    /**
+     * Get the list of id of responses associated with an appointment
+     * @param nIdAppointment the id of the appointment
+     * @return the list of response, or an empty list if no response was found
+     */
+    public static List<Integer> findListResponse( int nIdAppointment )
+    {
+        return _dao.findListResponse( nIdAppointment, _plugin );
     }
 }

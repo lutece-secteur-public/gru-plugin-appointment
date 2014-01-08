@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
-
 /**
  * Slot for an appointment in a day. The slot may have 3 states : free,
  * partially free or occupied.
@@ -44,6 +43,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
     private int _nIdForm;
     private int _nIdDay;
     private int _nDayOfWeek;
+    private int _nNbPlaces;
     private int _nNbFreePlaces;
     private int _nStartingHour;
     private int _nStartingMinute;
@@ -55,7 +55,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * Get the id of the slot
      * @return The id of the slot
      */
-    public int getIdSlot(  )
+    public int getIdSlot( )
     {
         return _nIdSlot;
     }
@@ -73,7 +73,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * Get the id of the form
      * @return The id of the form
      */
-    public int getIdForm(  )
+    public int getIdForm( )
     {
         return _nIdForm;
     }
@@ -92,7 +92,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * only with a form
      * @return The of the day
      */
-    public int getIdDay(  )
+    public int getIdDay( )
     {
         return _nIdDay;
     }
@@ -112,7 +112,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * @return The number of the day in the week. Returns 1 for Monday, 2 for
      *         Tuesday, ..., 7 for Sunday.
      */
-    public int getDayOfWeek(  )
+    public int getDayOfWeek( )
     {
         return _nDayOfWeek;
     }
@@ -128,10 +128,28 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
     }
 
     /**
+     * Get the number of places for this slot
+     * @return The number of places for this slot
+     */
+    public int getNbPlaces( )
+    {
+        return _nNbPlaces;
+    }
+
+    /**
+     * Set the number of places for this slot
+     * @param nNbPlaces The number of places for this slot
+     */
+    public void setNbPlaces( int nNbPlaces )
+    {
+        this._nNbPlaces = nNbPlaces;
+    }
+
+    /**
      * Get the number of free places for this slot
      * @return The number of free places for this slot
      */
-    public int getNbFreePlaces(  )
+    public int getNbFreePlaces( )
     {
         return _nNbFreePlaces;
     }
@@ -149,7 +167,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * Get the starting hour of this slot
      * @return The starting hour of this slot
      */
-    public int getStartingHour(  )
+    public int getStartingHour( )
     {
         return _nStartingHour;
     }
@@ -167,7 +185,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * Get the starting minute of this slot
      * @return The starting minute of this slot
      */
-    public int getStartingMinute(  )
+    public int getStartingMinute( )
     {
         return _nStartingMinute;
     }
@@ -185,7 +203,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * Get the ending hour of this slot
      * @return The ending hour of this slot
      */
-    public int getEndingHour(  )
+    public int getEndingHour( )
     {
         return _nEndingHour;
     }
@@ -203,7 +221,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * Get the ending minute of this slot
      * @return The ending minute of this slot
      */
-    public int getEndingMinute(  )
+    public int getEndingMinute( )
     {
         return _nEndingMinute;
     }
@@ -221,7 +239,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
      * Check if this slot is enabled for appointments or not
      * @return True if this slot is enabled, false otherwise
      */
-    public boolean getIsEnabled(  )
+    public boolean getIsEnabled( )
     {
         return _bIsEnabled;
     }
@@ -244,29 +262,29 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
     @Override
     public int compareTo( AppointmentSlot o )
     {
-        if ( getStartingHour(  ) != o.getStartingHour(  ) )
+        if ( getStartingHour( ) != o.getStartingHour( ) )
         {
-            return ( getStartingHour(  ) > o.getStartingHour(  ) ) ? 1 : ( -1 );
+            return ( getStartingHour( ) > o.getStartingHour( ) ) ? 1 : ( -1 );
         }
 
-        if ( getStartingMinute(  ) != o.getStartingMinute(  ) )
+        if ( getStartingMinute( ) != o.getStartingMinute( ) )
         {
-            return ( getStartingMinute(  ) > o.getStartingMinute(  ) ) ? 1 : ( -1 );
+            return ( getStartingMinute( ) > o.getStartingMinute( ) ) ? 1 : ( -1 );
         }
 
-        if ( getDayOfWeek(  ) != o.getDayOfWeek(  ) )
+        if ( getDayOfWeek( ) != o.getDayOfWeek( ) )
         {
-            return ( getDayOfWeek(  ) > o.getDayOfWeek(  ) ) ? 1 : ( -1 );
+            return ( getDayOfWeek( ) > o.getDayOfWeek( ) ) ? 1 : ( -1 );
         }
 
-        if ( getEndingHour(  ) != o.getEndingHour(  ) )
+        if ( getEndingHour( ) != o.getEndingHour( ) )
         {
-            return ( getEndingHour(  ) > o.getEndingHour(  ) ) ? 1 : ( -1 );
+            return ( getEndingHour( ) > o.getEndingHour( ) ) ? 1 : ( -1 );
         }
 
-        if ( getEndingMinute(  ) != o.getEndingMinute(  ) )
+        if ( getEndingMinute( ) != o.getEndingMinute( ) )
         {
-            return ( getEndingMinute(  ) > o.getEndingMinute(  ) ) ? 1 : ( -1 );
+            return ( getEndingMinute( ) > o.getEndingMinute( ) ) ? 1 : ( -1 );
         }
 
         return 0;

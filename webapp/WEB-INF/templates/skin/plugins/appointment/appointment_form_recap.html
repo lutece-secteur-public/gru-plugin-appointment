@@ -12,7 +12,25 @@
 						#i18n{appointment.appointmentApp.defaultTitle}
 					</#if>
 				</legend>
-				<#list formSubmit.listResponse as response>
+				<div class="control-group">
+					<label for="lastname" class="control-label">#i18n{appointment.appointmentApp.labelLastName}</label>
+					<div class="controls">
+						<input type="text" value="${appointment.lastName}" class="input-xxlarge" disabled>
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="firstname" class="control-label">#i18n{appointment.appointmentApp.labelFirstName}</label>
+					<div class="controls">
+						<input type="text" value="${appointment.firstName}" class="input-xxlarge" disabled>
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="email" class="control-label">#i18n{appointment.appointmentApp.labelEmail}</label>
+					<div class="controls">
+						<input type="text" value="${appointment.email}" class="input-xxlarge" disabled>
+					</div>
+				</div>
+				<#list appointment.listResponse as response>
 					<#if response.toStringValueResponse?has_content>
 					<div class="control-group">
 						<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
@@ -22,6 +40,29 @@
 					</div>
 					</#if>
 				</#list>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
+					<div class="controls">
+						<input type="text" value="${appointment.dateAppointment}" class="input-xxlarge" disabled>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.appointmentApp.labelTimeAppointment}</label>
+					<div class="controls">
+						<input type="text" value="<#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}" class="input-xxlarge" disabled>
+					</div>
+				</div>
+				<#if form.enableCaptcha && captcha??>
+					${captcha!}
+				</#if>
+				<div class="form-actions">
+					<button name="validate" class="btn btn-primary btn-small">
+						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
+					</button>
+					<button name="back" class="btn btn-small">
+						<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+					</button>
+				</div>
 			</fieldset>
 		</form>
 	</div>

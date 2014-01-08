@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import fr.paris.lutece.plugins.appointment.business.Appointment;
+import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -90,8 +91,8 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_APPOINTMENT = "appointment";
 
     // Session keys
-    private static final String SESSION_KEY_RESPONSES = "appointment.appointmentFormService.responses";
-    
+    private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
+    private static final String SESSION_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.validatedAppointment";
     // Templates
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
     private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
@@ -221,7 +222,7 @@ public class AppointmentFormService implements Serializable
 
         if ( request != null )
         {
-            Appointment appointment = getAppointmentFromSession( request.getSession( ) );
+            AppointmentDTO appointment = getAppointmentFromSession( request.getSession( ) );
 
             if ( appointment != null && appointment.getMapResponsesByIdEntry( ) != null )
             {
@@ -237,38 +238,30 @@ public class AppointmentFormService implements Serializable
     }
 
     /**
-     * Perform in the object formSubmit the responses associates with a entry
-     * specify in parameter.<br />
-     * Response creates are stored in session and can be get by calling the
-     * method {@link #getAppointmentFromSession(HttpSession)}
+     * Get the responses associated with an entry.<br />
+     * Return null if there is no error in the response, or return the list of
+     * errors
+     * Response created are stored the map of {@link AppointmentDTO}. The key of
+     * the map is this id of the entry, and the value the list of responses
      * @param request the request
      * @param nIdEntry the key of the entry
-     * @param bResponseNull true if the response created must be null
      * @param locale the locale
      * @param appointment The appointment
      * @return null if there is no error in the response or the list of errors
      *         found
      */
-    public List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry,
-            boolean bResponseNull, Locale locale, Appointment appointment )
+    public List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry, Locale locale,
+            AppointmentDTO appointment )
     {
         List<Response> listResponse = new ArrayList<Response>( );
-
-        if ( appointment.getMapResponsesByIdEntry( ) == null )
-        {
-            appointment.setMapResponsesByIdEntry( new HashMap<Integer, List<Response>>( ) );
-        }
-
         appointment.getMapResponsesByIdEntry( ).put( nIdEntry, listResponse );
-
-        return getResponseEntry( request, nIdEntry, listResponse, bResponseNull, locale, appointment );
+        return getResponseEntry( request, nIdEntry, listResponse, false, locale, appointment );
     }
 
     /**
-     * Perform in the object formSubmit the responses associates with a entry
-     * specify in parameter.<br />
-     * Return null if there is no error in the response else return a FormError
-     * Object
+     * Get the responses associated with an entry.<br />
+     * Return null if there is no error in the response, or return the list of
+     * errors
      * @param request the request
      * @param nIdEntry the key of the entry
      * @param listResponse The list of response to add responses found in
@@ -279,7 +272,7 @@ public class AppointmentFormService implements Serializable
      *         found
      */
     private List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry,
-            List<Response> listResponse, boolean bResponseNull, Locale locale, Appointment appointment )
+            List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentDTO appointment )
     {
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
@@ -394,20 +387,19 @@ public class AppointmentFormService implements Serializable
      * @param session The session
      * @param appointment The appointment to save
      */
-    public void saveAppointmentInSession( HttpSession session, Appointment appointment )
+    public void saveAppointmentInSession( HttpSession session, AppointmentDTO appointment )
     {
-        session.setAttribute( SESSION_KEY_RESPONSES, appointment );
+        session.setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointment );
     }
 
     /**
-     * Get responses saved in session
+     * Get the current appointment form from the session
      * @param session The session of the user
-     * @return A map containing lists of responses associated with the id of the
-     *         corresponding entry
+     * @return The appointment form
      */
-    public Appointment getAppointmentFromSession( HttpSession session )
+    public AppointmentDTO getAppointmentFromSession( HttpSession session )
     {
-        return (Appointment) session.getAttribute( SESSION_KEY_RESPONSES );
+        return (AppointmentDTO) session.getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
     }
 
     /**
@@ -416,6 +408,36 @@ public class AppointmentFormService implements Serializable
      */
     public void removeAppointmentFromSession( HttpSession session )
     {
-        session.removeAttribute( SESSION_KEY_RESPONSES );
+        session.removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
+    }
+
+    /**
+     * Save a validated appointment into the session of the user
+     * @param session The session
+     * @param appointment The appointment to save
+     */
+    public void saveValidatedAppointmentForm( HttpSession session, Appointment appointment )
+    {
+        removeAppointmentFromSession( session );
+        session.setAttribute( SESSION_VALIDATED_APPOINTMENT, appointment );
+    }
+
+    /**
+     * Get a validated appointment from the session
+     * @param session The session of the user
+     * @return The appointment
+     */
+    public Appointment getValidatedAppointmentFromSession( HttpSession session )
+    {
+        return (Appointment) session.getAttribute( SESSION_VALIDATED_APPOINTMENT );
+    }
+
+    /**
+     * Remove a validated appointment stored in the session of the user
+     * @param session The session
+     */
+    public void removeValidatedAppointmentFromSession( HttpSession session )
+    {
+        session.removeAttribute( SESSION_VALIDATED_APPOINTMENT );
     }
 }
