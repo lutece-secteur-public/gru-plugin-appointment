@@ -48,12 +48,15 @@ public final class AppointmentDAO implements IAppointmentDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_appointment ) FROM appointment_appointment";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_appointment, first_name, last_name, email, id_user, date_appointment, id_slot, status FROM appointment_appointment";
-    private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE id_appointment = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT app.id_appointment, app.first_name, app.last_name, app.email, app.id_user, app.date_appointment, app.id_slot, app.status FROM appointment_appointment app ";
+    private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE app.id_appointment = ?";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECTALL
+            + " INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot AND slot.id_form = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, date_appointment, id_slot, status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, date_appointment = ?, id_slot = ?, status = ? WHERE id_appointment = ?";
 
+    // SQL commands to manage appointment responses
     private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment, id_response) VALUES (?,?)";
     private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";
     private static final String SQL_QUERY_DELETE_APPOINTMENT_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_appointment = ?";
@@ -180,6 +183,27 @@ public final class AppointmentDAO implements IAppointmentDAO
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<Appointment> selectAppointmentsListByIdForm( int nIdForm, Plugin plugin )
+    {
+        Collection<Appointment> appointmentList = new ArrayList<Appointment>( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
+        daoUtil.setInt( 1, nIdForm );
+        daoUtil.executeQuery( );
+
+        while ( daoUtil.next( ) )
+        {
+            appointmentList.add( getAppointmentFormValues( daoUtil ) );
+        }
+
+        daoUtil.free( );
+
+        return appointmentList;
+    }
+
+    /**
      * {@inheritDoc }
      */
     @Override
@@ -198,15 +222,15 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public List<Integer> findListResponse( int nIdAppointment, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_APPOINTMENT_RESPONSE, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST, plugin );
         daoUtil.setInt( 1, nIdAppointment );
         daoUtil.executeQuery( );
         List<Integer> listIdResponse = new ArrayList<Integer>( );
-        while( daoUtil.next( ) )
+        while ( daoUtil.next( ) )
         {
             listIdResponse.add( daoUtil.getInt( 1 ) );
         }
-        
+
         daoUtil.free( );
         return listIdResponse;
     }

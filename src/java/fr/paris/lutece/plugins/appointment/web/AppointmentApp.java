@@ -92,11 +92,13 @@ public class AppointmentApp extends MVCApplication
     private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/plugins/appointment/appointment_form.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_CALENDAR = "/skin/plugins/appointment/appointment_form_calendar.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_RECAP = "/skin/plugins/appointment/appointment_form_recap.html";
+    private static final String TEMPLATE_APPOINTMENT_CREATED = "skin/plugins/appointment/appointment_created.html";
 
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
     private static final String VIEW_GET_FORM = "viewForm";
     private static final String VIEW_GET_APPOINTMENT_CALENDAR = "getAppointmentCalendar";
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
+    private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
 
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
@@ -439,7 +441,30 @@ public class AppointmentApp extends MVCApplication
             AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
         }
 
-        return null;
+        _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession( ) );
+
+        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
+    }
+
+    /**
+     * Get the page to notify the user that the appointment has been created
+     * @param request The request
+     * @return The XPage to display
+     */
+    @View( VIEW_GET_APPOINTMENT_CREATED )
+    public XPage getAppointmentCreated( HttpServletRequest request )
+    {
+
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            Map<String, Object> model = new HashMap<String, Object>( );
+            model.put( MARK_FORM, form );
+            return getXPage( TEMPLATE_APPOINTMENT_CREATED, getLocale( request ), model );
+        }
+        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
     /**
@@ -457,7 +482,7 @@ public class AppointmentApp extends MVCApplication
     }
 
     /**
-     * Convert an AppointmentDTO to an Appointment by transfering response from
+     * Convert an AppointmentDTO to an Appointment by transferring response from
      * the map of class AppointmentDTO to the list of class Appointment.
      * @param appointment
      */

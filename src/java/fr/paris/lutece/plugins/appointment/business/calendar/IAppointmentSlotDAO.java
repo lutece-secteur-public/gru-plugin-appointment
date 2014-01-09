@@ -159,5 +159,5 @@ public interface IAppointmentSlotDAO
      * @param plugin The plugin
      * @return the list of slots
      */
-    List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin _plugin );
+    List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin plugin );
 }

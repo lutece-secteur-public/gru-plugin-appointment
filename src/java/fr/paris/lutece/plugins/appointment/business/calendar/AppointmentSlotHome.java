@@ -127,6 +127,7 @@ public final class AppointmentSlotHome
     /**
      * Find a slot from its primary key
      * @param nIdSlot the id of the slot to remove
+     * @param date The date of the day of the slot
      * @return The appointment slot
      */
     public static AppointmentSlot findByPrimaryKeyWithFreePlaces( int nIdSlot, Date date )
@@ -154,18 +155,6 @@ public final class AppointmentSlotHome
     {
         return _dao.findByIdDay( nIdDay, _plugin );
     }
-
-    //    /**
-    //     * Change the enabling of slots associated with a given form and a given day
-    //     * of the week
-    //     * @param nIdForm The id of the form to update
-    //     * @param bEnable True to enable slots, false to disable them
-    //     * @param nDayOfWeek The day of the week of slots to update
-    //     */
-    //    public static void updateByIdFormAndDayOfWeek( int nIdForm, boolean bEnable, int nDayOfWeek )
-    //    {
-    //        _dao.updateByIdFormAndDayOfWeek( nIdForm, bEnable, nDayOfWeek, _plugin );
-    //    }
 
     /**
      * Get the list of slots associated with a given form for a given day of

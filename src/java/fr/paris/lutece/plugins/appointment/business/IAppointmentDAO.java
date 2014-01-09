@@ -86,6 +86,15 @@ public interface IAppointmentDAO
     Collection<Appointment> selectAppointmentsList( Plugin plugin );
 
     /**
+     * Load the data of appointment objects associated with a given form and
+     * returns them in a collection
+     * @param nIdForm the id of the form
+     * @param plugin the Plugin
+     * @return the collection which contains the data of appointment objects
+     */
+    Collection<Appointment> selectAppointmentsListByIdForm( int nIdForm, Plugin plugin );
+
+    /**
      * Associates a response to an appointment
      * @param nIdAppointment The id of the appointment
      * @param nIdResponse The id of the response

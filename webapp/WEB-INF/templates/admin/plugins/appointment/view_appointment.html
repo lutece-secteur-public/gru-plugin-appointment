@@ -1,0 +1,54 @@
+<div class="row-fluid" >
+    <div class="span12">
+	    <form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointments.jsp">
+	        <fieldset>
+	            <legend>#i18n{appointment.modify_appointment.pageTitle}</legend>
+	
+	            <@messages errors=errors />
+	
+	            <input type="hidden" id="id_appointment" name="id_appointment" value="${appointment.idAppointment}"/>
+	
+	            <div class="control-group">
+	                <label class="control-label" for="first_name" >#i18n{appointment.modify_appointment.labelFirstName} :</label>
+	                <div class="controls">
+	                    ${appointment.firstName}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="last_name" >#i18n{appointment.modify_appointment.labelLastName} :</label>
+	                <div class="controls">
+	                    ${appointment.lastName}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="email" >#i18n{appointment.modify_appointment.labelEmail} :</label>
+	                <div class="controls">
+	                    ${appointment.email}
+	                </div>
+	            </div>
+	            <div class="control-group">
+	                <label class="control-label" for="id_user" >#i18n{appointment.modify_appointment.labelIdUser} :</label>
+	                <div class="controls">
+	                    ${appointment.idUser}
+	                </div>
+	            </div>
+	            <div class="form-actions">   
+	                <button name="view_manageAppointments" class="btn btn-small" type="submit" title="#i18n{portal.util.labelBack}" >
+	                    <i class="icon-remove-circle btn-primary">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+	                </button>	
+	            </div>
+	            <#list appointment.listResponse as response>
+					<#if response.toStringValueResponse?has_content>
+					<div class="control-group">
+						<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+						<div class="controls">
+							<input type="text" value="${response.toStringValueResponse}" class="input-xxlarge" disabled>
+						</div>
+					</div>
+					</#if>
+				</#list>
+	        </fieldset>
+	    </form>
+    </div>  
+</div>
+

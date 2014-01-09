@@ -52,7 +52,7 @@
 						<input type="text" value="<#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}" class="input-xxlarge" disabled>
 					</div>
 				</div>
-				<#if form.enableCaptcha && captcha??>
+				<#if captcha??>
 					${captcha!}
 				</#if>
 				<div class="form-actions">

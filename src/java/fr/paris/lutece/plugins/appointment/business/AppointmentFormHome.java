@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -53,10 +54,12 @@ public final class AppointmentFormHome
     private static IAppointmentFormDAO _dao = SpringContextService.getBean( "appointment.appointmentFormDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
+    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance( );
+
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentFormHome(  )
+    private AppointmentFormHome( )
     {
     }
 
@@ -70,6 +73,8 @@ public final class AppointmentFormHome
     public static AppointmentForm create( AppointmentForm appointmentForm )
     {
         _dao.insert( appointmentForm, _plugin );
+        _cacheService.putInCache( AppointmentFormCacheService.getFormCacheKey( appointmentForm.getIdForm( ) ),
+                appointmentForm );
 
         return appointmentForm;
     }
@@ -83,7 +88,8 @@ public final class AppointmentFormHome
     public static AppointmentForm update( AppointmentForm appointmentForm )
     {
         _dao.store( appointmentForm, _plugin );
-
+        _cacheService.putInCache( AppointmentFormCacheService.getFormCacheKey( appointmentForm.getIdForm( ) ),
+                appointmentForm );
         return appointmentForm;
     }
 
@@ -109,7 +115,14 @@ public final class AppointmentFormHome
      */
     public static AppointmentForm findByPrimaryKey( int nKey )
     {
-        return _dao.load( nKey, _plugin );
+        String strCacheKey = AppointmentFormCacheService.getFormCacheKey( nKey );
+        AppointmentForm form = (AppointmentForm) _cacheService.getFromCache( strCacheKey );
+        if ( form == null )
+        {
+            form = _dao.load( nKey, _plugin );
+            _cacheService.putInCache( strCacheKey, form );
+        }
+        return form;
     }
 
     /**
@@ -118,7 +131,7 @@ public final class AppointmentFormHome
      * @return the collection which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getAppointmentFormsList(  )
+    public static Collection<AppointmentForm> getAppointmentFormsList( )
     {
         return _dao.selectAppointmentFormsList( _plugin );
     }
@@ -129,7 +142,7 @@ public final class AppointmentFormHome
      * @return the collection which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getActiveAppointmentFormsList(  )
+    public static Collection<AppointmentForm> getActiveAppointmentFormsList( )
     {
         return _dao.selectActiveAppointmentFormsList( _plugin );
     }

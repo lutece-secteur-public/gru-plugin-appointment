@@ -34,6 +34,12 @@
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
 							<i class="icon-edit icon-white">&nbsp;</i>
 						</a>
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">
+							<i class="fa fa-keybord-o">&nbsp;</i>
+						</a>
+						<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelManageAppointments}">
+							<i class="icon-list icon-white">&nbsp;</i>
+						</a>
 						<#if appointmentform.isActive>
 							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-small" title="#i18n{appointment.manage_appointmentforms.labelDisable}">
 								<i class="icon-stop icon-white">&nbsp;</i>

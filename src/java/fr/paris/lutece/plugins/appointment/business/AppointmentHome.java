@@ -127,6 +127,17 @@ public final class AppointmentHome
         return _dao.selectAppointmentsList( _plugin );
     }
 
+    /**
+     * Load the data of appointment objects associated with a given form and
+     * returns them in a collection
+     * @param nIdForm the id of the form
+     * @return the collection which contains the data of appointment objects
+     */
+    public static Collection<Appointment> getAppointmentsListByIdForm( int nIdForm )
+    {
+        return _dao.selectAppointmentsListByIdForm( nIdForm, _plugin );
+    }
+
     // Appointment response management
 
     /**
