@@ -39,6 +39,8 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
+import java.sql.Date;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -56,7 +58,7 @@ public final class AppointmentHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentHome( )
+    private AppointmentHome(  )
     {
     }
 
@@ -98,6 +100,7 @@ public final class AppointmentHome
         {
             ResponseHome.remove( nIdResponse );
         }
+
         _dao.deleteAppointmentResponse( nAppointmentId, _plugin );
         _dao.delete( nAppointmentId, _plugin );
     }
@@ -122,7 +125,7 @@ public final class AppointmentHome
      * @return the collection which contains the data of all the appointment
      *         objects
      */
-    public static Collection<Appointment> getAppointmentsList( )
+    public static Collection<Appointment> getAppointmentsList(  )
     {
         return _dao.selectAppointmentsList( _plugin );
     }
@@ -158,5 +161,17 @@ public final class AppointmentHome
     public static List<Integer> findListResponse( int nIdAppointment )
     {
         return _dao.findListResponse( nIdAppointment, _plugin );
+    }
+
+    /**
+     * Get the number of appointments associated with a given form and with a
+     * date after a given date
+     * @param nIdForm The id of the form
+     * @param date The minimum date of appointments to consider
+     * @return The number of appointments associated with the form
+     */
+    public static int countAppointmentsByIdForm( int nIdForm, Date date )
+    {
+        return _dao.countAppointmentsByIdForm( nIdForm, date, _plugin );
     }
 }

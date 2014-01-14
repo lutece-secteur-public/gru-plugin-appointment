@@ -35,13 +35,14 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.sql.Date;
+
 import java.util.List;
 
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -53,15 +54,12 @@ public class Appointment
     public static final int STATUS_NOT_VALIDATED = 0;
     public static final int STATUS_VALIDATED = 10;
     private int _nIdAppointment;
-
     @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.FirstName.size}" )
     private String _strFirstName;
-
     @NotEmpty( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.LastName.size}" )
     private String _strLastName;
-
     @NotEmpty( message = "#i18n{appointment.validation.appointment.Email.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.Email.size}" )
     @Email( message = "#i18n{appointment.validation.appointment.Email.email}" )
@@ -79,7 +77,7 @@ public class Appointment
      * Returns the IdAppointment
      * @return The IdAppointment
      */
-    public int getIdAppointment( )
+    public int getIdAppointment(  )
     {
         return _nIdAppointment;
     }
@@ -97,7 +95,7 @@ public class Appointment
      * Returns the FirstName
      * @return The FirstName
      */
-    public String getFirstName( )
+    public String getFirstName(  )
     {
         return _strFirstName;
     }
@@ -115,7 +113,7 @@ public class Appointment
      * Returns the LastName
      * @return The LastName
      */
-    public String getLastName( )
+    public String getLastName(  )
     {
         return _strLastName;
     }
@@ -133,7 +131,7 @@ public class Appointment
      * Returns the Email
      * @return The Email
      */
-    public String getEmail( )
+    public String getEmail(  )
     {
         return _strEmail;
     }
@@ -151,7 +149,7 @@ public class Appointment
      * Returns the IdUser
      * @return The IdUser
      */
-    public String getIdUser( )
+    public String getIdUser(  )
     {
         return _strIdUser;
     }
@@ -169,7 +167,7 @@ public class Appointment
      * Get the date of the appointment
      * @return The date of the appointment
      */
-    public Date getDateAppointment( )
+    public Date getDateAppointment(  )
     {
         return _dateAppointment;
     }
@@ -187,7 +185,7 @@ public class Appointment
      * Get the id of the slot
      * @return The id of the slot
      */
-    public int getIdSlot( )
+    public int getIdSlot(  )
     {
         return _nIdSlot;
     }
@@ -205,7 +203,7 @@ public class Appointment
      * Get the status of the appointment
      * @return The status of the appointment
      */
-    public int getStatus( )
+    public int getStatus(  )
     {
         return _nStatus;
     }
@@ -223,7 +221,7 @@ public class Appointment
      * Get the list of response of this appointment
      * @return the list of response of this appointment
      */
-    public List<Response> getlistResponse( )
+    public List<Response> getlistResponse(  )
     {
         return _listResponse;
     }

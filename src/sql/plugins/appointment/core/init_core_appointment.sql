@@ -11,4 +11,3 @@ INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is
 --
 DELETE FROM core_user_right WHERE id_right = 'APPOINTMENT_FORM_MANAGEMENT';
 INSERT INTO core_user_right (id_right,id_user) VALUES ('APPOINTMENT_FORM_MANAGEMENT',1);
-

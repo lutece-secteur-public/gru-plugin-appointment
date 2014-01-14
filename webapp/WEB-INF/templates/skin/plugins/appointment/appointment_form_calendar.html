@@ -1,13 +1,33 @@
 <div class="row-fluid">
 	<div class="span12">
+		<legend><#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>${formMessages.calendarTitle}<#else>#i18n{appointment.appointmentApp.calendar.pageTitle}</#if></legend>
 		<@messages infos=infos />
+		<#if nb_week &gt; 0>
+			<div class="pull-left">
+				<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
+					<i class="icon-arrow-left icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
+				</a>
+			</div>
+		</#if>
+		<#if nb_week &lt; form.nbWeeksToDisplay - 1>
+			<div class="pull-right">
+				<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
+					#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="icon-arrow-right icon-white">&nbsp;</i>
+				</a>
+			</div>
+		</#if>
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span12">
 		<div class="hidden-phone">
-			<table class="table">
+			<table class="table appointment-table-container">
 				<tr>
 					<td>
-						<table class="table table-stripped appointment-inner-table">
+						<table class="table appointment-inner-table">
 							<tr>
 								<td>
+									<br />
 									<#if nb_week &gt; 0>
 										<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week - 1}">
 											<i class="icon-arrow-left">&nbsp;</i>
@@ -34,6 +54,7 @@
 							<table class="table table-stripped appointment-inner-table">
 								<tr>
 									<th>
+										#i18n{${list_days_of_week[day_index]}}<br />
 										${day.date}
 									</th>
 								</tr>
@@ -96,22 +117,15 @@
 			<#list listDays as day>
 				<#if day.isOpen>
 					<div class="span1">
-						<table class="table table-stripped appointment-inner-table">
+						<table class="table appointment-inner-table">
 							<tr>
 								<th>
-									<#if nb_week &gt; 0>
-										<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week - 1}">
-											<i class="icon-arrow-left">&nbsp;</i>
-										</a>
-									</#if>
-									<#if nb_week &lt; form.nbWeeksToDisplay>
-										<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}">
-											<i class="icon-arrow-right">&nbsp;</i>
-										</a>
-									</#if>
 								</th>
 								<th>
-									${day.date}
+									<center>
+										#i18n{${list_days_of_week[day_index]}}
+										${day.date}
+									</center>
 								</th>
 							</tr>
 							<#list day.listSlots as slot>

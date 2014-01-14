@@ -46,13 +46,13 @@ import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -95,10 +95,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENT = "appointment.message.confirmRemoveAppointment";
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
+
     //    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointment.attribute.";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTS = "manageAppointments";
+
     //    private static final String VIEW_CREATE_APPOINTMENT = "createAppointment";
     //    private static final String VIEW_MODIFY_APPOINTMENT = "modifyAppointment";
     private static final String VIEW_VIEW_APPOINTMENT = "viewAppointment";
@@ -128,7 +130,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     /**
      * Default constructor
      */
-    public AppointmentJspBean( )
+    public AppointmentJspBean(  )
     {
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 );
     }
@@ -142,45 +144,46 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String getManageAppointments( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
             String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
-                    (String) request.getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
+                    (String) request.getSession(  ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
 
             if ( strCurrentPageIndex == null )
             {
                 strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
             }
 
-            request.getSession( ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
+            request.getSession(  ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
 
             int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
-                    getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
-            request.getSession( ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
+                    getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
+            request.getSession(  ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
 
-            request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
+            request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
 
             UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
-            String strUrl = url.getUrl( );
+            String strUrl = url.getUrl(  );
 
             // TODO : load only items of the current page
-            List<Appointment> listAppointments = (List<Appointment>) AppointmentHome
-                    .getAppointmentsListByIdForm( nIdForm );
+            List<Appointment> listAppointments = (List<Appointment>) AppointmentHome.getAppointmentsListByIdForm( nIdForm );
 
             // PAGINATOR
             LocalizedPaginator<Appointment> paginator = new LocalizedPaginator<Appointment>( listAppointments,
-                    nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
+                    nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
 
-            Map<String, Object> model = getModel( );
+            Map<String, Object> model = getModel(  );
 
             model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
             model.put( MARK_PAGINATOR, paginator );
-            model.put( MARK_APPOINTMENT_LIST, paginator.getPageItems( ) );
+            model.put( MARK_APPOINTMENT_LIST, paginator.getPageItems(  ) );
 
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS, TEMPLATE_MANAGE_APPOINTMENTS, model );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -245,7 +248,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         url.addParameter( PARAMETER_ID_APPOINTMENT, nId );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_APPOINTMENT,
-                url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+                url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
 
         return redirect( request, strMessageUrl );
     }
@@ -260,7 +263,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
         AppointmentHome.remove( nId );
-        addInfo( INFO_APPOINTMENT_REMOVED, getLocale( ) );
+        addInfo( INFO_APPOINTMENT_REMOVED, getLocale(  ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTS );
     }
@@ -322,9 +325,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
         Appointment appointment = AppointmentHome.findByPrimaryKey( nId );
-        request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
+        request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT, appointment );
 
-        Map<String, Object> model = getModel( );
+        Map<String, Object> model = getModel(  );
         model.put( MARK_APPOINTMENT, appointment );
 
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );

@@ -66,25 +66,39 @@ import javax.servlet.http.HttpServletRequest;
 public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = -1505164256619633838L;
+
+    // Properties
     private static final String PROPERTY_CREATE_FIELD_TITLE = "appointment.createField.title";
     private static final String PROPERTY_MODIFY_FIELD_TITLE = "appointment.modifyField.title";
+
+    // Urls
     private static final String JSP_URL_MANAGE_APPOINTMENT_FORM_FIELDS = "jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp";
+
+    // Marks
     private static final String MARK_FIELD = "field";
     private static final String MARK_ENTRY_LIST = "entry_list";
     private static final String MARK_ENTRY_TYPE_LIST = "entry_type_list";
+
+    // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_FIELD = "appointment.message.confirmRemoveField";
     private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
     private static final String MESSAGE_FIELD_VALUE_FIELD = "directory.message.field_value_field";
+
+    // Views
     private static final String VIEW_GET_CREATE_FIELD = "getCreateField";
     private static final String VIEW_GET_MODIFY_FIELD = "getModifyField";
     private static final String VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS = "getModifyFieldCC";
     private static final String VIEW_GET_CONFIRM_REMOVE_FIELD = "getConfirmRemoveField";
+
+    // Actions
     private static final String ACTION_DO_CREATE_FIELD = "doCreateField";
     private static final String ACTION_DO_MODIFY_FIELD = "doModifyField";
     private static final String ACTION_DO_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS = "doModifyFieldCC";
     private static final String ACTION_DO_MOVE_FIELD_UP = "doMoveFieldUp";
     private static final String ACTION_DO_MOVE_FIELD_DOWN = "doMoveFieldDown";
     private static final String ACTION_DO_REMOVE_FIELD = "doRemoveField";
+
+    // Parameters
     private static final String PARAMETER_ID_ENTRY = "id_entry";
     private static final String PARAMETER_ID_FIELD = "id_field";
     private static final String PARAMETER_CANCEL = "cancel";
@@ -96,6 +110,8 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     private static final String PARAMETER_COMMENT = "comment";
     private static final String FIELD_TITLE_FIELD = "form.createField.labelTitle";
     private static final String FIELD_VALUE_FIELD = "directory.create_field.label_value";
+
+    // Templates
     private static final String TEMPLATE_CREATE_FIELD = "admin/plugins/appointment/create_field.html";
     private static final String TEMPLATE_MODIFY_FIELD_WITH_CONDITIONAL_QUESTION = "admin/plugins/appointment/modify_field_with_conditional_question.html";
     private static final String TEMPLATE_MODIFY_FIELD = "admin/plugins/appointment/modify_field.html";

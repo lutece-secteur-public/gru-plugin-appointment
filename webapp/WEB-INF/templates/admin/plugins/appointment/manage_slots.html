@@ -71,11 +71,13 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="form-actions">
-				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
-					<i class="icon-remove-circle icon-white">&nbsp;</i>#i18n{portal.util.labelBack}
-				</a>
-			</div>
+			<#if day??>
+				<div class="form-actions">
+					<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
+						<i class="icon-remove-circle icon-white">&nbsp;</i>#i18n{portal.util.labelBack}
+					</a>
+				</div>
+			</#if>
     	</fieldset>
     </div>
 </div>

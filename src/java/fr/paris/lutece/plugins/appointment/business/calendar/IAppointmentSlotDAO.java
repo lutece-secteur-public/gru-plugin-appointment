@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -89,6 +90,21 @@ public interface IAppointmentSlotDAO
     void deleteByIdForm( int nIdForm, Plugin plugin );
 
     /**
+     * Delete every slots associated with a given form and a given day of week
+     * @param nIdForm The id of the form
+     * @param nDayOfWeek The day of the week
+     * @param plugin The plugin
+     */
+    void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin );
+
+    /**
+     * Delete every slots that are associated with a day before a given day.
+     * @param dateMonday The date of the day to remove slots
+     * @param plugin The plugin
+     */
+    void deleteOldSlots( Date dateMonday, Plugin plugin );
+
+    /**
      * Find a slot from its primary key
      * @param nIdSlot the id of the slot to remove
      * @param plugin The plugin
@@ -132,14 +148,6 @@ public interface IAppointmentSlotDAO
      * @return the list of slots
      */
     List<AppointmentSlot> findByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin );
-
-    /**
-     * Delete every slots associated with a given form and a given day of week
-     * @param nIdForm The id of the form
-     * @param nDayOfWeek The day of the week
-     * @param plugin The plugin
-     */
-    void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek, Plugin plugin );
 
     /**
      * Get the list of slots associated with a given day, and compute for each

@@ -1,0 +1,78 @@
+<#include "/admin/util/editor/editor.html" />
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
+			<div class="control-group">
+				<label class="control-label" for="calendarTitle">#i18n{appointment.modify_appointmentform_messages.labelCalendarTitle}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="calendarTitle" value="${formMessage.calendarTitle}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fieldFirstNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameTitle}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="fieldFirstNameTitle" value="${formMessage.fieldFirstNameTitle}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fieldFirstNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameHelp}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="fieldFirstNameHelp" value="${formMessage.fieldFirstNameHelp}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fieldLastNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameTitle}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="fieldLastNameTitle" value="${formMessage.fieldLastNameTitle}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fieldLastNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameHelp}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="fieldLastNameHelp" value="${formMessage.fieldLastNameHelp}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fieldEmailTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailTitle}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="fieldEmailTitle" value="${formMessage.fieldEmailTitle}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="fieldEmailHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailHelp}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="fieldEmailHelp" value="${formMessage.fieldEmailHelp}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="textAppointmentCreated">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCreated}</label>
+				<div class="controls">
+					<textarea class="richtext" name="textAppointmentCreated" >${formMessage.textAppointmentCreated}</textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="urlRedirectAfterCreation">#i18n{appointment.modify_appointmentform_messages.labelUrlRedirectAfterCreation}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="urlRedirectAfterCreation" value="${formMessage.urlRedirectAfterCreation}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="labelButtonRedirection">#i18n{appointment.modify_appointmentform_messages.labelLabelButtonRedirection}</label>
+				<div class="controls">
+					<input type="text" maxlength="255" name="labelButtonRedirection" value="${formMessage.labelButtonRedirection}" />
+				</div>
+			</div>
+			<div class="form-actions">
+				<input type="hidden" name="action" value="doModifyAppointmentFormMessages" />
+				<input type="hidden" name="id_form" value="${formMessage.idForm}" />
+				<button class="btn btn-primary btn-small" name="apply" value="apply" title="#i18n{portal.util.labelModify}">
+					<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
+				</button>
+				<button class="btn btn-small" name="back" value="back" title="#i18n{portal.util.labelBack}">
+					<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+<@initEditor />

@@ -4,10 +4,18 @@
 	height: 20px;
 	text-align: center;
 	vertical-align: middle;
+	border: none;
+}
+
+.appointment-inner-table:first-child {
+	border: none;
+}
+
+.appointment-inner-table tr {
+	border: 1px solid #DDDDDD;
 }
 
 .appointment-slot-avaiable {
-	background-color: #b3d16e;
 }
 
 .appointment-slot-full {
@@ -19,42 +27,56 @@
 	background-color: #bebebe;
 }
 
+.appointment-table-container td {
+	border-top: medium none;
+}
+
 td.appointment-row1 {
+	text-align: center;
 	height: 20px;
 }
 
 td.appointment-row2 {
+	text-align: center;
 	height: 57px;
 }
 
 td.appointment-row3 {
+	text-align: center;
 	height: 94px;
 }
 
 td.appointment-row4 {
+	text-align: center;
 	height: 131px;
 }
 
 td.appointment-row5 {
+	text-align: center;
 	height: 168px;
 }
 
 td.appointment-row6 {
+	text-align: center;
 	height: 205px;
 }
 
 td.appointment-row7 {
+	text-align: center;
 	height: 242px;
 }
 
 td.appointment-row8 {
+	text-align: center;
 	height: 279px;
 }
 
 td.appointment-row9 {
+	text-align: center;
 	height: 316px;
 }
 
 td.appointment-row10 {
+	text-align: center;
 	height: 353px;
 }

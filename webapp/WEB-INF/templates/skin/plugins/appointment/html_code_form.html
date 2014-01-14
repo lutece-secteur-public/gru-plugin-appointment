@@ -19,21 +19,30 @@
 				<br />
 				<br />
 				<div class="control-group">
-					<label for="lastname" class="control-label">#i18n{appointment.appointmentApp.labelLastName}</label>
+					<label for="lastname" class="control-label">${form_messages.fieldLastNameTitle!}</label>
 					<div class="controls">
 						<input type="text" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
+						<#if form_messages.fieldLastNameHelp?? && form_messages.fieldLastNameHelp != ''>
+							<span class="help-block">${form_messages.fieldLastNameHelp}</span>
+						</#if>
 					</div>
 				</div>
 				<div class="control-group">
-					<label for="firstname" class="control-label">#i18n{appointment.appointmentApp.labelFirstName}</label>
+					<label for="firstname" class="control-label">${form_messages.fieldFirstNameTitle!}</label>
 					<div class="controls">
 						<input type="text" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
+						<#if form_messages.fieldFirstNameHelp?? && form_messages.fieldFirstNameHelp != ''>
+							<span class="help-block">${form_messages.fieldFirstNameHelp}</span>
+						</#if>
 					</div>
 				</div>
 				<div class="control-group">
-					<label for="email" class="control-label">#i18n{appointment.appointmentApp.labelEmail}</label>
+					<label for="email" class="control-label">${form_messages.fieldEmailTitle!}</label>
 					<div class="controls">
 						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
+						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
+							<span class="help-block">${form_messages.fieldEmailHelp}</span>
+						</#if>
 					</div>
 				</div>
 				${str_entry}

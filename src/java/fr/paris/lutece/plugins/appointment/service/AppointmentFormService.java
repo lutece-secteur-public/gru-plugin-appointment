@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.service;
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -50,11 +51,15 @@ import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +90,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_FIELD = "field";
     private static final String MARK_STR_LIST_CHILDREN = "str_list_entry_children";
     private static final String MARK_FORM = "form";
+    private static final String MARK_FORM_MESSAGES = "form_messages";
     private static final String MARK_STR_ENTRY = "str_entry";
     private static final String MARK_USER = "user";
     private static final String MARK_LIST_RESPONSES = "list_responses";
@@ -93,25 +99,40 @@ public class AppointmentFormService implements Serializable
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
     private static final String SESSION_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.validatedAppointment";
+
     // Templates
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
     private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
 
+    // Properties
+    private static final String PROPERTY_DEFAULT_CALENDAR_TITLE = "appointment.formMessages.defaultCalendarTitle";
+    private static final String PROPERTY_DEFAULT_FIELD_FIRST_NAME_TITLE = "appointment.formMessages.defaultFieldFirstNameTitle";
+    private static final String PROPERTY_DEFAULT_FIELD_FIRST_NAME_HELP = "appointment.formMessages.defaultFieldFirstNameHelp";
+    private static final String PROPERTY_DEFAULT_FIELD_LAST_NAME_TITLE = "appointment.formMessages.defaultFieldLastNameTitle";
+    private static final String PROPERTY_DEFAULT_FIELD_LAST_NAME_HELP = "appointment.formMessages.defaultFieldLastNameHelp";
+    private static final String PROPERTY_DEFAULT_FIELD_EMAIL_TITLE = "appointment.formMessages.defaultFieldEmailTitle";
+    private static final String PROPERTY_DEFAULT_FIELD_EMAIL_HELP = "appointment.formMessages.defaultFieldEmailHelp";
+    private static final String PROPERTY_DEFAULT_URL_REDIRECTION = "appointment.formMessages.defaultUrlRedirection";
+    private static final String PROPERTY_DEFAULT_LABEL_BUTTON_REDIRECT = "appointment.formMessages.defaultLabelButtonRedirect";
+    private static final String PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED = "appointment.formMessages.defaultTextAppointmentCreated";
+
     /**
      * Return the HTML code of the form
      * @param form the form which HTML code must be return
+     * @param formMessages The form messages associated with the form
      * @param locale the locale
      * @param bDisplayFront True if the entry will be displayed in Front Office,
      *            false if it will be displayed in Back Office.
      * @param request HttpServletRequest
      * @return the HTML code of the form
      */
-    public String getHtmlForm( AppointmentForm form, Locale locale, boolean bDisplayFront, HttpServletRequest request )
+    public String getHtmlForm( AppointmentForm form, AppointmentFormMessages formMessages, Locale locale,
+        boolean bDisplayFront, HttpServletRequest request )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
-        StringBuffer strBuffer = new StringBuffer( );
-        EntryFilter filter = new EntryFilter( );
-        filter.setIdResource( form.getIdForm( ) );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        StringBuffer strBuffer = new StringBuffer(  );
+        EntryFilter filter = new EntryFilter(  );
+        filter.setIdResource( form.getIdForm(  ) );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
@@ -120,17 +141,18 @@ public class AppointmentFormService implements Serializable
 
         for ( Entry entry : listEntryFirstLevel )
         {
-            getHtmlEntry( entry.getIdEntry( ), strBuffer, locale, bDisplayFront, request );
+            getHtmlEntry( entry.getIdEntry(  ), strBuffer, locale, bDisplayFront, request );
         }
 
         model.put( MARK_FORM, form );
-        model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
+        model.put( MARK_FORM_MESSAGES, formMessages );
+        model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
         model.put( MARK_LOCALE, locale );
-        model.put( MARK_APPOINTMENT, getAppointmentFromSession( request.getSession( ) ) );
+        model.put( MARK_APPOINTMENT, getAppointmentFromSession( request.getSession(  ) ) );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
 
-        return template.getHtml( );
+        return template.getHtml(  );
     }
 
     /**
@@ -144,73 +166,73 @@ public class AppointmentFormService implements Serializable
      * @param request HttpServletRequest
      */
     public void getHtmlEntry( int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
-            HttpServletRequest request )
+        HttpServletRequest request )
     {
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
-        if ( entry.getEntryType( ).getGroup( ) )
+        if ( entry.getEntryType(  ).getGroup(  ) )
         {
-            StringBuffer strGroupStringBuffer = new StringBuffer( );
+            StringBuffer strGroupStringBuffer = new StringBuffer(  );
 
-            for ( Entry entryChild : entry.getChildren( ) )
+            for ( Entry entryChild : entry.getChildren(  ) )
             {
-                getHtmlEntry( entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );
+                getHtmlEntry( entryChild.getIdEntry(  ), strGroupStringBuffer, locale, bDisplayFront, request );
             }
 
-            model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
+            model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString(  ) );
         }
         else
         {
-            if ( entry.getNumberConditionalQuestion( ) != 0 )
+            if ( entry.getNumberConditionalQuestion(  ) != 0 )
             {
-                for ( Field field : entry.getFields( ) )
+                for ( Field field : entry.getFields(  ) )
                 {
-                    field.setConditionalQuestions( FieldHome.findByPrimaryKey( field.getIdField( ) )
-                            .getConditionalQuestions( ) );
+                    field.setConditionalQuestions( FieldHome.findByPrimaryKey( field.getIdField(  ) )
+                                                            .getConditionalQuestions(  ) );
                 }
             }
         }
 
-        if ( entry.getNumberConditionalQuestion( ) != 0 )
+        if ( entry.getNumberConditionalQuestion(  ) != 0 )
         {
-            strConditionalQuestionStringBuffer = new StringBuffer( );
+            strConditionalQuestionStringBuffer = new StringBuffer(  );
 
-            for ( Field field : entry.getFields( ) )
+            for ( Field field : entry.getFields(  ) )
             {
-                if ( field.getConditionalQuestions( ).size( ) != 0 )
+                if ( field.getConditionalQuestions(  ).size(  ) != 0 )
                 {
-                    StringBuffer strGroupStringBuffer = new StringBuffer( );
+                    StringBuffer strGroupStringBuffer = new StringBuffer(  );
 
-                    for ( Entry entryConditional : field.getConditionalQuestions( ) )
+                    for ( Entry entryConditional : field.getConditionalQuestions(  ) )
                     {
-                        getHtmlEntry( entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront,
-                                request );
+                        getHtmlEntry( entryConditional.getIdEntry(  ), strGroupStringBuffer, locale, bDisplayFront,
+                            request );
                     }
 
-                    model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
+                    model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString(  ) );
                     model.put( MARK_FIELD, field );
                     template = AppTemplateService.getTemplate( TEMPLATE_DIV_CONDITIONAL_ENTRY, locale, model );
-                    strConditionalQuestionStringBuffer.append( template.getHtml( ) );
+                    strConditionalQuestionStringBuffer.append( template.getHtml(  ) );
                 }
             }
 
-            model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString( ) );
+            model.put( MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString(  ) );
         }
 
         model.put( MARK_ENTRY, entry );
         model.put( MARK_LOCALE, locale );
 
-        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+        LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
 
-        if ( ( user == null ) && SecurityService.isAuthenticationEnable( )
-                && SecurityService.getInstance( ).isExternalAuthentication( ) )
+        if ( ( user == null ) && SecurityService.isAuthenticationEnable(  ) &&
+                SecurityService.getInstance(  ).isExternalAuthentication(  ) )
         {
             try
             {
-                user = SecurityService.getInstance( ).getRemoteUser( request );
+                user = SecurityService.getInstance(  ).getRemoteUser( request );
             }
             catch ( UserNotSignedException e )
             {
@@ -222,19 +244,19 @@ public class AppointmentFormService implements Serializable
 
         if ( request != null )
         {
-            AppointmentDTO appointment = getAppointmentFromSession( request.getSession( ) );
+            AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
 
-            if ( appointment != null && appointment.getMapResponsesByIdEntry( ) != null )
+            if ( ( appointment != null ) && ( appointment.getMapResponsesByIdEntry(  ) != null ) )
             {
-                List<Response> listResponses = appointment.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
+                List<Response> listResponses = appointment.getMapResponsesByIdEntry(  ).get( entry.getIdEntry(  ) );
                 model.put( MARK_LIST_RESPONSES, listResponses );
             }
         }
 
-        template = AppTemplateService
-                .getTemplate( EntryTypeServiceManager.getEntryTypeService( entry ).getHtmlCode( entry, bDisplayFront ),
-                        locale, model );
-        stringBuffer.append( template.getHtml( ) );
+        template = AppTemplateService.getTemplate( EntryTypeServiceManager.getEntryTypeService( entry )
+                                                                          .getHtmlCode( entry, bDisplayFront ), locale,
+                model );
+        stringBuffer.append( template.getHtml(  ) );
     }
 
     /**
@@ -251,10 +273,11 @@ public class AppointmentFormService implements Serializable
      *         found
      */
     public List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry, Locale locale,
-            AppointmentDTO appointment )
+        AppointmentDTO appointment )
     {
-        List<Response> listResponse = new ArrayList<Response>( );
-        appointment.getMapResponsesByIdEntry( ).put( nIdEntry, listResponse );
+        List<Response> listResponse = new ArrayList<Response>(  );
+        appointment.getMapResponsesByIdEntry(  ).put( nIdEntry, listResponse );
+
         return getResponseEntry( request, nIdEntry, listResponse, false, locale, appointment );
     }
 
@@ -272,40 +295,40 @@ public class AppointmentFormService implements Serializable
      *         found
      */
     private List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry,
-            List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentDTO appointment )
+        List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentDTO appointment )
     {
-        List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
+        List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>(  );
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
-        List<Field> listField = new ArrayList<Field>( );
+        List<Field> listField = new ArrayList<Field>(  );
 
-        for ( Field field : entry.getFields( ) )
+        for ( Field field : entry.getFields(  ) )
         {
-            field = FieldHome.findByPrimaryKey( field.getIdField( ) );
+            field = FieldHome.findByPrimaryKey( field.getIdField(  ) );
             listField.add( field );
         }
 
         entry.setFields( listField );
 
-        if ( entry.getEntryType( ).getGroup( ) )
+        if ( entry.getEntryType(  ).getGroup(  ) )
         {
-            for ( Entry entryChild : entry.getChildren( ) )
+            for ( Entry entryChild : entry.getChildren(  ) )
             {
-                List<Response> listResponseChild = new ArrayList<Response>( );
-                appointment.getMapResponsesByIdEntry( ).put( entryChild.getIdEntry( ), listResponseChild );
+                List<Response> listResponseChild = new ArrayList<Response>(  );
+                appointment.getMapResponsesByIdEntry(  ).put( entryChild.getIdEntry(  ), listResponseChild );
 
-                listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponseChild, false,
+                listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry(  ), listResponseChild, false,
                         locale, appointment ) );
             }
         }
-        else if ( !entry.getEntryType( ).getComment( ) )
+        else if ( !entry.getEntryType(  ).getComment(  ) )
         {
             GenericAttributeError formError = null;
 
             if ( !bResponseNull )
             {
-                formError = EntryTypeServiceManager.getEntryTypeService( entry ).getResponseData( entry, request,
-                        listResponse, locale );
+                formError = EntryTypeServiceManager.getEntryTypeService( entry )
+                                                   .getResponseData( entry, request, listResponse, locale );
 
                 if ( formError != null )
                 {
@@ -314,7 +337,7 @@ public class AppointmentFormService implements Serializable
             }
             else
             {
-                Response response = new Response( );
+                Response response = new Response(  );
                 response.setEntry( entry );
                 listResponse.add( response );
             }
@@ -325,16 +348,16 @@ public class AppointmentFormService implements Serializable
                 listFormErrors.add( formError );
             }
 
-            if ( entry.getNumberConditionalQuestion( ) != 0 )
+            if ( entry.getNumberConditionalQuestion(  ) != 0 )
             {
-                for ( Field field : entry.getFields( ) )
+                for ( Field field : entry.getFields(  ) )
                 {
-                    boolean bIsFieldInResponseList = isFieldInTheResponseList( field.getIdField( ), listResponse );
+                    boolean bIsFieldInResponseList = isFieldInTheResponseList( field.getIdField(  ), listResponse );
 
-                    for ( Entry conditionalEntry : field.getConditionalQuestions( ) )
+                    for ( Entry conditionalEntry : field.getConditionalQuestions(  ) )
                     {
-                        listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry( ), listResponse,
-                                !bIsFieldInResponseList, locale, appointment ) );
+                        listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry(  ),
+                                listResponse, !bIsFieldInResponseList, locale, appointment ) );
                     }
                 }
             }
@@ -353,7 +376,7 @@ public class AppointmentFormService implements Serializable
     {
         for ( Response response : listResponse )
         {
-            if ( ( response.getField( ) != null ) && ( response.getField( ).getIdField( ) == nIdField ) )
+            if ( ( response.getField(  ) != null ) && ( response.getField(  ).getIdField(  ) == nIdField ) )
             {
                 return true;
             }
@@ -369,17 +392,17 @@ public class AppointmentFormService implements Serializable
      */
     public String getEntryUrl( Entry entry )
     {
-        UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
+        UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_FORM );
 
-        if ( ( entry != null ) && ( entry.getIdResource( ) > 0 ) )
+        if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
         {
-            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource( ) );
-            url.setAnchor( PREFIX_ATTRIBUTE + entry.getIdEntry( ) );
+            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource(  ) );
+            url.setAnchor( PREFIX_ATTRIBUTE + entry.getIdEntry(  ) );
         }
 
-        return url.getUrl( );
+        return url.getUrl(  );
     }
 
     /**
@@ -439,5 +462,37 @@ public class AppointmentFormService implements Serializable
     public void removeValidatedAppointmentFromSession( HttpSession session )
     {
         session.removeAttribute( SESSION_VALIDATED_APPOINTMENT );
+    }
+
+    /**
+     * Get the default form message with values loaded from properties.
+     * @return The default form message. The form message is not associated with
+     *         any appointment form
+     */
+    public AppointmentFormMessages getDefaultAppointmentFormMessage(  )
+    {
+        AppointmentFormMessages formMessages = new AppointmentFormMessages(  );
+        formMessages.setCalendarTitle( AppPropertiesService.getProperty( PROPERTY_DEFAULT_CALENDAR_TITLE,
+                StringUtils.EMPTY ) );
+        formMessages.setFieldFirstNameTitle( AppPropertiesService.getProperty( 
+                PROPERTY_DEFAULT_FIELD_FIRST_NAME_TITLE, StringUtils.EMPTY ) );
+        formMessages.setFieldFirstNameHelp( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_FIRST_NAME_HELP,
+                StringUtils.EMPTY ) );
+        formMessages.setFieldLastNameTitle( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_LAST_NAME_TITLE,
+                StringUtils.EMPTY ) );
+        formMessages.setFieldLastNameHelp( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_LAST_NAME_HELP,
+                StringUtils.EMPTY ) );
+        formMessages.setFieldEmailTitle( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_EMAIL_TITLE,
+                StringUtils.EMPTY ) );
+        formMessages.setFieldEmailHelp( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_EMAIL_HELP,
+                StringUtils.EMPTY ) );
+        formMessages.setUrlRedirectAfterCreation( AppPropertiesService.getProperty( PROPERTY_DEFAULT_URL_REDIRECTION,
+                StringUtils.EMPTY ) );
+        formMessages.setLabelButtonRedirection( AppPropertiesService.getProperty( 
+                PROPERTY_DEFAULT_LABEL_BUTTON_REDIRECT, StringUtils.EMPTY ) );
+        formMessages.setTextAppointmentCreated( AppPropertiesService.getProperty( 
+                PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED, StringUtils.EMPTY ) );
+
+        return formMessages;
     }
 }

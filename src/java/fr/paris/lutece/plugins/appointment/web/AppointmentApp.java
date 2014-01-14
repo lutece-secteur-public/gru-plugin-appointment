@@ -37,6 +37,8 @@ import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
@@ -60,8 +62,14 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.dozer.converters.DateConverter;
+
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -71,10 +79,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.StringUtils;
-import org.dozer.converters.DateConverter;
+import javax.validation.ConstraintViolation;
 
 
 /**
@@ -88,21 +94,25 @@ public class AppointmentApp extends MVCApplication
      */
     private static final long serialVersionUID = 5741361182728887387L;
 
+    // Templates
     private static final String TEMPLATE_APPOINTMENT_FORM_LIST = "/skin/plugins/appointment/appointment_form_list.html";
     private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/plugins/appointment/appointment_form.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_CALENDAR = "/skin/plugins/appointment/appointment_form_calendar.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_RECAP = "/skin/plugins/appointment/appointment_form_recap.html";
     private static final String TEMPLATE_APPOINTMENT_CREATED = "skin/plugins/appointment/appointment_created.html";
 
+    // Views
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
     private static final String VIEW_GET_FORM = "viewForm";
     private static final String VIEW_GET_APPOINTMENT_CALENDAR = "getAppointmentCalendar";
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
     private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
 
+    // Actions
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
 
+    // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_NB_WEEK = "nb_week";
     private static final String PARAMETER_EMAIL = "email";
@@ -112,23 +122,38 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_DATE = "date";
     private static final String PARAMETER_BACK = "back";
 
+    // Marks
     private static final String MARK_FORM_LIST = "form_list";
     private static final String MARK_FORM_HTML = "form_html";
     private static final String MARK_FORM_ERRORS = "form_errors";
     private static final String MARK_LIST_DAYS = "listDays";
     private static final String MARK_FORM = "form";
+    private static final String MARK_FORM_MESSAGES = "formMessages";
     private static final String MARK_LIST_TIME_BEGIN = "list_time_begin";
     private static final String MARK_MIN_DURATION_APPOINTMENT = "min_duration_appointments";
     private static final String MARK_APPOINTMENT = "appointment";
     private static final String MARK_CAPTCHA = "captcha";
     private static final String MARK_SLOT = "slot";
+    private static final String MARK_LIST_DAYS_OF_WEEK = "list_days_of_week";
 
+    // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 
+    // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
-    private final AppointmentFormService _appointmentFormService = SpringContextService
-            .getBean( AppointmentFormService.BEAN_NAME );
-    private CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService( );
+
+    // Messages
+    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = 
+        {
+            "appointment.manageCalendarSlots.labelMonday", "appointment.manageCalendarSlots.labelTuesday",
+            "appointment.manageCalendarSlots.labelWednesday", "appointment.manageCalendarSlots.labelThursday",
+            "appointment.manageCalendarSlots.labelFriday", "appointment.manageCalendarSlots.labelSaturday",
+            "appointment.manageCalendarSlots.labelSunday",
+        };
+
+    // Local variables
+    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
+    private CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService(  );
     private transient DateConverter _dateConverter;
 
     /**
@@ -139,14 +164,14 @@ public class AppointmentApp extends MVCApplication
     @View( value = VIEW_APPOINTMENT_FORM_LIST, defaultView = true )
     public XPage getFormList( HttpServletRequest request )
     {
-        _appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
+        _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
+        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList(  );
         model.put( MARK_FORM_LIST, listAppointmentForm );
 
-        return getXPage( TEMPLATE_APPOINTMENT_FORM_LIST, request.getLocale( ), model );
+        return getXPage( TEMPLATE_APPOINTMENT_FORM_LIST, request.getLocale(  ), model );
     }
 
     /**
@@ -164,33 +189,35 @@ public class AppointmentApp extends MVCApplication
             int nIdForm = Integer.parseInt( strIdForm );
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
 
-            if ( ( form == null ) || !form.getIsActive( ) )
+            if ( ( form == null ) || !form.getIsActive(  ) )
             {
                 return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
             }
 
-            Map<String, Object> model = new HashMap<String, Object>( );
+            Map<String, Object> model = new HashMap<String, Object>(  );
 
-            model.put( MARK_FORM_HTML, _appointmentFormService.getHtmlForm( form, getLocale( request ), true, request ) );
+            model.put( MARK_FORM_HTML,
+                _appointmentFormService.getHtmlForm( form, formMessages, getLocale( request ), true, request ) );
 
-            List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute(
-                    SESSION_APPOINTMENT_FORM_ERRORS );
+            List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
+                                                                                          .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
 
             if ( listErrors != null )
             {
                 model.put( MARK_FORM_ERRORS, listErrors );
-                request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+                request.getSession(  ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
             }
 
-            _appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
-            _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession( ) );
+            _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
+            _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
 
             XPage page = getXPage( TEMPLATE_APPOINTMENT_FORM, getLocale( request ), model );
 
-            if ( form.getDisplayTitleFo( ) )
+            if ( form.getDisplayTitleFo(  ) )
             {
-                page.setTitle( form.getTitle( ) );
+                page.setTitle( form.getTitle(  ) );
             }
 
             return page;
@@ -213,7 +240,7 @@ public class AppointmentApp extends MVCApplication
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
-            EntryFilter filter = new EntryFilter( );
+            EntryFilter filter = new EntryFilter(  );
             filter.setIdResource( nIdForm );
             filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
             filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
@@ -222,53 +249,59 @@ public class AppointmentApp extends MVCApplication
 
             List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
 
-            _appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
+            _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
 
-            List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
-            Locale locale = request.getLocale( );
+            List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>(  );
+            Locale locale = request.getLocale(  );
 
-            AppointmentDTO appointment = new AppointmentDTO( );
+            AppointmentDTO appointment = new AppointmentDTO(  );
             appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
             appointment.setStatus( Appointment.STATUS_NOT_VALIDATED );
-            if ( SecurityService.isAuthenticationEnable( ) )
+
+            if ( SecurityService.isAuthenticationEnable(  ) )
             {
-                LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
+                LuteceUser luteceUser = SecurityService.getInstance(  ).getRegisteredUser( request );
+
                 if ( luteceUser != null )
                 {
-                    appointment.setIdUser( luteceUser.getName( ) );
+                    appointment.setIdUser( luteceUser.getName(  ) );
                 }
             }
+
             // We save the appointment in session. The appointment object will contain responses of the user to the form
-            _appointmentFormService.saveAppointmentInSession( request.getSession( ), appointment );
+            _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointment );
 
             Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointment );
-            if ( !listErrors.isEmpty( ) )
+
+            if ( !listErrors.isEmpty(  ) )
             {
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
                 {
-                    GenericAttributeError genAttError = new GenericAttributeError( );
-                    genAttError.setErrorMessage( constraintViolation.getMessage( ) );
+                    GenericAttributeError genAttError = new GenericAttributeError(  );
+                    genAttError.setErrorMessage( constraintViolation.getMessage(  ) );
                     listFormErrors.add( genAttError );
                 }
             }
 
             for ( Entry entry : listEntryFirstLevel )
             {
-                listFormErrors.addAll( _appointmentFormService.getResponseEntry( request, entry.getIdEntry( ), locale,
+                listFormErrors.addAll( _appointmentFormService.getResponseEntry( request, entry.getIdEntry(  ), locale,
                         appointment ) );
             }
 
             // If there is some errors, we redirect the user to the form page
-            if ( listFormErrors.size( ) > 0 )
+            if ( listFormErrors.size(  ) > 0 )
             {
-                request.getSession( ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
+                request.getSession(  ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
 
                 return redirect( request, VIEW_GET_FORM, PARAMETER_ID_FORM, nIdForm );
             }
+
             convertMapResponseToList( appointment );
-            _appointmentFormService.saveValidatedAppointmentForm( request.getSession( ), appointment );
+            _appointmentFormService.saveValidatedAppointmentForm( request.getSession(  ), appointment );
+
             return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
         }
 
@@ -290,14 +323,15 @@ public class AppointmentApp extends MVCApplication
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
-            if ( _appointmentFormService.getValidatedAppointmentFromSession( request.getSession( ) ) == null )
+            if ( _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) ) == null )
             {
                 return redirect( request, VIEW_GET_FORM, PARAMETER_ID_FORM, nIdForm );
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
 
-            Map<String, Object> model = new HashMap<String, Object>( );
+            Map<String, Object> model = new HashMap<String, Object>(  );
 
             String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
             int nNbWeek = 0;
@@ -306,64 +340,66 @@ public class AppointmentApp extends MVCApplication
             {
                 nNbWeek = Integer.parseInt( strNbWeek );
 
-                if ( nNbWeek > form.getNbWeeksToDisplay( ) )
+                if ( nNbWeek > ( form.getNbWeeksToDisplay(  ) - 1 ) )
                 {
-                    nNbWeek = form.getNbWeeksToDisplay( );
+                    nNbWeek = form.getNbWeeksToDisplay(  ) - 1;
                 }
             }
 
-            List<AppointmentDay> listDays = CalendarService.getService( ).getDayListforCalendar( form, nNbWeek, true,
-                    true );
+            List<AppointmentDay> listDays = CalendarService.getService(  ).getDayListForCalendar( form, nNbWeek );
 
             // We compute slots interval
             List<String> listTimeBegin = null;
 
-            int nMinOpeningHour = form.getOpeningHour( );
-            int nMinOpeningMinutes = form.getOpeningMinutes( );
-            int nMaxClosingHour = form.getClosingHour( );
-            int nMaxClosingMinutes = form.getClosingMinutes( );
-            int nMinAppointmentDuration = form.getDurationAppointments( );
+            int nMinOpeningHour = form.getOpeningHour(  );
+            int nMinOpeningMinutes = form.getOpeningMinutes(  );
+            int nMaxClosingHour = form.getClosingHour(  );
+            int nMaxClosingMinutes = form.getClosingMinutes(  );
+            int nMinAppointmentDuration = form.getDurationAppointments(  );
 
             for ( AppointmentDay appointmentDay : listDays )
             {
-                if ( appointmentDay.getIsOpen( ) && ( appointmentDay.getIdDay( ) > 0 ) )
+                if ( appointmentDay.getIsOpen(  ) && ( appointmentDay.getIdDay(  ) > 0 ) )
                 {
                     // we check that the day has is not a longer or has a shorter appointment duration 
-                    if ( appointmentDay.getAppointmentDuration( ) < nMinAppointmentDuration )
+                    if ( appointmentDay.getAppointmentDuration(  ) < nMinAppointmentDuration )
                     {
-                        nMinAppointmentDuration = appointmentDay.getAppointmentDuration( );
+                        nMinAppointmentDuration = appointmentDay.getAppointmentDuration(  );
                     }
 
-                    if ( appointmentDay.getOpeningHour( ) < nMinOpeningHour )
+                    if ( appointmentDay.getOpeningHour(  ) < nMinOpeningHour )
                     {
-                        nMinOpeningHour = appointmentDay.getOpeningHour( );
+                        nMinOpeningHour = appointmentDay.getOpeningHour(  );
                     }
 
-                    if ( appointmentDay.getOpeningMinutes( ) < nMinOpeningMinutes )
+                    if ( appointmentDay.getOpeningMinutes(  ) < nMinOpeningMinutes )
                     {
-                        nMinOpeningMinutes = appointmentDay.getOpeningMinutes( );
+                        nMinOpeningMinutes = appointmentDay.getOpeningMinutes(  );
                     }
 
-                    if ( appointmentDay.getClosingHour( ) > nMaxClosingHour )
+                    if ( appointmentDay.getClosingHour(  ) > nMaxClosingHour )
                     {
-                        nMaxClosingHour = appointmentDay.getClosingHour( );
+                        nMaxClosingHour = appointmentDay.getClosingHour(  );
                     }
 
-                    if ( appointmentDay.getClosingMinutes( ) > nMaxClosingMinutes )
+                    if ( appointmentDay.getClosingMinutes(  ) > nMaxClosingMinutes )
                     {
-                        nMaxClosingMinutes = appointmentDay.getClosingMinutes( );
+                        nMaxClosingMinutes = appointmentDay.getClosingMinutes(  );
                     }
                 }
             }
 
-            listTimeBegin = CalendarService.getService( ).getListAppointmentTimes( nMinAppointmentDuration,
-                    nMinOpeningHour, nMinOpeningMinutes, nMaxClosingHour, nMaxClosingMinutes );
+            listTimeBegin = CalendarService.getService(  )
+                                           .getListAppointmentTimes( nMinAppointmentDuration, nMinOpeningHour,
+                    nMinOpeningMinutes, nMaxClosingHour, nMaxClosingMinutes );
 
             model.put( MARK_FORM, form );
+            model.put( MARK_FORM_MESSAGES, formMessages );
             model.put( MARK_LIST_DAYS, listDays );
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
+            model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
 
             return getXPage( TEMPLATE_APPOINTMENT_FORM_CALENDAR, getLocale( request ), model );
         }
@@ -381,34 +417,41 @@ public class AppointmentApp extends MVCApplication
     {
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         String strDate = request.getParameter( PARAMETER_DATE );
+
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
         {
-            Appointment appointment = _appointmentFormService
-                    .getValidatedAppointmentFromSession( request.getSession( ) );
+            Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
 
-            Date date = (Date) getDateConverter( ).convert( java.sql.Date.class, strDate );
+            Date date = (Date) getDateConverter(  ).convert( java.sql.Date.class, strDate );
 
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
 
-            if ( appointment != null && date != null )
+            if ( ( appointment != null ) && ( date != null ) )
             {
                 appointment.setIdSlot( nIdSlot );
                 appointment.setDateAppointment( date );
-                Map<String, Object> model = new HashMap<String, Object>( );
+
+                Map<String, Object> model = new HashMap<String, Object>(  );
                 model.put( MARK_APPOINTMENT, appointment );
                 model.put( MARK_SLOT, appointmentSlot );
-                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm( ) );
-                if ( form.getEnableCaptcha( ) )
+
+                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) );
+
+                if ( form.getEnableCaptcha(  ) )
                 {
-                    model.put( MARK_CAPTCHA, _captchaSecurityService.getHtmlCode( ) );
+                    model.put( MARK_CAPTCHA, _captchaSecurityService.getHtmlCode(  ) );
                 }
+
                 model.put( MARK_FORM, form );
                 fillCommons( model );
+
                 return getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, getLocale( request ), model );
             }
-            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
+
+            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
         }
+
         return redirectView( request, VIEW_GET_FORM );
     }
 
@@ -420,30 +463,33 @@ public class AppointmentApp extends MVCApplication
     @Action( ACTION_DO_MAKE_APPOINTMENT )
     public XPage doMakeAppointment( HttpServletRequest request )
     {
-        Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession( ) );
-        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot( ),
-                appointment.getDateAppointment( ) );
+        Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
+        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
+                appointment.getDateAppointment(  ) );
+
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
         {
-            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
+            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
         }
 
-        if ( appointmentSlot.getNbFreePlaces( ) <= 0 )
+        if ( appointmentSlot.getNbFreePlaces(  ) <= 0 )
         {
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
+
+            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
         }
 
         AppointmentHome.create( appointment );
-        for ( Response response : appointment.getlistResponse( ) )
+
+        for ( Response response : appointment.getlistResponse(  ) )
         {
             ResponseHome.create( response );
-            AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
+            AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ), response.getIdResponse(  ) );
         }
 
-        _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession( ) );
+        _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
 
-        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
+        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
     }
 
     /**
@@ -454,16 +500,20 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_GET_APPOINTMENT_CREATED )
     public XPage getAppointmentCreated( HttpServletRequest request )
     {
-
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            Map<String, Object> model = new HashMap<String, Object>( );
+            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
+            Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_FORM, form );
+            model.put( MARK_FORM_MESSAGES, formMessages );
+
             return getXPage( TEMPLATE_APPOINTMENT_CREATED, getLocale( request ), model );
         }
+
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
@@ -471,7 +521,7 @@ public class AppointmentApp extends MVCApplication
      * Get the converter to convert string to java.sql.Date.
      * @return The converter to convert String to java.sql.Date.
      */
-    private DateConverter getDateConverter( )
+    private DateConverter getDateConverter(  )
     {
         if ( _dateConverter == null )
         {
@@ -488,11 +538,13 @@ public class AppointmentApp extends MVCApplication
      */
     private void convertMapResponseToList( AppointmentDTO appointment )
     {
-        List<Response> listResponse = new ArrayList<Response>( );
-        for ( List<Response> listResponseByEntry : appointment.getMapResponsesByIdEntry( ).values( ) )
+        List<Response> listResponse = new ArrayList<Response>(  );
+
+        for ( List<Response> listResponseByEntry : appointment.getMapResponsesByIdEntry(  ).values(  ) )
         {
             listResponse.addAll( listResponseByEntry );
         }
+
         appointment.setMapResponsesByIdEntry( null );
         appointment.setListResponse( listResponse );
     }

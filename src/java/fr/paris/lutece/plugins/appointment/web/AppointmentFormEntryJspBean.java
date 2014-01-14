@@ -77,6 +77,8 @@ import javax.servlet.http.HttpServletRequest;
 public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = -4951787792196104967L;
+
+    // Parameters
     private static final String PARAMETER_ID_ENTRY_TYPE = "id_type";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_FIELD = "id_field";
@@ -88,15 +90,23 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_ENTRY_GROUP = "id_entry_group";
     private static final String PARAMETER_ENTRY_ID_MOVE = "entry_id_move";
     private static final String PARAMETER_ID_EXPRESSION = "id_expression";
+
+    // Urls
     private static final String JSP_URL_MANAGE_APPOINTMENT_FORM_ENTRIES = "jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp";
+
+    // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_ENTRY = "appointment.message.confirmRemoveEntry";
     private static final String MESSAGE_CANT_REMOVE_ENTRY = "form.message.cantRemoveEntry";
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
     private static final String PROPERTY_MODIFY_QUESTION_TITLE = "appointment.modifyEntry.titleQuestion";
     private static final String PROPERTY_COPY_ENTRY_TITLE = "appointment.copyEntry.title";
+
+    // Views
     private static final String VIEW_GET_CREATE_ENTRY = "getCreateEntry";
     private static final String VIEW_GET_MODIFY_ENTRY = "getModifyEntry";
     private static final String VIEW_CONFIRM_REMOVE_ENTRY = "confirmRemoveEntry";
+
+    // Actions
     private static final String ACTION_DO_CREATE_ENTRY = "doCreateEntry";
     private static final String ACTION_DO_MODIFY_ENTRY = "doModifyEntry";
     private static final String ACTION_DO_REMOVE_ENTRY = "doRemoveEntry";
@@ -107,6 +117,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String ACTION_DO_MOVE_DOWN_ENTRY_CONDITIONAL = "doMoveDownEntryConditional";
     private static final String ACTION_DO_REMOVE_REGULAR_EXPRESSION = "doRemoveRegularExpression";
     private static final String ACTION_DO_INSERT_REGULAR_EXPRESSION = "doInsertRegularExpression";
+
+    // Marks
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_REGULAR_EXPRESSION_LIST_REF_LIST = "regular_expression_list";
@@ -114,6 +126,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String MARK_LIST = "list";
     private static final String MARK_FORM = "form";
     private static final String MARK_ENTRY_TYPE_SERVICE = "entryTypeService";
+
+    // Local variables
     private EntryService _entryService = EntryService.getService(  );
 
     /**

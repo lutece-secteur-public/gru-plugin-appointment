@@ -46,8 +46,7 @@ import java.util.Map;
  */
 public class AppointmentDTO extends Appointment
 {
-
-    Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>( );
+    Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>(  );
     AppointmentSlot _appointmentSlot;
 
     /**
@@ -57,7 +56,7 @@ public class AppointmentDTO extends Appointment
      *         the
      *         id of the associated entry
      */
-    public Map<Integer, List<Response>> getMapResponsesByIdEntry( )
+    public Map<Integer, List<Response>> getMapResponsesByIdEntry(  )
     {
         return _mapResponsesByIdEntry;
     }
@@ -76,7 +75,7 @@ public class AppointmentDTO extends Appointment
      * Get the appointment slot associated with the appointment
      * @return The appointment slot associated with the appointment
      */
-    public AppointmentSlot getAppointmentSlot( )
+    public AppointmentSlot getAppointmentSlot(  )
     {
         return _appointmentSlot;
     }

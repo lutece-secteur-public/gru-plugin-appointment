@@ -3,7 +3,7 @@
 	<div class="span12">
 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
 			<fieldset>
-				<legend>#i18n{appointment.createEntry.titleQuestion} : '.title}'</legend>
+				<legend>#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
 				<input name="id_form" value="${form.idForm}" type="hidden" />
 				<input name="action" value="doCreateEntry" type="hidden" />
 				<input name="id_type" value="${entry.entryType.idType}" type="hidden" />

@@ -53,55 +53,57 @@ public final class AppointmentFormHome
     // Static variable pointed at the DAO instance
     private static IAppointmentFormDAO _dao = SpringContextService.getBean( "appointment.appointmentFormDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-
-    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance( );
+    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance(  );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentFormHome( )
+    private AppointmentFormHome(  )
     {
     }
 
     /**
-     * Create an instance of the appointmentForm class
+     * Create an appointment form and its associated appointment form message
      * @param appointmentForm The instance of the AppointmentForm which contains
      *            the informations to store
-     * @return The instance of appointmentForm which has been created with its
-     *         primary key.
+     * @param formMessage The appointment form message associated with the form
+     *            to create
      */
-    public static AppointmentForm create( AppointmentForm appointmentForm )
+    public static void create( AppointmentForm appointmentForm, AppointmentFormMessages formMessage )
     {
         _dao.insert( appointmentForm, _plugin );
-        _cacheService.putInCache( AppointmentFormCacheService.getFormCacheKey( appointmentForm.getIdForm( ) ),
-                appointmentForm );
-
-        return appointmentForm;
+        _cacheService.putInCache( AppointmentFormCacheService.getFormCacheKey( appointmentForm.getIdForm(  ) ),
+            appointmentForm );
+        formMessage.setIdForm( appointmentForm.getIdForm(  ) );
+        AppointmentFormMessagesHome.create( formMessage );
     }
 
     /**
      * Update of the appointmentForm which is specified in parameter
      * @param appointmentForm The instance of the AppointmentForm which contains
      *            the data to store
-     * @return The instance of the appointmentForm which has been updated
      */
-    public static AppointmentForm update( AppointmentForm appointmentForm )
+    public static void update( AppointmentForm appointmentForm )
     {
         _dao.store( appointmentForm, _plugin );
-        _cacheService.putInCache( AppointmentFormCacheService.getFormCacheKey( appointmentForm.getIdForm( ) ),
-                appointmentForm );
-        return appointmentForm;
+        _cacheService.putInCache( AppointmentFormCacheService.getFormCacheKey( appointmentForm.getIdForm(  ) ),
+            appointmentForm );
     }
 
     /**
-     * Remove the appointmentForm whose identifier is specified in parameter
+     * Remove an appointment form by its primary key. Also remove the associated
+     * appointment form message and every associated day and slot.<br />
+     * <b>Warning, please check that there is no appointment associated with the
+     * form BEFORE removing it!</b>
      * @param nAppointmentFormId The appointmentForm Id
      */
     public static void remove( int nAppointmentFormId )
     {
         AppointmentDayHome.removeByIdForm( nAppointmentFormId );
         AppointmentSlotHome.deleteAllByIdForm( nAppointmentFormId );
+        AppointmentFormMessagesHome.remove( nAppointmentFormId );
         _dao.delete( nAppointmentFormId, _plugin );
+        _cacheService.removeKey( AppointmentFormCacheService.getFormCacheKey( nAppointmentFormId ) );
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -110,18 +112,20 @@ public final class AppointmentFormHome
     /**
      * Returns an instance of a appointmentForm whose identifier is specified in
      * parameter
-     * @param nKey The appointmentForm primary key
+     * @param nAppointmentFormId The appointmentForm primary key
      * @return an instance of AppointmentForm
      */
-    public static AppointmentForm findByPrimaryKey( int nKey )
+    public static AppointmentForm findByPrimaryKey( int nAppointmentFormId )
     {
-        String strCacheKey = AppointmentFormCacheService.getFormCacheKey( nKey );
+        String strCacheKey = AppointmentFormCacheService.getFormCacheKey( nAppointmentFormId );
         AppointmentForm form = (AppointmentForm) _cacheService.getFromCache( strCacheKey );
+
         if ( form == null )
         {
-            form = _dao.load( nKey, _plugin );
+            form = _dao.load( nAppointmentFormId, _plugin );
             _cacheService.putInCache( strCacheKey, form );
         }
+
         return form;
     }
 
@@ -131,7 +135,7 @@ public final class AppointmentFormHome
      * @return the collection which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getAppointmentFormsList( )
+    public static Collection<AppointmentForm> getAppointmentFormsList(  )
     {
         return _dao.selectAppointmentFormsList( _plugin );
     }
@@ -142,7 +146,7 @@ public final class AppointmentFormHome
      * @return the collection which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getActiveAppointmentFormsList( )
+    public static Collection<AppointmentForm> getActiveAppointmentFormsList(  )
     {
         return _dao.selectActiveAppointmentFormsList( _plugin );
     }

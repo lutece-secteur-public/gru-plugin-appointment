@@ -74,6 +74,14 @@ public interface IAppointmentDayDAO
     void removeByIdForm( int nIdForm, Plugin plugin );
 
     /**
+     * Delete days which date is before a given date and that are not associated
+     * with any slot
+     * @param dateMonday The date of days
+     * @param plugin The plugin
+     */
+    void removeLonelyDays( Date dateMonday, Plugin plugin );
+
+    /**
      * Returns an instance of a day whose identifier is specified in
      * parameter
      * @param nKey The appointmentDay primary key

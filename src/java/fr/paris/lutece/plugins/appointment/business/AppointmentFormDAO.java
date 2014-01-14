@@ -106,8 +106,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setBoolean( nIndex++, appointmentForm.getDisplayTitleFo(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getNbWeeksToDisplay(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getPeoplePerAppointment(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow( ) );
-        daoUtil.setBoolean( nIndex, appointmentForm.getEnableCaptcha( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow(  ) );
+        daoUtil.setBoolean( nIndex, appointmentForm.getEnableCaptcha(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );

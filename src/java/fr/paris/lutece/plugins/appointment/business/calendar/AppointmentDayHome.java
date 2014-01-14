@@ -97,6 +97,16 @@ public final class AppointmentDayHome
         _dao.removeByIdForm( nIdForm, _plugin );
     }
 
+    /**
+     * Delete days which date is before a given date and that are not associated
+     * with any slot
+     * @param dateMonday The date of days
+     */
+    public static void removeLonelyDays( Date dateMonday )
+    {
+        _dao.removeLonelyDays( dateMonday, _plugin );
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Finders
 

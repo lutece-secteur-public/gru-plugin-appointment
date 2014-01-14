@@ -52,12 +52,13 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     private static final String SQL_QUERY_UPDATE_DAY = "UPDATE appointment_day SET is_open = ?, date_day = ?, opening_hour = ?, opening_minute = ?, closing_hour = ?, closing_minute = ?, appointment_duration = ?, people_per_appointment = ? WHERE id_day = ?";
     private static final String SQL_QUERY_REMOVE_DAY_BY_PRIMARY_KEY = "DELETE FROM appointment_day WHERE id_day = ?";
     private static final String SQL_QUERY_REMOVE_DAY_BY_ID_DAY = "DELETE FROM appointment_day WHERE id_form = ?";
+    private static final String SQL_QUERY_REMOVE_LONELY_DAYS = " DELETE FROM appointment_day WHERE date_day < ? AND id_day NOT IN (SELECT DISTINCT(id_day) FROM appointment_slot) ";
     private static final String SQL_QUERY_SELECT_DAY = "SELECT id_day, id_form, is_open, date_day, opening_hour, opening_minute, closing_hour, closing_minute, appointment_duration, people_per_appointment FROM appointment_day ";
     private static final String SQL_QUERY_SELECT_DAY_BY_PRIMARY_KEY = SQL_QUERY_SELECT_DAY + " WHERE id_day = ?";
     private static final String SQL_QUERY_SELECT_DAY_BY_ID_FORM = SQL_QUERY_SELECT_DAY +
         " WHERE id_form = ? ORDER BY date_day ASC";
     private static final String SQL_QUERY_SELECT_DAY_BETWEEN = SQL_QUERY_SELECT_DAY +
-        " WHERE id_form = ? AND date_day >= ? AND date_day <= ? ";
+        " WHERE id_form = ? AND date_day >= ? AND date_day <= ? ORDER BY date_day ASC ";
 
     /**
      * Get a new primary key for a day
@@ -148,6 +149,18 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_DAY_BY_ID_DAY, plugin );
         daoUtil.setInt( 1, nIdForm );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeLonelyDays( Date dateMonday, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_LONELY_DAYS, plugin );
+        daoUtil.setDate( 1, dateMonday );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }

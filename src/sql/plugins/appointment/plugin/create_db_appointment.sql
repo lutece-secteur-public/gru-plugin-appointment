@@ -13,7 +13,7 @@ CREATE TABLE appointment_appointment (
 	status smallint NOT NULL,
 	PRIMARY KEY (id_appointment)
 );
-
+CREATE INDEX idx_appointment_id_slot ON appointment_appointment (id_slot);
 --
 -- Structure for table appointment_form
 --
@@ -58,6 +58,7 @@ CREATE TABLE appointment_day (
 	people_per_appointment INT(11) NOT NULL,
 	PRIMARY KEY (id_day)
 );
+CREATE INDEX idx_appointment_day_id_form ON appointment_day (id_form);
 
 DROP TABLE IF EXISTS appointment_slot;
 CREATE TABLE appointment_slot (
@@ -73,10 +74,28 @@ CREATE TABLE appointment_slot (
 	is_enabled SMALLINT NOT NULL,
 	PRIMARY KEY (id_slot)
 );
+CREATE INDEX idx_appointment_slot_id_form ON appointment_slot (id_form);
+CREATE INDEX idx_appointment_slot_id_day ON appointment_slot (id_day);
 
 DROP TABLE IF EXISTS appointment_appointment_response;
 CREATE TABLE appointment_appointment_response (
 	id_appointment INT(11) NOT NULL,
 	id_response INT(11) NOT NULL,
 	PRIMARY KEY (id_appointment,id_response)
+);
+
+DROP TABLE IF EXISTS appointment_form_messages;
+CREATE TABLE appointment_form_messages (
+	id_form INT(11) NOT NULL,
+	calendar_title varchar(255) NOT NULL default '',
+	field_firstname_title varchar(255) NOT NULL default '',
+	field_firstname_help varchar(255) NOT NULL default '',
+	field_lastname_title varchar(255) NOT NULL default '',
+	field_lastname_help varchar(255) NOT NULL default '',
+	field_email_title varchar(255) NOT NULL default '',
+	field_email_help varchar(255) NOT NULL default '',
+	text_appointment_created long varchar NOT NULL,
+	url_redirect_after_creation varchar(255) NOT NULL default '',
+	label_button_redirection varchar(255) NOT NULL default '',
+	PRIMARY KEY (id_form)
 );

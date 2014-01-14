@@ -35,6 +35,8 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
+import java.sql.Date;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -116,4 +118,14 @@ public interface IAppointmentDAO
      * @param plugin The plugin
      */
     void deleteAppointmentResponse( int nIdAppointment, Plugin plugin );
+
+    /**
+     * Get the number of appointments associated with a given form and with a
+     * date after a given date
+     * @param nIdForm The id of the form
+     * @param date The minimum date of appointments to consider
+     * @return The number of appointments associated with the form
+     * @param plugin The plugin
+     */
+    int countAppointmentsByIdForm( int nIdForm, Date date, Plugin plugin );
 }

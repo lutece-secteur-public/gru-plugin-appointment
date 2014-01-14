@@ -33,6 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import java.io.Serializable;
+
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
@@ -40,18 +44,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 
 /**
  * This is the business class for the object AppointmentForm
  */
-public class AppointmentForm
+public class AppointmentForm implements Serializable
 {
     /**
      * Name of the resource type of Appointment Forms
      */
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+    private static final long serialVersionUID = 307685220867535209L;
     private static final String CONSTANT_H = "h";
 
     // Variables declarations 

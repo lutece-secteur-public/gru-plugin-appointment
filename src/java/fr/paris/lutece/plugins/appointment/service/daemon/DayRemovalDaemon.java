@@ -31,64 +31,31 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.service;
+package fr.paris.lutece.plugins.appointment.service.daemon;
 
-import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.service.CalendarService;
+import fr.paris.lutece.portal.service.daemon.Daemon;
+
+import java.sql.Date;
 
 
 /**
- * Get the instance of the cache service
+ * Daemon that removes unused slots and days
  */
-public class AppointmentFormCacheService extends AbstractCacheableService
+public class DayRemovalDaemon extends Daemon
 {
-    private static final String SERVICE_NAME = "appointment.appointmentFormCacheService";
-    private static final String CACHE_KEY_FORM = "appointment.appointmentForm.";
-    private static final String CACHE_KEY_FORM_MESSAGE = "appointment.appointmentFormMessage.";
-    private static AppointmentFormCacheService _instance = new AppointmentFormCacheService(  );
-
-    /**
-     * Private constructor
-     */
-    private AppointmentFormCacheService(  )
-    {
-        initCache(  );
-    }
-
-    /**
-     * Get the instance of the cache service
-     * @return The instance of the service
-     */
-    public static AppointmentFormCacheService getInstance(  )
-    {
-        return _instance;
-    }
-
-    /**
-     * Get the cache key for a given form
-     * @param nIdForm The id of the form
-     * @return The cache key for the form
-     */
-    public static String getFormCacheKey( int nIdForm )
-    {
-        return CACHE_KEY_FORM + nIdForm;
-    }
-
-    /**
-     * Get the cache key for a given form message
-     * @param nIdForm The id of the form
-     * @return The cache key for the form message
-     */
-    public static String getFormMessageCacheKey( int nIdForm )
-    {
-        return CACHE_KEY_FORM_MESSAGE + nIdForm;
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getName(  )
+    public void run(  )
     {
-        return SERVICE_NAME;
+        // We get the 
+        Date dateMonday = CalendarService.getService(  ).getDateLastMonday(  );
+
+        AppointmentSlotHome.deleteOldSlots( dateMonday );
+        AppointmentDayHome.removeLonelyDays( dateMonday );
     }
 }

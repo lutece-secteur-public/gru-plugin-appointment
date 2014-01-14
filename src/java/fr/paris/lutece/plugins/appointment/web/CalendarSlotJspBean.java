@@ -61,15 +61,30 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( controllerJsp = "ManageCalendarSlots.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class CalendarSlotJspBean extends MVCAdminJspBean
 {
+    /**
+     * Serial version UID
+     */
     private static final long serialVersionUID = 2376721852596997810L;
+
+    // Messages
     private static final String MESSAGE_MANAGE_SLOTS_PAGE_TITLE = "appointment.manageCalendarSlots.pageTitle";
+
+    // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_DAY = "id_day";
     private static final String PARAMETER_ID_SLOT = "id_slot";
+
+    // Marks
     private static final String MARK_LIST_SLOTS = "listSlots";
     private static final String MARK_DAY = "day";
+
+    // Views
     private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
+
+    // Actions
     private static final String ACTION_DO_CHANGE_SLOT_ENABLING = "doChangeSlotEnabling";
+
+    // Templates
     private static final String TEMPLATE_MANAGE_SLOTS = "admin/plugins/appointment/manage_slots.html";
 
     /**
@@ -129,7 +144,7 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
                 if ( !day.getIsOpen(  ) )
                 {
                     return redirect( request,
-                        AppointmentFormJspBean.getURLManageAppointmentFormDays( request, strIdDay ) );
+                        AppointmentFormDayJspBean.getURLManageAppointmentFormDays( request, strIdDay ) );
                 }
 
                 listSlots = AppointmentSlotHome.findByIdDay( nIdDay );

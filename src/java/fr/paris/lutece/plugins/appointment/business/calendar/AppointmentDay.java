@@ -47,10 +47,6 @@ public class AppointmentDay
     private int _nIdForm;
     private boolean _bIsOpen;
     private Date _date;
-
-    //    private int _nYear;
-    //    private int _nMonth;
-    //    private int _nDay;
     private int _nOpeningHour;
     private int _nOpeningMinutes;
     private int _nClosingHour;

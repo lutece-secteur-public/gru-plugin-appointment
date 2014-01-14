@@ -25,7 +25,7 @@
 						</#if>
 						&nbsp;${appointmentform.title}
 						<#if appointmentform.isActive>
-							<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=viewForm&id_form=1">
+							<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=viewForm&id_form=${appointmentform.idForm}">
 								<i class="icon-globe">&nbsp;</i>
 							</a>
 						</#if>
@@ -34,11 +34,11 @@
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
 							<i class="icon-edit icon-white">&nbsp;</i>
 						</a>
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">
-							<i class="fa fa-keybord-o">&nbsp;</i>
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">
+							<i class="fa fa-comment">&nbsp;</i>
 						</a>
 						<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelManageAppointments}">
-							<i class="icon-list icon-white">&nbsp;</i>
+							<i class="fa fa-calendar">&nbsp;</i>
 						</a>
 						<#if appointmentform.isActive>
 							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-small" title="#i18n{appointment.manage_appointmentforms.labelDisable}">

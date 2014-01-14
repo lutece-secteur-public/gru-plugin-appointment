@@ -39,6 +39,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -53,7 +54,7 @@ public final class AppointmentSlotHome
     /**
      * Default constructor
      */
-    private AppointmentSlotHome( )
+    private AppointmentSlotHome(  )
     {
         // Private constructor
     }
@@ -115,6 +116,25 @@ public final class AppointmentSlotHome
     }
 
     /**
+     * Delete every slots associated with a given form and a given day of week
+     * @param nIdForm The id of the form
+     * @param nDayOfWeek The day of the week
+     */
+    public static void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek )
+    {
+        _dao.deleteByIdFormAndDayOfWeek( nIdForm, nDayOfWeek, _plugin );
+    }
+
+    /**
+     * Delete every slots that are associated with a day before a given day.
+     * @param dateMonday The date of the day to remove slots
+     */
+    public static void deleteOldSlots( Date dateMonday )
+    {
+        _dao.deleteOldSlots( dateMonday, _plugin );
+    }
+
+    /**
      * Find a slot from its primary key
      * @param nIdSlot the id of the slot to remove
      * @return The appointment slot
@@ -166,16 +186,6 @@ public final class AppointmentSlotHome
     public static List<AppointmentSlot> findByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek )
     {
         return _dao.findByIdFormAndDayOfWeek( nIdForm, nDayOfWeek, _plugin );
-    }
-
-    /**
-     * Delete every slots associated with a given form and a given day of week
-     * @param nIdForm The id of the form
-     * @param nDayOfWeek The day of the week
-     */
-    public static void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek )
-    {
-        _dao.deleteByIdFormAndDayOfWeek( nIdForm, nDayOfWeek, _plugin );
     }
 
     /**

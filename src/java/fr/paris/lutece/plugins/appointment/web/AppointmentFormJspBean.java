@@ -35,9 +35,11 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
+import fr.paris.lutece.plugins.appointment.service.CalendarService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -47,6 +49,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -89,16 +92,18 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String TEMPLATE_MANAGE_APPOINTMENTFORMS = "/admin/plugins/appointment/appointmentform/manage_appointmentforms.html";
     private static final String TEMPLATE_CREATE_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/create_appointmentform.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform.html";
-    private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS = "/admin/plugins/appointment/appointmentform/modify_appointmentform_days.html";
+    private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES = "/admin/plugins/appointment/appointmentform/modify_appointmentform_messages.html";
 
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
+    private static final String PARAMETER_BACK = "back";
+    private static final String PARAMETER_PAGE_INDEX = "page_index";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM = "appointment.modify_appointmentform.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.create_appointmentform.pageTitle";
-    private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS = "appointment.modify_appointmentformDays.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentformMessages.pageTitle";
 
     // Markers
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
@@ -110,9 +115,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_GROUP_ENTRY_LIST = "entry_group_list";
     private static final String MARK_LIST_ORDER_FIRST_LEVEL = "listOrderFirstLevel";
     private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
-    private static final String MARK_LIST_DAYS = "listDays";
     private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
-    private static final String PARAMETER_PAGE_INDEX = "page_index";
+    private static final String MARK_FORM_MESSAGE = "formMessage";
+    private static final String MARK_WEBAPP_URL = "webapp_url";
+    private static final String MARK_LOCALE = "locale";
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
     // Properties
@@ -124,7 +130,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
     private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
     private static final String VIEW_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
-    private static final String VIEW_MODIFY_APPOINTMENTFORM_DAYS = "modifyAppointmentFormDays";
+    private static final String VIEW_MODIFY_FORM_MESSAGES = "modifyAppointmentFormMessages";
 
     // Actions
     private static final String ACTION_CREATE_APPOINTMENTFORM = "createAppointmentForm";
@@ -132,6 +138,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String ACTION_REMOVE_APPOINTMENTFORM = "removeAppointmentForm";
     private static final String ACTION_CONFIRM_REMOVE_APPOINTMENTFORM = "confirmRemoveAppointmentForm";
     private static final String ACTION_DO_CHANGE_FORM_ACTIVATION = "doChangeFormActivation";
+    private static final String ACTION_DO_MODIFY_FORM_MESSAGES = "doModifyAppointmentFormMessages";
 
     // Infos
     private static final String INFO_APPOINTMENTFORM_CREATED = "appointment.info.appointmentform.created";
@@ -144,8 +151,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.appointmentForm.currentPageIndex";
     private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.appointmentForm.itemsPerPage";
     private static final String DEFAULT_CURRENT_PAGE = "1";
-    private static CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService(  );
-    private EntryService _entryService = EntryService.getService(  );
+
+    // Local variables
+    private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService(  );
+    private final EntryService _entryService = EntryService.getService(  );
+    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private int _nDefaultItemsPerPage;
 
     /**
@@ -232,6 +242,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+
+        if ( appointmentForm == null )
+        {
+            appointmentForm = new AppointmentForm(  );
+        }
+
         prepareFormForPopulate( appointmentForm );
         populate( appointmentForm, request );
 
@@ -241,7 +257,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
 
-        AppointmentFormHome.create( appointmentForm );
+        AppointmentFormHome.create( appointmentForm, _appointmentFormService.getDefaultAppointmentFormMessage(  ) );
 
         AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForForm( appointmentForm );
 
@@ -398,6 +414,29 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+
+            // If we enable the form, we check that its days has already been created
+            if ( !form.getIsActive(  ) )
+            {
+                CalendarService.getService(  ).checkFormDays( form );
+
+                // If we enable the form, and it has a passed date of end of validity, we remove it to prevent to form from being disabled by the publication daemon
+                if ( ( form.getDateEndValidity(  ) != null ) &&
+                        ( form.getDateEndValidity(  ).getTime(  ) < System.currentTimeMillis(  ) ) )
+                {
+                    form.setDateEndValidity( null );
+                }
+            }
+            else
+            {
+                // If we disable the form, and it has a passed date of start of validity, we remove it to prevent to form from being enabled by the publication daemon
+                if ( ( form.getDateStartValidity(  ) != null ) &&
+                        ( form.getDateStartValidity(  ).getTime(  ) < System.currentTimeMillis(  ) ) )
+                {
+                    form.setDateStartValidity( null );
+                }
+            }
+
             form.setIsActive( !form.getIsActive(  ) );
             AppointmentFormHome.update( form );
         }
@@ -406,27 +445,53 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     }
 
     /**
-     * Get the page to manage days of an appointment form
+     * Get the page to modify an appointment form
      * @param request The request
-     * @return the HTML content to display, or the next URL to redirect to
+     * @return The HTML content to display
      */
-    @View( VIEW_MODIFY_APPOINTMENTFORM_DAYS )
-    public String getModifyFormDays( HttpServletRequest request )
+    @View( VIEW_MODIFY_FORM_MESSAGES )
+    public String getModifyAppointmentFormMessages( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
-            AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
-
-            List<AppointmentDay> listDays = AppointmentDayHome.getAppointmentDayListByIdForm( nIdForm );
-
+            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
             Map<String, Object> model = new HashMap<String, Object>(  );
-            model.put( MARK_LIST_DAYS, listDays );
-            addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
+            model.put( MARK_FORM_MESSAGE, formMessages );
+            model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+            model.put( MARK_LOCALE, getLocale(  ) );
 
-            return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS, TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS, model );
+            return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES,
+                TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES, model );
+        }
+
+        return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+    }
+
+    /**
+     * Do modify an appointment form messages
+     * @param request The request
+     * @return The next URL to redirect to
+     */
+    @Action( ACTION_DO_MODIFY_FORM_MESSAGES )
+    public String doModifyAppointmentFormMessages( HttpServletRequest request )
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) &&
+                ( request.getParameter( PARAMETER_BACK ) == null ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+
+            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
+
+            populate( formMessages, request );
+
+            AppointmentFormMessagesHome.update( formMessages );
+
+            return redirect( request, VIEW_MODIFY_FORM_MESSAGES, PARAMETER_ID_FORM, nIdForm );
         }
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
@@ -527,32 +592,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTFORMS );
-
-        return urlItem.getUrl(  );
-    }
-
-    /**
-     * Get the URL to manage appointment forms
-     * @param request The request
-     * @param nIdForm The id of the form to manage days of
-     * @return The URL to manage appointment forms
-     */
-    public static String getURLManageAppointmentFormDays( HttpServletRequest request, int nIdForm )
-    {
-        return getURLManageAppointmentFormDays( request, Integer.toString( nIdForm ) );
-    }
-
-    /**
-     * Get the URL to manage appointment forms
-     * @param request The request
-     * @param strIdForm The id of the form to manage days of
-     * @return The URL to manage appointment forms
-     */
-    public static String getURLManageAppointmentFormDays( HttpServletRequest request, String strIdForm )
-    {
-        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS );
-        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_APPOINTMENTFORM_DAYS );
-        urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
         return urlItem.getUrl(  );
     }
