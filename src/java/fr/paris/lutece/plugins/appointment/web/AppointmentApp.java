@@ -62,7 +62,6 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,7 +74,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 
 import org.apache.commons.lang.StringUtils;
-import org.dozer.converters.DateConverter;
 
 
 /**
@@ -114,7 +112,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
     private static final String PARAMETER_ID_SLOT = "idSlot";
-    private static final String PARAMETER_DATE = "date";
+    //    private static final String PARAMETER_DATE = "date";
     private static final String PARAMETER_BACK = "back";
 
     // Marks
@@ -148,7 +146,8 @@ public class AppointmentApp extends MVCApplication
     private final AppointmentFormService _appointmentFormService = SpringContextService
             .getBean( AppointmentFormService.BEAN_NAME );
     private transient CaptchaSecurityService _captchaSecurityService;
-    private transient DateConverter _dateConverter;
+
+    //    private transient DateConverter _dateConverter;
 
     /**
      * Get the list of appointment form list
@@ -516,19 +515,19 @@ public class AppointmentApp extends MVCApplication
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
-    /**
-     * Get the converter to convert string to java.sql.Date.
-     * @return The converter to convert String to java.sql.Date.
-     */
-    private DateConverter getDateConverter( )
-    {
-        if ( _dateConverter == null )
-        {
-            _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE ) );
-        }
-
-        return _dateConverter;
-    }
+    //    /**
+    //     * Get the converter to convert string to java.sql.Date.
+    //     * @return The converter to convert String to java.sql.Date.
+    //     */
+    //    private DateConverter getDateConverter( )
+    //    {
+    //        if ( _dateConverter == null )
+    //        {
+    //            _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE ) );
+    //        }
+    //
+    //        return _dateConverter;
+    //    }
 
     /**
      * Get the captcha security service

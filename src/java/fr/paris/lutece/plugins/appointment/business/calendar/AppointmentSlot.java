@@ -33,12 +33,20 @@
  */
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
+import java.io.Serializable;
+
 /**
  * Slot for an appointment in a day. The slot may have 3 states : free,
  * partially free or occupied.
  */
-public class AppointmentSlot implements Comparable<AppointmentSlot>
+public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializable
 {
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = -3143858870219992098L;
+
     private int _nIdSlot;
     private int _nIdForm;
     private int _nIdDay;
@@ -266,6 +274,16 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>
         }
         AppointmentSlot other = (AppointmentSlot) o;
         return compareTo( other ) == 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode( )
+    {
+        return ( ( ( getStartingHour( ) * 60 + getStartingMinute( ) ) * 10 + getDayOfWeek( ) ) * 1000 + getEndingHour( )
+                * 60 + getEndingMinute( ) );
     }
 
     /**
