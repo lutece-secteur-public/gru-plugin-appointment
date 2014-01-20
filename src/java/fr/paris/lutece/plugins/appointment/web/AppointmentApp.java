@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
@@ -62,6 +63,7 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -114,6 +116,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_ID_SLOT = "idSlot";
     //    private static final String PARAMETER_DATE = "date";
     private static final String PARAMETER_BACK = "back";
+    private static final String PARAMETER_LOAD_RESPONSES_FROM_APPOINTMENT = "loadResponsesFromAppointment";
 
     // Marks
     private static final String MARK_FORM_LIST = "form_list";
@@ -121,6 +124,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_FORM_ERRORS = "form_errors";
     private static final String MARK_LIST_DAYS = "listDays";
     private static final String MARK_FORM = "form";
+    private static final String MARK_DAY = "day";
     private static final String MARK_FORM_MESSAGES = "formMessages";
     private static final String MARK_LIST_TIME_BEGIN = "list_time_begin";
     private static final String MARK_MIN_DURATION_APPOINTMENT = "min_duration_appointments";
@@ -190,6 +194,30 @@ public class AppointmentApp extends MVCApplication
             }
 
             Map<String, Object> model = new HashMap<String, Object>( );
+
+            Appointment appointment = _appointmentFormService
+                    .getValidatedAppointmentFromSession( request.getSession( ) );
+            if ( appointment != null )
+            {
+                AppointmentDTO appointmentDTO = new AppointmentDTO( );
+                appointmentDTO.setEmail( appointment.getEmail( ) );
+                appointmentDTO.setFirstName( appointment.getEmail( ) );
+                appointmentDTO.setLastName( appointment.getLastName( ) );
+
+                Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry( );
+                for ( Response response : appointment.getListResponse( ) )
+                {
+                    List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry( ).getIdEntry( ) );
+                    if ( listResponse == null )
+                    {
+                        listResponse = new ArrayList<Response>( );
+                        mapResponsesByIdEntry.put( response.getEntry( ).getIdEntry( ), listResponse );
+                    }
+                    listResponse.add( response );
+                }
+
+                _appointmentFormService.saveAppointmentInSession( request.getSession( ), appointmentDTO );
+            }
 
             model.put( MARK_FORM_HTML,
                     _appointmentFormService.getHtmlForm( form, formMessages, getLocale( request ), true, request ) );
@@ -426,12 +454,13 @@ public class AppointmentApp extends MVCApplication
                 model.put( MARK_SLOT, appointmentSlot );
 
                 AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm( ) );
-
                 if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
                 {
                     model.put( MARK_CAPTCHA, getCaptchaService( ).getHtmlCode( ) );
                 }
-
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay( ) );
+                appointment.setDateAppointment( (Date) day.getDate( ).clone( ) );
+                model.put( MARK_DAY, day );
                 model.put( MARK_FORM, form );
                 fillCommons( model );
 
@@ -479,7 +508,7 @@ public class AppointmentApp extends MVCApplication
 
         AppointmentHome.create( appointment );
 
-        for ( Response response : appointment.getlistResponse( ) )
+        for ( Response response : appointment.getListResponse( ) )
         {
             ResponseHome.create( response );
             AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );

@@ -184,7 +184,7 @@ public class Appointment implements Serializable
      * Get the date of the appointment
      * @return The date of the appointment
      */
-    public Date getDateAppointment(  )
+    public Date getDateAppointment( )
     {
         return _dateAppointment;
     }
@@ -238,7 +238,7 @@ public class Appointment implements Serializable
      * Get the list of response of this appointment
      * @return the list of response of this appointment
      */
-    public List<Response> getlistResponse(  )
+    public List<Response> getListResponse(  )
     {
         return _listResponse;
     }
