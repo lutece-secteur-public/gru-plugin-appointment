@@ -1,0 +1,20 @@
+<div class="row-fluid">
+	<div class="span12">
+		<#if form_errors?? && form_errors?has_content>
+			<div class="alert alert-error">
+				<#list form_errors as form_error>
+					<p>
+						<#if form_error.url?? && form_error.url != ''>
+							<a href="${form_error.url!}">
+						</#if>
+						${form_error.errorMessage!}
+						<#if form_error.url?? && form_error.url != ''>
+							</a>
+						</#if>
+					</p>
+				</#list>
+			</div>
+		</#if>
+		${form_html!}
+	</div>
+</div>

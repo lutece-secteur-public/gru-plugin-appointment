@@ -33,11 +33,13 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
 import fr.paris.lutece.plugins.appointment.service.CalendarService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
@@ -46,9 +48,12 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -63,8 +68,6 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +76,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -202,22 +207,30 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_APPOINTMENTFORM_LIST, paginator.getPageItems(  ) );
+        model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ),
+                AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
     /**
      * Returns the form to create an appointment form
-     *
+     * 
      * @param request The HTTP request
      * @return the HTML code of the appointment form
+     * @throws AccessDeniedException If the user is not authorized to create
+     *             appointment forms
      */
     @View( VIEW_CREATE_APPOINTMENTFORM )
-    public String getCreateAppointmentForm( HttpServletRequest request )
+    public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, "0",
+                AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
+        }
 
         if ( appointmentForm == null )
         {
@@ -236,12 +249,19 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * Process the data capture form of a new appointment form
      * @param request The HTTP Request
      * @return The JSP URL of the process result
+     * @throws AccessDeniedException If the user is not authorized to create
+     *             appointment forms
      */
     @Action( ACTION_CREATE_APPOINTMENTFORM )
-    public String doCreateAppointmentForm( HttpServletRequest request )
+    public String doCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
-                                                                   .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute(
+                SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, "0",
+                AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
+        }
 
         if ( appointmentForm == null )
         {
@@ -272,11 +292,21 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * HTTP request
      * @param request The HTTP request
      * @return the HTML code to confirm
+     * @throws AccessDeniedException If the user is not authorized to delete
+     *             this appointment form
      */
     @Action( ACTION_CONFIRM_REMOVE_APPOINTMENTFORM )
-    public String getConfirmRemoveAppointmentForm( HttpServletRequest request )
+    public String getConfirmRemoveAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+
+        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+                request.getParameter( PARAMETER_ID_FORM ),
+                AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_FORM );
+        }
+
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_APPOINTMENTFORM ) );
         url.addParameter( PARAMETER_ID_FORM, nId );
 
@@ -290,11 +320,20 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * Handles the removal form of an appointment form
      * @param request The HTTP request
      * @return the JSP URL to display the form to manage appointment forms
+     * @throws AccessDeniedException If the user is not authorized to delete
+     *             this appointment form
      */
     @Action( ACTION_REMOVE_APPOINTMENTFORM )
-    public String doRemoveAppointmentForm( HttpServletRequest request )
+    public String doRemoveAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+
+        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+                request.getParameter( PARAMETER_ID_FORM ),
+                AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_FORM );
+        }
 
         _entryService.removeEntriesByIdAppointmentForm( nId );
 
@@ -308,9 +347,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * Returns the form to update info about a appointment form
      * @param request The HTTP request
      * @return The HTML form to update info
+     * @throws AccessDeniedException If the user is not authorized to modify
+     *             this appointment form
      */
     @View( VIEW_MODIFY_APPOINTMENTFORM )
-    public String getModifyAppointmentForm( HttpServletRequest request )
+    public String getModifyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
@@ -320,6 +361,13 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
             appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
             request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+        }
+
+        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+                Integer.toString( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
+                AdminUserService.getAdminUser( request ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
 
         EntryFilter entryFilter = new EntryFilter(  );
@@ -370,12 +418,22 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * Process the change form of a appointment form
      * @param request The HTTP request
      * @return The JSP URL of the process result
+     * @throws AccessDeniedException If the user is not authorized to modify
+     *             this appointment form
      */
     @Action( ACTION_MODIFY_APPOINTMENTFORM )
-    public String doModifyAppointmentForm( HttpServletRequest request )
+    public String doModifyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+
+        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+                Integer.toString( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
+                AdminUserService.getAdminUser( request ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
+        }
+
         prepareFormForPopulate( appointmentForm );
         populate( appointmentForm, request );
 
@@ -404,14 +462,22 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * Change the enabling of an appointment form
      * @param request The request
      * @return The next URL to redirect to
+     * @throws AccessDeniedException If the user is not authorized to change the
+     *             activation of this appointment form
      */
     @Action( ACTION_DO_CHANGE_FORM_ACTIVATION )
-    public String doChangeFormActivation( HttpServletRequest request )
+    public String doChangeFormActivation( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
+            if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_CHANGE_STATE, AdminUserService.getAdminUser( request ) ) )
+            {
+                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_STATE );
+            }
+
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
@@ -448,14 +514,22 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * Get the page to modify an appointment form
      * @param request The request
      * @return The HTML content to display
+     * @throws AccessDeniedException If the user is not authorized to modify
+     *             this appointment form
      */
     @View( VIEW_MODIFY_FORM_MESSAGES )
-    public String getModifyAppointmentFormMessages( HttpServletRequest request )
+    public String getModifyAppointmentFormMessages( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
+            if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
+            {
+                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
+            }
+
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
             Map<String, Object> model = new HashMap<String, Object>(  );
@@ -474,15 +548,23 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * Do modify an appointment form messages
      * @param request The request
      * @return The next URL to redirect to
+     * @throws AccessDeniedException If the user is not authorized to modify
+     *             this appointment form
      */
     @Action( ACTION_DO_MODIFY_FORM_MESSAGES )
-    public String doModifyAppointmentFormMessages( HttpServletRequest request )
+    public String doModifyAppointmentFormMessages( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) &&
                 ( request.getParameter( PARAMETER_BACK ) == null ) )
         {
+            if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
+            {
+                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
+            }
+
             int nIdForm = Integer.parseInt( strIdForm );
 
             AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );

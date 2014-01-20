@@ -46,7 +46,8 @@ public class EntryTypeTextArea extends AbstractEntryTypeTextArea
 {
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_text_area.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_text_area.html";
-    private static final String TEMPLATE_HTML_CODE = "admin/plugins/appointment/entries/html_code_entry_type_text_area.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_text_area.html";
+    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_text_area.html";
 
     /**
      * {@inheritDoc}
@@ -54,7 +55,7 @@ public class EntryTypeTextArea extends AbstractEntryTypeTextArea
     @Override
     public String getHtmlCode( Entry entry, boolean bDisplayFront )
     {
-        return TEMPLATE_HTML_CODE;
+        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
     }
 
     /**

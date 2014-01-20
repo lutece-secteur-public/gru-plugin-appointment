@@ -1,0 +1,72 @@
+<#assign cpt=0>
+${entry.CSSClass!}
+<div class="control-group">
+	<label class="control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
+		<div class="controls">
+		<#list entry.fields as field>
+			<label class="checkbox <#if entry.fieldInLine>inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
+			<input type="checkbox" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}_${field.idField}" value="${field.idField}"
+				<#if list_responses??>
+					<#list list_responses as response>
+						<#if response.entry.idEntry == entry.idEntry && response.field??>
+							<#if response.field.idField == field.idField>checked="checked"</#if>
+						</#if>
+					</#list>
+				<#else>
+					<#if field.defaultValue>checked="checked" </#if>
+				</#if>
+				<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
+					onclick="doCheckboxEffect(this.checked,${field.idField});"
+				</#if>
+			/>
+			<#if !field.noDisplayTitle>
+				${field.title}
+			</#if>
+			</label>
+			<#if !entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
+				<p class="help-block">${entry.helpMessage}</p>
+			</#if>	
+		</#list>
+		<#if entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
+			<p class="help-block">${entry.helpMessage}</p>
+		</#if>	
+		<#if list_responses??>
+			<#list list_responses as response>
+				<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+					<div class="alert alert-error">
+					<#assign error = response.entry.error>
+					<#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if>
+					</div>
+				</#if>
+			</#list>
+		</#if>
+		<#if str_list_entry_children?exists>${str_list_entry_children}</#if>
+		</div>
+	</div>	
+	<#if list_responses??>
+		<script type="text/javascript">
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.field??>
+				var baliseId = "div" + ${response.field.idField};
+				if(document.getElementById && document.getElementById(baliseId) != null)
+				{
+					document.getElementById(baliseId).style.visibility='visible';
+					document.getElementById(baliseId).style.display='block';
+				}
+			</#if>
+		</#list>
+		</script>
+	<#else>
+		<#list entry.fields as field>
+			<#if field.defaultValue && field.conditionalQuestions?exists && field.conditionalQuestions?size != 0>
+				<script type="text/javascript">
+					var baliseId = "div" + ${field.idField};
+					if(document.getElementById && document.getElementById(baliseId) != null)
+					{
+					document.getElementById(baliseId).style.visibility='visible';
+					document.getElementById(baliseId).style.display='block';
+					}
+			</script>
+			</#if>
+		</#list>
+	</#if>

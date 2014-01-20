@@ -1,0 +1,60 @@
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" id="form-validate" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
+			<input name="page" value="appointment" type="hidden" />
+			<input name="action" value="doValidateForm" type="hidden" />
+			<input name="id_form" value="${form.idForm}" type="hidden" />
+			<input name="session" value="session" type="hidden" />
+			<fieldset>
+				<legend>
+					<#if form.displayTitleFo && form.title != "" >
+						${form.title}
+					<#else>
+						#i18n{appointment.appointmentApp.defaultTitle}
+					</#if>
+				</legend>
+				<span class="help-block">
+					${form.description!}
+				</span>
+				<br />
+				<br />
+				<div class="control-group">
+					<label for="lastname" class="control-label">${form_messages.fieldLastNameTitle!}</label>
+					<div class="controls">
+						<input type="text" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
+						<#if form_messages.fieldLastNameHelp?? && form_messages.fieldLastNameHelp != ''>
+							<span class="help-block">${form_messages.fieldLastNameHelp}</span>
+						</#if>
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="firstname" class="control-label">${form_messages.fieldFirstNameTitle!}</label>
+					<div class="controls">
+						<input type="text" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
+						<#if form_messages.fieldFirstNameHelp?? && form_messages.fieldFirstNameHelp != ''>
+							<span class="help-block">${form_messages.fieldFirstNameHelp}</span>
+						</#if>
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="email" class="control-label">${form_messages.fieldEmailTitle!}</label>
+					<div class="controls">
+						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
+						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
+							<span class="help-block">${form_messages.fieldEmailHelp}</span>
+						</#if>
+					</div>
+				</div>
+				${str_entry}
+				<div class="form-actions form-steps">
+					<button class="btn btn-primary btn-small" type="submit" name="save" >
+						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+					</button>
+					<button type="reset" name="reset" class="btn btn-primary btn-small">
+						<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelReset}
+					</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

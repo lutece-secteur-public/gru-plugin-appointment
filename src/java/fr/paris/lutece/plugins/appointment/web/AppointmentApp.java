@@ -56,6 +56,7 @@ import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
@@ -116,7 +117,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_ID_SLOT = "idSlot";
     //    private static final String PARAMETER_DATE = "date";
     private static final String PARAMETER_BACK = "back";
-    private static final String PARAMETER_LOAD_RESPONSES_FROM_APPOINTMENT = "loadResponsesFromAppointment";
 
     // Marks
     private static final String MARK_FORM_LIST = "form_list";
@@ -320,7 +320,7 @@ public class AppointmentApp extends MVCApplication
                 return redirect( request, VIEW_GET_FORM, PARAMETER_ID_FORM, nIdForm );
             }
 
-            convertMapResponseToList( appointment );
+            _appointmentFormService.convertMapResponseToList( appointment );
             _appointmentFormService.saveValidatedAppointmentForm( request.getSession( ), appointment );
 
             return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
@@ -514,6 +514,14 @@ public class AppointmentApp extends MVCApplication
             AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
         }
 
+        if ( form.getIdWorkflow( ) > 0 )
+        {
+            WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ),
+                    Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ), form.getIdForm( ) );
+            WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ),
+                    Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ), form.getIdForm( ) );
+        }
+
         _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession( ) );
 
         return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
@@ -569,23 +577,5 @@ public class AppointmentApp extends MVCApplication
             _captchaSecurityService = new CaptchaSecurityService( );
         }
         return _captchaSecurityService;
-    }
-
-    /**
-     * Convert an AppointmentDTO to an Appointment by transferring response from
-     * the map of class AppointmentDTO to the list of class Appointment.
-     * @param appointment The appointment to convert
-     */
-    private void convertMapResponseToList( AppointmentDTO appointment )
-    {
-        List<Response> listResponse = new ArrayList<Response>( );
-
-        for ( List<Response> listResponseByEntry : appointment.getMapResponsesByIdEntry( ).values( ) )
-        {
-            listResponse.addAll( listResponseByEntry );
-        }
-
-        appointment.setMapResponsesByIdEntry( null );
-        appointment.setListResponse( listResponse );
     }
 }

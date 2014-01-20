@@ -1,0 +1,63 @@
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" id="form-validate" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
+			<input name="action" value="doMakeAppointment" type="hidden" />
+			<fieldset>
+				<legend>
+					#i18n{appointment.appointmentApp.recap.title} - 
+					<#if form.displayTitleFo && form.title != "" >
+						${form.title}
+					<#else>
+						#i18n{appointment.appointmentApp.defaultTitle}
+					</#if>
+				</legend>
+				<@messages errors=errors />
+				<div class="control-group">
+					<label for="lastname" class="control-label">#i18n{appointment.appointmentApp.labelLastName}</label>
+					<div class="controls">
+						${appointment.lastName}
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="firstname" class="control-label">#i18n{appointment.appointmentApp.labelFirstName}</label>
+					<div class="controls">
+						${appointment.firstName}
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="email" class="control-label">#i18n{appointment.appointmentApp.labelEmail}</label>
+					<div class="controls">
+						${appointment.email}
+					</div>
+				</div>
+				<#list appointment.listResponse as response>
+					<#if response.toStringValueResponse?has_content>
+					<div class="control-group">
+						<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+						<div class="controls">
+							${response.toStringValueResponse}
+						</div>
+					</div>
+					</#if>
+				</#list>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
+					<div class="controls">
+						${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointment} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
+					</div>
+				</div>
+				<#if captcha??>
+					${captcha!}
+				</#if>
+				<div class="form-actions">
+					<button name="validate" class="btn btn-primary btn-small" value="validate">
+						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
+					</button>
+					<button name="back" class="btn btn-small" value="back">
+						<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+					</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

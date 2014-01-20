@@ -56,10 +56,7 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +65,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -103,6 +102,7 @@ public class AppointmentFormService implements Serializable
     // Templates
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
     private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
+    private static final String TEMPLATE_HTML_CODE_FORM_ADMIN = "admin/plugins/appointment/html_code_form.html";
 
     // Properties
     private static final String PROPERTY_DEFAULT_CALENDAR_TITLE = "appointment.formMessages.defaultCalendarTitle";
@@ -150,7 +150,8 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_LOCALE, locale );
         model.put( MARK_APPOINTMENT, getAppointmentFromSession( request.getSession(  ) ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
+        HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
+                : TEMPLATE_HTML_CODE_FORM_ADMIN, locale, model );
 
         return template.getHtml(  );
     }
@@ -494,5 +495,23 @@ public class AppointmentFormService implements Serializable
                 PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED, StringUtils.EMPTY ) );
 
         return formMessages;
+    }
+
+    /**
+     * Convert an AppointmentDTO to an Appointment by transferring response from
+     * the map of class AppointmentDTO to the list of class Appointment.
+     * @param appointment The appointment to convert
+     */
+    public void convertMapResponseToList( AppointmentDTO appointment )
+    {
+        List<Response> listResponse = new ArrayList<Response>( );
+
+        for ( List<Response> listResponseByEntry : appointment.getMapResponsesByIdEntry( ).values( ) )
+        {
+            listResponse.addAll( listResponseByEntry );
+        }
+
+        appointment.setMapResponsesByIdEntry( null );
+        appointment.setListResponse( listResponse );
     }
 }

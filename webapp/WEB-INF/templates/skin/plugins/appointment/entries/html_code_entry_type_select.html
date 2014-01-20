@@ -1,0 +1,54 @@
+<div class="control-group">
+	<label class="control-label"  for="attribute${entry.idEntry}">${entry.title} <#if entry.mandatory>*</#if></label>
+	<div class="controls">	 
+		<select name="attribute${entry.idEntry}" id="attribute${entry.idEntry}"
+			<#if list_responses??>
+				<#list list_responses as response>
+					<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+						class="error"
+						<#break>
+					</#if>
+				</#list>
+				class="${entry.CSSClass!}"
+		</#if>	>
+		<option value="">#i18n{appointment.xpage.form.noValue}</option>
+		<#list entry.fields as field>
+			<option  value="${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if>
+				<#if list_responses??>
+					<#list list_responses as response>
+						<#if response.entry.idEntry == entry.idEntry && response.field??>
+							<#if response.field.idField == field.idField>
+								selected ="selected"
+								<#break>
+							</#if>
+						</#if>
+					</#list>
+				<#else>
+					<#if field.defaultValue>
+						selected ="selected"
+					</#if>
+				</#if>
+				>
+					${field.title}
+			</option>	
+		</#list>
+	</select>
+	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
+	<p class="help-block">${entry.helpMessage}</p>
+	</#if>
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+				<div class="alert alert-error">
+					<#assign error = response.entry.error>
+					<#if error.mandatoryError>
+						#i18n{appointment.message.mandatory.entry}
+					<#else>
+						${error.errorMessage}
+					</#if>
+				</div>	
+				</#if>
+			</#list>
+	</#if>
+	</div>
+</div>

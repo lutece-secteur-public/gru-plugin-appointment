@@ -42,7 +42,8 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  */
 public class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser
 {
-    private static final String TEMPLATE_HTML_CODE = "admin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
+    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
 
     /**
      * {@inheritDoc}
@@ -50,6 +51,6 @@ public class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser
     @Override
     public String getHtmlCode( Entry entry, boolean bDisplayFront )
     {
-        return TEMPLATE_HTML_CODE;
+        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
     }
 }

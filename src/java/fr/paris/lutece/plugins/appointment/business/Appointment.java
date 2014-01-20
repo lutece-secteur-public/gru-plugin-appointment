@@ -50,6 +50,12 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class Appointment implements Serializable
 {
+
+    /**
+     * Appointment resource type
+     */
+    public static final String APPOINTMENT_RESOURCE_TYPE = "appointment";
+
     /**
      * Status of appointments that have been rejected
      */

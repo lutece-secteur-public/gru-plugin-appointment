@@ -44,7 +44,8 @@ public class EntryTypeSession extends AbstractEntryTypeSession
 {
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_session.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_session.html";
-    private static final String TEMPLATE_HTML_CODE = "admin/plugins/appointment/entries/html_code_entry_type_session.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_session.html";
+    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_session.html";
 
     /**
      * {@inheritDoc}
@@ -52,7 +53,7 @@ public class EntryTypeSession extends AbstractEntryTypeSession
     @Override
     public String getHtmlCode( Entry entry, boolean bDisplayFront )
     {
-        return TEMPLATE_HTML_CODE;
+        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
     }
 
     /**

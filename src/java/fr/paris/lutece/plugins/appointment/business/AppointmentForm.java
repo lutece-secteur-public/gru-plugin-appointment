@@ -33,10 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import fr.paris.lutece.portal.service.rbac.RBACResource;
 
 import java.io.Serializable;
-
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
@@ -44,11 +43,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 /**
  * This is the business class for the object AppointmentForm
  */
-public class AppointmentForm implements Serializable
+public class AppointmentForm implements Serializable, RBACResource
 {
     /**
      * Name of the resource type of Appointment Forms
@@ -597,5 +598,23 @@ public class AppointmentForm implements Serializable
 
         return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened[nDayOfWeek - 1]
                                                                                   : false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResourceTypeCode( )
+    {
+        return RESOURCE_TYPE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResourceId( )
+    {
+        return Integer.toString( getIdForm( ) );
     }
 }
