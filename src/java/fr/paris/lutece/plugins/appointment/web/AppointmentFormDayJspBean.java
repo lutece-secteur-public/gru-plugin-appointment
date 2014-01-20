@@ -50,14 +50,8 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
-import org.dozer.converters.DateConverter;
-
 import java.sql.Date;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -67,6 +61,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.dozer.converters.DateConverter;
 
 
 /**
@@ -346,6 +343,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     /**
      * Populate a day from data in an HTTP request
      * @param day The day to populate
+     * @param form The appointment form associated with the day to populate
      * @param request The request
      * @return The list of error, or an empty list if no error was found
      */

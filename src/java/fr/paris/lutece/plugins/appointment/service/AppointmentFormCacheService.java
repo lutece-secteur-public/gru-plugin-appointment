@@ -39,7 +39,7 @@ import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
 /**
  * Get the instance of the cache service
  */
-public class AppointmentFormCacheService extends AbstractCacheableService
+public final class AppointmentFormCacheService extends AbstractCacheableService
 {
     private static final String SERVICE_NAME = "appointment.appointmentFormCacheService";
     private static final String CACHE_KEY_FORM = "appointment.appointmentForm.";

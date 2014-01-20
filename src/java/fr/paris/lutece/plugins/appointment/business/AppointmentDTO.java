@@ -46,8 +46,13 @@ import java.util.Map;
  */
 public class AppointmentDTO extends Appointment
 {
-    Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>(  );
-    AppointmentSlot _appointmentSlot;
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 147509700468338769L;
+
+    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>( );
+    private AppointmentSlot _appointmentSlot;
 
     /**
      * Get the map containing an association between entries of the form and the

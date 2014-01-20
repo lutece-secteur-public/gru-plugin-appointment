@@ -35,24 +35,41 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-
+import java.io.Serializable;
 import java.sql.Date;
-
 import java.util.List;
 
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
  * This is the business class for the object Appointment
  */
-public class Appointment
+public class Appointment implements Serializable
 {
+    /**
+     * Status of appointments that have been rejected
+     */
     public static final int STATUS_REJECTED = -10;
+
+    /**
+     * Status of appointments that have not been validated yet
+     */
     public static final int STATUS_NOT_VALIDATED = 0;
+
+    /**
+     * Status of appointments that have been validated
+     */
     public static final int STATUS_VALIDATED = 10;
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = -2311528095383408879L;
+
     private int _nIdAppointment;
     @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.FirstName.size}" )

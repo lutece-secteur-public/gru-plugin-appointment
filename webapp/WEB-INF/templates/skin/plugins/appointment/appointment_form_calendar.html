@@ -86,7 +86,7 @@
 											<#if slot.isEnabled>
 												<#if slot.nbFreePlaces &gt; 0>
 													<td class="appointment-slot-avaiable appointment-row${rowspan}">
-														<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}&date=${day.date}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+														<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
 													</td>
 												<#else>
 													<td class="appointment-slot-full appointment-row${rowspan}">
@@ -136,7 +136,7 @@
 									<#if slot.isEnabled>
 										<#if slot.nbFreePlaces &gt; 0>
 											<td class="appointment-slot-avaiable">
-												<a href="jsp/site/Portal.jsp?page=appointment&action=confirmMakeAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+												<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
 											</td>
 										<#else>
 											<td class="appointment-slot-full">
