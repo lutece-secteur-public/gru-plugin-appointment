@@ -32,7 +32,14 @@
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentForms.jsp</feature-url>
             <feature-icon-url></feature-icon-url>
       </admin-feature>
-    </admin-features>    
+    </admin-features>
+	<rbac-resource-types>
+		<rbac-resource-type>
+			<rbac-resource-type-class>
+				fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService
+			</rbac-resource-type-class>
+		</rbac-resource-type>
+	</rbac-resource-types>    
   	<!-- XPages parameters -->
     <applications>
         <application>

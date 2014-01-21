@@ -115,6 +115,9 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_DEFAULT_URL_REDIRECTION = "appointment.formMessages.defaultUrlRedirection";
     private static final String PROPERTY_DEFAULT_LABEL_BUTTON_REDIRECT = "appointment.formMessages.defaultLabelButtonRedirect";
     private static final String PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED = "appointment.formMessages.defaultTextAppointmentCreated";
+    private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
+    private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
+    private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
 
     /**
      * Return the HTML code of the form
@@ -148,7 +151,23 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
         model.put( MARK_LOCALE, locale );
-        model.put( MARK_APPOINTMENT, getAppointmentFromSession( request.getSession(  ) ) );
+        AppointmentDTO appointment = getAppointmentFromSession( request.getSession( ) );
+        if ( appointment == null && SecurityService.isAuthenticationEnable( ) )
+        {
+            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+            if ( user != null )
+            {
+                appointment = new AppointmentDTO( );
+                appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty(
+                        PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
+                appointment.setLastName( user.getUserInfo( AppPropertiesService.getProperty(
+                        PROPERTY_USER_ATTRIBUTE_LAST_NAME, StringUtils.EMPTY ) ) );
+                appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty(
+                        PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
+
+            }
+        }
+        model.put( MARK_APPOINTMENT, appointment );
 
         HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
                 : TEMPLATE_HTML_CODE_FORM_ADMIN, locale, model );
@@ -249,7 +268,7 @@ public class AppointmentFormService implements Serializable
 
             if ( ( appointment != null ) && ( appointment.getMapResponsesByIdEntry(  ) != null ) )
             {
-                List<Response> listResponses = appointment.getMapResponsesByIdEntry(  ).get( entry.getIdEntry(  ) );
+                List<Response> listResponses = appointment.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
                 model.put( MARK_LIST_RESPONSES, listResponses );
             }
         }
@@ -357,8 +376,11 @@ public class AppointmentFormService implements Serializable
 
                     for ( Entry conditionalEntry : field.getConditionalQuestions(  ) )
                     {
+                        List<Response> listResponseChild = new ArrayList<Response>( );
+                        appointment.getMapResponsesByIdEntry( ).put( conditionalEntry.getIdEntry( ), listResponseChild );
+
                         listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry(  ),
-                                listResponse, !bIsFieldInResponseList, locale, appointment ) );
+                                listResponseChild, !bIsFieldInResponseList, locale, appointment ) );
                     }
                 }
             }

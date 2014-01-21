@@ -2,10 +2,17 @@
 	<div class="span12">
 		<fieldset>
 			<legend>
-				#i18n{appointment.manage_appointments.pageTitle}
-				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}" class="btn btn-primary pull-right" type="submit">
-					<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointments.buttonAdd}
-				</a>
+				${form.title} - #i18n{appointment.manage_appointments.pageTitle}
+				<#if day??>#i18n{appointment.manage_appointment_calendar.labelOf} ${day.date}</#if>
+				<#if slot??>
+					#i18n{appointment.manage_appointment_calendar.labelFrom} <#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
+					#i18n{appointment.manage_appointment_calendar.labelTo} <#if slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}
+				</#if>
+				<#if rightCreate?? && rightCreate>
+					<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}" class="btn btn-primary pull-right" type="submit">
+						<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointments.buttonAdd}
+					</a>
+				</#if>
 			</legend>   
 			<@messages infos=infos />
 			<@paginationAdmin paginator=paginator combo=1 />
@@ -47,7 +54,7 @@
 									<i class="icon-eye-open icon-white">&nbsp;</i>
 								</a>
 							</#if>
-							<#if rightRemove?? && rightRemove>
+							<#if rightDelete?? && rightDelete>
 								<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >
 									<i class="icon-trash icon-white">&nbsp;</i>
 								</a>

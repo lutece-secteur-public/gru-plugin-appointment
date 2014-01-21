@@ -36,8 +36,6 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
-
-import java.util.Collection;
 import java.util.List;
 
 
@@ -85,7 +83,7 @@ public interface IAppointmentDAO
      * @return The collection which contains the data of all the appointment
      *         objects
      */
-    Collection<Appointment> selectAppointmentsList( Plugin plugin );
+    List<Appointment> selectAppointmentsList( Plugin plugin );
 
     /**
      * Load the data of appointment objects associated with a given form and
@@ -94,7 +92,15 @@ public interface IAppointmentDAO
      * @param plugin the Plugin
      * @return the collection which contains the data of appointment objects
      */
-    Collection<Appointment> selectAppointmentsListByIdForm( int nIdForm, Plugin plugin );
+    List<Appointment> selectAppointmentsListByIdForm( int nIdForm, Plugin plugin );
+
+    /**
+     * Get the list of appointments matching a given filter
+     * @param appointmentFiler The filter appointments must match
+     * @param plugin The plugin
+     * @return The list of appointments that match the given filter
+     */
+    List<Appointment> selectAppointmentListByFilter( AppointmentFilter appointmentFiler, Plugin plugin );
 
     /**
      * Associates a response to an appointment

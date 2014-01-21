@@ -140,12 +140,6 @@ public class AppointmentApp extends MVCApplication
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
-    // Messages
-    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = { "appointment.manageCalendarSlots.labelMonday",
-            "appointment.manageCalendarSlots.labelTuesday", "appointment.manageCalendarSlots.labelWednesday",
-            "appointment.manageCalendarSlots.labelThursday", "appointment.manageCalendarSlots.labelFriday",
-            "appointment.manageCalendarSlots.labelSaturday", "appointment.manageCalendarSlots.labelSunday", };
-
     // Local variables
     private final AppointmentFormService _appointmentFormService = SpringContextService
             .getBean( AppointmentFormService.BEAN_NAME );
@@ -207,7 +201,7 @@ public class AppointmentApp extends MVCApplication
                 Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry( );
                 for ( Response response : appointment.getListResponse( ) )
                 {
-                    List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry( ).getIdEntry( ) );
+                    List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry( ) );
                     if ( listResponse == null )
                     {
                         listResponse = new ArrayList<Response>( );
@@ -369,49 +363,9 @@ public class AppointmentApp extends MVCApplication
 
             List<AppointmentDay> listDays = CalendarService.getService( ).getDayListForCalendar( form, nNbWeek );
 
-            // We compute slots interval
-            List<String> listTimeBegin = null;
-
-            int nMinOpeningHour = form.getOpeningHour( );
-            int nMinOpeningMinutes = form.getOpeningMinutes( );
-            int nMaxClosingHour = form.getClosingHour( );
-            int nMaxClosingMinutes = form.getClosingMinutes( );
-            int nMinAppointmentDuration = form.getDurationAppointments( );
-
-            for ( AppointmentDay appointmentDay : listDays )
-            {
-                if ( appointmentDay.getIsOpen( ) && ( appointmentDay.getIdDay( ) > 0 ) )
-                {
-                    // we check that the day has is not a longer or has a shorter appointment duration 
-                    if ( appointmentDay.getAppointmentDuration( ) < nMinAppointmentDuration )
-                    {
-                        nMinAppointmentDuration = appointmentDay.getAppointmentDuration( );
-                    }
-
-                    if ( appointmentDay.getOpeningHour( ) < nMinOpeningHour )
-                    {
-                        nMinOpeningHour = appointmentDay.getOpeningHour( );
-                    }
-
-                    if ( appointmentDay.getOpeningMinutes( ) < nMinOpeningMinutes )
-                    {
-                        nMinOpeningMinutes = appointmentDay.getOpeningMinutes( );
-                    }
-
-                    if ( appointmentDay.getClosingHour( ) > nMaxClosingHour )
-                    {
-                        nMaxClosingHour = appointmentDay.getClosingHour( );
-                    }
-
-                    if ( appointmentDay.getClosingMinutes( ) > nMaxClosingMinutes )
-                    {
-                        nMaxClosingMinutes = appointmentDay.getClosingMinutes( );
-                    }
-                }
-            }
-
-            listTimeBegin = CalendarService.getService( ).getListAppointmentTimes( nMinAppointmentDuration,
-                    nMinOpeningHour, nMinOpeningMinutes, nMaxClosingHour, nMaxClosingMinutes );
+            List<String> listTimeBegin = new ArrayList<String>( );
+            int nMinAppointmentDuration = CalendarService.getService( )
+                    .getListTimeBegin( listDays, form, listTimeBegin );
 
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, formMessages );
@@ -419,7 +373,7 @@ public class AppointmentApp extends MVCApplication
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
-            model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
+            model.put( MARK_LIST_DAYS_OF_WEEK, CalendarService.MESSAGE_LIST_DAYS_OF_WEEK );
 
             return getXPage( TEMPLATE_APPOINTMENT_FORM_CALENDAR, getLocale( request ), model );
         }
@@ -460,6 +414,7 @@ public class AppointmentApp extends MVCApplication
                 }
                 AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay( ) );
                 appointment.setDateAppointment( (Date) day.getDate( ).clone( ) );
+                model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( form.getIdForm( ) ) );
                 model.put( MARK_DAY, day );
                 model.put( MARK_FORM, form );
                 fillCommons( model );

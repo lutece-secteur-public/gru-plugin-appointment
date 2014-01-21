@@ -42,7 +42,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -59,6 +58,14 @@ public class CalendarService
      * Name of the bean of the service
      */
     public static final String BEAN_NAME = "appointment.calendarService";
+
+    /**
+     * List of i18n keys of days of week
+     */
+    public static final String[] MESSAGE_LIST_DAYS_OF_WEEK = { "appointment.manageCalendarSlots.labelMonday",
+            "appointment.manageCalendarSlots.labelTuesday", "appointment.manageCalendarSlots.labelWednesday",
+            "appointment.manageCalendarSlots.labelThursday", "appointment.manageCalendarSlots.labelFriday",
+            "appointment.manageCalendarSlots.labelSaturday", "appointment.manageCalendarSlots.labelSunday", };
 
     // Properties
     private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
@@ -480,5 +487,59 @@ public class CalendarService
         }
 
         checkFormDays( form );
+    }
+
+    /**
+     * Get the list of begin times for a given list of days
+     * @param listDays The list of days to consider
+     * @param form The form associated with the given days
+     * @param listTimeBegin The list to insert begin times in
+     * @return The minimum duration of appointments
+     */
+    public int getListTimeBegin( List<AppointmentDay> listDays, AppointmentForm form, List<String> listTimeBegin )
+    {
+        // We compute slots interval
+        int nMinOpeningHour = form.getOpeningHour( );
+        int nMinOpeningMinutes = form.getOpeningMinutes( );
+        int nMaxClosingHour = form.getClosingHour( );
+        int nMaxClosingMinutes = form.getClosingMinutes( );
+        int nMinAppointmentDuration = form.getDurationAppointments( );
+
+        for ( AppointmentDay appointmentDay : listDays )
+        {
+            if ( appointmentDay.getIsOpen( ) && ( appointmentDay.getIdDay( ) > 0 ) )
+            {
+                // we check that the day has is not a longer or has a shorter appointment duration 
+                if ( appointmentDay.getAppointmentDuration( ) < nMinAppointmentDuration )
+                {
+                    nMinAppointmentDuration = appointmentDay.getAppointmentDuration( );
+                }
+
+                if ( appointmentDay.getOpeningHour( ) < nMinOpeningHour )
+                {
+                    nMinOpeningHour = appointmentDay.getOpeningHour( );
+                }
+
+                if ( appointmentDay.getOpeningMinutes( ) < nMinOpeningMinutes )
+                {
+                    nMinOpeningMinutes = appointmentDay.getOpeningMinutes( );
+                }
+
+                if ( appointmentDay.getClosingHour( ) > nMaxClosingHour )
+                {
+                    nMaxClosingHour = appointmentDay.getClosingHour( );
+                }
+
+                if ( appointmentDay.getClosingMinutes( ) > nMaxClosingMinutes )
+                {
+                    nMaxClosingMinutes = appointmentDay.getClosingMinutes( );
+                }
+            }
+        }
+
+        listTimeBegin.addAll( CalendarService.getService( ).getListAppointmentTimes( nMinAppointmentDuration,
+                nMinOpeningHour, nMinOpeningMinutes, nMaxClosingHour, nMaxClosingMinutes ) );
+
+        return nMinAppointmentDuration;
     }
 }

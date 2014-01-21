@@ -1,54 +1,49 @@
-<div class="row-fluid" >
-    <div class="span12">
-	    <form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointments.jsp">
-	        <fieldset>
-	            <legend>#i18n{appointment.modify_appointment.pageTitle}</legend>
-	
-	            <@messages errors=errors />
-	
-	            <input type="hidden" id="id_appointment" name="id_appointment" value="${appointment.idAppointment}"/>
-	
-	            <div class="control-group">
-	                <label class="control-label" for="first_name" >#i18n{appointment.modify_appointment.labelFirstName} :</label>
-	                <div class="controls">
-	                    ${appointment.firstName}
-	                </div>
-	            </div>
-	            <div class="control-group">
-	                <label class="control-label" for="last_name" >#i18n{appointment.modify_appointment.labelLastName} :</label>
-	                <div class="controls">
-	                    ${appointment.lastName}
-	                </div>
-	            </div>
-	            <div class="control-group">
-	                <label class="control-label" for="email" >#i18n{appointment.modify_appointment.labelEmail} :</label>
-	                <div class="controls">
-	                    ${appointment.email}
-	                </div>
-	            </div>
-	            <div class="control-group">
-	                <label class="control-label" for="id_user" >#i18n{appointment.modify_appointment.labelIdUser} :</label>
-	                <div class="controls">
-	                    ${appointment.idUser}
-	                </div>
-	            </div>
-	            <div class="form-actions">   
-	                <button name="view_manageAppointments" class="btn btn-small" type="submit" title="#i18n{portal.util.labelBack}" >
-	                    <i class="icon-remove-circle btn-primary">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
-	                </button>	
-	            </div>
-	            <#list appointment.listResponse as response>
-					<#if response.toStringValueResponse?has_content>
-					<div class="control-group">
-						<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-						<div class="controls">
-							<input type="text" value="${response.toStringValueResponse}" class="input-xxlarge" disabled>
-						</div>
+<div class="row-fluid">
+	<div class="span12 form-horizontal">
+		<fieldset>
+			<legend>
+				${form.title}
+			</legend>
+			<@messages errors=errors />
+			<div class="control-group">
+				<label for="lastname" class="control-label">${formMessages.fieldLastNameTitle!}</label>
+				<div class="controls">
+					${appointment.lastName}
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="firstname" class="control-label">${formMessages.fieldFirstNameTitle!}</label>
+				<div class="controls">
+					${appointment.firstName}
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="email" class="control-label">${formMessages.fieldEmailTitle!}</label>
+				<div class="controls">
+					${appointment.email}
+				</div>
+			</div>
+			<#list appointment.listResponse as response>
+				<#if response.toStringValueResponse?has_content>
+				<div class="control-group">
+					<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+					<div class="controls">
+						${response.toStringValueResponse}
 					</div>
-					</#if>
-				</#list>
-	        </fieldset>
-	    </form>
-    </div>  
+				</div>
+				</#if>
+			</#list>
+			<div class="control-group">
+				<label class="control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
+				<div class="controls">
+					${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointment} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
+				</div>
+			</div>
+			<div class="form-actions">
+				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}" class="btn btn-small">
+					<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+				</a>
+			</div>
+		</fieldset>
+	</div>
 </div>
-

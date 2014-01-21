@@ -1,0 +1,161 @@
+<link href="css/plugins/appointment/appointment.css" rel="stylesheet" >
+
+<div class="row-fluid">
+	<div class="span12">
+		<legend>${form.title} - #i18n{appointment.manage_appointments.pageTitle}</legend>
+		<@messages infos=infos />
+		<div class="pull-left">
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
+				<i class="icon-arrow-left icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
+			</a>
+		</div>
+		<div class="pull-right">
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
+				#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="icon-arrow-right icon-white">&nbsp;</i>
+			</a>
+		</div>
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span12">
+		<div class="hidden-phone">
+			<table class="table appointment-table-container">
+				<tr>
+					<td>
+						<table class="table appointment-inner-table">
+							<tr>
+								<td>
+									<br />
+									<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}">
+										<i class="icon-arrow-left">&nbsp;</i>
+									</a>
+									<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week+1}">
+										<i class="icon-arrow-right">&nbsp;</i>
+									</a>
+								</td>
+							</tr>
+							<#list list_time_begin as time_begin>
+								<tr>
+									<td class="appointment-row1">
+										${time_begin}
+									</td>
+								</tr>
+							</#list>
+						</table>
+					</td>
+					<#list listDays as day>
+						<td>
+							<table class="table table-stripped appointment-inner-table">
+								<tr>
+									<th>
+										#i18n{${list_days_of_week[day_index]}}<br />
+										${day.date}
+									</th>
+								</tr>
+								<#if day.isOpen>
+									<#assign rowspan=day.appointmentDuration/min_duration_appointments>
+									<#assign first_slot = day.listSlots?first>
+									<#if first_slot.startingHour &lt; 10>
+										<#assign first_time = '0' + first_slot.startingHour + 'h'>
+									<#else>
+										<#assign first_time = first_slot.startingHour + 'h'>
+									</#if>
+									<#if first_slot.startingMinute &lt; 10>
+										<#assign first_time = first_time + '0' + first_slot.startingMinute>
+									<#else>
+										<#assign first_time = first_time + first_slot.startingMinute>
+									</#if>
+									<#list list_time_begin as time_begin>
+										<#if time_begin != first_time>
+											<tr>
+												<td class="appointment-slot-closed appointment-row1">
+												</td>
+											</tr>
+										<#else>
+											<#break>
+										</#if>
+									</#list>
+									<#list day.listSlots as slot>
+										<tr>
+											<#if slot.isEnabled>
+												<#if slot.nbFreePlaces == slot.nbPlaces>
+													<td class="appointment-slot-avaiable appointment-row${rowspan}">
+														${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+													</td>
+												<#else>
+													<td class="appointment-slot-full appointment-row${rowspan}">
+														<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
+															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+														</a>
+													</td>
+												</#if>
+											<#else>
+												<td class="appointment-slot-closed appointment-row${rowspan}">
+												</td>
+											</#if>
+										</tr>
+									</#list>
+								<#else>
+									<#list list_time_begin as time_begin>
+										<tr>
+											<td class="appointment-slot-closed appointment-row1">
+											</td>
+										</tr>
+									</#list>
+								</#if>
+							</table>
+						</td>
+					</#list>
+				</tr>
+			</table>
+		</div>
+		<div class="visible-phone">
+			<#list listDays as day>
+				<#if day.isOpen>
+					<div class="span1">
+						<table class="table appointment-inner-table">
+							<tr>
+								<th>
+								</th>
+								<th>
+									<center>
+										#i18n{${list_days_of_week[day_index]}}
+										${day.date}
+									</center>
+								</th>
+							</tr>
+							<#list day.listSlots as slot>
+								<tr>
+									<td>
+										<#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
+									</td>
+									<#if slot.isEnabled>
+										<#if slot.nbFreePlaces == slot.nbPlaces>
+											<td class="appointment-slot-avaiable">
+												${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+											</td>
+										<#else>
+											<td class="appointment-slot-full">
+												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&idSlot=${slot.idSlot}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
+													${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+												</a>
+											</td>
+										</#if>
+									<#else>
+										<td class="appointment-slot-closed">
+										</td>
+									</#if>
+								</tr>
+							</#list>
+						</table>
+					</div>
+				</#if>
+			</#list>
+		</div>
+		<div class="form-horizontal form-actions">
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
+				#i18n{portal.util.labelBack}
+			</a>
+		</div>
+	</div>
+</div>

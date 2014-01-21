@@ -50,13 +50,13 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -82,7 +82,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_FIELD = "appointment.message.confirmRemoveField";
     private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
-    private static final String MESSAGE_FIELD_VALUE_FIELD = "directory.message.field_value_field";
+    private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.field_value_field";
 
     // Views
     private static final String VIEW_GET_CREATE_FIELD = "getCreateField";
@@ -108,8 +108,8 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     private static final String PARAMETER_DEFAULT_VALUE = "default_value";
     private static final String PARAMETER_NO_DISPLAY_TITLE = "no_display_title";
     private static final String PARAMETER_COMMENT = "comment";
-    private static final String FIELD_TITLE_FIELD = "form.createField.labelTitle";
-    private static final String FIELD_VALUE_FIELD = "directory.create_field.label_value";
+    private static final String FIELD_TITLE_FIELD = "appointment.createField.labelTitle";
+    private static final String FIELD_VALUE_FIELD = "appointment.createField.labelValue";
 
     // Templates
     private static final String TEMPLATE_CREATE_FIELD = "admin/plugins/appointment/create_field.html";

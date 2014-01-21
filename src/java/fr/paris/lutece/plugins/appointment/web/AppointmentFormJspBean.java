@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
@@ -226,7 +225,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, "0",
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
                 AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
@@ -257,7 +256,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute(
                 SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, "0",
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
                 AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
@@ -300,7 +299,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
 
-        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
                 request.getParameter( PARAMETER_ID_FORM ),
                 AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
         {
@@ -328,7 +327,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
 
-        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
                 request.getParameter( PARAMETER_ID_FORM ),
                 AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
         {
@@ -363,7 +362,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
         }
 
-        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
                 Integer.toString( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {
@@ -427,7 +426,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
-        if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE,
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
                 Integer.toString( appointmentForm.getIdForm( ) ), AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {
@@ -472,7 +471,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
-            if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, strIdForm,
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
                     AppointmentResourceIdService.PERMISSION_CHANGE_STATE, AdminUserService.getAdminUser( request ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_STATE );
@@ -524,7 +523,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
-            if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, strIdForm,
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
                     AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
@@ -559,7 +558,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) &&
                 ( request.getParameter( PARAMETER_BACK ) == null ) )
         {
-            if ( !RBACService.isAuthorized( Appointment.APPOINTMENT_RESOURCE_TYPE, strIdForm,
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
                     AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );

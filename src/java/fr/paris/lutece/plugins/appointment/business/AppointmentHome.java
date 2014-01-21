@@ -40,8 +40,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
-import java.util.Collection;
 import java.util.List;
 
 
@@ -125,7 +123,7 @@ public final class AppointmentHome
      * @return the collection which contains the data of all the appointment
      *         objects
      */
-    public static Collection<Appointment> getAppointmentsList(  )
+    public static List<Appointment> getAppointmentsList( )
     {
         return _dao.selectAppointmentsList( _plugin );
     }
@@ -136,7 +134,7 @@ public final class AppointmentHome
      * @param nIdForm the id of the form
      * @return the collection which contains the data of appointment objects
      */
-    public static Collection<Appointment> getAppointmentsListByIdForm( int nIdForm )
+    public static List<Appointment> getAppointmentsListByIdForm( int nIdForm )
     {
         return _dao.selectAppointmentsListByIdForm( nIdForm, _plugin );
     }
@@ -173,5 +171,15 @@ public final class AppointmentHome
     public static int countAppointmentsByIdForm( int nIdForm, Date date )
     {
         return _dao.countAppointmentsByIdForm( nIdForm, date, _plugin );
+    }
+
+    /**
+     * Get the list of appointments matching a given filter
+     * @param appointmentFiler The filter appointments must match
+     * @return The list of appointments that match the given filter
+     */
+    public static List<Appointment> getAppointmentListByFilter( AppointmentFilter appointmentFiler )
+    {
+        return _dao.selectAppointmentListByFilter( appointmentFiler, _plugin );
     }
 }
