@@ -35,11 +35,13 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
-import java.text.DateFormat;
-import java.util.Locale;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
+
 import org.dozer.converters.DateConverter;
+
+import java.text.DateFormat;
+
+import java.util.Locale;
 
 
 /**

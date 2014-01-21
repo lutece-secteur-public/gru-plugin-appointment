@@ -45,7 +45,6 @@ public class AppointmentFilter
      * Value for status to ignore filter
      */
     public static final int NO_STATUS_FILTER = -1525;
-
     private int _nIdSlot;
     private int _nIdForm;
     private String _strFirstName;
@@ -59,7 +58,7 @@ public class AppointmentFilter
      * Get the id of the form
      * @return The id of the form
      */
-    public int getIdForm( )
+    public int getIdForm(  )
     {
         return _nIdForm;
     }
@@ -77,7 +76,7 @@ public class AppointmentFilter
      * Get the id of the slot
      * @return The id of the slot
      */
-    public int getIdSlot( )
+    public int getIdSlot(  )
     {
         return _nIdSlot;
     }
@@ -95,7 +94,7 @@ public class AppointmentFilter
      * Returns the FirstName
      * @return The FirstName
      */
-    public String getFirstName( )
+    public String getFirstName(  )
     {
         return _strFirstName;
     }
@@ -113,7 +112,7 @@ public class AppointmentFilter
      * Returns the LastName
      * @return The LastName
      */
-    public String getLastName( )
+    public String getLastName(  )
     {
         return _strLastName;
     }
@@ -131,7 +130,7 @@ public class AppointmentFilter
      * Returns the Email
      * @return The Email
      */
-    public String getEmail( )
+    public String getEmail(  )
     {
         return _strEmail;
     }
@@ -149,7 +148,7 @@ public class AppointmentFilter
      * Returns the IdUser
      * @return The IdUser
      */
-    public String getIdUser( )
+    public String getIdUser(  )
     {
         return _strIdUser;
     }
@@ -167,7 +166,7 @@ public class AppointmentFilter
      * Get the date of the appointment
      * @return The date of the appointment
      */
-    public Date getDateAppointment( )
+    public Date getDateAppointment(  )
     {
         return _dateAppointment;
     }
@@ -185,7 +184,7 @@ public class AppointmentFilter
      * Get the status of the appointment
      * @return The status of the appointment
      */
-    public int getStatus( )
+    public int getStatus(  )
     {
         return _nStatus;
     }

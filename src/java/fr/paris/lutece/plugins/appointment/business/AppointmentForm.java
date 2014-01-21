@@ -35,15 +35,16 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.io.Serializable;
+
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -604,7 +605,7 @@ public class AppointmentForm implements Serializable, RBACResource
      * {@inheritDoc}
      */
     @Override
-    public String getResourceTypeCode( )
+    public String getResourceTypeCode(  )
     {
         return RESOURCE_TYPE;
     }
@@ -613,8 +614,8 @@ public class AppointmentForm implements Serializable, RBACResource
      * {@inheritDoc}
      */
     @Override
-    public String getResourceId( )
+    public String getResourceId(  )
     {
-        return Integer.toString( getIdForm( ) );
+        return Integer.toString( getIdForm(  ) );
     }
 }

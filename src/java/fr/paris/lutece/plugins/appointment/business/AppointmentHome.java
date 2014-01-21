@@ -40,6 +40,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -123,7 +124,7 @@ public final class AppointmentHome
      * @return the collection which contains the data of all the appointment
      *         objects
      */
-    public static List<Appointment> getAppointmentsList( )
+    public static List<Appointment> getAppointmentsList(  )
     {
         return _dao.selectAppointmentsList( _plugin );
     }

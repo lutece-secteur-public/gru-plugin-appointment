@@ -411,6 +411,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         slot.setEndingHour( daoUtil.getInt( nIndex++ ) );
         slot.setEndingMinute( daoUtil.getInt( nIndex++ ) );
         slot.setIsEnabled( daoUtil.getBoolean( nIndex ) );
+        slot.setNbFreePlaces( slot.getNbPlaces(  ) );
 
         return slot;
     }

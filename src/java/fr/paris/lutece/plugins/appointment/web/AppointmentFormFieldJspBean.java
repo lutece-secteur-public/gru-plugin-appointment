@@ -50,13 +50,13 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**

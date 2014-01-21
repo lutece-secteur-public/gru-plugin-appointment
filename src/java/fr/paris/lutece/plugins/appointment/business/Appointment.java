@@ -35,14 +35,16 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.io.Serializable;
+
 import java.sql.Date;
+
 import java.util.List;
 
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -50,7 +52,6 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class Appointment implements Serializable
 {
-
     /**
      * Appointment resource type
      */
@@ -75,7 +76,6 @@ public class Appointment implements Serializable
      * Serial version UID
      */
     private static final long serialVersionUID = -2311528095383408879L;
-
     private int _nIdAppointment;
     @NotEmpty( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.FirstName.size}" )
@@ -190,7 +190,7 @@ public class Appointment implements Serializable
      * Get the date of the appointment
      * @return The date of the appointment
      */
-    public Date getDateAppointment( )
+    public Date getDateAppointment(  )
     {
         return _dateAppointment;
     }

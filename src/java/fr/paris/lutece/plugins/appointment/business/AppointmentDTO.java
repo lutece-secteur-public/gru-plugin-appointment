@@ -50,8 +50,7 @@ public class AppointmentDTO extends Appointment
      * Serial version UID
      */
     private static final long serialVersionUID = 147509700468338769L;
-
-    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>( );
+    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>(  );
     private AppointmentSlot _appointmentSlot;
 
     /**
