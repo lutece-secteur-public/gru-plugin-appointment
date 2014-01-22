@@ -40,7 +40,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -160,6 +159,15 @@ public final class AppointmentHome
     public static List<Integer> findListResponse( int nIdAppointment )
     {
         return _dao.findListResponse( nIdAppointment, _plugin );
+    }
+
+    /**
+     * Remove the association between an appointment and responses
+     * @param nAppointmentId The id of the appointment
+     */
+    public static void removeAppointmentResponse( int nAppointmentId )
+    {
+        _dao.deleteAppointmentResponse( nAppointmentId, _plugin );
     }
 
     /**

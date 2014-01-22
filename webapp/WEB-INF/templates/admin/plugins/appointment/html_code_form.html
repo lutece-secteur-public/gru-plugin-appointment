@@ -47,6 +47,9 @@
 				</div>
 				${str_entry}
 				<div class="form-actions form-steps">
+					<#if appointment.idAppointment &gt; 0>
+						<input type="hidden" name="id_appointment" value="${appointment.idAppointment}">
+					</#if>
 					<button class="btn btn-primary btn-small" type="submit" name="save" >
 						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
 					</button>

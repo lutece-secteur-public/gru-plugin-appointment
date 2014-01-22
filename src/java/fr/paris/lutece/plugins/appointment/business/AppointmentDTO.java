@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,30 @@ public class AppointmentDTO extends Appointment
     private static final long serialVersionUID = 147509700468338769L;
     private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>(  );
     private AppointmentSlot _appointmentSlot;
+
+    /**
+     * Default constructor
+     */
+    public AppointmentDTO( )
+    {
+        // Do nothing
+    }
+
+    /**
+     * Creates a new appointment DTO from an appointment
+     * @param appointment The appointment to read data from
+     */
+    public AppointmentDTO( Appointment appointment )
+    {
+        setIdAppointment( appointment.getIdAppointment( ) );
+        setDateAppointment( (Date) appointment.getDateAppointment( ).clone( ) );
+        setEmail( appointment.getEmail( ) );
+        setFirstName( appointment.getFirstName( ) );
+        setLastName( appointment.getLastName( ) );
+        setIdSlot( appointment.getIdSlot( ) );
+        setIdUser( appointment.getIdUser( ) );
+        setStatus( appointment.getStatus( ) );
+    }
 
     /**
      * Get the map containing an association between entries of the form and the
