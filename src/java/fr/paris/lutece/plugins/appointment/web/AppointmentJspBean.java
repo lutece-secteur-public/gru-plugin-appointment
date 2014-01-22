@@ -176,7 +176,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String VIEW_CALENDAR_MANAGE_APPOINTMENTS = "viewCalendarManageAppointment";
 
     // Actions
-    private static final String ACTION_CREATE_APPOINTMENT = "createAppointment";
+    //    private static final String ACTION_CREATE_APPOINTMENT = "createAppointment";
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
 
     //    private static final String ACTION_MODIFY_APPOINTMENT = "modifyAppointment";
@@ -313,7 +313,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
             String strIdDay = request.getParameter( PARAMETER_ID_DAY );
-            List<Appointment> listAppointments;
             AppointmentDay day = null;
             AppointmentSlot slot = null;
             AppointmentFilter filter = new AppointmentFilter(  );
@@ -330,14 +329,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 int nIdDay = Integer.parseInt( strIdDay );
                 day = AppointmentDayHome.findByPrimaryKey( nIdDay );
                 filter.setDateAppointment( day.getDate(  ) );
-                listAppointments = AppointmentHome.getAppointmentListByFilter( filter );
             }
             else
             {
                 populate( filter, request );
             }
 
-            listAppointments = AppointmentHome.getAppointmentListByFilter( filter );
+            List<Appointment> listAppointments = AppointmentHome.getAppointmentListByFilter( filter );
 
             // PAGINATOR
             LocalizedPaginator<Appointment> paginator = new LocalizedPaginator<Appointment>( listAppointments,

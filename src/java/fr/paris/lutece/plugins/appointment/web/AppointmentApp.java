@@ -204,7 +204,7 @@ public class AppointmentApp extends MVCApplication
 
                 for ( Response response : appointment.getListResponse(  ) )
                 {
-                    List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry(  ) );
+                    List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry(  ).getIdEntry(  ) );
 
                     if ( listResponse == null )
                     {
