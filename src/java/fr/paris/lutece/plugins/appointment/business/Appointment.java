@@ -34,17 +34,17 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.genericattributes.business.Response;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
+import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 
 import java.io.Serializable;
-
 import java.sql.Date;
-
+import java.util.Collection;
 import java.util.List;
 
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -57,6 +57,7 @@ public class Appointment implements Serializable
      */
     public static final String APPOINTMENT_RESOURCE_TYPE = "appointment";
 
+    // If status values change, the template appointment/manage_appointments.html must be updated !
     /**
      * Status of appointments that have been rejected
      */
@@ -95,6 +96,7 @@ public class Appointment implements Serializable
     private int _nIdSlot;
     private int _nStatus;
     private List<Response> _listResponse;
+    private transient Collection<Action> _listWorkflowActions;
 
     /**
      * Returns the IdAppointment
@@ -256,5 +258,26 @@ public class Appointment implements Serializable
     public void setListResponse( List<Response> listResponse )
     {
         this._listResponse = listResponse;
+    }
+
+    /**
+     * Set the list of workflow actions available for this appointment.
+     * @param listWorkflowActions The list of workflow actions available for this
+     *            appointment.
+     */
+    public void setListWorkflowActions( Collection<Action> listWorkflowActions )
+    {
+        this._listWorkflowActions = listWorkflowActions;
+    }
+
+    /**
+     * Get the list of workflow actions available for this appointment. Workflow
+     * actions are NOT loaded by default, so check that they have been set
+     * before calling this method.
+     * @return The list of workflow actions available for this appointment.
+     */
+    public Collection<Action> getListWorkflowActions( )
+    {
+        return _listWorkflowActions;
     }
 }

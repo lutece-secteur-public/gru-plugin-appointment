@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,16 +64,18 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     // Filters
     private static final String SQL_FILTER_ID_SLOT = " id_slot = ? ";
-    private static final String SQL_FILTER_FIRST_NAME = " first_name LIKE %?% ";
-    private static final String SQL_FILTER_LAST_NAME = " last_name LIKE %?%";
-    private static final String SQL_FILTER_EMAIL = " email LIKE %?% ";
-    private static final String SQL_FILTER_ID_USER = " id_user LIKE %?% ";
+    private static final String SQL_FILTER_FIRST_NAME = " first_name LIKE ? ";
+    private static final String SQL_FILTER_LAST_NAME = " last_name LIKE ?";
+    private static final String SQL_FILTER_EMAIL = " email LIKE ? ";
+    private static final String SQL_FILTER_ID_USER = " id_user LIKE ? ";
     private static final String SQL_FILTER_DATE_APPOINTMENT = " date_appointment = ? ";
     private static final String SQL_FILTER_STATUS = " status = ? ";
+
 
     // Constants
     private static final String CONSTANT_WHERE = " WHERE ";
     private static final String CONSTANT_AND = " AND ";
+    private static final String CONSTANT_PERCENT = "%";
 
     /**
      * Generates a new primary key
@@ -296,22 +297,22 @@ public final class AppointmentDAO implements IAppointmentDAO
 
             if ( appointmentFiler.getFirstName(  ) != null )
             {
-                daoUtil.setString( nIndex++, appointmentFiler.getFirstName(  ) );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getFirstName( ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getLastName(  ) != null )
             {
-                daoUtil.setString( nIndex++, appointmentFiler.getLastName(  ) );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getLastName( ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getEmail(  ) != null )
             {
-                daoUtil.setString( nIndex++, appointmentFiler.getEmail(  ) );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getEmail( ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getIdUser(  ) != null )
             {
-                daoUtil.setString( nIndex++, appointmentFiler.getIdUser(  ) );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getIdUser( ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getDateAppointment(  ) != null )

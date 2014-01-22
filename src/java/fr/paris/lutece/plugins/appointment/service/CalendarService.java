@@ -42,7 +42,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -102,7 +101,8 @@ public class CalendarService
 
     /**
      * compute the list of days with the list of slots for a given form and a
-     * given week
+     * given week. The number of free places of slots are initialized to the
+     * number of available places.
      * @param form The form to get days of. Opening and closing hour of the form
      *            are updated by this method
      * @param nOffsetWeeks The offset of the week to get
@@ -164,9 +164,8 @@ public class CalendarService
 
             if ( bLoadSlotsFromDb )
             {
-                day.setListSlots( day.getIsOpen(  )
-                    ? AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), i + 1 )
-                    : new ArrayList<AppointmentSlot>( 0 ) );
+                day.setListSlots( day.getIsOpen( ) ? AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm( ),
+                        i + 1 ) : new ArrayList<AppointmentSlot>( 0 ) );
             }
             else
             {

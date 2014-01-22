@@ -1,8 +1,18 @@
 <link href="css/plugins/appointment/appointment.css" rel="stylesheet" >
-
+<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <div class="row-fluid">
 	<div class="span12">
-		<legend>${form.title} - #i18n{appointment.manage_appointments.pageTitle}</legend>
+		<legend>
+			${form.title} - #i18n{appointment.manage_appointment_calendar.pageTitle}
+			<#if nb_week != 0>
+				<div class="pull-right">
+					<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=0" title="#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}">
+						<i class="icon-calendar icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}
+					</a>
+				</div>
+			</#if>
+		</legend>
+		<@tabs tab="calendar" form=form />
 		<@messages infos=infos />
 		<div class="pull-left">
 			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
@@ -25,7 +35,17 @@
 						<table class="table appointment-inner-table">
 							<tr>
 								<td>
-									<br />
+									<#if nb_week != 0>
+										<div>
+											<center>
+												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=0" title="#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}">
+													<i class="icon-calendar">&nbsp;</i>
+												</a>
+											</center>
+										</div>
+									<#else>
+										<br />
+									</#if>
 									<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}">
 										<i class="icon-arrow-left">&nbsp;</i>
 									</a>
@@ -48,8 +68,10 @@
 							<table class="table table-stripped appointment-inner-table">
 								<tr>
 									<th>
-										#i18n{${list_days_of_week[day_index]}}<br />
-										${day.date}
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&dateAppointment=${day.date}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentDay}">
+											#i18n{${list_days_of_week[day_index]}}<br />
+											${day.date}
+										</a>
 									</th>
 								</tr>
 								<#if day.isOpen>
