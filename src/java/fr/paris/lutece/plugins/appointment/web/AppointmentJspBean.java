@@ -210,6 +210,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.itemsPerPage";
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
+    // Messages
+    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = CalendarService.getListDaysOfWeek( );
+
     // Constant
     private static final String CONSTANT_MINUS = "-";
     private static final String DEFAULT_CURRENT_PAGE = "1";
@@ -327,7 +330,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( PARAMETER_NB_WEEK, nNbWeek );
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
-            model.put( MARK_LIST_DAYS_OF_WEEK, CalendarService.MESSAGE_LIST_DAYS_OF_WEEK );
+            model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
 
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR,
                     model );
@@ -733,7 +736,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
-            model.put( MARK_LIST_DAYS_OF_WEEK, CalendarService.MESSAGE_LIST_DAYS_OF_WEEK );
+            model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
 
             return getPage( PROPERTY_PAGE_TITLE_APPOINTMENT_CALENDAR, TEMPLATE_APPOINTMENT_FORM_CALENDAR, model );
         }

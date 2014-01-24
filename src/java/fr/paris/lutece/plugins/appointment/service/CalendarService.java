@@ -62,7 +62,7 @@ public class CalendarService
     /**
      * List of i18n keys of days of week
      */
-    public static final String[] MESSAGE_LIST_DAYS_OF_WEEK = 
+    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK =
         {
             "appointment.manageCalendarSlots.labelMonday", "appointment.manageCalendarSlots.labelTuesday",
             "appointment.manageCalendarSlots.labelWednesday", "appointment.manageCalendarSlots.labelThursday",
@@ -544,5 +544,14 @@ public class CalendarService
                 nMinOpeningMinutes, nMaxClosingHour, nMaxClosingMinutes ) );
 
         return nMinAppointmentDuration;
+    }
+
+    /**
+     * Get a string array containing a list of i118n keys of days of week
+     * @return A string array containing a list of i118n keys of days of week
+     */
+    public static String[] getListDaysOfWeek( )
+    {
+        return MESSAGE_LIST_DAYS_OF_WEEK.clone( );
     }
 }

@@ -64,10 +64,7 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,8 +74,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.ConstraintViolation;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -142,6 +140,9 @@ public class AppointmentApp extends MVCApplication
 
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
+
+    // Messages
+    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = CalendarService.getListDaysOfWeek( );
 
     // Local variables
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
@@ -377,7 +378,7 @@ public class AppointmentApp extends MVCApplication
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
-            model.put( MARK_LIST_DAYS_OF_WEEK, CalendarService.MESSAGE_LIST_DAYS_OF_WEEK );
+            model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
 
             return getXPage( TEMPLATE_APPOINTMENT_FORM_CALENDAR, getLocale( request ), model );
         }
