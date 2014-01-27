@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
 import java.sql.Date;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class AppointmentDTO extends Appointment
     /**
      * Default constructor
      */
-    public AppointmentDTO( )
+    public AppointmentDTO(  )
     {
         // Do nothing
     }
@@ -68,14 +69,14 @@ public class AppointmentDTO extends Appointment
      */
     public AppointmentDTO( Appointment appointment )
     {
-        setIdAppointment( appointment.getIdAppointment( ) );
-        setDateAppointment( (Date) appointment.getDateAppointment( ).clone( ) );
-        setEmail( appointment.getEmail( ) );
-        setFirstName( appointment.getFirstName( ) );
-        setLastName( appointment.getLastName( ) );
-        setIdSlot( appointment.getIdSlot( ) );
-        setIdUser( appointment.getIdUser( ) );
-        setStatus( appointment.getStatus( ) );
+        setIdAppointment( appointment.getIdAppointment(  ) );
+        setDateAppointment( (Date) appointment.getDateAppointment(  ).clone(  ) );
+        setEmail( appointment.getEmail(  ) );
+        setFirstName( appointment.getFirstName(  ) );
+        setLastName( appointment.getLastName(  ) );
+        setIdSlot( appointment.getIdSlot(  ) );
+        setIdUser( appointment.getIdUser(  ) );
+        setStatus( appointment.getStatus(  ) );
     }
 
     /**
