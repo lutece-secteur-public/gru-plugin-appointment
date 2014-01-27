@@ -67,7 +67,7 @@ public final class AppointmentFormMessagesHome
     {
         _dao.insert( formMessage, _plugin );
         _cacheService.putInCache( AppointmentFormCacheService.getFormMessageCacheKey( formMessage.getIdForm(  ) ),
-            formMessage );
+            formMessage.clone(  ) );
     }
 
     /**
@@ -78,7 +78,7 @@ public final class AppointmentFormMessagesHome
     {
         _dao.store( formMessage, _plugin );
         _cacheService.putInCache( AppointmentFormCacheService.getFormMessageCacheKey( formMessage.getIdForm(  ) ),
-            formMessage );
+            formMessage.clone(  ) );
     }
 
     /**
@@ -108,7 +108,11 @@ public final class AppointmentFormMessagesHome
         if ( formMessage == null )
         {
             formMessage = _dao.load( nAppointmentFormId, _plugin );
-            _cacheService.putInCache( strCacheKey, formMessage );
+            _cacheService.putInCache( strCacheKey, formMessage.clone(  ) );
+        }
+        else
+        {
+            formMessage = (AppointmentFormMessages) formMessage.clone(  );
         }
 
         return formMessage;

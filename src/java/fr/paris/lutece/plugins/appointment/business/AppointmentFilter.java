@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.io.Serializable;
+
 import java.sql.Date;
 
 
@@ -43,13 +44,14 @@ import java.sql.Date;
 public class AppointmentFilter implements Serializable
 {
     /**
-     * Serial version UID
-     */
-    private static final long serialVersionUID = 7458206872870171709L;
-    /**
      * Value for status to ignore filter
      */
     public static final int NO_STATUS_FILTER = -1525;
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 7458206872870171709L;
     private int _nIdSlot;
     private int _nIdForm;
     private String _strFirstName;

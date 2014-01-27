@@ -45,7 +45,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
-import fr.paris.lutece.plugins.appointment.service.CalendarService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -53,6 +53,9 @@ import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
+import fr.paris.lutece.portal.service.message.SiteMessage;
+import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -64,7 +67,10 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,9 +80,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.StringUtils;
+import javax.validation.ConstraintViolation;
 
 
 /**
@@ -96,6 +101,7 @@ public class AppointmentApp extends MVCApplication
     private static final String TEMPLATE_APPOINTMENT_FORM_CALENDAR = "/skin/plugins/appointment/appointment_form_calendar.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_RECAP = "/skin/plugins/appointment/appointment_form_recap.html";
     private static final String TEMPLATE_APPOINTMENT_CREATED = "skin/plugins/appointment/appointment_created.html";
+    private static final String TEMPLATE_CANCEL_APPOINTMENT = "skin/plugins/appointment/cancel_appointment.html";
 
     // Views
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
@@ -103,10 +109,12 @@ public class AppointmentApp extends MVCApplication
     private static final String VIEW_GET_APPOINTMENT_CALENDAR = "getAppointmentCalendar";
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
     private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
+    private static final String VIEW_GET_CANCEL_APPOINTMENT = "getCancelAppointment";
 
     // Actions
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
+    private static final String ACTION_DO_CANCEL_APPOINTMENT = "doCancelAppointment";
 
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
@@ -115,9 +123,9 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
     private static final String PARAMETER_ID_SLOT = "idSlot";
-
-    //    private static final String PARAMETER_DATE = "date";
+    private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
     private static final String PARAMETER_BACK = "back";
+    private static final String PARAMETER_REF_APPOINTMENT = "refAppointment";
 
     // Marks
     private static final String MARK_FORM_LIST = "form_list";
@@ -133,16 +141,19 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_CAPTCHA = "captcha";
     private static final String MARK_SLOT = "slot";
     private static final String MARK_LIST_DAYS_OF_WEEK = "list_days_of_week";
+    private static final String MARK_REF = "%%REF%%";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
+    private static final String ERROR_MESSAGE_UNKNOWN_REF = "appointment.message.error.unknownRef";
 
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
     // Messages
-    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = CalendarService.getListDaysOfWeek( );
+    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek(  );
+    private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancel_appointment.pageTitle";
 
     // Local variables
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
@@ -367,10 +378,11 @@ public class AppointmentApp extends MVCApplication
                 }
             }
 
-            List<AppointmentDay> listDays = CalendarService.getService(  ).getDayListForCalendar( form, nNbWeek );
+            List<AppointmentDay> listDays = AppointmentService.getService(  ).getDayListForCalendar( form, nNbWeek );
 
             List<String> listTimeBegin = new ArrayList<String>(  );
-            int nMinAppointmentDuration = CalendarService.getService(  ).getListTimeBegin( listDays, form, listTimeBegin );
+            int nMinAppointmentDuration = AppointmentService.getService(  )
+                                                            .getListTimeBegin( listDays, form, listTimeBegin );
 
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, formMessages );
@@ -490,7 +502,8 @@ public class AppointmentApp extends MVCApplication
 
         _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
 
-        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
+        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ),
+            PARAMETER_ID_APPOINTMENT, appointment.getIdAppointment(  ) );
     }
 
     /**
@@ -502,12 +515,20 @@ public class AppointmentApp extends MVCApplication
     public XPage getAppointmentCreated( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
 
-        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) &&
+                StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
+            int nIdAppointment = Integer.parseInt( strIdAppointment );
+            Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
             AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
+            formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated(  )
+                                                                .replaceAll( MARK_REF,
+                    AppointmentService.getService(  ).computeRefAppointment( appointment ) ) );
+
             Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, formMessages );
@@ -518,19 +539,78 @@ public class AppointmentApp extends MVCApplication
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
-    //    /**
-    //     * Get the converter to convert string to java.sql.Date.
-    //     * @return The converter to convert String to java.sql.Date.
-    //     */
-    //    private DateConverter getDateConverter( )
-    //    {
-    //        if ( _dateConverter == null )
-    //        {
-    //            _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE ) );
-    //        }
-    //
-    //        return _dateConverter;
-    //    }
+    /**
+     * Get the page to cancel an appointment
+     * @param request The request
+     * @return The XPage to display
+     */
+    @View( VIEW_GET_CANCEL_APPOINTMENT )
+    public XPage getCancelAppointment( HttpServletRequest request )
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+
+            if ( form.getAllowUsersToCancelAppointments(  ) )
+            {
+                Map<String, Object> model = new HashMap<String, Object>(  );
+                model.put( MARK_FORM, form );
+
+                XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, getLocale( request ), model );
+                xpage.setTitle( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE );
+
+                return xpage;
+            }
+        }
+
+        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+    }
+
+    /**
+     * Do cancel an appointment
+     * @param request The request
+     * @return The XPage to display
+     * @throws SiteMessageException If a site message needs to be displayed
+     */
+    @Action( ACTION_DO_CANCEL_APPOINTMENT )
+    public XPage doCancelAppointment( HttpServletRequest request )
+        throws SiteMessageException
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+        {
+            int nIdForm = Integer.parseInt( strIdForm );
+            String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+
+            if ( form.getAllowUsersToCancelAppointments(  ) && StringUtils.isNotEmpty( strRef ) )
+            {
+                String strIdAppointment = strRef.substring( 0,
+                        strRef.length(  ) - AppointmentService.CONSTANT_REF_SIZE_RANDOM_PART );
+
+                if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
+                {
+                    int nIdAppointment = Integer.parseInt( strIdAppointment );
+                    Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
+
+                    if ( StringUtils.equals( strRef,
+                                AppointmentService.getService(  ).computeRefAppointment( appointment ) ) )
+                    {
+                        appointment.setStatus( nIdAppointment );
+                        AppointmentHome.update( appointment );
+                    }
+                }
+
+                SiteMessageService.setMessage( request, ERROR_MESSAGE_UNKNOWN_REF, SiteMessage.TYPE_STOP );
+            }
+        }
+
+        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+    }
 
     /**
      * Get the captcha security service

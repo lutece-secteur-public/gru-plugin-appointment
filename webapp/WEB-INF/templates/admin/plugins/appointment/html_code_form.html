@@ -47,15 +47,18 @@
 				</div>
 				${str_entry}
 				<div class="form-actions form-steps">
-					<#if appointment.idAppointment &gt; 0>
-						<input type="hidden" name="id_appointment" value="${appointment.idAppointment}">
-					</#if>
 					<button class="btn btn-primary btn-small" type="submit" name="save" >
 						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
 					</button>
 					<button type="reset" name="reset" class="btn btn-primary btn-small">
 						<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelReset}
 					</button>
+					<#if appointment.idAppointment &gt; 0>
+						<input type="hidden" name="id_appointment" value="${appointment.idAppointment}">
+					</#if>
+					<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true" title="#i18n{portal.util.labelBack}">
+						<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+					</a>
 				</div>
 			</fieldset>
 		</form>

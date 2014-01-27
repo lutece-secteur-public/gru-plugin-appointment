@@ -115,9 +115,9 @@ public interface IAppointmentDAO
      * Get the list of id of responses associated with an appointment
      * @param nIdAppointment the id of the appointment
      * @param plugin the plugin
-     * @return the list of response, or an empty list if no response was found
+     * @return the list of responses, or an empty list if no response was found
      */
-    List<Integer> findListResponse( int nIdAppointment, Plugin plugin );
+    List<Integer> findListIdResponse( int nIdAppointment, Plugin plugin );
 
     /**
      * Remove the association between an appointment and responses

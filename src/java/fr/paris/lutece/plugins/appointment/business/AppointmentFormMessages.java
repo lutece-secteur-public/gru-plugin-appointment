@@ -33,11 +33,13 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import fr.paris.lutece.portal.service.util.AppLogService;
+
 
 /**
  * Class to describe messages of appointment form displayed in FO
  */
-public class AppointmentFormMessages
+public class AppointmentFormMessages implements Cloneable
 {
     private int _nIdForm;
     private String _strCalendarTitle;
@@ -260,5 +262,23 @@ public class AppointmentFormMessages
     public void setLabelButtonRedirection( String strLabelButtonRedirection )
     {
         this._strLabelButtonRedirection = strLabelButtonRedirection;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object clone(  )
+    {
+        try
+        {
+            return super.clone(  );
+        }
+        catch ( CloneNotSupportedException e )
+        {
+            AppLogService.error( e.getMessage(  ), e );
+
+            return null;
+        }
     }
 }

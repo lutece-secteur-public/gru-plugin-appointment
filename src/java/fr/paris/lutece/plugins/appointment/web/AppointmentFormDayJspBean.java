@@ -38,8 +38,8 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
-import fr.paris.lutece.plugins.appointment.service.CalendarService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -167,7 +167,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
-            Date dateMin = CalendarService.getService(  ).getDateMonday( _nNbWeek );
+            Date dateMin = AppointmentService.getService(  ).getDateMonday( _nNbWeek );
             Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
             calendar.setTime( dateMin );
             calendar.add( Calendar.DAY_OF_MONTH, 6 );
@@ -326,7 +326,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         {
             int nIdForm = Integer.parseInt( strIdForm );
             int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdForm,
-                    CalendarService.getService(  ).getDateLastMonday(  ) );
+                    AppointmentService.getService(  ).getDateLastMonday(  ) );
 
             if ( nNbAppointments > 0 )
             {
@@ -335,7 +335,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                         getURLManageAppointmentFormDays( request, strIdForm ), AdminMessage.TYPE_STOP ) );
             }
 
-            CalendarService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ) );
+            AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ) );
 
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM_DAYS, PARAMETER_ID_FORM, nIdForm );
         }

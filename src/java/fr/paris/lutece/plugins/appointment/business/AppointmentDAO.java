@@ -37,6 +37,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +71,6 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_ID_USER = " id_user LIKE ? ";
     private static final String SQL_FILTER_DATE_APPOINTMENT = " date_appointment = ? ";
     private static final String SQL_FILTER_STATUS = " status = ? ";
-
 
     // Constants
     private static final String CONSTANT_WHERE = " WHERE ";
@@ -297,22 +297,22 @@ public final class AppointmentDAO implements IAppointmentDAO
 
             if ( appointmentFiler.getFirstName(  ) != null )
             {
-                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getFirstName( ) + CONSTANT_PERCENT );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getFirstName(  ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getLastName(  ) != null )
             {
-                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getLastName( ) + CONSTANT_PERCENT );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getLastName(  ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getEmail(  ) != null )
             {
-                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getEmail( ) + CONSTANT_PERCENT );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getEmail(  ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getIdUser(  ) != null )
             {
-                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getIdUser( ) + CONSTANT_PERCENT );
+                daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFiler.getIdUser(  ) + CONSTANT_PERCENT );
             }
 
             if ( appointmentFiler.getDateAppointment(  ) != null )
@@ -355,7 +355,7 @@ public final class AppointmentDAO implements IAppointmentDAO
      * {@inheritDoc }
      */
     @Override
-    public List<Integer> findListResponse( int nIdAppointment, Plugin plugin )
+    public List<Integer> findListIdResponse( int nIdAppointment, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST, plugin );
         daoUtil.setInt( 1, nIdAppointment );
@@ -424,7 +424,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setIdUser( daoUtil.getString( nIndex++ ) );
         appointment.setDateAppointment( daoUtil.getDate( nIndex++ ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
-        appointment.setStatus( daoUtil.getInt( nIndex ) );
+        appointment.setStatus( daoUtil.getInt( nIndex++ ) );
 
         return appointment;
     }

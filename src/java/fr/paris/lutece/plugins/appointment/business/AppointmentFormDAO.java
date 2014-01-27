@@ -47,12 +47,12 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_form ) FROM appointment_form";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled FROM appointment_form";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments FROM appointment_form";
     private static final String SQL_QUERY_SELECTALL_ENABLED = SQL_QUERY_SELECTALL + " WHERE is_active = 1";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE id_form = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ? WHERE id_form = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ? WHERE id_form = ?";
 
     /**
      * Generates a new primary key
@@ -107,7 +107,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setInt( nIndex++, appointmentForm.getNbWeeksToDisplay(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getPeoplePerAppointment(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow(  ) );
-        daoUtil.setBoolean( nIndex, appointmentForm.getEnableCaptcha(  ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha(  ) );
+        daoUtil.setBoolean( nIndex, appointmentForm.getAllowUsersToCancelAppointments(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -177,6 +178,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setInt( nIndex++, appointmentForm.getPeoplePerAppointment(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha(  ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
         daoUtil.setInt( nIndex, appointmentForm.getIdForm(  ) );
 
         daoUtil.executeUpdate(  );
@@ -252,7 +254,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         appointmentForm.setNbWeeksToDisplay( daoUtil.getInt( nIndex++ ) );
         appointmentForm.setPeoplePerAppointment( daoUtil.getInt( nIndex++ ) );
         appointmentForm.setIdWorkflow( daoUtil.getInt( nIndex++ ) );
-        appointmentForm.setEnableCaptcha( daoUtil.getBoolean( nIndex ) );
+        appointmentForm.setEnableCaptcha( daoUtil.getBoolean( nIndex++ ) );
+        appointmentForm.setAllowUsersToCancelAppointments( daoUtil.getBoolean( nIndex ) );
 
         return appointmentForm;
     }

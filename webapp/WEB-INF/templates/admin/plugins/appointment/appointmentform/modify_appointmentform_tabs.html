@@ -79,6 +79,12 @@
 	                    <span class="help-block">#i18n{appointment.create_appointmentform.labelDateEndValidity.help}</span>
 	                </div>
 	            </div>
+				<div class="control-group">
+					<label class="control-label" for="allow_users_to_cancel_appointments" >#i18n{appointment.create_appointmentform.labelUserCanCancelAppointments} :</label>
+					<div class="controls">
+						<input type="checkbox" id="allow_users_to_cancel_appointments" name="allow_users_to_cancel_appointments" value="true" tabindex="8" <#if appointmentform?? && appointmentform.allowUsersToCancelAppointments>checked="checked"</#if> />
+					</div>
+				</div>
 	            <div class="control-group">
 	                <label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} :</label>
 	                <div class="controls">

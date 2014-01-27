@@ -155,19 +155,23 @@ public class AppointmentFormService implements Serializable
 
         AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
 
-        if ( ( appointment == null ) && SecurityService.isAuthenticationEnable(  ) )
+        if ( appointment == null )
         {
-            LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
+            appointment = new AppointmentDTO(  );
 
-            if ( user != null )
+            if ( SecurityService.isAuthenticationEnable(  ) )
             {
-                appointment = new AppointmentDTO(  );
-                appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty( 
-                            PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
-                appointment.setLastName( user.getUserInfo( AppPropertiesService.getProperty( 
-                            PROPERTY_USER_ATTRIBUTE_LAST_NAME, StringUtils.EMPTY ) ) );
-                appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty( 
-                            PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
+                LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
+
+                if ( user != null )
+                {
+                    appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty( 
+                                PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
+                    appointment.setLastName( user.getUserInfo( AppPropertiesService.getProperty( 
+                                PROPERTY_USER_ATTRIBUTE_LAST_NAME, StringUtils.EMPTY ) ) );
+                    appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty( 
+                                PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
+                }
             }
         }
 

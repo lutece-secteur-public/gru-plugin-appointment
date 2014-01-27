@@ -39,8 +39,8 @@
 
     <properties>
         <componentName>appointment</componentName>
-        <jiraProjectName>APPOINTMENT</jiraProjectName>
-        <jiraComponentId></jiraComponentId>
+        <jiraProjectName>RENDEZVOUS</jiraProjectName>
+        <jiraComponentId>12273</jiraComponentId>
     </properties>
     <scm>
         <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/applications/plugin-appointment</connection>

@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
@@ -40,8 +41,10 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.util.CryptoService;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -52,17 +55,22 @@ import java.util.Locale;
 /**
  * Service to manage calendars
  */
-public class CalendarService
+public class AppointmentService
 {
     /**
      * Name of the bean of the service
      */
-    public static final String BEAN_NAME = "appointment.calendarService";
+    public static final String BEAN_NAME = "appointment.appointmentService";
+
+    /**
+     * Get the number of characters of the random part of appointment reference
+     */
+    public static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
 
     /**
      * List of i18n keys of days of week
      */
-    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK =
+    private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = 
         {
             "appointment.manageCalendarSlots.labelMonday", "appointment.manageCalendarSlots.labelTuesday",
             "appointment.manageCalendarSlots.labelWednesday", "appointment.manageCalendarSlots.labelThursday",
@@ -79,17 +87,18 @@ public class CalendarService
     private static final int CONSTANT_MINUTES_IN_HOUR = 60;
     private static final int CONSTANT_NB_DAYS_IN_WEEK = 7;
     private static final long CONSTANT_MILISECONDS_IN_DAY = 86400000L;
+    private static final String CONSTANT_MD5 = "MD5";
 
     /**
      * Instance of the service
      */
-    private static volatile CalendarService _instance;
+    private static volatile AppointmentService _instance;
 
     /**
      * Get an instance of the service
      * @return An instance of the service
      */
-    public static CalendarService getService(  )
+    public static AppointmentService getService(  )
     {
         if ( _instance == null )
         {
@@ -97,6 +106,15 @@ public class CalendarService
         }
 
         return _instance;
+    }
+
+    /**
+     * Get a string array containing a list of i118n keys of days of week
+     * @return A string array containing a list of i118n keys of days of week
+     */
+    public static String[] getListDaysOfWeek(  )
+    {
+        return MESSAGE_LIST_DAYS_OF_WEEK.clone(  );
     }
 
     /**
@@ -164,8 +182,9 @@ public class CalendarService
 
             if ( bLoadSlotsFromDb )
             {
-                day.setListSlots( day.getIsOpen( ) ? AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm( ),
-                        i + 1 ) : new ArrayList<AppointmentSlot>( 0 ) );
+                day.setListSlots( day.getIsOpen(  )
+                    ? AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), i + 1 )
+                    : new ArrayList<AppointmentSlot>( 0 ) );
             }
             else
             {
@@ -539,19 +558,22 @@ public class CalendarService
             }
         }
 
-        listTimeBegin.addAll( CalendarService.getService(  )
-                                             .getListAppointmentTimes( nMinAppointmentDuration, nMinOpeningHour,
+        listTimeBegin.addAll( AppointmentService.getService(  )
+                                                .getListAppointmentTimes( nMinAppointmentDuration, nMinOpeningHour,
                 nMinOpeningMinutes, nMaxClosingHour, nMaxClosingMinutes ) );
 
         return nMinAppointmentDuration;
     }
 
     /**
-     * Get a string array containing a list of i118n keys of days of week
-     * @return A string array containing a list of i118n keys of days of week
+     * Compute the unique reference of an appointment
+     * @param appointment The appointment
+     * @return The unique reference of an appointment
      */
-    public static String[] getListDaysOfWeek( )
+    public String computeRefAppointment( Appointment appointment )
     {
-        return MESSAGE_LIST_DAYS_OF_WEEK.clone( );
+        return appointment.getIdAppointment(  ) +
+        CryptoService.encrypt( appointment.getIdAppointment(  ) + appointment.getEmail(  ), CONSTANT_MD5 )
+                     .substring( 0, CONSTANT_REF_SIZE_RANDOM_PART );
     }
 }

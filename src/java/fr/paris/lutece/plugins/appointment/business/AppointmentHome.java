@@ -34,12 +34,15 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
+import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -94,7 +97,7 @@ public final class AppointmentHome
      */
     public static void remove( int nAppointmentId )
     {
-        for ( int nIdResponse : _dao.findListResponse( nAppointmentId, _plugin ) )
+        for ( int nIdResponse : _dao.findListIdResponse( nAppointmentId, _plugin ) )
         {
             ResponseHome.remove( nIdResponse );
         }
@@ -154,11 +157,29 @@ public final class AppointmentHome
     /**
      * Get the list of id of responses associated with an appointment
      * @param nIdAppointment the id of the appointment
-     * @return the list of response, or an empty list if no response was found
+     * @return the list of responses, or an empty list if no response was found
      */
-    public static List<Integer> findListResponse( int nIdAppointment )
+    public static List<Integer> findListIdResponse( int nIdAppointment )
     {
-        return _dao.findListResponse( nIdAppointment, _plugin );
+        return _dao.findListIdResponse( nIdAppointment, _plugin );
+    }
+
+    /**
+     * Get the list of responses associated with an appointment
+     * @param nIdAppointment the id of the appointment
+     * @return the list of responses, or an empty list if no response was found
+     */
+    public static List<Response> findListResponse( int nIdAppointment )
+    {
+        List<Integer> listIdResponse = findListIdResponse( nIdAppointment );
+        List<Response> listResponse = new ArrayList<Response>( listIdResponse.size(  ) );
+
+        for ( Integer nIdResponse : listIdResponse )
+        {
+            listResponse.add( ResponseHome.findByPrimaryKey( nIdResponse ) );
+        }
+
+        return listResponse;
     }
 
     /**

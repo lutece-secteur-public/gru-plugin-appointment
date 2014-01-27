@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.service.daemon;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
-import fr.paris.lutece.plugins.appointment.service.CalendarService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.portal.service.daemon.Daemon;
 
 import java.sql.Date;
@@ -53,7 +53,7 @@ public class DayRemovalDaemon extends Daemon
     public void run(  )
     {
         // We get the 
-        Date dateMonday = CalendarService.getService(  ).getDateLastMonday(  );
+        Date dateMonday = AppointmentService.getService(  ).getDateLastMonday(  );
 
         AppointmentSlotHome.deleteOldSlots( dateMonday );
         AppointmentDayHome.removeLonelyDays( dateMonday );

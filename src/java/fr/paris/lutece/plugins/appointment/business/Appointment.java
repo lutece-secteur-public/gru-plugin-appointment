@@ -36,15 +36,17 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.io.Serializable;
+
 import java.sql.Date;
+
 import java.util.Collection;
 import java.util.List;
 
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -262,7 +264,8 @@ public class Appointment implements Serializable
 
     /**
      * Set the list of workflow actions available for this appointment.
-     * @param listWorkflowActions The list of workflow actions available for this
+     * @param listWorkflowActions The list of workflow actions available for
+     *            this
      *            appointment.
      */
     public void setListWorkflowActions( Collection<Action> listWorkflowActions )
@@ -276,7 +279,7 @@ public class Appointment implements Serializable
      * before calling this method.
      * @return The list of workflow actions available for this appointment.
      */
-    public Collection<Action> getListWorkflowActions( )
+    public Collection<Action> getListWorkflowActions(  )
     {
         return _listWorkflowActions;
     }

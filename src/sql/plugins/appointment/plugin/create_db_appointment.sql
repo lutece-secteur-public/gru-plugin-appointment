@@ -40,6 +40,7 @@ CREATE TABLE appointment_form (
 	people_per_appointment INT(11) NOT NULL default '0',
 	id_workflow INT(11) NOT NULL default '0',
 	is_captcha_enabled SMALLINT NOT NULL,
+	users_can_cancel_appointments SMALLINT NOT NULL,
 	PRIMARY KEY (id_form)
 );
 

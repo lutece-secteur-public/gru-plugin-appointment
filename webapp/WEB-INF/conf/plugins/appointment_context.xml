@@ -14,7 +14,7 @@
     
     <bean id="appointment.appointmentFormService" class="fr.paris.lutece.plugins.appointment.service.AppointmentFormService" />    
     <bean id="appointment.appointmentSlotService" class="fr.paris.lutece.plugins.appointment.service.AppointmentSlotService" />    
-    <bean id="appointment.calendarService" class="fr.paris.lutece.plugins.appointment.service.CalendarService" />
+    <bean id="appointment.appointmentService" class="fr.paris.lutece.plugins.appointment.service.AppointmentService" />
     
     <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />    
     <bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />

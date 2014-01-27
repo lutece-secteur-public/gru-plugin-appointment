@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.service.daemon;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.service.CalendarService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.portal.service.daemon.Daemon;
 
 
@@ -52,7 +52,7 @@ public class DayCreationDaemon extends Daemon
     {
         for ( AppointmentForm form : AppointmentFormHome.getAppointmentFormsList(  ) )
         {
-            CalendarService.getService(  ).checkFormDays( form );
+            AppointmentService.getService(  ).checkFormDays( form );
         }
     }
 }

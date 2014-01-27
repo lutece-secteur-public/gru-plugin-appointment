@@ -39,8 +39,8 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
-import fr.paris.lutece.plugins.appointment.service.CalendarService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -237,6 +237,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         if ( appointmentForm == null )
         {
             appointmentForm = new AppointmentForm(  );
+            appointmentForm.setAllowUsersToCancelAppointments( true );
             request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
         }
 
@@ -491,7 +492,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             // If we enable the form, we check that its days has already been created
             if ( !form.getIsActive(  ) )
             {
-                CalendarService.getService(  ).checkFormDays( form );
+                AppointmentService.getService(  ).checkFormDays( form );
 
                 // If we enable the form, and it has a passed date of end of validity, we remove it to prevent to form from being disabled by the publication daemon
                 if ( ( form.getDateEndValidity(  ) != null ) &&
@@ -622,6 +623,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         appointmentForm.setIsOpenSaturday( false );
         appointmentForm.setIsOpenSunday( false );
         appointmentForm.setEnableCaptcha( false );
+        appointmentForm.setAllowUsersToCancelAppointments( false );
     }
 
     /**

@@ -39,7 +39,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
-import fr.paris.lutece.plugins.appointment.service.CalendarService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -113,7 +113,7 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
                     form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
                     form.getIsOpenSunday(  ),
                 };
-            AppointmentDay day = CalendarService.getService(  ).getAppointmentDayFromForm( form );
+            AppointmentDay day = AppointmentService.getService(  ).getAppointmentDayFromForm( form );
             day.setIsOpen( false );
 
             boolean bHasClosedDay = false;
@@ -122,7 +122,7 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
             {
                 if ( !bArrayListDays[i] )
                 {
-                    listSlots.addAll( CalendarService.getService(  ).computeDaySlots( day, i + 1 ) );
+                    listSlots.addAll( AppointmentService.getService(  ).computeDaySlots( day, i + 1 ) );
                     bHasClosedDay = true;
                 }
             }

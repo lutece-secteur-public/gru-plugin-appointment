@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.rbac.RBACResource;
+import fr.paris.lutece.portal.service.util.AppLogService;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -50,7 +51,7 @@ import javax.validation.constraints.Size;
 /**
  * This is the business class for the object AppointmentForm
  */
-public class AppointmentForm implements Serializable, RBACResource
+public class AppointmentForm implements RBACResource, Cloneable, Serializable
 {
     /**
      * Name of the resource type of Appointment Forms
@@ -96,6 +97,7 @@ public class AppointmentForm implements Serializable, RBACResource
     private int _nClosingHour;
     private int _nClosingMinutes;
     private boolean _bEnableCaptcha;
+    private boolean _bAllowUsersToCancelAppointments;
     private boolean _bOpeningHourInitialized;
     private boolean _bOpeningMinutesInitialized;
     private boolean _bClosingHourInitialized;
@@ -584,6 +586,26 @@ public class AppointmentForm implements Serializable, RBACResource
     }
 
     /**
+     * Check if a FO user can cancel appointments of this form
+     * @return True if a FO user can cancel appointments of this form, false
+     *         otherwise
+     */
+    public boolean getAllowUsersToCancelAppointments(  )
+    {
+        return _bAllowUsersToCancelAppointments;
+    }
+
+    /**
+     * Set whether FO user can cancel appointments of this form
+     * @param bAllowUsersToCancelAppointments True if a FO user can cancel
+     *            appointments of this form, false otherwise
+     */
+    public void setAllowUsersToCancelAppointments( boolean bAllowUsersToCancelAppointments )
+    {
+        this._bAllowUsersToCancelAppointments = bAllowUsersToCancelAppointments;
+    }
+
+    /**
      * Check if a day of the week is opened or not
      * @param nDayOfWeek The number of the day of the week : 1 for Monday, 2 for
      *            Tuesday, ...
@@ -617,5 +639,23 @@ public class AppointmentForm implements Serializable, RBACResource
     public String getResourceId(  )
     {
         return Integer.toString( getIdForm(  ) );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object clone(  )
+    {
+        try
+        {
+            return super.clone(  );
+        }
+        catch ( CloneNotSupportedException e )
+        {
+            AppLogService.error( e.getMessage(  ), e );
+
+            return null;
+        }
     }
 }
