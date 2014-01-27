@@ -4,7 +4,14 @@
 			<fieldset>
 				<legend>#i18n{appointment.cancel_appointment.pageTitle}</legend>
 				<input type="hidden" name="page" value="appointment">
-				<input type="hidden" name="action" value="doRemoveAppointment">
+				<input type="hidden" name="action" value="doCancelAppointment">
+				<input type="hidden" name="id_form" value="${form.idForm}">
+				<div class="control-group">
+					<label class="control-label" for="dateAppointment">#i18n{appointment.cancel_appointment.labelDateAppointment}</label>
+					<div class="controls">
+						<input type="text" id="dateAppointment" name="dateAppointment" value="${dateAppointment!}">
+					</div>
+				</div>
 				<div class="control-group">
 					<label class="control-label" for="refAppointment">#i18n{appointment.cancel_appointment.labelRefAppointment}</label>
 					<div class="controls">
@@ -24,3 +31,5 @@
 		</form>
 	</div>
 </div>
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
+<@getDatePicker idField="dateAppointment" language='fr' />

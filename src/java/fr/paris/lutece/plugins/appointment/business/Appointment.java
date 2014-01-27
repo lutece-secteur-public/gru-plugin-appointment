@@ -36,17 +36,15 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import java.io.Serializable;
-
 import java.sql.Date;
-
 import java.util.Collection;
 import java.util.List;
 
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -94,6 +92,7 @@ public class Appointment implements Serializable
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strIdUser;
+    private String _strAuthenticationService;
     private Date _dateAppointment;
     private int _nIdSlot;
     private int _nStatus;
@@ -173,8 +172,8 @@ public class Appointment implements Serializable
     }
 
     /**
-     * Returns the IdUser
-     * @return The IdUser
+     * Returns the id of the lutece user that made this appointment
+     * @return The id of the lutece user that made this appointment
      */
     public String getIdUser(  )
     {
@@ -182,12 +181,36 @@ public class Appointment implements Serializable
     }
 
     /**
-     * Sets the IdUser
-     * @param strIdUser The IdUser
+     * Sets the id of the lutece user that made this appointment
+     * @param strIdUser The id of the lutece user that made this appointment
      */
     public void setIdUser( String strIdUser )
     {
         _strIdUser = strIdUser;
+    }
+
+    /**
+     * Returns the authentication service used by the lutece user that made this
+     * appointment, if any
+     * @return The authentication service used by the lutece user that made this
+     *         appointment, or null if this appointment is not associated with a
+     *         lutece user
+     */
+    public String getAuthenticationService( )
+    {
+        return _strAuthenticationService;
+    }
+
+    /**
+     * Sets the authentication service used by the lutece user that made this
+     * appointment, if any
+     * @param strAuthenticationService The authentication service used by the
+     *            lutece user that made this appointment, or null if this
+     *            appointment is not associated with a lutece user
+     */
+    public void setAuthenticationService( String strAuthenticationService )
+    {
+        _strAuthenticationService = strAuthenticationService;
     }
 
     /**

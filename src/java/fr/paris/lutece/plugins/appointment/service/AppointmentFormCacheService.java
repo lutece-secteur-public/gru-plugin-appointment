@@ -44,6 +44,7 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     private static final String SERVICE_NAME = "appointment.appointmentFormCacheService";
     private static final String CACHE_KEY_FORM = "appointment.appointmentForm.";
     private static final String CACHE_KEY_FORM_MESSAGE = "appointment.appointmentFormMessage.";
+    private static final String CACHE_KEY_APPOINTMENT_RESPONSE = "appointment.appointmentResponse";
     private static AppointmentFormCacheService _instance = new AppointmentFormCacheService(  );
 
     /**
@@ -81,6 +82,16 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     public static String getFormMessageCacheKey( int nIdForm )
     {
         return CACHE_KEY_FORM_MESSAGE + nIdForm;
+    }
+
+    /**
+     * Get the cache key form appointment responses
+     * @param nIdAppointment The id of the appointment
+     * @return The cache key for the given appointment
+     */
+    public String getAppointmentResponseCacheKey( int nIdAppointment )
+    {
+        return CACHE_KEY_APPOINTMENT_RESPONSE + nIdAppointment;
     }
 
     /**

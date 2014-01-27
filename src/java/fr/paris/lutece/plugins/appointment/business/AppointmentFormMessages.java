@@ -51,6 +51,7 @@ public class AppointmentFormMessages implements Cloneable
     private String _strFieldEmailHelp;
     private String _strUrlRedirectAfterCreation;
     private String _strTextAppointmentCreated;
+    private String _strTextAppointmentCanceled;
     private String _strLabelButtonRedirection;
 
     /**
@@ -243,6 +244,28 @@ public class AppointmentFormMessages implements Cloneable
     public void setTextAppointmentCreated( String strTextAppointmentCreated )
     {
         this._strTextAppointmentCreated = strTextAppointmentCreated;
+    }
+
+    /**
+     * Get the text to display to the user after the canceling of an
+     * appointment
+     * @return The text to display to the user after the canceling of an
+     *         appointment
+     */
+    public String getTextAppointmentCanceled( )
+    {
+        return _strTextAppointmentCanceled;
+    }
+
+    /**
+     * Set the text to display to the user after the canceling of an
+     * appointment
+     * @param strTextAppointmentCanceled The text to display to the user after
+     *            the canceling of an appointment
+     */
+    public void setTextAppointmentCanceled( String strTextAppointmentCanceled )
+    {
+        this._strTextAppointmentCanceled = strTextAppointmentCanceled;
     }
 
     /**

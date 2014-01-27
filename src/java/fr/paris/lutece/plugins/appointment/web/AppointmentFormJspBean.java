@@ -67,8 +67,6 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +75,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -129,6 +129,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENTFORM = "appointment.message.confirmRemoveAppointmentForm";
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
+    private static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
@@ -279,6 +280,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         // Check constraints
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
+            return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
+        }
+        if ( appointmentForm.getTimeStart( ).compareTo( appointmentForm.getTimeEnd( ) ) <= 0 )
+        {
+            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale( ) );
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
 
@@ -450,6 +456,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
         }
 
+        if ( appointmentForm.getTimeStart( ).compareTo( appointmentForm.getTimeEnd( ) ) <= 0 )
+        {
+            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale( ) );
+            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
+        }
         AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
 
         AppointmentFormHome.update( appointmentForm );

@@ -8,6 +8,7 @@ CREATE TABLE appointment_appointment (
 	last_name varchar(255) NOT NULL default '',
 	email varchar(255) NOT NULL default '',
 	id_user varchar(255) NULL default '',
+	authentication_service varchar(255) NULL default '',
 	date_appointment DATE NOT NULL,
 	id_slot int(11) NOT NULL,
 	status smallint NOT NULL,
@@ -97,6 +98,7 @@ CREATE TABLE appointment_form_messages (
 	field_email_help varchar(255) NOT NULL default '',
 	text_appointment_created long varchar NOT NULL,
 	url_redirect_after_creation varchar(255) NOT NULL default '',
+	text_appointment_canceled long varchar NOT NULL,
 	label_button_redirection varchar(255) NOT NULL default '',
 	PRIMARY KEY (id_form)
 );

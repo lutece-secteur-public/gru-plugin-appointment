@@ -12,3 +12,5 @@ INSERT INTO core_admin_role_resource (rbac_id,role_key,resource_type,resource_id
 --
 DELETE FROM core_user_right WHERE id_right = 'APPOINTMENT_FORM_MANAGEMENT';
 INSERT INTO core_user_right (id_right,id_user) VALUES ('APPOINTMENT_FORM_MANAGEMENT',1);
+
+INSERT INTO core_portlet_type VALUES ('APPOINTMENT_PORTLET','appointment.portlet.appointmentAppointmentPortlet.name','plugins/appointment/CreatePortletAppointment.jsp','plugins/appointment/ModifyPortletAppointment.jsp','fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletHome','appointment','plugins/appointment/DoCreatePortletAppointment.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/appointment/portlet/create_portletappointment.html','','plugins/appointment/DoModifyPortletAppointment.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/appointment/portlet/modify_portletappointment.html','');

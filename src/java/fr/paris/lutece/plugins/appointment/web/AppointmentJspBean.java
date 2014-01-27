@@ -63,6 +63,7 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
@@ -76,10 +77,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,8 +87,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import javax.validation.ConstraintViolation;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -137,6 +136,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_SLOT = "idSlot";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_ID_ACTION = "id_action";
+    private static final String PARAMETER_NEW_STATUS = "new_status";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -161,6 +161,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_REF_LIST_STATUS = "refListStatus";
     private static final String MARK_FILTER_FROM_SESSION = "loadFilterFromSession";
     private static final String MARK_TASKS_FORM = "tasks_form";
+    private static final String MARK_STATUS_VALIDATED = "status_validated";
+    private static final String MARK_STATUS_REJECTED = "status_rejected";
 
     // JSP
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -198,6 +200,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ACTION_CONFIRM_REMOVE_APPOINTMENT = "confirmRemoveAppointment";
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
     private static final String ACTION_DO_PROCESS_WORKFLOW_ACTION = "doProcessWorkflowAction";
+    private static final String ACTION_DO_CHANGE_APPOINTMENT_STATUS = "doChangeAppointmentStatus";
 
     // Infos
     private static final String INFO_APPOINTMENT_CREATED = "appointment.info.appointment.created";
@@ -258,19 +261,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             if ( StringUtils.isNotEmpty( strNbWeek ) )
             {
-                if ( strNbWeek.startsWith( CONSTANT_MINUS ) )
-                {
-                    strNbWeek = strNbWeek.substring( 1 );
-
-                    if ( StringUtils.isNumeric( strNbWeek ) )
-                    {
-                        nNbWeek = Integer.parseInt( strNbWeek ) * -1;
-                    }
-                }
-                else if ( StringUtils.isNumeric( strNbWeek ) )
-                {
-                    nNbWeek = Integer.parseInt( strNbWeek );
-                }
+                nNbWeek = parseInt( strNbWeek );
             }
 
             List<AppointmentDay> listDays = AppointmentService.getService(  ).computeDayList( form, nNbWeek, false );
@@ -430,7 +421,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
             model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
             model.put( MARK_PAGINATOR, paginator );
-
+            model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
+            model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
                 for ( Appointment appointment : paginator.getPageItems(  ) )
@@ -944,6 +936,41 @@ public class AppointmentJspBean extends MVCAdminJspBean
     }
 
     /**
+     * Do change the status of an appointment
+     * @param request The request
+     * @return The next URL to redirect to
+     */
+    @Action( ACTION_DO_CHANGE_APPOINTMENT_STATUS )
+    public String doChangeAppointmentStatus( HttpServletRequest request )
+    {
+        String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
+        if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
+        {
+            int nIdAppointment = Integer.parseInt( strIdAppointment );
+            String strNewStatus = request.getParameter( PARAMETER_NEW_STATUS );
+            int nNewStatus = parseInt( strNewStatus );
+            Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
+
+            // We check that the status has changed to avoid doing unnecessary updates.
+            // Also, it is not permitted to set the status of an appointment to not validated.
+            if ( appointment.getStatus( ) != nNewStatus && nNewStatus != Appointment.STATUS_NOT_VALIDATED )
+            {
+                appointment.setStatus( nNewStatus );
+                AppointmentHome.update( appointment );
+            }
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+
+            UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTS );
+            url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
+            url.addParameter( PARAMETER_ID_FORM, slot.getIdForm( ) );
+            url.addParameter( MARK_FILTER_FROM_SESSION, Boolean.TRUE.toString( ) );
+
+            return redirect( request, url.getUrl( ) );
+        }
+        return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+
+    /**
      * Get the workflow action form before processing the action. If the action
      * does not need to display any form, then redirect the user to the workflow
      * action processing page.
@@ -1051,5 +1078,33 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         return 0;
+    }
+
+    /**
+     * Parse a string representing a positive or negative integer
+     * @param strNumber The string to parse
+     * @return The integer value of the number represented by the string, or 0
+     *         if the string could not be parsed
+     */
+    private int parseInt( String strNumber )
+    {
+        int nNumber = 0;
+        if ( StringUtils.isEmpty( strNumber ) )
+        {
+            return nNumber;
+        }
+        if ( strNumber.startsWith( CONSTANT_MINUS ) )
+        {
+            String strParseableNumber = strNumber.substring( 1 );
+            if ( StringUtils.isNumeric( strParseableNumber ) )
+            {
+                nNumber = Integer.parseInt( strParseableNumber ) * -1;
+            }
+        }
+        else if ( StringUtils.isNumeric( strNumber ) )
+        {
+            nNumber = Integer.parseInt( strNumber );
+        }
+        return nNumber;
     }
 }

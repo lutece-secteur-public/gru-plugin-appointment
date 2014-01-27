@@ -2,7 +2,15 @@
 	<div class="span12">
 		${formMessages.textAppointmentCanceled}
 		<div class="form-actions">
-			<a href="${formMessages.urlRedirectAfterCreation}">${formMessages.labelButtonRedirection}</a>
+			<#if backUrl??>
+				<a href="${backUrl}" class="btn btn-small btn-primary">
+					#i18n{portal.util.labelBack}
+				</a>
+			<#else>
+				<a href="${formMessages.urlRedirectAfterCreation}" class="btn btn-small btn-primary">
+					${formMessages.labelButtonRedirection}
+				</a>
+			</#if>
 		</div>
 	</div>
 </div>

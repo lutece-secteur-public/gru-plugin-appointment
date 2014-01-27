@@ -34,8 +34,9 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.io.Serializable;
-
 import java.sql.Date;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -52,14 +53,20 @@ public class AppointmentFilter implements Serializable
      * Serial version UID
      */
     private static final long serialVersionUID = 7458206872870171709L;
+
+    private static final String[] LIST_ORDER_BY = { "id_appointment", "id_slot", "first_name", "last_name", "id_user",
+            "authentication_service", "date_appointment", "status" };
+
     private int _nIdSlot;
     private int _nIdForm;
     private String _strFirstName;
     private String _strLastName;
     private String _strEmail;
     private String _strIdUser;
+    private String _strAuthenticationService;
     private Date _dateAppointment;
     private int _nStatus = NO_STATUS_FILTER;
+    private String _strOrderBy = LIST_ORDER_BY[0];
 
     /**
      * Get the id of the form
@@ -170,6 +177,30 @@ public class AppointmentFilter implements Serializable
     }
 
     /**
+     * Returns the authentication service used by the lutece user that made this
+     * appointment, if any
+     * @return The authentication service used by the lutece user that made this
+     *         appointment, or null if this appointment is not associated with a
+     *         lutece user
+     */
+    public String getAuthenticationService( )
+    {
+        return _strAuthenticationService;
+    }
+
+    /**
+     * Sets the authentication service used by the lutece user that made this
+     * appointment, if any
+     * @param strAuthenticationService The authentication service used by the
+     *            lutece user that made this appointment, or null if this
+     *            appointment is not associated with a lutece user
+     */
+    public void setAuthenticationService( String strAuthenticationService )
+    {
+        _strAuthenticationService = strAuthenticationService;
+    }
+
+    /**
      * Get the date of the appointment
      * @return The date of the appointment
      */
@@ -203,5 +234,41 @@ public class AppointmentFilter implements Serializable
     public void setStatus( int nStatus )
     {
         _nStatus = nStatus;
+    }
+
+    /**
+     * Get the order by attribute of this filter
+     * @return The order by attribute of this filter
+     */
+    public String getOrderBy( )
+    {
+        return _strOrderBy;
+    }
+
+    /**
+     * Set the order by attribute of this filter.
+     * @param strOrderBy The order by attribute of this filter. If the specified
+     *            order does not match with column names of the appointment
+     *            table of the database, then the order by is reinitialized.
+     */
+    public void setOrderBy( String strOrderBy )
+    {
+        boolean bValidOrderBy = false;
+        for ( String strOrder : LIST_ORDER_BY )
+        {
+            if ( StringUtils.equals( strOrder, strOrderBy ) )
+            {
+                bValidOrderBy = true;
+                break;
+            }
+        }
+        if ( bValidOrderBy )
+        {
+            this._strOrderBy = strOrderBy;
+        }
+        else
+        {
+            _strOrderBy = LIST_ORDER_BY[0];
+        }
     }
 }

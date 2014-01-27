@@ -34,10 +34,10 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
 import java.sql.Date;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +54,7 @@ public class AppointmentDTO extends Appointment
     private static final long serialVersionUID = 147509700468338769L;
     private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>(  );
     private AppointmentSlot _appointmentSlot;
+    private AppointmentForm _appointmentForm;
 
     /**
      * Default constructor
@@ -119,4 +120,32 @@ public class AppointmentDTO extends Appointment
     {
         this._appointmentSlot = appointmentSlot;
     }
+
+    /**
+     * Get the appointment form associated with this appointment
+     * @return The appointment form associated with this appointment
+     */
+    public AppointmentForm getAppointmentForm( )
+    {
+        return _appointmentForm;
+    }
+
+    /**
+     * Set this appointment form associated with this appointment
+     * @param appointmentForm form associated with this appointment
+     */
+    public void setAppointmentForm( AppointmentForm appointmentForm )
+    {
+        this._appointmentForm = appointmentForm;
+    }
+
+    /**
+     * Get the reference of the appointment
+     * @return The reference of the appointment
+     */
+    public String getRef( )
+    {
+        return AppointmentService.getService( ).computeRefAppointment( this );
+    }
+
 }
