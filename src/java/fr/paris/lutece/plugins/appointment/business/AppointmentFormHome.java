@@ -123,9 +123,10 @@ public final class AppointmentFormHome
         if ( form == null )
         {
             form = _dao.load( nAppointmentFormId, _plugin );
+
             if ( form != null )
             {
-                _cacheService.putInCache( strCacheKey, form.clone( ) );
+                _cacheService.putInCache( strCacheKey, form.clone(  ) );
             }
         }
         else

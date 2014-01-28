@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -119,7 +120,7 @@ public interface IAppointmentDAO
      * @return The list of appointments which ids are given in parameters
      */
     List<Appointment> selectAppointmentListById( List<Integer> listIdAppointments, String strOrderBy, boolean bSortAsc,
-            Plugin plugin );
+        Plugin plugin );
 
     // ----------------------------------------
     // Appointment response management

@@ -36,15 +36,16 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.io.Serializable;
+
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**

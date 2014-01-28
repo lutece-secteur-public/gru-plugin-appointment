@@ -36,15 +36,17 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.io.Serializable;
+
 import java.sql.Date;
+
 import java.util.Collection;
 import java.util.List;
 
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -196,7 +198,7 @@ public class Appointment implements Serializable
      *         appointment, or null if this appointment is not associated with a
      *         lutece user
      */
-    public String getAuthenticationService( )
+    public String getAuthenticationService(  )
     {
         return _strAuthenticationService;
     }

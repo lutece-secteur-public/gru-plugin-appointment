@@ -67,6 +67,8 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,8 +77,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -282,9 +282,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
-        if ( appointmentForm.getTimeStart( ).compareTo( appointmentForm.getTimeEnd( ) ) <= 0 )
+
+        if ( appointmentForm.getTimeStart(  ).compareTo( appointmentForm.getTimeEnd(  ) ) <= 0 )
         {
-            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale( ) );
+            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale(  ) );
+
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
 
@@ -456,11 +458,13 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
         }
 
-        if ( appointmentForm.getTimeStart( ).compareTo( appointmentForm.getTimeEnd( ) ) >= 0 )
+        if ( appointmentForm.getTimeStart(  ).compareTo( appointmentForm.getTimeEnd(  ) ) >= 0 )
         {
-            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale( ) );
-            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
+            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale(  ) );
+
+            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
         }
+
         AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
 
         AppointmentFormHome.update( appointmentForm );

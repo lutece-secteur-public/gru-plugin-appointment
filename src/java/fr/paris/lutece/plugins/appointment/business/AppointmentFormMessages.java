@@ -252,7 +252,7 @@ public class AppointmentFormMessages implements Cloneable
      * @return The text to display to the user after the canceling of an
      *         appointment
      */
-    public String getTextAppointmentCanceled( )
+    public String getTextAppointmentCanceled(  )
     {
         return _strTextAppointmentCanceled;
     }

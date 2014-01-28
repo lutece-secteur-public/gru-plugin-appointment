@@ -72,8 +72,15 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
+
+import org.dozer.converters.DateConverter;
+
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,11 +90,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
-import org.dozer.converters.DateConverter;
+import javax.validation.ConstraintViolation;
 
 
 /**
@@ -225,7 +229,7 @@ public class AppointmentApp extends MVCApplication
             {
                 AppointmentDTO appointmentDTO = new AppointmentDTO(  );
                 appointmentDTO.setEmail( appointment.getEmail(  ) );
-                appointmentDTO.setFirstName( appointment.getFirstName( ) );
+                appointmentDTO.setFirstName( appointment.getFirstName(  ) );
                 appointmentDTO.setLastName( appointment.getLastName(  ) );
 
                 Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry(  );
@@ -574,6 +578,7 @@ public class AppointmentApp extends MVCApplication
             {
                 Map<String, Object> model = new HashMap<String, Object>(  );
                 model.put( MARK_FORM, form );
+
                 Locale locale = getLocale( request );
                 XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
                 xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
@@ -608,25 +613,29 @@ public class AppointmentApp extends MVCApplication
                 String strIdAppointment = strRef.substring( 0,
                         strRef.length(  ) - AppointmentService.CONSTANT_REF_SIZE_RANDOM_PART );
                 String strDate = request.getParameter( PARAMETER_DATE_APPOINTMENT );
+
                 if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
                 {
                     int nIdAppointment = Integer.parseInt( strIdAppointment );
                     Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
 
-                    Date date = (Date) getDateConverter( ).convert( Date.class, strDate );
+                    Date date = (Date) getDateConverter(  ).convert( Date.class, strDate );
 
                     if ( StringUtils.equals( strRef,
-                            AppointmentService.getService( ).computeRefAppointment( appointment ) )
-                            && DateUtils.isSameDay( date, appointment.getDateAppointment( ) ) )
+                                AppointmentService.getService(  ).computeRefAppointment( appointment ) ) &&
+                            DateUtils.isSameDay( date, appointment.getDateAppointment(  ) ) )
                     {
                         appointment.setStatus( Appointment.STATUS_REJECTED );
                         AppointmentHome.update( appointment );
-                        Map<String, String> mapParameters = new HashMap<String, String>( );
+
+                        Map<String, String> mapParameters = new HashMap<String, String>(  );
                         mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS,
-                                request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
+                            request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
+
                         return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
                     }
                 }
+
                 SiteMessageService.setMessage( request, ERROR_MESSAGE_UNKNOWN_REF, SiteMessage.TYPE_STOP );
             }
         }
@@ -643,19 +652,22 @@ public class AppointmentApp extends MVCApplication
     public XPage getAppointmentCanceled( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
-            Map<String, Object> model = new HashMap<String, Object>( );
+            Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
 
             if ( Boolean.parseBoolean( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
             {
                 model.put( MARK_BACK_URL, getViewUrl( VIEW_GET_MY_APPOINTMENTS ) );
             }
+
             return getXPage( TEMPLATE_APPOINTMENT_CANCELED, getLocale( request ), model );
         }
+
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
@@ -667,16 +679,19 @@ public class AppointmentApp extends MVCApplication
      *             user has not signed in
      */
     @View( VIEW_GET_MY_APPOINTMENTS )
-    public XPage getMyAppointments( HttpServletRequest request ) throws UserNotSignedException
+    public XPage getMyAppointments( HttpServletRequest request )
+        throws UserNotSignedException
     {
-        if ( !SecurityService.isAuthenticationEnable( ) )
+        if ( !SecurityService.isAuthenticationEnable(  ) )
         {
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
-        XPage xpage = new XPage( );
+
+        XPage xpage = new XPage(  );
         Locale locale = getLocale( request );
         xpage.setContent( getMyAppointmentsXPage( request, locale ) );
         xpage.setTitle( I18nService.getLocalizedString( MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale ) );
+
         return xpage;
     }
 
@@ -688,36 +703,43 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException If the user has not signed in
      */
     public static String getMyAppointmentsXPage( HttpServletRequest request, Locale locale )
-            throws UserNotSignedException
+        throws UserNotSignedException
     {
-        if ( !SecurityService.isAuthenticationEnable( ) )
+        if ( !SecurityService.isAuthenticationEnable(  ) )
         {
             return null;
         }
-        LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
+
+        LuteceUser luteceUser = SecurityService.getInstance(  ).getRegisteredUser( request );
+
         if ( luteceUser == null )
         {
-            throw new UserNotSignedException( );
+            throw new UserNotSignedException(  );
         }
-        AppointmentFilter appointmentFiler = new AppointmentFilter( );
-        appointmentFiler.setIdUser( luteceUser.getName( ) );
-        appointmentFiler.setAuthenticationService( luteceUser.getAuthenticationService( ) );
+
+        AppointmentFilter appointmentFiler = new AppointmentFilter(  );
+        appointmentFiler.setIdUser( luteceUser.getName(  ) );
+        appointmentFiler.setAuthenticationService( luteceUser.getAuthenticationService(  ) );
+
         List<Appointment> listAppointments = AppointmentHome.getAppointmentListByFilter( appointmentFiler );
 
-        List<AppointmentDTO> listAppointmentDTO = new ArrayList<AppointmentDTO>( listAppointments.size( ) );
+        List<AppointmentDTO> listAppointmentDTO = new ArrayList<AppointmentDTO>( listAppointments.size(  ) );
+
         for ( Appointment appointment : listAppointments )
         {
             AppointmentDTO appointmantDTO = new AppointmentDTO( appointment );
-            appointmantDTO.setAppointmentSlot( AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) ) );
-            appointmantDTO.setAppointmentForm( AppointmentFormHome.findByPrimaryKey( appointmantDTO
-                    .getAppointmentSlot( ).getIdForm( ) ) );
+            appointmantDTO.setAppointmentSlot( AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) ) );
+            appointmantDTO.setAppointmentForm( AppointmentFormHome.findByPrimaryKey( 
+                    appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) );
             listAppointmentDTO.add( appointmantDTO );
         }
-        Map<String, Object> model = new HashMap<String, Object>( );
+
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_LIST_APPOINTMENTS, listAppointments );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
-        return template.getHtml( );
+
+        return template.getHtml(  );
     }
 
     /**
@@ -738,7 +760,7 @@ public class AppointmentApp extends MVCApplication
      * Get the converter to convert string to java.sql.Date.
      * @return The converter to convert String to java.sql.Date.
      */
-    private DateConverter getDateConverter( )
+    private DateConverter getDateConverter(  )
     {
         if ( _dateConverter == null )
         {

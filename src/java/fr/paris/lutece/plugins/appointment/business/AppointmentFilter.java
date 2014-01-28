@@ -33,10 +33,11 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import java.io.Serializable;
-import java.sql.Date;
-
 import org.apache.commons.lang.StringUtils;
+
+import java.io.Serializable;
+
+import java.sql.Date;
 
 
 /**
@@ -50,19 +51,19 @@ public class AppointmentFilter implements Serializable
     public static final int NO_STATUS_FILTER = -1525;
 
     /**
-     * Serial version UID
-     */
-    private static final long serialVersionUID = 7458206872870171709L;
-
-    /**
      * Default order by
      */
     public static final String CONSTANT_DEFAULT_ORDER_BY = "id_appointment";
 
-    private static final String[] LIST_ORDER_BY = { CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name",
-            "id_user",
-            "authentication_service", "date_appointment", "status", };
-
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 7458206872870171709L;
+    private static final String[] LIST_ORDER_BY = 
+        {
+            CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name", "id_user", "authentication_service",
+            "date_appointment", "status",
+        };
     private int _nIdSlot;
     private int _nIdForm;
     private String _strFirstName;
@@ -190,7 +191,7 @@ public class AppointmentFilter implements Serializable
      *         appointment, or null if this appointment is not associated with a
      *         lutece user
      */
-    public String getAuthenticationService( )
+    public String getAuthenticationService(  )
     {
         return _strAuthenticationService;
     }
@@ -247,7 +248,7 @@ public class AppointmentFilter implements Serializable
      * Get the order by attribute of this filter
      * @return The order by attribute of this filter
      */
-    public String getOrderBy( )
+    public String getOrderBy(  )
     {
         return _strOrderBy;
     }
@@ -261,14 +262,17 @@ public class AppointmentFilter implements Serializable
     public void setOrderBy( String strOrderBy )
     {
         boolean bValidOrderBy = false;
+
         for ( String strOrder : LIST_ORDER_BY )
         {
             if ( StringUtils.equals( strOrder, strOrderBy ) )
             {
                 bValidOrderBy = true;
+
                 break;
             }
         }
+
         if ( bValidOrderBy )
         {
             this._strOrderBy = strOrderBy;
@@ -283,7 +287,7 @@ public class AppointmentFilter implements Serializable
      * Get the order of the sort of this filter
      * @return The _bOrderAsc
      */
-    public boolean getOrderAsc( )
+    public boolean getOrderAsc(  )
     {
         return _bOrderAsc;
     }

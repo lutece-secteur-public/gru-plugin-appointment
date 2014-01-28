@@ -78,7 +78,10 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,9 +91,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.StringUtils;
+import javax.validation.ConstraintViolation;
 
 
 /**
@@ -382,11 +384,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( ( _filter != null ) && Boolean.parseBoolean( request.getParameter( MARK_FILTER_FROM_SESSION ) ) )
             {
                 filter = _filter;
-                if ( filter == null )
-                {
-                    filter = new AppointmentFilter( );
-                }
+
                 String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
+
                 if ( StringUtils.isNotEmpty( strOrderBy ) )
                 {
                     filter.setOrderBy( strOrderBy );
@@ -416,17 +416,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
             List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
 
             LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( listIdAppointments, nItemsPerPage,
-                    strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
+                    strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
 
-            List<Appointment> listAppointments = AppointmentHome.getAppointmentListById( paginator.getPageItems( ),
-                    filter.getOrderBy( ), filter.getOrderAsc( ) );
+            List<Appointment> listAppointments = AppointmentHome.getAppointmentListById( paginator.getPageItems(  ),
+                    filter.getOrderBy(  ), filter.getOrderAsc(  ) );
 
-            LocalizedDelegatePaginator<Appointment> delegatePaginator = new LocalizedDelegatePaginator<Appointment>(
-                    listAppointments, nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex,
-                    listIdAppointments.size( ), getLocale( ) );
+            LocalizedDelegatePaginator<Appointment> delegatePaginator = new LocalizedDelegatePaginator<Appointment>( listAppointments,
+                    nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, listIdAppointments.size(  ),
+                    getLocale(  ) );
 
             // PAGINATOR
-
             ReferenceList refListStatus = new ReferenceList( 3 );
             refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
             refListStatus.addItem( Appointment.STATUS_VALIDATED,
@@ -444,9 +443,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_PAGINATOR, delegatePaginator );
             model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
             model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
+
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
-                for ( Appointment appointment : delegatePaginator.getPageItems( ) )
+                for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
                 {
                     appointment.setListWorkflowActions( WorkflowService.getInstance(  )
                                                                        .getActions( appointment.getIdAppointment(  ),
@@ -454,7 +454,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
             }
 
-            model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems( ) );
+            model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems(  ) );
             model.put( MARK_SLOT, slot );
             model.put( MARK_DAY, day );
             model.put( MARK_FILTER, filter );
@@ -965,6 +965,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String doChangeAppointmentStatus( HttpServletRequest request )
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
+
         if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
         {
             int nIdAppointment = Integer.parseInt( strIdAppointment );
@@ -974,20 +975,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             // We check that the status has changed to avoid doing unnecessary updates.
             // Also, it is not permitted to set the status of an appointment to not validated.
-            if ( appointment.getStatus( ) != nNewStatus && nNewStatus != Appointment.STATUS_NOT_VALIDATED )
+            if ( ( appointment.getStatus(  ) != nNewStatus ) && ( nNewStatus != Appointment.STATUS_NOT_VALIDATED ) )
             {
                 appointment.setStatus( nNewStatus );
                 AppointmentHome.update( appointment );
             }
-            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
 
             UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTS );
             url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
-            url.addParameter( PARAMETER_ID_FORM, slot.getIdForm( ) );
-            url.addParameter( MARK_FILTER_FROM_SESSION, Boolean.TRUE.toString( ) );
+            url.addParameter( PARAMETER_ID_FORM, slot.getIdForm(  ) );
+            url.addParameter( MARK_FILTER_FROM_SESSION, Boolean.TRUE.toString(  ) );
 
-            return redirect( request, url.getUrl( ) );
+            return redirect( request, url.getUrl(  ) );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -1110,13 +1113,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private int parseInt( String strNumber )
     {
         int nNumber = 0;
+
         if ( StringUtils.isEmpty( strNumber ) )
         {
             return nNumber;
         }
+
         if ( strNumber.startsWith( CONSTANT_MINUS ) )
         {
             String strParseableNumber = strNumber.substring( 1 );
+
             if ( StringUtils.isNumeric( strParseableNumber ) )
             {
                 nNumber = Integer.parseInt( strParseableNumber ) * -1;
@@ -1126,6 +1132,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             nNumber = Integer.parseInt( strNumber );
         }
+
         return nNumber;
     }
 }
