@@ -456,7 +456,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
         }
 
-        if ( appointmentForm.getTimeStart( ).compareTo( appointmentForm.getTimeEnd( ) ) <= 0 )
+        if ( appointmentForm.getTimeStart( ).compareTo( appointmentForm.getTimeEnd( ) ) >= 0 )
         {
             addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale( ) );
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );

@@ -346,11 +346,11 @@ public final class AppointmentDAO implements IAppointmentDAO
             {
                 daoUtil.setInt( nIndex++, appointmentFiler.getStatus(  ) );
             }
+        }
 
-            if ( StringUtils.isNotBlank( appointmentFiler.getOrderBy( ) ) )
-            {
-                daoUtil.setString( nIndex, appointmentFiler.getOrderBy( ) );
-            }
+        if ( StringUtils.isNotBlank( appointmentFiler.getOrderBy( ) ) )
+        {
+            daoUtil.setString( nIndex, appointmentFiler.getOrderBy( ) );
         }
 
         daoUtil.executeQuery(  );
