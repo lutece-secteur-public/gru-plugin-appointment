@@ -33,9 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,17 +48,21 @@ import org.apache.commons.lang.StringUtils;
 /**
  * This class represents business objects AppointmentPortlet
  */
-public class AppointmentPortlet extends PortletHtmlContent
+public class AppointmentFormPortlet extends PortletHtmlContent
 {
+    private final AppointmentFormService _appointmentFormService = SpringContextService
+            .getBean( AppointmentFormService.BEAN_NAME );
+    private int _nIdAppointmentForm;
+
     /////////////////////////////////////////////////////////////////////////////////
     // Constants
 
     /**
      * Sets the identifier of the portlet type to value specified
      */
-    public AppointmentPortlet(  )
+    public AppointmentFormPortlet(  )
     {
-        setPortletTypeId( AppointmentPortletHome.getInstance(  ).getPortletTypeId(  ) );
+        setPortletTypeId( AppointmentFormPortletHome.getInstance( ).getPortletTypeId( ) );
     }
 
     /**
@@ -67,23 +74,17 @@ public class AppointmentPortlet extends PortletHtmlContent
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        String strContent;
-
-        try
+        if ( _nIdAppointmentForm > 0 )
         {
-            strContent = AppointmentApp.getMyAppointmentsXPage( request, request.getLocale(  ) );
-
-            if ( strContent == null )
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( _nIdAppointmentForm );
+            if ( form != null && form.getIsActive( ) )
             {
-                strContent = StringUtils.EMPTY;
+                return AppointmentApp.getAppointmentFormHtml( request, form, _appointmentFormService,
+                        request.getLocale( ) );
             }
         }
-        catch ( UserNotSignedException e )
-        {
-            strContent = StringUtils.EMPTY;
-        }
 
-        return strContent;
+        return StringUtils.EMPTY;
     }
 
     /**
@@ -91,7 +92,7 @@ public class AppointmentPortlet extends PortletHtmlContent
      */
     public void update(  )
     {
-        AppointmentPortletHome.getInstance(  ).update( this );
+        AppointmentFormPortletHome.getInstance( ).update( this );
     }
 
     /**
@@ -100,7 +101,7 @@ public class AppointmentPortlet extends PortletHtmlContent
     @Override
     public void remove(  )
     {
-        AppointmentPortletHome.getInstance(  ).remove( this );
+        AppointmentFormPortletHome.getInstance( ).remove( this );
     }
 
     /**
@@ -110,5 +111,23 @@ public class AppointmentPortlet extends PortletHtmlContent
     public boolean canBeCachedForConnectedUsers( )
     {
         return false;
+    }
+
+    /**
+     * Get the id of the appointment form to display
+     * @return The id of the appointment form to display
+     */
+    public int getIdAppointmentForm( )
+    {
+        return _nIdAppointmentForm;
+    }
+
+    /**
+     * Set the id of the appointment form to display
+     * @param nIdAppointmentForm The id of the appointment form to display
+     */
+    public void setIdAppointmentForm( int nIdAppointmentForm )
+    {
+        this._nIdAppointmentForm = nIdAppointmentForm;
     }
 }

@@ -72,15 +72,8 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
-
-import org.dozer.converters.DateConverter;
-
 import java.sql.Date;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -90,8 +83,11 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.ConstraintViolation;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.dozer.converters.DateConverter;
 
 
 /**
@@ -214,68 +210,94 @@ public class AppointmentApp extends MVCApplication
             int nIdForm = Integer.parseInt( strIdForm );
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
 
             if ( ( form == null ) || !form.getIsActive(  ) )
             {
                 return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
             }
 
-            Map<String, Object> model = new HashMap<String, Object>(  );
+            String strHtmlContent = getAppointmentFormHtml( request, form, _appointmentFormService, getLocale( request ) );
 
-            Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
+            XPage page = new XPage( );
+            page.setContent( strHtmlContent );
+            page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
 
-            if ( appointment != null )
+            if ( form.getDisplayTitleFo( ) )
             {
-                AppointmentDTO appointmentDTO = new AppointmentDTO(  );
-                appointmentDTO.setEmail( appointment.getEmail(  ) );
-                appointmentDTO.setFirstName( appointment.getFirstName(  ) );
-                appointmentDTO.setLastName( appointment.getLastName(  ) );
-
-                Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry(  );
-
-                for ( Response response : appointment.getListResponse(  ) )
-                {
-                    List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry(  ).getIdEntry(  ) );
-
-                    if ( listResponse == null )
-                    {
-                        listResponse = new ArrayList<Response>(  );
-                        mapResponsesByIdEntry.put( response.getEntry(  ).getIdEntry(  ), listResponse );
-                    }
-
-                    listResponse.add( response );
-                }
-
-                _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
-            }
-
-            model.put( MARK_FORM_HTML,
-                _appointmentFormService.getHtmlForm( form, formMessages, getLocale( request ), true, request ) );
-
-            List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
-                                                                                          .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-
-            if ( listErrors != null )
-            {
-                model.put( MARK_FORM_ERRORS, listErrors );
-                request.getSession(  ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-            }
-
-            _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
-            _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
-
-            XPage page = getXPage( TEMPLATE_APPOINTMENT_FORM, getLocale( request ), model );
-
-            if ( form.getDisplayTitleFo(  ) )
-            {
-                page.setTitle( form.getTitle(  ) );
+                page.setTitle( form.getTitle( ) );
             }
 
             return page;
         }
 
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+    }
+
+    /**
+     * Get the HTML code of an appointment form
+     * @param request The request
+     * @param form The form to display. The form must not be null and must be
+     *            active
+     * @param appointmentFormService The appointment form service to use
+     * @param locale the locale
+     * @return The HTML code to display, or an empty string if the form is null
+     *         or not active
+     */
+    public static String getAppointmentFormHtml( HttpServletRequest request, AppointmentForm form,
+            AppointmentFormService appointmentFormService, Locale locale )
+    {
+        if ( form == null || !form.getIsActive( ) )
+        {
+            return StringUtils.EMPTY;
+        }
+
+        AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( form.getIdForm( ) );
+
+        Map<String, Object> model = new HashMap<String, Object>( );
+
+        Appointment appointment = appointmentFormService.getValidatedAppointmentFromSession( request.getSession( ) );
+
+        if ( appointment != null )
+        {
+            AppointmentDTO appointmentDTO = new AppointmentDTO( );
+            appointmentDTO.setEmail( appointment.getEmail( ) );
+            appointmentDTO.setFirstName( appointment.getFirstName( ) );
+            appointmentDTO.setLastName( appointment.getLastName( ) );
+
+            Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry( );
+
+            for ( Response response : appointment.getListResponse( ) )
+            {
+                List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry( ).getIdEntry( ) );
+
+                if ( listResponse == null )
+                {
+                    listResponse = new ArrayList<Response>( );
+                    mapResponsesByIdEntry.put( response.getEntry( ).getIdEntry( ), listResponse );
+                }
+
+                listResponse.add( response );
+            }
+
+            appointmentFormService.saveAppointmentInSession( request.getSession( ), appointmentDTO );
+        }
+
+        model.put( MARK_FORM_HTML, appointmentFormService.getHtmlForm( form, formMessages, locale, true, request ) );
+
+        List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute(
+                SESSION_APPOINTMENT_FORM_ERRORS );
+
+        if ( listErrors != null )
+        {
+            model.put( MARK_FORM_ERRORS, listErrors );
+            request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+        }
+
+        appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
+        appointmentFormService.removeValidatedAppointmentFromSession( request.getSession( ) );
+
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, locale, model );
+        return template.getHtml( );
     }
 
     /**
@@ -319,6 +341,7 @@ public class AppointmentApp extends MVCApplication
                 if ( luteceUser != null )
                 {
                     appointment.setIdUser( luteceUser.getName(  ) );
+                    appointment.setAuthenticationService( luteceUser.getAuthenticationService( ) );
                 }
             }
 

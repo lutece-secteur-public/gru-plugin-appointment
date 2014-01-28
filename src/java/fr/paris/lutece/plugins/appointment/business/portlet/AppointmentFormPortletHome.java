@@ -34,37 +34,70 @@
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
-import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.business.portlet.PortletHome;
+import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 
 /**
- *
- * Interface for DAO of Appointment portlet
+ * This class provides instances management methods for AppointmentPortlet
+ * objects
  */
-public interface IAppointmentPortletDAO extends IPortletInterfaceDAO
+public class AppointmentFormPortletHome extends PortletHome
 {
-    /**
-     * Delete record from table
-     * @param nPortletId The identifier of the Portlet
-     */
-    void delete( int nPortletId );
+    // Static variable pointed at the DAO instance
+    private static IAppointmentFormPortletDAO _dao = SpringContextService
+            .getBean( "appointment.appointmentFormPortletDAO" );
+
+    /* This class implements the Singleton design pattern. */
+    private static volatile AppointmentFormPortletHome _singleton;
 
     /**
-     * Insert a new record in the table.
-     * @param portlet The Instance of the Portlet
+     * Constructor
      */
-    void insert( Portlet portlet );
+    public AppointmentFormPortletHome(  )
+    {
+        if ( _singleton == null )
+        {
+            _singleton = this;
+        }
+    }
 
     /**
-     * load the data of dbpagePortlet from the table
-     * @param nIdPortlet The identifier of the portlet
-     * @return portlet The instance of the object portlet
+     * Returns the identifier of the portlet type
+     *
+     * @return the portlet type identifier
      */
-    Portlet load( int nIdPortlet );
+    public String getPortletTypeId(  )
+    {
+        String strCurrentClassName = this.getClass(  ).getName(  );
+        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
+
+        return strPortletTypeId;
+    }
 
     /**
-     * Update the record in the table
-     * @param portlet The reference of the portlet
+     * Returns the instance of AppointmentPortlet Portlet
+     *
+     * @return the AppointmentPortlet Portlet instance
      */
-    void store( Portlet portlet );
+    public static PortletHome getInstance(  )
+    {
+        if ( _singleton == null )
+        {
+            _singleton = new AppointmentFormPortletHome(  );
+        }
+
+        return _singleton;
+    }
+
+    /**
+     * Returns the instance of the portlet DAO singleton
+     *
+     * @return the instance of the DAO singleton
+     */
+    public IPortletInterfaceDAO getDAO(  )
+    {
+        return _dao;
+    }
 }

@@ -34,19 +34,20 @@
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
 import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.util.sql.DAOUtil;
 
 
 /**
  * this class provides Data Access methods for AppointmentPortlet objects
  */
-public final class AppointmentPortletDAO implements IAppointmentPortletDAO
+public final class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO
 {
     ////////////////////////////////////////////////////////////////////////////
     // Constants
-    //    private static final String SQL_QUERY_SELECT = "SELECT id_portlet FROM appointment_portlet WHERE id_portlet = ? ";
-    //    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_portlet ( id_portlet ) VALUES ( ? )";
-    //    private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_portlet WHERE id_portlet = ? ";
-    //    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_portlet SET id_portlet = ? WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_portlet, id_form FROM appointment_form_portlet WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_portlet ( id_portlet, id_form ) VALUES ( ? , ?)";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_portlet WHERE id_portlet = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_portlet SET id_form = ? WHERE id_portlet = ? ";
 
     ///////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data
@@ -59,11 +60,12 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
     @Override
     public void insert( Portlet portlet )
     {
-        //        AppointmentPortlet p = (AppointmentPortlet) portlet;
-        //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        //        daoUtil.setInt( 1, p.getId(  ) );
-        //        daoUtil.executeUpdate(  );
-        //        daoUtil.free(  );
+        AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
+        daoUtil.setInt( 1, p.getId(  ) );
+        daoUtil.setInt( 2, p.getIdAppointmentForm( ) );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -74,10 +76,10 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
     @Override
     public void delete( int nPortletId )
     {
-        //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        //        daoUtil.setInt( 1, nPortletId );
-        //        daoUtil.executeUpdate(  );
-        //        daoUtil.free(  );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
+        daoUtil.setInt( 1, nPortletId );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -88,13 +90,13 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
     @Override
     public void store( Portlet portlet )
     {
-        //        AppointmentPortlet p = (AppointmentPortlet) portlet;
-        //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        //        daoUtil.setInt( 1, p.getId(  ) );
-        //        daoUtil.setInt( 2, p.getId(  ) );
-        //
-        //        daoUtil.executeUpdate(  );
-        //        daoUtil.free(  );
+        AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+        daoUtil.setInt( 1, p.getIdAppointmentForm( ) );
+        daoUtil.setInt( 2, p.getId(  ) );
+
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -105,21 +107,19 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
     @Override
     public Portlet load( int nIdPortlet )
     {
-        //        AppointmentPortlet portlet = new AppointmentPortlet(  );
-        //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        //        daoUtil.setInt( 1, nIdPortlet );
-        //        daoUtil.executeQuery(  );
-        //
-        //        if ( daoUtil.next(  ) )
-        //        {
-        //            portlet.setId( daoUtil.getInt( 1 ) );
-        //        }
-        //
-        //        daoUtil.free(  );
-        //
-        //        return portlet;
-        AppointmentPortlet portlet = new AppointmentPortlet(  );
-        portlet.setId( nIdPortlet );
+        AppointmentFormPortlet portlet = new AppointmentFormPortlet( );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
+        daoUtil.setInt( 1, nIdPortlet );
+        daoUtil.executeQuery(  );
+
+        if ( daoUtil.next(  ) )
+        {
+            portlet.setId( daoUtil.getInt( 1 ) );
+            portlet.setIdAppointmentForm( daoUtil.getInt( 2 ) );
+        }
+
+        daoUtil.free(  );
+
         return portlet;
     }
 }
