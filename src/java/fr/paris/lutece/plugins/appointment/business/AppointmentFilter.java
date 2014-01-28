@@ -33,10 +33,11 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import java.io.Serializable;
-import java.sql.Date;
-
 import org.apache.commons.lang.StringUtils;
+
+import java.io.Serializable;
+
+import java.sql.Date;
 
 
 /**
@@ -231,7 +232,7 @@ public class AppointmentFilter implements Serializable
      * Get the minimum value of the date of the appointment
      * @return The minimum value of the date of the appointment
      */
-    public Date getDateAppointmentMin( )
+    public Date getDateAppointmentMin(  )
     {
         return _dateAppointmentMin;
     }
@@ -250,7 +251,7 @@ public class AppointmentFilter implements Serializable
      * Get the minimum value of the date of the appointment
      * @return The minimum value of the date of the appointment
      */
-    public Date getDateAppointmentMax( )
+    public Date getDateAppointmentMax(  )
     {
         return _dateAppointmentMax;
     }

@@ -56,7 +56,10 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,8 +68,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -524,8 +525,9 @@ public class AppointmentFormService implements Serializable
                 PROPERTY_DEFAULT_LABEL_BUTTON_REDIRECT, StringUtils.EMPTY ) );
         formMessages.setTextAppointmentCreated( AppPropertiesService.getProperty( 
                 PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED, StringUtils.EMPTY ) );
-        formMessages.setTextAppointmentCanceled( AppPropertiesService.getProperty(
+        formMessages.setTextAppointmentCanceled( AppPropertiesService.getProperty( 
                 PROPERTY_DEFAULT_TEXT_APPOINTMENT_CANCELED, StringUtils.EMPTY ) );
+
         return formMessages;
     }
 

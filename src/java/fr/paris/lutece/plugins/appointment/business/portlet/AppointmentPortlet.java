@@ -37,9 +37,9 @@ import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -107,7 +107,7 @@ public class AppointmentPortlet extends PortletHtmlContent
      * {@inheritDoc}
      */
     @Override
-    public boolean canBeCachedForConnectedUsers( )
+    public boolean canBeCachedForConnectedUsers(  )
     {
         return false;
     }

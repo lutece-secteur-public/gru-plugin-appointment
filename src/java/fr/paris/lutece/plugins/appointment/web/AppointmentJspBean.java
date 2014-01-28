@@ -78,7 +78,10 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,9 +91,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.StringUtils;
+import javax.validation.ConstraintViolation;
 
 
 /**
@@ -710,9 +712,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ),
                         response.getIdResponse(  ) );
                 }
+
                 if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_SAVE_AND_BACK ) ) )
                 {
-                    addInfo( INFO_APPOINTMENT_UPDATED, getLocale( ) );
+                    addInfo( INFO_APPOINTMENT_UPDATED, getLocale(  ) );
+
                     return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
                 }
             }
@@ -910,12 +914,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 ResponseHome.create( response );
                 AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ), response.getIdResponse(  ) );
             }
-            addInfo( INFO_APPOINTMENT_UPDATED, getLocale( ) );
+
+            addInfo( INFO_APPOINTMENT_UPDATED, getLocale(  ) );
         }
         else
         {
             AppointmentHome.update( appointment );
-            addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
+            addInfo( INFO_APPOINTMENT_CREATED, getLocale(  ) );
         }
 
         if ( form.getIdWorkflow(  ) > 0 )

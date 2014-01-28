@@ -60,17 +60,20 @@ public final class AppointmentFormPortletDAO implements IAppointmentFormPortletD
     @Override
     public void insert( Portlet portlet )
     {
-        AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-        daoUtil.setInt( 1, p.getId(  ) );
-        daoUtil.setInt( 2, p.getIdAppointmentForm( ) );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        if ( portlet instanceof AppointmentFormPortlet )
+        {
+            AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
+            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
+            daoUtil.setInt( 1, p.getId(  ) );
+            daoUtil.setInt( 2, p.getIdAppointmentForm(  ) );
+            daoUtil.executeUpdate(  );
+            daoUtil.free(  );
+        }
     }
 
     /**
      * Delete record from table
-     * 
+     *
      * @param nPortletId The identifier of the Portlet
      */
     @Override
@@ -90,13 +93,16 @@ public final class AppointmentFormPortletDAO implements IAppointmentFormPortletD
     @Override
     public void store( Portlet portlet )
     {
-        AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-        daoUtil.setInt( 1, p.getIdAppointmentForm( ) );
-        daoUtil.setInt( 2, p.getId(  ) );
+        if ( portlet instanceof AppointmentFormPortlet )
+        {
+            AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
+            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+            daoUtil.setInt( 1, p.getIdAppointmentForm(  ) );
+            daoUtil.setInt( 2, p.getId(  ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+            daoUtil.executeUpdate(  );
+            daoUtil.free(  );
+        }
     }
 
     /**
@@ -107,7 +113,7 @@ public final class AppointmentFormPortletDAO implements IAppointmentFormPortletD
     @Override
     public Portlet load( int nIdPortlet )
     {
-        AppointmentFormPortlet portlet = new AppointmentFormPortlet( );
+        AppointmentFormPortlet portlet = new AppointmentFormPortlet(  );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
         daoUtil.setInt( 1, nIdPortlet );
         daoUtil.executeQuery(  );

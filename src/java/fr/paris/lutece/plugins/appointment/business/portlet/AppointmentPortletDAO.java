@@ -68,7 +68,7 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
 
     /**
      * Delete record from table
-     * 
+     *
      * @param nPortletId The identifier of the Portlet
      */
     @Override
@@ -120,6 +120,7 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
         //        return portlet;
         AppointmentPortlet portlet = new AppointmentPortlet(  );
         portlet.setId( nIdPortlet );
+
         return portlet;
     }
 }
