@@ -96,11 +96,34 @@ public interface IAppointmentDAO
 
     /**
      * Get the list of appointments matching a given filter
-     * @param appointmentFiler The filter appointments must match
+     * @param appointmentFilter The filter appointments must match
      * @param plugin The plugin
      * @return The list of appointments that match the given filter
      */
-    List<Appointment> selectAppointmentListByFilter( AppointmentFilter appointmentFiler, Plugin plugin );
+    List<Appointment> selectAppointmentListByFilter( AppointmentFilter appointmentFilter, Plugin plugin );
+
+    /**
+     * Get the list of ids of appointments matching a given filter
+     * @param appointmentFilter The filter appointments must match
+     * @param plugin The plugin
+     * @return The list of ids of appointments that match the given filter
+     */
+    List<Integer> selectAppointmentIdByFilter( AppointmentFilter appointmentFilter, Plugin plugin );
+
+    /**
+     * Get a list of appointments from their ids
+     * @param listIdAppointments The list of ids of appointments to get
+     * @param strOrderBy The name of the column to sort rows
+     * @param bSortAsc True to sort ascending, false otherwise
+     * @param plugin The plugin
+     * @return The list of appointments which ids are given in parameters
+     */
+    List<Appointment> selectAppointmentListById( List<Integer> listIdAppointments, String strOrderBy, boolean bSortAsc,
+            Plugin plugin );
+
+    // ----------------------------------------
+    // Appointment response management
+    // ----------------------------------------
 
     /**
      * Associates a response to an appointment

@@ -133,6 +133,18 @@ public final class AppointmentHome
     }
 
     /**
+     * Get the number of appointments associated with a given form and with a
+     * date after a given date
+     * @param nIdForm The id of the form
+     * @param date The minimum date of appointments to consider
+     * @return The number of appointments associated with the form
+     */
+    public static int countAppointmentsByIdForm( int nIdForm, Date date )
+    {
+        return _dao.countAppointmentsByIdForm( nIdForm, date, _plugin );
+    }
+
+    /**
      * Load the data of appointment objects associated with a given form and
      * returns them in a collection
      * @param nIdForm the id of the form
@@ -143,7 +155,29 @@ public final class AppointmentHome
         return _dao.selectAppointmentsListByIdForm( nIdForm, _plugin );
     }
 
+    /**
+     * Get the list of appointments matching a given filter
+     * @param appointmentFilter The filter appointments must match
+     * @return The list of appointments that match the given filter
+     */
+    public static List<Appointment> getAppointmentListByFilter( AppointmentFilter appointmentFilter )
+    {
+        return _dao.selectAppointmentListByFilter( appointmentFilter, _plugin );
+    }
+
+    /**
+     * Get the list of ids of appointments matching a given filter
+     * @param appointmentFilter The filter appointments must match
+     * @return The list of ids of appointments that match the given filter
+     */
+    public static List<Integer> getAppointmentIdByFilter( AppointmentFilter appointmentFilter )
+    {
+        return _dao.selectAppointmentIdByFilter( appointmentFilter, _plugin );
+    }
+
+    // -----------------------------------------------
     // Appointment response management
+    // -----------------------------------------------
 
     /**
      * Associates a response to an appointment
@@ -206,24 +240,26 @@ public final class AppointmentHome
     }
 
     /**
-     * Get the number of appointments associated with a given form and with a
-     * date after a given date
-     * @param nIdForm The id of the form
-     * @param date The minimum date of appointments to consider
-     * @return The number of appointments associated with the form
+     * Get a list of appointments from their ids
+     * @param listIdAppointments The list of ids of appointments to get
+     * @return The list of appointments which ids are given in parameters
      */
-    public static int countAppointmentsByIdForm( int nIdForm, Date date )
+    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments )
     {
-        return _dao.countAppointmentsByIdForm( nIdForm, date, _plugin );
+        return _dao.selectAppointmentListById( listIdAppointments, AppointmentFilter.CONSTANT_DEFAULT_ORDER_BY, true,
+                _plugin );
     }
 
     /**
-     * Get the list of appointments matching a given filter
-     * @param appointmentFiler The filter appointments must match
-     * @return The list of appointments that match the given filter
+     * Get a list of appointments from their ids
+     * @param listIdAppointments The list of ids of appointments to get
+     * @param strOrderBy The name of the column to sort rows
+     * @param bSortAsc True to sort ascending, false otherwise
+     * @return The list of appointments which ids are given in parameters
      */
-    public static List<Appointment> getAppointmentListByFilter( AppointmentFilter appointmentFiler )
+    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments, String strOrderBy,
+            boolean bSortAsc )
     {
-        return _dao.selectAppointmentListByFilter( appointmentFiler, _plugin );
+        return _dao.selectAppointmentListById( listIdAppointments, strOrderBy, bSortAsc, _plugin );
     }
 }

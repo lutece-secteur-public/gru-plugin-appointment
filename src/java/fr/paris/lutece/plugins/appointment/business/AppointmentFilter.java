@@ -54,8 +54,14 @@ public class AppointmentFilter implements Serializable
      */
     private static final long serialVersionUID = 7458206872870171709L;
 
-    private static final String[] LIST_ORDER_BY = { "id_appointment", "id_slot", "first_name", "last_name", "id_user",
-            "authentication_service", "date_appointment", "status" };
+    /**
+     * Default order by
+     */
+    public static final String CONSTANT_DEFAULT_ORDER_BY = "id_appointment";
+
+    private static final String[] LIST_ORDER_BY = { CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name",
+            "id_user",
+            "authentication_service", "date_appointment", "status", };
 
     private int _nIdSlot;
     private int _nIdForm;
@@ -66,7 +72,8 @@ public class AppointmentFilter implements Serializable
     private String _strAuthenticationService;
     private Date _dateAppointment;
     private int _nStatus = NO_STATUS_FILTER;
-    private String _strOrderBy = LIST_ORDER_BY[0];
+    private String _strOrderBy = CONSTANT_DEFAULT_ORDER_BY;
+    private boolean _bOrderAsc;
 
     /**
      * Get the id of the form
@@ -270,5 +277,23 @@ public class AppointmentFilter implements Serializable
         {
             _strOrderBy = LIST_ORDER_BY[0];
         }
+    }
+
+    /**
+     * Get the order of the sort of this filter
+     * @return The _bOrderAsc
+     */
+    public boolean getOrderAsc( )
+    {
+        return _bOrderAsc;
+    }
+
+    /**
+     * Set the order of the sort of this filter
+     * @param bOrderAsc True to sort ascending, false to sort descending,
+     */
+    public void setOrderAsc( boolean bOrderAsc )
+    {
+        this._bOrderAsc = bOrderAsc;
     }
 }

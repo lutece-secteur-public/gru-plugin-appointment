@@ -71,6 +71,7 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.portal.web.util.LocalizedDelegatePaginator;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
@@ -137,6 +138,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_ID_ACTION = "id_action";
     private static final String PARAMETER_NEW_STATUS = "new_status";
+    private static final String PARAMETER_ORDER_BY = "orderBy";
+    private static final String PARAMETER_ORDER_ASC = "orderAsc";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -379,6 +382,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( ( _filter != null ) && Boolean.parseBoolean( request.getParameter( MARK_FILTER_FROM_SESSION ) ) )
             {
                 filter = _filter;
+                if ( filter == null )
+                {
+                    filter = new AppointmentFilter( );
+                }
+                String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
+                if ( StringUtils.isNotEmpty( strOrderBy ) )
+                {
+                    filter.setOrderBy( strOrderBy );
+                    filter.setOrderAsc( Boolean.parseBoolean( request.getParameter( PARAMETER_ORDER_ASC ) ) );
+                }
             }
             else
             {
@@ -398,13 +411,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 _filter = filter;
             }
 
-            List<Appointment> listAppointments = AppointmentHome.getAppointmentListByFilter( filter );
-
             String strUrl = url.getUrl(  );
 
+            List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
+
+            LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( listIdAppointments, nItemsPerPage,
+                    strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
+
+            List<Appointment> listAppointments = AppointmentHome.getAppointmentListById( paginator.getPageItems( ),
+                    filter.getOrderBy( ), filter.getOrderAsc( ) );
+
+            LocalizedDelegatePaginator<Appointment> delegatePaginator = new LocalizedDelegatePaginator<Appointment>(
+                    listAppointments, nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex,
+                    listIdAppointments.size( ), getLocale( ) );
+
             // PAGINATOR
-            LocalizedPaginator<Appointment> paginator = new LocalizedPaginator<Appointment>( listAppointments,
-                    nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
 
             ReferenceList refListStatus = new ReferenceList( 3 );
             refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
@@ -420,12 +441,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
             model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
-            model.put( MARK_PAGINATOR, paginator );
+            model.put( MARK_PAGINATOR, delegatePaginator );
             model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
             model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
-                for ( Appointment appointment : paginator.getPageItems(  ) )
+                for ( Appointment appointment : delegatePaginator.getPageItems( ) )
                 {
                     appointment.setListWorkflowActions( WorkflowService.getInstance(  )
                                                                        .getActions( appointment.getIdAppointment(  ),
@@ -433,7 +454,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
             }
 
-            model.put( MARK_APPOINTMENT_LIST, paginator.getPageItems(  ) );
+            model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems( ) );
             model.put( MARK_SLOT, slot );
             model.put( MARK_DAY, day );
             model.put( MARK_FILTER, filter );

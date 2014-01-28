@@ -28,6 +28,8 @@
 				<#if form??>
 					<input type="hidden" name="id_form" value="${form.idForm}">
 				</#if>
+				<input type="hidden" name="orderBy" value=${filter.orderBy}>
+				<input type="hidden" name="orderAsc" value=${filter.orderAsc?string}>
 				<div class="row-fluid">
 					<div class="span4 well">
 						<fieldset>
@@ -68,11 +70,51 @@
 						<#if appointment_list?? && appointment_list?size &gt; 0>
 							<table class="table table-condensed table-striped">
 								<tr>
-									<th>#i18n{appointment.manage_appointments.columnFirstName}</th>
-									<th>#i18n{appointment.manage_appointments.columnLastName}</th>
-									<th>#i18n{appointment.manage_appointments.columnEmail}</th>
-									<th>#i18n{appointment.manage_appointments.columnDateAppointment}</th>
-									<th>#i18n{appointment.manage_appointments.columnStatus}</th>
+									<th>
+										#i18n{appointment.manage_appointments.columnFirstName}
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=true">
+											<i class="icon-chevron-up">&nbsp;</i>
+										</a>
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=false">
+											<i class="icon-chevron-down">&nbsp;</i>
+										</a>
+									</th>
+									<th>
+										#i18n{appointment.manage_appointments.columnLastName}
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=true">
+											<i class="icon-chevron-up">&nbsp;</i>
+										</a>
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=false">
+											<i class="icon-chevron-down">&nbsp;</i>
+										</a>
+									</th>
+									<th>
+										#i18n{appointment.manage_appointments.columnEmail}
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=email&orderAsc=true">
+											<i class="icon-chevron-up">&nbsp;</i>
+										</a>
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=email&orderAsc=false">
+											<i class="icon-chevron-down">&nbsp;</i>
+										</a>
+									</th>
+									<th>
+										#i18n{appointment.manage_appointments.columnDateAppointment}
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=date_appointment&orderAsc=true">
+											<i class="icon-chevron-up">&nbsp;</i>
+										</a>
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=date_appointment&orderAsc=false">
+											<i class="icon-chevron-down">&nbsp;</i>
+										</a>
+									</th>
+									<th>
+										#i18n{appointment.manage_appointments.columnStatus}
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=true">
+											<i class="icon-chevron-up">&nbsp;</i>
+										</a>
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=false">
+											<i class="icon-chevron-down">&nbsp;</i>
+										</a>
+									</th>
 									<th>#i18n{portal.util.labelActions}</th>
 								</tr>
 								<#list appointment_list as appointment >
