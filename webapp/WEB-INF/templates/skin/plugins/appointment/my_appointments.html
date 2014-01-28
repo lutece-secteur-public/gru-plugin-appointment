@@ -2,52 +2,52 @@
 	<div class="span12">
 		<legend>#i18n{appointment.my_appointments.pageTitle}</legend>
 		<#if list_appointments?? && list_appointments?size &gt; 0>
-		<table class="table table-stripped table-condensed">
-			<tr>
-				<th>#i18n{appointment.my_appointments.labelAppointmentFormTitle}</th>
-				<th>#i18n{appointment.my_appointments.labelDateAppointment}</th>
-				<th>#i18n{appointment.my_appointments.labelTime}</th>
-				<th>#i18n{appointment.my_appointments.labelStatus}</th>
-				<th>#i18n{appointment.my_appointments.labelActions}</th>
-			</tr>
-			<#list list_appointments as appointment>
+			<table class="table table-stripped table-condensed">
 				<tr>
-					<td>
-						${appointment.appointmentForm.title}
-					</td>
-					<td>
-						${appointment.dateAppointment}
-					</td>
-					<td>
-						<#assign startingHour = appointment.appointmentSlot.startingHour>
-						<#assign startingMinute = appointment.appointmentSlot.startingMinute>
-						<#if startingHour &lt; 10>0</#if>${startingHour}H<#if startingMinute &lt; 10>0</#if>${startingMinute}
-					</td>
-					<td>
-						<#if appointment.status == status_validated>
-							<span class="label label-success">
-								#i18n{appointment.message.labelStatusValidated}
-							</span>
-						<#elseif appointment.status == status_rejected>
-							<span class="label label-important">
-								#i18n{appointment.message.labelStatusRejected}
-							</span>
-						<#else>
-							<span class="label">
-								#i18n{appointment.message.labelStatusNotValidated}
-							</span>
-						</#if>
-					</td>
-					<td>
-						<#if appointment.appointmentForm.allowUsersToCancelAppointments >
-							<a class="btn btn-danger btn-small" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&ref=${appointment.refAppointment}&fromMyappointments=true" >
-								<i class="icon-remove icon-white">&nbsp;</i>
-							</a>
-						</#if>
-					</td>
+					<th>#i18n{appointment.my_appointments.labelAppointmentFormTitle}</th>
+					<th>#i18n{appointment.my_appointments.labelDateAppointment}</th>
+					<th>#i18n{appointment.my_appointments.labelTime}</th>
+					<th>#i18n{appointment.my_appointments.labelStatus}</th>
+					<th>#i18n{appointment.my_appointments.labelActions}</th>
 				</tr>
-			</#list>
-		</table>
+				<#list list_appointments as appointment>
+					<tr>
+						<td>
+							${appointment.appointmentForm.title}
+						</td>
+						<td>
+							${appointment.dateAppointment}
+						</td>
+						<td>
+							<#assign startingHour = appointment.appointmentSlot.startingHour>
+							<#assign startingMinute = appointment.appointmentSlot.startingMinute>
+							<#if startingHour &lt; 10>0</#if>${startingHour}H<#if startingMinute &lt; 10>0</#if>${startingMinute}
+						</td>
+						<td>
+							<#if appointment.status == status_validated>
+								<span class="label label-success">
+									#i18n{appointment.message.labelStatusValidated}
+								</span>
+							<#elseif appointment.status == status_rejected>
+								<span class="label label-important">
+									#i18n{appointment.message.labelStatusRejected}
+								</span>
+							<#else>
+								<span class="label">
+									#i18n{appointment.message.labelStatusNotValidated}
+								</span>
+							</#if>
+						</td>
+						<td>
+							<#if appointment.appointmentForm.allowUsersToCancelAppointments >
+								<a class="btn btn-danger btn-small" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&ref=${appointment.refAppointment}&fromMyappointments=true" >
+									<i class="icon-remove icon-white">&nbsp;</i>
+								</a>
+							</#if>
+						</td>
+					</tr>
+				</#list>
+			</table>
 		<#else>
 			#i18n{portal.util.labelNoItem}
 		</#if>
