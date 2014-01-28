@@ -47,9 +47,18 @@
 				</div>
 				${str_entry}
 				<div class="form-actions form-steps">
-					<button class="btn btn-primary btn-small" type="submit" name="save" >
-						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
-					</button>
+					<#if appointment.idAppointment &gt; 0>
+						<button class="btn btn-primary btn-small" type="submit" name="saveAndBack" value="saveAndBack" >
+							<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+						</button>
+						<button class="btn btn-primary btn-small" type="submit" name="save" >
+							<i class="icon-arrow-right icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidateAndChangeDate}
+						</button>
+					<#else>
+						<button class="btn btn-primary btn-small" type="submit" name="save" value="saveAndBack" >
+							<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+						</button>
+					</#if>
 					<button type="reset" name="reset" class="btn btn-primary btn-small">
 						<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelReset}
 					</button>

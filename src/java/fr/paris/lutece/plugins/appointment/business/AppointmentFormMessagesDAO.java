@@ -88,8 +88,8 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
         daoUtil.setString( nIndex++, formMessage.getFieldEmailTitle(  ) );
         daoUtil.setString( nIndex++, formMessage.getFieldEmailHelp(  ) );
         daoUtil.setString( nIndex++, formMessage.getTextAppointmentCreated(  ) );
+        daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation( ) );
         daoUtil.setString( nIndex++, formMessage.getTextAppointmentCanceled(  ) );
-        daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation(  ) );
         daoUtil.setString( nIndex++, formMessage.getLabelButtonRedirection(  ) );
         daoUtil.setInt( nIndex, formMessage.getIdForm(  ) );
 
@@ -135,8 +135,8 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
             formMessage.setFieldEmailTitle( daoUtil.getString( nIndex++ ) );
             formMessage.setFieldEmailHelp( daoUtil.getString( nIndex++ ) );
             formMessage.setTextAppointmentCreated( daoUtil.getString( nIndex++ ) );
-            formMessage.setTextAppointmentCanceled( daoUtil.getString( nIndex++ ) );
             formMessage.setUrlRedirectAfterCreation( daoUtil.getString( nIndex++ ) );
+            formMessage.setTextAppointmentCanceled( daoUtil.getString( nIndex++ ) );
             formMessage.setLabelButtonRedirection( daoUtil.getString( nIndex ) );
         }
         else

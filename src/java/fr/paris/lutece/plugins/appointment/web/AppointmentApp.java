@@ -138,6 +138,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_REF_APPOINTMENT = "refAppointment";
     private static final String PARAMETER_DATE_APPOINTMENT = "dateAppointment";
     private static final String PARAMETER_FROM_MY_APPOINTMENTS = "fromMyappointments";
+    private static final String PARAMETER_REFERER = "referer";
 
     // Marks
     private static final String MARK_FORM_LIST = "form_list";
@@ -156,6 +157,9 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_REF = "%%REF%%";
     private static final String MARK_LIST_APPOINTMENTS = "list_appointments";
     private static final String MARK_BACK_URL = "backUrl";
+    private static final String MARK_STATUS_VALIDATED = "status_validated";
+    private static final String MARK_STATUS_REJECTED = "status_rejected";
+    private static final String MARK_FROM_URL = "fromUrl";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -231,73 +235,6 @@ public class AppointmentApp extends MVCApplication
         }
 
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
-    }
-
-    /**
-     * Get the HTML code of an appointment form
-     * @param request The request
-     * @param form The form to display. The form must not be null and must be
-     *            active
-     * @param appointmentFormService The appointment form service to use
-     * @param locale the locale
-     * @return The HTML code to display, or an empty string if the form is null
-     *         or not active
-     */
-    public static String getAppointmentFormHtml( HttpServletRequest request, AppointmentForm form,
-            AppointmentFormService appointmentFormService, Locale locale )
-    {
-        if ( form == null || !form.getIsActive( ) )
-        {
-            return StringUtils.EMPTY;
-        }
-
-        AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( form.getIdForm( ) );
-
-        Map<String, Object> model = new HashMap<String, Object>( );
-
-        Appointment appointment = appointmentFormService.getValidatedAppointmentFromSession( request.getSession( ) );
-
-        if ( appointment != null )
-        {
-            AppointmentDTO appointmentDTO = new AppointmentDTO( );
-            appointmentDTO.setEmail( appointment.getEmail( ) );
-            appointmentDTO.setFirstName( appointment.getFirstName( ) );
-            appointmentDTO.setLastName( appointment.getLastName( ) );
-
-            Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry( );
-
-            for ( Response response : appointment.getListResponse( ) )
-            {
-                List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry( ).getIdEntry( ) );
-
-                if ( listResponse == null )
-                {
-                    listResponse = new ArrayList<Response>( );
-                    mapResponsesByIdEntry.put( response.getEntry( ).getIdEntry( ), listResponse );
-                }
-
-                listResponse.add( response );
-            }
-
-            appointmentFormService.saveAppointmentInSession( request.getSession( ), appointmentDTO );
-        }
-
-        model.put( MARK_FORM_HTML, appointmentFormService.getHtmlForm( form, formMessages, locale, true, request ) );
-
-        List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute(
-                SESSION_APPOINTMENT_FORM_ERRORS );
-
-        if ( listErrors != null )
-        {
-            model.put( MARK_FORM_ERRORS, listErrors );
-            request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-        }
-
-        appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
-        appointmentFormService.removeValidatedAppointmentFromSession( request.getSession( ) );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, locale, model );
-        return template.getHtml( );
     }
 
     /**
@@ -650,11 +587,21 @@ public class AppointmentApp extends MVCApplication
                     {
                         appointment.setStatus( Appointment.STATUS_REJECTED );
                         AppointmentHome.update( appointment );
-
+                        AppointmentSlot appointmentSlot = AppointmentSlotHome
+                                .findByPrimaryKey( appointment.getIdSlot( ) );
                         Map<String, String> mapParameters = new HashMap<String, String>(  );
-                        mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS,
-                            request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
 
+                        if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
+                        {
+                            String strReferer = request.getHeader( PARAMETER_REFERER );
+                            if ( StringUtils.isNotEmpty( strReferer ) )
+                            {
+                                mapParameters.put( MARK_FROM_URL, strReferer );
+                            }
+                            mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS,
+                                    request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
+                        }
+                        mapParameters.put( PARAMETER_ID_FORM, Integer.toString( appointmentSlot.getIdForm( ) ) );
                         return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
                     }
                 }
@@ -685,7 +632,9 @@ public class AppointmentApp extends MVCApplication
 
             if ( Boolean.parseBoolean( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
             {
-                model.put( MARK_BACK_URL, getViewUrl( VIEW_GET_MY_APPOINTMENTS ) );
+                String strFromUrl = request.getParameter( MARK_FROM_URL );
+                model.put( MARK_BACK_URL, StringUtils.isNotEmpty( strFromUrl ) ? strFromUrl
+                        : getViewUrl( VIEW_GET_MY_APPOINTMENTS ) );
             }
 
             return getXPage( TEMPLATE_APPOINTMENT_CANCELED, getLocale( request ), model );
@@ -740,11 +689,12 @@ public class AppointmentApp extends MVCApplication
             throw new UserNotSignedException(  );
         }
 
-        AppointmentFilter appointmentFiler = new AppointmentFilter(  );
-        appointmentFiler.setIdUser( luteceUser.getName(  ) );
-        appointmentFiler.setAuthenticationService( luteceUser.getAuthenticationService(  ) );
+        AppointmentFilter appointmentFilter = new AppointmentFilter( );
+        appointmentFilter.setIdUser( luteceUser.getName( ) );
+        appointmentFilter.setAuthenticationService( luteceUser.getAuthenticationService( ) );
+        appointmentFilter.setDateAppointmentMin( new Date( System.currentTimeMillis( ) ) );
 
-        List<Appointment> listAppointments = AppointmentHome.getAppointmentListByFilter( appointmentFiler );
+        List<Appointment> listAppointments = AppointmentHome.getAppointmentListByFilter( appointmentFilter );
 
         List<AppointmentDTO> listAppointmentDTO = new ArrayList<AppointmentDTO>( listAppointments.size(  ) );
 
@@ -758,11 +708,80 @@ public class AppointmentApp extends MVCApplication
         }
 
         Map<String, Object> model = new HashMap<String, Object>(  );
-        model.put( MARK_LIST_APPOINTMENTS, listAppointments );
+        model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
+        model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
+        model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
 
         return template.getHtml(  );
+    }
+
+    /**
+     * Get the HTML code of an appointment form
+     * @param request The request
+     * @param form The form to display. The form must not be null and must be
+     *            active
+     * @param appointmentFormService The appointment form service to use
+     * @param locale the locale
+     * @return The HTML code to display, or an empty string if the form is null
+     *         or not active
+     */
+    public static String getAppointmentFormHtml( HttpServletRequest request, AppointmentForm form,
+            AppointmentFormService appointmentFormService, Locale locale )
+    {
+        if ( form == null || !form.getIsActive( ) )
+        {
+            return StringUtils.EMPTY;
+        }
+
+        AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( form.getIdForm( ) );
+
+        Map<String, Object> model = new HashMap<String, Object>( );
+
+        Appointment appointment = appointmentFormService.getValidatedAppointmentFromSession( request.getSession( ) );
+
+        if ( appointment != null )
+        {
+            AppointmentDTO appointmentDTO = new AppointmentDTO( );
+            appointmentDTO.setEmail( appointment.getEmail( ) );
+            appointmentDTO.setFirstName( appointment.getFirstName( ) );
+            appointmentDTO.setLastName( appointment.getLastName( ) );
+
+            Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry( );
+
+            for ( Response response : appointment.getListResponse( ) )
+            {
+                List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry( ).getIdEntry( ) );
+
+                if ( listResponse == null )
+                {
+                    listResponse = new ArrayList<Response>( );
+                    mapResponsesByIdEntry.put( response.getEntry( ).getIdEntry( ), listResponse );
+                }
+
+                listResponse.add( response );
+            }
+
+            appointmentFormService.saveAppointmentInSession( request.getSession( ), appointmentDTO );
+        }
+
+        model.put( MARK_FORM_HTML, appointmentFormService.getHtmlForm( form, formMessages, locale, true, request ) );
+
+        List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute(
+                SESSION_APPOINTMENT_FORM_ERRORS );
+
+        if ( listErrors != null )
+        {
+            model.put( MARK_FORM_ERRORS, listErrors );
+            request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+        }
+
+        appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
+        appointmentFormService.removeValidatedAppointmentFromSession( request.getSession( ) );
+
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, locale, model );
+        return template.getHtml( );
     }
 
     /**

@@ -78,10 +78,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,8 +88,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import javax.validation.ConstraintViolation;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -142,6 +140,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_NEW_STATUS = "new_status";
     private static final String PARAMETER_ORDER_BY = "orderBy";
     private static final String PARAMETER_ORDER_ASC = "orderAsc";
+    private static final String PARAMETER_SAVE_AND_BACK = "saveAndBack";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -209,8 +208,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Infos
     private static final String INFO_APPOINTMENT_CREATED = "appointment.info.appointment.created";
-
-    //    private static final String INFO_APPOINTMENT_UPDATED = "appointment.info.appointment.updated";
+    private static final String INFO_APPOINTMENT_UPDATED = "appointment.info.appointment.updated";
     private static final String INFO_APPOINTMENT_REMOVED = "appointment.info.appointment.removed";
 
     // Session keys
@@ -712,6 +710,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ),
                         response.getIdResponse(  ) );
                 }
+                if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_SAVE_AND_BACK ) ) )
+                {
+                    addInfo( INFO_APPOINTMENT_UPDATED, getLocale( ) );
+                    return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+                }
             }
 
             return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
@@ -907,10 +910,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 ResponseHome.create( response );
                 AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ), response.getIdResponse(  ) );
             }
+            addInfo( INFO_APPOINTMENT_UPDATED, getLocale( ) );
         }
         else
         {
             AppointmentHome.update( appointment );
+            addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
         }
 
         if ( form.getIdWorkflow(  ) > 0 )
@@ -924,8 +929,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
-
-        addInfo( INFO_APPOINTMENT_CREATED, getLocale(  ) );
 
         return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
     }

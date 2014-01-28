@@ -36,12 +36,11 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -74,6 +73,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_ID_USER = " id_user = ? ";
     private static final String SQL_FILTER_AUTHENTICATION_SERVICE = " authentication_service = ? ";
     private static final String SQL_FILTER_DATE_APPOINTMENT = " date_appointment = ? ";
+    private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = " date_appointment >= ? ";
+    private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = " date_appointment <= ? ";
     private static final String SQL_FILTER_STATUS = " status = ? ";
 
     // Constants
@@ -471,6 +472,21 @@ public final class AppointmentDAO implements IAppointmentDAO
             sbSql.append( SQL_FILTER_DATE_APPOINTMENT );
             bHasFilter = true;
         }
+        else
+        {
+            if ( appointmentFilter.getDateAppointmentMin( ) != null )
+            {
+                sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
+                sbSql.append( SQL_FILTER_DATE_APPOINTMENT_MIN );
+                bHasFilter = true;
+            }
+            if ( appointmentFilter.getDateAppointmentMax( ) != null )
+            {
+                sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
+                sbSql.append( SQL_FILTER_DATE_APPOINTMENT_MAX );
+                bHasFilter = true;
+            }
+        }
 
         if ( appointmentFilter.getStatus(  ) != AppointmentFilter.NO_STATUS_FILTER )
         {
@@ -536,6 +552,17 @@ public final class AppointmentDAO implements IAppointmentDAO
         if ( appointmentFilter.getDateAppointment(  ) != null )
         {
             daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointment(  ) );
+        }
+        else
+        {
+            if ( appointmentFilter.getDateAppointmentMin( ) != null )
+            {
+                daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointmentMin( ) );
+            }
+            if ( appointmentFilter.getDateAppointmentMax( ) != null )
+            {
+                daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointmentMax( ) );
+            }
         }
 
         if ( appointmentFilter.getStatus(  ) != AppointmentFilter.NO_STATUS_FILTER )

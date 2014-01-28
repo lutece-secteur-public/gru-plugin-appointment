@@ -39,8 +39,8 @@
 							</#if>
 						</td>
 						<td>
-							<#if appointment.appointmentForm.allowUsersToCancelAppointments >
-								<a class="btn btn-danger btn-small" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&ref=${appointment.refAppointment}&fromMyappointments=true" >
+							<#if appointment.appointmentForm.allowUsersToCancelAppointments && appointment.status != status_rejected >
+								<a class="btn btn-danger btn-small" title="#i18n{appointment.my_appointments.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&refAppointment=${appointment.refAppointment}&fromMyappointments=true" >
 									<i class="icon-remove icon-white">&nbsp;</i>
 								</a>
 							</#if>

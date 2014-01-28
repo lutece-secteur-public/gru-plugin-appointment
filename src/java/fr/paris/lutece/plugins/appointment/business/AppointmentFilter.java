@@ -33,11 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
-
 import java.sql.Date;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -72,6 +71,8 @@ public class AppointmentFilter implements Serializable
     private String _strIdUser;
     private String _strAuthenticationService;
     private Date _dateAppointment;
+    private Date _dateAppointmentMin;
+    private Date _dateAppointmentMax;
     private int _nStatus = NO_STATUS_FILTER;
     private String _strOrderBy = CONSTANT_DEFAULT_ORDER_BY;
     private boolean _bOrderAsc;
@@ -224,6 +225,44 @@ public class AppointmentFilter implements Serializable
     public void setDateAppointment( Date dateAppointment )
     {
         this._dateAppointment = dateAppointment;
+    }
+
+    /**
+     * Get the minimum value of the date of the appointment
+     * @return The minimum value of the date of the appointment
+     */
+    public Date getDateAppointmentMin( )
+    {
+        return _dateAppointmentMin;
+    }
+
+    /**
+     * Set the minimum value of the date of the appointment
+     * @param dateAppointmentMin The minimum value of the date of the
+     *            appointment
+     */
+    public void setDateAppointmentMin( Date dateAppointmentMin )
+    {
+        this._dateAppointmentMin = dateAppointmentMin;
+    }
+
+    /**
+     * Get the minimum value of the date of the appointment
+     * @return The minimum value of the date of the appointment
+     */
+    public Date getDateAppointmentMax( )
+    {
+        return _dateAppointmentMax;
+    }
+
+    /**
+     * Set the value value of the date of the appointment
+     * @param dateAppointmentMax The maximum value of the date of the
+     *            appointment
+     */
+    public void setDateAppointmentMax( Date dateAppointmentMax )
+    {
+        this._dateAppointmentMax = dateAppointmentMax;
     }
 
     /**

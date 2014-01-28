@@ -10,7 +10,7 @@
 					#i18n{appointment.manage_appointment_calendar.labelTo} <#if slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}
 				</#if>
 				<#if rightCreate?? && rightCreate>
-					<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}" class="btn btn-primary pull-right" type="submit">
+					<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}" class="btn btn-primary btn-small pull-right" type="submit">
 						<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointments.buttonAdd}
 					</a>
 				</#if>
@@ -71,20 +71,20 @@
 							<table class="table table-condensed table-striped">
 								<tr>
 									<th>
-										#i18n{appointment.manage_appointments.columnFirstName}
-										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=true">
-											<i class="icon-chevron-up">&nbsp;</i>
-										</a>
-										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=false">
-											<i class="icon-chevron-down">&nbsp;</i>
-										</a>
-									</th>
-									<th>
 										#i18n{appointment.manage_appointments.columnLastName}
 										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=true">
 											<i class="icon-chevron-up">&nbsp;</i>
 										</a>
 										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=false">
+											<i class="icon-chevron-down">&nbsp;</i>
+										</a>
+									</th>
+									<th>
+										#i18n{appointment.manage_appointments.columnFirstName}
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=true">
+											<i class="icon-chevron-up">&nbsp;</i>
+										</a>
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=false">
 											<i class="icon-chevron-down">&nbsp;</i>
 										</a>
 									</th>
@@ -120,10 +120,10 @@
 								<#list appointment_list as appointment >
 									<tr>
 										<td>
-											${appointment.firstName}
+											${appointment.lastName}
 										</td>
 										<td>
-											${appointment.lastName}
+											${appointment.firstName}
 										</td>
 										<td>
 											${appointment.email}

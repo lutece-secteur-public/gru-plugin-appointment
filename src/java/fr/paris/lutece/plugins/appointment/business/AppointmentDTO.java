@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
 import java.sql.Date;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +143,7 @@ public class AppointmentDTO extends Appointment
      * Get the reference of the appointment
      * @return The reference of the appointment
      */
-    public String getRef(  )
+    public String getRefAppointment( )
     {
         return AppointmentService.getService(  ).computeRefAppointment( this );
     }
