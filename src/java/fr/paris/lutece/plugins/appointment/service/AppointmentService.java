@@ -43,6 +43,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.Date;
 
 import java.util.ArrayList;
@@ -82,6 +84,7 @@ public class AppointmentService
     private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
 
     // Constantes
+    private static final String CONSTANT_MINUS = "-";
     private static final String CONSTANT_H = "h";
     private static final String CONSTANT_ZERO = "0";
     private static final int CONSTANT_MINUTES_IN_HOUR = 60;
@@ -334,29 +337,42 @@ public class AppointmentService
 
         for ( int i = 0; i < nNbSlots; i++ )
         {
-            StringBuilder sbTime = new StringBuilder(  );
-
-            if ( nStartingHour < 10 )
-            {
-                sbTime.append( CONSTANT_ZERO );
-            }
-
-            sbTime.append( nStartingHour );
-            sbTime.append( CONSTANT_H );
-
-            if ( nStartingMinutes < 10 )
-            {
-                sbTime.append( CONSTANT_ZERO );
-            }
-
-            sbTime.append( nStartingMinutes );
-            listTimes.add( sbTime.toString(  ) );
+            listTimes.add( getFormatedStringTime( nStartingHour, nStartingMinutes ) );
             nStartingMinutes = nStartingMinutes + nAppointmentDuration;
             nStartingHour = nStartingHour + ( nStartingMinutes / CONSTANT_MINUTES_IN_HOUR );
             nStartingMinutes = nStartingMinutes % CONSTANT_MINUTES_IN_HOUR;
         }
 
         return listTimes;
+    }
+
+    /**
+     * Get a string that describe a given time
+     * @param nHour The hour of the time to describe
+     * @param nMinute The minute of the time to describe
+     * @return The string describing the given time. the returned string match
+     *         the pattern <b>HHhMM</b>
+     */
+    public String getFormatedStringTime( int nHour, int nMinute )
+    {
+        StringBuilder sbTime = new StringBuilder(  );
+
+        if ( nHour < 10 )
+        {
+            sbTime.append( CONSTANT_ZERO );
+        }
+
+        sbTime.append( nHour );
+        sbTime.append( CONSTANT_H );
+
+        if ( nMinute < 10 )
+        {
+            sbTime.append( CONSTANT_ZERO );
+        }
+
+        sbTime.append( nMinute );
+
+        return sbTime.toString(  );
     }
 
     /**
@@ -558,9 +574,8 @@ public class AppointmentService
             }
         }
 
-        listTimeBegin.addAll( AppointmentService.getService(  )
-                                                .getListAppointmentTimes( nMinAppointmentDuration, nMinOpeningHour,
-                nMinOpeningMinutes, nMaxClosingHour, nMaxClosingMinutes ) );
+        listTimeBegin.addAll( getListAppointmentTimes( nMinAppointmentDuration, nMinOpeningHour, nMinOpeningMinutes,
+                nMaxClosingHour, nMaxClosingMinutes ) );
 
         return nMinAppointmentDuration;
     }
@@ -575,5 +590,37 @@ public class AppointmentService
         return appointment.getIdAppointment(  ) +
         CryptoService.encrypt( appointment.getIdAppointment(  ) + appointment.getEmail(  ), CONSTANT_MD5 )
                      .substring( 0, CONSTANT_REF_SIZE_RANDOM_PART );
+    }
+
+    /**
+     * Parse a string representing a positive or negative integer
+     * @param strNumber The string to parse
+     * @return The integer value of the number represented by the string, or 0
+     *         if the string could not be parsed
+     */
+    public int parseInt( String strNumber )
+    {
+        int nNumber = 0;
+
+        if ( StringUtils.isEmpty( strNumber ) )
+        {
+            return nNumber;
+        }
+
+        if ( strNumber.startsWith( CONSTANT_MINUS ) )
+        {
+            String strParseableNumber = strNumber.substring( 1 );
+
+            if ( StringUtils.isNumeric( strParseableNumber ) )
+            {
+                nNumber = Integer.parseInt( strParseableNumber ) * -1;
+            }
+        }
+        else if ( StringUtils.isNumeric( strNumber ) )
+        {
+            nNumber = Integer.parseInt( strNumber );
+        }
+
+        return nNumber;
     }
 }

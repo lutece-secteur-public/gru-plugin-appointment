@@ -172,8 +172,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // JSP
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
-
-    //    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointment.attribute.";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 
     // Messages
@@ -184,8 +182,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
-
-    //    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointment.attribute.";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTS = "manageAppointments";
@@ -198,10 +194,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String VIEW_WORKFLOW_ACTION_FORM = "viewWorkflowActionForm";
 
     // Actions
-    //    private static final String ACTION_CREATE_APPOINTMENT = "createAppointment";
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
-
-    //    private static final String ACTION_MODIFY_APPOINTMENT = "modifyAppointment";
     private static final String ACTION_REMOVE_APPOINTMENT = "removeAppointment";
     private static final String ACTION_CONFIRM_REMOVE_APPOINTMENT = "confirmRemoveAppointment";
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
@@ -223,7 +216,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek(  );
 
     // Constant
-    private static final String CONSTANT_MINUS = "-";
     private static final String DEFAULT_CURRENT_PAGE = "1";
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
 
@@ -266,7 +258,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             if ( StringUtils.isNotEmpty( strNbWeek ) )
             {
-                nNbWeek = parseInt( strNbWeek );
+                nNbWeek = AppointmentService.getService(  ).parseInt( strNbWeek );
             }
 
             List<AppointmentDay> listDays = AppointmentService.getService(  ).computeDayList( form, nNbWeek, false );
@@ -978,7 +970,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             int nIdAppointment = Integer.parseInt( strIdAppointment );
             String strNewStatus = request.getParameter( PARAMETER_NEW_STATUS );
-            int nNewStatus = parseInt( strNewStatus );
+            int nNewStatus = AppointmentService.getService(  ).parseInt( strNewStatus );
             Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
 
             // We check that the status has changed to avoid doing unnecessary updates.
@@ -1110,37 +1102,5 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         return 0;
-    }
-
-    /**
-     * Parse a string representing a positive or negative integer
-     * @param strNumber The string to parse
-     * @return The integer value of the number represented by the string, or 0
-     *         if the string could not be parsed
-     */
-    private int parseInt( String strNumber )
-    {
-        int nNumber = 0;
-
-        if ( StringUtils.isEmpty( strNumber ) )
-        {
-            return nNumber;
-        }
-
-        if ( strNumber.startsWith( CONSTANT_MINUS ) )
-        {
-            String strParseableNumber = strNumber.substring( 1 );
-
-            if ( StringUtils.isNumeric( strParseableNumber ) )
-            {
-                nNumber = Integer.parseInt( strParseableNumber ) * -1;
-            }
-        }
-        else if ( StringUtils.isNumeric( strNumber ) )
-        {
-            nNumber = Integer.parseInt( strNumber );
-        }
-
-        return nNumber;
     }
 }
