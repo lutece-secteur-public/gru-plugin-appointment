@@ -47,6 +47,14 @@
             <application-class>fr.paris.lutece.plugins.appointment.web.AppointmentApp</application-class>
         </application>
     </applications>
+    <!-- Dashboard components -->
+    <dashboard-components>
+        <dashboard-component>
+            <dashboard-component-name>APPOINTMENT_FORM</dashboard-component-name>
+            <dashboard-component-class>fr.paris.lutece.plugins.appointment.web.AppointmentFormDashboardComponent</dashboard-component-class>
+            <dashboard-feature-right>APPOINTMENT_FORM_MANAGEMENT</dashboard-feature-right>
+        </dashboard-component>
+    </dashboard-components>
 	<!-- Portlet parameters -->
     <portlets>
      <portlet>

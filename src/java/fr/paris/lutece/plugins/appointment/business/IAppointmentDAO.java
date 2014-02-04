@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -121,6 +120,16 @@ public interface IAppointmentDAO
      */
     List<Appointment> selectAppointmentListById( List<Integer> listIdAppointments, String strOrderBy, boolean bSortAsc,
         Plugin plugin );
+
+    /**
+     * Get the number of appointment of a given date and associated with a given
+     * form
+     * @param dateAppointment The date of appointments to count
+     * @param nIdForm The id of the appointment form
+     * @param plugin The plugin
+     * @return the number of appointments, or 0 if no appointment was found
+     */
+    int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm, Plugin plugin );
 
     // ----------------------------------------
     // Appointment response management

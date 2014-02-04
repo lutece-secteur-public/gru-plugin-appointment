@@ -1,0 +1,67 @@
+<div class="well">
+    <legend>
+    	<img src="${icon}" alt="logo" />
+	    <a href="${url}" > #i18n{appointment.manage_appointmentforms.pageTitle}</a> : 
+	    <div class="pull-right">
+			<#if permission_create>
+				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm" title="#i18n{appointment.manage_appointmentforms.buttonAdd}">
+		    		<i class="icon-plus icon-white">&nbsp;</i>
+		    	</a>
+			</#if>
+			<a href="jsp/admin/AdminMenu.jsp#top" title="#i18n{appointment.dashboard.top}">
+				<i class="icon-arrow-up"></i>
+			</a>
+		</div>
+	</legend>
+    <br />
+    <table class="table table-condensed table-striped">
+		<tr>
+			<th>#i18n{appointment.manage_appointmentforms.columnTitle}</th>
+			<th>#i18n{portal.util.labelActions}</th>
+		</tr>
+		<#list appointmentform_list as appointmentform >
+			<tr>
+				<td>
+					<#if appointmentform.isActive>
+						<span class="label label-success">
+							<i class="icon-ok-sign icon-white">&nbsp;</i>
+						</span>
+					<#else>
+						<span class="label label-important">
+							<i class="icon-remove-circle icon-white">&nbsp;</i>
+						</span>
+					</#if>
+					&nbsp;${appointmentform.title}
+					<#if appointmentform.isActive>
+						<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=viewForm&id_form=${appointmentform.idForm}">
+							<i class="icon-globe">&nbsp;</i>
+						</a>
+					</#if>
+				</td>
+				<td>
+					<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
+						<i class="icon-edit icon-white">&nbsp;</i>
+					</a>
+					<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">
+						<i class="fa fa-comment">&nbsp;</i>
+					</a>
+					<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelManageAppointments}">
+						<i class="fa fa-calendar">&nbsp;</i>
+					</a>
+					<#if appointmentform.isActive>
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}&fromDashboard=true" class="btn btn-danger btn-small" title="#i18n{appointment.manage_appointmentforms.labelDisable}">
+							<i class="icon-stop icon-white">&nbsp;</i>
+						</a>
+					<#else>
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}&fromDashboard=true" class="btn btn-success btn-small" title="#i18n{appointment.manage_appointmentforms.labelEnable}">
+							<i class="icon-ok icon-white">&nbsp;</i>
+						</a>
+					</#if>
+					<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >
+						<i class="icon-trash icon-white">&nbsp;</i>
+					</a>
+				</td>
+			</tr>
+		</#list>
+	</table>
+</div>

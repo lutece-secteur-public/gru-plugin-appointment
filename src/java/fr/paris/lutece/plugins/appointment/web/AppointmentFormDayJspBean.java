@@ -50,14 +50,8 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
-import org.dozer.converters.DateConverter;
-
 import java.sql.Date;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -67,6 +61,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.dozer.converters.DateConverter;
 
 
 /**
@@ -99,6 +96,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_DAY_ALREADY_EXIST = "appointment.message.error.dayAlreadyExist";
     private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_FORM_HAS_APPOINTMENTS = "appointment.message.error.refreshDays.formHasAppointments";
+    private static final String MESSAGE_ERROR_DAY_HAS_APPOINTMENT = "appointment.message.error.dayHasAppointment";
     private static final String MESSAGE_CONFIRM_REFRESH_DAYS = "appointment.message.confirmRefreshDays";
     private static final String INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED = "appointment.info.appointmentDay.slotsUpdated";
 
@@ -260,9 +258,16 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
                 List<String> listErrors = populateDay( day, form, request );
 
+                int nNbAppointment = AppointmentHome.getNbAppointmentByIdDay( day.getDate( ), day.getIdForm( ) );
+
+                Locale locale = request.getLocale( );
+                if ( nNbAppointment > 0 )
+                {
+                    addError( MESSAGE_ERROR_DAY_HAS_APPOINTMENT, locale );
+                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+                }
                 if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
                 {
-                    Locale locale = request.getLocale(  );
 
                     for ( String strError : listErrors )
                     {
@@ -271,7 +276,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
                     _appointmentDay = day;
 
-                    return redirect( request, VIEW_MODIFY_APPOINTMENTFORM_DAYS, PARAMETER_ID_DAY, day.getIdDay(  ) );
+                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
                 }
 
                 AppointmentDay dayFromDb = AppointmentDayHome.findByPrimaryKey( day.getIdDay(  ) );

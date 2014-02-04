@@ -36,12 +36,11 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -60,7 +59,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, date_appointment = ?, id_slot = ?, status = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM = "SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE slot.id_form = ? AND app.date_appointment > ? ";
     private static final String SQL_QUERY_SELECT_BY_LIST_ID = SQL_QUERY_SELECTALL + " WHERE id_appointment IN (";
-
+    private static final String SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM = " SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE date_appointment = ? AND slot.id_form = ? ";
+            
     // SQL commands to manage appointment responses
     private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment, id_response) VALUES (?,?)";
     private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";
@@ -330,6 +330,25 @@ public final class AppointmentDAO implements IAppointmentDAO
         }
 
         return appointmentList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM, plugin );
+        daoUtil.setDate( 1, dateAppointment );
+        daoUtil.setInt( 2, nIdForm );
+        daoUtil.executeQuery( );
+        int nRes = 0;
+        if ( daoUtil.next( ) )
+        {
+            nRes = daoUtil.getInt( 1 );
+        }
+        daoUtil.free( );
+        return nRes;
     }
 
     // ----------------------------------------

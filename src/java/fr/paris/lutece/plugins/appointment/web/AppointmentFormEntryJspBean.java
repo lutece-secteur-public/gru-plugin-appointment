@@ -630,12 +630,15 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 Entry entryParent = EntryHome.findByPrimaryKey( nIdEntryGroup );
                 String[] strArrayIdEntries = request.getParameterValues( PARAMETER_ENTRY_ID_MOVE );
 
-                for ( String strIdEntry : strArrayIdEntries )
+                if ( ( strArrayIdEntries != null ) && ( strArrayIdEntries.length > 0 ) )
                 {
-                    if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
+                    for ( String strIdEntry : strArrayIdEntries )
                     {
-                        int nIdEntry = Integer.parseInt( strIdEntry );
-                        _entryService.moveEntryIntoGroup( EntryHome.findByPrimaryKey( nIdEntry ), entryParent );
+                        if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
+                        {
+                            int nIdEntry = Integer.parseInt( strIdEntry );
+                            _entryService.moveEntryIntoGroup( EntryHome.findByPrimaryKey( nIdEntry ), entryParent );
+                        }
                     }
                 }
             }

@@ -78,10 +78,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,8 +88,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import javax.validation.ConstraintViolation;
+
+import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -261,7 +259,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 nNbWeek = AppointmentService.getService(  ).parseInt( strNbWeek );
             }
 
-            List<AppointmentDay> listDays = AppointmentService.getService(  ).computeDayList( form, nNbWeek, false );
+            List<AppointmentDay> listDays = AppointmentService.getService(  ).findAndComputeDayList( form, nNbWeek,
+                    false );
 
             for ( AppointmentDay day : listDays )
             {
@@ -907,12 +906,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ), response.getIdResponse(  ) );
             }
 
-            addInfo( INFO_APPOINTMENT_UPDATED, getLocale(  ) );
+            addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
         }
         else
         {
             AppointmentHome.update( appointment );
-            addInfo( INFO_APPOINTMENT_CREATED, getLocale(  ) );
+            addInfo( INFO_APPOINTMENT_UPDATED, getLocale( ) );
         }
 
         if ( form.getIdWorkflow(  ) > 0 )

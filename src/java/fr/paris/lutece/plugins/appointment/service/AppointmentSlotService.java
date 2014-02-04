@@ -39,6 +39,8 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.List;
 
 
@@ -86,8 +88,7 @@ public class AppointmentSlotService
      */
     public void computeAndCreateSlotsForForm( AppointmentForm appointmentForm )
     {
-        List<AppointmentDay> listAppointmentDay = AppointmentService.getService(  )
-                                                                    .computeDayList( appointmentForm, 0, false );
+        List<AppointmentDay> listAppointmentDay = AppointmentService.getService(  ).computeDayList( appointmentForm );
 
         for ( AppointmentDay day : listAppointmentDay )
         {
@@ -170,12 +171,14 @@ public class AppointmentSlotService
      */
     public boolean checkForFormModification( AppointmentForm appointmentForm, AppointmentForm formFromDb )
     {
-        if ( formFromDb.getDurationAppointments(  ) != appointmentForm.getDurationAppointments(  ) )
+        // If the duration of appointments, the starting time or the ending time has changed  we recreate appointments slots associated with this form
+        if ( ( formFromDb.getDurationAppointments(  ) != appointmentForm.getDurationAppointments(  ) ) ||
+                !StringUtils.equals( formFromDb.getTimeStart(  ), appointmentForm.getTimeStart(  ) ) ||
+                !StringUtils.equals( formFromDb.getTimeEnd(  ), appointmentForm.getTimeEnd(  ) ) )
         {
             AppointmentSlotHome.deleteByIdForm( appointmentForm.getIdForm(  ) );
 
-            List<AppointmentDay> listAppointmentDay = AppointmentService.getService(  )
-                                                                        .computeDayList( appointmentForm, 0, false );
+            List<AppointmentDay> listAppointmentDay = AppointmentService.getService(  ).computeDayList( appointmentForm );
 
             for ( AppointmentDay day : listAppointmentDay )
             {

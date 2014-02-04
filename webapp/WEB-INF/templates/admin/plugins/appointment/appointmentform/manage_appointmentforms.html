@@ -1,6 +1,8 @@
-<a class="btn btn-primary pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm">
-	<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointmentforms.buttonAdd}
-</a>
+<#if permission_create?? && permission_create>
+	<a class="btn btn-primary pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm">
+		<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointmentforms.buttonAdd}
+	</a>
+</#if>
 <legend>#i18n{appointment.manage_appointmentforms.pageTitle}</legend>	
 <div class="row-fluid" >
 	<div class="span12">

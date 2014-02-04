@@ -42,7 +42,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -176,6 +175,42 @@ public final class AppointmentHome
         return _dao.selectAppointmentIdByFilter( appointmentFilter, _plugin );
     }
 
+    /**
+     * Get a list of appointments from their ids
+     * @param listIdAppointments The list of ids of appointments to get
+     * @return The list of appointments which ids are given in parameters
+     */
+    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments )
+    {
+        return _dao.selectAppointmentListById( listIdAppointments, AppointmentFilter.CONSTANT_DEFAULT_ORDER_BY, true,
+                _plugin );
+    }
+
+    /**
+     * Get a list of appointments from their ids
+     * @param listIdAppointments The list of ids of appointments to get
+     * @param strOrderBy The name of the column to sort rows
+     * @param bSortAsc True to sort ascending, false otherwise
+     * @return The list of appointments which ids are given in parameters
+     */
+    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments, String strOrderBy,
+            boolean bSortAsc )
+    {
+        return _dao.selectAppointmentListById( listIdAppointments, strOrderBy, bSortAsc, _plugin );
+    }
+
+    /**
+     * Get the number of appointment of a given date and associated with a given
+     * form
+     * @param dateAppointment The date of appointments to count
+     * @param nIdForm The id of the appointment form
+     * @return the number of appointments, or 0 if no appointment was found
+     */
+    public static int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm )
+    {
+        return _dao.getNbAppointmentByIdDay( dateAppointment, nIdForm, _plugin );
+    }
+
     // -----------------------------------------------
     // Appointment response management
     // -----------------------------------------------
@@ -240,29 +275,5 @@ public final class AppointmentHome
     {
         _dao.deleteAppointmentResponse( nIdAppointment, _plugin );
         _cacheService.removeKey( _cacheService.getAppointmentResponseCacheKey( nIdAppointment ) );
-    }
-
-    /**
-     * Get a list of appointments from their ids
-     * @param listIdAppointments The list of ids of appointments to get
-     * @return The list of appointments which ids are given in parameters
-     */
-    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments )
-    {
-        return _dao.selectAppointmentListById( listIdAppointments, AppointmentFilter.CONSTANT_DEFAULT_ORDER_BY, true,
-            _plugin );
-    }
-
-    /**
-     * Get a list of appointments from their ids
-     * @param listIdAppointments The list of ids of appointments to get
-     * @param strOrderBy The name of the column to sort rows
-     * @param bSortAsc True to sort ascending, false otherwise
-     * @return The list of appointments which ids are given in parameters
-     */
-    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments, String strOrderBy,
-        boolean bSortAsc )
-    {
-        return _dao.selectAppointmentListById( listIdAppointments, strOrderBy, bSortAsc, _plugin );
     }
 }

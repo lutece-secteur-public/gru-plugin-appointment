@@ -121,9 +121,51 @@ public class AppointmentService
     }
 
     /**
-     * compute the list of days with the list of slots for a given form and a
+     * Compute the list of days with the list of slots for a given form and a
      * given week. The number of free places of slots are initialized to the
      * number of available places.
+     * @param form The form to get days of. Opening and closing hour of the form
+     *            are updated by this method
+     * @return The list of days
+     */
+    public List<AppointmentDay> computeDayList( AppointmentForm form )
+    {
+        Date dateMin = getDateMonday( 0 );
+
+        String[] strOpeningTime = form.getTimeStart(  ).split( CONSTANT_H );
+        String[] strClosingTime = form.getTimeEnd(  ).split( CONSTANT_H );
+        form.setOpeningHour( Integer.parseInt( strOpeningTime[0] ) );
+        form.setOpeningMinutes( Integer.parseInt( strOpeningTime[1] ) );
+        form.setClosingHour( Integer.parseInt( strClosingTime[0] ) );
+        form.setClosingMinutes( Integer.parseInt( strClosingTime[1] ) );
+
+        boolean[] bArrayIsOpen = 
+            {
+                form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
+                form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
+                form.getIsOpenSunday(  ),
+            };
+        long lMilisecDate = dateMin.getTime(  );
+        List<AppointmentDay> listDays = new ArrayList<AppointmentDay>( bArrayIsOpen.length );
+
+        for ( int i = 0; i < bArrayIsOpen.length; i++ )
+        {
+            AppointmentDay day = getAppointmentDayFromForm( form );
+            day.setDate( new Date( lMilisecDate ) );
+            day.setIsOpen( bArrayIsOpen[i] );
+            day.setListSlots( computeDaySlots( day ) );
+
+            listDays.add( day );
+            lMilisecDate += CONSTANT_MILISECONDS_IN_DAY;
+        }
+
+        return listDays;
+    }
+
+    /**
+     * Find a list of days with the list of slots for a given form and a given
+     * week, and compute missing data. The number of free places of slots are
+     * initialized to the number of available places.
      * @param form The form to get days of. Opening and closing hour of the form
      *            are updated by this method
      * @param nOffsetWeeks The offset of the week to get
@@ -131,7 +173,7 @@ public class AppointmentService
      *            false if they should be computed
      * @return The list of days
      */
-    public List<AppointmentDay> computeDayList( AppointmentForm form, int nOffsetWeeks, boolean bLoadSlotsFromDb )
+    public List<AppointmentDay> findAndComputeDayList( AppointmentForm form, int nOffsetWeeks, boolean bLoadSlotsFromDb )
     {
         Date dateMin = getDateMonday( nOffsetWeeks );
         Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
@@ -448,7 +490,7 @@ public class AppointmentService
             // If there is no days associated with the given week, or if some days does not exist
             if ( ( listDaysFound == null ) || ( listDaysFound.size(  ) < CONSTANT_NB_DAYS_IN_WEEK ) )
             {
-                List<AppointmentDay> listDays = computeDayList( form, nOffsetWeeks, true );
+                List<AppointmentDay> listDays = findAndComputeDayList( form, nOffsetWeeks, true );
 
                 for ( AppointmentDay day : listDays )
                 {

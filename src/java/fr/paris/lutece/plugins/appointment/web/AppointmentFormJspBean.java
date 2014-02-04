@@ -102,6 +102,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
+    private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -123,6 +124,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_FORM_MESSAGE = "formMessage";
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "locale";
+    private static final String MARK_PERMISSION_CREATE = "permission_create";
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
     // Properties
@@ -210,6 +212,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_APPOINTMENTFORM_LIST,
             RBACService.getAuthorizedCollection( paginator.getPageItems(  ),
                 AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
+        model.put( MARK_PERMISSION_CREATE,
+            RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
+                AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
@@ -283,7 +288,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
 
-        if ( appointmentForm.getTimeStart(  ).compareTo( appointmentForm.getTimeEnd(  ) ) <= 0 )
+        if ( appointmentForm.getTimeStart(  ).compareTo( appointmentForm.getTimeEnd(  ) ) >= 0 )
         {
             addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale(  ) );
 
@@ -528,6 +533,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
             form.setIsActive( !form.getIsActive(  ) );
             AppointmentFormHome.update( form );
+        }
+
+        if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )
+        {
+            return redirect( request, AppPathService.getBaseUrl( request ) + AppPathService.getAdminMenuUrl(  ) );
         }
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
