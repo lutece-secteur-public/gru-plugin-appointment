@@ -5,11 +5,13 @@
 				<legend>#i18n{appointment.cancel_appointment.pageTitle}</legend>
 				<input type="hidden" name="page" value="appointment">
 				<input type="hidden" name="action" value="doCancelAppointment">
-				<input type="hidden" name="id_form" value="${form.idForm}">
 				<div class="control-group">
 					<label class="control-label" for="dateAppointment">#i18n{appointment.cancel_appointment.labelDateAppointment}</label>
 					<div class="controls">
-						<input type="text" id="dateAppointment" name="dateAppointment" value="${dateAppointment!}">
+						<div class="input-prepend">
+							<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
+							<input type="text" id="dateAppointment" name="dateAppointment" value="${dateAppointment!}">
+						</div>
 					</div>
 				</div>
 				<div class="control-group">

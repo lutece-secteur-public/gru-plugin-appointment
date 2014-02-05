@@ -164,15 +164,17 @@
 													</a>
 												</#list>
 											</#if>
-											<#if appointment.status != status_validated>
-												<a class="btn btn-small btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_validated}" title="#i18n{appointment.manage_appointments.labelValidateAppointment}" >
-													<i class="icon-ok icon-white">&nbsp;</i>
-												</a>
-											</#if>
-											<#if appointment.status != status_rejected>
-												<a class="btn btn-small btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_rejected}" title="#i18n{appointment.manage_appointments.labelRejectAppointment}" >
-													<i class="icon-remove icon-white">&nbsp;</i>
-												</a>
+											<#if rightChangeStatus>
+												<#if appointment.status != status_validated>
+													<a class="btn btn-small btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_validated}" title="#i18n{appointment.manage_appointments.labelValidateAppointment}" >
+														<i class="icon-ok icon-white">&nbsp;</i>
+													</a>
+												</#if>
+												<#if appointment.status != status_rejected>
+													<a class="btn btn-small btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_rejected}" title="#i18n{appointment.manage_appointments.labelRejectAppointment}" >
+														<i class="icon-remove icon-white">&nbsp;</i>
+													</a>
+												</#if>
 											</#if>
 											<#if rightDelete?? && rightDelete>
 												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-danger btn-small" title="#i18n{portal.util.labelDelete}" >

@@ -55,7 +55,8 @@ import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -78,7 +79,10 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,9 +92,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolation;
 
-import org.apache.commons.lang.StringUtils;
+import javax.validation.ConstraintViolation;
 
 
 /**
@@ -160,6 +163,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_RIGHT_MODIFY = "rightModify";
     private static final String MARK_RIGHT_DELETE = "rightDelete";
     private static final String MARK_RIGHT_VIEW = "rightView";
+    private static final String MARK_RIGHT_CHANGE_STATUS = "rightChangeStatus";
     private static final String MARK_DAY = "day";
     private static final String MARK_FILTER = "filter";
     private static final String MARK_REF_LIST_STATUS = "refListStatus";
@@ -445,6 +449,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
             }
 
+            AdminUser user = getUser(  );
+
             model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems(  ) );
             model.put( MARK_SLOT, slot );
             model.put( MARK_DAY, day );
@@ -452,16 +458,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_REF_LIST_STATUS, refListStatus );
             model.put( MARK_RIGHT_CREATE,
                 RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, AdminUserService.getAdminUser( request ) ) );
+                    AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
             model.put( MARK_RIGHT_MODIFY,
                 RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, AdminUserService.getAdminUser( request ) ) );
+                    AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, user ) );
             model.put( MARK_RIGHT_DELETE,
                 RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, AdminUserService.getAdminUser( request ) ) );
+                    AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, user ) );
             model.put( MARK_RIGHT_VIEW,
                 RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, AdminUserService.getAdminUser( request ) ) );
+                    AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, user ) );
+            model.put( MARK_RIGHT_CHANGE_STATUS,
+                RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, user ) );
 
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS, TEMPLATE_MANAGE_APPOINTMENTS, model );
         }
@@ -473,15 +482,24 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Returns the form to create a appointment
      * @param request The HTTP request
      * @return the HTML code of the appointment form
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
      */
     @View( VIEW_CREATE_APPOINTMENT )
     public String getCreateAppointment( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm;
 
         if ( ( strIdForm != null ) && StringUtils.isNumeric( strIdForm ) )
         {
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                        AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, getUser(  ) ) )
+            {
+                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
+            }
+
             nIdForm = Integer.parseInt( strIdForm );
         }
         else
@@ -494,6 +512,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
                 AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
                 nIdForm = slot.getIdForm(  );
+
+                if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( nIdForm ),
+                            AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser(  ) ) )
+                {
+                    throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT );
+                }
             }
             else
             {
@@ -561,9 +585,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Get the page to modify an appointment
      * @param request The request
      * @return The HTML content to display or the next URL to redirect to
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
      */
     @View( VIEW_MODIFY_APPOINTMENT )
     public String getModifyAppointment( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
 
@@ -601,9 +628,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Do validate data entered by a user to fill a form
      * @param request The request
      * @return The next URL to redirect to
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
      */
     @Action( ACTION_DO_VALIDATE_FORM )
     public String doValidateForm( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -686,6 +716,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             if ( appointment.getIdAppointment(  ) > 0 )
             {
+                AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+
+                if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( slot.getIdForm(  ) ),
+                            AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser(  ) ) )
+                {
+                    throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT );
+                }
+
                 AppointmentHome.update( appointment );
 
                 List<Integer> listIdResponse = AppointmentHome.findListIdResponse( appointment.getIdAppointment(  ) );
@@ -798,9 +836,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Handles the removal form of a appointment
      * @param request The HTTP request
      * @return the JSP URL to display the form to manage appointments
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
      */
     @Action( ACTION_REMOVE_APPOINTMENT )
     public String doRemoveAppointment( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
 
@@ -812,6 +853,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( appointment != null )
             {
                 AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+
+                if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( slot.getIdForm(  ) ),
+                            AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, getUser(  ) ) )
+                {
+                    throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
+                }
 
                 if ( WorkflowService.getInstance(  ).isAvailable(  ) )
                 {
@@ -875,9 +922,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Do save an appointment into the database if it is valid
      * @param request The request
      * @return The XPage to display
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
     public String doMakeAppointment( HttpServletRequest request )
+        throws AccessDeniedException
     {
         Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
         AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
@@ -898,6 +948,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         if ( appointment.getIdAppointment(  ) == 0 )
         {
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
+                        Integer.toString( appointmentSlot.getIdForm(  ) ),
+                        AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, getUser(  ) ) )
+            {
+                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
+            }
+
             AppointmentHome.create( appointment );
 
             for ( Response response : appointment.getListResponse(  ) )
@@ -906,12 +963,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ), response.getIdResponse(  ) );
             }
 
-            addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
+            addInfo( INFO_APPOINTMENT_CREATED, getLocale(  ) );
         }
         else
         {
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
+                        Integer.toString( appointmentSlot.getIdForm(  ) ),
+                        AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser(  ) ) )
+            {
+                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT );
+            }
+
             AppointmentHome.update( appointment );
-            addInfo( INFO_APPOINTMENT_UPDATED, getLocale( ) );
+            addInfo( INFO_APPOINTMENT_UPDATED, getLocale(  ) );
         }
 
         if ( form.getIdWorkflow(  ) > 0 )
@@ -933,12 +997,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * View details of an appointment
      * @param request The request
      * @return The HTML content to display
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
      */
     @View( VIEW_VIEW_APPOINTMENT )
     public String getViewAppointment( HttpServletRequest request )
+        throws AccessDeniedException
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
         Appointment appointment = AppointmentHome.findByPrimaryKey( nId );
+        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( slot.getIdForm(  ) ),
+                    AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, getUser(  ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
+        }
 
         List<Response> listResponse = AppointmentHome.findListResponse( nId );
 
@@ -947,7 +1021,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         Map<String, Object> model = getModel(  );
         model.put( MARK_APPOINTMENT, appointment );
 
-        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
         model.put( MARK_SLOT, slot );
         model.put( MARK_FORM, AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) ) );
         model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( slot.getIdForm(  ) ) );
@@ -959,9 +1032,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Do change the status of an appointment
      * @param request The request
      * @return The next URL to redirect to
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
      */
     @Action( ACTION_DO_CHANGE_APPOINTMENT_STATUS )
     public String doChangeAppointmentStatus( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
 
@@ -971,6 +1047,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
             String strNewStatus = request.getParameter( PARAMETER_NEW_STATUS );
             int nNewStatus = AppointmentService.getService(  ).parseInt( strNewStatus );
             Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( slot.getIdForm(  ) ),
+                        AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, getUser(  ) ) )
+            {
+                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS );
+            }
 
             // We check that the status has changed to avoid doing unnecessary updates.
             // Also, it is not permitted to set the status of an appointment to not validated.
@@ -979,8 +1062,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 appointment.setStatus( nNewStatus );
                 AppointmentHome.update( appointment );
             }
-
-            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
 
             UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTS );
             url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );

@@ -73,14 +73,19 @@ public class AppointmentResourceIdService extends ResourceIdService
     /** Permission for modifying appointments of the form */
     public static final String PERMISSION_MODIFY_APPOINTMENT = "MODIFY_APPOINTMENT";
 
-    /** Permission for viewing result of a form */
+    /** Permission for viewing appointment forms */
     public static final String PERMISSION_VIEW_FORM = "VIEW_FORM";
 
-    /** Permission for viewing result of a form */
+    /** Permission for viewing appointments */
     public static final String PERMISSION_VIEW_APPOINTMENT = "VIEW_APPOINTMENT";
 
-    /** Permission for enable form */
+    /** Permission for changing the state of a form */
     public static final String PERMISSION_CHANGE_STATE = "CHANGE_STATE";
+
+    /** Permission for changing appointment status */
+    public static final String PERMISSION_CHANGE_APPOINTMENT_STATUS = "CHANGE_APPOINTMENT_STATUS";
+
+    // Permission labels
     private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.permission.label.resourceType";
     private static final String PROPERTY_LABEL_CREATE_FORM = "appointment.permission.label.createForm";
     private static final String PROPERTY_LABEL_CREATE_APPOINTMENT = "appointment.permission.label.createAppointment";
@@ -91,6 +96,7 @@ public class AppointmentResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_VIEW_FORM = "appointment.permission.label.viewForm";
     private static final String PROPERTY_LABEL_VIEW_APPOINTMENT = "appointment.permission.label.viewAppointment";
     private static final String PROPERTY_LABEL_CHANGE_STATE = "appointment.permission.label.changeState";
+    private static final String PROPERTY_LABEL_CHANGE_APPOINTMENT_STATUS = "appointment.permission.label.changeAppointmentStatus";
 
     /** Creates a new instance of DocumentTypeResourceIdService */
     public AppointmentResourceIdService(  )
@@ -152,6 +158,11 @@ public class AppointmentResourceIdService extends ResourceIdService
         p = new Permission(  );
         p.setPermissionKey( PERMISSION_DELETE_APPOINTMENT );
         p.setPermissionTitleKey( PROPERTY_LABEL_DELETE_APPOINTMENT );
+        rt.registerPermission( p );
+
+        p = new Permission(  );
+        p.setPermissionKey( PERMISSION_CHANGE_APPOINTMENT_STATUS );
+        p.setPermissionTitleKey( PROPERTY_LABEL_CHANGE_APPOINTMENT_STATUS );
         rt.registerPermission( p );
 
         ResourceTypeManager.registerResourceType( rt );

@@ -50,8 +50,14 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.dozer.converters.DateConverter;
+
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -61,9 +67,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.dozer.converters.DateConverter;
 
 
 /**
@@ -258,17 +261,19 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
                 List<String> listErrors = populateDay( day, form, request );
 
-                int nNbAppointment = AppointmentHome.getNbAppointmentByIdDay( day.getDate( ), day.getIdForm( ) );
+                int nNbAppointment = AppointmentHome.getNbAppointmentByIdDay( day.getDate(  ), day.getIdForm(  ) );
 
-                Locale locale = request.getLocale( );
+                Locale locale = request.getLocale(  );
+
                 if ( nNbAppointment > 0 )
                 {
                     addError( MESSAGE_ERROR_DAY_HAS_APPOINTMENT, locale );
-                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+
+                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
                 }
+
                 if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
                 {
-
                     for ( String strError : listErrors )
                     {
                         addError( strError, locale );
@@ -276,7 +281,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
                     _appointmentDay = day;
 
-                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
                 }
 
                 AppointmentDay dayFromDb = AppointmentDayHome.findByPrimaryKey( day.getIdDay(  ) );

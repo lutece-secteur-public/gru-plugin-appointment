@@ -42,6 +42,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,7 +184,7 @@ public final class AppointmentHome
     public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments )
     {
         return _dao.selectAppointmentListById( listIdAppointments, AppointmentFilter.CONSTANT_DEFAULT_ORDER_BY, true,
-                _plugin );
+            _plugin );
     }
 
     /**
@@ -194,7 +195,7 @@ public final class AppointmentHome
      * @return The list of appointments which ids are given in parameters
      */
     public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments, String strOrderBy,
-            boolean bSortAsc )
+        boolean bSortAsc )
     {
         return _dao.selectAppointmentListById( listIdAppointments, strOrderBy, bSortAsc, _plugin );
     }

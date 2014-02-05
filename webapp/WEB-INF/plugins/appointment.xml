@@ -90,7 +90,7 @@
 		<daemon>
 			<daemon-id>AppointmentPublicationDaemon</daemon-id>
 			<daemon-name>appointment.daemon.appointmentPublicationDaemon.name</daemon-name>
-			<daemon-description>appointment.daemon.sppointmentPublicationDaemon.description</daemon-description>
+			<daemon-description>appointment.daemon.appointmentPublicationDaemon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.AppointmentPublicationDaemon</daemon-class>
 		</daemon>
 	</daemons>

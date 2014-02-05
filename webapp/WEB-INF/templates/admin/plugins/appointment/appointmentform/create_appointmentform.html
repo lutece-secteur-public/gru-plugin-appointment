@@ -1,3 +1,4 @@
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <div class="row" >
 	<div class="span12">
 		<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
@@ -5,144 +6,35 @@
 				<legend>#i18n{appointment.create_appointmentform.pageTitle}</legend>
 				<@messages errors=errors />
 				<input type="hidden" id="id_form" name="id_form"  />
-				<div class="control-group">
-					<label class="control-label" for="title" >#i18n{appointment.create_appointmentform.labelTitle} * :</label>
-					<div class="controls">
-						<input type="text" id="title" name="title" value="${appointmentform.title!''}" maxlength="255" tabindex="1" />
-					</div>
-				</div>
-				<div class="control-group">
-	                <label class="control-label" for="description" >#i18n{appointment.create_appointmentform.labelDescription} * :</label>
-	                <div class="controls">
-	                    <textarea id="description" name="description" class="span" tabindex="2" >${appointmentform.description!''}</textarea>
-	                </div>
-	            </div>
-				<div class="control-group">
-					<label class="control-label" for="time_start" >#i18n{appointment.create_appointmentform.labelTimeStart} * :</label>
-					<div class="controls">
-						<input type="text" id="time_start" name="time_start" value="${appointmentform.timeStart!''}" tabindex="3" />
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeStart.help}</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="time_end" >#i18n{appointment.create_appointmentform.labelTimeEnd} * :</label>
-					<div class="controls">
-						<input type="text" id="time_end" name="time_end" value="${appointmentform.timeEnd!''}" tabindex="4" />
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeEnd.help}</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="duration_appointments" >#i18n{appointment.create_appointmentform.labelDurationAppointments} * :</label>
-					<div class="controls">
-						<input type="text" id="duration_appointments" name="duration_appointments" value="${appointmentform.durationAppointments!''}" tabindex="5" />
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelDurationAppointments.help}</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="date_start_validity" >#i18n{appointment.create_appointmentform.labelDateStartValidity} :</label>
-					<div class="controls">
-						<div class="input-prepend">
-							<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
-							<input class="input-small" type="text" id="date_start_validity" name="date_start_validity" value="${appointmentform.dateStartValidity!''}" tabindex="6" />
-						</div>
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelDateStartValidity.help}</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="date_end_validity" >#i18n{appointment.create_appointmentform.labelDateEndValidity} :</label>
-					<div class="controls">
-						<div class="input-prepend">
-							<span class="add-on"><i class="icon-calendar">&nbsp;</i></span>
-							<input class="input-small" type="text" id="date_end_validity" name="date_end_validity" value="${appointmentform.dateEndValidity!''}" tabindex="7" />
-						</div>
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelDateEndValidity.help}</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="allow_users_to_cancel_appointments" >#i18n{appointment.create_appointmentform.labelUserCanCancelAppointments} :</label>
-					<div class="controls">
-						<input type="checkbox" id="allow_users_to_cancel_appointments" name="allow_users_to_cancel_appointments" value="true" tabindex="8" <#if appointmentform?? && appointmentform.allowUsersToCancelAppointments>checked="checked"</#if> />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="display_title_fo" >#i18n{appointment.create_appointmentform.labelDisplayTitleFo} :</label>
-					<div class="controls">
-						<input type="checkbox" id="display_title_fo" name="display_title_fo" value="true" tabindex="8" <#if appointmentform?? && appointmentform.displayTitleFo>checked="checked"</#if> />
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelDisplayTitleFo.help}</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="nb_weeks_to_display" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} * :</label>
-					<div class="controls">
-						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" tabindex="9" />
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="people_per_appointment" >#i18n{appointment.create_appointmentform.labelPeoplePerAppointment} * :</label>
-					<div class="controls">
-						<input type="text" class="input-small" id="people_per_appointment" name="people_per_appointment" value="${appointmentform.peoplePerAppointment!''}" tabindex="10" />
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelPeoplePerAppointment.help}</span>
-					</div>
-				</div>
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />
+				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeStart' inputName='time_start' mandatory=true value=appointmentform.timeStart!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeStart.help' />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeEnd' inputName='time_end' mandatory=true value=appointmentform.timeEnd!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeEnd.help' />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelDurationAppointments' inputName='duration_appointments' mandatory=true value=appointmentform.durationAppointments!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDurationAppointments.help' />
+				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='input-small' />
+				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='input-small' />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelUserCanCancelAppointments' inputName='allow_users_to_cancel_appointments' value='true' checked=appointmentform.allowUsersToCancelAppointments!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbWeeksToDisplay' inputName='nb_weeks_to_display' mandatory=true value=appointmentform.nbWeeksToDisplay!'' i18nHelpBlockKey='appointment.create_appointmentform.labelNbWeeksToDisplay.help' />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelPeoplePerAppointment' inputName='people_per_appointment' mandatory=true value=appointmentform.peoplePerAppointment!'' i18nHelpBlockKey='appointment.create_appointmentform.labelPeoplePerAppointment.help' />
 				<h4>#i18n{appointment.create_appointmentform.labelTitleDaysOpen}</h4>
-				<div class="control-group">
-					<label class="control-label" for="is_open_monday" >#i18n{appointment.create_appointmentform.labelIsOpenMonday} :</label>
-					<div class="controls">
-						<input type="checkbox" id="is_open_monday" name="is_open_monday" value="true" tabindex="11" <#if appointmentform?? && appointmentform.isOpenMonday>checked="checked" </#if> />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="is_open_tuesday" >#i18n{appointment.create_appointmentform.labelIsOpenTuesday} :</label>
-					<div class="controls">
-						<input type="checkbox" id="is_open_tuesday" name="is_open_tuesday" value="true" tabindex="12" <#if appointmentform?? && appointmentform.isOpenTuesday>checked="checked" </#if> />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="is_open_wednesday" >#i18n{appointment.create_appointmentform.labelIsOpenWednesday} :</label>
-					<div class="controls">
-						<input type="checkbox" id="is_open_wednesday" name="is_open_wednesday" value="true" tabindex="13" <#if appointmentform?? && appointmentform.isOpenWednesday>checked="checked" </#if> />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="is_open_thursday" >#i18n{appointment.create_appointmentform.labelIsOpenThursday} :</label>
-					<div class="controls">
-						<input type="checkbox" id="is_open_thursday" name="is_open_thursday" value="true" tabindex="14" <#if appointmentform?? && appointmentform.isOpenThursday>checked="checked" </#if> />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="is_open_friday" >#i18n{appointment.create_appointmentform.labelIsOpenFriday} :</label>
-					<div class="controls">
-						<input type="checkbox" id="is_open_friday" name="is_open_friday" value="true" tabindex="15" <#if appointmentform?? && appointmentform.isOpenFriday>checked="checked" </#if> />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="is_open_saturday" >#i18n{appointment.create_appointmentform.labelIsOpenSaturday} :</label>
-					<div class="controls">
-						<input type="checkbox" id="is_open_saturday" name="is_open_saturday" value="true" tabindex="16" <#if appointmentform?? && appointmentform.isOpenSaturday>checked="checked" </#if> />
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="is_open_sunday" >#i18n{appointment.create_appointmentform.labelIsOpenSunday} :</label>
-					<div class="controls">
-						<input type="checkbox" id="is_open_sunday" name="is_open_sunday" value="true" tabindex="17" <#if appointmentform?? && appointmentform.isOpenSunday>checked="checked" </#if> />
-					</div>
-				</div>
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenMonday' inputName='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenTuesday' inputName='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenWednesday' inputName='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenThursday' inputName='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenFriday' inputName='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSaturday' inputName='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
 				<#if listWorkflows??>
 					<div class="control-group">
 						<label class="control-label" for="idWorkflow" >#i18n{appointment.create_appointmentform.labelWorkflow} :</label>
 						<div class="controls">
-							<@combo name="idWorkflow" items=listWorkflows default_value="" />
+							<@combo name="idWorkflow" items=listWorkflows default_value=appointmentform.idWorkflow!'' />
 						</div>
 					</div>
 				</#if>
 				<#if isCaptchaEnabled>
-					<div class="control-group">
-						<label class="control-label" for="enableCaptcha" >#i18n{appointment.create_appointmentform.labelEnableCaptcha} :</label>
-						<div class="controls">
-							<input type="checkbox" id="enableCaptcha" name="enableCaptcha" value="true" tabindex="18" <#if appointmentform?? && appointmentform.enableCaptcha>checked="checked"</#if> />
-						</div>
-					</div>
+					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>
 				<div class="form-actions">
 					<button name="action_createAppointmentForm" class="btn btn-primary btn-small" type="submit" tabindex="19">
@@ -156,6 +48,3 @@
 		</form>
 	</div>
 </div>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePicker idField="date_start_validity" language='fr' />
-<@getDatePicker idField="date_end_validity" language='fr' />

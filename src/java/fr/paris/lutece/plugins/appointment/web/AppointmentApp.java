@@ -169,6 +169,7 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
     private static final String ERROR_MESSAGE_UNKNOWN_REF = "appointment.message.error.unknownRef";
+    private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
 
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
@@ -531,27 +532,28 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_GET_CANCEL_APPOINTMENT )
     public XPage getCancelAppointment( HttpServletRequest request )
     {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        //        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
-        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
-        {
-            int nIdForm = Integer.parseInt( strIdForm );
-            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+        //        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+        //        {
+        //            int nIdForm = Integer.parseInt( strIdForm );
+        //            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
-            if ( form.getAllowUsersToCancelAppointments(  ) )
-            {
-                Map<String, Object> model = new HashMap<String, Object>(  );
-                model.put( MARK_FORM, form );
+        //            if ( form.getAllowUsersToCancelAppointments(  ) )
+        //            {
+        Map<String, Object> model = new HashMap<String, Object>(  );
 
-                Locale locale = getLocale( request );
-                XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
-                xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
+        //                model.put( MARK_FORM, form );
+        Locale locale = getLocale( request );
+        XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
+        xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
 
-                return xpage;
-            }
-        }
+        return xpage;
 
-        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
+        //            }
+        //        }
+
+        //        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
     /**
@@ -564,54 +566,59 @@ public class AppointmentApp extends MVCApplication
     public XPage doCancelAppointment( HttpServletRequest request )
         throws SiteMessageException
     {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        //        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
-        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+        //        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+        //        {
+        //            int nIdForm = Integer.parseInt( strIdForm );
+        String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
+
+        String strIdAppointment = strRef.substring( 0,
+                strRef.length(  ) - AppointmentService.CONSTANT_REF_SIZE_RANDOM_PART );
+        String strDate = request.getParameter( PARAMETER_DATE_APPOINTMENT );
+
+        if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
         {
-            int nIdForm = Integer.parseInt( strIdForm );
-            String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
-            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            int nIdAppointment = Integer.parseInt( strIdAppointment );
+            Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
 
-            if ( form.getAllowUsersToCancelAppointments(  ) && StringUtils.isNotEmpty( strRef ) )
+            Date date = (Date) getDateConverter(  ).convert( Date.class, strDate );
+
+            if ( StringUtils.equals( strRef, AppointmentService.getService(  ).computeRefAppointment( appointment ) ) &&
+                    DateUtils.isSameDay( date, appointment.getDateAppointment(  ) ) )
             {
-                String strIdAppointment = strRef.substring( 0,
-                        strRef.length(  ) - AppointmentService.CONSTANT_REF_SIZE_RANDOM_PART );
-                String strDate = request.getParameter( PARAMETER_DATE_APPOINTMENT );
+                AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) );
 
-                if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
+                if ( !form.getAllowUsersToCancelAppointments(  ) )
                 {
-                    int nIdAppointment = Integer.parseInt( strIdAppointment );
-                    Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
+                    SiteMessageService.setMessage( request, ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT,
+                        SiteMessage.TYPE_STOP );
+                }
 
-                    Date date = (Date) getDateConverter(  ).convert( Date.class, strDate );
+                appointment.setStatus( Appointment.STATUS_REJECTED );
+                AppointmentHome.update( appointment );
 
-                    if ( StringUtils.equals( strRef,
-                                AppointmentService.getService(  ).computeRefAppointment( appointment ) ) &&
-                            DateUtils.isSameDay( date, appointment.getDateAppointment(  ) ) )
+                if ( form.getAllowUsersToCancelAppointments(  ) && StringUtils.isNotEmpty( strRef ) )
+                {
+                    Map<String, String> mapParameters = new HashMap<String, String>(  );
+
+                    if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
                     {
-                        appointment.setStatus( Appointment.STATUS_REJECTED );
-                        AppointmentHome.update( appointment );
+                        String strReferer = request.getHeader( PARAMETER_REFERER );
 
-                        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
-                        Map<String, String> mapParameters = new HashMap<String, String>(  );
-
-                        if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
+                        if ( StringUtils.isNotEmpty( strReferer ) )
                         {
-                            String strReferer = request.getHeader( PARAMETER_REFERER );
-
-                            if ( StringUtils.isNotEmpty( strReferer ) )
-                            {
-                                mapParameters.put( MARK_FROM_URL, strReferer );
-                            }
-
-                            mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS,
-                                request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
+                            mapParameters.put( MARK_FROM_URL, strReferer );
                         }
 
-                        mapParameters.put( PARAMETER_ID_FORM, Integer.toString( appointmentSlot.getIdForm(  ) ) );
-
-                        return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
+                        mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS,
+                            request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
                     }
+
+                    mapParameters.put( PARAMETER_ID_FORM, Integer.toString( appointmentSlot.getIdForm(  ) ) );
+
+                    return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
                 }
 
                 SiteMessageService.setMessage( request, ERROR_MESSAGE_UNKNOWN_REF, SiteMessage.TYPE_STOP );
