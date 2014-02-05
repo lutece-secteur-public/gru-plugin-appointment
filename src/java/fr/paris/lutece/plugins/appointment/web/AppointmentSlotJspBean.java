@@ -40,12 +40,13 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-
-import org.apache.commons.lang.StringUtils;
+import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.util.url.UrlItem;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,13 +55,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 
 /**
  * JspBean to manage calendar slots
  */
-@Controller( controllerJsp = "ManageCalendarSlots.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class CalendarSlotJspBean extends MVCAdminJspBean
+@Controller( controllerJsp = AppointmentSlotJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
+public class AppointmentSlotJspBean extends MVCAdminJspBean
 {
+    /**
+     * JSP of this JSP Bean
+     */
+    public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
+
     /**
      * Serial version UID
      */
@@ -83,6 +91,10 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
 
     // Actions
     private static final String ACTION_DO_CHANGE_SLOT_ENABLING = "doChangeSlotEnabling";
+
+    // JSP URL
+    private static final String JSP_URL_MANAGE_APPOINTMENT_SLOT = "jsp/admin/plugins/appointment/" +
+        JSP_MANAGE_APPOINTMENT_SLOTS;
 
     // Templates
     private static final String TEMPLATE_MANAGE_SLOTS = "admin/plugins/appointment/manage_slots.html";
@@ -211,5 +223,56 @@ public class CalendarSlotJspBean extends MVCAdminJspBean
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+
+    /**
+     * Get the URL to manage slots associated with a form
+     * @param request The request
+     * @param nIdForm The id of the form
+     * @return The URL to manage slots
+     */
+    public static String getUrlManageSlotsByIdForm( HttpServletRequest request, int nIdForm )
+    {
+        return getUrlManageSlotsByIdForm( request, Integer.toString( nIdForm ) );
+    }
+
+    /**
+     * Get the URL to manage slots associated with a form
+     * @param request The request
+     * @param strIdForm The id of the form
+     * @return The URL to manage slots
+     */
+    public static String getUrlManageSlotsByIdForm( HttpServletRequest request, String strIdForm )
+    {
+        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_APPOINTMENT_SLOT );
+        urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
+
+        return urlItem.getUrl(  );
+    }
+
+    /**
+     * Get the URL to manage slots associated with a day
+     * @param request The request
+     * @param nIdDay The id of the day
+     * @return The URL to manage slots
+     */
+    public static String getUrlManageSlotsByIdDay( HttpServletRequest request, int nIdDay )
+    {
+        return getUrlManageSlotsByIdDay( request, Integer.toString( nIdDay ) );
+    }
+
+    /**
+     * Get the URL to manage slots associated with a day
+     * @param request The request
+     * @param strIdDay The id of the day
+     * @return The URL to manage slots
+     */
+    public static String getUrlManageSlotsByIdDay( HttpServletRequest request, String strIdDay )
+    {
+        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_APPOINTMENT_SLOT );
+        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENT_SLOTS );
+        urlItem.addParameter( PARAMETER_ID_DAY, strIdDay );
+
+        return urlItem.getUrl(  );
     }
 }

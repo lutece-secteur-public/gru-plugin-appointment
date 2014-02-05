@@ -39,6 +39,13 @@
 					${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointment} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
 				</div>
 			</div>
+			
+			<#if resource_history?? && resource_history != ''>
+				<div class="well">
+					${resource_history}
+				</div> 
+			</#if>
+			
 			<div class="form-actions">
 				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true" class="btn btn-small">
 					<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}

@@ -91,7 +91,7 @@ public class AppointmentFilter implements Serializable
      * Set the id of the form
      * @param nIdForm The id of the form
      */
-    public void getIdForm( int nIdForm )
+    public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
     }

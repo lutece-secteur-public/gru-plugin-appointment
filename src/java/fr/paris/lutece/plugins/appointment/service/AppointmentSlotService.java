@@ -70,13 +70,30 @@ public class AppointmentSlotService
      * Compute slots for a given day, and create them
      * @param day The day to create slots of. The day must have been inserted in
      *            the database.
+     * @param form The form associated with the day.
      */
-    public void computeAndCreateSlotsForDay( AppointmentDay day )
+    public void computeAndCreateSlotsForDay( AppointmentDay day, AppointmentForm form )
     {
-        List<AppointmentSlot> listSlots = AppointmentService.getService(  ).computeDaySlots( day );
+        List<AppointmentSlot> listSlots;
+
+        if ( ( form.getOpeningHour(  ) == day.getOpeningHour(  ) ) &&
+                ( form.getOpeningMinutes(  ) == day.getOpeningMinutes(  ) ) &&
+                ( form.getClosingHour(  ) == day.getClosingHour(  ) ) &&
+                ( form.getClosingMinutes(  ) == day.getClosingMinutes(  ) ) &&
+                ( form.getDurationAppointments(  ) == day.getAppointmentDuration(  ) ) )
+        {
+            int nDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( day.getDate(  ) );
+            listSlots = AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), nDayOfWeek );
+        }
+        else
+        {
+            listSlots = AppointmentService.getService(  ).computeDaySlots( day );
+        }
 
         for ( AppointmentSlot slot : listSlots )
         {
+            slot.setIdDay( day.getIdDay(  ) );
+            slot.setNbPlaces( day.getPeoplePerAppointment(  ) );
             AppointmentSlotHome.create( slot );
         }
     }
@@ -106,9 +123,10 @@ public class AppointmentSlotService
      * @param day The day with new values of attributes. New values should be
      *            saved in the database before this method is called.
      * @param dayFromDb The day with old values of attributes.
+     * @param form The form associated with the day.
      * @return True if some slots was modified, false otherwise
      */
-    public boolean checkForDayModification( AppointmentDay day, AppointmentDay dayFromDb )
+    public boolean checkForDayModification( AppointmentDay day, AppointmentDay dayFromDb, AppointmentForm form )
     {
         // If the appointment duration or the opening or closing time of the day has changed, we reinitialized slots
         if ( ( dayFromDb.getAppointmentDuration(  ) != day.getAppointmentDuration(  ) ) ||
@@ -118,7 +136,7 @@ public class AppointmentSlotService
                 day.getClosingMinutes(  ) ) ) )
         {
             AppointmentSlotHome.deleteByIdDay( day.getIdDay(  ) );
-            AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForDay( day );
+            AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForDay( day, form );
 
             return true;
         }
@@ -128,7 +146,7 @@ public class AppointmentSlotService
             if ( day.getIsOpen(  ) )
             {
                 // If the day has been opened, we create slots 
-                computeAndCreateSlotsForDay( day );
+                computeAndCreateSlotsForDay( day, form );
             }
             else
             {
@@ -139,22 +157,35 @@ public class AppointmentSlotService
             return true;
         }
 
-        if ( day.getDate(  ).getTime(  ) != dayFromDb.getDate(  ).getTime(  ) )
+        //        if ( day.getDate(  ).getTime(  ) != dayFromDb.getDate(  ).getTime(  ) )
+        //        {
+        //            // If the date changed, we must update the day of week of each slot.
+        //            int nDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( day.getDate(  ) );
+        //            int nOldDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( dayFromDb.getDate(  ) );
+        //
+        //            if ( nDayOfWeek != nOldDayOfWeek )
+        //            {
+        //                List<AppointmentSlot> listSlots = AppointmentSlotHome.findByIdDay( day.getIdDay(  ) );
+        //
+        //                for ( AppointmentSlot slot : listSlots )
+        //                {
+        //                    slot.setDayOfWeek( nDayOfWeek );
+        //                    AppointmentSlotHome.update( slot );
+        //                }
+        //                bRes = true;
+        //            }
+        //        }
+        if ( day.getPeoplePerAppointment(  ) != dayFromDb.getPeoplePerAppointment(  ) )
         {
-            // If the date changed, we must update the day of week of each slot.
-            int nDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( day.getDate(  ) );
-            int nOldDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( dayFromDb.getDate(  ) );
+            List<AppointmentSlot> listSlots = AppointmentSlotHome.findByIdDay( day.getIdDay(  ) );
 
-            if ( nDayOfWeek != nOldDayOfWeek )
+            for ( AppointmentSlot slot : listSlots )
             {
-                List<AppointmentSlot> listSlots = AppointmentSlotHome.findByIdDay( day.getIdDay(  ) );
-
-                for ( AppointmentSlot slot : listSlots )
-                {
-                    slot.setDayOfWeek( nDayOfWeek );
-                    AppointmentSlotHome.update( slot );
-                }
+                slot.setNbPlaces( day.getPeoplePerAppointment(  ) );
+                AppointmentSlotHome.update( slot );
             }
+
+            return true;
         }
 
         return false;

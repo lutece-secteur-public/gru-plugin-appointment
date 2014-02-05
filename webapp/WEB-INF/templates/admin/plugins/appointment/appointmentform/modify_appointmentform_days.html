@@ -12,6 +12,9 @@
 	    				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=confirmRefreshDays&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelRefreshDays}">
 	    					<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}
 	    				</a>
+	    				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelCreateDay}">
+	    					<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelCreateDay}
+	    				</a>
 	    			</div>
     			</#if>
     		</legend>
@@ -62,7 +65,7 @@
 										<i class="icon-edit icon-white">&nbsp;</i>
 									</a>
 									<#if day.isOpen>
-										<a href="jsp/admin/plugins/appointment/ManageCalendarSlots.jsp?view=manageAppointmentSlots&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{appointment.modify_appointmentformDays.labelManageSlots}">
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{appointment.modify_appointmentformDays.labelManageSlots}">
 											<i class="fa fa-calendar"></i>
 										</a>
 									</#if>
