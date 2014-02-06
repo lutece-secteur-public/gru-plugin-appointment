@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2014, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,14 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.dozer.converters.DateConverter;
+
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -64,9 +70,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.dozer.converters.DateConverter;
 
 
 /**
@@ -150,14 +153,15 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      *             this feature.
      */
     @View( VIEW_MODIFY_APPOINTMENTFORM_DAYS )
-    public String getModifyFormDays( HttpServletRequest request ) throws AccessDeniedException
+    public String getModifyFormDays( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser( ) ) )
+                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
@@ -180,28 +184,27 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
-            Date dateMin = AppointmentService.getService( ).getDateMonday( _nNbWeek );
+            Date dateMin = AppointmentService.getService(  ).getDateMonday( _nNbWeek );
             Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
             calendar.setTime( dateMin );
             calendar.add( Calendar.DAY_OF_MONTH, 6 );
 
-            Date dateMax = new Date( calendar.getTimeInMillis( ) );
+            Date dateMax = new Date( calendar.getTimeInMillis(  ) );
 
-            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( appointmentForm.getIdForm( ), dateMin,
+            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( appointmentForm.getIdForm(  ), dateMin,
                     dateMax );
 
             AppointmentDayHome.getDaysBetween( nIdForm, dateMin, dateMax );
 
-            Map<String, Object> model = new HashMap<String, Object>( );
+            Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_LIST_DAYS, listDays );
             model.put( PARAMETER_NB_WEEK, _nNbWeek );
             model.put( MARK_DATE_MIN, dateMin );
             model.put( MARK_DATE_MAX, dateMax );
-            AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ),
-                    model );
+            AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ),
+                getLocale(  ), model );
 
-            return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS, TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS,
-                    model );
+            return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS, TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS, model );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -215,7 +218,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      *             this feature.
      */
     @View( VIEW_GET_CREATE_DAY )
-    public String getCreateDay( HttpServletRequest request ) throws AccessDeniedException
+    public String getCreateDay( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -225,13 +229,13 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         }
 
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser( ) ) )
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
 
         // Default Values
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( PARAMETER_ID_FORM, strIdForm );
 
         if ( _appointmentDay != null )
@@ -253,7 +257,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      *             this feature.
      */
     @Action( ACTION_DO_CREATE_DAY )
-    public String doCreateDay( HttpServletRequest request ) throws AccessDeniedException
+    public String doCreateDay( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -264,21 +269,21 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 return redirect( request, getURLManageAppointmentFormDays( request, strIdForm ) );
             }
 
-            AppointmentDay day = new AppointmentDay( );
+            AppointmentDay day = new AppointmentDay(  );
             day.setIdForm( Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) ) );
 
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser( ) ) )
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm(  ) ),
+                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
 
-            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm( ) );
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
             List<String> listErrors = populateDay( day, form, request );
 
-            if ( ( listErrors != null ) && ( listErrors.size( ) > 0 ) )
+            if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
             {
-                Locale locale = request.getLocale( );
+                Locale locale = request.getLocale(  );
 
                 for ( String strError : listErrors )
                 {
@@ -287,17 +292,20 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
                 _appointmentDay = day;
 
-                return redirect( request, VIEW_GET_CREATE_DAY, PARAMETER_ID_FORM, day.getIdForm( ) );
+                return redirect( request, VIEW_GET_CREATE_DAY, PARAMETER_ID_FORM, day.getIdForm(  ) );
             }
 
             AppointmentDayHome.create( day );
-            AppointmentSlotService.getInstance( ).computeAndCreateSlotsForDay( day, form );
-            if ( day.getIsOpen( ) )
+            AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForDay( day, form );
+
+            if ( day.getIsOpen(  ) )
             {
-                return redirect( request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, day.getIdDay( ) ) );
+                return redirect( request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, day.getIdDay(  ) ) );
             }
-            return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm( ) ) ) );
+
+            return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -309,7 +317,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      *             this feature.
      */
     @View( VIEW_GET_MODIFY_DAY )
-    public String getModifyDay( HttpServletRequest request ) throws AccessDeniedException
+    public String getModifyDay( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdDay = request.getParameter( PARAMETER_ID_DAY );
 
@@ -319,7 +328,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             AppointmentDay day;
 
-            if ( ( _appointmentDay != null ) && ( _appointmentDay.getIdDay( ) == nIdDay ) )
+            if ( ( _appointmentDay != null ) && ( _appointmentDay.getIdDay(  ) == nIdDay ) )
             {
                 day = _appointmentDay;
                 _appointmentDay = null;
@@ -329,13 +338,13 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 day = AppointmentDayHome.findByPrimaryKey( nIdDay );
             }
 
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser( ) ) )
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm(  ) ),
+                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
 
-            Map<String, Object> model = new HashMap<String, Object>( );
+            Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_DAY, day );
             fillCommons( model );
 
@@ -353,7 +362,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      *             this feature.
      */
     @Action( ACTION_DO_MODIFY_DAY )
-    public String doModifyDay( HttpServletRequest request ) throws AccessDeniedException
+    public String doModifyDay( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdDay = request.getParameter( PARAMETER_ID_DAY );
 
@@ -366,42 +376,43 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
         AppointmentDay day = AppointmentDayHome.findByPrimaryKey( nIdDay );
 
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm(  ) ),
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
 
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
         {
-            return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm( ) ) ) );
+            return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
         }
-        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm( ) );
+
+        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
         List<String> listErrors = populateDay( day, form, request );
 
-        Locale locale = request.getLocale( );
+        Locale locale = request.getLocale(  );
 
-        AppointmentDay dayFromDb = AppointmentDayHome.findByPrimaryKey( day.getIdDay( ) );
+        AppointmentDay dayFromDb = AppointmentDayHome.findByPrimaryKey( day.getIdDay(  ) );
 
         // If there were modification on the day, then we check that the day is not associated with any appointment
         // The only attributes that can freely be changed are the opening attribute and the people per appointment attribute
-        if ( ( day.getOpeningHour( ) != dayFromDb.getOpeningHour( ) )
-                || ( day.getOpeningMinutes( ) != dayFromDb.getOpeningMinutes( ) )
-                || ( day.getClosingHour( ) != dayFromDb.getClosingHour( ) )
-                || ( day.getClosingMinutes( ) != dayFromDb.getClosingMinutes( ) )
-                || ( day.getAppointmentDuration( ) != dayFromDb.getAppointmentDuration( ) ) )
+        if ( ( day.getOpeningHour(  ) != dayFromDb.getOpeningHour(  ) ) ||
+                ( day.getOpeningMinutes(  ) != dayFromDb.getOpeningMinutes(  ) ) ||
+                ( day.getClosingHour(  ) != dayFromDb.getClosingHour(  ) ) ||
+                ( day.getClosingMinutes(  ) != dayFromDb.getClosingMinutes(  ) ) ||
+                ( day.getAppointmentDuration(  ) != dayFromDb.getAppointmentDuration(  ) ) )
         {
-            int nNbAppointment = AppointmentHome.getNbAppointmentByIdDay( day.getDate( ), day.getIdForm( ) );
+            int nNbAppointment = AppointmentHome.getNbAppointmentByIdDay( day.getDate(  ), day.getIdForm(  ) );
 
             if ( nNbAppointment > 0 )
             {
                 addError( MESSAGE_ERROR_DAY_HAS_APPOINTMENT, locale );
 
-                return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+                return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
             }
         }
 
-        if ( ( listErrors != null ) && ( listErrors.size( ) > 0 ) )
+        if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
         {
             for ( String strError : listErrors )
             {
@@ -410,20 +421,22 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             _appointmentDay = day;
 
-            return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+            return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
         }
 
         AppointmentDayHome.update( day );
 
-        if ( AppointmentSlotService.getInstance( ).checkForDayModification( day, dayFromDb, form ) )
+        if ( AppointmentSlotService.getInstance(  ).checkForDayModification( day, dayFromDb, form ) )
         {
-            addInfo( INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED, getLocale( ) );
+            addInfo( INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED, getLocale(  ) );
         }
-        if ( day.getIsOpen( ) )
+
+        if ( day.getIsOpen(  ) )
         {
-            return redirect( request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, day.getIdDay( ) ) );
+            return redirect( request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, day.getIdDay(  ) ) );
         }
-        return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm( ) ) ) );
+
+        return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
     }
 
     /**
@@ -434,14 +447,15 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      *             this feature.
      */
     @View( VIEW_CONFIRM_REFRESH_DAYS )
-    public String getConfirmRefreshDays( HttpServletRequest request ) throws AccessDeniedException
+    public String getConfirmRefreshDays( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser( ) ) )
+                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
@@ -449,8 +463,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             UrlItem urlItem = new UrlItem( getActionUrl( ACTION_DO_REFRESH_DAYS ) );
             urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
-            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REFRESH_DAYS,
-                    urlItem.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
+            return redirect( request,
+                AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REFRESH_DAYS, urlItem.getUrl(  ),
+                    AdminMessage.TYPE_CONFIRMATION ) );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -464,30 +479,31 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      *             this feature.
      */
     @Action( ACTION_DO_REFRESH_DAYS )
-    public String doRefreshDays( HttpServletRequest request ) throws AccessDeniedException
+    public String doRefreshDays( HttpServletRequest request )
+        throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser( ) ) )
+                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
 
             int nIdForm = Integer.parseInt( strIdForm );
-            int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdForm, AppointmentService.getService( )
-                    .getDateLastMonday( ) );
+            int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdForm,
+                    AppointmentService.getService(  ).getDateLastMonday(  ) );
 
             if ( nNbAppointments > 0 )
             {
-                return redirect( request, AdminMessageService.getMessageUrl( request,
-                        MESSAGE_ERROR_FORM_HAS_APPOINTMENTS, getURLManageAppointmentFormDays( request, strIdForm ),
-                        AdminMessage.TYPE_STOP ) );
+                return redirect( request,
+                    AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_FORM_HAS_APPOINTMENTS,
+                        getURLManageAppointmentFormDays( request, strIdForm ), AdminMessage.TYPE_STOP ) );
             }
 
-            AppointmentService.getService( ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ) );
+            AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ) );
 
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM_DAYS, PARAMETER_ID_FORM, nIdForm );
         }
@@ -504,9 +520,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      */
     private List<String> populateDay( AppointmentDay day, AppointmentForm form, HttpServletRequest request )
     {
-        List<String> listErrors = new ArrayList<String>( );
+        List<String> listErrors = new ArrayList<String>(  );
         String strDate = request.getParameter( PARAMETER_DATE );
-        Date date = (Date) getDateConverter( ).convert( java.sql.Date.class, strDate );
+        Date date = (Date) getDateConverter(  ).convert( java.sql.Date.class, strDate );
 
         if ( date == null )
         {
@@ -515,11 +531,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         else
         {
             // We check that the day does not already exist
-            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( day.getIdForm( ), date, date );
+            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( day.getIdForm(  ), date, date );
 
-            if ( ( listDays != null ) && ( listDays.size( ) > 0 ) )
+            if ( ( listDays != null ) && ( listDays.size(  ) > 0 ) )
             {
-                if ( day.getIdDay( ) == 0 )
+                if ( day.getIdDay(  ) == 0 )
                 {
                     listErrors.add( MESSAGE_ERROR_DAY_ALREADY_EXIST );
                 }
@@ -528,7 +544,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                     // If there is a day for this form that has the same date but a different id, we add an error
                     for ( AppointmentDay dayFound : listDays )
                     {
-                        if ( dayFound.getIdDay( ) != day.getIdDay( ) )
+                        if ( dayFound.getIdDay(  ) != day.getIdDay(  ) )
                         {
                             listErrors.add( MESSAGE_ERROR_DAY_ALREADY_EXIST );
 
@@ -578,17 +594,17 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             {
                 day.setAppointmentDuration( Integer.parseInt( strDuration ) );
 
-                if ( ( form.getDurationAppointments( ) != day.getAppointmentDuration( ) )
-                        && ( form.getDurationAppointments( ) > day.getAppointmentDuration( ) ) )
+                if ( ( form.getDurationAppointments(  ) != day.getAppointmentDuration(  ) ) &&
+                        ( form.getDurationAppointments(  ) > day.getAppointmentDuration(  ) ) )
                 {
-                    if ( ( form.getDurationAppointments( ) % day.getAppointmentDuration( ) ) != 0 )
+                    if ( ( form.getDurationAppointments(  ) % day.getAppointmentDuration(  ) ) != 0 )
                     {
                         listErrors.add( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM );
                     }
                 }
                 else
                 {
-                    if ( ( day.getAppointmentDuration( ) % form.getDurationAppointments( ) ) != 0 )
+                    if ( ( day.getAppointmentDuration(  ) % form.getDurationAppointments(  ) ) != 0 )
                     {
                         listErrors.add( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM );
                     }
@@ -635,14 +651,14 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_APPOINTMENTFORM_DAYS );
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
-        return urlItem.getUrl( );
+        return urlItem.getUrl(  );
     }
 
     /**
      * Get the converter to convert string to java.sql.Date.
      * @return The converter to convert String to java.sql.Date.
      */
-    private DateConverter getDateConverter( )
+    private DateConverter getDateConverter(  )
     {
         if ( _dateConverter == null )
         {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2014, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,8 @@ public class AppointmentRemovalManager
      */
     public static void notifyListenersAppointmentRemoval( int nIdAppointment )
     {
-        for ( IAppointmentRemovalListener appointmentRemovalListener : SpringContextService
-                .getBeansOfType( IAppointmentRemovalListener.class ) )
+        for ( IAppointmentRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
+                IAppointmentRemovalListener.class ) )
         {
             appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
         }

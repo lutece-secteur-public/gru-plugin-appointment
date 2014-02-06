@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2013, Mairie de Paris
+ * Copyright (c) 2002-2014, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,17 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+
 /**
  * Interface for listeners that should be notified when appointments are
  * removed. <b>The listener must be a Spring bean.</b>
  */
 public interface IAppointmentRemovalListener
 {
-
     /**
      * Notify the listener that an appointment has been removed
      * @param nIdAppointment The id of the appointment
      */
     void notifyAppointmentRemoval( int nIdAppointment );
-
 }
