@@ -12,6 +12,7 @@ CREATE TABLE appointment_appointment (
 	date_appointment DATE NOT NULL,
 	id_slot int(11) NOT NULL,
 	status smallint NOT NULL,
+	id_action_cancel int(11) NOT NULL,
 	PRIMARY KEY (id_appointment)
 );
 CREATE INDEX idx_appointment_id_slot ON appointment_appointment (id_slot);

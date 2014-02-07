@@ -36,17 +36,15 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import java.io.Serializable;
-
 import java.sql.Date;
-
 import java.util.Collection;
 import java.util.List;
 
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
@@ -100,12 +98,13 @@ public class Appointment implements Serializable
     private int _nStatus;
     private List<Response> _listResponse;
     private transient Collection<Action> _listWorkflowActions;
+    private int _nIdActionCancel;
 
     /**
      * Returns the IdAppointment
      * @return The IdAppointment
      */
-    public int getIdAppointment(  )
+    public int getIdAppointment( )
     {
         return _nIdAppointment;
     }
@@ -123,7 +122,7 @@ public class Appointment implements Serializable
      * Returns the FirstName
      * @return The FirstName
      */
-    public String getFirstName(  )
+    public String getFirstName( )
     {
         return _strFirstName;
     }
@@ -141,7 +140,7 @@ public class Appointment implements Serializable
      * Returns the LastName
      * @return The LastName
      */
-    public String getLastName(  )
+    public String getLastName( )
     {
         return _strLastName;
     }
@@ -159,7 +158,7 @@ public class Appointment implements Serializable
      * Returns the Email
      * @return The Email
      */
-    public String getEmail(  )
+    public String getEmail( )
     {
         return _strEmail;
     }
@@ -177,7 +176,7 @@ public class Appointment implements Serializable
      * Returns the id of the lutece user that made this appointment
      * @return The id of the lutece user that made this appointment
      */
-    public String getIdUser(  )
+    public String getIdUser( )
     {
         return _strIdUser;
     }
@@ -198,7 +197,7 @@ public class Appointment implements Serializable
      *         appointment, or null if this appointment is not associated with a
      *         lutece user
      */
-    public String getAuthenticationService(  )
+    public String getAuthenticationService( )
     {
         return _strAuthenticationService;
     }
@@ -219,7 +218,7 @@ public class Appointment implements Serializable
      * Get the date of the appointment
      * @return The date of the appointment
      */
-    public Date getDateAppointment(  )
+    public Date getDateAppointment( )
     {
         return _dateAppointment;
     }
@@ -237,7 +236,7 @@ public class Appointment implements Serializable
      * Get the id of the slot
      * @return The id of the slot
      */
-    public int getIdSlot(  )
+    public int getIdSlot( )
     {
         return _nIdSlot;
     }
@@ -255,7 +254,7 @@ public class Appointment implements Serializable
      * Get the status of the appointment
      * @return The status of the appointment
      */
-    public int getStatus(  )
+    public int getStatus( )
     {
         return _nStatus;
     }
@@ -273,7 +272,7 @@ public class Appointment implements Serializable
      * Get the list of response of this appointment
      * @return the list of response of this appointment
      */
-    public List<Response> getListResponse(  )
+    public List<Response> getListResponse( )
     {
         return _listResponse;
     }
@@ -304,8 +303,29 @@ public class Appointment implements Serializable
      * before calling this method.
      * @return The list of workflow actions available for this appointment.
      */
-    public Collection<Action> getListWorkflowActions(  )
+    public Collection<Action> getListWorkflowActions( )
     {
         return _listWorkflowActions;
+    }
+
+    /**
+     * Get the id of the workflow action to execute to cancel the appointment
+     * @return The id of the workflow action to execute to cancel the
+     *         appointment
+     */
+    public int getIdActionCancel( )
+    {
+        return _nIdActionCancel;
+    }
+
+    /**
+     * Set the id of the workflow action to execute to cancel the appointment
+     * @param nIdActionCancel The id of the workflow action to execute to cancel
+     *            the appointment
+     */
+    public void setIdActionCancel( int nIdActionCancel )
+    {
+        this._nIdActionCancel = nIdActionCancel;
+
     }
 }
