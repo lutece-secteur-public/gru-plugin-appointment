@@ -103,6 +103,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
+    private static final String PARAMETER_FORCE_RELOAD = "forceReload";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -240,7 +241,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
 
-        if ( appointmentForm == null )
+        if ( ( appointmentForm == null ) || ( appointmentForm.getIdForm(  ) > 0 ) )
         {
             appointmentForm = new AppointmentForm(  );
             appointmentForm.setAllowUsersToCancelAppointments( true );
@@ -375,9 +376,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
-        if ( appointmentForm == null )
+        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+
+        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm(  ) ) ||
+                Boolean.parseBoolean( request.getParameter( PARAMETER_FORCE_RELOAD ) ) )
         {
-            int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
             appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
             request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
         }
@@ -446,6 +449,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        int nIdAppointmentForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+
+        if ( nIdAppointmentForm != appointmentForm.getIdForm(  ) )
+        {
+            appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm );
+        }
 
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
                     Integer.toString( appointmentForm.getIdForm(  ) ),

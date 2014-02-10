@@ -1,5 +1,5 @@
 <#if permission_create?? && permission_create>
-	<a class="btn btn-primary pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm">
+	<a class="btn btn-primary pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm&forceReload=true">
 		<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointmentforms.buttonAdd}
 	</a>
 </#if>
@@ -33,7 +33,7 @@
 						</#if>
 					</td>
 					<td>
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
 							<i class="icon-edit icon-white">&nbsp;</i>
 						</a>
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">

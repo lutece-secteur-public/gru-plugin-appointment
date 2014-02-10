@@ -36,11 +36,12 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -130,8 +131,8 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setString( nIndex++, appointment.getAuthenticationService(  ) );
         daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
         daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
-        daoUtil.setInt( nIndex++, appointment.getStatus( ) );
-        daoUtil.setInt( nIndex, appointment.getIdActionCancel( ) );
+        daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
+        daoUtil.setInt( nIndex, appointment.getIdActionCancel(  ) );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }

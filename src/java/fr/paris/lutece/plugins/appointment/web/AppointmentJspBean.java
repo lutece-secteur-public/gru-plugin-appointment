@@ -65,6 +65,7 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
@@ -210,7 +211,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENT_REMOVED = "appointment.info.appointment.removed";
 
     // Session keys
-    private static final String SESSION_ATTRIBUTE_APPOINTMENT = "appointment.session.appointment";
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
     private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.itemsPerPage";
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
@@ -251,8 +251,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
 
             int nIdForm = Integer.parseInt( strIdForm );
-
-            request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
@@ -363,8 +361,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
                     getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
             request.getSession(  ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
-
-            request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT );
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
             UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
@@ -1209,7 +1205,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      */
     public static String getUrlManageAppointment( HttpServletRequest request, String strIdForm )
     {
-        UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
+        UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTS );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
         url.addParameter( PARAMETER_ID_FORM, strIdForm );
         url.addParameter( MARK_FILTER_FROM_SESSION, Boolean.TRUE.toString(  ) );

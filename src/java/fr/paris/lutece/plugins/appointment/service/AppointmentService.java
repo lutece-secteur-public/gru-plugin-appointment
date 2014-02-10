@@ -465,44 +465,49 @@ public class AppointmentService
     {
         int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
 
-        // We check every weeks from the current to the first not displayable
-        for ( int nOffsetWeeks = 0; nOffsetWeeks < ( form.getNbWeeksToDisplay(  ) + nNbWeeksToCreate );
-                nOffsetWeeks++ )
+        // We synchronize the method by id form to avoid collisions between manual and daemon checks
+        synchronized ( AppointmentService.class + Integer.toString( form.getIdForm(  ) ) )
         {
-            Date date = new Date( System.currentTimeMillis(  ) );
-            Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
-            calendar.setTime( date );
-            // We set the week to the requested one 
-            calendar.add( Calendar.DAY_OF_MONTH, 7 * nOffsetWeeks );
-
-            // We get the current day of the week
-            int nCurrentDayOfWeek = calendar.get( Calendar.DAY_OF_WEEK );
-            // We add the day of the week to Monday on the calendar
-            calendar.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
-
-            Date dateMin = new Date( calendar.getTimeInMillis(  ) );
-            calendar.add( Calendar.DAY_OF_MONTH, 6 );
-
-            Date dateMax = new Date( calendar.getTimeInMillis(  ) );
-
-            List<AppointmentDay> listDaysFound = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
-
-            // If there is no days associated with the given week, or if some days does not exist
-            if ( ( listDaysFound == null ) || ( listDaysFound.size(  ) < CONSTANT_NB_DAYS_IN_WEEK ) )
+            // We check every weeks from the current to the first not displayable
+            for ( int nOffsetWeeks = 0; nOffsetWeeks < ( form.getNbWeeksToDisplay(  ) + nNbWeeksToCreate );
+                    nOffsetWeeks++ )
             {
-                List<AppointmentDay> listDays = findAndComputeDayList( form, nOffsetWeeks, true );
+                Date date = new Date( System.currentTimeMillis(  ) );
+                Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
+                calendar.setTime( date );
+                // We set the week to the requested one 
+                calendar.add( Calendar.DAY_OF_MONTH, 7 * nOffsetWeeks );
 
-                for ( AppointmentDay day : listDays )
+                // We get the current day of the week
+                int nCurrentDayOfWeek = calendar.get( Calendar.DAY_OF_WEEK );
+                // We add the day of the week to Monday on the calendar
+                calendar.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+
+                Date dateMin = new Date( calendar.getTimeInMillis(  ) );
+                calendar.add( Calendar.DAY_OF_MONTH, 6 );
+
+                Date dateMax = new Date( calendar.getTimeInMillis(  ) );
+
+                List<AppointmentDay> listDaysFound = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin,
+                        dateMax );
+
+                // If there is no days associated with the given week, or if some days does not exist
+                if ( ( listDaysFound == null ) || ( listDaysFound.size(  ) < CONSTANT_NB_DAYS_IN_WEEK ) )
                 {
-                    // If the day has not already been created, we create it
-                    if ( day.getIdDay(  ) == 0 )
-                    {
-                        AppointmentDayHome.create( day );
+                    List<AppointmentDay> listDays = findAndComputeDayList( form, nOffsetWeeks, true );
 
-                        for ( AppointmentSlot slot : day.getListSlots(  ) )
+                    for ( AppointmentDay day : listDays )
+                    {
+                        // If the day has not already been created, we create it
+                        if ( day.getIdDay(  ) == 0 )
                         {
-                            slot.setIdDay( day.getIdDay(  ) );
-                            AppointmentSlotHome.create( slot );
+                            AppointmentDayHome.create( day );
+
+                            for ( AppointmentSlot slot : day.getListSlots(  ) )
+                            {
+                                slot.setIdDay( day.getIdDay(  ) );
+                                AppointmentSlotHome.create( slot );
+                            }
                         }
                     }
                 }
