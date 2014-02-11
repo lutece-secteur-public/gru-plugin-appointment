@@ -63,14 +63,17 @@ import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -97,9 +100,14 @@ import javax.validation.ConstraintViolation;
 /**
  * This class provides a simple implementation of an XPage
  */
-@Controller( xpageName = "appointment", pageTitleI18nKey = "appointment.appointmentApp.defaultTitle", pagePathI18nKey = "appointment.appointmentApp.defaultPath" )
+@Controller( xpageName = AppointmentApp.XPAGE_NAME, pageTitleI18nKey = "appointment.appointmentApp.defaultTitle", pagePathI18nKey = "appointment.appointmentApp.defaultPath" )
 public class AppointmentApp extends MVCApplication
 {
+    /**
+     * The name of the XPage
+     */
+    protected static final String XPAGE_NAME = "appointment";
+
     /**
      * Generated serial version UID
      */
@@ -180,6 +188,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.my_appointments.pageTitle";
 
     // Local variables
+    private static final DateFormat _dateFormat = DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE );
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private transient CaptchaSecurityService _captchaSecurityService;
     private transient DateConverter _dateConverter;
@@ -566,15 +575,10 @@ public class AppointmentApp extends MVCApplication
     public XPage doCancelAppointment( HttpServletRequest request )
         throws SiteMessageException
     {
-        //        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-
-        //        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
-        //        {
-        //            int nIdForm = Integer.parseInt( strIdForm );
         String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
 
         String strIdAppointment = strRef.substring( 0,
-                strRef.length(  ) - AppointmentService.CONSTANT_REF_SIZE_RANDOM_PART );
+                strRef.length(  ) - AppointmentService.getService(  ).getRefSizeRandomPart(  ) );
         String strDate = request.getParameter( PARAMETER_DATE_APPOINTMENT );
 
         if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
@@ -596,8 +600,18 @@ public class AppointmentApp extends MVCApplication
                         SiteMessage.TYPE_STOP );
                 }
 
-                appointment.setStatus( Appointment.STATUS_REJECTED );
-                AppointmentHome.update( appointment );
+                if ( appointment.getIdActionCancel(  ) > 0 )
+                {
+                    WorkflowService.getInstance(  )
+                                   .doProcessAction( appointment.getIdAppointment(  ),
+                        Appointment.APPOINTMENT_RESOURCE_TYPE, appointment.getIdActionCancel(  ), form.getIdForm(  ),
+                        request, request.getLocale(  ), false );
+                }
+                else
+                {
+                    appointment.setStatus( Appointment.STATUS_REJECTED );
+                    AppointmentHome.update( appointment );
+                }
 
                 if ( form.getAllowUsersToCancelAppointments(  ) && StringUtils.isNotEmpty( strRef ) )
                 {
@@ -822,9 +836,32 @@ public class AppointmentApp extends MVCApplication
     {
         if ( _dateConverter == null )
         {
-            _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE ) );
+            _dateConverter = new DateConverter( getDateFormat(  ) );
         }
 
         return _dateConverter;
+    }
+
+    private static DateFormat getDateFormat(  )
+    {
+        return _dateFormat;
+    }
+
+    /**
+     * Get the URL
+     * @param request Get the URL to cancel an appointment in FO
+     * @param appointment The appointment
+     * @return The URL to cancel the appointment
+     */
+    public static String getCancelAppointmentUrl( HttpServletRequest request, Appointment appointment )
+    {
+        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + AppPathService.getPortalUrl(  ) );
+        urlItem.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
+        urlItem.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_CANCEL_APPOINTMENT );
+        urlItem.addParameter( PARAMETER_DATE_APPOINTMENT, getDateFormat(  ).format( appointment.getDateAppointment(  ) ) );
+        urlItem.addParameter( PARAMETER_REF_APPOINTMENT,
+            AppointmentService.getService(  ).computeRefAppointment( appointment ) );
+
+        return urlItem.getUrl(  );
     }
 }

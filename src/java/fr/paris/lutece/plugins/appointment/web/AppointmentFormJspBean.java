@@ -451,7 +451,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         int nIdAppointmentForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
 
-        if ( nIdAppointmentForm != appointmentForm.getIdForm(  ) )
+        if ( ( appointmentForm == null ) || ( nIdAppointmentForm != appointmentForm.getIdForm(  ) ) )
         {
             appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm );
         }

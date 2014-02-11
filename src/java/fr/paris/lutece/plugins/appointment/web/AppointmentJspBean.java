@@ -1212,4 +1212,38 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return url.getUrl(  );
     }
+
+    /**
+     * Get the URL to display the form of a workflow action. If the action has
+     * no form, then the user is redirected to the page to execute the workflow
+     * action
+     * @param request The request
+     * @param nIdAppointment The id of the appointment
+     * @param nIdAction The id of the workflow action
+     * @return The URL
+     */
+    public static String getUrlExecuteWorkflowAction( HttpServletRequest request, int nIdAppointment, int nIdAction )
+    {
+        return getUrlExecuteWorkflowAction( request, Integer.toString( nIdAppointment ), Integer.toString( nIdAction ) );
+    }
+
+    /**
+     * Get the URL to display the form of a workflow action. If the action has
+     * no form, then the user is redirected to the page to execute the workflow
+     * action
+     * @param request The request
+     * @param strIdAppointment The id of the appointment
+     * @param strIdAction The id of the workflow action
+     * @return The URL
+     */
+    public static String getUrlExecuteWorkflowAction( HttpServletRequest request, String strIdAppointment,
+        String strIdAction )
+    {
+        UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTS );
+        url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_WORKFLOW_ACTION_FORM );
+        url.addParameter( PARAMETER_ID_APPOINTMENT, strIdAppointment );
+        url.addParameter( PARAMETER_ID_ACTION, strIdAction );
+
+        return url.getUrl(  );
+    }
 }

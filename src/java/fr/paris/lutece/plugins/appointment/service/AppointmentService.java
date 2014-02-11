@@ -67,7 +67,7 @@ public class AppointmentService
     /**
      * Get the number of characters of the random part of appointment reference
      */
-    public static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
+    private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
 
     /**
      * List of i18n keys of days of week
@@ -82,6 +82,8 @@ public class AppointmentService
 
     // Properties
     private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
+    private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
+    private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
 
     // Constantes
     private static final String CONSTANT_MINUS = "-";
@@ -90,7 +92,7 @@ public class AppointmentService
     private static final int CONSTANT_MINUTES_IN_HOUR = 60;
     private static final int CONSTANT_NB_DAYS_IN_WEEK = 7;
     private static final long CONSTANT_MILISECONDS_IN_DAY = 86400000L;
-    private static final String CONSTANT_MD5 = "MD5";
+    private static final String CONSTANT_SHA256 = "SHA-256";
 
     /**
      * Instance of the service
@@ -628,6 +630,15 @@ public class AppointmentService
     }
 
     /**
+     * Get the size of the random part of the reference of appointments
+     * @return The size of the random part of the reference of appointments
+     */
+    public int getRefSizeRandomPart(  )
+    {
+        return AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART );
+    }
+
+    /**
      * Compute the unique reference of an appointment
      * @param appointment The appointment
      * @return The unique reference of an appointment
@@ -635,8 +646,9 @@ public class AppointmentService
     public String computeRefAppointment( Appointment appointment )
     {
         return appointment.getIdAppointment(  ) +
-        CryptoService.encrypt( appointment.getIdAppointment(  ) + appointment.getEmail(  ), CONSTANT_MD5 )
-                     .substring( 0, CONSTANT_REF_SIZE_RANDOM_PART );
+        CryptoService.encrypt( appointment.getIdAppointment(  ) + appointment.getEmail(  ),
+            AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) )
+                     .substring( 0, getRefSizeRandomPart(  ) );
     }
 
     /**

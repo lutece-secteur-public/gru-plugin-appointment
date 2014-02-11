@@ -39,8 +39,16 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Manager form appointment removal listeners
  */
-public class AppointmentRemovalManager
+public final class AppointmentRemovalManager
 {
+    /**
+     * Private default constructor
+     */
+    private AppointmentRemovalManager(  )
+    {
+        // Nothing to do
+    }
+
     /**
      * Notify listeners that an appointment is about to be removed
      * @param nIdAppointment The id of the appointment that will be removed
