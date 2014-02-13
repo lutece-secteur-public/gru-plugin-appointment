@@ -55,6 +55,12 @@
 								<label class="control-label">#i18n{appointment.manage_appointments.labelStatus}</label>
 								<@combo name="status" items=refListStatus default_value=filter.status />
 							</div>
+							<#if list_admin_users??>
+								<div class="control-group">
+									<label class="control-label">#i18n{appointment.manage_appointments.labelAdminUser}</label>
+									<@combo name="idAdminUser" items=list_admin_users default_value=filter.idAdminUser />
+								</div>
+							</#if>
 							<div class="form-actions">
 								<button class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointments.labelSearch}">
 									<i class="fa fa-search">&nbsp;</i>#i18n{appointment.manage_appointments.labelSearch}

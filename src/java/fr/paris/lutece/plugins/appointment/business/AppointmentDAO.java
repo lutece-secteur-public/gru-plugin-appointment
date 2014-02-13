@@ -51,13 +51,13 @@ public final class AppointmentDAO implements IAppointmentDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_appointment ) FROM appointment_appointment";
-    private static final String SQL_QUERY_SELECTALL = "SELECT app.id_appointment, app.first_name, app.last_name, app.email, app.id_user, app.authentication_service, app.date_appointment, app.id_slot, app.status, app.id_action_cancel FROM appointment_appointment app ";
+    private static final String SQL_QUERY_SELECTALL = "SELECT app.id_appointment, app.first_name, app.last_name, app.email, app.id_user, app.authentication_service, app.date_appointment, app.id_slot, app.status, app.id_action_cancel, app.id_admin_user FROM appointment_appointment app ";
     private static final String SQL_QUERY_SELECT_ID = "SELECT app.id_appointment FROM appointment_appointment app ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE app.id_appointment = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = " INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot AND slot.id_form = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, date_appointment, id_slot, status, id_action_cancel ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, date_appointment, id_slot, status, id_action_cancel, id_admin_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ? WHERE id_appointment = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ?, id_admin_user = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM = "SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE slot.id_form = ? AND app.date_appointment > ? ";
     private static final String SQL_QUERY_SELECT_BY_LIST_ID = SQL_QUERY_SELECTALL + " WHERE id_appointment IN (";
     private static final String SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM = " SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE date_appointment = ? AND slot.id_form = ? ";
@@ -74,6 +74,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_EMAIL = " email LIKE ? ";
     private static final String SQL_FILTER_ID_USER = " id_user = ? ";
     private static final String SQL_FILTER_AUTHENTICATION_SERVICE = " authentication_service = ? ";
+    private static final String SQL_FILTER_ADMIN_USER = " id_admin_user = ? ";
     private static final String SQL_FILTER_DATE_APPOINTMENT = " date_appointment = ? ";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = " date_appointment >= ? ";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = " date_appointment <= ? ";
@@ -132,7 +133,8 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
         daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
         daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
-        daoUtil.setInt( nIndex, appointment.getIdActionCancel(  ) );
+        daoUtil.setInt( nIndex++, appointment.getIdActionCancel(  ) );
+        daoUtil.setInt( nIndex, appointment.getIdAdminUser(  ) );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
@@ -188,6 +190,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
         daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
         daoUtil.setInt( nIndex++, appointment.getIdActionCancel(  ) );
+        daoUtil.setInt( nIndex++, appointment.getIdAdminUser(  ) );
         daoUtil.setInt( nIndex, appointment.getIdAppointment(  ) );
 
         daoUtil.executeUpdate(  );
@@ -492,6 +495,13 @@ public final class AppointmentDAO implements IAppointmentDAO
             bHasFilter = true;
         }
 
+        if ( appointmentFilter.getIdAdminUser(  ) >= 0 )
+        {
+            sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
+            sbSql.append( SQL_FILTER_ADMIN_USER );
+            bHasFilter = true;
+        }
+
         if ( appointmentFilter.getDateAppointment(  ) != null )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
@@ -576,6 +586,11 @@ public final class AppointmentDAO implements IAppointmentDAO
             daoUtil.setString( nIndex++, appointmentFilter.getAuthenticationService(  ) );
         }
 
+        if ( appointmentFilter.getIdAdminUser(  ) >= 0 )
+        {
+            daoUtil.setInt( nIndex++, appointmentFilter.getIdAdminUser(  ) );
+        }
+
         if ( appointmentFilter.getDateAppointment(  ) != null )
         {
             daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointment(  ) );
@@ -617,7 +632,8 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setDateAppointment( daoUtil.getDate( nIndex++ ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
         appointment.setStatus( daoUtil.getInt( nIndex++ ) );
-        appointment.setIdActionCancel( daoUtil.getInt( nIndex ) );
+        appointment.setIdActionCancel( daoUtil.getInt( nIndex++ ) );
+        appointment.setIdAdminUser( daoUtil.getInt( nIndex ) );
 
         return appointment;
     }

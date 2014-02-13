@@ -13,6 +13,7 @@ CREATE TABLE appointment_appointment (
 	id_slot int NOT NULL,
 	status smallint NOT NULL,
 	id_action_cancel int NOT NULL,
+	id_admin_user int DEFAULT NULL,
 	PRIMARY KEY (id_appointment)
 );
 CREATE INDEX idx_appointment_id_slot ON appointment_appointment (id_slot);

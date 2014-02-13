@@ -40,6 +40,15 @@
 				</div>
 			</div>
 			
+			<#if admin_user??>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.appointmentApp.labelAdminUser}</label>
+					<div class="controls">
+						${admin_user.firstName} ${admin_user.lastName}
+					</div>
+				</div>
+			</#if>
+			
 			<#if resource_history?? && resource_history != ''>
 				<div class="well">
 					${resource_history}

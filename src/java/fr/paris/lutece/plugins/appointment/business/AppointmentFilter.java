@@ -71,6 +71,7 @@ public class AppointmentFilter implements Serializable
     private String _strEmail;
     private String _strIdUser;
     private String _strAuthenticationService;
+    private int _nIdAdminUser = -1;
     private Date _dateAppointment;
     private Date _dateAppointmentMin;
     private Date _dateAppointmentMax;
@@ -178,7 +179,7 @@ public class AppointmentFilter implements Serializable
     }
 
     /**
-     * Sets the IdUser
+     * Sets the id of the LuteceUser
      * @param strIdUser The IdUser
      */
     public void setIdUser( String strIdUser )
@@ -208,6 +209,24 @@ public class AppointmentFilter implements Serializable
     public void setAuthenticationService( String strAuthenticationService )
     {
         _strAuthenticationService = strAuthenticationService;
+    }
+
+    /**
+     * Sets the id of the admin user
+     * @param nIdAdminUser The id of the admin user
+     */
+    public void setIdAdminUser( int nIdAdminUser )
+    {
+        _nIdAdminUser = nIdAdminUser;
+    }
+
+    /**
+     * Returns the id of the admin user
+     * @return The id of the admin user
+     */
+    public int getIdAdminUser(  )
+    {
+        return _nIdAdminUser;
     }
 
     /**

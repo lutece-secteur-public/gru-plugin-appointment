@@ -101,6 +101,7 @@ public class Appointment implements Serializable
     private List<Response> _listResponse;
     private transient Collection<Action> _listWorkflowActions;
     private int _nIdActionCancel;
+    private int _idAdminUser;
 
     /**
      * Returns the IdAppointment
@@ -328,5 +329,24 @@ public class Appointment implements Serializable
     public void setIdActionCancel( int nIdActionCancel )
     {
         this._nIdActionCancel = nIdActionCancel;
+    }
+
+    /**
+     * Get the id of the admin user associated with this appointment
+     * @return The id of the admin user associated with this appointment
+     */
+    public int getIdAdminUser(  )
+    {
+        return _idAdminUser;
+    }
+
+    /**
+     * Set the id of the admin user associated with this appointment
+     * @param nIdAdminUser The id of the admin user associated with this
+     *            appointment
+     */
+    public void setIdAdminUser( int nIdAdminUser )
+    {
+        this._idAdminUser = nIdAdminUser;
     }
 }

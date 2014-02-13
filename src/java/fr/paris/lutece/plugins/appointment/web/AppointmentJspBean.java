@@ -57,6 +57,7 @@ import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -85,6 +86,7 @@ import org.apache.commons.lang.StringUtils;
 import java.sql.Date;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -173,6 +175,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_STATUS_VALIDATED = "status_validated";
     private static final String MARK_STATUS_REJECTED = "status_rejected";
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
+    private static final String MARK_LIST_ADMIN_USERS = "list_admin_users";
+    private static final String MARK_ADMIN_USER = "admin_user";
 
     // JSP
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -183,6 +187,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MESSAGE_LABEL_STATUS_VALIDATED = "appointment.message.labelStatusValidated";
     private static final String MESSAGE_LABEL_STATUS_NOT_VALIDATED = "appointment.message.labelStatusNotValidated";
     private static final String MESSAGE_LABEL_STATUS_REJECTED = "appointment.message.labelStatusRejected";
+    private static final String MESSAGE_APPOINTMENT_WITH_NO_ADMIN_USER = "appointment.manage_appointment.labelAppointmentWithNoAdminUser";
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
@@ -218,8 +223,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Messages
     private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek(  );
 
-    // Constant
+    // Constants
     private static final String DEFAULT_CURRENT_PAGE = "1";
+    private static final String CONSTANT_SPACE = " ";
+    private static final String CONSTANT_ZERO = "0";
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
 
     // Session variable to store working values
@@ -444,6 +451,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
                                                                        .getActions( appointment.getIdAppointment(  ),
                             Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) ) );
                 }
+
+                // We also add the list of admin users to filter appointments by admin users.
+                // This is only available when workflow is on, because appointments can only be associated to admin users throw a workflow
+                Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
+                ReferenceList refListAdmins = new ReferenceList(  );
+                refListAdmins.addItem( StringUtils.EMPTY, StringUtils.EMPTY );
+                refListAdmins.addItem( CONSTANT_ZERO, MESSAGE_APPOINTMENT_WITH_NO_ADMIN_USER );
+
+                for ( AdminUser adminUser : listAdminUser )
+                {
+                    refListAdmins.addItem( adminUser.getUserId(  ),
+                        adminUser.getFirstName(  ) + CONSTANT_SPACE + adminUser.getLastName(  ) );
+                }
+
+                model.put( MARK_LIST_ADMIN_USERS, refListAdmins );
             }
 
             AdminUser user = getUser(  );
@@ -1030,6 +1052,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 WorkflowService.getInstance(  )
                                .getDisplayDocumentHistory( nId, Appointment.APPOINTMENT_RESOURCE_TYPE,
                     form.getIdWorkflow(  ), request, getLocale(  ) ) );
+
+            if ( appointment.getIdAdminUser(  ) > 0 )
+            {
+                model.put( MARK_ADMIN_USER, AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser(  ) ) );
+            }
         }
 
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
