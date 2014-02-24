@@ -25,12 +25,12 @@
 			</div>
 			<#list appointment.listResponse as response>
 				<#if response.toStringValueResponse?has_content>
-				<div class="control-group">
-					<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-					<div class="controls">
-						${response.toStringValueResponse}
+					<div class="control-group">
+						<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+						<div class="controls">
+							${response.toStringValueResponse}
+						</div>
 					</div>
-				</div>
 				</#if>
 			</#list>
 			<div class="control-group">

@@ -68,17 +68,17 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_DELETE_APPOINTMENT_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_appointment = ?";
 
     // Filters
-    private static final String SQL_FILTER_ID_SLOT = " id_slot = ? ";
-    private static final String SQL_FILTER_FIRST_NAME = " first_name LIKE ? ";
-    private static final String SQL_FILTER_LAST_NAME = " last_name LIKE ?";
-    private static final String SQL_FILTER_EMAIL = " email LIKE ? ";
-    private static final String SQL_FILTER_ID_USER = " id_user = ? ";
-    private static final String SQL_FILTER_AUTHENTICATION_SERVICE = " authentication_service = ? ";
-    private static final String SQL_FILTER_ADMIN_USER = " id_admin_user = ? ";
-    private static final String SQL_FILTER_DATE_APPOINTMENT = " date_appointment = ? ";
-    private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = " date_appointment >= ? ";
-    private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = " date_appointment <= ? ";
-    private static final String SQL_FILTER_STATUS = " status = ? ";
+    private static final String SQL_FILTER_ID_SLOT = " app.id_slot = ? ";
+    private static final String SQL_FILTER_FIRST_NAME = " app.first_name LIKE ? ";
+    private static final String SQL_FILTER_LAST_NAME = " app.last_name LIKE ?";
+    private static final String SQL_FILTER_EMAIL = " app.email LIKE ? ";
+    private static final String SQL_FILTER_ID_USER = " app.id_user = ? ";
+    private static final String SQL_FILTER_AUTHENTICATION_SERVICE = " app.authentication_service = ? ";
+    private static final String SQL_FILTER_ADMIN_USER = " app.id_admin_user = ? ";
+    private static final String SQL_FILTER_DATE_APPOINTMENT = " app.date_appointment = ? ";
+    private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = " app.date_appointment >= ? ";
+    private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = " app.date_appointment <= ? ";
+    private static final String SQL_FILTER_STATUS = " app.status = ? ";
 
     // Constants
     private static final String CONSTANT_WHERE = " WHERE ";

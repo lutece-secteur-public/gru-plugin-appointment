@@ -842,6 +842,10 @@ public class AppointmentApp extends MVCApplication
         return _dateConverter;
     }
 
+    /**
+     * Get the date format
+     * @return The date format
+     */
     private static DateFormat getDateFormat(  )
     {
         return _dateFormat;

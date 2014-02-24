@@ -96,7 +96,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_ENTRY = "appointment.message.confirmRemoveEntry";
-    private static final String MESSAGE_CANT_REMOVE_ENTRY = "form.message.cantRemoveEntry";
+    private static final String MESSAGE_CANT_REMOVE_ENTRY = "advert.message.cantRemoveEntry";
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
     private static final String PROPERTY_MODIFY_QUESTION_TITLE = "appointment.modifyEntry.titleQuestion";
     private static final String PROPERTY_COPY_ENTRY_TITLE = "appointment.copyEntry.title";
