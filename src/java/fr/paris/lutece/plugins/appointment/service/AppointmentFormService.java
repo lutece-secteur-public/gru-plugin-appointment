@@ -284,8 +284,8 @@ public class AppointmentFormService implements Serializable
         }
 
         template = AppTemplateService.getTemplate( EntryTypeServiceManager.getEntryTypeService( entry )
-                                                                          .getHtmlCode( entry, bDisplayFront ), locale,
-                model );
+                                                                          .getTemplateHtmlForm( entry, bDisplayFront ),
+                locale, model );
         stringBuffer.append( template.getHtml(  ) );
     }
 
