@@ -77,10 +77,13 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -90,6 +93,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.ConstraintViolation;
 
 
@@ -407,9 +411,9 @@ public class AppointmentApp extends MVCApplication
 
             // We check that the appointment is not null and that the form associated with the validated appointment in session
             // is the form associated with the selected slot
-            if ( appointment != null
-                    && ( appointment.getListResponse( ) == null || appointment.getListResponse( ).size( ) == 0 || ( appointment
-                            .getListResponse( ).get( 0 ).getEntry( ).getIdResource( ) == appointmentSlot.getIdForm( ) ) ) )
+            if ( ( appointment != null ) &&
+                    ( ( appointment.getListResponse(  ) == null ) || ( appointment.getListResponse(  ).size(  ) == 0 ) ||
+                    ( appointment.getListResponse(  ).get( 0 ).getEntry(  ).getIdResource(  ) == appointmentSlot.getIdForm(  ) ) ) )
             {
                 appointment.setIdSlot( nIdSlot );
 
