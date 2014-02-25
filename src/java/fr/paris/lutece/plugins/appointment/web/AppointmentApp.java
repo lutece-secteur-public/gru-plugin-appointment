@@ -77,13 +77,10 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -93,7 +90,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.ConstraintViolation;
 
 
@@ -372,7 +368,7 @@ public class AppointmentApp extends MVCApplication
                 }
             }
 
-            List<AppointmentDay> listDays = AppointmentService.getService(  ).getDayListForCalendar( form, nNbWeek );
+            List<AppointmentDay> listDays = AppointmentService.getService(  ).getDayListForCalendar( form, nNbWeek, true );
 
             List<String> listTimeBegin = new ArrayList<String>(  );
             int nMinAppointmentDuration = AppointmentService.getService(  )
@@ -409,7 +405,11 @@ public class AppointmentApp extends MVCApplication
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
 
-            if ( appointment != null )
+            // We check that the appointment is not null and that the form associated with the validated appointment in session
+            // is the form associated with the selected slot
+            if ( appointment != null
+                    && ( appointment.getListResponse( ) == null || appointment.getListResponse( ).size( ) == 0 || ( appointment
+                            .getListResponse( ).get( 0 ).getEntry( ).getIdResource( ) == appointmentSlot.getIdForm( ) ) ) )
             {
                 appointment.setIdSlot( nIdSlot );
 

@@ -821,7 +821,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
             }
 
-            List<AppointmentDay> listDays = AppointmentService.getService(  ).getDayListForCalendar( form, nNbWeek );
+            List<AppointmentDay> listDays = AppointmentService.getService(  ).getDayListForCalendar( form, nNbWeek,
+                    false );
 
             List<String> listTimeBegin = new ArrayList<String>(  );
             int nMinAppointmentDuration = AppointmentService.getService(  )

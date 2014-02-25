@@ -253,15 +253,28 @@ public class AppointmentService
      * @param form The form the get days of.
      * @param nOffsetWeeks The offset of weeks (0 for the current week, 1 for
      *            the next, ...).
+     * @param bIsForFront True if the calendar is for Front Office, false if it
+     *            is for Back Office. If the calendar is for Front Office, then
+     *            the n next days will be closed (n is set by the
+     *            {@link AppointmentForm#getMinDaysBeforeAppointment()}
+     *            attribute).
      * @return The list of days found
      */
-    public List<AppointmentDay> getDayListForCalendar( AppointmentForm form, int nOffsetWeeks )
+    public List<AppointmentDay> getDayListForCalendar( AppointmentForm form, int nOffsetWeeks, boolean bIsForFront )
     {
         Date date = new Date( System.currentTimeMillis(  ) );
         Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
         calendar.setTime( date );
+
+        int nRealOffset = nOffsetWeeks;
+
+        if ( bIsForFront && ( form.getMinDaysBeforeAppointment(  ) > 7 ) )
+        {
+            nRealOffset += ( form.getMinDaysBeforeAppointment(  ) / 7 );
+        }
+
         // We set the week to the requested one 
-        calendar.add( Calendar.DAY_OF_MONTH, 7 * nOffsetWeeks );
+        calendar.add( Calendar.DAY_OF_MONTH, 7 * nRealOffset );
 
         // We get the current day of the week
         int nCurrentDayOfWeek = calendar.get( Calendar.DAY_OF_WEEK );
@@ -276,6 +289,11 @@ public class AppointmentService
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
 
         long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
+
+        if ( bIsForFront )
+        {
+            lTimeOfYesterday += ( form.getMinDaysBeforeAppointment(  ) * CONSTANT_MILISECONDS_IN_DAY );
+        }
 
         for ( AppointmentDay day : listDays )
         {
