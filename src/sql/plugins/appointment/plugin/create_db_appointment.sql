@@ -45,6 +45,7 @@ CREATE TABLE appointment_form (
 	id_workflow INT NOT NULL default '0',
 	is_captcha_enabled SMALLINT NOT NULL,
 	users_can_cancel_appointments SMALLINT NOT NULL,
+	min_days_before_app SMALLINT NOT NULL,
 	PRIMARY KEY (id_form)
 );
 

@@ -147,6 +147,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ORDER_BY = "orderBy";
     private static final String PARAMETER_ORDER_ASC = "orderAsc";
     private static final String PARAMETER_SAVE_AND_BACK = "saveAndBack";
+    private static final String PARAMETER_ID_ADMIN_USER = "idAdminUser";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -238,7 +239,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      */
     public AppointmentJspBean(  )
     {
-        _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 );
+        _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 10 );
     }
 
     /**
@@ -395,8 +396,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
             else
             {
                 filter = new AppointmentFilter(  );
-
                 populate( filter, request );
+
+                // We manually set the id of the admin user to -1 if no parameter is specified to avoid a bug of population that set it to 0
+                String strIdAdminUser = request.getParameter( PARAMETER_ID_ADMIN_USER );
+
+                if ( StringUtils.isBlank( strIdAdminUser ) )
+                {
+                    filter.setIdAdminUser( -1 );
+                }
 
                 if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
                 {
@@ -457,7 +465,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
                 ReferenceList refListAdmins = new ReferenceList(  );
                 refListAdmins.addItem( StringUtils.EMPTY, StringUtils.EMPTY );
-                refListAdmins.addItem( CONSTANT_ZERO, MESSAGE_APPOINTMENT_WITH_NO_ADMIN_USER );
+                refListAdmins.addItem( CONSTANT_ZERO,
+                    I18nService.getLocalizedString( MESSAGE_APPOINTMENT_WITH_NO_ADMIN_USER, getLocale(  ) ) );
 
                 for ( AdminUser adminUser : listAdminUser )
                 {
@@ -1052,11 +1061,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 WorkflowService.getInstance(  )
                                .getDisplayDocumentHistory( nId, Appointment.APPOINTMENT_RESOURCE_TYPE,
                     form.getIdWorkflow(  ), request, getLocale(  ) ) );
+        }
 
-            if ( appointment.getIdAdminUser(  ) > 0 )
-            {
-                model.put( MARK_ADMIN_USER, AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser(  ) ) );
-            }
+        if ( appointment.getIdAdminUser(  ) > 0 )
+        {
+            model.put( MARK_ADMIN_USER, AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser(  ) ) );
         }
 
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
@@ -1163,10 +1172,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
-            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
 
             if ( request.getParameter( PARAMETER_BACK ) == null )
             {
+                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
+
                 if ( WorkflowService.getInstance(  ).isDisplayTasksForm( nIdAction, getLocale(  ) ) )
                 {
                     String strError = WorkflowService.getInstance(  )
@@ -1189,6 +1199,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                 return redirect( request, VIEW_MANAGE_APPOINTMENTS, mapParams );
             }
+
+            return redirect( request, getUrlManageAppointment( request, slot.getIdForm(  ) ) );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );

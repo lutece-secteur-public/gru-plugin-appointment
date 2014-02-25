@@ -62,7 +62,7 @@ public class AppointmentFilter implements Serializable
     private static final String[] LIST_ORDER_BY = 
         {
             CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name", "id_user", "authentication_service",
-            "date_appointment", "status",
+            "date_appointment", "status", "email",
         };
     private int _nIdSlot;
     private int _nIdForm;

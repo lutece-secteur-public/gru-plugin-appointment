@@ -35,12 +35,12 @@
 						<fieldset>
 							<legend>#i18n{appointment.manage_appointments.labelSearch}</legend>
 							<div class="control-group">
-								<label class="control-label">${formMessages.fieldFirstNameTitle}</label>
-								<input type="text" name="firstName" value="${filter.firstName!}">
-							</div>
-							<div class="control-group">
 								<label class="control-label">${formMessages.fieldLastNameTitle}</label>
 								<input type="text" name="lastName" value="${filter.lastName!}">
+							</div>
+							<div class="control-group">
+								<label class="control-label">${formMessages.fieldFirstNameTitle}</label>
+								<input type="text" name="firstName" value="${filter.firstName!}">
 							</div>
 							<div class="control-group">
 								<label class="control-label">${formMessages.fieldEmailTitle}</label>
@@ -72,7 +72,9 @@
 						</fieldset>
 					</div>
 					<div class="span8">
-						<@paginationAdmin paginator=paginator combo=1 form=0 />
+						<center>
+							<@paginationAdmin paginator=paginator combo=1 form=0 />
+						</center>
 						<#if appointment_list?? && appointment_list?size &gt; 0>
 							<table class="table table-condensed table-striped">
 								<tr>
@@ -194,7 +196,9 @@
 						<#else>
 							#i18n{portal.util.labelNoItem}
 						</#if>
-						<@paginationAdmin paginator=paginator form=0 />
+						<center>
+							<@paginationAdmin paginator=paginator form=0 />
+						</center>
 					</div>
 				</div>
 			</form>

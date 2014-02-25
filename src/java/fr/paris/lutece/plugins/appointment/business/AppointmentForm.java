@@ -96,6 +96,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private int _nOpeningMinutes;
     private int _nClosingHour;
     private int _nClosingMinutes;
+    private int _nMinDaysBeforeAppointment;
     private boolean _bEnableCaptcha;
     private boolean _bAllowUsersToCancelAppointments;
     private boolean _bOpeningHourInitialized;
@@ -565,6 +566,28 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     {
         this._nClosingMinutes = nClosingMinutes;
         _bClosingMinutesInitialized = true;
+    }
+
+    /**
+     * Get the minimum number of days between the current date and the date of
+     * appointment make by users
+     * @return The minimum number of days between the current date and the date
+     *         of appointment make by users
+     */
+    public int getMinDaysBeforeAppointment(  )
+    {
+        return _nMinDaysBeforeAppointment;
+    }
+
+    /**
+     * Set the minimum number of days between the current date and the date of
+     * appointment make by users
+     * @param nMinDayBeforeAppointment The minimum number of days between the
+     *            current date and the date of appointment make by users
+     */
+    public void setMinDaysBeforeAppointment( int nMinDayBeforeAppointment )
+    {
+        this._nMinDaysBeforeAppointment = nMinDayBeforeAppointment;
     }
 
     /**
