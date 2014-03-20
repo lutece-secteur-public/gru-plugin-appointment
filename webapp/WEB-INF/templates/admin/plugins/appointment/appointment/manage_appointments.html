@@ -115,6 +115,9 @@
 										</a>
 									</th>
 									<th>
+										#i18n{appointment.manage_appointments.columnAdminUser}
+									</th>
+									<th>
 										#i18n{appointment.manage_appointments.columnStatus}
 										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=true">
 											<i class="icon-chevron-up">&nbsp;</i>
@@ -138,6 +141,16 @@
 										</td>
 										<td>
 											${appointment.dateAppointment}
+										</td>
+										<td>
+											<#if appointment.idAdminUser &gt; 0>
+												<#list list_admin_users as refItemAdmin>
+													<#if refItemAdmin.code == appointment.idAdminUser?string>
+														${refItemAdmin.name}
+														<#break>
+													</#if>
+												</#list>
+											</#if>
 										</td>
 										<td>
 											<#if appointment.status == status_validated>

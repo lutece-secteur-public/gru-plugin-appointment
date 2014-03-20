@@ -459,23 +459,25 @@ public class AppointmentJspBean extends MVCAdminJspBean
                                                                        .getActions( appointment.getIdAppointment(  ),
                             Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) ) );
                 }
-
-                // We also add the list of admin users to filter appointments by admin users.
-                // This is only available when workflow is on, because appointments can only be associated to admin users throw a workflow
-                Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
-                ReferenceList refListAdmins = new ReferenceList(  );
-                refListAdmins.addItem( StringUtils.EMPTY, StringUtils.EMPTY );
-                refListAdmins.addItem( CONSTANT_ZERO,
-                    I18nService.getLocalizedString( MESSAGE_APPOINTMENT_WITH_NO_ADMIN_USER, getLocale(  ) ) );
-
-                for ( AdminUser adminUser : listAdminUser )
-                {
-                    refListAdmins.addItem( adminUser.getUserId(  ),
-                        adminUser.getFirstName(  ) + CONSTANT_SPACE + adminUser.getLastName(  ) );
-                }
-
-                model.put( MARK_LIST_ADMIN_USERS, refListAdmins );
             }
+
+            // We add the list of admin users to filter appointments by admin users.
+            Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
+            ReferenceList refListAdmins = new ReferenceList(  );
+            Map<Integer, String> mapAdminUsers = new HashMap<Integer, String>(  );
+            refListAdmins.addItem( StringUtils.EMPTY, StringUtils.EMPTY );
+            refListAdmins.addItem( CONSTANT_ZERO,
+                I18nService.getLocalizedString( MESSAGE_APPOINTMENT_WITH_NO_ADMIN_USER, getLocale(  ) ) );
+
+            for ( AdminUser adminUser : listAdminUser )
+            {
+                refListAdmins.addItem( adminUser.getUserId(  ),
+                    adminUser.getFirstName(  ) + CONSTANT_SPACE + adminUser.getLastName(  ) );
+                mapAdminUsers.put( adminUser.getUserId(  ),
+                    adminUser.getFirstName(  ) + CONSTANT_SPACE + adminUser.getLastName(  ) );
+            }
+
+            model.put( MARK_LIST_ADMIN_USERS, refListAdmins );
 
             AdminUser user = getUser(  );
 
