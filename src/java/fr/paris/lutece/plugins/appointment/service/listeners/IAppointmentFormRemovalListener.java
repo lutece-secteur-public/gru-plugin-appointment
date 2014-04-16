@@ -33,45 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
-
 
 /**
- * Manager form appointment removal listeners
+ * Interface for listeners that should be notified when appointment forms are
+ * removed. <b>The listener must be a Spring bean.</b>
  */
-public final class AppointmentRemovalManager
+public interface IAppointmentFormRemovalListener
 {
     /**
-     * Private default constructor
+     * Notify the listener that an appointment form has been removed
+     * @param nIdAppointmentForm The id of the appointment form
      */
-    private AppointmentRemovalManager(  )
-    {
-        // Nothing to do
-    }
-
-    /**
-     * Notify listeners that an appointment is about to be removed
-     * @param nIdAppointment The id of the appointment that will be removed
-     */
-    public static void notifyListenersAppointmentRemoval( int nIdAppointment )
-    {
-        for ( IAppointmentRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
-                IAppointmentRemovalListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
-        }
-    }
-
-    /**
-     * Notify users that an appointment form has been removed
-     * @param nIdAppointmentForm the id of the removed appointment form
-     */
-    public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
-    {
-        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
-                IAppointmentFormRemovalListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
-        }
-    }
+    void notifyAppointmentFormRemoval( int nIdAppointmentForm );
 }

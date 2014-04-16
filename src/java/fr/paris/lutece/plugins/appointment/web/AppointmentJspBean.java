@@ -48,7 +48,6 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentRemovalManager;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -896,7 +895,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     WorkflowService.getInstance(  ).doRemoveWorkFlowResource( nId, Appointment.APPOINTMENT_RESOURCE_TYPE );
                 }
 
-                AppointmentRemovalManager.notifyListenersAppointmentRemoval( appointment.getIdAppointment(  ) );
                 AppointmentHome.remove( nId );
                 addInfo( INFO_APPOINTMENT_REMOVED, getLocale(  ) );
 

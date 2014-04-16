@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentRemovalManager;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -99,6 +100,7 @@ public final class AppointmentFormHome
      */
     public static void remove( int nAppointmentFormId )
     {
+        AppointmentRemovalManager.notifyListenersAppointmentFormRemoval( nAppointmentFormId );
         AppointmentDayHome.removeByIdForm( nAppointmentFormId );
         AppointmentSlotHome.deleteAllByIdForm( nAppointmentFormId );
         AppointmentFormMessagesHome.remove( nAppointmentFormId );

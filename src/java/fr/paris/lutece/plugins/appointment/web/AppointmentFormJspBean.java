@@ -52,6 +52,8 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -126,6 +128,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
+    private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
+
+    // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
     // Properties
@@ -133,6 +138,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
     private static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
+    private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
@@ -738,6 +744,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_APPOINTMENTFORM, appointmentForm );
         model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance(  ).getWorkflowsEnabled( user, locale ) );
         model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable(  ) );
+
+        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( 
+                    PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
+        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED,
+            ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled(  ) );
         request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
     }
 }
