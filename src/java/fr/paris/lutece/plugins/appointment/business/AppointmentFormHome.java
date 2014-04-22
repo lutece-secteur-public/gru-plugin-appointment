@@ -42,7 +42,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -142,10 +142,10 @@ public final class AppointmentFormHome
     /**
      * Load the data of all the appointmentForm objects and returns them in form
      * of a collection
-     * @return the collection which contains the data of all the appointmentForm
+     * @return the list which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getAppointmentFormsList(  )
+    public static List<AppointmentForm> getAppointmentFormsList(  )
     {
         return _dao.selectAppointmentFormsList( _plugin );
     }
@@ -153,10 +153,10 @@ public final class AppointmentFormHome
     /**
      * Load the data of all the appointmentForm objects and returns them in form
      * of a collection
-     * @return the collection which contains the data of all the appointmentForm
+     * @return the list which contains the data of all the appointmentForm
      *         objects
      */
-    public static Collection<AppointmentForm> getActiveAppointmentFormsList(  )
+    public static List<AppointmentForm> getActiveAppointmentFormsList(  )
     {
         return _dao.selectActiveAppointmentFormsList( _plugin );
     }

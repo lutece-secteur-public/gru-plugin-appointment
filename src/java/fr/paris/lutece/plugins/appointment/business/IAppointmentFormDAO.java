@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -82,7 +82,7 @@ public interface IAppointmentFormDAO
      * @return The collection which contains the data of all the appointmentForm
      *         objects
      */
-    Collection<AppointmentForm> selectAppointmentFormsList( Plugin plugin );
+    List<AppointmentForm> selectAppointmentFormsList( Plugin plugin );
 
     /**
      * Load the data of all active appointmentForm objects and returns them as a
@@ -91,5 +91,5 @@ public interface IAppointmentFormDAO
      * @return The collection which contains the data of all the appointmentForm
      *         objects
      */
-    Collection<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin );
+    List<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin );
 }

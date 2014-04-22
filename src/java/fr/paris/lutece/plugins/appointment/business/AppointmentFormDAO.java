@@ -37,7 +37,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -192,9 +192,9 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
      * {@inheritDoc }
      */
     @Override
-    public Collection<AppointmentForm> selectAppointmentFormsList( Plugin plugin )
+    public List<AppointmentForm> selectAppointmentFormsList( Plugin plugin )
     {
-        Collection<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>(  );
+        List<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>(  );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
         daoUtil.executeQuery(  );
 
@@ -212,9 +212,9 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
      * {@inheritDoc}
      */
     @Override
-    public Collection<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin )
+    public List<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin )
     {
-        Collection<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>(  );
+        List<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>(  );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ENABLED, plugin );
         daoUtil.executeQuery(  );
 
