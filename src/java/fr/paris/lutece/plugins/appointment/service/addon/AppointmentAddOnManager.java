@@ -45,7 +45,10 @@ import java.util.Locale;
  */
 public final class AppointmentAddOnManager
 {
-    private AppointmentAddOnManager( )
+    /**
+     * Private constructor
+     */
+    private AppointmentAddOnManager(  )
     {
         // Default constructor
     }
@@ -58,12 +61,14 @@ public final class AppointmentAddOnManager
      */
     public static String getAppointmentAddOn( int nIdAppointment, Locale locale )
     {
-        StringBuilder sbAddOn = new StringBuilder( );
-        for ( IAppointmentAddonService addonService : SpringContextService
-                .getBeansOfType( IAppointmentAddonService.class ) )
+        StringBuilder sbAddOn = new StringBuilder(  );
+
+        for ( IAppointmentAddonService addonService : SpringContextService.getBeansOfType( 
+                IAppointmentAddonService.class ) )
         {
             sbAddOn.append( addonService.getAppointmentAddOn( nIdAppointment, locale ) );
         }
-        return sbAddOn.toString( );
+
+        return sbAddOn.toString(  );
     }
 }
