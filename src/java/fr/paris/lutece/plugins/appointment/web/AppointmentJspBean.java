@@ -1036,7 +1036,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String getViewAppointment( HttpServletRequest request )
         throws AccessDeniedException
     {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
+        String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
+
+        if ( StringUtils.isEmpty( strIdAppointment ) || !StringUtils.isNumeric( strIdAppointment ) )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
+
+        int nId = Integer.parseInt( strIdAppointment );
         Appointment appointment = AppointmentHome.findByPrimaryKey( nId );
         AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
         AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );

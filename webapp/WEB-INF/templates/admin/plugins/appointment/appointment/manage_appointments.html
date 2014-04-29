@@ -31,45 +31,47 @@
 				<input type="hidden" name="orderBy" value=${filter.orderBy}>
 				<input type="hidden" name="orderAsc" value=${filter.orderAsc?string}>
 				<div class="row-fluid">
-					<div class="span4 well">
-						<fieldset>
-							<legend>#i18n{appointment.manage_appointments.labelSearch}</legend>
-							<div class="control-group">
-								<label class="control-label">${formMessages.fieldLastNameTitle}</label>
-								<input type="text" name="lastName" value="${filter.lastName!}">
-							</div>
-							<div class="control-group">
-								<label class="control-label">${formMessages.fieldFirstNameTitle}</label>
-								<input type="text" name="firstName" value="${filter.firstName!}">
-							</div>
-							<div class="control-group">
-								<label class="control-label">${formMessages.fieldEmailTitle}</label>
-								<input type="text" name="email" value="${filter.email!}">
-							</div>
-							<div class="control-group">
-								<label class="control-label">#i18n{appointment.manage_appointments.labelDate}</label>
-								<input type="text" id="dateAppointment" name="dateAppointment" value="${filter.dateAppointment!}">
-								<span class="help-block">#i18n{appointment.manage_appointments.labelDateHelp}</span>
-							</div>
-							<div class="control-group">
-								<label class="control-label">#i18n{appointment.manage_appointments.labelStatus}</label>
-								<@combo name="status" items=refListStatus default_value=filter.status />
-							</div>
-							<#if list_admin_users??>
+					<div class="span4">
+						<div class="well">
+							<fieldset>
+								<legend>#i18n{appointment.manage_appointments.labelSearch}</legend>
 								<div class="control-group">
-									<label class="control-label">#i18n{appointment.manage_appointments.labelAdminUser}</label>
-									<@combo name="idAdminUser" items=list_admin_users default_value=filter.idAdminUser />
+									<label class="control-label">${formMessages.fieldLastNameTitle}</label>
+									<input type="text" name="lastName" value="${filter.lastName!}">
 								</div>
-							</#if>
-							<div class="form-actions">
-								<button class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointments.labelSearch}">
-									<i class="fa fa-search">&nbsp;</i>#i18n{appointment.manage_appointments.labelSearch}
-								</button>
-								<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments<#if form??>&id_form=${form.idForm}</#if>" title="#i18n{appointment.display_appointment_form.labelReset}">
-									<i class="fa fa-refresh">&nbsp;</i>#i18n{appointment.display_appointment_form.labelReset}
-								</a>
-							</div>
-						</fieldset>
+								<div class="control-group">
+									<label class="control-label">${formMessages.fieldFirstNameTitle}</label>
+									<input type="text" name="firstName" value="${filter.firstName!}">
+								</div>
+								<div class="control-group">
+									<label class="control-label">${formMessages.fieldEmailTitle}</label>
+									<input type="text" name="email" value="${filter.email!}">
+								</div>
+								<div class="control-group">
+									<label class="control-label">#i18n{appointment.manage_appointments.labelDate}</label>
+									<input type="text" id="dateAppointment" name="dateAppointment" value="${filter.dateAppointment!}">
+									<span class="help-block">#i18n{appointment.manage_appointments.labelDateHelp}</span>
+								</div>
+								<div class="control-group">
+									<label class="control-label">#i18n{appointment.manage_appointments.labelStatus}</label>
+									<@combo name="status" items=refListStatus default_value=filter.status />
+								</div>
+								<#if list_admin_users??>
+									<div class="control-group">
+										<label class="control-label">#i18n{appointment.manage_appointments.labelAdminUser}</label>
+										<@combo name="idAdminUser" items=list_admin_users default_value=filter.idAdminUser />
+									</div>
+								</#if>
+								<div class="form-actions">
+									<button class="btn btn-primary btn-small" title="#i18n{appointment.manage_appointments.labelSearch}">
+										<i class="fa fa-search">&nbsp;</i>#i18n{appointment.manage_appointments.labelSearch}
+									</button>
+									<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments<#if form??>&id_form=${form.idForm}</#if>" title="#i18n{appointment.display_appointment_form.labelReset}">
+										<i class="fa fa-refresh">&nbsp;</i>#i18n{appointment.display_appointment_form.labelReset}
+									</a>
+								</div>
+							</fieldset>
+						</div>
 					</div>
 					<div class="span8">
 						<center>
