@@ -48,6 +48,10 @@
 	width: 140px;
 }
 
+.appointment-slot-avaiable.appointment-tooltip span.appointment-tooltip-title {
+	margin-top: -45px;
+}
+
 .appointment-tooltip:hover span.appointment-tooltip-title {
 	display: inline;
 	position: absolute;

@@ -130,7 +130,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setString( nIndex++, appointment.getEmail(  ) );
         daoUtil.setString( nIndex++, appointment.getIdUser(  ) );
         daoUtil.setString( nIndex++, appointment.getAuthenticationService(  ) );
-        daoUtil.setString( nIndex++, appointment.getLocalization(  ) );
+        daoUtil.setString( nIndex++, appointment.getLocation(  ) );
         daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
         daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
         daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
@@ -187,7 +187,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setString( nIndex++, appointment.getEmail(  ) );
         daoUtil.setString( nIndex++, appointment.getIdUser(  ) );
         daoUtil.setString( nIndex++, appointment.getAuthenticationService(  ) );
-        daoUtil.setString( nIndex++, appointment.getLocalization(  ) );
+        daoUtil.setString( nIndex++, appointment.getLocation(  ) );
         daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
         daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
         daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
@@ -631,7 +631,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setEmail( daoUtil.getString( nIndex++ ) );
         appointment.setIdUser( daoUtil.getString( nIndex++ ) );
         appointment.setAuthenticationService( daoUtil.getString( nIndex++ ) );
-        appointment.setLocalization( daoUtil.getString( nIndex++ ) );
+        appointment.setLocation( daoUtil.getString( nIndex++ ) );
         appointment.setDateAppointment( daoUtil.getDate( nIndex++ ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
         appointment.setStatus( daoUtil.getInt( nIndex++ ) );
