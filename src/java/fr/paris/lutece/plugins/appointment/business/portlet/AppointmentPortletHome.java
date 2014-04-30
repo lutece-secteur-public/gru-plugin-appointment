@@ -63,10 +63,9 @@ public class AppointmentPortletHome extends PortletHome
     }
 
     /**
-     * Returns the identifier of the portlet type
-     *
-     * @return the portlet type identifier
+     * {@inheritDoc}
      */
+    @Override
     public String getPortletTypeId(  )
     {
         String strCurrentClassName = this.getClass(  ).getName(  );
@@ -91,10 +90,9 @@ public class AppointmentPortletHome extends PortletHome
     }
 
     /**
-     * Returns the instance of the portlet DAO singleton
-     *
-     * @return the instance of the DAO singleton
+     * {@inheritDoc}
      */
+    @Override
     public IPortletInterfaceDAO getDAO(  )
     {
         return _dao;

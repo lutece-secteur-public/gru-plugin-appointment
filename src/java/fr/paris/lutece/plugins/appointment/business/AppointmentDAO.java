@@ -51,13 +51,13 @@ public final class AppointmentDAO implements IAppointmentDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_appointment ) FROM appointment_appointment";
-    private static final String SQL_QUERY_SELECTALL = "SELECT app.id_appointment, app.first_name, app.last_name, app.email, app.id_user, app.authentication_service, app.date_appointment, app.id_slot, app.status, app.id_action_cancel, app.id_admin_user FROM appointment_appointment app ";
+    private static final String SQL_QUERY_SELECTALL = "SELECT app.id_appointment, app.first_name, app.last_name, app.email, app.id_user, app.authentication_service, app.localization, app.date_appointment, app.id_slot, app.status, app.id_action_cancel, app.id_admin_user FROM appointment_appointment app ";
     private static final String SQL_QUERY_SELECT_ID = "SELECT app.id_appointment FROM appointment_appointment app ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE app.id_appointment = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = " INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot AND slot.id_form = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, date_appointment, id_slot, status, id_action_cancel, id_admin_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, localization, date_appointment, id_slot, status, id_action_cancel, id_admin_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ?, id_admin_user = ? WHERE id_appointment = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, localization = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ?, id_admin_user = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM = "SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE slot.id_form = ? AND app.date_appointment > ? ";
     private static final String SQL_QUERY_SELECT_BY_LIST_ID = SQL_QUERY_SELECTALL + " WHERE id_appointment IN (";
     private static final String SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM = " SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE date_appointment = ? AND slot.id_form = ? ";
@@ -130,6 +130,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setString( nIndex++, appointment.getEmail(  ) );
         daoUtil.setString( nIndex++, appointment.getIdUser(  ) );
         daoUtil.setString( nIndex++, appointment.getAuthenticationService(  ) );
+        daoUtil.setString( nIndex++, appointment.getLocalization(  ) );
         daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
         daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
         daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
@@ -186,6 +187,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setString( nIndex++, appointment.getEmail(  ) );
         daoUtil.setString( nIndex++, appointment.getIdUser(  ) );
         daoUtil.setString( nIndex++, appointment.getAuthenticationService(  ) );
+        daoUtil.setString( nIndex++, appointment.getLocalization(  ) );
         daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
         daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
         daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
@@ -629,6 +631,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setEmail( daoUtil.getString( nIndex++ ) );
         appointment.setIdUser( daoUtil.getString( nIndex++ ) );
         appointment.setAuthenticationService( daoUtil.getString( nIndex++ ) );
+        appointment.setLocalization( daoUtil.getString( nIndex++ ) );
         appointment.setDateAppointment( daoUtil.getDate( nIndex++ ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
         appointment.setStatus( daoUtil.getInt( nIndex++ ) );

@@ -69,14 +69,12 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
 
     /**
-     * The HTML code of the component
-     * @param user The Admin User
-     * @param request HttpServletRequest
-     * @return The dashboard component
+     * {@inheritDoc}
      */
+    @Override
     public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
-        List<AppointmentForm> listAppointmentForms = (List<AppointmentForm>) AppointmentFormHome.getAppointmentFormsList(  );
+        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList(  );
 
         Map<String, Object> model = new HashMap<String, Object>(  );
 

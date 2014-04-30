@@ -31,6 +31,49 @@
 	border-top: medium none;
 }
 
+.appointment-tooltip {
+	outline: none;
+}
+
+.appointment-tooltip:hover {
+	text-decoration: none;
+}
+
+.appointment-tooltip span.appointment-tooltip-title{
+	z-index: 10;
+	display: none;
+	padding: 14px 20px;
+	margin-top: -15px;
+	margin-left: 30px;
+	width: 140px;
+}
+
+.appointment-tooltip:hover span.appointment-tooltip-title {
+	display: inline;
+	position: absolute;
+	color: #111111;
+	border: 1px solid #AAAAAA;
+	background: #EEEEEE;
+}
+
+.appointment-callout {
+	z-index: 20;
+	position: absolute;
+	top: 30px;
+	border: 0;
+	left: -12px;
+}
+
+.appointment-tooltip span.appointment-tooltip-title {
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-box-shadow: 5px 5px 8px #CCC;
+	-webkit-box-shadow: 5px 5px 8px #CCC;
+	box-shadow: 5px 5px 8px #CCC;
+}
+
+
 td.appointment-row1 {
 	text-align: center;
 	height: 20px;

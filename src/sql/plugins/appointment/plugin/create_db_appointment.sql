@@ -9,6 +9,7 @@ CREATE TABLE appointment_appointment (
 	email varchar(255) NOT NULL default '',
 	id_user varchar(255) NULL default '',
 	authentication_service varchar(255) NULL default '',
+	localization varchar(255) NULL default '',
 	date_appointment DATE NOT NULL,
 	id_slot int NOT NULL,
 	status smallint NOT NULL,

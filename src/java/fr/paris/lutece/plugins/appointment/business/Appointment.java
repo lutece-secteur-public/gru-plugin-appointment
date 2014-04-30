@@ -95,6 +95,7 @@ public class Appointment implements Serializable
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strIdUser;
     private String _strAuthenticationService;
+    private String _strLocalization;
     private Date _dateAppointment;
     private int _nIdSlot;
     private int _nStatus;
@@ -215,6 +216,24 @@ public class Appointment implements Serializable
     public void setAuthenticationService( String strAuthenticationService )
     {
         _strAuthenticationService = strAuthenticationService;
+    }
+
+    /**
+     * Get the localization of the appointment
+     * @return the localization of the appointment
+     */
+    public String getLocalization(  )
+    {
+        return _strLocalization;
+    }
+
+    /**
+     * Set the localization of the appointment
+     * @param strLocalization The localization of the appointment
+     */
+    public void setLocalization( String strLocalization )
+    {
+        this._strLocalization = strLocalization;
     }
 
     /**

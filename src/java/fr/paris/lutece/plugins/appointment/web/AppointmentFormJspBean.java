@@ -206,7 +206,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
         String strUrl = url.getUrl(  );
-        List<AppointmentForm> listAppointmentForms = (List<AppointmentForm>) AppointmentFormHome.getAppointmentFormsList(  );
+        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList(  );
 
         // PAGINATOR
         LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms,
