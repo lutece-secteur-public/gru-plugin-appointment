@@ -33,45 +33,26 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import java.util.Locale;
 
 
 /**
- * Manager form appointment removal listeners
+ * Interface for listeners that should be notified when appointments are
+ * removed or when the date changed. <b>The listener must be a Spring bean.</b>
  */
-public final class AppointmentRemovalManager
+public interface IAppointmentListener
 {
     /**
-     * Private default constructor
+     * Notify the listener that an appointment has been removed
+     * @param nIdAppointment The id of the appointment
      */
-    private AppointmentRemovalManager(  )
-    {
-        // Nothing to do
-    }
+    void notifyAppointmentRemoval( int nIdAppointment );
 
     /**
-     * Notify listeners that an appointment is about to be removed
-     * @param nIdAppointment The id of the appointment that will be removed
+     * Notify the listener that the date of an appointment has changed.
+     * @param nIdAppointment the id of the appointment
+     * @param nIdSlot The new slot of the appointment
+     * @return The message to display to the user, if any.
      */
-    public static void notifyListenersAppointmentRemoval( int nIdAppointment )
-    {
-        for ( IAppointmentRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
-                IAppointmentRemovalListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
-        }
-    }
-
-    /**
-     * Notify users that an appointment form has been removed
-     * @param nIdAppointmentForm the id of the removed appointment form
-     */
-    public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
-    {
-        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
-                IAppointmentFormRemovalListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
-        }
-    }
+    String appointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale );
 }

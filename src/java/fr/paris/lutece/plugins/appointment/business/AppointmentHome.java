@@ -35,7 +35,7 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentRemovalManager;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -100,7 +100,7 @@ public final class AppointmentHome
      */
     public static void remove( int nAppointmentId )
     {
-        AppointmentRemovalManager.notifyListenersAppointmentRemoval( nAppointmentId );
+        AppointmentListenerManager.notifyListenersAppointmentRemoval( nAppointmentId );
 
         for ( int nIdResponse : _dao.findListIdResponse( nAppointmentId, _plugin ) )
         {
