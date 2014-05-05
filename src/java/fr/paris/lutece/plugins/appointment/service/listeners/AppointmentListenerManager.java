@@ -50,7 +50,7 @@ public final class AppointmentListenerManager
     /**
      * Private default constructor
      */
-    private AppointmentListenerManager( )
+    private AppointmentListenerManager(  )
     {
         // Nothing to do
     }
@@ -61,8 +61,8 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentRemoval( int nIdAppointment )
     {
-        for ( IAppointmentListener appointmentRemovalListener : SpringContextService
-                .getBeansOfType( IAppointmentListener.class ) )
+        for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
+                IAppointmentListener.class ) )
         {
             appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
         }
@@ -77,16 +77,19 @@ public final class AppointmentListenerManager
      */
     public static List<String> notifyListenersAppointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale )
     {
-        List<String> listMessages = new ArrayList<String>( );
-        for ( IAppointmentListener appointmentRemovalListener : SpringContextService
-                .getBeansOfType( IAppointmentListener.class ) )
+        List<String> listMessages = new ArrayList<String>(  );
+
+        for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
+                IAppointmentListener.class ) )
         {
             String strMessage = appointmentRemovalListener.appointmentDateChanged( nIdAppointment, nIdSlot, locale );
+
             if ( StringUtils.isNotEmpty( strMessage ) )
             {
                 listMessages.add( strMessage );
             }
         }
+
         return listMessages;
     }
 
@@ -96,8 +99,8 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
     {
-        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService
-                .getBeansOfType( IAppointmentFormRemovalListener.class ) )
+        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( 
+                IAppointmentFormRemovalListener.class ) )
         {
             appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
         }
