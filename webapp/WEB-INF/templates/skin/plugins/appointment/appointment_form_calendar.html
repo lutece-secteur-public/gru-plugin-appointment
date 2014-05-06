@@ -86,17 +86,20 @@
 										<tr>
 											<#if slot.isEnabled>
 												<#if slot.nbFreePlaces &gt; 0>
-													<td class="appointment-slot-avaiable appointment-row${rowspan}">
+													<td class="appointment-slot-avaiable appointment-row${rowspan} appointment-tooltip">
 														<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												<#else>
-													<td class="appointment-slot-full appointment-row${rowspan}">
+													<td class="appointment-slot-full appointment-row${rowspan} appointment-tooltip">
 														#i18n{appointment.appointmentCalendar.labelSlotFull}
+														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												</#if>
 											<#else>
-												<td class="appointment-slot-closed appointment-row${rowspan}">
+												<td class="appointment-slot-closed appointment-row${rowspan} appointment-tooltip">
 													&nbsp;
+													<@getCellTooltip appointmentSlot=slot />
 												</td>
 											</#if>
 										</tr>
@@ -139,7 +142,9 @@
 									<#if slot.isEnabled>
 										<#if slot.nbFreePlaces &gt; 0>
 											<td class="appointment-slot-avaiable">
-												<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+												<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">
+													#i18n{appointment.appointmentCalendar.makeAppointment}
+												</a>
 											</td>
 										<#else>
 											<td class="appointment-slot-full">
@@ -166,3 +171,9 @@
 		</div>
 	</div>
 </div>
+
+<#macro getCellTooltip appointmentSlot>
+	<span class="appointment-tooltip-title appointment-tooltip-title-fo">
+		<#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute} 
+	</span> 
+</#macro>
