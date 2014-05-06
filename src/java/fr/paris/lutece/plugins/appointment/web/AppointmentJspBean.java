@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
@@ -57,6 +58,8 @@ import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -85,7 +88,6 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -96,7 +98,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import javax.validation.ConstraintViolation;
 
 
@@ -180,6 +181,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_ADMIN_USERS = "list_admin_users";
     private static final String MARK_ADMIN_USER = "admin_user";
     private static final String MARK_ADDON = "addon";
+    private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
 
     // JSP
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -942,6 +944,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     AppointmentFormMessagesHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) ) );
                 fillCommons( model );
 
+                Locale locale = getLocale( );
+
+                List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment
+                        .getListResponse( ).size( ) );
+                for ( Response response : appointment.getListResponse( ) )
+                {
+                    IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response
+                            .getEntry( ) );
+                    listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService
+                            .getResponseValueForRecap( response.getEntry( ), request, response, locale ) ) );
+                }
+                model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
+
                 return getPage( PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT, TEMPLATE_APPOINTMENT_FORM_RECAP, model );
             }
 
@@ -1086,6 +1101,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             model.put( MARK_ADMIN_USER, AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser(  ) ) );
         }
+
+        Locale locale = getLocale( );
+
+        List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( )
+                .size( ) );
+        for ( Response response : appointment.getListResponse( ) )
+        {
+            IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
+            listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap(
+                    response.getEntry( ), request, response, locale ) ) );
+        }
+        model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
 
         model.put( MARK_ADDON,
             AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), getLocale(  ) ) );

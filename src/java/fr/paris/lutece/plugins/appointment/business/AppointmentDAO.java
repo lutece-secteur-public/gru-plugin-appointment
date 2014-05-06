@@ -39,7 +39,6 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +54,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_SELECT_ID = "SELECT app.id_appointment FROM appointment_appointment app ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE app.id_appointment = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = " INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot AND slot.id_form = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, localization, date_appointment, id_slot, status, id_action_cancel, id_admin_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, localization, date_appointment, id_slot, status, id_action_cancel, id_admin_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, localization = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ?, id_admin_user = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM = "SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE slot.id_form = ? AND app.date_appointment > ? ";
@@ -66,6 +65,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment, id_response) VALUES (?,?)";
     private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";
     private static final String SQL_QUERY_DELETE_APPOINTMENT_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_appointment = ?";
+    private static final String SQL_QUERY_REMOVE_FROM_ID_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_response = ?";
 
     // Filters
     private static final String SQL_FILTER_ID_SLOT = " app.id_slot = ? ";
@@ -411,6 +411,18 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setInt( 1, nIdAppointment );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeAppointmentResponsesByIdResponse( int nIdResponse, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_FROM_ID_RESPONSE, plugin );
+        daoUtil.setInt( 1, nIdResponse );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**

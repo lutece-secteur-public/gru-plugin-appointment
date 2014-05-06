@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -168,4 +167,11 @@ public interface IAppointmentDAO
      * @param plugin The plugin
      */
     int countAppointmentsByIdForm( int nIdForm, Date date, Plugin plugin );
+
+    /**
+     * Remove an appointment responses from the id of a response.
+     * @param nIdResponse The id of the response
+     * @param plugin The plugin
+     */
+    void removeAppointmentResponsesByIdResponse( int nIdResponse, Plugin plugin );
 }

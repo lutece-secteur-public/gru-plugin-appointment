@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -474,6 +475,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 EntryHome.decrementOrderByOne( entry.getPosition(  ), entry.getFieldDepend(  ).getIdField(  ),
                     entry.getIdResource(  ), entry.getResourceType(  ) );
             }
+
+            AppointmentHome.removeResponsesByIdEntry( nIdEntry );
 
             // Remove entry
             EntryHome.remove( nIdEntry );

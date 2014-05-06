@@ -52,6 +52,7 @@ public interface IAppointmentListener
      * Notify the listener that the date of an appointment has changed.
      * @param nIdAppointment the id of the appointment
      * @param nIdSlot The new slot of the appointment
+     * @param locale The locale to display error messages with
      * @return The message to display to the user, if any.
      */
     String appointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale );
