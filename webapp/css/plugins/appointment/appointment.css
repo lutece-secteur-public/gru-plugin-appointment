@@ -5,6 +5,13 @@
 	text-align: center;
 	vertical-align: middle;
 	border: none;
+	box-sizing:content-box !important;
+	-moz-box-sizing:content-box !important;
+}
+
+.table.appointment-inner-table > tbody > tr > td
+{
+	vertical-align: middle;
 }
 
 .appointment-inner-table:first-child {
