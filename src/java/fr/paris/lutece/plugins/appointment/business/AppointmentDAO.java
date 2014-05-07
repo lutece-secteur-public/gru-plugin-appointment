@@ -39,6 +39,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -421,8 +422,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_FROM_ID_RESPONSE, plugin );
         daoUtil.setInt( 1, nIdResponse );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**

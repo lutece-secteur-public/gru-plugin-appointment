@@ -88,6 +88,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -98,6 +99,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import javax.validation.ConstraintViolation;
 
 
@@ -944,17 +946,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     AppointmentFormMessagesHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) ) );
                 fillCommons( model );
 
-                Locale locale = getLocale( );
+                Locale locale = getLocale(  );
 
-                List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment
-                        .getListResponse( ).size( ) );
-                for ( Response response : appointment.getListResponse( ) )
+                List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse(  )
+                                                                                                          .size(  ) );
+
+                for ( Response response : appointment.getListResponse(  ) )
                 {
-                    IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response
-                            .getEntry( ) );
-                    listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService
-                            .getResponseValueForRecap( response.getEntry( ), request, response, locale ) ) );
+                    IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry(  ) );
+                    listResponseRecapDTO.add( new ResponseRecapDTO( response,
+                            entryTypeService.getResponseValueForRecap( response.getEntry(  ), request, response, locale ) ) );
                 }
+
                 model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
 
                 return getPage( PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT, TEMPLATE_APPOINTMENT_FORM_RECAP, model );
@@ -1102,16 +1105,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_ADMIN_USER, AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser(  ) ) );
         }
 
-        Locale locale = getLocale( );
+        Locale locale = getLocale(  );
 
-        List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( )
-                .size( ) );
-        for ( Response response : appointment.getListResponse( ) )
+        List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse(  )
+                                                                                                  .size(  ) );
+
+        for ( Response response : appointment.getListResponse(  ) )
         {
-            IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap(
-                    response.getEntry( ), request, response, locale ) ) );
+            IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry(  ) );
+            listResponseRecapDTO.add( new ResponseRecapDTO( response,
+                    entryTypeService.getResponseValueForRecap( response.getEntry(  ), request, response, locale ) ) );
         }
+
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
 
         model.put( MARK_ADDON,

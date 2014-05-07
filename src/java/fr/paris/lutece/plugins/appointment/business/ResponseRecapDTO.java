@@ -48,7 +48,6 @@ public class ResponseRecapDTO extends Response
      * Serial version UID
      */
     private static final long serialVersionUID = -248405445729375667L;
-
     private String _strRecapValue;
     private Response _response;
 
@@ -76,7 +75,7 @@ public class ResponseRecapDTO extends Response
      * Get the recap value of this response
      * @return The recap value of this response
      */
-    public String getRecapValue( )
+    public String getRecapValue(  )
     {
         return this._strRecapValue;
     }
@@ -94,62 +93,62 @@ public class ResponseRecapDTO extends Response
      * {@inheritDoc}
      */
     @Override
-    public Entry getEntry( )
+    public Entry getEntry(  )
     {
-        return _response.getEntry( );
+        return _response.getEntry(  );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getIdResponse( )
+    public int getIdResponse(  )
     {
-        return _response.getIdResponse( );
+        return _response.getIdResponse(  );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Field getField( )
+    public Field getField(  )
     {
-        return _response.getField( );
+        return _response.getField(  );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getToStringValueResponse( )
+    public String getToStringValueResponse(  )
     {
-        return _response.getToStringValueResponse( );
+        return _response.getToStringValueResponse(  );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getResponseValue( )
+    public String getResponseValue(  )
     {
-        return _response.getResponseValue( );
+        return _response.getResponseValue(  );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getStatus( )
+    public int getStatus(  )
     {
-        return _response.getStatus( );
+        return _response.getStatus(  );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public File getFile( )
+    public File getFile(  )
     {
-        return _response.getFile( );
+        return _response.getFile(  );
     }
 }

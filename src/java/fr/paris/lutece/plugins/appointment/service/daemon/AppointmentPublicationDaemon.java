@@ -38,6 +38,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.portal.service.daemon.Daemon;
 
 import java.sql.Date;
+
 import java.util.Collection;
 
 
@@ -50,27 +51,26 @@ public class AppointmentPublicationDaemon extends Daemon
      * {@inheritDoc}
      */
     @Override
-    public void run( )
+    public void run(  )
     {
-        Collection<AppointmentForm> listForms = AppointmentFormHome.getAppointmentFormsList( );
-        Date dateNow = new Date( System.currentTimeMillis( ) );
+        Collection<AppointmentForm> listForms = AppointmentFormHome.getAppointmentFormsList(  );
+        Date dateNow = new Date( System.currentTimeMillis(  ) );
         int nPublishedForms = 0;
         int nUnpublishedForms = 0;
 
         for ( AppointmentForm form : listForms )
         {
-            if ( ( form.getDateStartValidity( ) != null )
-                    && !form.getIsActive( )
-                    && ( form.getDateStartValidity( ).getTime( ) < dateNow.getTime( ) )
-                    && ( form.getDateEndValidity( ) == null || form.getDateEndValidity( ).getTime( ) > dateNow
-                            .getTime( ) ) )
+            if ( ( form.getDateStartValidity(  ) != null ) && !form.getIsActive(  ) &&
+                    ( form.getDateStartValidity(  ).getTime(  ) < dateNow.getTime(  ) ) &&
+                    ( ( form.getDateEndValidity(  ) == null ) ||
+                    ( form.getDateEndValidity(  ).getTime(  ) > dateNow.getTime(  ) ) ) )
             {
                 form.setIsActive( true );
                 AppointmentFormHome.update( form );
                 nPublishedForms++;
             }
-            else if ( ( form.getDateEndValidity( ) != null ) && form.getIsActive( )
-                    && ( form.getDateEndValidity( ).getTime( ) < dateNow.getTime( ) ) )
+            else if ( ( form.getDateEndValidity(  ) != null ) && form.getIsActive(  ) &&
+                    ( form.getDateEndValidity(  ).getTime(  ) < dateNow.getTime(  ) ) )
             {
                 form.setIsActive( false );
                 AppointmentFormHome.update( form );
@@ -78,7 +78,7 @@ public class AppointmentPublicationDaemon extends Daemon
             }
         }
 
-        this.setLastRunLogs( nPublishedForms + " appointment form(s) have been published, and " + nUnpublishedForms
-                + " have been unpublished" );
+        this.setLastRunLogs( nPublishedForms + " appointment form(s) have been published, and " + nUnpublishedForms +
+            " have been unpublished" );
     }
 }

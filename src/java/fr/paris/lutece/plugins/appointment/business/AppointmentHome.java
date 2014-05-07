@@ -44,6 +44,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,12 +58,12 @@ public final class AppointmentHome
     // Static variable pointed at the DAO instance
     private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance( );
+    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance(  );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentHome( )
+    private AppointmentHome(  )
     {
     }
 
@@ -131,7 +132,7 @@ public final class AppointmentHome
      * @return the collection which contains the data of all the appointment
      *         objects
      */
-    public static List<Appointment> getAppointmentsList( )
+    public static List<Appointment> getAppointmentsList(  )
     {
         return _dao.selectAppointmentsList( _plugin );
     }
@@ -187,7 +188,7 @@ public final class AppointmentHome
     public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments )
     {
         return _dao.selectAppointmentListById( listIdAppointments, AppointmentFilter.CONSTANT_DEFAULT_ORDER_BY, true,
-                _plugin );
+            _plugin );
     }
 
     /**
@@ -198,7 +199,7 @@ public final class AppointmentHome
      * @return The list of appointments which ids are given in parameters
      */
     public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments, String strOrderBy,
-            boolean bSortAsc )
+        boolean bSortAsc )
     {
         return _dao.selectAppointmentListById( listIdAppointments, strOrderBy, bSortAsc, _plugin );
     }
@@ -261,7 +262,7 @@ public final class AppointmentHome
     public static List<Response> findListResponse( int nIdAppointment )
     {
         List<Integer> listIdResponse = findListIdResponse( nIdAppointment );
-        List<Response> listResponse = new ArrayList<Response>( listIdResponse.size( ) );
+        List<Response> listResponse = new ArrayList<Response>( listIdResponse.size(  ) );
 
         for ( Integer nIdResponse : listIdResponse )
         {
@@ -287,17 +288,17 @@ public final class AppointmentHome
      */
     public static void removeResponsesByIdEntry( int nIdEntry )
     {
-        ResponseFilter filter = new ResponseFilter( );
+        ResponseFilter filter = new ResponseFilter(  );
         filter.setIdEntry( nIdEntry );
 
         List<Response> listResponses = ResponseHome.getResponseList( filter );
 
         for ( Response response : listResponses )
         {
-            _dao.removeAppointmentResponsesByIdResponse( response.getIdResponse( ), _plugin );
-            ResponseHome.remove( response.getIdResponse( ) );
+            _dao.removeAppointmentResponsesByIdResponse( response.getIdResponse(  ), _plugin );
+            ResponseHome.remove( response.getIdResponse(  ) );
         }
 
-        _cacheService.resetCache( );
+        _cacheService.resetCache(  );
     }
 }
