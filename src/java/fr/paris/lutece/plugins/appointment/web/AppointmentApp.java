@@ -475,6 +475,11 @@ public class AppointmentApp extends MVCApplication
                 appointment.getDateAppointment(  ) );
         AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) );
 
+        if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
+        {
+            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
+        }
+
         if ( form.getEnableCaptcha(  ) && getCaptchaService(  ).isAvailable(  ) )
         {
             if ( !getCaptchaService(  ).validate( request ) )
@@ -484,11 +489,6 @@ public class AppointmentApp extends MVCApplication
                 return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_SLOT,
                     appointmentSlot.getIdSlot(  ) );
             }
-        }
-
-        if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
-        {
-            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
         }
 
         if ( appointmentSlot.getNbFreePlaces(  ) <= 0 )

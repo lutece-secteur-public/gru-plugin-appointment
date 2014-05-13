@@ -1,7 +1,7 @@
 <div class="row-fluid">
 	<div class="span12">
 		<#if form_errors?? && form_errors?has_content>
-			<div class="alert alert-error">
+			<div class="alert alert-error alert-danger">
 				<#list form_errors as form_error>
 					<p>
 						<#if form_error.url?? && form_error.url != ''>
