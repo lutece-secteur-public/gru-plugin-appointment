@@ -24,3 +24,7 @@ INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_use
 (112,'Session',0,0,0,'appointment.entryTypeSession','appointment');
 INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,plugin) VALUES
 (113,'Utilisateur MyLutece',0,0,1,'appointment.entryTypeMyLuteceUser','appointment');
+INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,plugin) VALUES
+(114,'Image',0,0,0,'appointment.entryTypeImage','appointment');
+INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,plugin) VALUES
+(115,'Fichier',0,0,0,'appointment.entryTypeFile','appointment');

@@ -51,6 +51,7 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
+import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -257,6 +258,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @View( value = VIEW_CALENDAR_MANAGE_APPOINTMENTS, defaultView = true )
     public String getCalendarManageAppointments( HttpServletRequest request )
     {
+        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
+
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
@@ -353,6 +356,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     @View( value = VIEW_MANAGE_APPOINTMENTS )
     public String getManageAppointments( HttpServletRequest request )
     {
+        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
+
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
@@ -981,8 +986,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
-        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
-                appointment.getDateAppointment(  ) );
+        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
         AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) );
 
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
@@ -990,64 +994,41 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
         }
 
-        if ( appointmentSlot.getNbFreePlaces(  ) <= 0 )
+        boolean bCreation = appointment.getIdAppointment(  ) == 0;
+
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
+                    Integer.toString( appointmentSlot.getIdForm(  ) ),
+                    bCreation ? AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT
+                                  : AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser(  ) ) )
+        {
+            throw new AccessDeniedException( bCreation ? AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT
+                                                       : AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT );
+        }
+
+        if ( _appointmentFormService.doMakeAppointment( appointment, form, true ) )
+        {
+            addInfo( bCreation ? INFO_APPOINTMENT_CREATED : INFO_APPOINTMENT_UPDATED, getLocale(  ) );
+
+            if ( !bCreation )
+            {
+                List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged( appointment.getIdAppointment(  ),
+                        appointment.getIdSlot(  ), getLocale(  ) );
+
+                for ( String strMessage : listMessages )
+                {
+                    addInfo( strMessage );
+                }
+            }
+        }
+        else
         {
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale(  ) );
 
             return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
         }
 
-        if ( appointment.getIdAppointment(  ) == 0 )
-        {
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                        Integer.toString( appointmentSlot.getIdForm(  ) ),
-                        AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, getUser(  ) ) )
-            {
-                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
-            }
-
-            AppointmentHome.create( appointment );
-
-            for ( Response response : appointment.getListResponse(  ) )
-            {
-                ResponseHome.create( response );
-                AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ), response.getIdResponse(  ) );
-            }
-
-            addInfo( INFO_APPOINTMENT_CREATED, getLocale(  ) );
-        }
-        else
-        {
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                        Integer.toString( appointmentSlot.getIdForm(  ) ),
-                        AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser(  ) ) )
-            {
-                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT );
-            }
-
-            AppointmentHome.update( appointment );
-            addInfo( INFO_APPOINTMENT_UPDATED, getLocale(  ) );
-
-            List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged( appointment.getIdAppointment(  ),
-                    appointment.getIdSlot(  ), getLocale(  ) );
-
-            for ( String strMessage : listMessages )
-            {
-                addInfo( strMessage );
-            }
-        }
-
-        if ( form.getIdWorkflow(  ) > 0 )
-        {
-            WorkflowService.getInstance(  )
-                           .getState( appointment.getIdAppointment(  ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                form.getIdWorkflow(  ), form.getIdForm(  ) );
-            WorkflowService.getInstance(  )
-                           .executeActionAutomatic( appointment.getIdAppointment(  ),
-                Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), form.getIdForm(  ) );
-        }
-
         _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
+        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
 
         return redirect( request, getUrlManageAppointment( request, form.getIdForm(  ) ) );
     }

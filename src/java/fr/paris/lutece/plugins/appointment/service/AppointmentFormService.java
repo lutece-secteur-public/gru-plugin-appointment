@@ -37,6 +37,9 @@ import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
+import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -45,6 +48,7 @@ import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
@@ -53,6 +57,7 @@ import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
@@ -97,6 +102,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_LIST_RESPONSES = "list_responses";
     private static final String MARK_APPOINTMENT = "appointment";
     private static final String MARK_ADDON = "addon";
+    private static final String MARK_IS_FORM_FIRST_STEP = "isFormFirstStep";
 
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
@@ -122,6 +128,8 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
+    private static final String PROPERTY_IS_FORM_FIRST_STEP = "appointment.isFormFirstStep";
+    private volatile transient Boolean _bIsFormFirstStep;
 
     /**
      * Return the HTML code of the form
@@ -179,6 +187,11 @@ public class AppointmentFormService implements Serializable
         }
 
         model.put( MARK_APPOINTMENT, appointment );
+
+        if ( bDisplayFront )
+        {
+            model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep(  ) );
+        }
 
         if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
         {
@@ -555,5 +568,75 @@ public class AppointmentFormService implements Serializable
 
         appointment.setMapResponsesByIdEntry( null );
         appointment.setListResponse( listResponse );
+    }
+
+    /**
+     * Check if the form is the first step of the creation of appointments, or
+     * if it is the calendar.
+     * @return True if the form is the first step of the creation of
+     *         appointments, false otherwise
+     */
+    public boolean isFormFirstStep(  )
+    {
+        if ( _bIsFormFirstStep == null )
+        {
+            _bIsFormFirstStep = Boolean.parseBoolean( AppPropertiesService.getProperty( PROPERTY_IS_FORM_FIRST_STEP ) );
+        }
+
+        return _bIsFormFirstStep;
+    }
+
+    /**
+     * Do check if an appointment can be made and make an appointment.
+     * @param appointment The appointment to make
+     * @param form The appointment form associated with the appointment
+     * @param bIsAdmin True if this method was called by an admin, false if it
+     *            was called by a regular user
+     * @return True if the appointment was successfully made, false if the
+     *         selected slot is empty or does not exist
+     */
+    public synchronized boolean doMakeAppointment( Appointment appointment, AppointmentForm form, boolean bIsAdmin )
+    {
+        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
+                appointment.getDateAppointment(  ) );
+
+        if ( ( slot == null ) || ( slot.getNbFreePlaces(  ) <= 0 ) )
+        {
+            return false;
+        }
+
+        // Only admins can modify appointments
+        boolean bCreate = !bIsAdmin || ( appointment.getIdAppointment(  ) == 0 );
+
+        if ( bCreate )
+        {
+            AppointmentHome.create( appointment );
+        }
+        else
+        {
+            AppointmentHome.update( appointment );
+        }
+
+        // For modification (by an admin), the update of responses have alreday been made when this method is called 
+        if ( bCreate )
+        {
+            for ( Response response : appointment.getListResponse(  ) )
+            {
+                ResponseHome.create( response );
+                AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ), response.getIdResponse(  ) );
+            }
+        }
+
+        if ( form.getIdWorkflow(  ) > 0 )
+        {
+            WorkflowService.getInstance(  )
+                           .getState( appointment.getIdAppointment(  ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                form.getIdWorkflow(  ), form.getIdForm(  ) );
+            WorkflowService.getInstance(  )
+                           .executeActionAutomatic( appointment.getIdAppointment(  ),
+                Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), form.getIdForm(  ) );
+        }
+
+        return true;
     }
 }

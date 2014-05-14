@@ -1,17 +1,17 @@
 <div class="row-fluid">
 	<div class="span12">
 		<legend><#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>${formMessages.calendarTitle}<#else>#i18n{appointment.appointmentApp.calendar.pageTitle}</#if></legend>
-		<@messages infos=infos />
+		<@messages infos=infos errors=errors />
 		<#if nb_week &gt; 0>
 			<div class="pull-left">
-				<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
+				<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
 					<i class="icon-arrow-left icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
 				</a>
 			</div>
 		</#if>
 		<#if nb_week &lt; form.nbWeeksToDisplay - 1>
 			<div class="pull-right">
-				<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
+				<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
 					#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="icon-arrow-right icon-white">&nbsp;</i>
 				</a>
 			</div>
@@ -29,12 +29,12 @@
 								<td>
 									<br />
 									<#if nb_week &gt; 0>
-										<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week - 1}">
+										<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}">
 											<i class="icon-arrow-left">&nbsp;</i>
 										</a>
 									</#if>
 									<#if nb_week &lt; form.nbWeeksToDisplay>
-										<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}">
+										<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}">
 											<i class="icon-arrow-right">&nbsp;</i>
 										</a>
 									</#if>
@@ -87,7 +87,7 @@
 											<#if slot.isEnabled>
 												<#if slot.nbFreePlaces &gt; 0>
 													<td class="appointment-slot-avaiable appointment-row${rowspan} appointment-tooltip">
-														<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+														<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
 														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												<#else>
@@ -142,7 +142,7 @@
 									<#if slot.isEnabled>
 										<#if slot.nbFreePlaces &gt; 0>
 											<td class="appointment-slot-avaiable">
-												<a href="jsp/site/Portal.jsp?page=appointment&view=displayRecapAppointment&idSlot=${slot.idSlot}">
+												<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
 													#i18n{appointment.appointmentCalendar.makeAppointment}
 												</a>
 											</td>
@@ -164,11 +164,13 @@
 			</#list>
 		</div>
 		&nbsp;
+		<#if isFormFirstStep>
 		<div class="form-actions">
-			<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=viewForm&id_form=${form.idForm}">
+			<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormSecondStep&id_form=${form.idForm}">
 				#i18n{portal.util.labelBack}
 			</a>
 		</div>
+		</#if>
 	</div>
 </div>
 

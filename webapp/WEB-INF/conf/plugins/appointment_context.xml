@@ -17,6 +17,8 @@
     <bean id="appointment.appointmentSlotService" class="fr.paris.lutece.plugins.appointment.service.AppointmentSlotService" />    
     <bean id="appointment.appointmentService" class="fr.paris.lutece.plugins.appointment.service.AppointmentService" />
     
+    <bean id="appointment.appointmentAsynchronousUploadHandler" class="fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler" />
+    
     <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />    
     <bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />
 	<bean id="appointment.entryTypeComment" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeComment" />
@@ -30,5 +32,7 @@
 	<bean id="appointment.entryTypeSelectSQL" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSelectSQL" />
 	<bean id="appointment.entryTypeSession" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeSession" />
 	<bean id="appointment.entryTypeText" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeText" />
-	<bean id="appointment.entryTypeTextArea" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeTextArea" />    
+	<bean id="appointment.entryTypeTextArea" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeTextArea" />
+	<bean id="appointment.entryTypeImage" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage" />
+	<bean id="appointment.entryTypeFile" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeFile" />
 </beans>
