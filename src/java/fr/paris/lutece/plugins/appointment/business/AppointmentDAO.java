@@ -39,7 +39,6 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +66,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";
     private static final String SQL_QUERY_DELETE_APPOINTMENT_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_appointment = ?";
     private static final String SQL_QUERY_REMOVE_FROM_ID_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_response = ?";
+    private static final String SQL_QUERY_FIND_ID_APPOINTMENT_FROM_ID_RESPONSE = " SELECT id_appointment FROM appointment_appointment_response WHERE id_response = ? ";
 
     // Filters
     private static final String SQL_FILTER_ID_SLOT = " app.id_slot = ? ";
@@ -652,5 +652,23 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setIdAdminUser( daoUtil.getInt( nIndex ) );
 
         return appointment;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int findIdAppointmentByIdResponse( int nIdResponse, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ID_APPOINTMENT_FROM_ID_RESPONSE, plugin );
+        daoUtil.setInt( 1, nIdResponse );
+        daoUtil.executeQuery( );
+        int nIdAppointment = 0;
+        if ( daoUtil.next( ) )
+        {
+            nIdAppointment = daoUtil.getInt( 1 );
+        }
+        daoUtil.free( );
+        return nIdAppointment;
     }
 }

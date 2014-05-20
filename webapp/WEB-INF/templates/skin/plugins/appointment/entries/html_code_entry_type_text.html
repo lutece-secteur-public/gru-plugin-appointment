@@ -33,7 +33,7 @@
 </div>
 <#if list_responses??>
 	<#list list_responses as response>
-		<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 			<#assign error = response.entry.error>
 			<div class="alert alert-error alert-danger"><#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if></div>
 		</#if>

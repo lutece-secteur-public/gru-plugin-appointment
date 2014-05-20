@@ -28,7 +28,18 @@
 					<div class="control-group">
 						<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
 						<div class="controls">
+							<#if response.file?? && response.file.idFile &gt; 0>
+								<#assign hasFile = true>
+							<#else>
+								<#assign hasFile = false>
+							</#if>
+							<#if hasFile>
+								<a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?idResponse=${response.idResponse}">
+							</#if>
 							${response.recapValue}
+							<#if hasFile>
+								</a>
+							</#if>
 						</div>
 					</div>
 				</#if>

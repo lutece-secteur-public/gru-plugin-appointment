@@ -1,39 +1,10 @@
 <#include "/admin/plugins/appointment/commons.html" />
 <div class="control-group">
-	<label class="control-label" for="attribute_${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
+	<label class="control-label" for="attribute${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
 	<div class="controls">
-		<#if list_responses?? && list_responses?has_content>
-			<#if list_responses?size &gt; 1 >
-				<#assign class = "pirobox_gall">
-			<#else>
-				<#assign class = "pirobox">
-			</#if>
-			<#assign hasImage = false >
-			<#list list_responses as response>
-				<#if response.file?? && response.file.idFile &gt; 0>
-					<#assign hasImage = true >
-					<#break>
-				</#if>
-			</#list>
-			<#if hasImage>
-				<ul id="slideshow">
-					<#list list_responses as response>
-						<#if response.file?? && response.file.idFile &gt; 0>
-							<li>
-								<a class="${class}" title="#i18n{appointment.view_appointment.imagesCaption}" href="image?resource_type=GENERICATTRIBUTES_RESPONSE&id=${response.idResponse}">
-									<img class="thumbnail" width="80" height="80" src="image?resource_type=GENERICATTRIBUTES_RESPONSE&id=${response.idResponse}" />
-									${response.toStringValueResponse!}
-								</a>
-							</li>
-						</#if>
-					</#list>
-				</ul>
-				<br><br><br><br><br>
-			</#if>
-		</#if>
 		<#list entry.fields as field>
 			<#if !field.title??>
-				<input type="file" name="attribute_${entry.idEntry}" id="attribute_${entry.idEntry}" size="${field.width}"
+				<input type="file" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}"
 				<#if list_responses??>
 					<#list list_responses as response>
 						<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
@@ -45,13 +16,13 @@
 				/>
 			</#if>
 		</#list>
-		<input type="hidden" name="_appointment_upload_maxLength_attribute_${entry.idEntry}" id="_appointment_upload_maxLength_attribute_${entry.idEntry}" value="${getFileMaxSize( entry )}" />
+		<input type="hidden" name="_appointment_upload_maxLength_attribute${entry.idEntry}" id="_appointment_upload_maxLength_attribute${entry.idEntry}" value="${getFileMaxSize( entry )}" />
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 			<span class="help-block">${entry.helpMessage}</span>
 		</#if>
 		<#if list_responses?? && list_responses?has_content>
 			<#assign response_error = list_responses[0]>
-			<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error??>
+			<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error??  && response_error.entry.error.isDisplayableError>
 				<div class="alert alert-error">
 					<#assign error = response_error.entry.error>
 					<#if error.mandatoryError>
@@ -62,7 +33,6 @@
 				</div>
 			</#if>
 		</#if>
-		<button class="btn btn-primary btn-small" type="submit"  id="_appointment_upload_submit_attribute_${entry.idEntry}" name="_appointment_upload_submit_attribute_${entry.idEntry}" >#i18n{appointment.action.send.name}</button>
 	</div>
 </div>
 
@@ -75,16 +45,23 @@
 	</#if>
 </#if>
 
-<div class="control-group well" <#if !has_files>style="display:none;"</#if> id="_file_deletion_label_attribute_${entry.idEntry}">
+<div class="control-group well" <#if !has_files>style="display:none;"</#if> id="_file_deletion_label_attribute${entry.idEntry}">
 	<label class="control-label" for="delete_${entry.idEntry}">#i18n{appointment.file.uploadedFile}</label>
-	<div id="_file_deletion_attribute_${entry.idEntry}">
+	<div id="_file_deletion_attribute${entry.idEntry}">
 		<#assign file_index = 0>
 		<#if has_files>
 			<#list list_responses as response>
 				<#if response.file?? && response.file.title?? && response.file.title != ''>
 					<div class="controls">
-						<label class="checkbox" for="_appointment_upload_checkbox_attribute_${entry.idEntry}${file_index}">
-						<input type="checkbox" name="_appointment_upload_checkbox_attribute_${entry.idEntry}${file_index}" value="1" />${response.file.title}</label>
+						<label class="form-inline checkbox" for="_appointment_upload_checkbox_attribute${entry.idEntry}${file_index}">
+							<input type="checkbox" name="_appointment_upload_checkbox_attribute${entry.idEntry}${file_index}" value="1" />
+							<a target="_blank" title="#i18n{appointment.view_appointment.imagesCaption}" href="image?resource_type=GENERICATTRIBUTES_RESPONSE&id=${response.idResponse}">
+								<#if response.idResponse &gt; 0>
+									<img class="thumbnail" width="80" height="80" src="image?resource_type=GENERICATTRIBUTES_RESPONSE&id=${response.idResponse}" />
+								</#if>
+								${(response.file.title)!}
+							</a>
+						</label>
 						<#assign file_index = file_index + 1>
 					</div>
 				</#if>
@@ -93,6 +70,6 @@
 	</div>
 	<br />
 	<div class="controls">
-		<button class="btn btn-primary btn-small" name="_appointment_upload_delete_attribute_${entry.idEntry}" type="submit" >#i18n{appointment.action.delete.name}</button>
+		<button class="btn btn-primary btn-small" name="_appointment_upload_delete_attribute${entry.idEntry}" value="_appointment_upload_delete_attribute${entry.idEntry}" type="submit" >#i18n{appointment.action.delete.name}</button>
 	</div>
 </div>

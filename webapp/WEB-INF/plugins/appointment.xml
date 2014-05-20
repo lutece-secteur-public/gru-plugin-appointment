@@ -98,7 +98,6 @@
    <javascript-files>
         <javascript-files-scope>portal</javascript-files-scope>
         <javascript-file>appointment/appointment.js</javascript-file>
-        <javascript-file>appointment/pirobox/piroBox.1_2_min.js</javascript-file>
 		<javascript-file>appointment/uploadify/jquery.uploadify.v2.1.4.min.js</javascript-file>
 		<javascript-file>appointment/uploadify/swfobject.js</javascript-file>
 		<javascript-file>appointment/appointmentupload.js</javascript-file>

@@ -48,6 +48,92 @@ function addAsynchronousUploadField(fieldId) {
 			}
 	    });
 	    
+//	    // Back office : modification of appointments
+//	    $('#' + fieldId).uploadify({
+//	        'uploader' : 'js/plugins/appointment/uploadify/swf/uploadify.swf',
+//	        'script' : baseUrl + '/jsp/site/upload',
+//	        'cancelImg' : 'js/plugins/appointment/uploadify/cancel.png',
+//			'auto' : true,
+//			'buttonText' : 'Parcourir',
+//			'displayData' : 'percentage',
+//			'multi' : true,
+//			// Max Files Numbers 
+//			'uploadLimit' : getMaxFiles( fieldId ),
+//			
+//			// file types & size limit
+//			'sizeLimit' : getMaxLengthValue( fieldId ),
+//			
+//			// additional parameters
+//			'scriptData' : {'jsessionid' : document.cookie.match(/JSESSIONID=([^;]+)/)[1], 'view': 'modifyAppointment', 'fieldname':fieldId},
+//			
+//			// event handlers
+//			'onComplete' : function(event,ID,fileObj,data) {
+//				formOnUploadComplete(event,ID,fileObj,data);
+//				$('#' + fieldId).uploadifySettings('hideButton',false);
+//			},
+//			'onError' : function(event,ID,fileObj,data) {
+//				handleError( event,ID,fileObj,data,fieldId );
+//				$('#' + fieldId).uploadifySettings('hideButton',false);
+//			},
+//			'onCancel' : function(event,ID,fileObj,data) {
+//				uploading--;
+//				$('#' + fieldId).uploadifySettings('hideButton',false);
+//			},
+//			'onSelect' : function(event,ID) {
+//				if ( !formStartUpload( event, ID, fieldId ) )
+//				{
+//					return false;
+//				}
+//				else
+//				{
+//					$('#' + fieldId).uploadifySettings('hideButton',true);
+//				}
+//			}
+//	    });
+	    
+//	    // Back office : creation of appointments
+//	    $('#' + fieldId).uploadify({
+//	        'uploader' : 'js/plugins/appointment/uploadify/swf/uploadify.swf',
+//	        'script' : baseUrl + '/jsp/site/upload',
+//	        'cancelImg' : 'js/plugins/appointment/uploadify/cancel.png',
+//			'auto' : true,
+//			'buttonText' : 'Parcourir',
+//			'displayData' : 'percentage',
+//			'multi' : true,
+//			// Max Files Numbers 
+//			'uploadLimit' : getMaxFiles( fieldId ),
+//			
+//			// file types & size limit
+//			'sizeLimit' : getMaxLengthValue( fieldId ),
+//			
+//			// additional parameters
+//			'scriptData' : {'jsessionid' : document.cookie.match(/JSESSIONID=([^;]+)/)[1], 'view': 'createAppointment', 'fieldname':fieldId},
+//			
+//			// event handlers
+//			'onComplete' : function(event,ID,fileObj,data) {
+//				formOnUploadComplete(event,ID,fileObj,data);
+//				$('#' + fieldId).uploadifySettings('hideButton',false);
+//			},
+//			'onError' : function(event,ID,fileObj,data) {
+//				handleError( event,ID,fileObj,data,fieldId );
+//				$('#' + fieldId).uploadifySettings('hideButton',false);
+//			},
+//			'onCancel' : function(event,ID,fileObj,data) {
+//				uploading--;
+//				$('#' + fieldId).uploadifySettings('hideButton',false);
+//			},
+//			'onSelect' : function(event,ID) {
+//				if ( !formStartUpload( event, ID, fieldId ) )
+//				{
+//					return false;
+//				}
+//				else
+//				{
+//					$('#' + fieldId).uploadifySettings('hideButton',true);
+//				}
+//			}
+//	    });
+	    
 	    /* move form help so the question mark is besides the input instead of below */
 	    var formHelp = $( '#' + fieldId ).parent(  ).parent(  ).find( '.form-help' );
 		var formQueue = $( '#' + fieldId + 'Queue' );
@@ -246,13 +332,13 @@ function getInputValue( inputId ) {
  * @param action the action button name
  */
 function removeFile( action ) {
-	var fieldName = action.match("_appointment_upload_delete_attribute_(.*)")[1];
+	var fieldName = action.match("_appointment_upload_delete_attribute(.*)")[1];
 	
 	// build indexes to remove
 	var indexes = new Array();
 	
 	var indexesCount = 0;
-	var checkboxPrefix = '_appointment_upload_checkbox_attribute_' + fieldName;
+	var checkboxPrefix = '_appointment_upload_checkbox_attribute' + fieldName;
 	$('[name^="' + checkboxPrefix + '"]:checked' ).each( function() {
 		if (this.checked)
 		{

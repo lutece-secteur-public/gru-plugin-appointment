@@ -2,20 +2,28 @@
 	<div class="span12">
 		<script type="text/javascript" src="js/plugins/appointment/appointment.js" ></script>
 		<#if form_errors?? && form_errors?has_content>
-			<div class="alert alert-error alert-danger">
-				<#list form_errors as form_error>
-					<p>
-						<#if form_error.url?? && form_error.url != ''>
-							<a href="${form_error.url!}">
+			<#assign hasDisplayableError = false>
+			<#list form_errors as form_error>
+				<#if form_error.isDisplayableError>
+					<#assign hasDisplayableError = true>
+					<#break >
+				</#if>
+			</#list>
+			<#if hasDisplayableError>
+				<div class="alert alert-error alert-danger">
+					<#list form_errors as form_error>	
+						<#if form_error.isDisplayableError>
+							<p>
+								${form_error.errorMessage!}
+							</p>
 						</#if>
-						${form_error.errorMessage!}
-						<#if form_error.url?? && form_error.url != ''>
-							</a>
-						</#if>
-					</p>
-				</#list>
-			</div>
+					</#list>
+				</div>
+			</#if>
 		</#if>
 		${form_html!}
+		<script type="text/javascript" src="js/plugins/appointment/uploadify/jquery.uploadify.v2.1.4.min.js" ></script>
+		<script type="text/javascript" src="js/plugins/appointment/uploadify/swfobject.js" ></script>
+		<script type="text/javascript" src="js/plugins/appointment/appointmentupload.js" ></script>
 	</div>
 </div>

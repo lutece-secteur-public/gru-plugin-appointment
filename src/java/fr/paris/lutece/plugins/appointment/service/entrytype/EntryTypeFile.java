@@ -35,33 +35,8 @@ package fr.paris.lutece.plugins.appointment.service.entrytype;
 
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
-import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
-import fr.paris.lutece.plugins.genericattributes.business.MandatoryError;
-import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeUpload;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeFile;
 import fr.paris.lutece.plugins.genericattributes.service.upload.IGAAsyncUploadHandler;
-import fr.paris.lutece.portal.business.file.File;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
-import fr.paris.lutece.portal.service.fileupload.FileUploadService;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
-import fr.paris.lutece.util.filesystem.FileSystemUtil;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-
-import java.awt.image.BufferedImage;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import java.util.List;
-import java.util.Locale;
-
-import javax.imageio.ImageIO;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -69,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * class EntryTypeImage
  *
  */
-public class EntryTypeFile extends AbstractEntryTypeUpload
+public class EntryTypeFile extends AbstractEntryTypeFile
 {
     /**
      * Name of the bean of this service
@@ -79,7 +54,6 @@ public class EntryTypeFile extends AbstractEntryTypeUpload
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_file.html";
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_file.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_file.html";
-    private static final String MESSAGE_ERROR_NOT_AN_IMAGE = "announce.message.notAnImage";
 
     /**
      * {@inheritDoc}
@@ -109,117 +83,12 @@ public class EntryTypeFile extends AbstractEntryTypeUpload
     }
 
     /**
-     * Check whether this entry type allows only images or every file type
-     * @return True if this entry type allows only images, false if it allow
-     *         every file type
-     */
-    protected boolean checkForImages(  )
-    {
-        return false;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
-    public GenericAttributeError getResponseData( Entry entry, HttpServletRequest request, List<Response> listResponse,
-        Locale locale )
+    protected boolean checkForImages(  )
     {
-        List<FileItem> listFilesSource = null;
-
-        if ( request instanceof MultipartHttpServletRequest )
-        {
-            List<FileItem> asynchronousFileItem = getFileSources( entry, request );
-
-            if ( asynchronousFileItem != null )
-            {
-                listFilesSource = asynchronousFileItem;
-            }
-
-            GenericAttributeError formError = null;
-
-            if ( ( listFilesSource != null ) && !listFilesSource.isEmpty(  ) )
-            {
-                formError = checkResponseData( entry, listFilesSource, locale, request );
-
-                if ( formError != null )
-                {
-                    // Add the response to the list in order to have the error message in the page
-                    Response response = new Response(  );
-                    response.setEntry( entry );
-                    listResponse.add( response );
-                }
-
-                for ( FileItem fileItem : listFilesSource )
-                {
-                    String strFilename = ( fileItem != null ) ? FileUploadService.getFileNameOnly( fileItem )
-                                                              : StringUtils.EMPTY;
-
-                    //Add the image to the response list
-                    Response response = new Response(  );
-                    response.setEntry( entry );
-
-                    if ( ( fileItem != null ) && ( fileItem.getSize(  ) < Integer.MAX_VALUE ) )
-                    {
-                        PhysicalFile physicalFile = new PhysicalFile(  );
-                        physicalFile.setValue( fileItem.get(  ) );
-
-                        File file = new File(  );
-                        file.setPhysicalFile( physicalFile );
-                        file.setTitle( strFilename );
-                        file.setSize( (int) fileItem.getSize(  ) );
-                        file.setMimeType( FileSystemUtil.getMIMEType( strFilename ) );
-
-                        response.setFile( file );
-                    }
-
-                    listResponse.add( response );
-
-                    if ( checkForImages(  ) )
-                    {
-                        BufferedImage image = null;
-
-                        try
-                        {
-                            if ( ( fileItem != null ) && ( fileItem.get(  ) != null ) )
-                            {
-                                image = ImageIO.read( new ByteArrayInputStream( fileItem.get(  ) ) );
-                            }
-                        }
-                        catch ( IOException e )
-                        {
-                            AppLogService.error( e );
-                        }
-
-                        if ( ( image == null ) && StringUtils.isNotBlank( strFilename ) )
-                        {
-                            formError = new GenericAttributeError(  );
-                            formError.setMandatoryError( false );
-
-                            Object[] args = { ( fileItem != null ) ? fileItem.getName(  ) : StringUtils.EMPTY };
-                            formError.setErrorMessage( I18nService.getLocalizedString( MESSAGE_ERROR_NOT_AN_IMAGE,
-                                    args, request.getLocale(  ) ) );
-                            formError.setTitleQuestion( entry.getTitle(  ) );
-                        }
-                    }
-                }
-
-                return formError;
-            }
-
-            if ( entry.isMandatory(  ) )
-            {
-                formError = new MandatoryError( entry, locale );
-
-                Response response = new Response(  );
-                response.setEntry( entry );
-                listResponse.add( response );
-            }
-
-            return formError;
-        }
-
-        return entry.isMandatory(  ) ? new MandatoryError( entry, locale ) : null;
+        return false;
     }
 
     /**

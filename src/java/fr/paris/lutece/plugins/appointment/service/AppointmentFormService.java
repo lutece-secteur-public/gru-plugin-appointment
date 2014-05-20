@@ -65,7 +65,6 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -440,19 +439,18 @@ public class AppointmentFormService implements Serializable
     }
 
     /**
-     * Get the URL to modify an entry of the form in front office
+     * Get the URL of the anchor of an entry
      * @param entry the entry
-     * @return The URL to modify the entry in front office
+     * @return The URL of the anchor of an entry
      */
     public String getEntryUrl( Entry entry )
     {
-        UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
+        UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_FORM );
-
-        if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
+        if ( ( entry != null ) && ( entry.getIdResource( ) > 0 ) )
         {
-            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource(  ) );
+            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource( ) );
             url.setAnchor( PREFIX_ATTRIBUTE + entry.getIdEntry(  ) );
         }
 

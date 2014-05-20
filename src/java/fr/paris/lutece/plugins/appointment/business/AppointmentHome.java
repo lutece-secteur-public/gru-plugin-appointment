@@ -44,7 +44,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -270,6 +269,17 @@ public final class AppointmentHome
         }
 
         return listResponse;
+    }
+
+    /**
+     * Find the id of the appointment associated with a given response
+     * @param nIdResponse The id of the response
+     * @return The id of the appointment, or 0 if no appointment is associated
+     *         with he given response.
+     */
+    public static int findIdAppointmentByIdResponse( int nIdResponse )
+    {
+        return _dao.findIdAppointmentByIdResponse( nIdResponse, _plugin );
     }
 
     /**
