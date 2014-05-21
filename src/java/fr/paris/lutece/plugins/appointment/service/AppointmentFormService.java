@@ -65,6 +65,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +85,10 @@ public class AppointmentFormService implements Serializable
      * Name of the bean of the service
      */
     public static final String BEAN_NAME = "appointment.appointmentFormService";
+
+    /**
+     * Serial version UID
+     */
     private static final long serialVersionUID = 6197939507943704211L;
     private static final String VIEW_GET_FORM = "viewForm";
     private static final String PARAMETER_ID_FORM = "id_form";
@@ -128,7 +133,7 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
     private static final String PROPERTY_IS_FORM_FIRST_STEP = "appointment.isFormFirstStep";
-    private volatile transient Boolean _bIsFormFirstStep;
+    private transient volatile Boolean _bIsFormFirstStep;
 
     /**
      * Return the HTML code of the form
@@ -445,12 +450,13 @@ public class AppointmentFormService implements Serializable
      */
     public String getEntryUrl( Entry entry )
     {
-        UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
+        UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_FORM );
-        if ( ( entry != null ) && ( entry.getIdResource( ) > 0 ) )
+
+        if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
         {
-            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource( ) );
+            url.addParameter( PARAMETER_ID_FORM, entry.getIdResource(  ) );
             url.setAnchor( PREFIX_ATTRIBUTE + entry.getIdEntry(  ) );
         }
 

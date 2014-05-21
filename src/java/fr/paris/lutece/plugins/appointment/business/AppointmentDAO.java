@@ -39,6 +39,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -662,13 +663,17 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ID_APPOINTMENT_FROM_ID_RESPONSE, plugin );
         daoUtil.setInt( 1, nIdResponse );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
+
         int nIdAppointment = 0;
-        if ( daoUtil.next( ) )
+
+        if ( daoUtil.next(  ) )
         {
             nIdAppointment = daoUtil.getInt( 1 );
         }
-        daoUtil.free( );
+
+        daoUtil.free(  );
+
         return nIdAppointment;
     }
 }

@@ -57,7 +57,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractAsynchronousUp
      * Get the handler
      * @return the handler
      */
-    public static AppointmentAsynchronousUploadHandler getHandler( )
+    public static AppointmentAsynchronousUploadHandler getHandler(  )
     {
         return SpringContextService.getBean( BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER );
     }
@@ -75,7 +75,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractAsynchronousUp
      * {@inheritDoc}
      */
     @Override
-    public String getUploadSubmitPrefix( )
+    public String getUploadSubmitPrefix(  )
     {
         return UPLOAD_SUBMIT_PREFIX;
     }
@@ -84,7 +84,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractAsynchronousUp
      * {@inheritDoc}
      */
     @Override
-    public String getUploadDeletePrefix( )
+    public String getUploadDeletePrefix(  )
     {
         return UPLOAD_DELETE_PREFIX;
     }
@@ -93,7 +93,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractAsynchronousUp
      * {@inheritDoc}
      */
     @Override
-    public String getUploadCheckboxPrefix( )
+    public String getUploadCheckboxPrefix(  )
     {
         return UPLOAD_CHECKBOX_PREFIX;
     }
