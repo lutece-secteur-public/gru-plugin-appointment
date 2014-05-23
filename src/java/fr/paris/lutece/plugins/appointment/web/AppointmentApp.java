@@ -87,13 +87,10 @@ import net.sf.json.JSONSerializer;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,7 +101,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.ConstraintViolation;
 
 
@@ -114,6 +110,16 @@ import javax.validation.ConstraintViolation;
 @Controller( xpageName = AppointmentApp.XPAGE_NAME, pageTitleI18nKey = "appointment.appointmentApp.defaultTitle", pagePathI18nKey = "appointment.appointmentApp.defaultPath" )
 public class AppointmentApp extends MVCApplication
 {
+    /**
+     * Name of the view of the first step of the form
+     */
+    public static final String VIEW_APPOINTMENT_FORM_FIRST_STEP = "getAppointmentFormFirstStep";
+
+    /**
+     * Name of the view of the second step of the form
+     */
+    public static final String VIEW_APPOINTMENT_FORM_SECOND_STEP = "getAppointmentFormSecondStep";
+
     /**
      * The name of the XPage
      */
@@ -137,15 +143,11 @@ public class AppointmentApp extends MVCApplication
     // Views
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
 
-    //    private static final String VIEW_GET_FORM = "viewForm";
-    //    private static final String VIEW_GET_APPOINTMENT_CALENDAR = "getAppointmentCalendar";
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
     private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
     private static final String VIEW_GET_CANCEL_APPOINTMENT = "getCancelAppointment";
     private static final String VIEW_APPOINTMENT_CANCELED = "getAppointmentCanceled";
     private static final String VIEW_GET_MY_APPOINTMENTS = "getMyAppointments";
-    private static final String VIEW_APPOINTMENT_FORM_FIRST_STEP = "getAppointmentFormFirstStep";
-    private static final String VIEW_APPOINTMENT_FORM_SECOND_STEP = "getAppointmentFormSecondStep";
 
     // Actions
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";

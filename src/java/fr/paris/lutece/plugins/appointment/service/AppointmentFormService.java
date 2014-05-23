@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -65,7 +66,6 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -452,7 +452,8 @@ public class AppointmentFormService implements Serializable
     {
         UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
-        url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_FORM );
+        url.addParameter( MVCUtils.PARAMETER_VIEW, isFormFirstStep( ) ? AppointmentApp.VIEW_APPOINTMENT_FORM_FIRST_STEP
+                : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP );
 
         if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
         {

@@ -6,142 +6,59 @@ function addAsynchronousUploadField(fieldId) {
 	/* Flash Player 9.0.24 or greater  - simple mode otherwise */
 	if ( swfobject.hasFlashPlayerVersion( "9.0.24" ) )
 	{
-	    $('#' + fieldId).uploadify({
-	        'uploader' : 'js/plugins/appointment/uploadify/swf/uploadify.swf',
-	        'script' : baseUrl + '/jsp/site/upload',
-	        'cancelImg' : 'js/plugins/appointment/uploadify/cancel.png',
-			'auto' : true,
-			'buttonText' : 'Parcourir',
-			'displayData' : 'percentage',
-			'multi' : true,
-			// Max Files Numbers 
-			'uploadLimit' : getMaxFiles( fieldId ),
-			
-			// file types & size limit
-			'sizeLimit' : getMaxLengthValue( fieldId ),
-			
-			// additional parameters
-			'scriptData' : {'jsessionid' : document.cookie.match(/JSESSIONID=([^;]+)/)[1], 'page': 'appointment', 'fieldname':fieldId},
-			
-			// event handlers
-			'onComplete' : function(event,ID,fileObj,data) {
-				formOnUploadComplete(event,ID,fileObj,data);
-				$('#' + fieldId).uploadifySettings('hideButton',false);
-			},
-			'onError' : function(event,ID,fileObj,data) {
-				handleError( event,ID,fileObj,data,fieldId );
-				$('#' + fieldId).uploadifySettings('hideButton',false);
-			},
-			'onCancel' : function(event,ID,fileObj,data) {
-				uploading--;
-				$('#' + fieldId).uploadifySettings('hideButton',false);
-			},
-			'onSelect' : function(event,ID) {
-				if ( !formStartUpload( event, ID, fieldId ) )
-				{
-					return false;
+		var cookie = document.cookie;
+		if ( cookie != null && cookie != '' && document.cookie.match(/JSESSIONID=([^;]+)/) != null )
+		{
+		    $('#' + fieldId).uploadify({
+		        'uploader' : 'js/plugins/appointment/uploadify/swf/uploadify.swf',
+		        'script' : baseUrl + '/jsp/site/upload',
+		        'cancelImg' : 'js/plugins/appointment/uploadify/cancel.png',
+				'auto' : true,
+				'buttonText' : 'Parcourir',
+				'displayData' : 'percentage',
+				'multi' : true,
+				// Max Files Numbers 
+				'uploadLimit' : getMaxFiles( fieldId ),
+				
+				// file types & size limit
+				'sizeLimit' : getMaxLengthValue( fieldId ),
+				
+				// additional parameters
+				'scriptData' : {'jsessionid' : document.cookie.match(/JSESSIONID=([^;]+)/)[1], 'page': 'appointment', 'fieldname':fieldId},
+				
+				// event handlers
+				'onComplete' : function(event,ID,fileObj,data) {
+					formOnUploadComplete(event,ID,fileObj,data);
+					$('#' + fieldId).uploadifySettings('hideButton',false);
+				},
+				'onError' : function(event,ID,fileObj,data) {
+					handleError( event,ID,fileObj,data,fieldId );
+					$('#' + fieldId).uploadifySettings('hideButton',false);
+				},
+				'onCancel' : function(event,ID,fileObj,data) {
+					uploading--;
+					$('#' + fieldId).uploadifySettings('hideButton',false);
+				},
+				'onSelect' : function(event,ID) {
+					if ( !formStartUpload( event, ID, fieldId ) )
+					{
+						return false;
+					}
+					else
+					{
+						$('#' + fieldId).uploadifySettings('hideButton',true);
+					}
 				}
-				else
-				{
-					$('#' + fieldId).uploadifySettings('hideButton',true);
-				}
-			}
-	    });
+		    });
 	    
-//	    // Back office : modification of appointments
-//	    $('#' + fieldId).uploadify({
-//	        'uploader' : 'js/plugins/appointment/uploadify/swf/uploadify.swf',
-//	        'script' : baseUrl + '/jsp/site/upload',
-//	        'cancelImg' : 'js/plugins/appointment/uploadify/cancel.png',
-//			'auto' : true,
-//			'buttonText' : 'Parcourir',
-//			'displayData' : 'percentage',
-//			'multi' : true,
-//			// Max Files Numbers 
-//			'uploadLimit' : getMaxFiles( fieldId ),
-//			
-//			// file types & size limit
-//			'sizeLimit' : getMaxLengthValue( fieldId ),
-//			
-//			// additional parameters
-//			'scriptData' : {'jsessionid' : document.cookie.match(/JSESSIONID=([^;]+)/)[1], 'view': 'modifyAppointment', 'fieldname':fieldId},
-//			
-//			// event handlers
-//			'onComplete' : function(event,ID,fileObj,data) {
-//				formOnUploadComplete(event,ID,fileObj,data);
-//				$('#' + fieldId).uploadifySettings('hideButton',false);
-//			},
-//			'onError' : function(event,ID,fileObj,data) {
-//				handleError( event,ID,fileObj,data,fieldId );
-//				$('#' + fieldId).uploadifySettings('hideButton',false);
-//			},
-//			'onCancel' : function(event,ID,fileObj,data) {
-//				uploading--;
-//				$('#' + fieldId).uploadifySettings('hideButton',false);
-//			},
-//			'onSelect' : function(event,ID) {
-//				if ( !formStartUpload( event, ID, fieldId ) )
-//				{
-//					return false;
-//				}
-//				else
-//				{
-//					$('#' + fieldId).uploadifySettings('hideButton',true);
-//				}
-//			}
-//	    });
-	    
-//	    // Back office : creation of appointments
-//	    $('#' + fieldId).uploadify({
-//	        'uploader' : 'js/plugins/appointment/uploadify/swf/uploadify.swf',
-//	        'script' : baseUrl + '/jsp/site/upload',
-//	        'cancelImg' : 'js/plugins/appointment/uploadify/cancel.png',
-//			'auto' : true,
-//			'buttonText' : 'Parcourir',
-//			'displayData' : 'percentage',
-//			'multi' : true,
-//			// Max Files Numbers 
-//			'uploadLimit' : getMaxFiles( fieldId ),
-//			
-//			// file types & size limit
-//			'sizeLimit' : getMaxLengthValue( fieldId ),
-//			
-//			// additional parameters
-//			'scriptData' : {'jsessionid' : document.cookie.match(/JSESSIONID=([^;]+)/)[1], 'view': 'createAppointment', 'fieldname':fieldId},
-//			
-//			// event handlers
-//			'onComplete' : function(event,ID,fileObj,data) {
-//				formOnUploadComplete(event,ID,fileObj,data);
-//				$('#' + fieldId).uploadifySettings('hideButton',false);
-//			},
-//			'onError' : function(event,ID,fileObj,data) {
-//				handleError( event,ID,fileObj,data,fieldId );
-//				$('#' + fieldId).uploadifySettings('hideButton',false);
-//			},
-//			'onCancel' : function(event,ID,fileObj,data) {
-//				uploading--;
-//				$('#' + fieldId).uploadifySettings('hideButton',false);
-//			},
-//			'onSelect' : function(event,ID) {
-//				if ( !formStartUpload( event, ID, fieldId ) )
-//				{
-//					return false;
-//				}
-//				else
-//				{
-//					$('#' + fieldId).uploadifySettings('hideButton',true);
-//				}
-//			}
-//	    });
-	    
-	    /* move form help so the question mark is besides the input instead of below */
-	    var formHelp = $( '#' + fieldId ).parent(  ).parent(  ).find( '.form-help' );
-		var formQueue = $( '#' + fieldId + 'Queue' );
-		formQueue.appendTo( formHelp );
-		
-		$( '#_appointment_upload_submit_' + fieldId ).hide();
-		$( '#_file_deletion_button_' + fieldId ).hide();
-		
+		    /* move form help so the question mark is besides the input instead of below */
+		    var formHelp = $( '#' + fieldId ).parent(  ).parent(  ).find( '.form-help' );
+			var formQueue = $( '#' + fieldId + 'Queue' );
+			formQueue.appendTo( formHelp );
+			
+			$( '#_appointment_upload_submit_' + fieldId ).hide();
+			$( '#_file_deletion_button_' + fieldId ).hide();
+		}
 	}
 }
 

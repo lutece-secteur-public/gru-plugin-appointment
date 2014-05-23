@@ -16,6 +16,9 @@
 				/>
 			</#if>
 		</#list>
+		<button class="btn btn-primary btn-small" name="_appointment_upload_submit_attribute${entry.idEntry}" id="_appointment_upload_submit_attribute${entry.idEntry}" value="_appointment_upload_submit_attribute${entry.idEntry}" type="submit" >
+			#i18n{appointment.action.send.name}
+		</button>
 		<input type="hidden" name="_appointment_upload_maxLength_attribute${entry.idEntry}" id="_appointment_upload_maxLength_attribute${entry.idEntry}" value="${getFileMaxSize( entry )}" />
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 			<span class="help-block">${entry.helpMessage}</span>
@@ -33,7 +36,6 @@
 				</div>
 			</#if>
 		</#if>
-<!-- 		<button class="btn btn-primary btn-small" type="submit"  id="_appointment_upload_submit_attribute${entry.idEntry}" name="_appointment_upload_submit_attribute${entry.idEntry}" >#i18n{appointment.action.send.name}</button> -->
 	</div>
 </div>
 

@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.service.entrytype;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeFile;
-import fr.paris.lutece.plugins.genericattributes.service.upload.IGAAsyncUploadHandler;
+import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractAsynchronousUploadHandler;
 
 
 /**
@@ -95,7 +95,7 @@ public class EntryTypeFile extends AbstractEntryTypeFile
      * {@inheritDoc}
      */
     @Override
-    public IGAAsyncUploadHandler getAsynchronousUploadHandler(  )
+    public AbstractAsynchronousUploadHandler getAsynchronousUploadHandler( )
     {
         return AppointmentAsynchronousUploadHandler.getHandler(  );
     }
