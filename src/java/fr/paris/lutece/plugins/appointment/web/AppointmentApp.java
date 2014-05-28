@@ -56,7 +56,6 @@ import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
-import fr.paris.lutece.plugins.genericattributes.util.JSONUtils;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
@@ -79,20 +78,16 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +96,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.ConstraintViolation;
 
 
@@ -142,7 +138,6 @@ public class AppointmentApp extends MVCApplication
 
     // Views
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
-
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
     private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
     private static final String VIEW_GET_CANCEL_APPOINTMENT = "getCancelAppointment";
@@ -168,8 +163,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_DATE_APPOINTMENT = "dateAppointment";
     private static final String PARAMETER_FROM_MY_APPOINTMENTS = "fromMyappointments";
     private static final String PARAMETER_REFERER = "referer";
-    private static final String PARAMETER_ID_ENTRY = "id_entry";
-    private static final String PARAMETER_FIELD_INDEX = "field_index";
 
     // Marks
     private static final String MARK_FORM_LIST = "form_list";
@@ -1017,65 +1010,6 @@ public class AppointmentApp extends MVCApplication
     {
         return _appointmentFormService.isFormFirstStep(  ) ? VIEW_APPOINTMENT_FORM_FIRST_STEP
                                                            : VIEW_APPOINTMENT_FORM_SECOND_STEP;
-    }
-
-    /**
-     * Removes the uploaded fileItem
-     * @param request the request
-     * @return The JSON result
-     */
-    public String doRemoveAsynchronousUploadedFile( HttpServletRequest request )
-    {
-        String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
-        String strFieldIndex = request.getParameter( PARAMETER_FIELD_INDEX );
-
-        if ( StringUtils.isBlank( strIdEntry ) || StringUtils.isBlank( strFieldIndex ) )
-        {
-            return JSONUtils.buildJsonErrorRemovingFile( request ).toString(  );
-        }
-
-        // parse json
-        JSON jsonFieldIndexes = JSONSerializer.toJSON( strFieldIndex );
-
-        if ( !jsonFieldIndexes.isArray(  ) )
-        {
-            return JSONUtils.buildJsonErrorRemovingFile( request ).toString(  );
-        }
-
-        JSONArray jsonArrayFieldIndexers = (JSONArray) jsonFieldIndexes;
-        int[] tabFieldIndex = new int[jsonArrayFieldIndexers.size(  )];
-
-        for ( int nIndex = 0; nIndex < jsonArrayFieldIndexers.size(  ); nIndex++ )
-        {
-            try
-            {
-                tabFieldIndex[nIndex] = Integer.parseInt( jsonArrayFieldIndexers.getString( nIndex ) );
-            }
-            catch ( NumberFormatException nfe )
-            {
-                return JSONUtils.buildJsonErrorRemovingFile( request ).toString(  );
-            }
-        }
-
-        // inverse order (removing using index - remove greater first to keep order)
-        Arrays.sort( tabFieldIndex );
-        ArrayUtils.reverse( tabFieldIndex );
-
-        AppointmentAsynchronousUploadHandler handler = AppointmentAsynchronousUploadHandler.getHandler(  );
-
-        for ( int nFieldIndex : tabFieldIndex )
-        {
-            handler.removeFileItem( strIdEntry, request.getSession(  ).getId(  ), nFieldIndex );
-        }
-
-        JSONObject json = new JSONObject(  );
-        // operation successful
-        json.element( JSONUtils.JSON_KEY_SUCCESS, JSONUtils.JSON_KEY_SUCCESS );
-        json.accumulateAll( JSONUtils.getUploadedFileJSON( handler.getFileItems( strIdEntry,
-                    request.getSession(  ).getId(  ) ) ) );
-        json.element( JSONUtils.JSON_KEY_FIELD_NAME, handler.buildFieldName( strIdEntry ) );
-
-        return json.toString(  );
     }
 
     /**

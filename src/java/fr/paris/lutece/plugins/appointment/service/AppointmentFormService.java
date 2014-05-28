@@ -66,6 +66,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -452,8 +453,9 @@ public class AppointmentFormService implements Serializable
     {
         UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
-        url.addParameter( MVCUtils.PARAMETER_VIEW, isFormFirstStep( ) ? AppointmentApp.VIEW_APPOINTMENT_FORM_FIRST_STEP
-                : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP );
+        url.addParameter( MVCUtils.PARAMETER_VIEW,
+            isFormFirstStep(  ) ? AppointmentApp.VIEW_APPOINTMENT_FORM_FIRST_STEP
+                                : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP );
 
         if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
         {

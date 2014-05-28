@@ -60,6 +60,6 @@ public class AppointmentSessionListener implements HttpSessionListener
     public void sessionDestroyed( HttpSessionEvent se )
     {
         String strSessionId = se.getSession(  ).getId(  );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( strSessionId );
+        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( strSessionId );
     }
 }

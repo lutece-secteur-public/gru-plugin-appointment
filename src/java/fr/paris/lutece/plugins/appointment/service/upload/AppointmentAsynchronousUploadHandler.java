@@ -33,11 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.service.upload;
 
-import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
-import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractAsynchronousUploadHandler;
+import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractGenAttUploadHandler;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -45,13 +42,13 @@ import javax.servlet.http.HttpServletRequest;
  * @see #getFileItems(String, String)
  * @see #removeFileItem(String, String, int)
  */
-public class AppointmentAsynchronousUploadHandler extends AbstractAsynchronousUploadHandler
+public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
 {
-    private static final String UPLOAD_SUBMIT_PREFIX = "_appointment_upload_submit_attribute";
-    private static final String UPLOAD_DELETE_PREFIX = "_appointment_upload_delete_attribute";
-    private static final String UPLOAD_CHECKBOX_PREFIX = "_appointment_upload_checkbox_attribute";
-    private static final String PARAMETER_PAGE = "page";
+    private static final String UPLOAD_SUBMIT_PREFIX = "_appointment_upload_submit_";
+    private static final String UPLOAD_DELETE_PREFIX = "_appointment_upload_delete_";
+    private static final String UPLOAD_CHECKBOX_PREFIX = "_appointment_upload_checkbox_";
     private static final String BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER = "appointment.appointmentAsynchronousUploadHandler";
+    private static final String HANDLER_NAME = "appointmentAsynchronousUploadHandler";
 
     /**
      * Get the handler
@@ -60,15 +57,6 @@ public class AppointmentAsynchronousUploadHandler extends AbstractAsynchronousUp
     public static AppointmentAsynchronousUploadHandler getHandler(  )
     {
         return SpringContextService.getBean( BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isInvoked( HttpServletRequest request )
-    {
-        return AppointmentPlugin.PLUGIN_NAME.equals( request.getParameter( PARAMETER_PAGE ) );
     }
 
     /**
@@ -96,5 +84,14 @@ public class AppointmentAsynchronousUploadHandler extends AbstractAsynchronousUp
     public String getUploadCheckboxPrefix(  )
     {
         return UPLOAD_CHECKBOX_PREFIX;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getHandlerName(  )
+    {
+        return HANDLER_NAME;
     }
 }
