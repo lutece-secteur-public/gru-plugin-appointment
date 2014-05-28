@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<plug-in>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><plug-in>
     <name>appointment</name>
     <class>fr.paris.lutece.plugins.appointment.service.AppointmentPlugin</class>
     <version>1.0.0</version>
-    <documentation></documentation>
-    <installation></installation>
-    <changes></changes>
-    <user-guide></user-guide>
+    <documentation/>
+    <installation/>
+    <changes/>
+    <user-guide/>
     <description>appointment.plugin.description</description>
     <provider>appointment.plugin.provider</provider>
     <provider-url>http://dev.lutece.paris.fr</provider-url>
@@ -22,7 +21,7 @@
             <feature-description>appointment.adminFeature.ManageAppointment.description</feature-description>
             <feature-level>1</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageAppointments.jsp</feature-url>
-            <feature-icon-url></feature-icon-url>
+            <feature-icon-url/>
       </admin-feature>
         <admin-feature>
             <feature-id>APPOINTMENT_FORM_MANAGEMENT</feature-id>
@@ -30,7 +29,7 @@
             <feature-description>appointment.adminFeature.ManageAppointmentForm.description</feature-description>
             <feature-level>0</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentForms.jsp</feature-url>
-            <feature-icon-url></feature-icon-url>
+            <feature-icon-url/>
       </admin-feature>
     </admin-features>
 	<rbac-resource-types>
@@ -70,8 +69,8 @@
         <portlet-modify-script-template>/admin/portlet/script_modify_portlet.html</portlet-modify-script-template>
         <portlet-create-specific-template>/admin/plugins/appointment/portlet/create_portletappointment.html</portlet-create-specific-template>
         <portlet-modify-specific-template>/admin/plugins/appointment/portlet/modify_portletappointment.html</portlet-modify-specific-template>
-        <portlet-create-specific-form-template></portlet-create-specific-form-template>
-        <portlet-modify-specific-form-template></portlet-modify-specific-form-template> 
+        <portlet-create-specific-form-template/>
+        <portlet-modify-specific-form-template/> 
      </portlet>
    </portlets>
 	<daemons>
