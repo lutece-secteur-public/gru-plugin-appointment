@@ -1,3 +1,4 @@
+<#include "/skin/plugins/asynchronousupload/upload_commons.html" />
 <div class="row-fluid">
 	<div class="span12">
 		<script type="text/javascript" src="js/plugins/appointment/appointment.js" ></script>
@@ -22,8 +23,9 @@
 			</#if>
 		</#if>
 		${form_html!}
-		<script type="text/javascript" src="js/plugins/appointment/uploadify/jquery.uploadify.v2.1.4.min.js" ></script>
-		<script type="text/javascript" src="js/plugins/appointment/uploadify/swfobject.js" ></script>
-		<script type="text/javascript" src="js/plugins/appointment/appointmentupload.js" ></script>
+		
+		<@addRequiredJsFiles />
+		
+		<script type="text/javascript" src="jsp/site/plugins/asynchronousupload/GetMainUploadJs.jsp?handler=appointmentAsynchronousUploadHandler" ></script>
 	</div>
 </div>

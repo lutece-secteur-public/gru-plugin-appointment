@@ -34,6 +34,18 @@
 package fr.paris.lutece.plugins.appointment.service.entrytype;
 
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.util.html.HtmlTemplate;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -49,6 +61,9 @@ public class EntryTypeImage extends EntryTypeFile
     public static final String BEAN_NAME = "appointment.entryTypeImage";
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_image.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_image.html";
+    private static final String TEMPLATE_FILE_IMAGE = "skin/plugins/appointment/entries/recap_entry_type_image.html";
+    private static final String MARK_FILE_NAME = "file_name";
+    private static final String MARK_IMG_URL = "img_url";
 
     /**
      * {@inheritDoc}
@@ -75,5 +90,31 @@ public class EntryTypeImage extends EntryTypeFile
     public String getUrlDownloadFile( int nResponseId, String strBaseUrl )
     {
         return getUrlDownloadImage( nResponseId, strBaseUrl );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResponseValueForRecap( Entry entry, HttpServletRequest request, Response response, Locale locale )
+    {
+        if ( ( response.getFile(  ) != null ) && StringUtils.isNotBlank( response.getFile(  ).getTitle(  ) ) )
+        {
+            if ( response.getIdResponse(  ) > 0 )
+            {
+                Map<String, Object> model = new HashMap<String, Object>(  );
+                model.put( MARK_FILE_NAME, response.getFile(  ).getTitle(  ) );
+                model.put( MARK_IMG_URL,
+                    getUrlDownloadFile( response.getIdResponse(  ), AppPathService.getBaseUrl( request ) ) );
+
+                HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FILE_IMAGE, locale, model );
+
+                return template.getHtml(  );
+            }
+
+            return response.getFile(  ).getTitle(  );
+        }
+
+        return StringUtils.EMPTY;
     }
 }
