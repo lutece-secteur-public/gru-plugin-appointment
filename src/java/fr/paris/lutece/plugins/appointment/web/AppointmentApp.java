@@ -467,6 +467,8 @@ public class AppointmentApp extends MVCApplication
                 appointment.setIdSlot( nIdSlot );
             }
 
+            // If the calendar is the first step, then we must create the appointment object and save it into the session
+            // Then we redirect the user to the second step
             if ( !_appointmentFormService.isFormFirstStep(  ) )
             {
                 appointment = _appointmentFormService.getAppointmentFromSession( request.getSession(  ) );
@@ -474,20 +476,18 @@ public class AppointmentApp extends MVCApplication
                 if ( appointment == null )
                 {
                     AppointmentDTO appointmentDTO = new AppointmentDTO(  );
+                    _appointmentFormService.setUserInfo( request, appointmentDTO );
                     _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
                     appointment = appointmentDTO;
                 }
 
                 appointment.setIdSlot( nIdSlot );
+
+                return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM,
+                    appointmentSlot.getIdForm(  ) );
             }
 
-            if ( _appointmentFormService.isFormFirstStep(  ) )
-            {
-                return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
-            }
-
-            return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM,
-                appointmentSlot.getIdForm(  ) );
+            return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
         }
 
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );

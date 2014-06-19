@@ -177,20 +177,7 @@ public class AppointmentFormService implements Serializable
         {
             appointment = new AppointmentDTO(  );
 
-            if ( SecurityService.isAuthenticationEnable(  ) )
-            {
-                LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
-
-                if ( user != null )
-                {
-                    appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty( 
-                                PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
-                    appointment.setLastName( user.getUserInfo( AppPropertiesService.getProperty( 
-                                PROPERTY_USER_ATTRIBUTE_LAST_NAME, StringUtils.EMPTY ) ) );
-                    appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty( 
-                                PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
-                }
-            }
+            setUserInfo( request, appointment );
         }
 
         model.put( MARK_APPOINTMENT, appointment );
@@ -211,6 +198,30 @@ public class AppointmentFormService implements Serializable
                 model );
 
         return template.getHtml(  );
+    }
+
+    /**
+     * Set the info of the current LuteceUser to an appointment. If there is no
+     * current lutece user, then do nothing
+     * @param request The request
+     * @param appointment The appointment to set user info
+     */
+    public void setUserInfo( HttpServletRequest request, Appointment appointment )
+    {
+        if ( SecurityService.isAuthenticationEnable(  ) && ( appointment != null ) )
+        {
+            LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
+
+            if ( user != null )
+            {
+                appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty( 
+                            PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
+                appointment.setLastName( user.getUserInfo( AppPropertiesService.getProperty( 
+                            PROPERTY_USER_ATTRIBUTE_LAST_NAME, StringUtils.EMPTY ) ) );
+                appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty( 
+                            PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
+            }
+        }
     }
 
     /**
