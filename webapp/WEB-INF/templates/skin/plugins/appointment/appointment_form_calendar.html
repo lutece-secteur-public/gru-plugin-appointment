@@ -84,20 +84,26 @@
 									</#list>
 									<#list day.listSlots as slot>
 										<tr>
+											<#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - ( slot.startingHour * 60 + slot.startingMinute ) >
+											<#if slotDuration != day.appointmentDuration>
+												<#assign slotSpan= (slotDuration / min_duration_appointments)?round >
+											<#else>
+												<#assign slotSpan=rowspan >
+											</#if>
 											<#if slot.isEnabled>
 												<#if slot.nbFreePlaces &gt; 0>
-													<td class="appointment-slot-avaiable appointment-row${rowspan} appointment-tooltip">
+													<td class="appointment-slot-avaiable appointment-row${slotSpan} appointment-tooltip">
 														<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
 														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												<#else>
-													<td class="appointment-slot-full appointment-row${rowspan} appointment-tooltip">
+													<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
 														#i18n{appointment.appointmentCalendar.labelSlotFull}
 														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												</#if>
 											<#else>
-												<td class="appointment-slot-closed appointment-row${rowspan} appointment-tooltip">
+												<td class="appointment-slot-closed appointment-row${slotSpan} appointment-tooltip">
 													&nbsp;
 													<@getCellTooltip appointmentSlot=slot />
 												</td>

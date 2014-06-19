@@ -100,20 +100,26 @@
 									</#list>
 									<#list day.listSlots as slot>
 										<tr>
+											<#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - ( slot.startingHour * 60 + slot.startingMinute ) >
+											<#if slotDuration != day.appointmentDuration>
+												<#assign slotSpan= (slotDuration / min_duration_appointments)?round >
+											<#else>
+												<#assign slotSpan=rowspan >
+											</#if>
 											<#if slot.isEnabled>
 												<#if slot.nbFreePlaces == slot.nbPlaces>
-													<td class="appointment-slot-avaiable appointment-row${rowspan}">
+													<td class="appointment-slot-avaiable appointment-row${slotSpan}">
 														${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
 													</td>
 												<#else>
-													<td class="appointment-slot-full appointment-row${rowspan}">
+													<td class="appointment-slot-full appointment-row${slotSpan}">
 														<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
 															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
 														</a>
 													</td>
 												</#if>
 											<#else>
-												<td class="appointment-slot-closed appointment-row${rowspan}">
+												<td class="appointment-slot-closed appointment-row${slotSpan}">
 													&nbsp;
 												</td>
 											</#if>
