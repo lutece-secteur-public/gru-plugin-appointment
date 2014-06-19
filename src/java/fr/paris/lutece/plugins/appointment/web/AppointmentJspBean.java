@@ -683,7 +683,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     FileItem fileItem = new GenAttFileItem( physicalFile.getValue(  ), file.getTitle(  ),
                             IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry, response.getIdResponse(  ) );
                     AppointmentAsynchronousUploadHandler.getHandler(  )
-                                                        .addFileItemToUploadedFile( fileItem,
+                                                        .addFileItemToUploadedFilesList( fileItem,
                         IEntryTypeService.PREFIX_ATTRIBUTE + strIdEntry, request );
                 }
 

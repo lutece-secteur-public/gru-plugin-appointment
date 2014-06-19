@@ -50,7 +50,9 @@ import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeUpload;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
@@ -91,7 +93,6 @@ public class AppointmentFormService implements Serializable
      * Serial version UID
      */
     private static final long serialVersionUID = 6197939507943704211L;
-    private static final String VIEW_GET_FORM = "viewForm";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PREFIX_ATTRIBUTE = "attribute";
 
@@ -108,6 +109,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_APPOINTMENT = "appointment";
     private static final String MARK_ADDON = "addon";
     private static final String MARK_IS_FORM_FIRST_STEP = "isFormFirstStep";
+    private static final String MARK_UPLOAD_HANDLER = "uploadHandler";
 
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
@@ -309,8 +311,16 @@ public class AppointmentFormService implements Serializable
             }
         }
 
-        template = AppTemplateService.getTemplate( EntryTypeServiceManager.getEntryTypeService( entry )
-                                                                          .getTemplateHtmlForm( entry, bDisplayFront ),
+        IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
+
+        // If the entry type is a file, we add the 
+        if ( entryTypeService instanceof AbstractEntryTypeUpload )
+        {
+            model.put( MARK_UPLOAD_HANDLER,
+                ( (AbstractEntryTypeUpload) entryTypeService ).getAsynchronousUploadHandler(  ) );
+        }
+
+        template = AppTemplateService.getTemplate( entryTypeService.getTemplateHtmlForm( entry, bDisplayFront ),
                 locale, model );
         stringBuffer.append( template.getHtml(  ) );
     }

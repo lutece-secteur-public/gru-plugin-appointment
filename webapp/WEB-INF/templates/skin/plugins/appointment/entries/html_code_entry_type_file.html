@@ -13,7 +13,7 @@
 				</#if>
 			</#list>
 		</#if>
-		<@addFileInput fieldName=fieldName handlerName='appointmentAsynchronousUploadHandler' submitPrefix='_appointment_upload_submit_' cssClass=cssClass multiple=true />
+		<@addFileInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 			<span class="help-block">${entry.helpMessage}</span>
 		</#if>
@@ -47,4 +47,4 @@
 	<#assign listFiles = ''>
 </#if>
 
-<@addUploadedFilesBox fieldName=fieldName checkBoxPrefix='_appointment_upload_checkbox_' deletePrefix='_appointment_upload_delete_' listFiles=listFiles />
+<@addUploadedFilesBox fieldName=fieldName handler=uploadHandler listFiles=listFiles />
