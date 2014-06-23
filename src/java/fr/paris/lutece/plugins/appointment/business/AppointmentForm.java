@@ -39,7 +39,6 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
-
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
@@ -57,8 +56,17 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * Name of the resource type of Appointment Forms
      */
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+    /**
+     * Constant for separator between hours and minutes.
+     */
+    public static final String CONSTANT_H = "h";
+
+    /**
+     * Regular expression used to control time format
+     */
+    public static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$";
+
     private static final long serialVersionUID = 307685220867535209L;
-    private static final String CONSTANT_H = "h";
 
     // Variables declarations 
     private int _nIdForm;
@@ -68,9 +76,9 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     @NotEmpty( message = "#i18n{appointment.validation.appointmentform.Description.notEmpty}" )
     private String _strDescription;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    @Pattern( regexp = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
+    @Pattern( regexp = CONSTANT_TIME_REGEX, message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
     private String _strTimeStart;
-    @Pattern( regexp = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$", message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
+    @Pattern( regexp = CONSTANT_TIME_REGEX, message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeEnd;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )

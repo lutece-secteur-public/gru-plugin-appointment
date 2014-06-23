@@ -1,0 +1,122 @@
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<div class="row-fluid" >
+	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
+    <div class="span8">
+    	<#if day??>
+    		<@tabs tab="days" appointmentform=appointmentform />
+    	<#else>
+    		<@tabs tab="slots" appointmentform=appointmentform />
+    	</#if>
+    	<fieldset>
+    		<legend>#i18n{appointment.manageCalendarSlots.pageTitle}</legend>
+			<table class="table appointment-table-slots">
+				<thead>
+					<#if day??>
+						<tr>
+							<th>
+							</th>
+							<th>
+								${day.date}
+							</th>
+						</tr>
+					<#else>
+						<tr>
+							<th>
+							</th>
+							<th>
+								#i18n{appointment.manageCalendarSlots.labelMonday}
+							</th>
+							<th>
+								#i18n{appointment.manageCalendarSlots.labelTuesday}
+							</th>
+							<th>
+								#i18n{appointment.manageCalendarSlots.labelWednesday}
+							</th>
+							<th>
+								#i18n{appointment.manageCalendarSlots.labelThursday}
+							</th>
+							<th>
+								#i18n{appointment.manageCalendarSlots.labelFriday}
+							</th>
+							<th>
+								#i18n{appointment.manageCalendarSlots.labelSaturday}
+							</th>
+							<th>
+								#i18n{appointment.manageCalendarSlots.labelSunday}
+							</th>
+						</tr>
+					</#if>
+				</thead>
+				<tbody>
+					<#assign startingHour = minStartingHour>
+					<#assign startingMinute = minStartingMinute>
+					<tr>
+						<td class="column-time">
+							<#if startingHour &lt; 10 >0</#if>${startingHour}h<#if startingMinute &lt; 10 >0</#if>${startingMinute}
+						</td>
+						<#list listSlots as slot>
+							<#if slot.startingHour * 60 + slot.startingMinute &gt; startingHour * 60 + startingMinute >
+								
+								<#assign nbHeadersToAdd = ((slot.startingHour * 60 + slot.startingMinute) - (startingHour * 60 + startingMinute) ) / minDuration>
+								
+								<#list 1..nbHeadersToAdd as i >
+									<#assign startingMinute = startingMinute + minDuration >
+									<#if startingMinute &gt;= 60>
+										<#assign startingHour = startingHour + (startingMinute / 60)?round>
+										<#assign startingMinute = startingMinute % 60>
+									</#if>
+									</tr>
+									<tr>
+										<td class="column-time">
+											<#if startingHour &lt; 10 >0</#if>${startingHour}h<#if startingMinute &lt; 10 >0</#if>${startingMinute}
+										</td>
+								</#list>
+							</#if>
+							<#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - (slot.startingHour * 60 + slot.startingMinute) >
+							<#if slotDuration &gt; minDuration>
+								<#assign rowspan=(slotDuration/minDuration)?round>
+							<#else>
+								<#assign rowspan=1>
+							</#if>
+							<td rowspan="${rowspan}" class="appointment-tooltip" >
+								<#if slot.idSlot &gt; 0>
+									<a id="${slot.idSlot}" class="btn btn-mini  btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}">
+										<#if slot.isEnabled>
+											#i18n{appointment.manageCalendarSlots.labelOpened}
+										<#else>
+											#i18n{appointment.manageCalendarSlots.labelClosed}
+										</#if>
+									</a>
+									<a class="btn btn-default btn-mini" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_slot=${slot.idSlot}" title="#i18n{portal.util.labelModify}">
+										<i class="icon-edit"></i>
+									</a>
+								<#else>
+									<button type="button" class="btn btn-primary btn-danger btn-mini" >#i18n{appointment.manageCalendarSlots.labelClosed}</button>
+								</#if>
+								<@getCellTooltip appointmentSlot=slot />
+							</td>
+						</#list>
+					</tr>
+				</tbody>
+			</table>
+			<#if day??>
+				<div class="form-actions">
+					<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
+						<i class="icon-remove-circle icon-white">&nbsp;</i>#i18n{portal.util.labelBack}
+					</a>
+				</div>
+			</#if>
+    	</fieldset>
+    </div>
+</div>
+
+<br />
+<br />
+
+<#macro getCellTooltip appointmentSlot>
+	<span class="appointment-tooltip-title appointment-tooltip-title-fo">
+		<#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute} 
+	</span> 
+</#macro>
+
+<link href="css/plugins/appointment/appointment.css" rel="stylesheet">

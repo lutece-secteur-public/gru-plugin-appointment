@@ -1,0 +1,45 @@
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<div class="row-fluid">
+	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
+	<div class="span8">
+		<#if slot.idDay &gt; 0>
+    		<@tabs tab="days" appointmentform=appointmentform />
+    	<#else>
+    		<@tabs tab="slots" appointmentform=appointmentform />
+    	</#if>
+		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
+			<fieldset>
+				<legend>#i18n{appointment.modifyCalendarSlots.pageTitle}</legend>
+				<@messages errors=errors infos=infos />
+				<input type="hidden" name="action" value="doModifySlot">
+				<input type="hidden" name="id_slot" value="${slot.idSlot}" >
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.create_appointmentform.labelPeoplePerAppointment}</label>
+					<div class="controls">
+						<input type="text" name="nbPlaces" value="${slot.nbPlaces}" >
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.model.entity.appointmentform.attribute.timeStart}</label>
+					<div class="controls">
+						<#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}</label>
+					<div class="controls">
+						<input type="text" name="timeEnd" value="<#if slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}" >
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-small btn-primary">
+						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
+					</button>
+					<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if>">
+						<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+					</a>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

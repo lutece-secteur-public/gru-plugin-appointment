@@ -94,12 +94,11 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -111,7 +110,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import javax.validation.ConstraintViolation;
 
 
@@ -221,7 +219,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
     private static final String VIEW_CALENDAR_MANAGE_APPOINTMENTS = "viewCalendarManageAppointment";
     private static final String VIEW_WORKFLOW_ACTION_FORM = "viewWorkflowActionForm";
-    private static final String VIEW_DOWNLOAD_FILE = "viewDownloadFile";
 
     // Actions
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
@@ -869,8 +866,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
             }
 
-            List<AppointmentDay> listDays = AppointmentService.getService(  ).getDayListForCalendar( form, nNbWeek,
-                    false );
+            List<AppointmentDay> listDays = AppointmentService.getService( ).getDayListForCalendar( form,
+                    new MutableInt( nNbWeek ), false, false );
 
             List<String> listTimeBegin = new ArrayList<String>(  );
             int nMinAppointmentDuration = AppointmentService.getService(  )

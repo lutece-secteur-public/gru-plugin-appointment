@@ -54,13 +54,10 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -136,9 +133,6 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     // Urls
     private static final String JSP_MANAGE_APPOINTMENTFORMS_DAYS = "jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp";
 
-    // Constants
-    private static final String CONSTANT_H = "h";
-    private static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]h[0-5][0-9]$";
 
     // Local variables
     private transient DateConverter _dateConverter;
@@ -564,9 +558,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         {
             String strOpeningTime = request.getParameter( PARAMETER_OPENING_TIME );
 
-            if ( ( strOpeningTime != null ) && strOpeningTime.matches( CONSTANT_TIME_REGEX ) )
+            if ( ( strOpeningTime != null ) && strOpeningTime.matches( AppointmentForm.CONSTANT_TIME_REGEX ) )
             {
-                String[] strArrayOpeningTime = strOpeningTime.split( CONSTANT_H );
+                String[] strArrayOpeningTime = strOpeningTime.split( AppointmentForm.CONSTANT_H );
                 day.setOpeningHour( Integer.parseInt( strArrayOpeningTime[0] ) );
                 day.setOpeningMinutes( Integer.parseInt( strArrayOpeningTime[1] ) );
             }
@@ -577,9 +571,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             String strClosingTime = request.getParameter( PARAMETER_CLOSING_TIME );
 
-            if ( ( strClosingTime != null ) && strClosingTime.matches( CONSTANT_TIME_REGEX ) )
+            if ( ( strClosingTime != null ) && strClosingTime.matches( AppointmentForm.CONSTANT_TIME_REGEX ) )
             {
-                String[] strArrayClosingTime = strClosingTime.split( CONSTANT_H );
+                String[] strArrayClosingTime = strClosingTime.split( AppointmentForm.CONSTANT_H );
                 day.setClosingHour( Integer.parseInt( strArrayClosingTime[0] ) );
                 day.setClosingMinutes( Integer.parseInt( strArrayClosingTime[1] ) );
             }

@@ -45,21 +45,22 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     private static final String CACHE_KEY_FORM = "appointment.appointmentForm.";
     private static final String CACHE_KEY_FORM_MESSAGE = "appointment.appointmentFormMessage.";
     private static final String CACHE_KEY_APPOINTMENT_RESPONSE = "appointment.appointmentResponse";
-    private static AppointmentFormCacheService _instance = new AppointmentFormCacheService(  );
+    private static final String CACHE_KEY_LIST_APPOINTMENT_TIMES = "appointment.listAppointmentTimes.";
+    private static AppointmentFormCacheService _instance = new AppointmentFormCacheService( );
 
     /**
      * Private constructor
      */
-    private AppointmentFormCacheService(  )
+    private AppointmentFormCacheService( )
     {
-        initCache(  );
+        initCache( );
     }
 
     /**
      * Get the instance of the cache service
      * @return The instance of the service
      */
-    public static AppointmentFormCacheService getInstance(  )
+    public static AppointmentFormCacheService getInstance( )
     {
         return _instance;
     }
@@ -95,10 +96,31 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     }
 
     /**
+     * Get the cache key to lists of appointment times
+     * @param nAppointmentDuration The appointment duration
+     * @param nOpeningHour The opening hour
+     * @param nOpeningMinutes The opening minute
+     * @param nClosingHour The closing hour
+     * @param nClosingMinutes The closing minute
+     * @return The cache key
+     */
+    public static String getListAppointmentTimesCacheKey( int nAppointmentDuration, int nOpeningHour,
+            int nOpeningMinutes, int nClosingHour, int nClosingMinutes )
+    {
+        StringBuilder sbCacheKey = new StringBuilder( CACHE_KEY_LIST_APPOINTMENT_TIMES );
+        sbCacheKey.append( nAppointmentDuration );
+        sbCacheKey.append( nOpeningHour );
+        sbCacheKey.append( nOpeningMinutes );
+        sbCacheKey.append( nClosingHour );
+        sbCacheKey.append( nClosingMinutes );
+        return sbCacheKey.toString( );
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
-    public String getName(  )
+    public String getName( )
     {
         return SERVICE_NAME;
     }
