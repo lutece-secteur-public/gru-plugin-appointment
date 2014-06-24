@@ -75,8 +75,9 @@ public final class AppointmentFormListPortletDAO implements IAppointmentFormList
     @Override
     public Portlet load( int nIdPortlet )
     {
-        AppointmentFormListPortlet portlet = new AppointmentFormListPortlet( );
+        AppointmentFormListPortlet portlet = new AppointmentFormListPortlet(  );
         portlet.setId( nIdPortlet );
+
         return portlet;
     }
 }

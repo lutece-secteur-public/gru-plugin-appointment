@@ -44,40 +44,36 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
     ///////////////////////////////////////////////////////////////////////////////////////
     // Access methods to data
 
-
-        /**
-     * {@inheritDoc}
-     */
+    /**
+    * {@inheritDoc}
+    */
     @Override
     public void insert( Portlet portlet )
     {
         // Do nothing
     }
 
-
-        /**
-     * {@inheritDoc}
-     */
+    /**
+    * {@inheritDoc}
+    */
     @Override
     public void delete( int nPortletId )
     {
         // Do nothing
     }
 
-
-        /**
-     * {@inheritDoc}
-     */
+    /**
+    * {@inheritDoc}
+    */
     @Override
     public void store( Portlet portlet )
     {
         // Do nothing
     }
 
-
-        /**
-     * {@inheritDoc}
-     */
+    /**
+    * {@inheritDoc}
+    */
     @Override
     public Portlet load( int nIdPortlet )
     {

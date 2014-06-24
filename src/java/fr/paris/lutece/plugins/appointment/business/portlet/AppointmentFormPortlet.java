@@ -52,8 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AppointmentFormPortlet extends PortletHtmlContent
 {
-    private final AppointmentFormService _appointmentFormService = SpringContextService
-            .getBean( AppointmentFormService.BEAN_NAME );
+    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private int _nIdAppointmentForm;
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -62,9 +61,9 @@ public class AppointmentFormPortlet extends PortletHtmlContent
     /**
      * Sets the identifier of the portlet type to value specified
      */
-    public AppointmentFormPortlet( )
+    public AppointmentFormPortlet(  )
     {
-        setPortletTypeId( AppointmentFormPortletHome.getInstance( ).getPortletTypeId( ) );
+        setPortletTypeId( AppointmentFormPortletHome.getInstance(  ).getPortletTypeId(  ) );
     }
 
     /**
@@ -75,14 +74,14 @@ public class AppointmentFormPortlet extends PortletHtmlContent
     @Override
     public String getHtmlContent( HttpServletRequest request )
     {
-        if ( request != null && _nIdAppointmentForm > 0 )
+        if ( ( request != null ) && ( _nIdAppointmentForm > 0 ) )
         {
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( _nIdAppointmentForm );
 
-            if ( ( form != null ) && form.getIsActive( ) )
+            if ( ( form != null ) && form.getIsActive(  ) )
             {
                 return AppointmentApp.getHtmlFormFirstStep( request, form, _appointmentFormService,
-                        new HashMap<String, Object>( ), request.getLocale( ) );
+                    new HashMap<String, Object>(  ), request.getLocale(  ) );
             }
         }
 
@@ -92,25 +91,25 @@ public class AppointmentFormPortlet extends PortletHtmlContent
     /**
      * Updates the current instance of the AppointmentPortlet object
      */
-    public void update( )
+    public void update(  )
     {
-        AppointmentFormPortletHome.getInstance( ).update( this );
+        AppointmentFormPortletHome.getInstance(  ).update( this );
     }
 
     /**
      * Removes the current instance of the AppointmentPortlet object
      */
     @Override
-    public void remove( )
+    public void remove(  )
     {
-        AppointmentFormPortletHome.getInstance( ).remove( this );
+        AppointmentFormPortletHome.getInstance(  ).remove( this );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean canBeCachedForConnectedUsers( )
+    public boolean canBeCachedForConnectedUsers(  )
     {
         return false;
     }
@@ -119,7 +118,7 @@ public class AppointmentFormPortlet extends PortletHtmlContent
      * {@inheritDoc}
      */
     @Override
-    public boolean canBeCachedForAnonymousUsers( )
+    public boolean canBeCachedForAnonymousUsers(  )
     {
         return false;
     }
@@ -128,7 +127,7 @@ public class AppointmentFormPortlet extends PortletHtmlContent
      * Get the id of the appointment form to display
      * @return The id of the appointment form to display
      */
-    public int getIdAppointmentForm( )
+    public int getIdAppointmentForm(  )
     {
         return _nIdAppointmentForm;
     }

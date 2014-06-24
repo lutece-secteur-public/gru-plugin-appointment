@@ -47,7 +47,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AppointmentFormListPortletJspBean extends PortletJspBean
 {
-
     /**
      * Serial version UID
      */
@@ -86,7 +85,7 @@ public class AppointmentFormListPortletJspBean extends PortletJspBean
     @Override
     public String doCreate( HttpServletRequest request )
     {
-        AppointmentFormListPortlet portlet = new AppointmentFormListPortlet( );
+        AppointmentFormListPortlet portlet = new AppointmentFormListPortlet(  );
 
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
@@ -103,7 +102,7 @@ public class AppointmentFormListPortletJspBean extends PortletJspBean
         portlet.setPageId( nPageId );
 
         // Creates the portlet
-        AppointmentFormListPortletHome.getInstance( ).create( portlet );
+        AppointmentFormListPortletHome.getInstance(  ).create( portlet );
 
         //Displays the page with the new Portlet
         return getPageUrl( nPageId );

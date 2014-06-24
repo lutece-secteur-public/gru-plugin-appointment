@@ -60,7 +60,7 @@ public class AppointmentPortlet extends PortletHtmlContent
 
     /**
      * Returns the HTML code of the AppointmentPortlet portlet
-     * 
+     *
      * @param request The HTTP servlet request
      * @return the HTML code of the AppointmentPortlet portlet
      */

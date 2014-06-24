@@ -48,15 +48,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AppointmentFormListPortlet extends PortletHtmlContent
 {
-    private final AppointmentFormService _appointmentFormService = SpringContextService
-            .getBean( AppointmentFormService.BEAN_NAME );
+    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
 
     /**
      * Sets the identifier of the portlet type to value specified
      */
     public AppointmentFormListPortlet(  )
     {
-        setPortletTypeId( AppointmentFormListPortletHome.getInstance( ).getPortletTypeId( ) );
+        setPortletTypeId( AppointmentFormListPortletHome.getInstance(  ).getPortletTypeId(  ) );
     }
 
     /**
@@ -68,8 +67,9 @@ public class AppointmentFormListPortlet extends PortletHtmlContent
         if ( request != null )
         {
             return AppointmentApp.getFormListHtml( request, _appointmentFormService,
-                    getDisplayPortletTitle( ) == 0 ? getName( ) : null, request.getLocale( ) );
+                ( getDisplayPortletTitle(  ) == 0 ) ? getName(  ) : null, request.getLocale(  ) );
         }
+
         return StringUtils.EMPTY;
     }
 
@@ -78,7 +78,7 @@ public class AppointmentFormListPortlet extends PortletHtmlContent
      */
     public void update(  )
     {
-        AppointmentFormListPortletHome.getInstance( ).update( this );
+        AppointmentFormListPortletHome.getInstance(  ).update( this );
     }
 
     /**
@@ -87,6 +87,6 @@ public class AppointmentFormListPortlet extends PortletHtmlContent
     @Override
     public void remove(  )
     {
-        AppointmentFormListPortletHome.getInstance( ).remove( this );
+        AppointmentFormListPortletHome.getInstance(  ).remove( this );
     }
 }
