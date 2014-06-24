@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -108,4 +107,13 @@ public interface IAppointmentDayDAO
      * @return The list of days
      */
     List<AppointmentDay> getDaysBetween( int nIdForm, Date dateMin, Date dateMax, Plugin plugin );
+
+    /**
+     * Decrement or increment by 1 the number of free places of an appointment
+     * @param day The day to update
+     * @param bIncrement True to increment the number of free places by 1, false
+     *            to decrement it
+     * @param plugin The plugin
+     */
+    void updateDayFreePlaces( AppointmentDay day, boolean bIncrement, Plugin plugin );
 }

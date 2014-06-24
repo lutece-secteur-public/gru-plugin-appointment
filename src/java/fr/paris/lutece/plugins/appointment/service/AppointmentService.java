@@ -303,16 +303,7 @@ public class AppointmentService
                     if ( day.getIsOpen( ) )
                     {
                         day.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay( ) ) );
-                        if ( !bSlotFound )
-                        {
-                            for ( AppointmentSlot slot : day.getListSlots( ) )
-                            {
-                                if ( slot.getIsEnabled( ) && slot.getNbFreePlaces( ) > 0 )
-                                {
-                                    bSlotFound = true;
-                                }
-                            }
-                        }
+                        bSlotFound = bSlotFound || day.getFreePlaces( ) > 0;
                     }
                     else
                     {
@@ -556,6 +547,15 @@ public class AppointmentService
                         // If the day has not already been created, we create it
                         if ( day.getIdDay( ) == 0 )
                         {
+                            int nNbFreePlaces = 0;
+                            for ( AppointmentSlot slot : day.getListSlots( ) )
+                            {
+                                if ( slot.getIsEnabled( ) )
+                                {
+                                    nNbFreePlaces += slot.getNbPlaces( );
+                                }
+                            }
+                            day.setFreePlaces( nNbFreePlaces );
                             AppointmentDayHome.create( day );
 
                             for ( AppointmentSlot slot : day.getListSlots( ) )

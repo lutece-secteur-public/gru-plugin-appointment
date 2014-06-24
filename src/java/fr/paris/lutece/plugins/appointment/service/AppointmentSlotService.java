@@ -98,6 +98,8 @@ public class AppointmentSlotService
             slot.setNbPlaces( day.getPeoplePerAppointment( ) );
             AppointmentSlotHome.create( slot );
         }
+        day.setFreePlaces( day.getPeoplePerAppointment( ) * listSlots.size( ) );
+        AppointmentDayHome.update( day );
     }
 
     /**
@@ -111,10 +113,14 @@ public class AppointmentSlotService
 
         for ( AppointmentDay day : listAppointmentDay )
         {
+            int nFreePlaces = 0;
             for ( AppointmentSlot slot : day.getListSlots( ) )
             {
                 AppointmentSlotHome.create( slot );
+                nFreePlaces += slot.getNbPlaces( );
             }
+            day.setFreePlaces( nFreePlaces );
+            AppointmentDayHome.update( day );
         }
     }
 
@@ -191,6 +197,11 @@ public class AppointmentSlotService
             }
 
             AppointmentSlotHome.create( slot );
+        }
+
+        if ( modifiedSlot.getIdDay( ) > 0 )
+        {
+            AppointmentDayHome.resetDayFreePlaces( modifiedSlot.getIdDay( ) );
         }
     }
 
@@ -273,10 +284,14 @@ public class AppointmentSlotService
 
             for ( AppointmentDay day : listAppointmentDay )
             {
+                int nFreePlaces = 0;
                 for ( AppointmentSlot slot : day.getListSlots( ) )
                 {
                     AppointmentSlotHome.create( slot );
+                    nFreePlaces += slot.getNbPlaces( );
                 }
+                day.setFreePlaces( nFreePlaces );
+                AppointmentDayHome.update( day );
             }
 
             return true;

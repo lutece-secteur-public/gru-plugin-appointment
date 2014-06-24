@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
@@ -44,7 +47,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +80,10 @@ public final class AppointmentHome
     {
         _dao.insert( appointment, _plugin );
 
+        // We update the number of free places of the day
+        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+        AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay( ) );
+
         return appointment;
     }
 
@@ -85,13 +91,29 @@ public final class AppointmentHome
      * Update of the appointment which is specified in parameter
      * @param appointment The instance of the Appointment which contains the
      *            data to store
-     * @return The instance of the appointment which has been updated
      */
-    public static Appointment update( Appointment appointment )
+    public static void update( Appointment appointment )
     {
+        Appointment appointmentFromDb = findByPrimaryKey( appointment.getIdAppointment( ) );
+
         _dao.store( appointment, _plugin );
 
-        return appointment;
+        // If the status changed, we check if we need to update the number of free places of the associated day
+        if ( appointment.getStatus( ) != appointmentFromDb.getStatus( ) )
+        {
+            if ( appointmentFromDb.getStatus( ) != Appointment.STATUS_REJECTED
+                    && appointment.getStatus( ) == Appointment.STATUS_REJECTED )
+            {
+                AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+                AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay( ) );
+            }
+            else if ( appointmentFromDb.getStatus( ) == Appointment.STATUS_REJECTED
+                    && appointment.getStatus( ) != Appointment.STATUS_REJECTED )
+            {
+                AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+                AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay( ) );
+            }
+        }
     }
 
     /**
@@ -103,6 +125,8 @@ public final class AppointmentHome
     {
         AppointmentListenerManager.notifyListenersAppointmentRemoval( nAppointmentId );
 
+        Appointment appointment = findByPrimaryKey( nAppointmentId );
+
         for ( int nIdResponse : _dao.findListIdResponse( nAppointmentId, _plugin ) )
         {
             ResponseHome.remove( nIdResponse );
@@ -110,6 +134,12 @@ public final class AppointmentHome
 
         _dao.deleteAppointmentResponse( nAppointmentId, _plugin );
         _dao.delete( nAppointmentId, _plugin );
+
+        if ( appointment.getStatus( ) != Appointment.STATUS_REJECTED )
+        {
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+            AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay( ) );
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

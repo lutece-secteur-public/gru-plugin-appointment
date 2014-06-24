@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -158,14 +157,14 @@ public interface IAppointmentSlotDAO
      */
     List<AppointmentSlot> findByIdDayWithFreePlaces( int nIdDay, Plugin plugin );
 
-    /**
-     * Get the list of slots associated with a given form for a given day of
-     * week. Also compute the number of free places for each slot
-     * @param nIdForm the if of the form
-     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
-     * @param dateDay The date of the day
-     * @param plugin The plugin
-     * @return the list of slots
-     */
-    List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin plugin );
+    //    /**
+    //     * Get the list of slots associated with a given form for a given day of
+    //     * week. Also compute the number of free places for each slot
+    //     * @param nIdForm the if of the form
+    //     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
+    //     * @param dateDay The date of the day
+    //     * @param plugin The plugin
+    //     * @return the list of slots
+    //     */
+    //    List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin plugin );
 }

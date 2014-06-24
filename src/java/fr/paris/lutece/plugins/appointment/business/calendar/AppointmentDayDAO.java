@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,12 +47,13 @@ import java.util.List;
 public class AppointmentDayDAO implements IAppointmentDayDAO
 {
     private static final String NEW_PRIMARY_KEY = "SELECT MAX(id_day) FROM appointment_day";
-    private static final String SQL_QUERY_CREATE_DAY = "INSERT INTO appointment_day (id_day, id_form, is_open, date_day, opening_hour, opening_minute, closing_hour, closing_minute, appointment_duration, people_per_appointment) VALUES (?,?,?,?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY_UPDATE_DAY = "UPDATE appointment_day SET is_open = ?, date_day = ?, opening_hour = ?, opening_minute = ?, closing_hour = ?, closing_minute = ?, appointment_duration = ?, people_per_appointment = ? WHERE id_day = ?";
+    private static final String SQL_QUERY_CREATE_DAY = "INSERT INTO appointment_day (id_day, id_form, is_open, date_day, opening_hour, opening_minute, closing_hour, closing_minute, appointment_duration, people_per_appointment, free_places) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String SQL_QUERY_UPDATE_DAY = "UPDATE appointment_day SET is_open = ?, date_day = ?, opening_hour = ?, opening_minute = ?, closing_hour = ?, closing_minute = ?, appointment_duration = ?, people_per_appointment = ?, free_places = ? WHERE id_day = ?";
+    private static final String SQL_QUERY_UPDATE_DAY_FREE_PLACES = "UPDATE appointment_day SET free_places = ? WHERE id_day = ?";
     private static final String SQL_QUERY_REMOVE_DAY_BY_PRIMARY_KEY = "DELETE FROM appointment_day WHERE id_day = ?";
     private static final String SQL_QUERY_REMOVE_DAY_BY_ID_DAY = "DELETE FROM appointment_day WHERE id_form = ?";
     private static final String SQL_QUERY_REMOVE_LONELY_DAYS = " DELETE FROM appointment_day WHERE date_day < ? AND id_day NOT IN (SELECT DISTINCT(id_day) FROM appointment_slot) ";
-    private static final String SQL_QUERY_SELECT_DAY = "SELECT id_day, id_form, is_open, date_day, opening_hour, opening_minute, closing_hour, closing_minute, appointment_duration, people_per_appointment FROM appointment_day ";
+    private static final String SQL_QUERY_SELECT_DAY = "SELECT id_day, id_form, is_open, date_day, opening_hour, opening_minute, closing_hour, closing_minute, appointment_duration, people_per_appointment, free_places FROM appointment_day ";
     private static final String SQL_QUERY_SELECT_DAY_BY_PRIMARY_KEY = SQL_QUERY_SELECT_DAY + " WHERE id_day = ?";
     private static final String SQL_QUERY_SELECT_DAY_BY_ID_FORM = SQL_QUERY_SELECT_DAY +
         " WHERE id_form = ? ORDER BY date_day ASC";
@@ -101,7 +101,8 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.setInt( nIndex++, day.getClosingHour(  ) );
         daoUtil.setInt( nIndex++, day.getClosingMinutes(  ) );
         daoUtil.setInt( nIndex++, day.getAppointmentDuration(  ) );
-        daoUtil.setInt( nIndex, day.getPeoplePerAppointment(  ) );
+        daoUtil.setInt( nIndex++, day.getPeoplePerAppointment( ) );
+        daoUtil.setInt( nIndex, day.getFreePlaces( ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -123,6 +124,7 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.setInt( nIndex++, day.getClosingMinutes(  ) );
         daoUtil.setInt( nIndex++, day.getAppointmentDuration(  ) );
         daoUtil.setInt( nIndex++, day.getPeoplePerAppointment(  ) );
+        daoUtil.setInt( nIndex++, day.getFreePlaces( ) );
         daoUtil.setInt( nIndex, day.getIdDay(  ) );
 
         daoUtil.executeUpdate(  );
@@ -253,8 +255,33 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         day.setClosingHour( daoUtil.getInt( nIndex++ ) );
         day.setClosingMinutes( daoUtil.getInt( nIndex++ ) );
         day.setAppointmentDuration( daoUtil.getInt( nIndex++ ) );
-        day.setPeoplePerAppointment( daoUtil.getInt( nIndex ) );
+        day.setPeoplePerAppointment( daoUtil.getInt( nIndex++ ) );
+        day.setFreePlaces( daoUtil.getInt( nIndex ) );
 
         return day;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateDayFreePlaces( AppointmentDay day, boolean bIncrement, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_DAY_FREE_PLACES, plugin );
+        if ( bIncrement )
+        {
+            day.setFreePlaces( day.getFreePlaces( ) + 1 );
+        }
+        else
+        {
+            if ( day.getFreePlaces( ) > 0 )
+            {
+                day.setFreePlaces( day.getFreePlaces( ) - 1 );
+            }
+        }
+        daoUtil.setInt( 1, day.getFreePlaces( ) );
+        daoUtil.setInt( 2, day.getIdDay( ) );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 }

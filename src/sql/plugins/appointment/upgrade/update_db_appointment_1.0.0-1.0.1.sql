@@ -1,0 +1,1 @@
+ALTER TABLE appointment_day ADD COLUMN free_places INT NOT NULL;

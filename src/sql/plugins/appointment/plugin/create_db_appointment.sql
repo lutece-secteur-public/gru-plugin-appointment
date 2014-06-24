@@ -63,6 +63,7 @@ CREATE TABLE appointment_day (
 	closing_minute INT NOT NULL,
 	appointment_duration INT NOT NULL,
 	people_per_appointment INT NOT NULL,
+	free_places INT NOT NULL,
 	PRIMARY KEY (id_day)
 );
 CREATE INDEX idx_appointment_day_id_form ON appointment_day (id_form);

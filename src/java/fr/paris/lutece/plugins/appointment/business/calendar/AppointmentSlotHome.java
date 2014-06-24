@@ -39,7 +39,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -74,7 +73,26 @@ public final class AppointmentSlotHome
      */
     public static void update( AppointmentSlot slot )
     {
+        AppointmentSlot slotFromDb = findByPrimaryKey( slot.getIdSlot( ) );
+
         _dao.update( slot, _plugin );
+
+        if ( slot.getIdDay( ) > 0 )
+        {
+            if ( slotFromDb.getIsEnabled( ) ^ slot.getIsEnabled( ) )
+            {
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
+                day.setFreePlaces( slot.getIsEnabled( ) ? day.getFreePlaces( ) + slot.getNbPlaces( ) : day
+                        .getFreePlaces( ) - slot.getNbPlaces( ) );
+                AppointmentDayHome.update( day );
+            }
+            if ( slotFromDb.getNbPlaces( ) != slot.getNbPlaces( ) )
+            {
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
+                day.setFreePlaces( day.getFreePlaces( ) + slot.getNbPlaces( ) - slotFromDb.getNbPlaces( ) );
+                AppointmentDayHome.update( day );
+            }
+        }
     }
 
     /**
@@ -196,19 +214,20 @@ public final class AppointmentSlotHome
      */
     public static List<AppointmentSlot> findByIdDayWithFreePlaces( int nIdDay )
     {
+        // TODO : save list slots in cache
         return _dao.findByIdDayWithFreePlaces( nIdDay, _plugin );
     }
 
-    /**
-     * Get the list of slots associated with a given form for a given day of
-     * week. Also compute the number of free places for each slot
-     * @param nIdForm the if of the form
-     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
-     * @param dateDay The date of the day
-     * @return the list of slots
-     */
-    public static List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay )
-    {
-        return _dao.findByIdFormWithFreePlaces( nIdForm, nDayOfWeek, dateDay, _plugin );
-    }
+    //    /**
+    //     * Get the list of slots associated with a given form for a given day of
+    //     * week. Also compute the number of free places for each slot
+    //     * @param nIdForm the if of the form
+    //     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
+    //     * @param dateDay The date of the day
+    //     * @return the list of slots
+    //     */
+    //    public static List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay )
+    //    {
+    //        return _dao.findByIdFormWithFreePlaces( nIdForm, nDayOfWeek, dateDay, _plugin );
+    //    }
 }

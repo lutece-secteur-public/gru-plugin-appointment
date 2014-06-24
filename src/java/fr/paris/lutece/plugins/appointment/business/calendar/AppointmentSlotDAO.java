@@ -38,7 +38,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +64,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         " WHERE id_form = ? AND id_day = 0 ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DAY_OF_WEEK = SQL_QUERY_SELECT +
         " WHERE id_form = ? AND id_day = 0 AND day_of_week = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND app.date_appointment = ? AND status != ? ) FROM appointment_slot slot WHERE id_form = ? AND id_day = 0 AND day_of_week = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
+    //    private static final String SQL_QUERY_SELECT_BY_ID_FORM_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND app.date_appointment = ? AND status != ? ) FROM appointment_slot slot WHERE id_form = ? AND id_day = 0 AND day_of_week = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_SELECT_BY_ID_DAY = SQL_QUERY_SELECT +
         " WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND status != ? ) FROM appointment_slot slot WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
@@ -347,30 +346,30 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         return listSlots;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin plugin )
-    {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_WITH_FREE_PLACES, plugin );
-        daoUtil.setDate( 1, dateDay );
-        daoUtil.setInt( 2, Appointment.STATUS_REJECTED );
-        daoUtil.setInt( 3, nIdForm );
-        daoUtil.setInt( 4, nDayOfWeek );
-        daoUtil.executeQuery(  );
-
-        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( _nDefaultSlotListSize );
-
-        while ( daoUtil.next(  ) )
-        {
-            listSlots.add( getSlotDataFromDAOUtilWithFreePlaces( daoUtil ) );
-        }
-
-        daoUtil.free(  );
-
-        return listSlots;
-    }
+    //    /**
+    //     * {@inheritDoc}
+    //     */
+    //    @Override
+    //    public List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin plugin )
+    //    {
+    //        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_WITH_FREE_PLACES, plugin );
+    //        daoUtil.setDate( 1, dateDay );
+    //        daoUtil.setInt( 2, Appointment.STATUS_REJECTED );
+    //        daoUtil.setInt( 3, nIdForm );
+    //        daoUtil.setInt( 4, nDayOfWeek );
+    //        daoUtil.executeQuery(  );
+    //
+    //        List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>( _nDefaultSlotListSize );
+    //
+    //        while ( daoUtil.next(  ) )
+    //        {
+    //            listSlots.add( getSlotDataFromDAOUtilWithFreePlaces( daoUtil ) );
+    //        }
+    //
+    //        daoUtil.free(  );
+    //
+    //        return listSlots;
+    //    }
 
     /**
      * Get data of an appointment slot from a DAOUtil. Also load the number of

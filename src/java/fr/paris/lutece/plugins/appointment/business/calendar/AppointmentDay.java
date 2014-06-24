@@ -34,7 +34,6 @@
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -53,6 +52,7 @@ public class AppointmentDay
     private int _nClosingMinutes;
     private int _nAppointmentDuration;
     private int _nPeoplePerAppointment;
+    private int _nDayFreePlaces;
     private List<AppointmentSlot> _listSlots;
 
     /**
@@ -305,5 +305,23 @@ public class AppointmentDay
     public void setListSlots( List<AppointmentSlot> listSlots )
     {
         this._listSlots = listSlots;
+    }
+
+    /**
+     * Get the number of free places of this day
+     * @return The number of free places of this day
+     */
+    public int getFreePlaces( )
+    {
+        return _nDayFreePlaces;
+    }
+
+    /**
+     * Set the number of free places of this day
+     * @param nDayFreePlaces The number of free places of this day
+     */
+    public void setFreePlaces( int nDayFreePlaces )
+    {
+        this._nDayFreePlaces = nDayFreePlaces;
     }
 }

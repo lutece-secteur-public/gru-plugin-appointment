@@ -39,7 +39,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -73,7 +72,7 @@ public final class AppointmentDayHome
      * Update a day
      * @param day The day to create
      */
-    public static void update( AppointmentDay day )
+    public static synchronized void update( AppointmentDay day )
     {
         _dao.update( day, _plugin );
     }
@@ -142,5 +141,40 @@ public final class AppointmentDayHome
     public static List<AppointmentDay> getDaysBetween( int nIdForm, Date dateMin, Date dateMax )
     {
         return _dao.getDaysBetween( nIdForm, dateMin, dateMax, _plugin );
+    }
+
+    /**
+     * Increment by 1 the number of free places of an appointment
+     * @param nIdDay The id of the day to update
+     */
+    public static synchronized void incrementDayFreePlaces( int nIdDay )
+    {
+        _dao.updateDayFreePlaces( findByPrimaryKey( nIdDay ), true, _plugin );
+    }
+
+    /**
+     * Decrement by 1 the number of free places of an appointment
+     * @param nIdDay The id of the day to update
+     */
+    public static synchronized void decrementDayFreePlaces( int nIdDay )
+    {
+        _dao.updateDayFreePlaces( findByPrimaryKey( nIdDay ), false, _plugin );
+    }
+
+    /**
+     * Reset the number of free places of a day
+     * @param nIdDay The id of the day
+     */
+    public static synchronized void resetDayFreePlaces( int nIdDay )
+    {
+        AppointmentDay day = findByPrimaryKey( nIdDay );
+        List<AppointmentSlot> listAppointmentSlot = AppointmentSlotHome.findByIdDayWithFreePlaces( nIdDay );
+        int nFreePlaces = 0;
+        for ( AppointmentSlot slot : listAppointmentSlot )
+        {
+            nFreePlaces += slot.getNbFreePlaces( );
+        }
+        day.setFreePlaces( nFreePlaces );
+        update( day );
     }
 }
