@@ -39,6 +39,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -170,10 +171,12 @@ public final class AppointmentDayHome
         AppointmentDay day = findByPrimaryKey( nIdDay );
         List<AppointmentSlot> listAppointmentSlot = AppointmentSlotHome.findByIdDayWithFreePlaces( nIdDay );
         int nFreePlaces = 0;
+
         for ( AppointmentSlot slot : listAppointmentSlot )
         {
-            nFreePlaces += slot.getNbFreePlaces( );
+            nFreePlaces += slot.getNbFreePlaces(  );
         }
+
         day.setFreePlaces( nFreePlaces );
         update( day );
     }

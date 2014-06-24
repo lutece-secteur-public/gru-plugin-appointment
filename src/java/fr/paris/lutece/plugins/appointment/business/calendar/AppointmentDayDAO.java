@@ -37,6 +37,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,8 +102,8 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.setInt( nIndex++, day.getClosingHour(  ) );
         daoUtil.setInt( nIndex++, day.getClosingMinutes(  ) );
         daoUtil.setInt( nIndex++, day.getAppointmentDuration(  ) );
-        daoUtil.setInt( nIndex++, day.getPeoplePerAppointment( ) );
-        daoUtil.setInt( nIndex, day.getFreePlaces( ) );
+        daoUtil.setInt( nIndex++, day.getPeoplePerAppointment(  ) );
+        daoUtil.setInt( nIndex, day.getFreePlaces(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -124,7 +125,7 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.setInt( nIndex++, day.getClosingMinutes(  ) );
         daoUtil.setInt( nIndex++, day.getAppointmentDuration(  ) );
         daoUtil.setInt( nIndex++, day.getPeoplePerAppointment(  ) );
-        daoUtil.setInt( nIndex++, day.getFreePlaces( ) );
+        daoUtil.setInt( nIndex++, day.getFreePlaces(  ) );
         daoUtil.setInt( nIndex, day.getIdDay(  ) );
 
         daoUtil.executeUpdate(  );
@@ -268,20 +269,22 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     public void updateDayFreePlaces( AppointmentDay day, boolean bIncrement, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_DAY_FREE_PLACES, plugin );
+
         if ( bIncrement )
         {
-            day.setFreePlaces( day.getFreePlaces( ) + 1 );
+            day.setFreePlaces( day.getFreePlaces(  ) + 1 );
         }
         else
         {
-            if ( day.getFreePlaces( ) > 0 )
+            if ( day.getFreePlaces(  ) > 0 )
             {
-                day.setFreePlaces( day.getFreePlaces( ) - 1 );
+                day.setFreePlaces( day.getFreePlaces(  ) - 1 );
             }
         }
-        daoUtil.setInt( 1, day.getFreePlaces( ) );
-        daoUtil.setInt( 2, day.getIdDay( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+
+        daoUtil.setInt( 1, day.getFreePlaces(  ) );
+        daoUtil.setInt( 2, day.getIdDay(  ) );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 }

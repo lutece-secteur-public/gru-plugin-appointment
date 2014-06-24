@@ -81,10 +81,13 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
+
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -94,6 +97,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.ConstraintViolation;
 
 
@@ -398,18 +402,19 @@ public class AppointmentApp extends MVCApplication
             {
                 nNbWeek = Integer.parseInt( strNbWeek );
 
-                if ( nNbWeek > ( form.getNbWeeksToDisplay( ) - 1 ) )
+                if ( nNbWeek > ( form.getNbWeeksToDisplay(  ) - 1 ) )
                 {
-                    nNbWeek = form.getNbWeeksToDisplay( ) - 1;
+                    nNbWeek = form.getNbWeeksToDisplay(  ) - 1;
                 }
             }
 
             MutableInt nMutableNbWeek = new MutableInt( nNbWeek );
 
-            List<AppointmentDay> listDays = AppointmentService.getService( ).getDayListForCalendar( form,
-                    nMutableNbWeek, true, StringUtils.isEmpty( strNbWeek ) );
+            List<AppointmentDay> listDays = AppointmentService.getService(  )
+                                                              .getDayListForCalendar( form, nMutableNbWeek, true,
+                    StringUtils.isEmpty( strNbWeek ) );
 
-            nNbWeek = nMutableNbWeek.intValue( );
+            nNbWeek = nMutableNbWeek.intValue(  );
 
             List<String> listTimeBegin = new ArrayList<String>(  );
             int nMinAppointmentDuration = AppointmentService.getService(  )

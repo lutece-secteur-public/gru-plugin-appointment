@@ -113,13 +113,12 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String ACTION_DO_MODIFY_SLOT = "doModifySlot";
 
     // JSP URL
-    private static final String JSP_URL_MANAGE_APPOINTMENT_SLOT = "jsp/admin/plugins/appointment/"
-            + JSP_MANAGE_APPOINTMENT_SLOTS;
+    private static final String JSP_URL_MANAGE_APPOINTMENT_SLOT = "jsp/admin/plugins/appointment/" +
+        JSP_MANAGE_APPOINTMENT_SLOTS;
 
     // Templates
     private static final String TEMPLATE_MANAGE_SLOTS = "admin/plugins/appointment/slots/manage_slots.html";
     private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modify_slot.html";
-
     private AppointmentSlot slotInSession;
 
     /**
@@ -131,9 +130,10 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     public String getManageSlots( HttpServletRequest request )
     {
         slotInSession = null;
+
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         List<AppointmentSlot> listSlots = null;
-        Map<String, Object> model = getModel( );
+        Map<String, Object> model = getModel(  );
 
         AppointmentForm form = null;
 
@@ -143,10 +143,13 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             listSlots = AppointmentSlotHome.findByIdForm( nIdForm );
             form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
-            boolean[] bArrayListDays = { form.getIsOpenMonday( ), form.getIsOpenTuesday( ), form.getIsOpenWednesday( ),
-                    form.getIsOpenThursday( ), form.getIsOpenFriday( ), form.getIsOpenSaturday( ),
-                    form.getIsOpenSunday( ), };
-            AppointmentDay day = AppointmentService.getService( ).getAppointmentDayFromForm( form );
+            boolean[] bArrayListDays = 
+                {
+                    form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
+                    form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
+                    form.getIsOpenSunday(  ),
+                };
+            AppointmentDay day = AppointmentService.getService(  ).getAppointmentDayFromForm( form );
             day.setIsOpen( false );
 
             boolean bHasClosedDay = false;
@@ -155,7 +158,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             {
                 if ( !bArrayListDays[i] )
                 {
-                    listSlots.addAll( AppointmentService.getService( ).computeDaySlots( day, i + 1 ) );
+                    listSlots.addAll( AppointmentService.getService(  ).computeDaySlots( day, i + 1 ) );
                     bHasClosedDay = true;
                 }
             }
@@ -174,15 +177,15 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                 int nIdDay = Integer.parseInt( strIdDay );
                 AppointmentDay day = AppointmentDayHome.findByPrimaryKey( nIdDay );
 
-                if ( !day.getIsOpen( ) )
+                if ( !day.getIsOpen(  ) )
                 {
                     return redirect( request,
-                            AppointmentFormDayJspBean.getURLManageAppointmentFormDays( request, strIdDay ) );
+                        AppointmentFormDayJspBean.getURLManageAppointmentFormDays( request, strIdDay ) );
                 }
 
                 listSlots = AppointmentSlotHome.findByIdDay( nIdDay );
                 model.put( MARK_DAY, day );
-                form = AppointmentFormHome.findByPrimaryKey( day.getIdForm( ) );
+                form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
             }
         }
 
@@ -198,10 +201,11 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         int nMinStartingMinute = 0;
         int nMaxEndingHour = 0;
         int nMaxEndingMinute = 0;
+
         for ( AppointmentSlot slot : listSlots )
         {
-            int nSlotStartingTime = slot.getStartingHour( ) * 60 + slot.getStartingMinute( );
-            int nSlotEndingTime = slot.getEndingHour( ) * 60 + slot.getEndingMinute( );
+            int nSlotStartingTime = ( slot.getStartingHour(  ) * 60 ) + slot.getStartingMinute(  );
+            int nSlotEndingTime = ( slot.getEndingHour(  ) * 60 ) + slot.getEndingMinute(  );
             int nSlotDuration = nSlotEndingTime - nSlotStartingTime;
 
             if ( nSlotDuration < 0 )
@@ -209,21 +213,23 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                 nSlotDuration = -1 * nSlotDuration;
             }
 
-            if ( nDuration == 0 || nSlotDuration < nDuration )
+            if ( ( nDuration == 0 ) || ( nSlotDuration < nDuration ) )
             {
                 nDuration = nSlotDuration;
             }
-            if ( nMinStartingTime == 0 || nSlotStartingTime < nMinStartingTime )
+
+            if ( ( nMinStartingTime == 0 ) || ( nSlotStartingTime < nMinStartingTime ) )
             {
                 nMinStartingTime = nSlotStartingTime;
-                nMinStartingHour = slot.getStartingHour( );
-                nMinStartingMinute = slot.getStartingMinute( );
+                nMinStartingHour = slot.getStartingHour(  );
+                nMinStartingMinute = slot.getStartingMinute(  );
             }
+
             if ( nSlotEndingTime > nMaxEndingTime )
             {
                 nMaxEndingTime = nSlotEndingTime;
-                nMaxEndingHour = slot.getEndingHour( );
-                nMaxEndingMinute = slot.getEndingMinute( );
+                nMaxEndingHour = slot.getEndingHour(  );
+                nMaxEndingMinute = slot.getEndingMinute(  );
             }
         }
 
@@ -233,7 +239,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         model.put( MARK_MIN_STARTING_MINUTE, nMinStartingMinute );
         model.put( MARK_MAX_ENDING_HOUR, nMaxEndingHour );
         model.put( MARK_MAX_ENDING_MINUTE, nMaxEndingMinute );
-        AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser( ), getLocale( ), model );
+        AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
 
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
     }
@@ -253,35 +259,35 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
 
-            if ( slot.getIdDay( ) > 0 )
+            if ( slot.getIdDay(  ) > 0 )
             {
-                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
 
-                if ( day.getIsOpen( ) )
+                if ( day.getIsOpen(  ) )
                 {
                     // we can only change enabling of opened days
-                    slot.setIsEnabled( !slot.getIsEnabled( ) );
+                    slot.setIsEnabled( !slot.getIsEnabled(  ) );
                 }
             }
             else
             {
-                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm( ) );
+                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
 
-                if ( form.isDayOfWeekOpened( slot.getDayOfWeek( ) ) )
+                if ( form.isDayOfWeekOpened( slot.getDayOfWeek(  ) ) )
                 {
                     // we can only change enabling of opened days
-                    slot.setIsEnabled( !slot.getIsEnabled( ) );
+                    slot.setIsEnabled( !slot.getIsEnabled(  ) );
                 }
             }
 
             AppointmentSlotHome.update( slot );
 
-            if ( slot.getIdDay( ) > 0 )
+            if ( slot.getIdDay(  ) > 0 )
             {
-                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_DAY, slot.getIdDay( ) );
+                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_DAY, slot.getIdDay(  ) );
             }
 
-            return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm( ) );
+            return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(  ) );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -297,6 +303,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     {
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         AppointmentSlot slot;
+
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
         {
             int nIdSlot = Integer.parseInt( strIdSlot );
@@ -306,18 +313,21 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         {
             slot = slotInSession;
         }
+
         if ( slot != null )
         {
-            addInfo( MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale( ) );
+            addInfo( MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale(  ) );
 
-            Map<String, Object> model = getModel( );
+            Map<String, Object> model = getModel(  );
             model.put( MARK_SLOT, slot );
-            AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( slot.getIdForm( ) );
-            AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ),
-                    model );
+
+            AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
+            AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ),
+                getLocale(  ), model );
 
             return getPage( MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, model );
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -330,12 +340,14 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     public String doModifySlot( HttpServletRequest request )
     {
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
+
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
         {
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
 
             String strNbPlaces = request.getParameter( PARAMETER_NB_PLACES );
+
             if ( StringUtils.isNotBlank( strNbPlaces ) && StringUtils.isNumeric( strNbPlaces ) )
             {
                 int nNbPlaces = Integer.parseInt( strNbPlaces );
@@ -348,56 +360,64 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
             String strEndingTime = request.getParameter( PARAMETER_ENDING_TIME );
 
-            if ( StringUtils.isNotEmpty( strEndingTime ) && strEndingTime.matches( AppointmentForm.CONSTANT_TIME_REGEX ) )
+            if ( StringUtils.isNotEmpty( strEndingTime ) &&
+                    strEndingTime.matches( AppointmentForm.CONSTANT_TIME_REGEX ) )
             {
                 String[] strSplitedEndingTime = strEndingTime.split( AppointmentForm.CONSTANT_H );
                 int nEndingHour = Integer.parseInt( strSplitedEndingTime[0] );
                 int nEndingMinute = Integer.parseInt( strSplitedEndingTime[1] );
 
                 // If the slot is associated to a day, we check that no slot of this day has an appointment, as they may be removed. 
+                boolean bHasEndingTimeBeenModified = ( slot.getEndingHour(  ) != nEndingHour ) ||
+                    ( slot.getEndingMinute(  ) != nEndingMinute );
 
-                boolean bHasEndingTimeBeenModified = slot.getEndingHour( ) != nEndingHour
-                        || slot.getEndingMinute( ) != nEndingMinute;
                 if ( bHasEndingTimeBeenModified )
                 {
                     int nRefDuration;
 
                     int nRefEndingTime;
 
-                    if ( slot.getIdDay( ) > 0 )
+                    if ( slot.getIdDay(  ) > 0 )
                     {
-                        AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
-                        AppointmentFilter filter = new AppointmentFilter( );
-                        filter.setIdForm( slot.getIdForm( ) );
-                        filter.setDateAppointment( day.getDate( ) );
+                        AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
+                        AppointmentFilter filter = new AppointmentFilter(  );
+                        filter.setIdForm( slot.getIdForm(  ) );
+                        filter.setDateAppointment( day.getDate(  ) );
+
                         List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
 
-                        if ( listIdAppointments != null && listIdAppointments.size( ) > 0 )
+                        if ( ( listIdAppointments != null ) && ( listIdAppointments.size(  ) > 0 ) )
                         {
                             return redirect( request,
-                                    AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DAY_HAS_APPOINTMENT ) );
+                                AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_DAY_HAS_APPOINTMENT ) );
                         }
-                        nRefDuration = day.getAppointmentDuration( );
-                        nRefEndingTime = day.getClosingHour( ) * 60 + day.getClosingMinutes( );
+
+                        nRefDuration = day.getAppointmentDuration(  );
+                        nRefEndingTime = ( day.getClosingHour(  ) * 60 ) + day.getClosingMinutes(  );
                     }
                     else
                     {
-                        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm( ) );
-                        nRefDuration = form.getDurationAppointments( );
-                        nRefEndingTime = form.getClosingHour( ) * 60 + form.getClosingMinutes( );
+                        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
+                        nRefDuration = form.getDurationAppointments(  );
+                        nRefEndingTime = ( form.getClosingHour(  ) * 60 ) + form.getClosingMinutes(  );
                     }
-                    int nSlotDuration = nEndingHour * 60 + nEndingMinute
-                            - ( slot.getStartingHour( ) * 60 + slot.getStartingMinute( ) );
-                    if ( nSlotDuration % nRefDuration != 0 && nRefDuration % nSlotDuration != 0 )
+
+                    int nSlotDuration = ( ( nEndingHour * 60 ) + nEndingMinute ) -
+                        ( ( slot.getStartingHour(  ) * 60 ) + slot.getStartingMinute(  ) );
+
+                    if ( ( ( nSlotDuration % nRefDuration ) != 0 ) && ( ( nRefDuration % nSlotDuration ) != 0 ) )
                     {
-                        addError( MESSAGE_ERROR_DURATION_MUST_BE_MULTIPLE_OF_REF_DURATION, getLocale( ) );
+                        addError( MESSAGE_ERROR_DURATION_MUST_BE_MULTIPLE_OF_REF_DURATION, getLocale(  ) );
                         slotInSession = slot;
+
                         return redirectView( request, VIEW_MODIFY_APPOINTMENT_SLOT );
                     }
-                    if ( nEndingHour * 60 + nEndingMinute > nRefEndingTime )
+
+                    if ( ( ( nEndingHour * 60 ) + nEndingMinute ) > nRefEndingTime )
                     {
-                        addError( MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale( ) );
+                        addError( MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale(  ) );
                         slotInSession = slot;
+
                         return redirectView( request, VIEW_MODIFY_APPOINTMENT_SLOT );
                     }
                 }
@@ -405,11 +425,12 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                 slot.setEndingHour( nEndingHour );
                 slot.setEndingMinute( nEndingMinute );
 
-                if ( slot.getEndingHour( ) * 60 + slot.getEndingMinute( ) <= slot.getStartingHour( ) * 60
-                        + slot.getStartingMinute( ) )
+                if ( ( ( slot.getEndingHour(  ) * 60 ) + slot.getEndingMinute(  ) ) <= ( ( slot.getStartingHour(  ) * 60 ) +
+                        slot.getStartingMinute(  ) ) )
                 {
-                    addError( MESSAGE_ERROR_TIME_END_BEFORE_TIME_START, getLocale( ) );
+                    addError( MESSAGE_ERROR_TIME_END_BEFORE_TIME_START, getLocale(  ) );
                     slotInSession = slot;
+
                     return redirectView( request, VIEW_MODIFY_APPOINTMENT_SLOT );
                 }
 
@@ -417,15 +438,17 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
                 if ( bHasEndingTimeBeenModified )
                 {
-                    AppointmentSlotService.getInstance( ).updateSlotsOfDayAfterSlotModification( slot );
+                    AppointmentSlotService.getInstance(  ).updateSlotsOfDayAfterSlotModification( slot );
                 }
 
-                addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
+                addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale(  ) );
 
-                return redirect( request, slot.getIdDay( ) > 0 ? getUrlManageSlotsByIdDay( request, slot.getIdDay( ) )
-                        : getUrlManageSlotsByIdForm( request, slot.getIdForm( ) ) );
+                return redirect( request,
+                    ( slot.getIdDay(  ) > 0 ) ? getUrlManageSlotsByIdDay( request, slot.getIdDay(  ) )
+                                              : getUrlManageSlotsByIdForm( request, slot.getIdForm(  ) ) );
             }
         }
+
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
@@ -451,7 +474,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_URL_MANAGE_APPOINTMENT_SLOT );
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
-        return urlItem.getUrl( );
+        return urlItem.getUrl(  );
     }
 
     /**
@@ -477,6 +500,6 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENT_SLOTS );
         urlItem.addParameter( PARAMETER_ID_DAY, strIdDay );
 
-        return urlItem.getUrl( );
+        return urlItem.getUrl(  );
     }
 }

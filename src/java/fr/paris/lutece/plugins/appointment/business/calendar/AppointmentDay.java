@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -311,7 +312,7 @@ public class AppointmentDay
      * Get the number of free places of this day
      * @return The number of free places of this day
      */
-    public int getFreePlaces( )
+    public int getFreePlaces(  )
     {
         return _nDayFreePlaces;
     }

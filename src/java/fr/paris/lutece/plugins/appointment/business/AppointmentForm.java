@@ -39,6 +39,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
+
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
@@ -56,6 +57,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * Name of the resource type of Appointment Forms
      */
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+
     /**
      * Constant for separator between hours and minutes.
      */
@@ -65,7 +67,6 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * Regular expression used to control time format
      */
     public static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$";
-
     private static final long serialVersionUID = 307685220867535209L;
 
     // Variables declarations 

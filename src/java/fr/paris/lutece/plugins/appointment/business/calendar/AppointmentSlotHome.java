@@ -39,6 +39,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -73,23 +74,24 @@ public final class AppointmentSlotHome
      */
     public static void update( AppointmentSlot slot )
     {
-        AppointmentSlot slotFromDb = findByPrimaryKey( slot.getIdSlot( ) );
+        AppointmentSlot slotFromDb = findByPrimaryKey( slot.getIdSlot(  ) );
 
         _dao.update( slot, _plugin );
 
-        if ( slot.getIdDay( ) > 0 )
+        if ( slot.getIdDay(  ) > 0 )
         {
-            if ( slotFromDb.getIsEnabled( ) ^ slot.getIsEnabled( ) )
+            if ( slotFromDb.getIsEnabled(  ) ^ slot.getIsEnabled(  ) )
             {
-                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
-                day.setFreePlaces( slot.getIsEnabled( ) ? day.getFreePlaces( ) + slot.getNbPlaces( ) : day
-                        .getFreePlaces( ) - slot.getNbPlaces( ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
+                day.setFreePlaces( slot.getIsEnabled(  ) ? ( day.getFreePlaces(  ) + slot.getNbPlaces(  ) )
+                                                         : ( day.getFreePlaces(  ) - slot.getNbPlaces(  ) ) );
                 AppointmentDayHome.update( day );
             }
-            if ( slotFromDb.getNbPlaces( ) != slot.getNbPlaces( ) )
+
+            if ( slotFromDb.getNbPlaces(  ) != slot.getNbPlaces(  ) )
             {
-                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
-                day.setFreePlaces( day.getFreePlaces( ) + slot.getNbPlaces( ) - slotFromDb.getNbPlaces( ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
+                day.setFreePlaces( ( day.getFreePlaces(  ) + slot.getNbPlaces(  ) ) - slotFromDb.getNbPlaces(  ) );
                 AppointmentDayHome.update( day );
             }
         }
