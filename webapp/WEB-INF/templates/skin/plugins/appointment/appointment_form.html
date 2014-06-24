@@ -1,5 +1,8 @@
 <div class="row-fluid">
 	<div class="span12">
+		<#if infos?? && errors??>
+			<@messages infos=infos errors=errors />
+		</#if>
 		<#if form_errors?? && form_errors?has_content>
 			<#assign hasDisplayableError = false>
 			<#list form_errors as form_error>

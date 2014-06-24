@@ -33,57 +33,14 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
-import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 
 
 /**
- * this class provides Data Access methods for AppointmentPortlet objects
+ * 
+ * Interface for DAO of Appointment Form List portlet
  */
-public final class AppointmentPortletDAO implements IAppointmentPortletDAO
+public interface IAppointmentFormListPortletDAO extends IPortletInterfaceDAO
 {
-    ///////////////////////////////////////////////////////////////////////////////////////
-    // Access methods to data
-
-
-        /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void insert( Portlet portlet )
-    {
-        // Do nothing
-    }
-
-
-        /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete( int nPortletId )
-    {
-        // Do nothing
-    }
-
-
-        /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void store( Portlet portlet )
-    {
-        // Do nothing
-    }
-
-
-        /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Portlet load( int nIdPortlet )
-    {
-        AppointmentPortlet portlet = new AppointmentPortlet(  );
-        portlet.setId( nIdPortlet );
-
-        return portlet;
-    }
+    // No new method
 }

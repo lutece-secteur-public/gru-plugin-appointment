@@ -33,57 +33,69 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
-import fr.paris.lutece.portal.business.portlet.Portlet;
+import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
+import fr.paris.lutece.portal.business.portlet.PortletHome;
+import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 
 /**
- * this class provides Data Access methods for AppointmentPortlet objects
+ * This class provides instances management methods for AppointmentPortlet
+ * objects
  */
-public final class AppointmentPortletDAO implements IAppointmentPortletDAO
+public class AppointmentFormListPortletHome extends PortletHome
 {
-    ///////////////////////////////////////////////////////////////////////////////////////
-    // Access methods to data
+    // Static variable pointed at the DAO instance
+    private static IAppointmentFormListPortletDAO _dao = SpringContextService
+            .getBean( "appointment.appointmentFormListPortletDAO" );
 
+    /* This class implements the Singleton design pattern. */
+    private static volatile AppointmentFormListPortletHome _singleton;
 
-        /**
-     * {@inheritDoc}
+    /**
+     * Constructor
      */
-    @Override
-    public void insert( Portlet portlet )
+    public AppointmentFormListPortletHome( )
     {
-        // Do nothing
+        if ( _singleton == null )
+        {
+            _singleton = this;
+        }
     }
 
-
-        /**
+    /**
      * {@inheritDoc}
      */
     @Override
-    public void delete( int nPortletId )
+    public String getPortletTypeId( )
     {
-        // Do nothing
+        String strCurrentClassName = this.getClass( ).getName( );
+        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
+
+        return strPortletTypeId;
     }
 
-
-        /**
-     * {@inheritDoc}
+    /**
+     * Returns the instance of AppointmentPortlet Portlet
+     * 
+     * @return the AppointmentPortlet Portlet instance
      */
-    @Override
-    public void store( Portlet portlet )
+    public static PortletHome getInstance( )
     {
-        // Do nothing
+        if ( _singleton == null )
+        {
+            _singleton = new AppointmentFormListPortletHome( );
+        }
+
+        return _singleton;
     }
 
-
-        /**
+    /**
      * {@inheritDoc}
      */
     @Override
-    public Portlet load( int nIdPortlet )
+    public IPortletInterfaceDAO getDAO( )
     {
-        AppointmentPortlet portlet = new AppointmentPortlet(  );
-        portlet.setId( nIdPortlet );
-
-        return portlet;
+        return _dao;
     }
 }

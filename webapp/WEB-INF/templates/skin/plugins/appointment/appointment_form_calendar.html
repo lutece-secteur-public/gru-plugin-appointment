@@ -1,7 +1,9 @@
 <div class="row-fluid">
 	<div class="span12">
 		<legend><#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>${formMessages.calendarTitle}<#else>#i18n{appointment.appointmentApp.calendar.pageTitle}</#if></legend>
-		<@messages infos=infos errors=errors />
+		<#if infos?? && errors??>
+			<@messages infos=infos errors=errors />
+		</#if>
 		<#if nb_week &gt; 0>
 			<div class="pull-left">
 				<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">

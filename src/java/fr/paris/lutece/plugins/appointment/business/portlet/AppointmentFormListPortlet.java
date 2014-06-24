@@ -33,9 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.security.UserNotSignedException;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -45,75 +46,47 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * This class represents business objects AppointmentPortlet
  */
-public class AppointmentPortlet extends PortletHtmlContent
+public class AppointmentFormListPortlet extends PortletHtmlContent
 {
-    /////////////////////////////////////////////////////////////////////////////////
-    // Constants
+    private final AppointmentFormService _appointmentFormService = SpringContextService
+            .getBean( AppointmentFormService.BEAN_NAME );
 
     /**
      * Sets the identifier of the portlet type to value specified
      */
-    public AppointmentPortlet(  )
+    public AppointmentFormListPortlet(  )
     {
-        setPortletTypeId( AppointmentPortletHome.getInstance(  ).getPortletTypeId(  ) );
-    }
-
-    /**
-     * Returns the HTML code of the AppointmentPortlet portlet
-     * 
-     * @param request The HTTP servlet request
-     * @return the HTML code of the AppointmentPortlet portlet
-     */
-    @Override
-    public String getHtmlContent( HttpServletRequest request )
-    {
-        if ( request == null )
-        {
-            return StringUtils.EMPTY;
-        }
-
-        String strContent;
-
-        try
-        {
-            strContent = AppointmentApp.getMyAppointmentsXPage( request, request.getLocale(  ) );
-
-            if ( strContent == null )
-            {
-                strContent = StringUtils.EMPTY;
-            }
-        }
-        catch ( UserNotSignedException e )
-        {
-            strContent = StringUtils.EMPTY;
-        }
-
-        return strContent;
-    }
-
-    /**
-     * Updates the current instance of the AppointmentPortlet object
-     */
-    public void update(  )
-    {
-        AppointmentPortletHome.getInstance(  ).update( this );
-    }
-
-    /**
-     * Removes the current instance of the AppointmentPortlet object
-     */
-    @Override
-    public void remove(  )
-    {
-        AppointmentPortletHome.getInstance(  ).remove( this );
+        setPortletTypeId( AppointmentFormListPortletHome.getInstance( ).getPortletTypeId( ) );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean canBeCachedForConnectedUsers(  )
+    public String getHtmlContent( HttpServletRequest request )
     {
-        return false;
+        if ( request != null )
+        {
+            return AppointmentApp.getFormListHtml( request, _appointmentFormService,
+                    getDisplayPortletTitle( ) == 0 ? getName( ) : null, request.getLocale( ) );
+        }
+        return StringUtils.EMPTY;
+    }
+
+    /**
+     * Updates the current instance of the AppointmentFormListPortlet object
+     */
+    public void update(  )
+    {
+        AppointmentFormListPortletHome.getInstance( ).update( this );
+    }
+
+    /**
+     * Removes the current instance of the AppointmentFormListPortlet object
+     */
+    @Override
+    public void remove(  )
+    {
+        AppointmentFormListPortletHome.getInstance( ).remove( this );
     }
 }
