@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 
@@ -71,10 +71,10 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     // Variables declarations 
     private int _nIdForm;
-    @NotEmpty( message = "#i18n{appointment.validation.appointmentform.Title.notEmpty}" )
+    @NotBlank( message = "#i18n{appointment.validation.appointmentform.Title.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
     private String _strTitle;
-    @NotEmpty( message = "#i18n{appointment.validation.appointmentform.Description.notEmpty}" )
+    @NotBlank( message = "#i18n{appointment.validation.appointmentform.Description.notEmpty}" )
     private String _strDescription;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     @Pattern( regexp = CONSTANT_TIME_REGEX, message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
