@@ -40,7 +40,7 @@ import java.io.Serializable;
  * Slot for an appointment in a day. The slot may have 3 states : free,
  * partially free or occupied.
  */
-public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializable
+public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializable, Cloneable
 {
     /**
      * Serial version UID
@@ -323,5 +323,23 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
         }
 
         return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AppointmentSlot clone(  )
+    {
+        try
+        {
+            return (AppointmentSlot) super.clone(  );
+        }
+        catch ( CloneNotSupportedException e )
+        {
+            // Do nothing
+        }
+
+        return null;
     }
 }

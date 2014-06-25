@@ -873,15 +873,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
                                                               .getDayListForCalendar( form, new MutableInt( nNbWeek ),
                     false, false );
 
-            List<String> listTimeBegin = new ArrayList<String>(  );
-            int nMinAppointmentDuration = AppointmentService.getService(  )
-                                                            .getListTimeBegin( listDays, form, listTimeBegin );
+            if ( listDays != null )
+            {
+                List<String> listTimeBegin = new ArrayList<String>(  );
+                int nMinAppointmentDuration = AppointmentService.getService(  )
+                                                                .getListTimeBegin( listDays, form, listTimeBegin );
+                model.put( MARK_LIST_DAYS, listDays );
+                model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
+                model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
+            }
 
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
-            model.put( MARK_LIST_DAYS, listDays );
-            model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
-            model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
+
             model.put( PARAMETER_NB_WEEK, nNbWeek );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
 

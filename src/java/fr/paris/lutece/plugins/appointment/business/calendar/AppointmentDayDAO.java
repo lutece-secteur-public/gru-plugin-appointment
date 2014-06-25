@@ -56,8 +56,6 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     private static final String SQL_QUERY_REMOVE_LONELY_DAYS = " DELETE FROM appointment_day WHERE date_day < ? AND id_day NOT IN (SELECT DISTINCT(id_day) FROM appointment_slot) ";
     private static final String SQL_QUERY_SELECT_DAY = "SELECT id_day, id_form, is_open, date_day, opening_hour, opening_minute, closing_hour, closing_minute, appointment_duration, people_per_appointment, free_places FROM appointment_day ";
     private static final String SQL_QUERY_SELECT_DAY_BY_PRIMARY_KEY = SQL_QUERY_SELECT_DAY + " WHERE id_day = ?";
-    private static final String SQL_QUERY_SELECT_DAY_BY_ID_FORM = SQL_QUERY_SELECT_DAY +
-        " WHERE id_form = ? ORDER BY date_day ASC";
     private static final String SQL_QUERY_SELECT_DAY_BETWEEN = SQL_QUERY_SELECT_DAY +
         " WHERE id_form = ? AND date_day >= ? AND date_day <= ? ORDER BY date_day ASC ";
 
@@ -188,28 +186,6 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.free(  );
 
         return day;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<AppointmentDay> getAppointmentDayListByIdForm( int nIdForm, Plugin plugin )
-    {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DAY_BY_ID_FORM, plugin );
-        daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeQuery(  );
-
-        List<AppointmentDay> listDays = new ArrayList<AppointmentDay>(  );
-
-        while ( daoUtil.next(  ) )
-        {
-            listDays.add( getDayFromDAO( daoUtil ) );
-        }
-
-        daoUtil.free(  );
-
-        return listDays;
     }
 
     /**

@@ -35,8 +35,16 @@ package fr.paris.lutece.plugins.appointment.service.daemon;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.portal.service.daemon.Daemon;
+
+import java.sql.Date;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 
 /**
@@ -53,6 +61,19 @@ public class DayCreationDaemon extends Daemon
         for ( AppointmentForm form : AppointmentFormHome.getAppointmentFormsList(  ) )
         {
             AppointmentService.getService(  ).checkFormDays( form );
+
+            Calendar calendar = new GregorianCalendar(  );
+            Date dateLastMonday = AppointmentService.getService(  ).getDateLastMonday(  );
+            calendar.setTime( dateLastMonday );
+            calendar.add( Calendar.DAY_OF_MONTH, form.getNbWeeksToDisplay(  ) * 7 );
+
+            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateLastMonday,
+                    new Date( calendar.getTimeInMillis(  ) ) );
+
+            for ( AppointmentDay day : listDays )
+            {
+                AppointmentDayHome.resetDayFreePlaces( day.getIdDay(  ) );
+            }
         }
     }
 }

@@ -286,7 +286,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             appointmentForm = new AppointmentForm(  );
         }
 
-        prepareFormForPopulate( appointmentForm );
         populate( appointmentForm, request );
 
         // Check constraints
@@ -469,7 +468,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
 
-        prepareFormForPopulate( appointmentForm );
         populate( appointmentForm, request );
 
         // Check constraints
@@ -487,6 +485,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
 
+        // The populate set the active flag to false, so we have to restore it
+        appointmentForm.setIsActive( formFromDb.getIsActive(  ) );
         AppointmentFormHome.update( appointmentForm );
 
         if ( AppointmentSlotService.getInstance(  ).checkForFormModification( appointmentForm, formFromDb ) )
@@ -646,24 +646,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
 
         return 0;
-    }
-
-    /**
-     * Prepare an appointment form for population. Boolean fields of the form
-     * will be set to false, as check boxes are not committed in the request.
-     * @param appointmentForm The appointment form
-     */
-    private void prepareFormForPopulate( AppointmentForm appointmentForm )
-    {
-        appointmentForm.setIsOpenMonday( false );
-        appointmentForm.setIsOpenTuesday( false );
-        appointmentForm.setIsOpenWednesday( false );
-        appointmentForm.setIsOpenThursday( false );
-        appointmentForm.setIsOpenFriday( false );
-        appointmentForm.setIsOpenSaturday( false );
-        appointmentForm.setIsOpenSunday( false );
-        appointmentForm.setEnableCaptcha( false );
-        appointmentForm.setAllowUsersToCancelAppointments( false );
     }
 
     /**

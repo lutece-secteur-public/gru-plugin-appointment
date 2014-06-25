@@ -106,5 +106,6 @@ CREATE TABLE appointment_form_messages (
 	url_redirect_after_creation varchar(255) NOT NULL default '',
 	text_appointment_canceled long varchar NOT NULL,
 	label_button_redirection varchar(255) NOT NULL default '',
+	no_available_slot varchar(255) NOT NULL default '',
 	PRIMARY KEY (id_form)
 );

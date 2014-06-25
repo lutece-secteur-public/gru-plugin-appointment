@@ -18,3 +18,5 @@ INSERT INTO core_portlet_type VALUES ('APPOINTMENT_FORM_PORTLET','appointment.po
 INSERT INTO core_portlet_type VALUES ('APPOINTMENT_FORM_LIST_PORTLET','appointment.portlet.appointmentFormListPortlet.name','plugins/appointment/CreatePortletAppointmentFormList.jsp','plugins/appointment/ModifyPortletAppointmentFormList.jsp','fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletHome','appointment','plugins/appointment/DoCreatePortletAppointmentFormList.jsp','/admin/portlet/script_create_portlet.html','/admin/plugins/appointment/portlet/create_portletappointmentformlist.html','','plugins/appointment/DoModifyPortletAppointmentFormList.jsp','/admin/portlet/script_modify_portlet.html','/admin/plugins/appointment/portlet/modify_portletappointmentformlist.html','');
 
 INSERT INTO core_dashboard(dashboard_name, dashboard_column, dashboard_order) VALUES('APPOINTMENT_FORM', 3, 2);
+
+INSERT INTO core_datastore(entity_key, entity_value) VALUES ('core.cache.status.appointment.appointmentFormCacheService.enabled', '1');

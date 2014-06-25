@@ -46,6 +46,8 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     private static final String CACHE_KEY_FORM_MESSAGE = "appointment.appointmentFormMessage.";
     private static final String CACHE_KEY_APPOINTMENT_RESPONSE = "appointment.appointmentResponse";
     private static final String CACHE_KEY_LIST_APPOINTMENT_TIMES = "appointment.listAppointmentTimes.";
+    private static final String CACHE_KEY_APPOINTMENT_DAY = "appointment.appointmentDay.";
+    private static final String CACHE_KEY_APPOINTMENT_SLOT = "appointment.appointmentSlot.";
     private static AppointmentFormCacheService _instance = new AppointmentFormCacheService(  );
 
     /**
@@ -115,6 +117,26 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
         sbCacheKey.append( nClosingMinutes );
 
         return sbCacheKey.toString(  );
+    }
+
+    /**
+     * Get the cache key for a given appointment day
+     * @param nIdDay The id of the day
+     * @return The cache key for the given day
+     */
+    public static String getAppointmentDayKey( int nIdDay )
+    {
+        return CACHE_KEY_APPOINTMENT_DAY + nIdDay;
+    }
+
+    /**
+     * Get the cache key for a given appointment day
+     * @param nIdSlot The id of the slot
+     * @return The cache key for the given slot
+     */
+    public static String getAppointmentSlotKey( int nIdSlot )
+    {
+        return CACHE_KEY_APPOINTMENT_SLOT + nIdSlot;
     }
 
     /**

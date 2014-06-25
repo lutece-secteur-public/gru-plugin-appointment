@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -67,6 +68,12 @@ public final class AppointmentDayHome
     public static void create( AppointmentDay day )
     {
         _dao.create( day, _plugin );
+
+        AppointmentDay dayClone = day.clone(  );
+        dayClone.setListSlots( null );
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
+            dayClone );
     }
 
     /**
@@ -76,6 +83,12 @@ public final class AppointmentDayHome
     public static synchronized void update( AppointmentDay day )
     {
         _dao.update( day, _plugin );
+
+        AppointmentDay dayClone = day.clone(  );
+        dayClone.setListSlots( null );
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
+            dayClone );
     }
 
     /**
@@ -86,6 +99,7 @@ public final class AppointmentDayHome
     {
         AppointmentSlotHome.deleteByIdDay( nIdDay );
         _dao.remove( nIdDay, _plugin );
+        AppointmentFormCacheService.getInstance(  ).removeKey( AppointmentFormCacheService.getAppointmentDayKey( nIdDay ) );
     }
 
     /**
@@ -118,17 +132,22 @@ public final class AppointmentDayHome
      */
     public static AppointmentDay findByPrimaryKey( int nIdDay )
     {
-        return _dao.findByPrimaryKey( nIdDay, _plugin );
-    }
+        String strKey = AppointmentFormCacheService.getAppointmentDayKey( nIdDay );
+        AppointmentDay day = (AppointmentDay) AppointmentFormCacheService.getInstance(  ).getFromCache( strKey );
 
-    /**
-     * Get the list of days associated with a form.
-     * @param nIdForm The id of the form
-     * @return The list of days associated with the given form
-     */
-    public static List<AppointmentDay> getAppointmentDayListByIdForm( int nIdForm )
-    {
-        return _dao.getAppointmentDayListByIdForm( nIdForm, _plugin );
+        if ( day != null )
+        {
+            return day.clone(  );
+        }
+
+        day = _dao.findByPrimaryKey( nIdDay, _plugin );
+
+        if ( day != null )
+        {
+            AppointmentFormCacheService.getInstance(  ).putInCache( strKey, day.clone(  ) );
+        }
+
+        return day;
     }
 
     /**
@@ -150,7 +169,11 @@ public final class AppointmentDayHome
      */
     public static synchronized void incrementDayFreePlaces( int nIdDay )
     {
-        _dao.updateDayFreePlaces( findByPrimaryKey( nIdDay ), true, _plugin );
+        AppointmentDay day = findByPrimaryKey( nIdDay );
+        _dao.updateDayFreePlaces( day, true, _plugin );
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
+            day.clone(  ) );
     }
 
     /**
@@ -159,7 +182,11 @@ public final class AppointmentDayHome
      */
     public static synchronized void decrementDayFreePlaces( int nIdDay )
     {
-        _dao.updateDayFreePlaces( findByPrimaryKey( nIdDay ), false, _plugin );
+        AppointmentDay day = findByPrimaryKey( nIdDay );
+        _dao.updateDayFreePlaces( day, false, _plugin );
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
+            day.clone(  ) );
     }
 
     /**
@@ -174,7 +201,10 @@ public final class AppointmentDayHome
 
         for ( AppointmentSlot slot : listAppointmentSlot )
         {
-            nFreePlaces += slot.getNbFreePlaces(  );
+            if ( slot.getIsEnabled(  ) )
+            {
+                nFreePlaces += slot.getNbFreePlaces(  );
+            }
         }
 
         day.setFreePlaces( nFreePlaces );

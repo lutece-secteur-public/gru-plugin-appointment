@@ -53,6 +53,7 @@ public class AppointmentFormMessages implements Cloneable
     private String _strTextAppointmentCreated;
     private String _strTextAppointmentCanceled;
     private String _strLabelButtonRedirection;
+    private String _strNoAvailableSlot;
 
     /**
      * Return the id of the associated form
@@ -285,6 +286,27 @@ public class AppointmentFormMessages implements Cloneable
     public void setLabelButtonRedirection( String strLabelButtonRedirection )
     {
         this._strLabelButtonRedirection = strLabelButtonRedirection;
+    }
+
+    /**
+     * Get the message to display when there is no available slot for the
+     * associated form
+     * @return the message to display when there is no available slot
+     */
+    public String getNoAvailableSlot(  )
+    {
+        return _strNoAvailableSlot;
+    }
+
+    /**
+     * Set the message to display when there is no available slot for the
+     * associated form
+     * @param strNoAvailableSlot The message to display when there is no
+     *            available slot
+     */
+    public void setNoAvailableSlot( String strNoAvailableSlot )
+    {
+        this._strNoAvailableSlot = strNoAvailableSlot;
     }
 
     /**

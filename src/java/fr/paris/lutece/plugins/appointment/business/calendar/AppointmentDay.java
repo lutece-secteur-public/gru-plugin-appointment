@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Describes a day form an appointment calendar
  */
-public class AppointmentDay
+public class AppointmentDay implements Cloneable
 {
     private int _nIdDay;
     private int _nIdForm;
@@ -324,5 +324,23 @@ public class AppointmentDay
     public void setFreePlaces( int nDayFreePlaces )
     {
         this._nDayFreePlaces = nDayFreePlaces;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AppointmentDay clone(  )
+    {
+        try
+        {
+            return (AppointmentDay) super.clone(  );
+        }
+        catch ( CloneNotSupportedException e )
+        {
+            // Do nothing
+        }
+
+        return null;
     }
 }

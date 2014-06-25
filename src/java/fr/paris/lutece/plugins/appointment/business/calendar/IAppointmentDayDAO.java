@@ -91,14 +91,6 @@ public interface IAppointmentDayDAO
     AppointmentDay findByPrimaryKey( int nKey, Plugin plugin );
 
     /**
-     * Get the list of days associated with a form.
-     * @param nIdForm The id of the form
-     * @param plugin The plugin
-     * @return The list of days associated with the given form
-     */
-    List<AppointmentDay> getAppointmentDayListByIdForm( int nIdForm, Plugin plugin );
-
-    /**
      * Get the list of days associated with a form and which date are between 2
      * given dates.
      * @param nIdForm The id of the form

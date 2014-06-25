@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -66,6 +67,9 @@ public final class AppointmentSlotHome
     public static void create( AppointmentSlot slot )
     {
         _dao.create( slot, _plugin );
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getAppointmentSlotKey( slot.getIdSlot(  ) ),
+            slot.clone(  ) );
     }
 
     /**
@@ -77,6 +81,10 @@ public final class AppointmentSlotHome
         AppointmentSlot slotFromDb = findByPrimaryKey( slot.getIdSlot(  ) );
 
         _dao.update( slot, _plugin );
+
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getAppointmentSlotKey( slot.getIdSlot(  ) ),
+            slot.clone(  ) );
 
         if ( slot.getIdDay(  ) > 0 )
         {
@@ -104,6 +112,8 @@ public final class AppointmentSlotHome
     public static void delete( int nIdSlot )
     {
         _dao.delete( nIdSlot, _plugin );
+        AppointmentFormCacheService.getInstance(  )
+                                   .removeKey( AppointmentFormCacheService.getAppointmentSlotKey( nIdSlot ) );
     }
 
     /**
@@ -161,7 +171,23 @@ public final class AppointmentSlotHome
      */
     public static AppointmentSlot findByPrimaryKey( int nIdSlot )
     {
-        return _dao.findByPrimaryKey( nIdSlot, _plugin );
+        String strKey = AppointmentFormCacheService.getAppointmentSlotKey( nIdSlot );
+
+        AppointmentSlot slot = (AppointmentSlot) AppointmentFormCacheService.getInstance(  ).getFromCache( strKey );
+
+        if ( slot != null )
+        {
+            return slot.clone(  );
+        }
+
+        slot = _dao.findByPrimaryKey( nIdSlot, _plugin );
+
+        if ( slot != null )
+        {
+            AppointmentFormCacheService.getInstance(  ).putInCache( strKey, slot.clone(  ) );
+        }
+
+        return slot;
     }
 
     /**
@@ -219,17 +245,4 @@ public final class AppointmentSlotHome
         // TODO : save list slots in cache
         return _dao.findByIdDayWithFreePlaces( nIdDay, _plugin );
     }
-
-    //    /**
-    //     * Get the list of slots associated with a given form for a given day of
-    //     * week. Also compute the number of free places for each slot
-    //     * @param nIdForm the if of the form
-    //     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
-    //     * @param dateDay The date of the day
-    //     * @return the list of slots
-    //     */
-    //    public static List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay )
-    //    {
-    //        return _dao.findByIdFormWithFreePlaces( nIdForm, nDayOfWeek, dateDay, _plugin );
-    //    }
 }

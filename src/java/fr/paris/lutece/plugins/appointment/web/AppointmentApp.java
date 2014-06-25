@@ -70,10 +70,12 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.util.mvc.utils.MVCMessage;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
+import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
@@ -198,6 +200,8 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_IS_FORM_FIRST_STEP = "isFormFirstStep";
     private static final String MARK_TITLE = "title";
+    private static final String MARK_INFOS = "infos";
+    private static final String MARK_ERRORS = "errors";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -999,14 +1003,22 @@ public class AppointmentApp extends MVCApplication
 
         nNbWeek = nMutableNbWeek.intValue(  );
 
-        List<String> listTimeBegin = new ArrayList<String>(  );
-        int nMinAppointmentDuration = AppointmentService.getService(  ).getListTimeBegin( listDays, form, listTimeBegin );
+        if ( listDays != null )
+        {
+            List<String> listTimeBegin = new ArrayList<String>(  );
+            int nMinAppointmentDuration = AppointmentService.getService(  )
+                                                            .getListTimeBegin( listDays, form, listTimeBegin );
+            model.put( MARK_LIST_DAYS, listDays );
+            model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
+            model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
+        }
+        else
+        {
+            addInfo( model, formMessages.getNoAvailableSlot(  ) );
+        }
 
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( MARK_LIST_DAYS, listDays );
-        model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
-        model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
         model.put( PARAMETER_NB_WEEK, nNbWeek );
         model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
         model.put( MARK_IS_FORM_FIRST_STEP, appointmentFormService.isFormFirstStep(  ) );
@@ -1116,5 +1128,27 @@ public class AppointmentApp extends MVCApplication
             AppointmentService.getService(  ).computeRefAppointment( appointment ) );
 
         return urlItem.getUrl(  );
+    }
+
+    private static void addInfo( Map<String, Object> model, String strMessage )
+    {
+        List<ErrorMessage> listInfos = (List<ErrorMessage>) model.get( MARK_INFOS );
+
+        if ( listInfos == null )
+        {
+            listInfos = new ArrayList<ErrorMessage>(  );
+            model.put( MARK_INFOS, listInfos );
+        }
+
+        List<ErrorMessage> listErrors = (List<ErrorMessage>) model.get( MARK_ERRORS );
+
+        if ( listErrors == null )
+        {
+            listErrors = new ArrayList<ErrorMessage>(  );
+            model.put( MARK_ERRORS, listErrors );
+        }
+
+        MVCMessage message = new MVCMessage( strMessage );
+        listInfos.add( message );
     }
 }

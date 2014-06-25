@@ -303,24 +303,27 @@ public class AppointmentService
 
         boolean bSlotFound = false;
 
-        while ( !bSlotFound && ( nRealOffset < form.getNbWeeksToDisplay(  ) ) )
+        while ( !bSlotFound && ( nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ) ) )
         {
-            for ( AppointmentDay day : listDays )
+            if ( listDays != null )
             {
-                if ( day.getDate(  ).getTime(  ) < lTimeOfYesterday )
+                for ( AppointmentDay day : listDays )
                 {
-                    day.setIsOpen( false );
-                }
-                else
-                {
-                    if ( day.getIsOpen(  ) )
+                    if ( day.getDate(  ).getTime(  ) < lTimeOfYesterday )
                     {
-                        day.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) ) );
-                        bSlotFound = bSlotFound || ( day.getFreePlaces(  ) > 0 );
+                        day.setIsOpen( false );
                     }
                     else
                     {
-                        day.setListSlots( new ArrayList<AppointmentSlot>(  ) );
+                        if ( day.getIsOpen(  ) )
+                        {
+                            day.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) ) );
+                            bSlotFound = bSlotFound || ( day.getFreePlaces(  ) > 0 );
+                        }
+                        else
+                        {
+                            day.setListSlots( new ArrayList<AppointmentSlot>(  ) );
+                        }
                     }
                 }
             }
@@ -330,16 +333,26 @@ public class AppointmentService
                 bSlotFound = true;
             }
 
+            // If no slot were found, we prepare to exit the loop or to make another iteration
             if ( !bSlotFound )
             {
+                // If the form has no slot available, we return a null list
+                if ( ( nOffsetWeeks.intValue(  ) + 1 ) >= form.getNbWeeksToDisplay(  ) )
+                {
+                    listDays = null;
+                }
+                else
+                {
+                    calendar.setTime( dateMin );
+                    calendar.add( Calendar.DAY_OF_MONTH, 7 );
+                    dateMin = new Date( calendar.getTimeInMillis(  ) );
+                    calendar.setTime( dateMax );
+                    calendar.add( Calendar.DAY_OF_MONTH, 7 );
+                    dateMax = new Date( calendar.getTimeInMillis(  ) );
+                    listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
+                }
+
                 nOffsetWeeks.increment(  );
-                calendar.setTime( dateMin );
-                calendar.add( Calendar.DAY_OF_MONTH, 7 );
-                dateMin = new Date( calendar.getTimeInMillis(  ) );
-                calendar.setTime( dateMax );
-                calendar.add( Calendar.DAY_OF_MONTH, 7 );
-                dateMax = new Date( calendar.getTimeInMillis(  ) );
-                listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
             }
         }
 
