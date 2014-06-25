@@ -132,6 +132,10 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_DEFAULT_LABEL_BUTTON_REDIRECT = "appointment.formMessages.defaultLabelButtonRedirect";
     private static final String PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED = "appointment.formMessages.defaultTextAppointmentCreated";
     private static final String PROPERTY_DEFAULT_TEXT_APPOINTMENT_CANCELED = "appointment.formMessages.defaultTextAppointmentCanceled";
+    private static final String PROPERTY_DEFAULT_NO_AVAILABLE_SLOT = "appointment.formMessages.defaultNoAvailableSlot";
+    private static final String PROPERTY_DEFAULT_CALENDAR_DESCRIPTION = "appointment.formMessages.defaultCalendarDescription";
+    private static final String PROPERTY_DEFAULT_CALENDAR_RESERVE_LABEL = "appointment.formMessages.defaultCalendarReserveLabel";
+    private static final String PROPERTY_DEFAULT_CALENDAR_FULL_LABEL = "appointment.formMessages.defaultCalendarFullLabel";
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
@@ -576,6 +580,14 @@ public class AppointmentFormService implements Serializable
                 PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED, StringUtils.EMPTY ) );
         formMessages.setTextAppointmentCanceled( AppPropertiesService.getProperty( 
                 PROPERTY_DEFAULT_TEXT_APPOINTMENT_CANCELED, StringUtils.EMPTY ) );
+        formMessages.setNoAvailableSlot( AppPropertiesService.getProperty( PROPERTY_DEFAULT_NO_AVAILABLE_SLOT,
+                StringUtils.EMPTY ) );
+        formMessages.setCalendarDescription( AppPropertiesService.getProperty( PROPERTY_DEFAULT_CALENDAR_DESCRIPTION,
+                StringUtils.EMPTY ) );
+        formMessages.setCalendarReserveLabel( AppPropertiesService.getProperty( 
+                PROPERTY_DEFAULT_CALENDAR_RESERVE_LABEL, StringUtils.EMPTY ) );
+        formMessages.setCalendarFullLabel( AppPropertiesService.getProperty( PROPERTY_DEFAULT_CALENDAR_FULL_LABEL,
+                StringUtils.EMPTY ) );
 
         return formMessages;
     }

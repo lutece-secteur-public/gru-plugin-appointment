@@ -853,8 +853,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
 
-            Map<String, Object> model = new HashMap<String, Object>(  );
+            if ( StringUtils.isNotBlank( formMessages.getCalendarDescription(  ) ) )
+            {
+                addInfo( formMessages.getCalendarDescription(  ) );
+            }
+
+            Map<String, Object> model = getModel(  );
 
             String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
             int nNbWeek = 0;
@@ -884,7 +890,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
 
             model.put( MARK_FORM, form );
-            model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
+            model.put( MARK_FORM_MESSAGES, formMessages );
 
             model.put( PARAMETER_NB_WEEK, nNbWeek );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );

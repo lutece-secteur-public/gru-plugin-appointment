@@ -1,25 +1,41 @@
 <div class="row-fluid">
 	<div class="span12">
-		<legend><#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>${formMessages.calendarTitle}<#else>#i18n{appointment.appointmentApp.calendar.pageTitle}</#if></legend>
+		<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''><legend>${formMessages.calendarTitle}</legend></#if>
 		<#if infos?? && errors??>
 			<@messages infos=infos errors=errors />
 		</#if>
 		<#if listDays??>
-			<#if nb_week &gt; 0>
-				<div class="pull-left">
-					<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
-						<i class="icon-arrow-left icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
-					</a>
+			<div class="row-fluid">
+				<div class="span4">
+					<#if nb_week &gt; 0>
+						<div class="pull-left">
+							<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
+								<i class="icon-arrow-left icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
+							</a>
+						</div>
+					</#if>
 				</div>
-			</#if>
-			<#if nb_week &lt; form.nbWeeksToDisplay - 1>
-				<div class="pull-right">
-					<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
-						#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="icon-arrow-right icon-white">&nbsp;</i>
-					</a>
+				<div class="span4">
+					<div>
+						<center>
+							<button class="btn btn-small btn-primary" id="buttonCalendarAvailableDays" type="button" style="display: none;">
+								<i class="icon-calendar icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}
+							</button>
+						</center>
+					</div>
 				</div>
-			</#if>
+				<div class="span4">
+					<#if nb_week &lt; form.nbWeeksToDisplay - 1>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
+								#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="icon-arrow-right icon-white">&nbsp;</i>
+							</a>
+						</div>
+					</#if>
+				</div>
+			</div>
 		</#if>
+		<br />
 	</div>
 </div>
 <div class="row-fluid">
@@ -66,6 +82,7 @@
 									<#if day.isOpen>
 										<#assign rowspan=day.appointmentDuration/min_duration_appointments>
 										<#assign first_slot = day.listSlots?first>
+										<#assign nbSlotsFilled = 0>
 										<#if first_slot.startingHour &lt; 10>
 											<#assign first_time = '0' + first_slot.startingHour + 'h'>
 										<#else>
@@ -83,6 +100,7 @@
 														&nbsp;
 													</td>
 												</tr>
+												<#assign nbSlotsFilled = nbSlotsFilled + 1>
 											<#else>
 												<#break>
 											</#if>
@@ -98,12 +116,14 @@
 												<#if slot.isEnabled>
 													<#if slot.nbFreePlaces &gt; 0>
 														<td class="appointment-slot-avaiable appointment-row${slotSpan} appointment-tooltip">
-															<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+															<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
+																${formMessages.calendarReserveLabel}
+															</a>
 															<@getCellTooltip appointmentSlot=slot />
 														</td>
 													<#else>
 														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
-															#i18n{appointment.appointmentCalendar.labelSlotFull}
+															${formMessages.calendarFullLabel}
 															<@getCellTooltip appointmentSlot=slot />
 														</td>
 													</#if>
@@ -113,8 +133,18 @@
 														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												</#if>
+												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
 											</tr>
 										</#list>
+										<#if nbSlotsFilled &lt; list_time_begin?size - 1>
+											<#list nbSlotsFilled..(list_time_begin?size - 1) as slotToFill>
+												<tr>
+													<td class="appointment-slot-closed appointment-row1">
+														&nbsp;
+													</td>
+												</tr>
+											</#list>
+										</#if>
 									<#else>
 										<#list list_time_begin as time_begin>
 											<tr>
@@ -154,12 +184,12 @@
 											<#if slot.nbFreePlaces &gt; 0>
 												<td class="appointment-slot-avaiable">
 													<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
-														#i18n{appointment.appointmentCalendar.makeAppointment}
+														${formMessages.calendarReserveLabel}
 													</a>
 												</td>
 											<#else>
 												<td class="appointment-slot-full">
-													#i18n{appointment.appointmentCalendar.labelSlotFull}
+													${formMessages.calendarFullLabel}
 												</td>
 											</#if>
 										<#else>
@@ -191,3 +221,67 @@
 		<#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute} 
 	</span> 
 </#macro>
+
+<script src="js/bootstrap-datepicker.js"></script>
+<script src="js/locales/bootstrap-datepicker.fr.js"></script>
+
+<script type="text/javascript">
+	function dateToString( date ) {
+	    var dateStr = padString(date.getDate()) + "/" + padString(1 + date.getMonth()) + "/" + padString(date.getFullYear()); 
+	    return dateStr;
+	}
+	
+	function padString(i) {
+	    return (i < 10) ? "0" + i : "" + i;
+	}
+
+	$(function()
+	{
+		$('#buttonCalendarAvailableDays').show();
+		
+		<#assign hasDays = false >
+		var validDays = [<#list listAvailableDays as day><#if day.isOpen && day.freePlaces &gt; 0><#if hasDays >, </#if>'${day.date}'<#assign hasDays=true></#if></#list>];
+		var hrefs = [<#list 0..form.nbWeeksToDisplay as nbWeek><#if nbWeek_index &gt; 0>, </#if>'jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nbWeek}'</#list>];
+		var nowTemp = new Date();
+		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+		$("#buttonCalendarAvailableDays").datepicker({
+		    weekStart: 1,
+		    format: 'dd/mm/yyyy',
+		    language: 'fr',
+		    beforeShowDay: function (date) {
+		    	if( date.valueOf() <= now.valueOf() )
+				{
+					return false;
+				}
+		    	var stringDate = dateToString(date);
+		    	for (var i = 0; i < validDays.length; i++) {
+		            if ($.inArray(stringDate, validDays) != -1) {
+		                return {enabled: true, classes: 'appointment-datepicker-day-highlighted', tooltip: null};
+		            }
+		        }
+		    	return false;
+		    }
+		}).on( 'changeDate', function(e) {
+			var stringDate = dateToString( e.date );
+	        if ( $.inArray( stringDate, validDays ) != -1 )
+	        {
+	        	var dateMonday = new Date( ${dateLastMonday} );
+// 	        	var dateNearestMonday = new Date(e.date);
+// 	        	dateNearestMonday.setHour(0,0,0);
+// 	        	// We set the day on the previous monday
+// 	        	dateNearestMonday.setDate(dateNearestMonday.getDate - (e.date.getDay() + 1) );
+	        	
+// 	        	var dateLastMonday = new Date(now);
+// 	        	dateLastMonday.setHour(0,0,0);
+// 	        	// We set the day on the previous monday
+// 	        	dateLastMonday.setDate(dateLastMonday.getDate - (now.getDay() + 1) );
+	        	
+// 	        	var nbWeek = Math.ceil( (dateNearestMonday - dateLastMonday) / 604800000 );
+
+				var nbWeek = Math.floor( (e.date - dateMonday) / 604800000 );
+	        	// TODO : compute nb weeks
+	        	window.location = hrefs[nbWeek];
+	        }
+	    });
+	})
+</script>

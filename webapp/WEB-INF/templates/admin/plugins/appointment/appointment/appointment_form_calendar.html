@@ -2,8 +2,8 @@
 
 <div class="row-fluid">
 	<div class="span12">
-		<legend><#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>${formMessages.calendarTitle}<#else>#i18n{appointment.appointmentApp.calendar.pageTitle}</#if></legend>
-		<@messages infos=infos />
+		<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''><legend>${formMessages.calendarTitle}</legend></#if>
+		<@messages infos=infos errors=errors />
 		<#if listDays??>
 			<#if nb_week &gt; 0>
 				<div class="pull-left">
@@ -66,6 +66,7 @@
 									<#if day.isOpen>
 										<#assign rowspan=day.appointmentDuration/min_duration_appointments>
 										<#assign first_slot = day.listSlots?first>
+										<#assign nbSlotsFilled = 0>
 										<#if first_slot.startingHour &lt; 10>
 											<#assign first_time = '0' + first_slot.startingHour + 'h'>
 										<#else>
@@ -83,6 +84,7 @@
 														&nbsp;
 													</td>
 												</tr>
+												<#assign nbSlotsFilled = nbSlotsFilled + 1>
 											<#else>
 												<#break>
 											</#if>
@@ -98,12 +100,14 @@
 												<#if slot.isEnabled>
 													<#if slot.nbFreePlaces &gt; 0>
 														<td class="appointment-slot-avaiable appointment-row${slotSpan} appointment-tooltip">
-															<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+															<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}">
+																${formMessages.calendarReserveLabel}
+															</a>
 															<@getCellTooltip appointmentSlot=slot />
 														</td>
 													<#else>
 														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
-															#i18n{appointment.appointmentCalendar.labelSlotFull}
+															${formMessages.calendarFullLabel}
 															<@getCellTooltip appointmentSlot=slot />
 														</td>
 													</#if>
@@ -113,8 +117,18 @@
 														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												</#if>
+												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
 											</tr>
 										</#list>
+										<#if nbSlotsFilled &lt; list_time_begin?size - 1>
+											<#list nbSlotsFilled..(list_time_begin?size - 1) as slotToFill>
+												<tr>
+													<td class="appointment-slot-closed appointment-row1">
+														&nbsp;
+													</td>
+												</tr>
+											</#list>
+										</#if>
 									<#else>
 										<#list list_time_begin as time_begin>
 											<tr>
@@ -153,11 +167,13 @@
 										<#if slot.isEnabled>
 											<#if slot.nbFreePlaces &gt; 0>
 												<td class="appointment-slot-avaiable">
-													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}">#i18n{appointment.appointmentCalendar.makeAppointment}</a>
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}">
+														${formMessages.calendarReserveLabel}
+													</a>
 												</td>
 											<#else>
 												<td class="appointment-slot-full">
-													#i18n{appointment.appointmentCalendar.labelSlotFull}
+													${formMessages.calendarFullLabel}
 												</td>
 											</#if>
 										<#else>

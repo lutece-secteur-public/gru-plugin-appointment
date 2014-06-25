@@ -91,6 +91,7 @@ import java.sql.Date;
 import java.text.DateFormat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -182,6 +183,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_FORM_HTML = "form_html";
     private static final String MARK_FORM_ERRORS = "form_errors";
     private static final String MARK_LIST_DAYS = "listDays";
+    private static final String MARK_LIST_AVAILABLE_DAYS = "listAvailableDays";
     private static final String MARK_FORM = "form";
     private static final String MARK_DAY = "day";
     private static final String MARK_FORM_MESSAGES = "formMessages";
@@ -202,6 +204,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_TITLE = "title";
     private static final String MARK_INFOS = "infos";
     private static final String MARK_ERRORS = "errors";
+    private static final String MARK_DATE_LAST_MONDAY = "dateLastMonday";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -1003,14 +1006,23 @@ public class AppointmentApp extends MVCApplication
 
         nNbWeek = nMutableNbWeek.intValue(  );
 
+        if ( StringUtils.isNotBlank( formMessages.getCalendarDescription(  ) ) )
+        {
+            addInfo( model, formMessages.getCalendarDescription(  ) );
+        }
+
         if ( listDays != null )
         {
             List<String> listTimeBegin = new ArrayList<String>(  );
             int nMinAppointmentDuration = AppointmentService.getService(  )
                                                             .getListTimeBegin( listDays, form, listTimeBegin );
+            List<AppointmentDay> listAvailableDays = AppointmentService.getService(  ).getAllAvailableDays( form );
             model.put( MARK_LIST_DAYS, listDays );
+            model.put( MARK_LIST_AVAILABLE_DAYS, listAvailableDays );
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
+            model.put( MARK_DATE_LAST_MONDAY,
+                DateUtils.truncate( AppointmentService.getService(  ).getDateLastMonday(  ), Calendar.DATE ).getTime(  ) );
         }
         else
         {

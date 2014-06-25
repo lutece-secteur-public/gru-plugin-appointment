@@ -1,25 +1,4 @@
 --
--- Structure for table appointment_appointment
---
-DROP TABLE IF EXISTS appointment_appointment;
-CREATE TABLE appointment_appointment (
-	id_appointment int NOT NULL default '0',
-	first_name varchar(255) NOT NULL default '',
-	last_name varchar(255) NOT NULL default '',
-	email varchar(255) NOT NULL default '',
-	id_user varchar(255) NULL default '',
-	authentication_service varchar(255) NULL default '',
-	localization varchar(255) NULL default '',
-	date_appointment DATE NOT NULL,
-	id_slot int NOT NULL,
-	status smallint NOT NULL,
-	id_action_cancel int NOT NULL,
-	id_admin_user int DEFAULT NULL,
-	PRIMARY KEY (id_appointment)
-);
-CREATE INDEX idx_appointment_id_slot ON appointment_appointment (id_slot);
-CREATE INDEX idx_appointment_date_app ON appointment_appointment (date_appointment);
---
 -- Structure for table appointment_form
 --
 DROP TABLE IF EXISTS appointment_form;
@@ -50,7 +29,6 @@ CREATE TABLE appointment_form (
 	PRIMARY KEY (id_form)
 );
 
-
 DROP TABLE IF EXISTS appointment_day;
 CREATE TABLE appointment_day (
 	id_day INT NOT NULL,
@@ -68,6 +46,9 @@ CREATE TABLE appointment_day (
 );
 CREATE INDEX idx_appointment_day_id_form ON appointment_day (id_form);
 
+ALTER TABLE appointment_day ADD CONSTRAINT fk_appointment_day_id_form FOREIGN KEY (id_form)
+      REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;
+
 DROP TABLE IF EXISTS appointment_slot;
 CREATE TABLE appointment_slot (
 	id_slot INT NOT NULL,
@@ -83,7 +64,33 @@ CREATE TABLE appointment_slot (
 	PRIMARY KEY (id_slot)
 );
 CREATE INDEX idx_appointment_slot_id_form ON appointment_slot (id_form);
+ALTER TABLE appointment_slot ADD CONSTRAINT fk_appointment_slot_id_form FOREIGN KEY (id_form)
+      REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;
 CREATE INDEX idx_appointment_slot_id_day ON appointment_slot (id_day);
+
+--
+-- Structure for table appointment_appointment
+--
+DROP TABLE IF EXISTS appointment_appointment;
+CREATE TABLE appointment_appointment (
+	id_appointment int NOT NULL default '0',
+	first_name varchar(255) NOT NULL default '',
+	last_name varchar(255) NOT NULL default '',
+	email varchar(255) NOT NULL default '',
+	id_user varchar(255) NULL default '',
+	authentication_service varchar(255) NULL default '',
+	localization varchar(255) NULL default '',
+	date_appointment DATE NOT NULL,
+	id_slot int NOT NULL,
+	status smallint NOT NULL,
+	id_action_cancel int NOT NULL,
+	id_admin_user int DEFAULT NULL,
+	PRIMARY KEY (id_appointment)
+);
+CREATE INDEX idx_appointment_id_slot ON appointment_appointment (id_slot);
+ALTER TABLE appointment_appointment ADD CONSTRAINT fk_appointment_id_slot FOREIGN KEY (id_slot)
+      REFERENCES appointment_slot (id_slot) ON DELETE RESTRICT ON UPDATE RESTRICT ;
+CREATE INDEX idx_appointment_date_app ON appointment_appointment (date_appointment);
 
 DROP TABLE IF EXISTS appointment_appointment_response;
 CREATE TABLE appointment_appointment_response (
@@ -91,6 +98,8 @@ CREATE TABLE appointment_appointment_response (
 	id_response INT NOT NULL,
 	PRIMARY KEY (id_appointment,id_response)
 );
+ALTER TABLE appointment_appointment_response ADD CONSTRAINT fk_app_response_id_app FOREIGN KEY (id_appointment)
+      REFERENCES appointment_appointment (id_appointment) ON DELETE RESTRICT ON UPDATE RESTRICT ;
 
 DROP TABLE IF EXISTS appointment_form_messages;
 CREATE TABLE appointment_form_messages (
@@ -107,5 +116,10 @@ CREATE TABLE appointment_form_messages (
 	text_appointment_canceled long varchar NOT NULL,
 	label_button_redirection varchar(255) NOT NULL default '',
 	no_available_slot varchar(255) NOT NULL default '',
+	calendar_description long varchar NOT NULL,
+	calendar_reserve_label varchar(255) NOT NULL default '',
+	calendar_full_label varchar(255) NOT NULL default '',
 	PRIMARY KEY (id_form)
 );
+ALTER TABLE appointment_form_messages ADD CONSTRAINT fk_app_form_messages_id_form FOREIGN KEY (id_form)
+      REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;

@@ -360,6 +360,30 @@ public class AppointmentService
     }
 
     /**
+     * Get the list of every days between the current day and the last day of
+     * the form open for appointments.
+     * @param form The form
+     * @return The list of required days
+     */
+    public List<AppointmentDay> getAllAvailableDays( AppointmentForm form )
+    {
+        //        Date date = getDateLastMonday( );
+        Date date = new Date( System.currentTimeMillis(  ) );
+        Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE );
+        calendarFrom.setTime( date );
+        calendarFrom.add( Calendar.DAY_OF_MONTH, form.getMinDaysBeforeAppointment(  ) );
+
+        Calendar calendarTo = GregorianCalendar.getInstance( Locale.FRANCE );
+        calendarTo.setTime( getDateLastMonday(  ) );
+        calendarTo.add( Calendar.WEEK_OF_MONTH, form.getNbWeeksToDisplay(  ) );
+        // We remove the last monday
+        calendarTo.add( Calendar.DAY_OF_MONTH, -1 );
+
+        return AppointmentDayHome.getDaysBetween( form.getIdForm(  ), new Date( calendarFrom.getTimeInMillis(  ) ),
+            new Date( calendarTo.getTimeInMillis(  ) ) );
+    }
+
+    /**
      * Get the list of appointment slots for a given day
      * @param day the day to initialize
      * @return The list of slots computed from the day

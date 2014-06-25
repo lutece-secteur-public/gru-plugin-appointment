@@ -98,6 +98,11 @@
 	border-bottom: none;
 }
 
+.appointment-datepicker-day-highlighted {
+	background-color: lightgray;
+	color: black !important;
+}
+
 
 td.appointment-row1 {
 	text-align: center;

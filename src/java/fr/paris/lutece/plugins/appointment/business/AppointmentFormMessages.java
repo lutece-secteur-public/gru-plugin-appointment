@@ -54,6 +54,9 @@ public class AppointmentFormMessages implements Cloneable
     private String _strTextAppointmentCanceled;
     private String _strLabelButtonRedirection;
     private String _strNoAvailableSlot;
+    private String _strCalendarDescription;
+    private String _strCalendarReserveLabel;
+    private String _strCalendarFullLabel;
 
     /**
      * Return the id of the associated form
@@ -307,6 +310,61 @@ public class AppointmentFormMessages implements Cloneable
     public void setNoAvailableSlot( String strNoAvailableSlot )
     {
         this._strNoAvailableSlot = strNoAvailableSlot;
+    }
+
+    /**
+     * Get the calendar description
+     * @return The calendar description
+     */
+    public String getCalendarDescription(  )
+    {
+        return _strCalendarDescription;
+    }
+
+    /**
+     * Set the calendar description
+     * @param strCalendarDescription The calendar description
+     */
+    public void setCalendarDescription( String strCalendarDescription )
+    {
+        this._strCalendarDescription = strCalendarDescription;
+    }
+
+    /**
+     * Get the label that indicates that a slot is open for reservation
+     * @return The label that indicates that a slot is open for reservation
+     */
+    public String getCalendarReserveLabel(  )
+    {
+        return _strCalendarReserveLabel;
+    }
+
+    /**
+     * Set the label that indicates that a slot is open for reservation
+     * @param strCalendarReserveLabel The label that indicates that a slot is
+     *            open for reservation
+     */
+    public void setCalendarReserveLabel( String strCalendarReserveLabel )
+    {
+        this._strCalendarReserveLabel = strCalendarReserveLabel;
+    }
+
+    /**
+     * Get the label that indicates that a slot is full
+     * @return The label that indicates that a slot is full
+     */
+    public String getCalendarFullLabel(  )
+    {
+        return _strCalendarFullLabel;
+    }
+
+    /**
+     * Set the label that indicates that a slot is full
+     * @param strCalendarFullLabel The label that indicates that a slot is full
+     */
+    public void setCalendarFullLabel( String strCalendarFullLabel )
+    {
+        this._strCalendarFullLabel = strCalendarFullLabel;
     }
 
     /**
