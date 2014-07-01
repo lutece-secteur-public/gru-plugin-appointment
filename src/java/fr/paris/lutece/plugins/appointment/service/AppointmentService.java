@@ -807,6 +807,13 @@ public class AppointmentService
         return nNumber;
     }
 
+    /**
+     * Convert a duration from hours and minutes to its time format. The time
+     * format is equal to the number of minutes of the given duration.
+     * @param nHour The number of hours
+     * @param nMinute The number of minutes
+     * @return The number of minutes of the given duration
+     */
     private int getTime( int nHour, int nMinute )
     {
         return ( nHour * 60 ) + nMinute;

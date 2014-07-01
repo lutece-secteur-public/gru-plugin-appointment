@@ -47,13 +47,13 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_form ) FROM appointment_form";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app FROM appointment_form ";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template FROM appointment_form ";
     private static final String SQL_QUERY_SELECTALL = SQL_QUERY_SELECT_COLUMNS + " ORDER BY title";
     private static final String SQL_QUERY_SELECTALL_ENABLED = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ? WHERE id_form = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ? WHERE id_form = ?";
 
     /**
      * Generates a new primary key
@@ -110,7 +110,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
-        daoUtil.setInt( nIndex, appointmentForm.getMinDaysBeforeAppointment(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment(  ) );
+        daoUtil.setInt( nIndex, appointmentForm.getCalendarTemplateId(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -182,6 +183,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId(  ) );
         daoUtil.setInt( nIndex, appointmentForm.getIdForm(  ) );
 
         daoUtil.executeUpdate(  );
@@ -259,7 +261,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         appointmentForm.setIdWorkflow( daoUtil.getInt( nIndex++ ) );
         appointmentForm.setEnableCaptcha( daoUtil.getBoolean( nIndex++ ) );
         appointmentForm.setAllowUsersToCancelAppointments( daoUtil.getBoolean( nIndex++ ) );
-        appointmentForm.setMinDaysBeforeAppointment( daoUtil.getInt( nIndex ) );
+        appointmentForm.setMinDaysBeforeAppointment( daoUtil.getInt( nIndex++ ) );
+        appointmentForm.setCalendarTemplateId( daoUtil.getInt( nIndex ) );
 
         return appointmentForm;
     }

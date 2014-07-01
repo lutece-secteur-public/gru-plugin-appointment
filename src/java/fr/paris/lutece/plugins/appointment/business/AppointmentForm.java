@@ -112,6 +112,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private boolean _bOpeningMinutesInitialized;
     private boolean _bClosingHourInitialized;
     private boolean _bClosingMinutesInitialized;
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
+    private int _nCalendarTemplateId;
 
     /**
      * Returns the IdForm
@@ -635,6 +637,25 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     public void setAllowUsersToCancelAppointments( boolean bAllowUsersToCancelAppointments )
     {
         this._bAllowUsersToCancelAppointments = bAllowUsersToCancelAppointments;
+    }
+
+    /**
+     * Get the id of the calendar template of this appointment form
+     * @return The id of the calendar template of this appointment form
+     */
+    public int getCalendarTemplateId(  )
+    {
+        return _nCalendarTemplateId;
+    }
+
+    /**
+     * Set the id of the calendar template of this appointment form
+     * @param nCalendarTemplateId The id of the calendar template of this
+     *            appointment form
+     */
+    public void setCalendarTemplateId( int nCalendarTemplateId )
+    {
+        _nCalendarTemplateId = nCalendarTemplateId;
     }
 
     /**

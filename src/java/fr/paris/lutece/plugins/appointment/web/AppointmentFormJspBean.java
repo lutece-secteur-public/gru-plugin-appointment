@@ -37,6 +37,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
+import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
@@ -129,6 +130,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
+    private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
 
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -255,6 +257,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
 
         Map<String, Object> model = getModel(  );
+        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList(  ) );
         addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
 
         //        model.put( MARK_LOCALE, AppointmentPlugin.getPluginLocale( getLocale( ) ) );
@@ -726,6 +729,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_APPOINTMENTFORM, appointmentForm );
         model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance(  ).getWorkflowsEnabled( user, locale ) );
         model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable(  ) );
+        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList(  ) );
 
         Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( 
                     PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );

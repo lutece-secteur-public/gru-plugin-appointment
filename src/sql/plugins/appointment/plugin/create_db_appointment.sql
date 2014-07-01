@@ -26,6 +26,7 @@ CREATE TABLE appointment_form (
 	is_captcha_enabled SMALLINT NOT NULL,
 	users_can_cancel_appointments SMALLINT NOT NULL,
 	min_days_before_app SMALLINT NOT NULL,
+	id_calendar_template INT NOT NULL,
 	PRIMARY KEY (id_form)
 );
 
@@ -123,3 +124,15 @@ CREATE TABLE appointment_form_messages (
 );
 ALTER TABLE appointment_form_messages ADD CONSTRAINT fk_app_form_messages_id_form FOREIGN KEY (id_form)
       REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;
+      
+DROP TABLE IF EXISTS appointment_calendar_template;
+CREATE TABLE appointment_calendar_template (
+	id INT NOT NULL,
+	title varchar(255) NOT NULL default '',
+	description varchar(255) NOT NULL default '',
+	template_path varchar(255) NOT NULL default '',
+	PRIMARY KEY(id)
+);
+
+ALTER TABLE appointment_form ADD CONSTRAINT fk_app_form_template FOREIGN KEY (id_calendar_template)
+      REFERENCES appointment_calendar_template (id) ON DELETE RESTRICT ON UPDATE RESTRICT ;

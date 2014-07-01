@@ -46,6 +46,8 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
+import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
@@ -143,7 +145,6 @@ public class AppointmentApp extends MVCApplication
     // Templates
     private static final String TEMPLATE_APPOINTMENT_FORM_LIST = "/skin/plugins/appointment/appointment_form_list.html";
     private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/plugins/appointment/appointment_form.html";
-    private static final String TEMPLATE_APPOINTMENT_FORM_CALENDAR = "/skin/plugins/appointment/appointment_form_calendar.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_RECAP = "/skin/plugins/appointment/appointment_form_recap.html";
     private static final String TEMPLATE_APPOINTMENT_CREATED = "skin/plugins/appointment/appointment_created.html";
     private static final String TEMPLATE_CANCEL_APPOINTMENT = "skin/plugins/appointment/cancel_appointment.html";
@@ -194,6 +195,9 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_SLOT = "slot";
     private static final String MARK_LIST_DAYS_OF_WEEK = "list_days_of_week";
     private static final String MARK_REF = "%%REF%%";
+    private static final String MARK_DATE_APP = "%%DATE%%";
+    private static final String MARK_TIME_BEGIN = "%%HEURE_DEBUT%%";
+    private static final String MARK_TIME_END = "%%HEURE_FIN%%";
     private static final String MARK_LIST_APPOINTMENTS = "list_appointments";
     private static final String MARK_BACK_URL = "backUrl";
     private static final String MARK_STATUS_VALIDATED = "status_validated";
@@ -622,9 +626,19 @@ public class AppointmentApp extends MVCApplication
             Appointment appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
             AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+
+            String strTimeBegin = _appointmentFormService.convertTimeIntoString( slot.getStartingHour(  ),
+                    slot.getStartingMinute(  ) );
+            String strTimeEnd = _appointmentFormService.convertTimeIntoString( slot.getEndingHour(  ),
+                    slot.getEndingMinute(  ) );
+
             formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated(  )
                                                                 .replaceAll( MARK_REF,
-                    AppointmentService.getService(  ).computeRefAppointment( appointment ) ) );
+                    AppointmentService.getService(  ).computeRefAppointment( appointment ) )
+                                                                .replaceAll( MARK_DATE_APP,
+                    _dateFormat.format( appointment.getDateAppointment(  ) ) ).replaceAll( MARK_TIME_BEGIN, strTimeBegin )
+                                                                .replaceAll( MARK_TIME_END, strTimeEnd ) );
 
             Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_FORM, form );
@@ -1035,7 +1049,9 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
         model.put( MARK_IS_FORM_FIRST_STEP, appointmentFormService.isFormFirstStep(  ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM_CALENDAR, locale, model );
+        CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( form.getCalendarTemplateId(  ) );
+
+        HtmlTemplate template = AppTemplateService.getTemplate( calendarTemplate.getTemplatePath(  ), locale, model );
 
         return template.getHtml(  );
     }

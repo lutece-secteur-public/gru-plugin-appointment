@@ -111,7 +111,8 @@ public class AppointmentFormPortlet extends PortletHtmlContent
     @Override
     public boolean canBeCachedForConnectedUsers(  )
     {
-        return false;
+        // We only allow cache is the form is the first step of the appointment process
+        return _appointmentFormService.isFormFirstStep(  );
     }
 
     /**
@@ -120,7 +121,8 @@ public class AppointmentFormPortlet extends PortletHtmlContent
     @Override
     public boolean canBeCachedForAnonymousUsers(  )
     {
-        return false;
+        // We only allow cache is the form is the first step of the appointment process
+        return _appointmentFormService.isFormFirstStep(  );
     }
 
     /**

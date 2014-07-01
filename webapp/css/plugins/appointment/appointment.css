@@ -93,6 +93,12 @@
 	border: 1px solid lightgray;
 }
 
+.appointment-td-border {
+	border: 1px solid #DDDDDD;
+	vertical-align: middle;
+	text-align: center;
+}
+
 .appointment-table-slots tbody tr td.column-time {
 	border-left: none;
 	border-bottom: none;

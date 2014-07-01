@@ -1,0 +1,48 @@
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp">
+			<fieldset>
+				<legend>
+					<#if template.id?? && template.id &gt; 0>
+						#i18n{appointment.createModifyCalendarTemplate.pageTitleModify}
+					<#else>
+						#i18n{appointment.createModifyCalendarTemplate.pageTitleCreate}
+					</#if>
+				</legend>
+				<@messages infos=infos errors=errors />
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.createModifyCalendarTemplate.labelTitle}</label>
+					<div class="controls">
+						<input maxlength="255" type="text" name="title" value="${(template.title)!}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.createModifyCalendarTemplate.labelDescription}</label>
+					<div class="controls">
+						<input maxlength="255" type="text" name="description" value="${(template.description)!}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}</label>
+					<div class="controls">
+						<@combo items=refListTemplates default_value=(template.templatePath)!'' name="templatePath" />
+						<button name="action" value="doDownloadTemplate" title="#i18n{portal.util.labelDownload}" class="btn btn-small btn-primary">
+							<i class="icon-download icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelDownload}
+						</button>
+					</div>
+				</div>
+				<div class="form-actions">
+					<#if (template.id)?? && template.id &gt; 0>
+						<input type="hidden" name="id" value="${template.id}">
+					</#if>
+					<button name="action" value="doCreateModifyTemplate" class="btn btn-small btn-primary">
+						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelOk}
+					</button>
+					<a class="btn btn-small btn-default" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp">
+						<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+					</a>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>

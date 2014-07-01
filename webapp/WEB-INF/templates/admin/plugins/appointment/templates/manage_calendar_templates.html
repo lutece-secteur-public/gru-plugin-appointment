@@ -1,0 +1,26 @@
+<div class="row-fluid">
+	<div class="span12">
+		<legend>
+			#i18n{appointment.manageCalendarTemplates.pageTitleManageCalendarTemplates}
+			<div class="pull-right">
+				<a class="btn btn-small btn-primary" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate" >
+					<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manageCalendarTemplates.labelAddTemplate}
+				</a>
+			</div>
+		</legend>
+		
+		<@messages infos=infos errors=errors />
+		
+		<@dataTable dataTableManager=dataTableManager actionMacro="actionColumnCalendarTemplate" />
+	</div>
+</div>
+
+
+<#macro actionColumnCalendarTemplate item>
+	<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.id}" >
+		<i class="icon-edit icon-white">&nbsp;</i>
+	</a>
+	<a class="btn btn-danger btn-small" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.id}" >
+		<i class="icon-trash icon-white">&nbsp;</i>
+	</a>
+</#macro>

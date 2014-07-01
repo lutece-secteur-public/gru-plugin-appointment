@@ -20,3 +20,20 @@ ALTER TABLE appointment_form_messages ADD CONSTRAINT fk_app_form_messages_id_for
       REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;
 ALTER TABLE appointment_appointment_response ADD CONSTRAINT fk_app_response_id_resp FOREIGN KEY (id_response)
       REFERENCES genatt_response (id_response) ON DELETE RESTRICT ON UPDATE RESTRICT ;
+
+DROP TABLE IF EXISTS appointment_calendar_template;
+CREATE TABLE appointment_calendar_template (
+	id INT NOT NULL,
+	title varchar(255) NOT NULL default '',
+	description varchar(255) NOT NULL default '',
+	template_path varchar(255) NOT NULL default '',
+	PRIMARY KEY(id)
+);
+
+INSERT INTO appointment_calendar_template (id, title, description, template_path) VALUES (1,'Calendrier','Calendrier des créneaux disponibles et indisponibles','skin/plugins/appointment/calendar/appointment_form_calendar.html' );
+INSERT INTO appointment_calendar_template (id, title, description, template_path) VALUES (2,'Liste des créneaux disponibles','Liste des créneaux disponibles','skin/plugins/appointment/calendar/appointment_form_list_open_slots.html' );
+
+ALTER TABLE appointment_form ADD COLUMN id_calendar_template INT NOT NULL;
+UPDATE appointment_form SET id_calendar_template = 1;
+ALTER TABLE appointment_form ADD CONSTRAINT fk_app_form_template FOREIGN KEY (id_calendar_template)
+      REFERENCES appointment_calendar_template (id) ON DELETE RESTRICT ON UPDATE RESTRICT ;

@@ -627,6 +627,34 @@ public class AppointmentFormService implements Serializable
     }
 
     /**
+     * Convert a time into string
+     * @param nHour The hour
+     * @param nMinute The minute
+     * @return The string representing the given time
+     */
+    public String convertTimeIntoString( int nHour, int nMinute )
+    {
+        StringBuilder sbTime = new StringBuilder(  );
+
+        if ( nHour < 10 )
+        {
+            sbTime.append( 0 );
+        }
+
+        sbTime.append( nHour );
+        sbTime.append( AppointmentForm.CONSTANT_H );
+
+        if ( nMinute < 10 )
+        {
+            sbTime.append( 0 );
+        }
+
+        sbTime.append( nMinute );
+
+        return sbTime.toString(  );
+    }
+
+    /**
      * Do check if an appointment can be made and make an appointment.
      * @param appointment The appointment to make
      * @param form The appointment form associated with the appointment

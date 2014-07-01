@@ -14,23 +14,23 @@
     <db-pool-required>1</db-pool-required>
     
     <!-- Admin features parameters -->
-    <admin-features>
-        <admin-feature>
-            <feature-id>APPOINTMENT_MANAGEMENT</feature-id>
-            <feature-title>appointment.adminFeature.ManageAppointment.name</feature-title>
-            <feature-description>appointment.adminFeature.ManageAppointment.description</feature-description>
-            <feature-level>1</feature-level>
-            <feature-url>jsp/admin/plugins/appointment/ManageAppointments.jsp</feature-url>
-            <feature-icon-url/>
-      </admin-feature>
-        <admin-feature>
+	<admin-features>
+		<admin-feature>
             <feature-id>APPOINTMENT_FORM_MANAGEMENT</feature-id>
             <feature-title>appointment.adminFeature.ManageAppointmentForm.name</feature-title>
             <feature-description>appointment.adminFeature.ManageAppointmentForm.description</feature-description>
-            <feature-level>0</feature-level>
+            <feature-level>1</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentForms.jsp</feature-url>
             <feature-icon-url/>
-      </admin-feature>
+		</admin-feature>
+		<admin-feature>
+            <feature-id>APPOINTMENT_CALENDAR_TEMPLATE</feature-id>
+            <feature-title>appointment.adminFeature.manageCalendarTemplates.name</feature-title>
+            <feature-description>appointment.adminFeature.manageCalendarTemplates.description</feature-description>
+            <feature-level>0</feature-level>
+            <feature-url>jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp</feature-url>
+            <feature-icon-url/>
+		</admin-feature>
     </admin-features>
 	<rbac-resource-types>
 		<rbac-resource-type>

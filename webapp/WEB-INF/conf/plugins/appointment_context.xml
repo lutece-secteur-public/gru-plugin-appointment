@@ -8,6 +8,7 @@
     <bean id="appointment.appointmentFormPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletDAO" />
     <bean id="appointment.appointmentFormListPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletDAO" />
     <bean id="appointment.appointmentDayDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayDAO" />
+   	<bean id="appointment.calendarTemplateDAO" class="fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateDAO" />
    	<bean id="appointment.appointmentSlotDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDAO" >
    		<property name="defaultSlotListSize">
    			<value>100</value>
