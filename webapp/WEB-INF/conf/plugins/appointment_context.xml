@@ -37,4 +37,6 @@
 	<bean id="appointment.entryTypeTextArea" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeTextArea" />
 	<bean id="appointment.entryTypeImage" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage" />
 	<bean id="appointment.entryTypeFile" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeFile" />
+	<bean id="appointment.entryTypePhone" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypePhone" />
+	
 </beans>

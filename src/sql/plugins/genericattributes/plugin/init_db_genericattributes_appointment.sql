@@ -28,3 +28,5 @@ INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_use
 (114,'Image',0,0,0,'appointment.entryTypeImage','appointment');
 INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,plugin) VALUES
 (115,'Fichier',0,0,0,'appointment.entryTypeFile','appointment');
+INSERT INTO genatt_entry_type (id_type,title,is_group,is_comment,is_mylutece_user,class_name,plugin) VALUES 
+(116,'Numéro de téléphone',0,0,0,'appointment.entryTypePhone','appointment');

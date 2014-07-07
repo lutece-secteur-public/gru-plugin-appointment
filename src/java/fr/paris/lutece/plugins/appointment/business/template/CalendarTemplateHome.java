@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.template;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -65,6 +66,9 @@ public final class CalendarTemplateHome
     public static void create( CalendarTemplate template )
     {
         _dao.create( template, _plugin );
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( 
+                template.getId(  ) ), template );
     }
 
     /**
@@ -74,6 +78,9 @@ public final class CalendarTemplateHome
     public static void update( CalendarTemplate template )
     {
         _dao.update( template, _plugin );
+        AppointmentFormCacheService.getInstance(  )
+                                   .putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( 
+                template.getId(  ) ), template );
     }
 
     /**
@@ -84,7 +91,16 @@ public final class CalendarTemplateHome
      */
     public static CalendarTemplate findByPrimaryKey( int nId )
     {
-        return _dao.findByPrimaryKey( nId, _plugin );
+        String strKey = AppointmentFormCacheService.getCalendarTemplateCacheKey( nId );
+        CalendarTemplate template = (CalendarTemplate) AppointmentFormCacheService.getInstance(  ).getFromCache( strKey );
+
+        if ( template == null )
+        {
+            template = _dao.findByPrimaryKey( nId, _plugin );
+            AppointmentFormCacheService.getInstance(  ).putInCache( strKey, template );
+        }
+
+        return template;
     }
 
     /**
@@ -120,5 +136,7 @@ public final class CalendarTemplateHome
     public static void delete( int nId )
     {
         _dao.delete( nId, _plugin );
+        AppointmentFormCacheService.getInstance(  )
+                                   .removeKey( AppointmentFormCacheService.getCalendarTemplateCacheKey( nId ) );
     }
 }

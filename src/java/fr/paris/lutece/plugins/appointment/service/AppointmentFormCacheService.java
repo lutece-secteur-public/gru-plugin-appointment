@@ -48,6 +48,7 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     private static final String CACHE_KEY_LIST_APPOINTMENT_TIMES = "appointment.listAppointmentTimes.";
     private static final String CACHE_KEY_APPOINTMENT_DAY = "appointment.appointmentDay.";
     private static final String CACHE_KEY_APPOINTMENT_SLOT = "appointment.appointmentSlot.";
+    private static final String CACHE_KEY_CALENDAR_TEMPLATE = "appointment.calendarTemplate.";
     private static AppointmentFormCacheService _instance = new AppointmentFormCacheService(  );
 
     /**
@@ -146,5 +147,15 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     public String getName(  )
     {
         return SERVICE_NAME;
+    }
+
+    /**
+     * Get the cache key for a calendar template
+     * @param nId The id of the calendar template
+     * @return The cache key of the calendar template
+     */
+    public static String getCalendarTemplateCacheKey( int nId )
+    {
+        return CACHE_KEY_CALENDAR_TEMPLATE + nId;
     }
 }
