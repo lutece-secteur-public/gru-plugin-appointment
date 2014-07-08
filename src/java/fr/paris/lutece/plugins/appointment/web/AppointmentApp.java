@@ -85,10 +85,13 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
+
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -99,6 +102,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.ConstraintViolation;
 
 
@@ -632,8 +636,8 @@ public class AppointmentApp extends MVCApplication
                                                                 .replaceAll( MARK_REF,
                     AppointmentService.getService(  ).computeRefAppointment( appointment ) )
                                                                 .replaceAll( MARK_DATE_APP,
- getDateFormat( ).format( appointment.getDateAppointment( ) ) )
-                    .replaceAll( MARK_TIME_BEGIN, strTimeBegin )
+                    getDateFormat(  ).format( appointment.getDateAppointment(  ) ) )
+                                                                .replaceAll( MARK_TIME_BEGIN, strTimeBegin )
                                                                 .replaceAll( MARK_TIME_END, strTimeEnd ) );
 
             Map<String, Object> model = new HashMap<String, Object>(  );
@@ -1171,7 +1175,7 @@ public class AppointmentApp extends MVCApplication
      * Get the date format
      * @return The date format
      */
-    private static DateFormat getDateFormat( )
+    private static DateFormat getDateFormat(  )
     {
         return DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE );
     }

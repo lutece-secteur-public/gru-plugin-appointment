@@ -60,16 +60,16 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
     private int newPrimaryKey( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PRIMARY_KEY, plugin );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
 
         int nRes = 1;
 
-        if ( daoUtil.next( ) )
+        if ( daoUtil.next(  ) )
         {
             nRes = daoUtil.getInt( 1 ) + 1;
         }
 
-        daoUtil.free( );
+        daoUtil.free(  );
 
         return nRes;
     }
@@ -85,12 +85,12 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
 
         int nIndex = 1;
 
-        daoUtil.setInt( nIndex++, template.getId( ) );
-        daoUtil.setString( nIndex++, template.getTitle( ) );
-        daoUtil.setString( nIndex++, template.getDescription( ) );
-        daoUtil.setString( nIndex, template.getTemplatePath( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.setInt( nIndex++, template.getId(  ) );
+        daoUtil.setString( nIndex++, template.getTitle(  ) );
+        daoUtil.setString( nIndex++, template.getDescription(  ) );
+        daoUtil.setString( nIndex, template.getTemplatePath(  ) );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -102,12 +102,12 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
         int nIndex = 1;
 
-        daoUtil.setString( nIndex++, template.getTitle( ) );
-        daoUtil.setString( nIndex++, template.getDescription( ) );
-        daoUtil.setString( nIndex++, template.getTemplatePath( ) );
-        daoUtil.setInt( nIndex++, template.getId( ) );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.setString( nIndex++, template.getTitle(  ) );
+        daoUtil.setString( nIndex++, template.getDescription(  ) );
+        daoUtil.setString( nIndex++, template.getTemplatePath(  ) );
+        daoUtil.setInt( nIndex++, template.getId(  ) );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -118,16 +118,16 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, nId );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
 
         CalendarTemplate template = null;
 
-        if ( daoUtil.next( ) )
+        if ( daoUtil.next(  ) )
         {
             template = getCalendarTemplate( daoUtil );
         }
 
-        daoUtil.free( );
+        daoUtil.free(  );
 
         return template;
     }
@@ -139,16 +139,16 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
     public List<CalendarTemplate> findAll( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL, plugin );
-        daoUtil.executeQuery( );
+        daoUtil.executeQuery(  );
 
-        List<CalendarTemplate> listTemplates = new ArrayList<CalendarTemplate>( );
+        List<CalendarTemplate> listTemplates = new ArrayList<CalendarTemplate>(  );
 
-        while ( daoUtil.next( ) )
+        while ( daoUtil.next(  ) )
         {
             listTemplates.add( getCalendarTemplate( daoUtil ) );
         }
 
-        daoUtil.free( );
+        daoUtil.free(  );
 
         return listTemplates;
     }
@@ -161,8 +161,8 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
         daoUtil.setInt( 1, nId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
 
     /**
@@ -175,7 +175,7 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
     private CalendarTemplate getCalendarTemplate( DAOUtil daoUtil )
     {
         int nIndex = 1;
-        CalendarTemplate template = new CalendarTemplate( );
+        CalendarTemplate template = new CalendarTemplate(  );
         template.setId( daoUtil.getInt( nIndex++ ) );
         template.setTitle( daoUtil.getString( nIndex++ ) );
         template.setDescription( daoUtil.getString( nIndex++ ) );
