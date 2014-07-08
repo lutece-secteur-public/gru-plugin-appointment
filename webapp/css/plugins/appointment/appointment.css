@@ -22,9 +22,6 @@
 	border: 1px solid #DDDDDD;
 }
 
-.appointment-slot-avaiable {
-}
-
 .appointment-slot-full {
 	background-color: #EEEEEE;
 	color: #222222;
@@ -99,7 +96,7 @@
 	text-align: center;
 }
 
-.appointment-table-slots tbody tr td.column-time {
+.appointment-table-slots tr .column-time {
 	border-left: none;
 	border-bottom: none;
 }
@@ -109,6 +106,47 @@
 	color: black !important;
 }
 
+.table > tbody > tr > td.appointment-slot-horizontal, .table > tbody > tr > td.column-time-minute {
+	text-align: center;
+	vertical-align: middle;
+	padding: 3px;
+}
+
+.column-time-minute {
+	font-size: 8px;
+}
+
+.appointment-slot-horizontal .appointment-slot-closed,
+.appointment-slot-horizontal .appointment-slot-avaiable {
+	height: 40px;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #EEEEEE;
+}
+
+.appointment-slot-horizontal .appointment-slot-avaiable {
+	background-color: #7E7E7E;
+}
+
+.appointment-slot-horizontal .appointment-slot-avaiable:hover {
+	background-color: #333333;
+}
+
+.appointment-slot-horizontal a:hover {
+	text-decoration: none;
+}
+
+.column-time-hour {
+	text-align: center;
+	vertical-align: middle;
+	background-color: lightgray;
+}
+
+.column-time-date {
+	text-align: center;
+	vertical-align: middle;
+	background-color: #F5F5F5;
+}
 
 td.appointment-row1 {
 	text-align: center;
