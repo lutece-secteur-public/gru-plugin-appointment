@@ -119,7 +119,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     // Templates
     private static final String TEMPLATE_MANAGE_SLOTS = "admin/plugins/appointment/slots/manage_slots.html";
     private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modify_slot.html";
-    private AppointmentSlot slotInSession;
+    private AppointmentSlot _slotInSession;
 
     /**
      * Get the page to manage slots of a form or a day
@@ -129,7 +129,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     @View( defaultView = true, value = VIEW_MANAGE_APPOINTMENT_SLOTS )
     public String getManageSlots( HttpServletRequest request )
     {
-        slotInSession = null;
+        _slotInSession = null;
 
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         List<AppointmentSlot> listSlots = null;
@@ -311,7 +311,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         }
         else
         {
-            slot = slotInSession;
+            slot = _slotInSession;
         }
 
         if ( slot != null )
@@ -408,7 +408,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                     if ( ( ( nSlotDuration % nRefDuration ) != 0 ) && ( ( nRefDuration % nSlotDuration ) != 0 ) )
                     {
                         addError( MESSAGE_ERROR_DURATION_MUST_BE_MULTIPLE_OF_REF_DURATION, getLocale(  ) );
-                        slotInSession = slot;
+                        _slotInSession = slot;
 
                         return redirectView( request, VIEW_MODIFY_APPOINTMENT_SLOT );
                     }
@@ -416,7 +416,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                     if ( ( ( nEndingHour * 60 ) + nEndingMinute ) > nRefEndingTime )
                     {
                         addError( MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale(  ) );
-                        slotInSession = slot;
+                        _slotInSession = slot;
 
                         return redirectView( request, VIEW_MODIFY_APPOINTMENT_SLOT );
                     }
@@ -429,7 +429,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                         slot.getStartingMinute(  ) ) )
                 {
                     addError( MESSAGE_ERROR_TIME_END_BEFORE_TIME_START, getLocale(  ) );
-                    slotInSession = slot;
+                    _slotInSession = slot;
 
                     return redirectView( request, VIEW_MODIFY_APPOINTMENT_SLOT );
                 }

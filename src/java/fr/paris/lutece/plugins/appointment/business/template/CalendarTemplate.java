@@ -35,14 +35,20 @@ package fr.paris.lutece.plugins.appointment.business.template;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.Size;
 
 
 /**
  * Class that describes calendar templates
  */
-public class CalendarTemplate
+public class CalendarTemplate implements Serializable
 {
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 8029294463873867355L;
     private int _nId;
     @NotBlank( message = "#i18n{appointment.calendarTemplate.labelTitleBlank}" )
     @Size( max = 255, message = "#i18n{appointment.calendarTemplate.labelTitleSize}" )

@@ -38,23 +38,29 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import java.util.List;
 
 
+/**
+ * Interface of DAO to manage calendar templates
+ */
 public interface ICalendarTemplateDAO
 {
-    public static final String BEAN_NAME = "appointment.calendarTemplateDAO";
+    /**
+     * The name of the bean of the DAO
+     */
+    static final String BEAN_NAME = "appointment.calendarTemplateDAO";
 
     /**
      * Create a new calendar template
      * @param template The template to create
      * @param plugin The plugin
      */
-    public void create( CalendarTemplate template, Plugin plugin );
+    void create( CalendarTemplate template, Plugin plugin );
 
     /**
      * Update an existing template
      * @param template The template
      * @param plugin The plugin
      */
-    public void update( CalendarTemplate template, Plugin plugin );
+    void update( CalendarTemplate template, Plugin plugin );
 
     /**
      * Find a template by its primary key
@@ -63,19 +69,19 @@ public interface ICalendarTemplateDAO
      * @return The calendar template found, or null if no calendar template has
      *         the given primary key
      */
-    public CalendarTemplate findByPrimaryKey( int nId, Plugin plugin );
+    CalendarTemplate findByPrimaryKey( int nId, Plugin plugin );
 
     /**
      * Get the list of calendar templates
      * @param plugin The plugin
      * @return The list of calendar templates
      */
-    public List<CalendarTemplate> findAll( Plugin plugin );
+    List<CalendarTemplate> findAll( Plugin plugin );
 
     /**
      * Remove a template from its primary key
      * @param nId The id of the template to remove
      * @param plugin The plugin
      */
-    public void delete( int nId, Plugin plugin );
+    void delete( int nId, Plugin plugin );
 }
