@@ -46,7 +46,7 @@ public interface ICalendarTemplateDAO
     /**
      * The name of the bean of the DAO
      */
-    static final String BEAN_NAME = "appointment.calendarTemplateDAO";
+    final String BEAN_NAME = "appointment.calendarTemplateDAO";
 
     /**
      * Create a new calendar template

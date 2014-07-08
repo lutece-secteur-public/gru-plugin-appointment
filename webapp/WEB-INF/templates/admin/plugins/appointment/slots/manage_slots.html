@@ -55,14 +55,14 @@
 							<#if startingHour &lt; 10 >0</#if>${startingHour}h<#if startingMinute &lt; 10 >0</#if>${startingMinute}
 						</td>
 						<#list listSlots as slot>
-							<#if slot.startingHour * 60 + slot.startingMinute &gt; startingHour * 60 + startingMinute >
+							<#if ( slot.startingHour * 60 + slot.startingMinute ) &gt; ( startingHour * 60 + startingMinute ) >
 								
 								<#assign nbHeadersToAdd = ((slot.startingHour * 60 + slot.startingMinute) - (startingHour * 60 + startingMinute) ) / minDuration>
 								
 								<#list 1..nbHeadersToAdd as i >
 									<#assign startingMinute = startingMinute + minDuration >
 									<#if startingMinute &gt;= 60>
-										<#assign startingHour = startingHour + (startingMinute / 60)?round>
+										<#assign startingHour = startingHour + (startingMinute / 60)?floor>
 										<#assign startingMinute = startingMinute % 60>
 									</#if>
 									</tr>

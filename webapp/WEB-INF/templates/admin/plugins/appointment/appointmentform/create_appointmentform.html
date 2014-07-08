@@ -27,19 +27,9 @@
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSaturday' inputName='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
 				<#if listWorkflows??>
-					<div class="control-group">
-						<label class="control-label" for="idWorkflow" >#i18n{appointment.create_appointmentform.labelWorkflow} :</label>
-						<div class="controls">
-							<@combo name="idWorkflow" items=listWorkflows default_value=appointmentform.idWorkflow!'' />
-						</div>
-					</div>
+					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" />
 				</#if>
-				<div class="control-group">
-					<label class="control-label" for="calendarTemplateId">#i18n{appointment.create_appointmentform.labelCalendarTemplate} * :</label>
-					<div class="controls">
-						<@combo name="calendarTemplateId" items=refListCalendarTemplates default_value=appointmentform.calendarTemplateId!'' />
-					</div>
-				</div>
+				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
 					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>
