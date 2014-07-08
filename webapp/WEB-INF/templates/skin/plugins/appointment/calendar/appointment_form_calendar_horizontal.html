@@ -119,8 +119,9 @@
 										<#if slot.nbFreePlaces &gt; 0>
 											<td class="appointment-slot-horizontal" colspan="${slotSpan}">
 												<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}" title="${formMessages.calendarReserveLabel}">
-													<div class="appointment-slot-avaiable">
+													<div class="appointment-slot-avaiable appointment-tooltip">
 														&nbsp;
+														<@getCellTooltip appointmentSlot=slot />
 													</div>
 												</a>
 											</td>
@@ -237,6 +238,12 @@
 		</#if>
 	</div>
 </div>
+
+<#macro getCellTooltip appointmentSlot>
+	<span class="appointment-tooltip-title appointment-tooltip-title-fo">
+		<#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute} 
+	</span> 
+</#macro>
 
 <script src="js/bootstrap-datepicker.js"></script>
 <script src="js/locales/bootstrap-datepicker.fr.js"></script>
