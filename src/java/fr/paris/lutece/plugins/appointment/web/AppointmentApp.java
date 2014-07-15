@@ -85,10 +85,13 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
+
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
+
 import java.text.DateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -99,6 +102,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.ConstraintViolation;
 
 
@@ -408,7 +412,7 @@ public class AppointmentApp extends MVCApplication
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
-            if ( !form.getIsActive( ) )
+            if ( !form.getIsActive(  ) )
             {
                 return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
             }
@@ -1150,6 +1154,11 @@ public class AppointmentApp extends MVCApplication
         return urlItem.getUrl(  );
     }
 
+    /**
+     * Add an info message to a model
+     * @param model The model
+     * @param strMessage The message to add
+     */
     private static void addInfo( Map<String, Object> model, String strMessage )
     {
         List<ErrorMessage> listInfos = (List<ErrorMessage>) model.get( MARK_INFOS );
