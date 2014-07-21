@@ -1,7 +1,13 @@
---
--- Structure for table appointment_form
---
+DROP TABLE IF EXISTS workflow_task_manual_app_notify;
+DROP TABLE IF EXISTS workflow_task_update_admin_appointment;
+DROP TABLE IF EXISTS appointment_appointment_response;
+DROP TABLE IF EXISTS appointment_appointment;
+DROP TABLE IF EXISTS appointment_slot;
+DROP TABLE IF EXISTS appointment_day;
+DROP TABLE IF EXISTS appointment_form_messages;
 DROP TABLE IF EXISTS appointment_form;
+DROP TABLE IF EXISTS appointment_calendar_template;
+
 CREATE TABLE appointment_form (
 	id_form int NOT NULL,
 	title varchar(255) NOT NULL default '',
@@ -30,7 +36,6 @@ CREATE TABLE appointment_form (
 	PRIMARY KEY (id_form)
 );
 
-DROP TABLE IF EXISTS appointment_day;
 CREATE TABLE appointment_day (
 	id_day INT NOT NULL,
 	id_form INT NOT NULL,
@@ -47,10 +52,6 @@ CREATE TABLE appointment_day (
 );
 CREATE INDEX idx_appointment_day_id_form ON appointment_day (id_form);
 
-ALTER TABLE appointment_day ADD CONSTRAINT fk_appointment_day_id_form FOREIGN KEY (id_form)
-      REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;
-
-DROP TABLE IF EXISTS appointment_slot;
 CREATE TABLE appointment_slot (
 	id_slot INT NOT NULL,
 	id_form INT NOT NULL,
@@ -65,14 +66,11 @@ CREATE TABLE appointment_slot (
 	PRIMARY KEY (id_slot)
 );
 CREATE INDEX idx_appointment_slot_id_form ON appointment_slot (id_form);
-ALTER TABLE appointment_slot ADD CONSTRAINT fk_appointment_slot_id_form FOREIGN KEY (id_form)
-      REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;
 CREATE INDEX idx_appointment_slot_id_day ON appointment_slot (id_day);
 
 --
 -- Structure for table appointment_appointment
 --
-DROP TABLE IF EXISTS appointment_appointment;
 CREATE TABLE appointment_appointment (
 	id_appointment int NOT NULL default '0',
 	first_name varchar(255) NOT NULL default '',
@@ -89,20 +87,14 @@ CREATE TABLE appointment_appointment (
 	PRIMARY KEY (id_appointment)
 );
 CREATE INDEX idx_appointment_id_slot ON appointment_appointment (id_slot);
-ALTER TABLE appointment_appointment ADD CONSTRAINT fk_appointment_id_slot FOREIGN KEY (id_slot)
-      REFERENCES appointment_slot (id_slot) ON DELETE RESTRICT ON UPDATE RESTRICT ;
 CREATE INDEX idx_appointment_date_app ON appointment_appointment (date_appointment);
 
-DROP TABLE IF EXISTS appointment_appointment_response;
 CREATE TABLE appointment_appointment_response (
 	id_appointment INT NOT NULL,
 	id_response INT NOT NULL,
 	PRIMARY KEY (id_appointment,id_response)
 );
-ALTER TABLE appointment_appointment_response ADD CONSTRAINT fk_app_response_id_app FOREIGN KEY (id_appointment)
-      REFERENCES appointment_appointment (id_appointment) ON DELETE RESTRICT ON UPDATE RESTRICT ;
 
-DROP TABLE IF EXISTS appointment_form_messages;
 CREATE TABLE appointment_form_messages (
 	id_form INT NOT NULL,
 	calendar_title varchar(255) NOT NULL default '',
@@ -122,10 +114,7 @@ CREATE TABLE appointment_form_messages (
 	calendar_full_label varchar(255) NOT NULL default '',
 	PRIMARY KEY (id_form)
 );
-ALTER TABLE appointment_form_messages ADD CONSTRAINT fk_app_form_messages_id_form FOREIGN KEY (id_form)
-      REFERENCES appointment_form (id_form) ON DELETE RESTRICT ON UPDATE RESTRICT ;
-      
-DROP TABLE IF EXISTS appointment_calendar_template;
+
 CREATE TABLE appointment_calendar_template (
 	id INT NOT NULL,
 	title varchar(255) NOT NULL default '',
@@ -134,5 +123,16 @@ CREATE TABLE appointment_calendar_template (
 	PRIMARY KEY(id)
 );
 
+
 ALTER TABLE appointment_form ADD CONSTRAINT fk_app_form_template FOREIGN KEY (id_calendar_template)
-      REFERENCES appointment_calendar_template (id) ON DELETE RESTRICT ON UPDATE RESTRICT ;
+      REFERENCES appointment_calendar_template (id) ON DELETE CASCADE ON UPDATE RESTRICT ;
+ALTER TABLE appointment_day ADD CONSTRAINT fk_appointment_day_id_form FOREIGN KEY (id_form)
+      REFERENCES appointment_form (id_form) ON DELETE CASCADE ON UPDATE RESTRICT ;
+ALTER TABLE appointment_slot ADD CONSTRAINT fk_appointment_slot_id_form FOREIGN KEY (id_form)
+      REFERENCES appointment_form (id_form) ON DELETE CASCADE ON UPDATE RESTRICT ;
+ALTER TABLE appointment_appointment ADD CONSTRAINT fk_appointment_id_slot FOREIGN KEY (id_slot)
+      REFERENCES appointment_slot (id_slot) ON DELETE CASCADE ON UPDATE RESTRICT ;
+ALTER TABLE appointment_form_messages ADD CONSTRAINT fk_app_form_messages_id_form FOREIGN KEY (id_form)
+      REFERENCES appointment_form (id_form) ON DELETE CASCADE ON UPDATE RESTRICT ;
+ALTER TABLE appointment_appointment_response ADD CONSTRAINT fk_app_response_id_app FOREIGN KEY (id_appointment)
+      REFERENCES appointment_appointment (id_appointment) ON DELETE CASCADE ON UPDATE RESTRICT ;
