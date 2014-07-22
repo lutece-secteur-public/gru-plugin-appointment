@@ -54,20 +54,25 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.content.XPageAppService;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -661,8 +666,11 @@ public class AppointmentFormService implements Serializable
      *            was called by a regular user
      * @return True if the appointment was successfully made, false if the
      *         selected slot is empty or does not exist
+     * @throws AppException If an error occurs when processing the creation or
+     *             the update of the appointment
      */
     public synchronized boolean doMakeAppointment( Appointment appointment, AppointmentForm form, boolean bIsAdmin )
+        throws AppException
     {
         AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
                 appointment.getDateAppointment(  ) );
@@ -672,34 +680,51 @@ public class AppointmentFormService implements Serializable
             return false;
         }
 
-        // Only admins can modify appointments
-        boolean bCreate = !bIsAdmin || ( appointment.getIdAppointment( ) == 0 );
+        Plugin pluginAppointment = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
-        if ( bCreate )
-        {
-            AppointmentHome.create( appointment );
-        }
-        else
-        {
-            AppointmentHome.update( appointment );
-        }
+        TransactionManager.beginTransaction( pluginAppointment );
 
-        // For modification (by an admin), the update of responses have alreday been made when this method is called 
-        if ( bCreate )
+        try
         {
-            for ( Response response : appointment.getListResponse( ) )
+            // Only admins can modify appointments
+            boolean bCreate = !bIsAdmin || ( appointment.getIdAppointment(  ) == 0 );
+
+            if ( bCreate )
             {
-                ResponseHome.create( response );
-                AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
+                AppointmentHome.create( appointment );
             }
-        }
+            else
+            {
+                AppointmentHome.update( appointment );
+            }
 
-        if ( form.getIdWorkflow( ) > 0 )
+            // For modification (by an admin), the update of responses have already been made when this method is called 
+            if ( bCreate )
+            {
+                for ( Response response : appointment.getListResponse(  ) )
+                {
+                    ResponseHome.create( response );
+                    AppointmentHome.insertAppointmentResponse( appointment.getIdAppointment(  ),
+                        response.getIdResponse(  ) );
+                }
+            }
+
+            if ( form.getIdWorkflow(  ) > 0 )
+            {
+                WorkflowService.getInstance(  )
+                               .getState( appointment.getIdAppointment(  ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                    form.getIdWorkflow(  ), form.getIdForm(  ) );
+                WorkflowService.getInstance(  )
+                               .executeActionAutomatic( appointment.getIdAppointment(  ),
+                    Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), form.getIdForm(  ) );
+            }
+
+            TransactionManager.commitTransaction( pluginAppointment );
+        }
+        catch ( Exception e )
         {
-            WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ),
-                    Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ), form.getIdForm( ) );
-            WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ),
-                    Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ), form.getIdForm( ) );
+            TransactionManager.rollBack( pluginAppointment );
+            throw new AppException( e.getMessage(  ), e );
         }
 
         return true;

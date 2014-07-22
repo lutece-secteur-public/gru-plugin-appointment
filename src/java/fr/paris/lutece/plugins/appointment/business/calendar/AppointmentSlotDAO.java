@@ -100,9 +100,10 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     @Override
     public synchronized void create( AppointmentSlot slot, Plugin plugin )
     {
+        slot.setIdSlot( newPrimaryKey( plugin ) );
+
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CREATE, plugin );
         int nIndex = 1;
-        slot.setIdSlot( newPrimaryKey( plugin ) );
         daoUtil.setInt( nIndex++, slot.getIdSlot(  ) );
         daoUtil.setInt( nIndex++, slot.getIdForm(  ) );
         daoUtil.setInt( nIndex++, slot.getIdDay(  ) );

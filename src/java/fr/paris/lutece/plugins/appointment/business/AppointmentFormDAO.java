@@ -83,9 +83,9 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     @Override
     public void insert( AppointmentForm appointmentForm, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-
         appointmentForm.setIdForm( newPrimaryKey( plugin ) );
+
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
 
         int nIndex = 1;
         daoUtil.setInt( nIndex++, appointmentForm.getIdForm(  ) );

@@ -49,6 +49,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -63,11 +64,14 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -80,6 +84,7 @@ import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
+import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
@@ -722,17 +727,31 @@ public class AppointmentApp extends MVCApplication
                         SiteMessage.TYPE_STOP );
                 }
 
-                if ( appointment.getIdActionCancel(  ) > 0 )
+                Plugin appointmentPlugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+
+                TransactionManager.beginTransaction( appointmentPlugin );
+
+                try
                 {
-                    WorkflowService.getInstance(  )
-                                   .doProcessAction( appointment.getIdAppointment(  ),
-                        Appointment.APPOINTMENT_RESOURCE_TYPE, appointment.getIdActionCancel(  ), form.getIdForm(  ),
-                        request, request.getLocale(  ), false );
+                    if ( appointment.getIdActionCancel(  ) > 0 )
+                    {
+                        WorkflowService.getInstance(  )
+                                       .doProcessAction( appointment.getIdAppointment(  ),
+                            Appointment.APPOINTMENT_RESOURCE_TYPE, appointment.getIdActionCancel(  ),
+                            form.getIdForm(  ), request, request.getLocale(  ), false );
+                    }
+                    else
+                    {
+                        appointment.setStatus( Appointment.STATUS_REJECTED );
+                        AppointmentHome.update( appointment );
+                    }
+
+                    TransactionManager.commitTransaction( appointmentPlugin );
                 }
-                else
+                catch ( Exception e )
                 {
-                    appointment.setStatus( Appointment.STATUS_REJECTED );
-                    AppointmentHome.update( appointment );
+                    TransactionManager.rollBack( appointmentPlugin );
+                    throw new AppException( e.getMessage(  ), e );
                 }
 
                 if ( form.getAllowUsersToCancelAppointments(  ) && StringUtils.isNotEmpty( strRef ) )

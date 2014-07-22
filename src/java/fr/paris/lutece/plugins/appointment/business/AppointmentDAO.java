@@ -121,9 +121,9 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public synchronized void insert( Appointment appointment, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
-
         appointment.setIdAppointment( newPrimaryKey( plugin ) );
+
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
 
         int nIndex = 1;
         daoUtil.setInt( nIndex++, appointment.getIdAppointment(  ) );

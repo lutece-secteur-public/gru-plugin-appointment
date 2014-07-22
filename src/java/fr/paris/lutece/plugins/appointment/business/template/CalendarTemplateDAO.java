@@ -80,8 +80,9 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
     @Override
     public synchronized void create( CalendarTemplate template, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
         template.setId( newPrimaryKey( plugin ) );
+
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
 
         int nIndex = 1;
 
