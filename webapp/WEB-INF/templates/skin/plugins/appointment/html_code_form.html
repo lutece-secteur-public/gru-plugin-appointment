@@ -1,6 +1,6 @@
-<div class="row-fluid">
-	<div class="span12">
-		<form class="form-horizontal" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
+<div class="row">
+	<div class="col-md-12">
+		<form class="form-horizontal" role="form" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
 			<input name="page" value="appointment" type="hidden" />
 			<input name="action" value="doValidateForm" type="hidden" />
 			<input name="id_form" value="${form.idForm}" type="hidden" />
@@ -18,46 +18,48 @@
 				</div>
 				<br />
 				<br />
-				<div class="control-group">
-					<label for="lastname" class="control-label">${form_messages.fieldLastNameTitle!} *</label>
-					<div class="controls">
-						<input type="text" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
+				<div class="form-group">
+					<label class="col-sm-2 control-label"for="lastname" class="col-sm-2 control-label">${form_messages.fieldLastNameTitle!} *</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
 						<#if form_messages.fieldLastNameHelp?? && form_messages.fieldLastNameHelp != ''>
 							<span class="help-block">${form_messages.fieldLastNameHelp}</span>
 						</#if>
 					</div>
 				</div>
-				<div class="control-group">
-					<label for="firstname" class="control-label">${form_messages.fieldFirstNameTitle!} *</label>
-					<div class="controls">
-						<input type="text" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
+				<div class="form-group">
+					<label class="col-sm-2 control-label"for="firstname" class="col-sm-2 control-label">${form_messages.fieldFirstNameTitle!} *</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
 						<#if form_messages.fieldFirstNameHelp?? && form_messages.fieldFirstNameHelp != ''>
 							<span class="help-block">${form_messages.fieldFirstNameHelp}</span>
 						</#if>
 					</div>
 				</div>
-				<div class="control-group">
-					<label for="email" class="control-label">${form_messages.fieldEmailTitle!} *</label>
-					<div class="controls">
-						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
+				<div class="form-group">
+					<label class="col-sm-2 control-label"for="email" class="col-sm-2 control-label">${form_messages.fieldEmailTitle!} *</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
 						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
 							<span class="help-block">${form_messages.fieldEmailHelp}</span>
 						</#if>
 					</div>
 				</div>
 				${str_entry}
-				<div class="form-actions form-steps">
+				 <div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10 form-steps">
 					<button class="btn btn-primary btn-small" type="submit" name="save" >
-						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+						<i class="icon-ok icon-white"></i><span class="hidden-xs">&nbsp;#i18n{appointment.display_appointment_form.labelValidate}</span>
 					</button>
 					<button type="reset" name="reset" class="btn btn-primary btn-small">
-						<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelReset}
+						<i class="icon-refresh icon-white"></i><span class="hidden-xs">&nbsp;#i18n{appointment.display_appointment_form.labelReset}</span>
 					</button>
 					<#if !isFormFirstStep>
 						<a class="btn btn-small btn-primary" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form.idForm}" >
-							<i class="icon-remove-circle icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+							<i class="icon-remove-circle icon-white"></i><span class="hidden-xs">&nbsp;#i18n{portal.util.labelBack}</span>
 						</a>
 					</#if>
+					</div>
 				</div>
 			</fieldset>
 		</form>

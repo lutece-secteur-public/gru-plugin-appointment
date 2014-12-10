@@ -1,16 +1,20 @@
-<div class="row-fluid">
-	<div class="span12">
-		${formMessages.textAppointmentCanceled}
-		<div class="form-actions">
-			<#if backUrl??>
-				<a href="${backUrl}" class="btn btn-small btn-primary">
-					#i18n{portal.util.labelBack}
-				</a>
-			<#else>
-				<a href="${formMessages.urlRedirectAfterCreation}" class="btn btn-small btn-primary">
-					${formMessages.labelButtonRedirection}
-				</a>
-			</#if>
+<div class="row">
+	<div class="col-md-12">
+		<div class="jumbotron">
+			<div class="container">
+				<p>${formMessages.textAppointmentCanceled}</p>
+				<p>
+				<#if backUrl??>
+					<a href="${backUrl}" class="btn btn-primary btn-lg">
+						#i18n{portal.util.labelBack}
+					</a>
+				<#else>
+					<a href="${formMessages.urlRedirectAfterCreation}" class="btn btn-primary btn-lg">
+						${formMessages.labelButtonRedirection}
+					</a>
+				</#if>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
