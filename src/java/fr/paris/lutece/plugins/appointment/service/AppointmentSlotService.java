@@ -78,19 +78,21 @@ public class AppointmentSlotService
     {
         List<AppointmentSlot> listSlots;
 
-        if ( ( form.getOpeningHour(  ) == day.getOpeningHour(  ) ) &&
-                ( form.getOpeningMinutes(  ) == day.getOpeningMinutes(  ) ) &&
-                ( form.getClosingHour(  ) == day.getClosingHour(  ) ) &&
-                ( form.getClosingMinutes(  ) == day.getClosingMinutes(  ) ) &&
-                ( form.getDurationAppointments(  ) == day.getAppointmentDuration(  ) ) )
-        {
-            int nDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( day.getDate(  ) );
-            listSlots = AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), nDayOfWeek );
-        }
-        else
-        {
+        
+// form could be updated after the form is created so the form 
+//        if ( ( form.getOpeningHour(  ) == day.getOpeningHour(  ) ) &&
+//                ( form.getOpeningMinutes(  ) == day.getOpeningMinutes(  ) ) &&
+//                ( form.getClosingHour(  ) == day.getClosingHour(  ) ) &&
+//                ( form.getClosingMinutes(  ) == day.getClosingMinutes(  ) ) &&
+//                ( form.getDurationAppointments(  ) == day.getAppointmentDuration(  ) ) )
+//        {
+//            int nDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( day.getDate(  ) );
+//            listSlots = AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), nDayOfWeek );
+//        }
+//        else
+//        {
             listSlots = AppointmentService.getService(  ).computeDaySlots( day );
-        }
+//        }
 
         for ( AppointmentSlot slot : listSlots )
         {
