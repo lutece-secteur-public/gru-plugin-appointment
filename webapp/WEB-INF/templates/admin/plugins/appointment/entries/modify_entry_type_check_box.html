@@ -1,6 +1,6 @@
 <#include "/admin/util/editor/editor.html" />
-<div class="row-fluid">
-	<div class="span4">
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 		<form class="form" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
 			<fieldset>
 				<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
@@ -8,15 +8,15 @@
 				<input name="action" value="doModifyEntry" type="hidden" />
 				
 				<label for="title">#i18n{appointment.createEntry.labelTitle}* : </label>
-				<input type="text" name="title" id="title" class="input-xlarge" value="${entry.title}"  maxlength="255" />
+				<input type="text" name="title" id="title" class="form-control" value="${entry.title}"  maxlength="255">
 				<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
 				<label for="help_message">#i18n{appointment.createEntry.labelHelpMessage} : </label>
-				<textarea  name="help_message" id="help_message" rows="2" class="input-xlarge">${entry.helpMessage}</textarea>
+				<textarea  name="help_message" id="help_message" rows="2" class="form-control">${entry.helpMessage}</textarea>
 				<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
 				<label for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
-				<textarea  name="comment" class="input-xlarge" rows="2">${entry.comment}</textarea>
+				<textarea  name="comment" class="form-control" rows="2">${entry.comment}</textarea>
 			 	<label for="width">#i18n{appointment.createEntry.labelPresentation} : </label>
-				<select  id="field_in_line" name="field_in_line" class="input-xlarge">
+				<select  id="field_in_line" name="field_in_line" class="form-control">
 					<option value=1 <#if entry.fieldInLine >selected="selected" </#if> >#i18n{appointment.createEntry.selectPresentationInLine}</option>
 					<option value=0 <#if !entry.fieldInLine >selected="selected" </#if>>#i18n{appointment.createEntry.selectPresentationNotInLine}</option>
 				</select>
@@ -24,36 +24,36 @@
 				<label for="mandatory">#i18n{appointment.createEntry.labelMandatory} : 
 				<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked"</#if> /></label>
 				<label for="errorMessage"> #i18n{appointment.createEntry.labelMandatoryErrorMessage} : </label>
-				<textarea name="errorMessage" class="input-xlarge" rows="2">${entry.errorMessage!}</textarea>
+				<textarea name="errorMessage" class="form-control" rows="2">${entry.errorMessage!}</textarea>
 				<span class="help-block">#i18n{appointment.createEntry.labelMandatoryErrorMessageHelp}</span>
 				<label for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-				<input type="text" name="css_class" value="${entry.CSSClass!}" class="input-xlarge" maxlength="255" />
+				<input type="text" name="css_class" value="${entry.CSSClass!}" class="form-control" maxlength="255">
 				<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
-				<div class="form-actions">
-					<button class="btn btn-primary btn-small" name="save" type="submit" >
-						<i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
+				<div class="form-group">
+					<button class="btn btn-primary btn-sm" name="save" type="submit" >
+						<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
 					</button>
-					<button class="btn btn-primary btn-small" name="apply" type="submit" >
-						<i class="icon-ok-sign icon-white"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
+					<button class="btn btn-primary btn-sm" name="apply" type="submit" >
+						<i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
 					</button>
-					<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
-						<i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+					<button class="btn btn-default btn-sm" type="submit" name="cancel" value="cancel" >
+						<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
 					</button>
 				</div>
 			</fieldset>
 		</form>
 	</div>
-	<div class="span8">
+	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		<fieldset>
 			<legend>
 				#i18n{appointment.createEntry.manageField.title}
-				<a class="btn btn-primary btn-small pull-right" type="submit" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getCreateField&id_entry=${entry.idEntry}" ><i class="icon-plus icon-white"></i>&nbsp;#i18n{appointment.createEntry.manageField.buttonInsert}</a>
+				<a class="btn btn-primary btn-sm pull-right" type="submit" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getCreateField&id_entry=${entry.idEntry}" ><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{appointment.createEntry.manageField.buttonInsert}</a>
 			</legend>
 			<table class="table table-striped">
 				<tr> 
 					<th>#i18n{appointment.createEntry.manageField.rowTitle}</th>
 					<th>#i18n{appointment.createEntry.manageField.rowValue}</th>
-					<th><i class="icon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>&nbsp;</th>
+					<th><i class="glyphicon glyphicon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>&nbsp;</th>
 					<th>#i18n{appointment.createEntry.manageField.rowActions}</th>
 				</tr>
 			 	<#assign cpt=0>
@@ -61,7 +61,7 @@
 					<#assign cpt=cpt+1>
 					<tr>
 						<td>${field.title}</td>
-						<td><#if field.defaultValue><span class="label label-success"><i class="icon-ok icon-white" title="#i18n{appointment.createEntry.manageField.rowDefaultValue}"></i></span></#if>&nbsp;${field.value}</td>
+						<td><#if field.defaultValue><span class="label label-success"><i class="glyphicon glyphicon-ok" title="#i18n{appointment.createEntry.manageField.rowDefaultValue}"></i></span></#if>&nbsp;${field.value}</td>
 						<td>
 							<#if field.conditionalQuestions?exists>
 								<#list field.conditionalQuestions as entry>
@@ -75,21 +75,21 @@
 							</#if>     	
 						</td>
 						<td>
-							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyFieldCC&id_field=${field.idField}" title="#i18n{portal.util.labelModify}" >
-								<i class="icon-edit icon-white"></i>
+							<a class="btn btn-primary btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyFieldCC&id_field=${field.idField}" title="#i18n{portal.util.labelModify}">
+								<i class="glyphicon glyphicon-edit"></i>
 							</a>
 							<#if cpt!=1>
-								<a class="btn  btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list"  title="#i18n{appointment.createEntry.manageField.titleMoveUp}" >
-									<i class="icon-chevron-up icon-white"></i>
+								<a class="btn  btn-primary btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list"  title="#i18n{appointment.createEntry.manageField.titleMoveUp}" >
+									<i class="glyphicon glyphicon-chevron-up"></i>
 								</a>
 							</#if>
 							<#if field_has_next>
-								<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list"  title="#i18n{appointment.createEntry.manageField.titleMoveDown}" >
-									<i class="icon-chevron-down icon-white"></i>
+								<a class="btn btn-primary btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list"  title="#i18n{appointment.createEntry.manageField.titleMoveDown}" >
+									<i class="glyphicon glyphicon-chevron-down"></i>
 								</a>
 							</#if>
-							<a class="btn btn-danger btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list"  title="#i18n{appointment.createEntry.manageField.titleDelete}" >
-								<i class="icon-trash icon-white"></i>
+							<a class="btn btn-danger btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list"  title="#i18n{appointment.createEntry.manageField.titleDelete}" >
+								<i class="glyphicon glyphicon-trash"></i>
 							</a>
 						</td>
 					</tr>

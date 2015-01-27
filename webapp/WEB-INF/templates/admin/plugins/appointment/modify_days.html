@@ -1,59 +1,65 @@
-<div class="row-fluid" >
-	<div class="span12">
+<div class="row" >
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp">
 			<fieldset>
 				<legend>#i18n{appointment.modifyDay.pageTitle}</legend>
 				<@messages errors=errors />
 				<input type="hidden" id="action" name="action" value="doModifyDay" />
 				<input type="hidden" id="id_day" name="id_day" value="${day.idDay}" />
-				<div class="control-group">
-					<label class="control-label" for="date" >#i18n{appointment.modify_appointmentformDays.labelDate} * :</label>
-					<div class="controls">
-						<input type="text" class="input-small" id="date" name="date" value="${(day.date)!}" />
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="date" >#i18n{appointment.modify_appointmentformDays.labelDate} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" id="date" name="date" value="${(day.date)!}" class="form-control">
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="isOpen" >#i18n{appointment.modify_appointmentformDays.labelOpen} * :</label>
-					<div class="controls">
-						<input type="checkbox" id="isOpen" name="isOpen" value="true" onClick="javascript:switchVisibilityOpeningField();" <#if !day?? || day.isOpen>checked="checked"</#if> />
-						<span class="help-block">#i18n{appointment.createDay.labelOpenHelp}</span>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpen" >#i18n{appointment.modify_appointmentformDays.labelOpen} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<div class="checkbox">
+							<label>
+							<input type="checkbox" id="isOpen" name="isOpen" value="true" onClick="javascript:switchVisibilityOpeningField();" <#if !day?? || day.isOpen>checked="checked"</#if> />&#160;
+							</label>
+							<span class="help-block">#i18n{appointment.createDay.labelOpenHelp}</span>
+						</div>
 					</div>
 				</div>
-				<div class="control-group" id="divOpeningTime">
-					<label class="control-label" for="openingTime" >#i18n{appointment.create_appointmentform.labelTimeStart} * :</label>
-					<div class="controls">
-						<input type="text" id="openingTime" name="openingTime" value="<#if day.openingHour &lt; 10>0</#if>${day.openingHour}h<#if day.openingMinutes &lt; 10>0</#if>${day.openingMinutes}" />
+				<div class="form-group" id="divOpeningTime">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="openingTime" >#i18n{appointment.create_appointmentform.labelTimeStart} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" id="openingTime" name="openingTime" value="<#if day.openingHour &lt; 10>0</#if>${day.openingHour}h<#if day.openingMinutes &lt; 10>0</#if>${day.openingMinutes}" class="form-control">
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeStart.help}</span>
 					</div>
 				</div>
-				<div class="control-group" id="divClosingTime">
-					<label class="control-label" for="closingTime" >#i18n{appointment.create_appointmentform.labelTimeEnd} * :</label>
-					<div class="controls">
-						<input type="text" id="closingTime" name="closingTime" value="<#if day.closingHour &lt; 10>0</#if>${day.closingHour}h<#if day.closingMinutes &lt; 10>0</#if>${day.closingMinutes}" />
+				<div class="form-group" id="divClosingTime">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="closingTime" >#i18n{appointment.create_appointmentform.labelTimeEnd} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" id="closingTime" name="closingTime" value="<#if day.closingHour &lt; 10>0</#if>${day.closingHour}h<#if day.closingMinutes &lt; 10>0</#if>${day.closingMinutes}" class="form-control">
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelTimeEnd.help}</span>
 					</div>
 				</div>
-				<div class="control-group" id="divAppointmentDuration">
-					<label class="control-label" for="appointmentDuration" >#i18n{appointment.create_appointmentform.labelDurationAppointments} * :</label>
-					<div class="controls">
-						<input type="text" id="appointmentDuration" name="appointmentDuration" value="${(day.appointmentDuration)!}" />
+				<div class="form-group" id="divAppointmentDuration">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="appointmentDuration" >#i18n{appointment.create_appointmentform.labelDurationAppointments} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" id="appointmentDuration" name="appointmentDuration" value="${(day.appointmentDuration)!}" class="form-control">
 						<span class="help-block">#i18n{create_appointmentform.labelDurationAppointments.help}</span>
 					</div>
 				</div>
-				<div class="control-group" id="divPeoplePerAppointment">
-					<label class="control-label" for="peoplePerAppointment" >#i18n{appointment.create_appointmentform.labelPeoplePerAppointment} * :</label>
-					<div class="controls">
-						<input type="text" id="peoplePerAppointment" name="peoplePerAppointment" value="${(day.peoplePerAppointment)!}" />
+				<div class="form-group" id="divPeoplePerAppointment">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="peoplePerAppointment" >#i18n{appointment.create_appointmentform.labelPeoplePerAppointment} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" id="peoplePerAppointment" name="peoplePerAppointment" value="${(day.peoplePerAppointment)!}" class="form-control">
 						<span class="help-block">#i18n{create_appointmentform.labelPeoplePerAppointment.help}</span>
 					</div>
 				</div>
-				<div class="form-actions">
-					<button class="btn btn-primary btn-small" name="save" value="save" title="#i18n{portal.util.labelModify}">
-						<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
-					</button>
-					<button class="btn btn-small" name="cancel" value="cancel" title="#i18n{portal.util.labelBack}">
-						<i class="icon-remove-circle">&nbsp;</i>#i18n{portal.util.labelBack}
-					</button>
+				<div class="form-group">
+					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+						<button class="btn btn-primary btn-sm" name="save" value="save" title="#i18n{portal.util.labelModify}">
+							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelModify}
+						</button>
+						<button class="btn btn-default btn-sm" name="cancel" value="cancel" title="#i18n{portal.util.labelBack}">
+							<i class="glyphicon glyphicon-remove-circle"></i>#i18n{portal.util.labelBack}
+						</button>
+					</div>
 				</div>
 			</fieldset>
 		</form>

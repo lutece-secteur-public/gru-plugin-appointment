@@ -1,41 +1,47 @@
 <#include "/admin/plugins/appointment/commons.html" />
-<div class="row-fluid">
-	<div class="span12">
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<fieldset>
 			<legend>#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
 			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post">
-				<input name="id_form" value="${form.idForm}" type="hidden" />
-				<input name="action" value="doCreateEntry" type="hidden" />
-				<input name="id_type" value="${entry.entryType.idType}" type="hidden" />
+				<input name="id_form" value="${form.idForm}" type="hidden">
+				<input name="action" value="doCreateEntry" type="hidden">
+				<input name="id_type" value="${entry.entryType.idType}" type="hidden">
 				<#if entry.fieldDepend?exists>
-					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden" />
+					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
 				</#if>
-				<div class="control-group">
-				<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
-					<div class="controls">
-						<input type="text" name="title" id="title"class="input-large"value=""  maxlength="255" />
+				<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" name="title" id="title" class="form-control" value="" maxlength="255">
 					</div>
 				</div>
-				<div class="control-group">
-				<label class="control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory}</label>
-					<div class="controls">
-						<input name="mandatory" value="1" type="checkbox" />		
+				<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory}</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<div class="checkbox">
+							<label>
+								<input name="mandatory" value="1" type="checkbox">&#160;
+							</label>
+						</div>
 						<span class="help-block">#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}</span>
 					</div>
 				</div>
-				<div class="control-group">
-				<label class="control-label" for="value">#i18n{appointment.createEntry.labelAttributeName} * : </label>
-					<div class="controls">
-						<input type="text" name="value" id="value" class="input-large" maxlength="255" value ="" />
+				<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createEntry.labelAttributeName} * : </label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" name="value" id="value" class="form-control" maxlength="255" value="">
 						<span class="help-block">#i18n{appointment.createEntry.labelAttributeNameComment}</span>
 					</div>
 				</div>
-				<div class="form-actions">
-					<button class="btn btn-primary btn-small" name="save" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
-					<button class="btn btn-primary btn-small" name="apply" type="submit" ><i class="icon-ok-circle icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonApplyAndManageVerification}</button>
-					<button class="btn btn-small" type="submit" name="cancel" value="cancel" >
-						<i class="icon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
-					</button>
+				<div class="form-group">
+					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+						<button class="btn btn-primary btn-sm" name="save" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
+						<button class="btn btn-primary btn-sm" name="apply" type="submit" ><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonApplyAndManageVerification}</button>
+						<button class="btn btn-default btn-sm" type="submit" name="cancel" value="cancel">
+							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+						</button>
+					</div>
 				</div>
 			</form>
 		</fieldset>

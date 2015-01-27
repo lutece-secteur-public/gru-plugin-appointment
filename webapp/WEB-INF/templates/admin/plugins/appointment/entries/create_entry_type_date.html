@@ -1,62 +1,66 @@
 <#include "/admin/plugins/appointment/commons.html" />
-<div class="row-fluid">
-	<div class="span12">
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
 			<fieldset>
 				<legend>#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-				<input name="id_form" value="${form.idForm}" type="hidden" />
-				<input name="action" value="doCreateEntry" type="hidden" />
-				<input name="id_type" value="${entry.entryType.idType}" type="hidden" />
+				<input name="id_form" value="${form.idForm}" type="hidden">
+				<input name="action" value="doCreateEntry" type="hidden">
+				<input name="id_type" value="${entry.entryType.idType}" type="hidden">
 				<#if entry.fieldDepend?exists>
-					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden" />
+					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
 				</#if>
-				<div class="control-group">
-					<label class="control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
-					<div class="controls">
-						<input  type="text" name="title" id="title" class="input-large" value=""  maxlength="255"/>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input  type="text" name="title" id="title" value=""  maxlength="255" class="form-control">
 						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" >  #i18n{appointment.createEntry.labelHelpMessage} :  </label>
-					<div class="controls">
-						<textarea  name="help_message" id="help_message"  rows="5" class="span4"></textarea>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createEntry.labelHelpMessage} : </label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<textarea name="help_message" id="help_message" rows="5" class="form-control"></textarea>
 						<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
-					<div class="controls">
-						<textarea  name="comment" class="span4" rows="2"></textarea>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<textarea  name="comment" rows="2" class="form-control"></textarea>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="date">#i18n{appointment.createEntry.labelValueDefault} :</label>
-					<div class="controls">
-						<div class="input-prepend">
-							<span class="add-on"><i class="icon-calendar"></i></span>
-							<input type="text" name="value" id="date" class="input-small" value="" />
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="date">#i18n{appointment.createEntry.labelValueDefault} :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							<input type="text" name="value" id="date" class="form-control" value="">
 						</div>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
-					<div class="controls">	
-						<label class="checkbox" for="mandatory">
-							<input name="mandatory" value="1" type="checkbox" />
-						</label>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<div class="checkbox">
+							<label for="mandatory">
+								<input name="mandatory" value="1" type="checkbox">&#160;
+							</label>
+						</div>
 					</div>
 				</div>
-				<div class="control-group">
-					<label class="control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-					<div class="controls">
-						<input type="text" name="css_class" value="" maxlength="255"class="input-large"/>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" name="css_class" value="" maxlength="255"class="form-control">
 						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
 					</div>
 				</div>
-				<div class="form-actions">
-					<button class="btn btn-primary btn-small" type="submit" >#i18n{appointment.createEntry.buttonSave}</button>
-					<button class="btn btn-primary btn-small" type="button" onclick="javascript:window.history.back();" ><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}</button>
+				<div class="form-group">
+					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+						<button class="btn btn-primary btn-sm" type="submit" >#i18n{appointment.createEntry.buttonSave}</button>
+						<button class="btn btn-default btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}</button>
+					</div>
 				</div>
 			</fieldset>
 		</form>

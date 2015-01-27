@@ -1,10 +1,11 @@
 <#assign cpt=0>
 ${entry.CSSClass!}
-<div class="control-group">
-	<label class="control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
-		<div class="controls">
+<div class="form-group">
+	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
+		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 		<#list entry.fields as field>
-			<label class="checkbox <#if entry.fieldInLine>inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
+			<#if !entry.fieldInLine><div class="checkbox"></#if>
+			<label <#if entry.fieldInLine>class="checkbox-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
 			<input type="checkbox" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}_${field.idField}" value="${field.idField}"
 				<#if list_responses??>
 					<#list list_responses as response>
@@ -23,6 +24,8 @@ ${entry.CSSClass!}
 				${field.title}
 			</#if>
 			</label>
+			<#if !entry.fieldInLine></div></#if>
+			
 			<#if !entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
 				<p class="help-block">${entry.helpMessage}</p>
 			</#if>	

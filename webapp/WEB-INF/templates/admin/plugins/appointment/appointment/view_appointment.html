@@ -1,33 +1,33 @@
-<div class="row-fluid">
-	<div class="span12 form-horizontal">
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-horizontal">
 		<fieldset>
 			<legend>
 				${form.title}
 			</legend>
 			<@messages errors=errors />
-			<div class="control-group">
-				<label for="lastname" class="control-label">${formMessages.fieldLastNameTitle!}</label>
-				<div class="controls">
+			<div class="form-group">
+				<label for="lastname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${formMessages.fieldLastNameTitle!}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 					${appointment.lastName}
 				</div>
 			</div>
-			<div class="control-group">
-				<label for="firstname" class="control-label">${formMessages.fieldFirstNameTitle!}</label>
-				<div class="controls">
+			<div class="form-group">
+				<label for="firstname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${formMessages.fieldFirstNameTitle!}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 					${appointment.firstName}
 				</div>
 			</div>
-			<div class="control-group">
-				<label for="email" class="control-label">${formMessages.fieldEmailTitle!}</label>
-				<div class="controls">
+			<div class="form-group">
+				<label for="email" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${formMessages.fieldEmailTitle!}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 					${appointment.email}
 				</div>
 			</div>
 			<#list listResponseRecapDTO as response>
 				<#if response.recapValue?has_content>
-					<div class="control-group">
-						<label class="control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-						<div class="controls">
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<#if response.file?? && response.file.idFile &gt; 0>
 								<#assign hasFile = true>
 							<#else>
@@ -44,17 +44,17 @@
 					</div>
 				</#if>
 			</#list>
-			<div class="control-group">
-				<label class="control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
-				<div class="controls">
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 					${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointmentFrom} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute} #i18n{appointment.appointmentApp.labelTimeAppointmentTo} <#if slot.endingHour &lt; 10 >0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}
 				</div>
 			</div>
 			
 			<#if admin_user??>
-				<div class="control-group">
-					<label class="control-label">#i18n{appointment.appointmentApp.labelAdminUser}</label>
-					<div class="controls">
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.appointmentApp.labelAdminUser}</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						${admin_user.firstName} ${admin_user.lastName}
 					</div>
 				</div>
@@ -68,9 +68,9 @@
 				</div> 
 			</#if>
 			
-			<div class="form-actions">
-				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true" class="btn btn-small">
-					<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+			<div class="form-group">
+				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true" class="btn btn-default btn-sm">
+					<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
 				</a>
 			</div>
 		</fieldset>

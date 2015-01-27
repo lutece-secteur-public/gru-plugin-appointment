@@ -1,107 +1,109 @@
 <#include "/admin/util/editor/editor.html" />
-<div class="row-fluid">
-	<div class="span12">
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
-			<div class="control-group">
-				<label class="control-label" for="calendarTitle">#i18n{appointment.modify_appointmentform_messages.labelCalendarTitle}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="calendarTitle" value="${formMessage.calendarTitle}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarTitle">#i18n{appointment.modify_appointmentform_messages.labelCalendarTitle}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="calendarTitle" value="${formMessage.calendarTitle}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="calendarDescription">#i18n{appointment.modify_appointmentform_messages.labelCalendarDescription}</label>
-				<div class="controls">
-					<textarea class="richtext" name="calendarDescription" >${formMessage.calendarDescription}</textarea>
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarDescription">#i18n{appointment.modify_appointmentform_messages.labelCalendarDescription}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<textarea class="richtext" name="calendarDescription" class="form-control">${formMessage.calendarDescription}</textarea>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="fieldFirstNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameTitle}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="fieldFirstNameTitle" value="${formMessage.fieldFirstNameTitle}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldFirstNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameTitle}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="fieldFirstNameTitle" value="${formMessage.fieldFirstNameTitle}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="fieldFirstNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameHelp}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="fieldFirstNameHelp" value="${formMessage.fieldFirstNameHelp}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldFirstNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameHelp}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="fieldFirstNameHelp" value="${formMessage.fieldFirstNameHelp}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="fieldLastNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameTitle}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="fieldLastNameTitle" value="${formMessage.fieldLastNameTitle}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldLastNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameTitle}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="fieldLastNameTitle" value="${formMessage.fieldLastNameTitle}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="fieldLastNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameHelp}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="fieldLastNameHelp" value="${formMessage.fieldLastNameHelp}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldLastNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameHelp}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="fieldLastNameHelp" value="${formMessage.fieldLastNameHelp}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="fieldEmailTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailTitle}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="fieldEmailTitle" value="${formMessage.fieldEmailTitle}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldEmailTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailTitle}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="fieldEmailTitle" value="${formMessage.fieldEmailTitle}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="fieldEmailHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailHelp}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="fieldEmailHelp" value="${formMessage.fieldEmailHelp}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldEmailHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailHelp}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="fieldEmailHelp" value="${formMessage.fieldEmailHelp}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="calendarReserveLabel">#i18n{appointment.modify_appointmentform_messages.labelCalendarReserveLabel}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="calendarReserveLabel" value="${formMessage.calendarReserveLabel}" >
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarReserveLabel">#i18n{appointment.modify_appointmentform_messages.labelCalendarReserveLabel}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="calendarReserveLabel" value="${formMessage.calendarReserveLabel}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="calendarFullLabel">#i18n{appointment.modify_appointmentform_messages.labelCalendarFullLabel}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="calendarFullLabel" value="${formMessage.calendarFullLabel}" >
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarFullLabel">#i18n{appointment.modify_appointmentform_messages.labelCalendarFullLabel}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="calendarFullLabel" value="${formMessage.calendarFullLabel}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="textAppointmentCreated">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCreated}</label>
-				<div class="controls">
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="textAppointmentCreated">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCreated}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 					<textarea class="richtext" name="textAppointmentCreated" >${formMessage.textAppointmentCreated}</textarea>
 					<span class="help-block">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCreatedHelp}</span>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="urlRedirectAfterCreation">#i18n{appointment.modify_appointmentform_messages.labelUrlRedirectAfterCreation}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="urlRedirectAfterCreation" value="${formMessage.urlRedirectAfterCreation}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="urlRedirectAfterCreation">#i18n{appointment.modify_appointmentform_messages.labelUrlRedirectAfterCreation}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="urlRedirectAfterCreation" value="${formMessage.urlRedirectAfterCreation}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="textAppointmentCanceled">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCanceled}</label>
-				<div class="controls">
-					<textarea class="richtext" name="textAppointmentCanceled" >${formMessage.textAppointmentCanceled}</textarea>
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="textAppointmentCanceled">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCanceled}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<textarea class="richtext" name="textAppointmentCanceled" class="form-control">${formMessage.textAppointmentCanceled}</textarea>
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="labelButtonRedirection">#i18n{appointment.modify_appointmentform_messages.labelLabelButtonRedirection}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="labelButtonRedirection" value="${formMessage.labelButtonRedirection}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="labelButtonRedirection">#i18n{appointment.modify_appointmentform_messages.labelLabelButtonRedirection}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="labelButtonRedirection" value="${formMessage.labelButtonRedirection}" class="form-control">
 				</div>
 			</div>
-			<div class="control-group">
-				<label class="control-label" for="noAvailableSlot">#i18n{appointment.modify_appointmentform_messages.labelNoAvailableSlot}</label>
-				<div class="controls">
-					<input type="text" maxlength="255" name="noAvailableSlot" value="${formMessage.noAvailableSlot}" />
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="noAvailableSlot">#i18n{appointment.modify_appointmentform_messages.labelNoAvailableSlot}</label>
+				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<input type="text" maxlength="255" name="noAvailableSlot" value="${formMessage.noAvailableSlot}" class="form-control">
 				</div>
 			</div>
-			<div class="form-actions">
-				<input type="hidden" name="action" value="doModifyAppointmentFormMessages" />
-				<input type="hidden" name="id_form" value="${formMessage.idForm}" />
-				<button class="btn btn-primary btn-small" name="apply" value="apply" title="#i18n{portal.util.labelModify}">
-					<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
-				</button>
-				<button class="btn btn-small" name="back" value="back" title="#i18n{portal.util.labelBack}">
-					<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
-				</button>
+			<div class="form-group">
+				<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+					<input type="hidden" name="action" value="doModifyAppointmentFormMessages" />
+					<input type="hidden" name="id_form" value="${formMessage.idForm}" />
+					<button class="btn btn-primary btn-sm" name="apply" value="apply" title="#i18n{portal.util.labelModify}">
+						<i class="glyphicon glyphicon-ok">&nbsp;</i>&nbsp;#i18n{portal.util.labelModify}
+					</button>
+					<button class="btn btn-default btn-sm" name="back" value="back" title="#i18n{portal.util.labelBack}">
+						<i class="glyphicon glyphicon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+					</button>
+				</div>
 			</div>
 		</form>
 	</div>

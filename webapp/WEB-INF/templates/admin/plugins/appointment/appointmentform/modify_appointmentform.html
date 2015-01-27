@@ -12,30 +12,34 @@
 	    });
 	});
 </script>
-<div class="row-fluid" >
+<div class="row" >
 	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
-    <div class="span8">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
     	<@tabs tab="entries" appointmentform=appointmentform />
     	<fieldset>
     		<legend>#i18n{appointment.modify_appointmentform.pageTitle}</legend>
 			<form method="get" class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
-				<input type="hidden" value="getCreateEntry" name="view" >
-				<input type="hidden" name="id_form" value="${appointmentform.idForm}" />
-				<label for="id_type">#i18n{appointment.modify_appointmentform.labelInsertEntry} :</label>
-				<@combo name="id_type" items=entry_type_list default_value=-1 />
-				<button type="submit" class="btn btn-primary btn-small" title="#i18n{appointment.modify_appointmentform.buttonInsertEntry}">
-					<i class="icon-plus icon-white">&nbsp;</i>
+				<input type="hidden" value="getCreateEntry" name="view">
+				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
+				<label for="id_type">#i18n{appointment.modify_appointmentform.labelInsertEntry} :&#160;&#160;</label>
+				<div class="input-group">
+				<@comboWithParams name="id_type" items=entry_type_list default_value="-1" additionalParameters="class='form-control input-sm'"/>
+				<span class="input-group-btn">
+				<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modify_appointmentform.buttonInsertEntry}">
+					<i class="glyphicon glyphicon-plus"></i>
 				</button>
+				</span>
+				</div>
 			</form>
 			<form method="post"	action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" class="form-inline">
-				<input type="hidden" name="action" value="doChangeOrderEntry" />
-				<input type="hidden" name="id_form" value="${appointmentform.idForm}" />
+				<input type="hidden" name="action" value="doChangeOrderEntry">
+				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
 				<#if entry_group_list?has_content>
 					<div>
 						<!-- List all entry of type group  -->
-						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"input-xlarge\"" items=entry_group_list />  
-						<button type="submit" class="btn btn-small" title="#i18n{appointment.modify_appointmentform.move}" name="add_to_group" value="#i18n{appointment.modify_appointmentform.moveAll}">
-							<i class="icon-resize-vertical"></i>
+						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"form-control\"" items=entry_group_list />  
+						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modify_appointmentform.move}" name="add_to_group" value="#i18n{appointment.modify_appointmentform.moveAll}">
+							<i class="glyphicon glyphicon-resize-vertical"></i>
 						</button>
 					</div>
 				</#if>
@@ -43,13 +47,13 @@
 					<thead>
 						<tr>
 							<th>
-								<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modify_appointmentform.selectAll}" />
+								<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modify_appointmentform.selectAll}">
 							</th>
 							<th>
 								#i18n{appointment.createEntry.manageField.rowTitle} #i18n{appointment.modifyField.manageConditionalQuestion.rowType}
 							</th>
 							<th>
-								<i class="icon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>
+								<i class="glyphicon glyphicon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>
 							</th>
 							<th>
 								#i18n{appointment.createEntry.manageField.rowOrder}
@@ -68,7 +72,7 @@
 								<td>
 									<!--  add checkbox if entry isn't a group --> 
 									<#if !entry.entryType.group>
-										<input type="checkbox" name="entry_id_move" value="${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.select}" />
+										<input type="checkbox" name="entry_id_move" value="${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.select}">
 									</#if>
 								</td>
 								<td>
@@ -103,37 +107,37 @@
 									<td>
 										<blockquote>
 											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=entry.parent.idEntry />
-											<button class="btn btn-primary btn-small" type="submit"	name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
-												<i class="icon-ok icon-white">&nbsp;</i>
+											<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+												<i class="glyphicon glyphicon-ok"></i>
 											</button>
 										</blockquote>
 									</td>
 								<#else>
 									<td>
 										<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
-										<button class="btn btn-primary btn-small" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
-											<i class="icon-ok icon-white"></i>
+										<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+											<i class="glyphicon glyphicon-ok"></i>
 										</button>
 									</td>
 								</#if>
 								<td>
 									<#if !entry.entryType.myLuteceUser>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}" class="btn btn-primary btn-small">
-											<i class="icon-edit icon-white">&nbsp;</i>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}" class="btn btn-primary btn-sm">
+											<i class="glyphicon glyphicon-edit"></i>
 										</a>
 									</#if>
 									<#if entry.parent?exists>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}" class="btn btn-primary btn-small">
-											<i class="icon-chevron-right icon-white">&nbsp;</i>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}" class="btn btn-primary btn-sm">
+											<i class="glyphicon glyphicon-chevron-right"></i>
 										</a>
 									</#if>
 									<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.createEntry.manageField.titleCopy}" class="btn btn-primary btn-small">
-											<i class="icon-plus-sign icon-white">&nbsp;</i>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.createEntry.manageField.titleCopy}" class="btn btn-primary btn-sm">
+											<i class="glyphicon glyphicon-plus-sign"></i>
 										</a>
 									</#if>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleDelete}" class="btn btn-danger btn-small">
-										<i class="icon-trash icon-white">&nbsp;</i>
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleDelete}" class="btn btn-danger btn-sm">
+										<i class="glyphicon glyphicon-trash"></i>
 									</a>
 								</td>
 							</tr>
@@ -146,7 +150,7 @@
 </div>
 
 <#macro comboOrders name default_value idParent >
-		<select id="${name}" name="${name}" class="input-mini">
+		<select id="${name}" name="${name}" class="input-xs">
 			<#if idParent &gt; 0 && lastGroup??>
 				<#assign start_enum = lastGroup.position + 1 >
 				<#assign nb_entries = lastGroup.position + lastGroup.children?size >

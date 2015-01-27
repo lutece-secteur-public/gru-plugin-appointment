@@ -1,7 +1,7 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
-<div class="row-fluid" >
+<div class="row" >
 	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
-    <div class="span8">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
     	<#if day??>
     		<@tabs tab="days" appointmentform=appointmentform />
     	<#else>
@@ -80,18 +80,18 @@
 							</#if>
 							<td rowspan="${rowspan}" class="appointment-tooltip" >
 								<#if slot.idSlot &gt; 0>
-									<a id="${slot.idSlot}" class="btn btn-mini  btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}">
+									<a id="${slot.idSlot}" class="btn btn-xs btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}">
 										<#if slot.isEnabled>
 											#i18n{appointment.manageCalendarSlots.labelOpened}
 										<#else>
 											#i18n{appointment.manageCalendarSlots.labelClosed}
 										</#if>
 									</a>
-									<a class="btn btn-default btn-mini" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_slot=${slot.idSlot}" title="#i18n{portal.util.labelModify}">
-										<i class="icon-edit"></i>
+									<a class="btn btn-default btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_slot=${slot.idSlot}" title="#i18n{portal.util.labelModify}">
+										<i class="glyphicon glyphicon-edit"></i>
 									</a>
 								<#else>
-									<button type="button" class="btn btn-primary btn-danger btn-mini" >#i18n{appointment.manageCalendarSlots.labelClosed}</button>
+									<button type="button" class="btn btn-primary btn-danger btn-xs" >#i18n{appointment.manageCalendarSlots.labelClosed}</button>
 								</#if>
 								<@getCellTooltip appointmentSlot=slot />
 							</td>
@@ -100,9 +100,9 @@
 				</tbody>
 			</table>
 			<#if day??>
-				<div class="form-actions">
-					<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
-						<i class="icon-remove-circle">&nbsp;</i>#i18n{portal.util.labelBack}
+				<div class="form-group">
+					<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
+						<i class="glyphicon glyphicon-remove-circle">&nbsp;</i>#i18n{portal.util.labelBack}
 					</a>
 				</div>
 			</#if>

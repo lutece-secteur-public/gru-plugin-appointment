@@ -11,28 +11,28 @@
 		</#if>
 	</#list>
 </#if>
-<div class="control-group">
-	<label class="control-label" for="form${entry.idEntry}_address" id="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
-	<div class="controls">
+<div class="form-group">
+	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="form${entry.idEntry}_address" id="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
+	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
     <#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
 				<#if response.field.title == "X">
-					<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value="${response.toStringValueResponse!}"/>
+					<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value="${response.toStringValueResponse!}">
 				<#elseif response.field.title == "Y">
-					<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value="${response.toStringValueResponse!}"/>
+					<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value="${response.toStringValueResponse!}">
 				<#elseif response.field.title == "idAddress">
-					<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value="${response.toStringValueResponse!}"/>
+					<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value="${response.toStringValueResponse!}">
 				<#else>
-					<input type="text" name="${entry.idEntry}_address" id="${entry.idEntry}_address" <#if response.entry.error??>class="error"<#else>class="${entry.CSSClass!}"</#if> value="${response.toStringValueResponse!}" />
+					<input type="text" name="${entry.idEntry}_address" id="${entry.idEntry}_address" <#if response.entry.error??>class="form-control error"<#else>class="form-control ${entry.CSSClass!}"</#if> value="${response.toStringValueResponse!}" />
 				</#if>
 			</#if>
 		</#list>
 	<#else>
-		<input type="text" value="" name="${entry.idEntry}_address" id="${entry.idEntry}_address" size="50" />
-		<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value=""/>
-		<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value=""/>
-		<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value=""/>
+		<input type="text" value="" name="${entry.idEntry}_address" id="${entry.idEntry}_address" size="50" class="form-control">
+		<input type="hidden" name="${entry.idEntry}_x" id="${entry.idEntry}_x" value="">
+		<input type="hidden" name="${entry.idEntry}_y" id="${entry.idEntry}_y" value="">
+		<input type="hidden" name="${entry.idEntry}_idAddress" id="${entry.idEntry}_idAddress" value="">
 	</#if>
 	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 		<p class="help-block">${entry.helpMessage}</p>

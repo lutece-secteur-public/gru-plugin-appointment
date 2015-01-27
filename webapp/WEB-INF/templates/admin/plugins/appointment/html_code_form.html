@@ -1,5 +1,5 @@
-<div class="row-fluid">
-	<div class="span12">
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<form class="form-horizontal" id="form-validate" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
 			<input name="action" value="doValidateForm" type="hidden" />
 			<input name="id_form" value="${form.idForm}" type="hidden" />
@@ -16,28 +16,28 @@
 					${form.description!}
 				</div>
 				<br />
-				<div class="control-group">
-					<label for="lastname" class="control-label">${form_messages.fieldLastNameTitle!} *</label>
-					<div class="controls">
-						<input type="text" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
+				<div class="form-group">
+					<label for="lastname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldLastNameTitle!} *</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname" class="form-control">
 						<#if form_messages.fieldLastNameHelp?? && form_messages.fieldLastNameHelp != ''>
 							<span class="help-block">${form_messages.fieldLastNameHelp}</span>
 						</#if>
 					</div>
 				</div>
-				<div class="control-group">
-					<label for="firstname" class="control-label">${form_messages.fieldFirstNameTitle!} *</label>
-					<div class="controls">
-						<input type="text" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
+				<div class="form-group">
+					<label for="firstname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldFirstNameTitle!} *</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname" class="form-control">
 						<#if form_messages.fieldFirstNameHelp?? && form_messages.fieldFirstNameHelp != ''>
 							<span class="help-block">${form_messages.fieldFirstNameHelp}</span>
 						</#if>
 					</div>
 				</div>
-				<div class="control-group">
-					<label for="email" class="control-label">${form_messages.fieldEmailTitle!} *</label>
-					<div class="controls">
-						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
+				<div class="form-group">
+					<label for="email" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldEmailTitle!} *</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email" class="form-control">
 						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
 							<span class="help-block">${form_messages.fieldEmailHelp}</span>
 						</#if>
@@ -45,28 +45,30 @@
 				</div>
 				${str_entry}
 				${addon!}
-				<div class="form-actions form-steps">
-					<#if appointment.idAppointment &gt; 0>
-						<button class="btn btn-primary btn-small" type="submit" name="saveAndBack" value="saveAndBack" >
-							<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+				<div class="form-group">
+					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+						<#if appointment.idAppointment &gt; 0>
+						<button class="btn btn-primary btn-sm" type="submit" name="saveAndBack" value="saveAndBack">
+							<i class="glyphicon glyphicon-ok">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
 						</button>
-						<button class="btn btn-primary btn-small" type="submit" name="save" >
-							<i class="icon-arrow-right icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidateAndChangeDate}
+						<button class="btn btn-primary btn-sm" type="submit" name="save">
+							<i class="glyphicon glyphicon-arrow-right">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidateAndChangeDate}
 						</button>
-					<#else>
-						<button class="btn btn-primary btn-small" type="submit" name="save" value="saveAndBack" >
-							<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+						<#else>
+							<button class="btn btn-primary btn-sm" type="submit" name="save" value="saveAndBack" >
+								<i class="glyphicon glyphicon-ok">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
+							</button>
+						</#if>
+						<button type="reset" name="reset" class="btn btn-primary btn-sm">
+							<i class="glyphicon glyphicon-refresh">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelReset}
 						</button>
-					</#if>
-					<button type="reset" name="reset" class="btn btn-primary btn-small">
-						<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelReset}
-					</button>
-					<#if appointment.idAppointment &gt; 0>
-						<input type="hidden" name="id_appointment" value="${appointment.idAppointment}">
-					</#if>
-					<a class="btn btn-small" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true" title="#i18n{portal.util.labelBack}">
-						<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
-					</a>
+						<#if appointment.idAppointment &gt; 0>
+							<input type="hidden" name="id_appointment" value="${appointment.idAppointment}">
+						</#if>
+						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true" title="#i18n{portal.util.labelBack}">
+							<i class="glyphicon glyphicon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+						</a>
+					</div>
 				</div>
 			</fieldset>
 		</form>

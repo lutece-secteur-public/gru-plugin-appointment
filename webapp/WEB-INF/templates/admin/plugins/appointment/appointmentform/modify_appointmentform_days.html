@@ -1,7 +1,7 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
-<div class="row-fluid" >
+<div class="row" >
 	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
-    <div class="span8">
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
     	<@tabs tab="days" appointmentform=appointmentform />
     	<@messages infos=infos />
     	<fieldset>
@@ -9,23 +9,23 @@
     			#i18n{appointment.modify_appointmentformDays.pageTitle}
     			<#if nb_week &gt; -1>
 	    			<div class="pull-right">
-	    				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=confirmRefreshDays&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelRefreshDays}">
-	    					<i class="icon-refresh icon-white">&nbsp;</i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}
+	    				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=confirmRefreshDays&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelRefreshDays}">
+	    					<i class="glyphicon glyphicon-refresh"></i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}
 	    				</a>
-	    				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelCreateDay}">
-	    					<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelCreateDay}
+	    				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelCreateDay}">
+	    					<i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelCreateDay}
 	    				</a>
 	    			</div>
     			</#if>
     		</legend>
 			<div class="pull-left">
-				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
-					<i class="icon-arrow-left icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
+				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
+					<i class="glyphicon glyphicon-arrow-left"></i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
 				</a>
 			</div>
 			<div class="pull-right">
-				<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=${nb_week + 1}" title="#i18n{appointment.appointmentApp.nextWeek}">
-					#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="icon-arrow-right icon-white">&nbsp;</i>
+				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=${nb_week + 1}" title="#i18n{appointment.appointmentApp.nextWeek}">
+					#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>
 				</a>
 			</div>
 			<#if listDays?? && listDays?size &gt; 0>
@@ -52,20 +52,20 @@
 								<td>
 									<#if day.isOpen>
 										<span class="label label-success">
-											<i class="icon-ok-sign icon-white">&nbsp;</i>
+											<i class="glyphicon glyphicon-ok-sign"></i>
 										</span>
 									<#else>
 										<span class="label label-important">
-											<i class="icon-remove-circle icon-white">&nbsp;</i>
+											<i class="glyphicon glyphicon-remove-circle"></i>
 										</span>
 									</#if>
 								</td>
 								<td>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
-										<i class="icon-edit icon-white">&nbsp;</i>
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
+										<i class="glyphicon glyphicon-edit"></i>
 									</a>
 									<#if day.isOpen>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{appointment.modify_appointmentformDays.labelManageSlots}">
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_day=${day.idDay}" class="btn btn-primary btn-xs" title="#i18n{appointment.modify_appointmentformDays.labelManageSlots}">
 											<i class="fa fa-calendar"></i>
 										</a>
 									</#if>
@@ -75,8 +75,8 @@
 					</tbody>
 				</table>
 			<#else>
-				<div class="row-fluid" >
-					<div class="span12">
+				<div class="row" >
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<br />
 						#i18n{appointment.modify_appointmentformDays.labelNoResultWeek} <b>${dateMin}</b> #i18n{appointment.modify_appointmentformDays.labelNoResultWeekTo} <b>${dateMax}</b>.
 					</div>
@@ -87,7 +87,7 @@
 </div>
 
 <#macro comboOrders name default_value idParent >
-		<select id="${name}" name="${name}" class="input-mini">
+		<select id="${name}" name="${name}" class="input-xs">
 			<#if idParent &gt; 0 && lastGroup??>
 				<#assign start_enum = lastGroup.position + 1 >
 				<#assign nb_entries = lastGroup.position + lastGroup.children?size >

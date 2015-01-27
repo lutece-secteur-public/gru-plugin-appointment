@@ -1,10 +1,10 @@
-<div class="row-fluid">
-	<div class="span12">
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<legend>
 			#i18n{appointment.manageCalendarTemplates.pageTitleManageCalendarTemplates}
 			<div class="pull-right">
-				<a class="btn btn-small btn-primary" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate" >
-					<i class="icon-plus icon-white">&nbsp;</i>&nbsp;#i18n{appointment.manageCalendarTemplates.labelAddTemplate}
+				<a class="btn btn-sm btn-primary" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate" >
+					<i class="glyphicon glyphicon-plus">&nbsp;</i>&nbsp;#i18n{appointment.manageCalendarTemplates.labelAddTemplate}
 				</a>
 			</div>
 		</legend>
@@ -17,10 +17,10 @@
 
 
 <#macro actionColumnCalendarTemplate item>
-	<a class="btn btn-primary btn-small" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.id}" >
-		<i class="icon-edit icon-white">&nbsp;</i>
+	<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.id}" >
+		<i class="glyphicon glyphicon-edit">&nbsp;</i>
 	</a>
-	<a class="btn btn-danger btn-small" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.id}" >
-		<i class="icon-trash icon-white">&nbsp;</i>
+	<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.id}" >
+		<i class="glyphicon glyphicon-trash">&nbsp;</i>
 	</a>
 </#macro>
