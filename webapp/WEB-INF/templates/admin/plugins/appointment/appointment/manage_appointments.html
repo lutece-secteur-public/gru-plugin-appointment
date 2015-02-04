@@ -36,39 +36,52 @@
 							<fieldset>
 								<legend>#i18n{appointment.manage_appointments.labelSearch}</legend>
 								<div class="form-group">
-									<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${formMessages.fieldLastNameTitle}</label>
-									<input type="text" name="lastName" value="${filter.lastName!}" class="form-control">
+									<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">${formMessages.fieldLastNameTitle}</label>
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<input type="text" name="lastName" value="${filter.lastName!}" class="form-control">
+									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${formMessages.fieldFirstNameTitle}</label>
-									<input type="text" name="firstName" value="${filter.firstName!}" class="form-control">
+									<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">${formMessages.fieldFirstNameTitle}</label>
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<input type="text" name="firstName" value="${filter.firstName!}" class="form-control">
+									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${formMessages.fieldEmailTitle}</label>
-									<input type="text" name="email" value="${filter.email!}" class="form-control">
+									<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">${formMessages.fieldEmailTitle}</label>
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<input type="text" name="email" value="${filter.email!}" class="form-control">
+									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.manage_appointments.labelDate}</label>
-									<input type="text" id="dateAppointment" name="dateAppointment" value="${filter.dateAppointment!}" class="form-control">
-									<span class="help-block">#i18n{appointment.manage_appointments.labelDateHelp}</span>
+									<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">#i18n{appointment.manage_appointments.labelDate}</label>
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<input type="text" id="dateAppointment" name="dateAppointment" value="${filter.dateAppointment!}" class="form-control">
+										<span class="help-block">#i18n{appointment.manage_appointments.labelDateHelp}</span>
+									</div>
 								</div>
 								<div class="form-group">
-									<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.manage_appointments.labelStatus}</label>
-									<@combo name="status" items=refListStatus default_value=filter.status />
+									<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">#i18n{appointment.manage_appointments.labelStatus}</label>
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<@comboWithParams name="status" items=refListStatus default_value="filter.status" additionalParameters="class='form-control'" />
+									</div>
 								</div>
 								<#if list_admin_users??>
 									<div class="form-group">
-										<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.manage_appointments.labelAdminUser}</label>
-										<@combo name="idAdminUser" items=list_admin_users default_value=filter.idAdminUser />
+										<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">#i18n{appointment.manage_appointments.labelAdminUser}</label>
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<@comboWithParams name="idAdminUser" items=list_admin_users default_value="filter.idAdminUser" additionalParameters="class='form-control'" />
+											<span class="help-block"></span>
+										</div>
 									</div>
 								</#if>
 								<div class="form-group">
-									<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<button class="btn btn-primary btn-sm" title="#i18n{appointment.manage_appointments.labelSearch}">
-											<i class="fa fa-search"></i>#i18n{appointment.manage_appointments.labelSearch}
+											<i class="fa fa-search"></i> #i18n{appointment.manage_appointments.labelSearch}
 										</button>
-										<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments<#if form??>&id_form=${form.idForm}</#if>" title="#i18n{appointment.display_appointment_form.labelReset}">
-											<i class="fa fa-refresh"></i>#i18n{appointment.display_appointment_form.labelReset}
+										<a class="btn btn-default btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments<#if form??>&id_form=${form.idForm}</#if>" title="#i18n{appointment.display_appointment_form.labelReset}">
+											<i class="fa fa-refresh"></i> #i18n{appointment.display_appointment_form.labelReset}
 										</a>
 									</div>
 								</div>
@@ -173,36 +186,36 @@
 										</td>
 										<td>
 											<#if rightModify?? && rightModify>
-												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}">
+												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
 													<i class="glyphicon glyphicon-edit"></i>
 												</a>
 											</#if>
 											<#if rightView?? && rightView>
-												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-sm" title="#i18n{appointment.manage_appointments.labelViewAppointment}">
+												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointments.labelViewAppointment}">
 													<i class="glyphicon glyphicon-eye-open"></i>
 												</a>
 											</#if>
 											<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0>
 												<#list appointment.listWorkflowActions as action>
-													<a class="btn btn-sm btn-primary" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}">	
+													<a class="btn btn-xs btn-primary" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}">	
 														<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}" <#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if> title="${action.name}" alt="${action.name}"	/>
 													</a>
 												</#list>
 											</#if>
 											<#if rightChangeStatus>
 												<#if appointment.status != status_validated>
-													<a class="btn btn-sm btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_validated}" title="#i18n{appointment.manage_appointments.labelValidateAppointment}" >
+													<a class="btn btn-xs btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_validated}" title="#i18n{appointment.manage_appointments.labelValidateAppointment}" >
 														<i class="glyphicon glyphicon-ok"></i>
 													</a>
 												</#if>
 												<#if appointment.status != status_rejected>
-													<a class="btn btn-sm btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_rejected}" title="#i18n{appointment.manage_appointments.labelRejectAppointment}" >
+													<a class="btn btn-xs btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_rejected}" title="#i18n{appointment.manage_appointments.labelRejectAppointment}" >
 														<i class="glyphicon glyphicon-remove"></i>
 													</a>
 												</#if>
 											</#if>
 											<#if rightDelete?? && rightDelete>
-												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-danger btn-sm" title="#i18n{portal.util.labelDelete}" >
+												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
 													<i class="glyphicon glyphicon-trash"></i>
 												</a>
 											</#if>
