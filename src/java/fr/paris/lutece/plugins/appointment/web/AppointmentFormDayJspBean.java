@@ -54,13 +54,11 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
-
 import java.text.DateFormat;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -68,6 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -96,19 +95,22 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     //    private static final String MESSAGE_CONFIRM_REMOVE_DAY = "appointment.message.confirmRemoveDay";
     private static final String MESSAGE_ERROR_OPENING_TIME_FORMAT = "appointment.modify_appointmentForm.patternTimeStart";
     private static final String MESSAGE_ERROR_CLOSING_TIME_FORMAT = "appointment.modify_appointmentForm.patternTimeEnd";
-    private static final String MESSAGE_ERROR_DATE_FORMAT = "appointment.message.error.dayDateFormat";
+    private static final String MESSAGE_ERROR_DATE_FORMAT = "appointment.message.error.dayDateFormatAnterior";
     private static final String MESSAGE_ERROR_FORMAT_APPOINTMENT_DURATION = "appointment.message.error.formatNumberAppointmentDuration";
     private static final String MESSAGE_ERROR_FORMAT_PEOPLE_PER_APPOINTMENT = "appointment.message.error.formatPeoplePerAppointmentDuration";
     private static final String MESSAGE_ERROR_DAY_ALREADY_EXIST = "appointment.message.error.dayAlreadyExist";
     private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_FORM_HAS_APPOINTMENTS = "appointment.message.error.refreshDays.formHasAppointments";
     private static final String MESSAGE_ERROR_DAY_HAS_APPOINTMENT = "appointment.message.error.dayHasAppointment";
+    private static final String MESSAGE_ERROR_HOUR_APPOINTMENT = "appointment.message.error.timeStartAfterTimeEnd";
+    private static final String MESSAGE_ERROR_HOUR_APPOINTMENT_MAXIMALE = "appointment.message.error.formatNumberAppointmentDurationMaximum";
     private static final String MESSAGE_CONFIRM_REFRESH_DAYS = "appointment.message.confirmRefreshDays";
     private static final String INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED = "appointment.info.appointmentDay.slotsUpdated";
 
     // Page titles
     private static final String PROPERTY_CREATE_DAY_TITLE = "appointment.createDay.pageTitle";
     private static final String PROPERTY_MODIFY_DAY_TITLE = "appointment.modifyDay.pageTitle";
+    private static final String PROPERTY_VIEW_DAY_TITLE = "appointment.viewDay.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS = "appointment.modify_appointmentformDays.pageTitle";
 
     // Views
@@ -116,6 +118,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String VIEW_CONFIRM_REFRESH_DAYS = "confirmRefreshDays";
     private static final String VIEW_GET_CREATE_DAY = "getCreateDay";
     private static final String VIEW_GET_MODIFY_DAY = "getModifyDay";
+    private static final String VIEW_GET_VIEW_DAY = "viewModifyDay";
 
     // Actions
     private static final String ACTION_DO_CREATE_DAY = "doCreateDay";
@@ -127,9 +130,12 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_DAYS = "listDays";
     private static final String MARK_DATE_MIN = "dateMin";
     private static final String MARK_DATE_MAX = "dateMax";
+    private static final String MARK_LOCALE = "language";
+    private static final String MARK_CHECK_ANTERIOR = "anteriorDate";
 
     // Templates
     private static final String TEMPLATE_MODIFY_DAY = "/admin/plugins/appointment/modify_days.html";
+    private static final String TEMPLATE_VIEWS_DAY = "/admin/plugins/appointment/view_days.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS = "/admin/plugins/appointment/appointmentform/modify_appointmentform_days.html";
     private static final String TEMPLATE_CREATE_DAY = "/admin/plugins/appointment/create_days.html";
 
@@ -140,7 +146,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private transient DateConverter _dateConverter;
     private transient AppointmentDay _appointmentDay;
     private int _nNbWeek;
-
+  
     /**
      * Get the page to manage days of an appointment form
      * @param request The request
@@ -181,7 +187,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
             Date dateMin = AppointmentService.getService(  ).getDateMonday( _nNbWeek );
-            Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
+            Calendar calendar = GregorianCalendar.getInstance( getLocale ( ) );
             calendar.setTime( dateMin );
             calendar.add( Calendar.DAY_OF_MONTH, 6 );
 
@@ -197,6 +203,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             model.put( PARAMETER_NB_WEEK, _nNbWeek );
             model.put( MARK_DATE_MIN, dateMin );
             model.put( MARK_DATE_MAX, dateMax );
+            model.put( MARK_LOCALE, getLocale ( ) );
             AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ),
                 getLocale(  ), model );
 
@@ -312,38 +319,104 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException If the user is not authorized to access
      *             this feature.
      */
+    @View( VIEW_GET_VIEW_DAY )
+    public String viewModifyDay( HttpServletRequest request )
+        throws AccessDeniedException
+    {
+    	String strIdDay = request.getParameter( PARAMETER_ID_DAY );
+    	if ( StringUtils.isNotEmpty( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
+        {
+            int nIdDay = Integer.parseInt( strIdDay );
+
+            AppointmentDay day = fillAppoinmentDay( nIdDay , AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
+            Map<String, Object> model = fillFreeMarker(day);
+            fillCommons( model );
+            
+            return getPage( PROPERTY_VIEW_DAY_TITLE, TEMPLATE_VIEWS_DAY, model );
+        }
+
+        return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+
+	/**
+	 * Fullfill freemarker variables
+	 * @param day
+	 * @return
+	 */
+	private Map<String, Object> fillFreeMarker(AppointmentDay day) {
+		Map<String, Object> model = new HashMap<String, Object>(  );
+		model.put( MARK_LOCALE, getLocale ( ) );
+		model.put( MARK_DAY, day );
+		fillCommons( model );
+		return model;
+	}
+
+	/**
+	 * Get an Appointment day Copied
+	 * @param day
+	 * @throws AccessDeniedException 
+	 */
+	private AppointmentDay fillAppoinmentDay(int nIdDay, String strPermission ) throws AccessDeniedException {
+		// Check if isOpen or not to put form value default
+
+		AppointmentDay day = null ;
+        if ( ( _appointmentDay != null ) && ( _appointmentDay.getIdDay(  ) == nIdDay ) )
+        {
+            day = _appointmentDay;
+            _appointmentDay = null;
+        }
+        else 
+        {
+        	day = AppointmentDayHome.findByPrimaryKey( nIdDay ) ;
+        }
+		 if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm(  ) ),
+                 strPermission, getUser(  ) ) )
+		 {
+			 throw new AccessDeniedException( strPermission );
+		 }
+
+		if (!day.getIsOpen())
+		{
+			AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
+			day.setOpeningMinutes(formFromDb.getOpeningMinutes());
+			day.setOpeningHour(formFromDb.getOpeningHour());
+			day.setClosingMinutes(formFromDb.getClosingMinutes());
+			day.setClosingHour(formFromDb.getClosingHour());
+			day.setAppointmentDuration(formFromDb.getDurationAppointments());
+			day.setPeoplePerAppointment(formFromDb.getPeoplePerAppointment());
+		}
+		return day;
+	}
+	
+	
+    /**
+     * Gets the entry modification page
+     * @param request The HTTP request
+     * @return The entry modification page
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature.
+     */
     @View( VIEW_GET_MODIFY_DAY )
     public String getModifyDay( HttpServletRequest request )
         throws AccessDeniedException
     {
         String strIdDay = request.getParameter( PARAMETER_ID_DAY );
+        
 
         if ( StringUtils.isNotEmpty( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
         {
             int nIdDay = Integer.parseInt( strIdDay );
 
-            AppointmentDay day;
-
-            if ( ( _appointmentDay != null ) && ( _appointmentDay.getIdDay(  ) == nIdDay ) )
+            AppointmentDay day = fillAppoinmentDay( nIdDay, AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
+            
+            if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
             {
-                day = _appointmentDay;
-                _appointmentDay = null;
+            	return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
             }
-            else
-            {
-                day = AppointmentDayHome.findByPrimaryKey( nIdDay );
-            }
-
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( day.getIdForm(  ) ),
-                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
-            {
-                throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
-            }
-
-            Map<String, Object> model = new HashMap<String, Object>(  );
-            model.put( MARK_DAY, day );
-            fillCommons( model );
-
+            
+            Map<String, Object> model = fillFreeMarker( day );
+            
+           
             return getPage( PROPERTY_MODIFY_DAY_TITLE, TEMPLATE_MODIFY_DAY, model );
         }
 
@@ -362,7 +435,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdDay = request.getParameter( PARAMETER_ID_DAY );
-
+        addInfo( MARK_LOCALE, getLocale ( ) );
         if ( StringUtils.isEmpty( strIdDay ) || !StringUtils.isNumeric( strIdDay ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -419,6 +492,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
         }
+        
 
         AppointmentDayHome.update( day );
 
@@ -517,12 +591,12 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private List<String> populateDay( AppointmentDay day, AppointmentForm form, HttpServletRequest request )
     {
         List<String> listErrors = new ArrayList<String>(  );
-        String strDate = request.getParameter( PARAMETER_DATE );
-        Date date = (Date) getDateConverter(  ).convert( java.sql.Date.class, strDate );
-
-        if ( date == null )
+        SimpleDateFormat actFormatDate =  new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH );
+        Date date = (Date) getDateConverter(  ).convert( java.sql.Date.class, actFormatDate.format ( day.getDate ( ) )) ;
+        if ( isDateAnterior ( day.getDate ( ) ) )
         {
             listErrors.add( MESSAGE_ERROR_DATE_FORMAT );
+            return listErrors;
         }
         else
         {
@@ -551,20 +625,22 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
         }
 
-        day.setDate( date );
-
+ 
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
         day.setIsOpen( bIsOpen );
 
         if ( bIsOpen )
         {
             String strOpeningTime = request.getParameter( PARAMETER_OPENING_TIME );
-
+            boolean bOpeningTime = false; //Check if we have a good opening time
+            boolean bClosingTime = false; //Check if we have a good closing time
+            
             if ( ( strOpeningTime != null ) && strOpeningTime.matches( AppointmentForm.CONSTANT_TIME_REGEX ) )
             {
                 String[] strArrayOpeningTime = strOpeningTime.split( AppointmentForm.CONSTANT_H );
                 day.setOpeningHour( Integer.parseInt( strArrayOpeningTime[0] ) );
                 day.setOpeningMinutes( Integer.parseInt( strArrayOpeningTime[1] ) );
+                bOpeningTime = true;
             }
             else
             {
@@ -578,42 +654,58 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 String[] strArrayClosingTime = strClosingTime.split( AppointmentForm.CONSTANT_H );
                 day.setClosingHour( Integer.parseInt( strArrayClosingTime[0] ) );
                 day.setClosingMinutes( Integer.parseInt( strArrayClosingTime[1] ) );
+                bClosingTime = true;
             }
             else
             {
                 listErrors.add( MESSAGE_ERROR_CLOSING_TIME_FORMAT );
             }
+            
 
-            String strDuration = request.getParameter( PARAMETER_APPOINTMENT_DURATION );
-
-            if ( StringUtils.isNotEmpty( strDuration ) && StringUtils.isNumeric( strDuration ) )
+            if ( bOpeningTime && bClosingTime )
             {
-                day.setAppointmentDuration( Integer.parseInt( strDuration ) );
-
-                if ( ( form.getDurationAppointments(  ) != day.getAppointmentDuration(  ) ) &&
-                        ( form.getDurationAppointments(  ) > day.getAppointmentDuration(  ) ) )
-                {
-                    if ( ( form.getDurationAppointments(  ) % day.getAppointmentDuration(  ) ) != 0 )
-                    {
-                        listErrors.add( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM );
-                    }
-                }
-                else
-                {
-                    if ( ( day.getAppointmentDuration(  ) % form.getDurationAppointments(  ) ) != 0 )
-                    {
-                        listErrors.add( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM );
-                    }
-                }
+            	Calendar objCalOpen = getCalendar( day.getOpeningHour(), day.getOpeningMinutes(), getLocale(  ) );
+            	Calendar objCalClose =  getCalendar( day.getClosingHour(), day.getClosingMinutes() , getLocale(  ));
+            	
+            	if ( objCalOpen.compareTo(objCalClose) >= 0 ) //Check if Opening < Closing time
+            	{
+            		listErrors.add( MESSAGE_ERROR_HOUR_APPOINTMENT );
+            	}
+            	else 
+            	{
+            		String strDuration = request.getParameter( PARAMETER_APPOINTMENT_DURATION );
+            		//Check Now Duration because all Time are checked 
+            		if ( StringUtils.isNotEmpty( strDuration ) && StringUtils.isNumeric( strDuration ) && 
+                       	 Integer.valueOf(strDuration) > 0 )
+                   {
+            			day.setAppointmentDuration( Integer.parseInt( strDuration ) );	
+            			int nDiffHour = ( objCalClose.get(Calendar.HOUR_OF_DAY) - objCalOpen.get(Calendar.HOUR_OF_DAY) ) * 60;
+            			int nDiffMins = objCalClose.get(Calendar.MINUTE) - objCalOpen.get(Calendar.MINUTE);
+            			int nMaxima = nDiffHour + nDiffMins;
+            			if (day.getAppointmentDuration ( ) > nMaxima) //Duration can't exceed in minutes closing - opening
+            			{
+            				listErrors.add( MESSAGE_ERROR_HOUR_APPOINTMENT_MAXIMALE );
+            			}
+            			else
+            			{
+            				if ( nMaxima % day.getAppointmentDuration ( ) != 0 ) //Duration Time must be a modulo
+            				{
+            					listErrors.add( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM );
+            				}
+            			}
+                   }
+            	   else
+                   {
+                        listErrors.add( MESSAGE_ERROR_FORMAT_APPOINTMENT_DURATION );
+                   }
+            	}
+            	
             }
-            else
-            {
-                listErrors.add( MESSAGE_ERROR_FORMAT_APPOINTMENT_DURATION );
-            }
-
+                
             String strPeoplePerAppointment = request.getParameter( PARAMETER_PEOPLE_PER_APPOINTMENT );
 
-            if ( StringUtils.isNotEmpty( strPeoplePerAppointment ) && StringUtils.isNumeric( strPeoplePerAppointment ) )
+            if ( StringUtils.isNotEmpty( strPeoplePerAppointment ) && StringUtils.isNumeric( strPeoplePerAppointment ) &&
+            	 Integer.valueOf( strPeoplePerAppointment ) >	0 )
             {
                 day.setPeoplePerAppointment( Integer.parseInt( strPeoplePerAppointment ) );
             }
@@ -635,6 +727,17 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         return listErrors;
     }
 
+    private static Calendar getCalendar(int nHour, int nMinutes, Locale objPays)
+    {
+    	Calendar objCal =  new GregorianCalendar( objPays );
+    	objCal.set( Calendar.HOUR_OF_DAY, nHour );
+    	objCal.set( Calendar.MINUTE, nMinutes );
+    	objCal.set( Calendar.SECOND, 0 );
+    	objCal.set( Calendar.MILLISECOND, 0);
+    	
+    	return objCal;
+    }
+    
     /**
      * Get the URL to manage appointment forms
      * @param request The request
@@ -658,9 +761,28 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     {
         if ( _dateConverter == null )
         {
-            _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE ) );
+            _dateConverter = new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, getLocale( ) ) );
         }
 
         return _dateConverter;
+    }
+   
+    /**
+     * Is date anterior before
+     * @param objDate
+     * @return
+     */
+    private boolean isDateAnterior ( Date objDate ) 
+    {
+    	boolean bBeforeNow = false ;
+    	SimpleDateFormat actFormatDate =  new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH );
+    	if ( objDate != null ) 
+    	{
+    	
+	    	Date date = (Date) getDateConverter(  ).convert( java.sql.Date.class, actFormatDate.format ( objDate )) ;
+	    	Date actuelle = (Date) getDateConverter(  ).convert( java.sql.Date.class, actFormatDate.format(Calendar.getInstance().getTime()));
+	    	bBeforeNow =  date.before(actuelle );
+    	}
+    	return bBeforeNow;
     }
 }
