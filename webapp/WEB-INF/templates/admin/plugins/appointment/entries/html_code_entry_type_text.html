@@ -24,7 +24,7 @@
 			<#if field.maxSizeEnter!=-1>
 				maxlength="${field.maxSizeEnter}"
 			</#if>
-			class="${entry.CSSClass!} "	/>
+			class="form-control ${entry.CSSClass!} "	/>
 		</#list>
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 			<p class="help-block">${entry.helpMessage}</p>

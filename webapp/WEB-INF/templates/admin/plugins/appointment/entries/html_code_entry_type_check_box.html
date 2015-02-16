@@ -5,7 +5,7 @@ ${entry.CSSClass!}
 		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 		<#list entry.fields as field>
 			<#if !entry.fieldInLine><div class="checkbox"></#if>
-			<label <#if entry.fieldInLine>class="checkbox-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
+			<label <#if entry.fieldInLine>class="checkbox-inline"</#if> for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
 			<input type="checkbox" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}_${field.idField}" value="${field.idField}"
 				<#if list_responses??>
 					<#list list_responses as response>

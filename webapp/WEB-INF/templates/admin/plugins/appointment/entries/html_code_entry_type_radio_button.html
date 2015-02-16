@@ -10,8 +10,8 @@ ${entry.CSSClass!}
 	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
     <#list entry.fields as field>
-		<#if !entry.fieldInLine><div class="radio"></#if>
-			<label <#if entry.fieldInLine>class="radio-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> > 
+		<#if !entry.fieldInLine><div class="radio lalala"></#if>
+			<label <#if entry.fieldInLine>class="radio-inline"</#if> for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> > 
 			<input type="radio" class="" id="attribute${entry.idEntry}_${field.idField}" name="attribute${entry.idEntry}" value="${field.idField}"
 			<#if list_responses??>
 				<#list list_responses as response>
@@ -31,8 +31,8 @@ ${entry.CSSClass!}
 		   <#if !entry.fieldInLine && entry.helpMessage?exists && entry.helpMessage != ''>
 				<p class="help-block">${entry.helpMessage}</p>
 			</#if>
-		</#list>
 		<#if !entry.fieldInLine></div></#if>
+		</#list>
 		
 	</div>
  </div>	
