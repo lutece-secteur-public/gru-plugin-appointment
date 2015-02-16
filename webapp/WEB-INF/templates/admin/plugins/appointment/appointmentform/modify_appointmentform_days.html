@@ -12,9 +12,9 @@
 	    				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=confirmRefreshDays&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelRefreshDays}">
 	    					<i class="glyphicon glyphicon-refresh"></i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}
 	    				</a>
-	    				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelCreateDay}">
-	    					<i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelCreateDay}
-	    				</a>
+	    				<button class="btn btn-primary btn-sm"  id="validityDate"  name="validityDate" title="#i18n{appointment.modify_appointmentformDays.labelCreateDay}" >
+	    					<i class="glyphicon glyphicon-calendar" ></i>
+	    				</button>
 	    			</div>
     			</#if>
     		</legend>
@@ -65,7 +65,7 @@
 								<#assign aDate = aDateTime?date>
 								<#assign myDate = day.date?date>
 								<#if aDate < myDate || aDate?iso_local == myDate?iso_local>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-small" title="#i18n{portal.util.labelModify}">
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
 										<i class="glyphicon glyphicon-edit"></i>
 									</a>
 								<#else>
@@ -119,6 +119,22 @@
 		</select>
 </#macro>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePicker idField="date_start_validity" language='fr' />
-<@getDatePicker idField="date_end_validity" language='fr' />
+<@getDatePickerBootstrap idField="validityDate" language=language />
+<script type="text/javascript">
+$('#validityDate').datepicker({
+    language:		"${language}",
+    <#if appointmentform.dateStartValidity?? && appointmentform.dateStartValidity?has_content >
+    startDate:		"${appointmentform.dateStartValidity}",
+    </#if>
+    <#if appointmentform.dateEndValidity?? && appointmentform.dateEndValidity?has_content >
+    endDate:		"${appointmentform.dateEndValidity}",
+    </#if>
+    autoclose:		true
+});
+$(document).ready(function() {
+	$('#validityDate').datepicker().on('changeDate', function(ev){    
+	    window.location.href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}&time="+ev.date.getTime();
+	});
+});
+
+</script>
