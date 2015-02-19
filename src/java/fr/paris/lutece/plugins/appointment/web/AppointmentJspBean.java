@@ -98,11 +98,11 @@ import org.apache.commons.lang.mutable.MutableInt;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
 import java.sql.Date;
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -112,7 +112,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import javax.validation.ConstraintViolation;
 
 
@@ -166,6 +165,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_SAVE_AND_BACK = "saveAndBack";
     private static final String PARAMETER_ID_ADMIN_USER = "idAdminUser";
     private static final String PARAMETER_ID_RESPONSE = "idResponse";
+    private static final String PARAMETER_ID_TIME="time";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -198,7 +198,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_ADMIN_USER = "admin_user";
     private static final String MARK_ADDON = "addon";
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
-
+    private static final String MARK_LANGUAGE = "language";
     // JSP
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -274,18 +274,48 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
 
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-
+        String strTimeMilli   = request.getParameter( PARAMETER_ID_TIME );
+        
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
             _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
 
             int nIdForm = Integer.parseInt( strIdForm );
-
+            String strTime =  request.getParameter( PARAMETER_ID_TIME ) ;
+          
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
             String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
             int nNbWeek = 0;
+            if ( !StringUtils.isEmpty(strTimeMilli) || StringUtils.isNumeric( strTimeMilli ))
+            {
+            	 Date objMyTime = new Date ( Long.valueOf( strTimeMilli) );
+            	 if ( form == null || 
+            	    ( form.getDateStartValidity() != null && objMyTime.before( form.getDateStartValidity( ) ) ) || 
+            	    ( form.getDateEndValidity() != null &&   objMyTime.after( form.getDateEndValidity ( ) ) ) )
+            	 {
+            	       	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+            	 }
+            	 else
+            	 {
+            		 // Compute difference in week beetween now and date picked
+            		 Calendar objNow = new GregorianCalendar();
+            		 Calendar objAfter = new GregorianCalendar();
+            		 objAfter.setTime(objMyTime);
+            		 int startWeek = objNow.get(Calendar.WEEK_OF_YEAR);
+            		 int endWeek = objAfter.get(Calendar.WEEK_OF_YEAR); 
+            		 int idiff = objNow.get(Calendar.YEAR) - objAfter.get(Calendar.YEAR);
+            		 int ideltaYears = 0;
+            		 Calendar objTmp = objNow.after(objAfter) ? objAfter : objNow;
+        		     for(int i = 0;i < idiff;i++)
+        		     {
+        		    	 ideltaYears += objTmp.getWeeksInWeekYear( ) ;
+        		    	 objTmp.add(Calendar.YEAR, 1); 
+        		    }
+        		     nNbWeek = (endWeek + ideltaYears) - startWeek;
+            	 }
+            }
 
             if ( StringUtils.isNotEmpty( strNbWeek ) )
             {
@@ -353,7 +383,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
-
+            model.put( MARK_LANGUAGE, getLocale() );
+            
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR,
                 model );
         }

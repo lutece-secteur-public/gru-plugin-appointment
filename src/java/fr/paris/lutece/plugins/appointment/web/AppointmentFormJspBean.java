@@ -72,11 +72,15 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -113,7 +117,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM = "appointment.modify_appointmentform.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.create_appointmentform.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentformMessages.pageTitle";
-
     // Markers
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
     private static final String MARK_APPOINTMENTFORM = "appointmentform";
@@ -140,8 +143,15 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
     private static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
+    private static final String ERROR_MESSAGE_TIME_START_AFTER_DATE_END = "appointment.message.error.dateStartAfterTimeEnd";
     private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
+    private static final String ERROR_MESSAGE_APPOINTMENT_FAILED="appointment.message.error.formatDaysBeforeAppointment";
+    private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR="appointment.message.error.formatDaysBeforeAppointmentSuperior";
+    private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE="message.error.formatDaysBeforeAppointmentMiddleSuperior";
+    private static final String ERROR_MESSAGE_APPOINTMENT_PARSING_DATE="appointment.message.error.dayDateFormat";
+    private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
 
+    
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
     private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
@@ -479,13 +489,17 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
         }
 
-        if ( appointmentForm.getTimeStart(  ).compareTo( appointmentForm.getTimeEnd(  ) ) >= 0 )
-        {
-            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale(  ) );
-
-            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
-        }
-
+        //Check Constraint better
+        
+        
+        try {
+			if ( !checkConstraints( appointmentForm ) )
+				return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+		} catch (ParseException e) {
+			addError(ERROR_MESSAGE_APPOINTMENT_PARSING_DATE);
+			return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+		}
+        
         AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
 
         // The populate set the active flag to false, so we have to restore it
@@ -503,6 +517,76 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
 
+    
+    /**
+     * Check Constraints
+     * @param appointmentForm
+     * @return
+     * @throws ParseException 
+     */
+    private boolean checkConstraints( AppointmentForm appointmentForm) throws ParseException
+    {
+    	 boolean bReturn = true;
+       	 SimpleDateFormat formatterHHMM = new SimpleDateFormat("HH:mm", Locale.FRENCH );
+    	 Date dtDate1 = (Date) formatterHHMM.parse( appointmentForm.getTimeStart ( ).replace('h', ':') );
+    	 Date dtDate2 = (Date) formatterHHMM.parse( appointmentForm.getTimeEnd   ( ).replace('h', ':') );
+    	     	 
+         if ( dtDate1.after( dtDate2 ) )
+         {
+        	 bReturn = false;
+             addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale(  ) );
+         }
+         
+         if ( appointmentForm.getMinDaysBeforeAppointment() < 0 )
+         {
+        	 bReturn = false;
+         	addError( ERROR_MESSAGE_APPOINTMENT_FAILED, getLocale(  ) ) ;
+         }
+         
+         if ( appointmentForm.getDateStartValidity() != null && appointmentForm.getDateEndValidity() != null )
+         {
+         	if ( appointmentForm.getDateStartValidity().after( appointmentForm.getDateEndValidity() ) )
+         	{
+         		bReturn = false;
+         		addError( ERROR_MESSAGE_TIME_START_AFTER_DATE_END, getLocale(  ) );
+         	}
+         	else
+         	{
+         		long lMinutes = getDateDiff( dtDate1 , dtDate2, TimeUnit.MINUTES);
+         		if ( appointmentForm.getMinDaysBeforeAppointment() > lMinutes )
+         		{
+         			bReturn = false;
+             		addError( ERROR_MESSAGE_APPOINTMENT_SUPERIOR, getLocale(  ) );
+         		}
+         		if ( appointmentForm.getDurationAppointments() > lMinutes )
+         		{
+         			bReturn = false;
+             		addError( ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE, getLocale(  ) );
+         		}
+         		else
+         		{
+         			if ( lMinutes % appointmentForm.getDurationAppointments ( ) != 0 ) //Duration Time must be a modulo
+    				{
+         				addError ( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM, getLocale(  )  );
+    				}
+         		}
+          	}
+         }
+         
+    	return bReturn;
+    }
+    /**
+     * Get a diff between two dates
+     * @param date1 the oldest date
+     * @param date2 the newest date
+     * @param timeUnit the unit in which you want the diff
+     * @return the diff value, in the provided unit
+     */
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
+    
     /**
      * Change the enabling of an appointment form
      * @param request The request

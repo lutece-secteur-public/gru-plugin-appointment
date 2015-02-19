@@ -80,7 +80,9 @@
 							</#if>
 							<td rowspan="${rowspan}" class="appointment-tooltip" >
 								<#if slot.idSlot &gt; 0>
+									<#if !readonly >									 
 									<a id="${slot.idSlot}" class="btn btn-xs btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}">
+									
 										<#if slot.isEnabled>
 											#i18n{appointment.manageCalendarSlots.labelOpened}
 										<#else>
@@ -90,6 +92,15 @@
 									<a class="btn btn-default btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_slot=${slot.idSlot}" title="#i18n{portal.util.labelModify}">
 										<i class="glyphicon glyphicon-edit"></i>
 									</a>
+									<#else>
+									<i  class="btn-xs btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" >									
+										<#if slot.isEnabled>
+											#i18n{appointment.manageCalendarSlots.labelOpened}
+										<#else>
+											#i18n{appointment.manageCalendarSlots.labelClosed}
+										</#if>
+									</i>
+									</#if>
 								<#else>
 									<button type="button" class="btn btn-primary btn-danger btn-xs" >#i18n{appointment.manageCalendarSlots.labelClosed}</button>
 								</#if>

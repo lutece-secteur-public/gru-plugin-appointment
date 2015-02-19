@@ -54,6 +54,7 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.sql.Date;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +104,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String MARK_MIN_STARTING_MINUTE = "minStartingMinute";
     private static final String MARK_MAX_ENDING_HOUR = "maxEndingHour";
     private static final String MARK_MAX_ENDING_MINUTE = "maxEndingMinute";
-
+    private static final String MARK_READ_ONLY="readonly";
     // Views
     private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
     private static final String VIEW_MODIFY_APPOINTMENT_SLOT = "viewModifySlots";
@@ -185,6 +186,8 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
                 listSlots = AppointmentSlotHome.findByIdDay( nIdDay );
                 model.put( MARK_DAY, day );
+                Date dateMin = AppointmentService.getService(  ).getDateMonday( 0 ); 
+                model.put(MARK_READ_ONLY, day.getDate().before(dateMin) );
                 form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
             }
         }

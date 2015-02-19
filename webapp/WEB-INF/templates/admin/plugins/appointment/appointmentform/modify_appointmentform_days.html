@@ -7,16 +7,19 @@
     	<fieldset>
     		<legend>
     			#i18n{appointment.modify_appointmentformDays.pageTitle}
-    			<#if nb_week &gt; -1>
 	    			<div class="pull-right">
+		    			<a class="btn btn-primary btn-sm" href="http://localhost:8080/lutece/jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=0">
+							<i class="glyphicon glyphicon-flag"></i>&nbsp;#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}
+						</a>
+    			<#if nb_week &gt; -1>
 	    				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=confirmRefreshDays&id_form=${appointmentform.idForm}" title="#i18n{appointment.modify_appointmentformDays.labelRefreshDays}">
 	    					<i class="glyphicon glyphicon-refresh"></i>&nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}
 	    				</a>
+    			</#if>
 	    				<button class="btn btn-primary btn-sm"  id="validityDate"  name="validityDate" title="#i18n{appointment.modify_appointmentformDays.labelCreateDay}" >
-	    					<i class="glyphicon glyphicon-calendar" ></i>
+	    					<i class="glyphicon glyphicon-calendar" ></i>&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}
 	    				</button>
 	    			</div>
-    			</#if>
     		</legend>
 			<div class="pull-left">
 				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
@@ -130,11 +133,7 @@ $('#validityDate').datepicker({
     endDate:		"${appointmentform.dateEndValidity}",
     </#if>
     autoclose:		true
-});
-$(document).ready(function() {
-	$('#validityDate').datepicker().on('changeDate', function(ev){    
+}).on('changeDate', function(ev){    
 	    window.location.href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}&time="+ev.date.getTime();
 	});
-});
-
 </script>
