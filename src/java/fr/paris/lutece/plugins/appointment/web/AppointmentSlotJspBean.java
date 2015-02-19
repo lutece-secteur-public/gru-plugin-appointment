@@ -152,7 +152,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                 };
             AppointmentDay day = AppointmentService.getService(  ).getAppointmentDayFromForm( form );
             day.setIsOpen( false );
-
+            model.put(MARK_READ_ONLY, false );
             boolean bHasClosedDay = false;
 
             for ( int i = 0; i < bArrayListDays.length; i++ )
@@ -186,8 +186,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
                 listSlots = AppointmentSlotHome.findByIdDay( nIdDay );
                 model.put( MARK_DAY, day );
-                Date dateMin = AppointmentService.getService(  ).getDateMonday( 0 ); 
-                model.put(MARK_READ_ONLY, day.getDate().before(dateMin) );
+                model.put(MARK_READ_ONLY, isReadonly ( day.getDate() ));
                 form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
             }
         }
@@ -247,6 +246,17 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
     }
 
+   
+    /**
+     * Test if date is anterior or not for an readlony
+     * @param objdate
+     * @return
+     */
+    private static boolean isReadonly(Date objdate)
+    { 
+    	Date dateMin = AppointmentService.getService(  ).getDateMonday( 0 );
+    	return objdate == null   ? false :  objdate.before(dateMin) ;
+    }
     /**
      * Do change the enabling of a slot
      * @param request The request
