@@ -136,6 +136,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_FORM_MESSAGE = "formMessage";
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "language";
+    private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
@@ -455,6 +456,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance(  ).getEntryTypeReferenceList(  ) );
         model.put( MARK_ENTRY_LIST, listEntry );
         model.put( MARK_LOCALE, getLocale () );
+        model.put( MARK_LOCALE_TINY, getLocale () );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
         addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
 
@@ -710,7 +712,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             model.put( MARK_FORM_MESSAGE, formMessages );
             model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
             model.put( MARK_LOCALE, getLocale(  ) );
-
+            model.put( MARK_LOCALE_TINY , getLocale(  ) );
             return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES,
                 TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES, model );
         }
