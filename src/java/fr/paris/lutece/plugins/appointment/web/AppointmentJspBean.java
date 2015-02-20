@@ -505,7 +505,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_PAGINATOR, delegatePaginator );
             model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
             model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
-
+            model.put( MARK_LANGUAGE, getLocale() );
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
                 for ( Appointment appointment : delegatePaginator.getPageItems(  ) )

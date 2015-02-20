@@ -1,3 +1,4 @@
+<link href="css/datepicker.css" rel="stylesheet">
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -235,5 +236,14 @@
 		</fieldset>
 	</div>
 </div>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePicker idField="dateAppointment" language='fr' />
+<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
+<@getDatePickerBootstrap idField="dateAppointment" language=language />
+<script type="text/javascript">
+$('#dateAppointment').datepicker({
+    language:		"${language}",
+    weekStart: 1,
+    todayBtn: true,
+    todayHighLight: true,
+    autoclose: true
+});
+</script>
