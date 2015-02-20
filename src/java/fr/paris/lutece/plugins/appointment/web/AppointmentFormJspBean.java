@@ -33,6 +33,23 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
@@ -67,23 +84,9 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 
 /**
@@ -107,6 +110,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
+    private static final String PARAMETER_ID_START = "date_start_validity";
+    private static final String PARAMETER_ID_END = "date_end_validity";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
@@ -130,11 +135,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
     private static final String MARK_FORM_MESSAGE = "formMessage";
     private static final String MARK_WEBAPP_URL = "webapp_url";
-    private static final String MARK_LOCALE = "locale";
+    private static final String MARK_LOCALE = "language";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
-
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
@@ -147,10 +151,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
     private static final String ERROR_MESSAGE_APPOINTMENT_FAILED="appointment.message.error.formatDaysBeforeAppointment";
     private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR="appointment.message.error.formatDaysBeforeAppointmentSuperior";
-    private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE="message.error.formatDaysBeforeAppointmentMiddleSuperior";
+    private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE="appointment.message.error.formatDaysBeforeAppointmentMiddleSuperior";
     private static final String ERROR_MESSAGE_APPOINTMENT_PARSING_DATE="appointment.message.error.dayDateFormat";
     private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
-
+    private static final String ERROR_MESSAGE_APPOINTMENT_DATES="appointment.message.error.dateStartTimeEnd";
     
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
@@ -298,9 +302,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             appointmentForm = new AppointmentForm(  );
         }
-
-        populate( appointmentForm, request );
-
+       if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) && checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
+        	populate( appointmentForm, request );
+       else
+       {
+    	   return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
+       }
         // Check constraints
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
@@ -447,6 +454,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( appointmentForm.getIdForm(  ) ) );
         model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance(  ).getEntryTypeReferenceList(  ) );
         model.put( MARK_ENTRY_LIST, listEntry );
+        model.put( MARK_LOCALE, getLocale () );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
         addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
 
@@ -480,8 +488,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
-
-        populate( appointmentForm, request );
+        if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) && checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
+        	populate( appointmentForm, request );
+       else
+       {
+    	   return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+       }
 
         // Check constraints
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -575,7 +587,33 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
          
     	return bReturn;
     }
+    
     /**
+     * @param request
+     * @return
+     */
+    private boolean checkValidDate( String strDate )
+    {
+    	boolean bReturn = true;
+    	Pattern pattern = Pattern.compile("([012]\\d|3[01])/([012]\\d|3[01])/(19|20)\\d\\d");
+    	if ( !StringUtils.isEmpty( strDate ) )
+    	{
+    		try {
+    				Matcher m = pattern.matcher( strDate );
+    				if ( !m.matches() )
+    					throw new ParseException(strDate, -1);
+    				Date strMyDate = DateUtil.formatDate( strDate, getLocale() );
+    				if ( strMyDate == null )
+    					throw new ParseException(strDate, -1);
+			} catch (ParseException e) {
+				addError( ERROR_MESSAGE_APPOINTMENT_DATES, getLocale() );
+				bReturn = false;
+			} 
+    	}
+    	return bReturn;
+    }
+    
+/**
      * Get a diff between two dates
      * @param date1 the oldest date
      * @param date2 the newest date

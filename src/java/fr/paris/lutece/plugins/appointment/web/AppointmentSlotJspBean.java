@@ -105,6 +105,8 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String MARK_MAX_ENDING_HOUR = "maxEndingHour";
     private static final String MARK_MAX_ENDING_MINUTE = "maxEndingMinute";
     private static final String MARK_READ_ONLY="readonly";
+    private static final String MARK_LOCALE = "language";
+   
     // Views
     private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
     private static final String VIEW_MODIFY_APPOINTMENT_SLOT = "viewModifySlots";
@@ -241,6 +243,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         model.put( MARK_MIN_STARTING_MINUTE, nMinStartingMinute );
         model.put( MARK_MAX_ENDING_HOUR, nMaxEndingHour );
         model.put( MARK_MAX_ENDING_MINUTE, nMaxEndingMinute );
+        model.put( MARK_LOCALE, getLocale ( ) );
         AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
 
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );

@@ -1,3 +1,4 @@
+<link href="css/datepicker.css" rel="stylesheet">
 <#macro tabs tab appointmentform >
     <div>
         <ul class="nav nav-tabs">
@@ -73,4 +74,23 @@
 	        </fieldset>
 	    </form>
     </div>
+    <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
+	<@getDatePickerBootstrap idField="date_start_validity" language=language />
+	<@getDatePickerBootstrap idField="date_end_validity"   language=language />
+	<script type="text/javascript">
+$('#date_start_validity').datepicker({
+    language:		"${language}",
+    weekStart: 1,
+    todayBtn: true,
+    todayHighLight: true,
+    autoclose: true
+});
+$('#date_end_validity').datepicker({
+    language:		"${language}",
+    weekStart: 1,
+    todayBtn: true,
+    todayHighLight: true,
+    autoclose: true
+});
+</script>
 </#macro> 

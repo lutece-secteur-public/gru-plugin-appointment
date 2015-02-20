@@ -1,3 +1,4 @@
+<link href="css/datepicker.css" rel="stylesheet">
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
 <div class="row" >
 	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
@@ -132,6 +133,8 @@ $('#validityDate').datepicker({
     <#if appointmentform.dateEndValidity?? && appointmentform.dateEndValidity?has_content >
     endDate:		"${appointmentform.dateEndValidity}",
     </#if>
+    todayBtn: true,
+    todayHighLight: true,
     autoclose:		true
 }).on('changeDate', function(ev){    
 	    window.location.href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}&time="+ev.date.getTime();
