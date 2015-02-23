@@ -336,7 +336,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
             Map<String, Object> model = getModel(  );
             model.put( MARK_SLOT, slot );
-
+            model.put( MARK_LOCALE, getLocale() );
             AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
             AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ),
                 getLocale(  ), model );

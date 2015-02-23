@@ -915,7 +915,28 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 List<String> listTimeBegin = new ArrayList<String>(  );
                 int nMinAppointmentDuration = AppointmentService.getService(  )
                                                                 .getListTimeBegin( listDays, form, listTimeBegin );
-                model.put( MARK_LIST_DAYS, listDays );
+                
+                //Unvalid appointsments before Now
+                //Is is not necessary to check appointment slots if date is before now
+                //Add the time necessary beetwen an appointment
+                Calendar objNow = new GregorianCalendar();
+                objNow.add(Calendar.HOUR_OF_DAY, form.getMinDaysBeforeAppointment ());
+                for (int i = 0; i < listDays.size() ; i ++)
+                {
+                	for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
+                	{
+                		Calendar tmpCal = new GregorianCalendar( );
+                		tmpCal.setTime( listDays.get( i ).getDate() );
+                		tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
+                		tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
+                		if (objNow.after( tmpCal ) )
+                		{
+                			listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
+                		}
+                	}
+                }
+                
+                  model.put( MARK_LIST_DAYS, listDays );
                 model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
                 model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             }
