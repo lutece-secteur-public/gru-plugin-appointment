@@ -159,6 +159,7 @@
 										</td>
 										<td>
 											${appointment.dateAppointment}
+											#i18n{appointment.manage_appointment_calendar.labelFrom}&nbsp;${appointment.startAppointment?time?string["HH:mm"]}&nbsp;#i18n{appointment.manage_appointment_calendar.labelTo}&nbsp;${appointment.endAppointment?time?string["HH:mm"]}
 										</td>
 										<td>
 											<#if appointment.idAdminUser &gt; 0>

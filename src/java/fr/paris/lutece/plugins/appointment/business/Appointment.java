@@ -32,17 +32,18 @@
  * License 1.0
  */
 package fr.paris.lutece.plugins.appointment.business;
-
-import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 
+import fr.paris.lutece.plugins.genericattributes.business.Response;
 import org.hibernate.validator.constraints.Email;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 
 import java.sql.Date;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -97,6 +98,8 @@ public class Appointment implements Serializable
     private String _strAuthenticationService;
     private String _strLocation;
     private Date _dateAppointment;
+    private java.util.Date startAppointment;
+    private java.util.Date endAppointment;
     private int _nIdSlot;
     private int _nStatus;
     private List<Response> _listResponse;
@@ -368,4 +371,24 @@ public class Appointment implements Serializable
     {
         this._idAdminUser = nIdAdminUser;
     }
+
+	public java.util.Date getStartAppointment()
+	{
+		return startAppointment;
+	}
+
+	public void setStartAppointment(java.util.Date date)
+	{
+		this.startAppointment = date;
+	}
+
+	public java.util.Date getEndAppointment()
+	{
+		return endAppointment;
+	}
+
+	public void setEndAppointment(java.util.Date date)
+	{
+		this.endAppointment = date;
+	}
 }

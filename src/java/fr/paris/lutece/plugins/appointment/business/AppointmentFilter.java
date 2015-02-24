@@ -334,7 +334,14 @@ public class AppointmentFilter implements Serializable
 
         if ( bValidOrderBy )
         {
-            this._strOrderBy = strOrderBy;
+        	if (strOrderBy.equalsIgnoreCase( "date_appointment" ) )
+        	{
+        		this._strOrderBy = "date_appointment,starting_hour,starting_minute";
+        	}
+        	else
+        	{
+        		this._strOrderBy = strOrderBy;
+        	}
         }
         else
         {

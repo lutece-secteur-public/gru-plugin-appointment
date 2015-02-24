@@ -7,15 +7,15 @@
  * are met:
  *
  *  1. Redistributions of source code must retain the above copyright notice
- *         and the following disclaimer.
+ *     and the following disclaimer.
  *
  *  2. Redistributions in binary form must reproduce the above copyright notice
- *         and the following disclaimer in the documentation and/or other materials
- *         provided with the distribution.
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
  *
  *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
- *         contributors may be used to endorse or promote products derived from
- *         this software without specific prior written permission.
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -41,6 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import java.sql.Date;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -51,10 +52,10 @@ public final class AppointmentDAO implements IAppointmentDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_appointment ) FROM appointment_appointment";
-    private static final String SQL_QUERY_SELECTALL = "SELECT app.id_appointment, app.first_name, app.last_name, app.email, app.id_user, app.authentication_service, app.localization, app.date_appointment, app.id_slot, app.status, app.id_action_cancel, app.id_admin_user FROM appointment_appointment app ";
+    private static final String SQL_QUERY_SELECTALL = "SELECT app.id_appointment, app.first_name, app.last_name, app.email, app.id_user, app.authentication_service, app.localization, app.date_appointment, app.id_slot, app.status, app.id_action_cancel, app.id_admin_user, slot.starting_hour, slot.starting_minute, slot.ending_hour, slot.ending_minute FROM appointment_appointment app INNER JOIN appointment_slot slot on slot.id_slot = app.id_slot";
     private static final String SQL_QUERY_SELECT_ID = "SELECT app.id_appointment FROM appointment_appointment app ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECTALL + " WHERE app.id_appointment = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = " INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot AND slot.id_form = ?";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = " AND slot.id_form = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, localization, date_appointment, id_slot, status, id_action_cancel, id_admin_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, localization = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ?, id_admin_user = ? WHERE id_appointment = ?";
@@ -314,9 +315,10 @@ public final class AppointmentDAO implements IAppointmentDAO
 
             if ( StringUtils.isNotEmpty( strOrderBy ) )
             {
+            	String strOrderType = bSortAsc ? CONSTANT_ASC : CONSTANT_DESC;
                 sbSql.append( CONSTANT_ORDER_BY );
-                sbSql.append( strOrderBy );
-                sbSql.append( bSortAsc ? CONSTANT_ASC : CONSTANT_DESC );
+                sbSql.append( strOrderBy.replaceAll( ",", strOrderType + "," ) );
+                sbSql.append( strOrderType );
             }
 
             DAOUtil daoUtil = new DAOUtil( sbSql.toString(  ), plugin );
@@ -550,9 +552,10 @@ public final class AppointmentDAO implements IAppointmentDAO
 
         if ( StringUtils.isNotBlank( appointmentFilter.getOrderBy(  ) ) )
         {
+        	String strOrderType = appointmentFilter.getOrderAsc(  ) ? CONSTANT_ASC : CONSTANT_DESC;
             sbSql.append( CONSTANT_ORDER_BY );
-            sbSql.append( appointmentFilter.getOrderBy(  ) );
-            sbSql.append( appointmentFilter.getOrderAsc(  ) ? CONSTANT_ASC : CONSTANT_DESC );
+            sbSql.append( appointmentFilter.getOrderBy(  ).replaceAll(",", strOrderType + ",") );
+            sbSql.append( strOrderType );
         }
 
         return sbSql.toString(  );
@@ -638,6 +641,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     private Appointment getAppointmentFormValues( DAOUtil daoUtil )
     {
         Appointment appointment = new Appointment(  );
+        Calendar dateAppointment = Calendar.getInstance();
         int nIndex = 1;
         appointment.setIdAppointment( daoUtil.getInt( nIndex++ ) );
         appointment.setFirstName( daoUtil.getString( nIndex++ ) );
@@ -646,11 +650,18 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setIdUser( daoUtil.getString( nIndex++ ) );
         appointment.setAuthenticationService( daoUtil.getString( nIndex++ ) );
         appointment.setLocation( daoUtil.getString( nIndex++ ) );
-        appointment.setDateAppointment( daoUtil.getDate( nIndex++ ) );
+        dateAppointment.setTime(daoUtil.getDate( nIndex++ ) );
+        appointment.setDateAppointment( new Date( dateAppointment .getTimeInMillis() ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
         appointment.setStatus( daoUtil.getInt( nIndex++ ) );
         appointment.setIdActionCancel( daoUtil.getInt( nIndex++ ) );
-        appointment.setIdAdminUser( daoUtil.getInt( nIndex ) );
+        appointment.setIdAdminUser( daoUtil.getInt( nIndex++ ) );
+        dateAppointment.set( Calendar.HOUR_OF_DAY, daoUtil.getInt( nIndex++ ) );
+        dateAppointment.set( Calendar.MINUTE, daoUtil.getInt( nIndex++ ) );
+        appointment.setStartAppointment( dateAppointment.getTime() );
+        dateAppointment.set( Calendar.HOUR_OF_DAY, daoUtil.getInt( nIndex++ ) );
+        dateAppointment.set( Calendar.MINUTE, daoUtil.getInt( nIndex++ ) );
+        appointment.setEndAppointment( dateAppointment.getTime() );
 
         return appointment;
     }
