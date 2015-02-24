@@ -92,6 +92,21 @@
 					<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 						<center>
 							<@paginationAdmin paginator=paginator combo=1 form=0 />
+							<table class="table table-condensed table-striped">
+							<tr>
+							<th colspan="7" align="center">
+								<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&allDates=${allDates}">
+										<#if allDates?boolean>
+										<i class="glyphicon glyphicon-eye-open"></i>
+											#i18n{appointment.manage_appointments.fulltitle}
+										<#else>
+										<i class="glyphicon glyphicon-eye-close"></i>
+											#i18n{appointment.manage_appointments.lighttitle}
+										</#if>
+								</a>
+							</th>
+							</tr>
+							</table>
 						</center>
 						<#if appointment_list?? && appointment_list?size &gt; 0>
 							<table class="table table-condensed table-striped">

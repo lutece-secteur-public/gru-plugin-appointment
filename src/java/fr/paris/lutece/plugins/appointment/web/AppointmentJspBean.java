@@ -153,6 +153,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_EMAIL = "email";
+    private static final String PARAMETER_DATE_MIN = "allDates";
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
     private static final String PARAMETER_NB_WEEK = "nb_week";
@@ -199,6 +200,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_ADDON = "addon";
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_LANGUAGE = "language";
+    private static final String MARK_ALLDATES = "allDates";
+
     // JSP
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -432,13 +435,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
             url.addParameter( MARK_FILTER_FROM_SESSION, Boolean.TRUE.toString(  ) );
 
             String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
+            String strCheckDate = request.getParameter( PARAMETER_DATE_MIN );
             AppointmentDay day = null;
             AppointmentSlot slot = null;
             AppointmentFilter filter;
 
             if ( ( _filter != null ) && Boolean.parseBoolean( request.getParameter( MARK_FILTER_FROM_SESSION ) ) )
             {
-                filter = _filter;
+                filter = dateFiltered(strCheckDate, _filter);
 
                 String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
 
@@ -447,6 +451,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     filter.setOrderBy( strOrderBy );
                     filter.setOrderAsc( Boolean.parseBoolean( request.getParameter( PARAMETER_ORDER_ASC ) ) );
                 }
+                
             }
             else
             {
@@ -469,8 +474,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     filter.setIdSlot( nIdSlot );
                     url.addParameter( PARAMETER_ID_SLOT, strIdSlot );
                 }
-
-                _filter = filter;
+                
+              
+                
+                _filter = dateFiltered(strCheckDate, filter);
             }
 
             String strUrl = url.getUrl(  );
@@ -506,6 +513,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
             model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
             model.put( MARK_LANGUAGE, getLocale() );
+            model.put( MARK_ALLDATES, filter.getDateAppointmentMin() == null ? "false" : "true");
+            
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
                 for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
@@ -562,6 +571,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
+
+	/**
+	 * @param strCheckDate
+	 * @param filter
+	 */
+	private  AppointmentFilter dateFiltered(String strCheckDate, AppointmentFilter filter) {
+		//Check filter from Date
+		    filter.setDateAppointmentMin( new Date ( System.currentTimeMillis() ) );
+		    if (  Boolean.valueOf (strCheckDate ) )
+		    	filter.setDateAppointmentMin( null );
+		    return filter;
+	}
 
     /**
      * Returns the form to create an appointment
@@ -923,20 +944,23 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 objNow.add(Calendar.HOUR_OF_DAY, form.getMinDaysBeforeAppointment ());
                 for (int i = 0; i < listDays.size() ; i ++)
                 {
-                	for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
+                	if (listDays.get( i ).getListSlots() != null )
                 	{
-                		Calendar tmpCal = new GregorianCalendar( );
-                		tmpCal.setTime( listDays.get( i ).getDate() );
-                		tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
-                		tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
-                		if (objNow.after( tmpCal ) )
+                		for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
                 		{
-                			listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
-                		}
+                			Calendar tmpCal = new GregorianCalendar( );
+                			tmpCal.setTime( listDays.get( i ).getDate() );
+                			tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
+                			tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
+                			if (objNow.after( tmpCal ) )
+                			{
+                				listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
+                			}
+                		}                		
                 	}
                 }
                 
-                  model.put( MARK_LIST_DAYS, listDays );
+                model.put( MARK_LIST_DAYS, listDays );
                 model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
                 model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             }
