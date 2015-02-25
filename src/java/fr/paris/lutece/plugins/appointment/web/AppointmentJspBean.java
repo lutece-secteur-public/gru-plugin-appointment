@@ -302,7 +302,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             	 }
             	 else
             	 {
-            		 // Compute difference in week beetween now and date picked
+            		 // Compute difference in week beetween now and date picked for the calendar button
             		 Calendar objNow = new GregorianCalendar();
             		 Calendar objAfter = new GregorianCalendar();
             		 objAfter.setTime(objMyTime);
@@ -378,6 +378,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nMinAppointmentDuration = AppointmentService.getService(  )
                                                             .getListTimeBegin( listDays, form, listTimeBegin );
 
+            listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays);
             Map<String, Object> model = getModel(  );
 
             model.put( MARK_FORM, form );
@@ -474,8 +475,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     filter.setIdSlot( nIdSlot );
                     url.addParameter( PARAMETER_ID_SLOT, strIdSlot );
                 }
-                
-              
                 
                 _filter = dateFiltered(strCheckDate, filter);
             }
@@ -576,11 +575,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	 * @param strCheckDate
 	 * @param filter
 	 */
-	private  AppointmentFilter dateFiltered(String strCheckDate, AppointmentFilter filter) {
-		//Check filter from Date
-		    filter.setDateAppointmentMin( new Date ( System.currentTimeMillis() ) );
-		    if (  Boolean.valueOf (strCheckDate ) )
-		    	filter.setDateAppointmentMin( null );
+	private  static AppointmentFilter dateFiltered(String strCheckDate, AppointmentFilter filter) {
+		//Check filter from Date. Be careful if a slot is enabled
+			if (filter.getIdSlot()<= 0)
+			{
+			    filter.setDateAppointmentMin( new Date ( System.currentTimeMillis() ) );
+			    if (  Boolean.valueOf (strCheckDate ) )
+			    	filter.setDateAppointmentMin( null );
+			}
 		    return filter;
 	}
 
@@ -937,28 +939,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 int nMinAppointmentDuration = AppointmentService.getService(  )
                                                                 .getListTimeBegin( listDays, form, listTimeBegin );
                 
-                //Unvalid appointsments before Now
-                //Is is not necessary to check appointment slots if date is before now
-                //Add the time necessary beetwen an appointment
-                Calendar objNow = new GregorianCalendar();
-                objNow.add(Calendar.HOUR_OF_DAY, form.getMinDaysBeforeAppointment ());
-                for (int i = 0; i < listDays.size() ; i ++)
-                {
-                	if (listDays.get( i ).getListSlots() != null )
-                	{
-                		for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
-                		{
-                			Calendar tmpCal = new GregorianCalendar( );
-                			tmpCal.setTime( listDays.get( i ).getDate() );
-                			tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
-                			tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
-                			if (objNow.after( tmpCal ) )
-                			{
-                				listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
-                			}
-                		}                		
-                	}
-                }
+                listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment(), listDays);
                 
                 model.put( MARK_LIST_DAYS, listDays );
                 model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
@@ -976,6 +957,38 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
+
+	/**
+	 * Unvalid appointsments before Now
+	 * Is is not necessary to check appointment slots if date is before now
+	 * Add the time necessary beetwen an appointment
+	 * @param form
+	 * @param listDays
+	 */
+	private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
+			List<AppointmentDay> listDays) {
+
+		Calendar objNow = new GregorianCalendar();
+		objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
+		for (int i = 0; i < listDays.size() ; i ++)
+		{
+			if (listDays.get( i ).getListSlots() != null )
+			{
+				for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
+				{
+					Calendar tmpCal = new GregorianCalendar( );
+					tmpCal.setTime( listDays.get( i ).getDate() );
+					tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
+					tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
+					if (objNow.after( tmpCal ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
+					{
+						listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
+					}
+				}                		
+			}
+		}
+		return listDays;
+	}
 
     /**
      * Manages the removal form of a appointment whose identifier is in the HTTP
