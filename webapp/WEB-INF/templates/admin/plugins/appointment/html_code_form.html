@@ -4,12 +4,15 @@
 			<input name="action" value="doValidateForm" type="hidden" />
 			<input name="id_form" value="${form.idForm}" type="hidden" />
 			<input name="session" value="session" type="hidden" />
+			<#if appointmentSlot?has_content>
+			<input name="idSlot" value="${appointmentSlot}" type="hidden">
+			</#if>
 			<fieldset>
 				<legend>
 					<#if form.displayTitleFo && form.title != "" >
-						${form.title}
+						${form.title}&nbsp;<#if appointmentSlotDay?has_content>${appointmentSlotDay}</#if>
 					<#else>
-						#i18n{appointment.appointmentApp.defaultTitle}
+						#i18n{appointment.appointmentApp.defaultTitle}&nbsp;<#if appointmentSlotDay?has_content>${appointmentSlotDay}</#if>
 					</#if>
 				</legend>
 				<div class="alert alert-info">

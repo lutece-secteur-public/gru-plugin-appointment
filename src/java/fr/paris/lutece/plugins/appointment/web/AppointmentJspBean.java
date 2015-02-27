@@ -89,6 +89,7 @@ import fr.paris.lutece.portal.web.util.LocalizedDelegatePaginator;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
@@ -171,6 +172,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
     private static final String MARK_APPOINTMENT = "appointment";
+    private static final String MARK_APPOINTMENTSLOT = "appointmentSlot";
+    private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     private static final String MARK_FORM_MESSAGES = "formMessages";
@@ -587,6 +590,25 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	}
 
     /**
+     * Write Title Day MM/DD/YYY locale and Hours
+     * @param nIdSlot
+     * @return
+     */
+    private String getTitleComment ( int nIdSlot )
+    {
+    	String strComment = null;
+    	AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
+    	if (slot != null )
+    	{
+			AppointmentDay objDay  = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
+			strComment = DateUtil.getDateString( objDay.getDate() , getLocale() );
+			strComment += " " + String.format("%02d",slot.getStartingHour( )) +":"  + String.format("%-2d",slot.getStartingMinute( )).replace(' ', '0');
+			strComment += " ~ " +  String.format("%02d",slot.getEndingHour( ))   +":"  + String.format("%-2d",slot.getEndingMinute( )).replace(' ', '0');
+    	}
+    	return strComment;
+    }
+	
+	/**
      * Returns the form to create an appointment
      * @param request The HTTP request
      * @return the HTML code of the appointment form
@@ -598,8 +620,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
+        
         int nIdForm;
-
         clearUploadFilesIfNeeded( request.getSession(  ) );
 
         if ( ( strIdForm != null ) && StringUtils.isNumeric( strIdForm ) )
@@ -636,13 +659,26 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-
+        String strSlot = null;
+        String strDayComment = null;
+        
         if ( ( form == null ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
         Map<String, Object> model = new HashMap<String, Object>(  );
+
+        if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
+        {
+        	int nIdSlot = Integer.parseInt( strIdSlot );
+        	AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
+        	if ( slot != null )
+        	{
+        		strSlot = String.valueOf( slot.getIdSlot() );
+        		strDayComment = getTitleComment ( slot.getIdSlot( ) );	
+        	}
+        }
 
         Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
 
@@ -674,7 +710,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
         model.put( MARK_FORM_HTML,
-            _appointmentFormService.getHtmlForm( form, formMessages, getLocale(  ), false, request ) );
+            _appointmentFormService.getHtmlForm( strDayComment, strSlot, form, formMessages, getLocale(  ), false, request ) );
 
         List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
                                                                                       .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
@@ -753,6 +789,23 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
+    
+    /**
+     * Come from calendar pick date ?
+     * @param strIdSlot
+     * @return
+     */
+    private static boolean comeFromCalendarAppointment( String strIdSlot )
+    {
+    	 boolean bReturn = false;
+    	 if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
+         {
+            int nIdSlot = Integer.parseInt( strIdSlot );
+         	AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
+         	bReturn = slot != null;
+         }
+    	 return bReturn;
+    }
 
     /**
      * Do validate data entered by a user to fill a form
@@ -766,7 +819,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-
+        String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
+        
         if ( ( strIdForm != null ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
@@ -837,8 +891,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( listFormErrors.size(  ) > 0 )
             {
                 request.getSession(  ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
-
-                return redirect( request, VIEW_CREATE_APPOINTMENT, PARAMETER_ID_FORM, nIdForm );
+                if ( comeFromCalendarAppointment( strIdSlot ) )
+                {
+	               return redirect( request, VIEW_CREATE_APPOINTMENT, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT, Integer.parseInt( ( strIdSlot ) ));
+                }
+                else
+                {
+                	return redirect( request, VIEW_CREATE_APPOINTMENT, PARAMETER_ID_FORM, nIdForm );
+                }
             }
 
             _appointmentFormService.convertMapResponseToList( appointment );
@@ -879,8 +939,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     return redirect( request, getUrlManageAppointment( request, nIdForm ) );
                 }
             }
-
-            return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+            if ( comeFromCalendarAppointment( strIdSlot ) )
+            {
+            	return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_SLOT, Integer.parseInt( strIdSlot ) );
+            }
+            else
+           {
+            	return redirect( request, VIEW_GET_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+            }
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );

@@ -38,6 +38,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
@@ -65,6 +66,7 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.url.UrlItem;
@@ -72,7 +74,6 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +115,10 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_ADDON = "addon";
     private static final String MARK_IS_FORM_FIRST_STEP = "isFormFirstStep";
     private static final String MARK_UPLOAD_HANDLER = "uploadHandler";
-
+    private static final String MARK_APPOINTMENTSLOT = "appointmentSlot";
+    private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
+    
+    
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
     private static final String SESSION_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.validatedAppointment";
@@ -146,6 +150,82 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_IS_FORM_FIRST_STEP = "appointment.isFormFirstStep";
     private transient volatile Boolean _bIsFormFirstStep;
 
+    
+    /**
+     * Return the HTML code of the form
+     * @param form the form which HTML code must be return
+     * @param formMessages The form messages associated with the form
+     * @param locale the locale
+     * @param 
+     * @param bDisplayFront True if the entry will be displayed in Front Office,
+     *            false if it will be displayed in Back Office.
+     * @param request HttpServletRequest
+     * @return the HTML code of the form
+     */
+    public String getHtmlForm( String strDay, String strSlot, AppointmentForm form, AppointmentFormMessages formMessages, Locale locale,
+        boolean bDisplayFront, HttpServletRequest request )
+    {
+    	 Map<String, Object> model = new HashMap<String, Object>(  );
+         StringBuffer strBuffer = new StringBuffer(  );
+
+         List<Entry> listEntryFirstLevel = getFilter ( form.getIdForm() );
+
+         for ( Entry entry : listEntryFirstLevel )
+         {
+             getHtmlEntry( entry.getIdEntry(  ), strBuffer, locale, bDisplayFront, request );
+         }
+         
+         model.put( MARK_APPOINTMENTSLOT, strSlot );
+         model.put( MARK_APPOINTMENTSLOTDAY,  strDay );
+         model.put( MARK_FORM, form );
+         model.put( MARK_FORM_MESSAGES, formMessages );
+         model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
+         model.put( MARK_LOCALE, locale );
+
+         AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
+
+         if ( appointment == null )
+         {
+             appointment = new AppointmentDTO(  );
+
+             setUserInfo( request, appointment );
+         }
+
+         model.put( MARK_APPOINTMENT, appointment );
+
+         if ( bDisplayFront )
+         {
+             model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep(  ) );
+         }
+
+         if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
+         {
+             model.put( MARK_ADDON,
+                 AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), locale ) );
+         }
+
+         
+         HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
+                                                                               : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
+                 model );
+
+         return template.getHtml(  );
+    }
+    
+    /**
+     * Get an Entry Filter
+     * @return
+     */
+    private static List<Entry> getFilter ( int iform )
+    {
+    	EntryFilter filter = new EntryFilter(  );
+        filter.setIdResource( iform );
+        filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
+        filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+        List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
+        return listEntryFirstLevel;
+    }
     /**
      * Return the HTML code of the form
      * @param form the form which HTML code must be return
@@ -161,13 +241,8 @@ public class AppointmentFormService implements Serializable
     {
         Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strBuffer = new StringBuffer(  );
-        EntryFilter filter = new EntryFilter(  );
-        filter.setIdResource( form.getIdForm(  ) );
-        filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
-        filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
-        filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
-        List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
+        List<Entry> listEntryFirstLevel = getFilter ( form.getIdForm() );
 
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -201,6 +276,7 @@ public class AppointmentFormService implements Serializable
                 AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), locale ) );
         }
 
+        
         HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
                                                                               : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
                 model );

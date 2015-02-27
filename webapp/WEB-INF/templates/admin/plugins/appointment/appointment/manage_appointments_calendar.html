@@ -113,7 +113,10 @@
 											<#if slot.isEnabled>
 												<#if slot.nbFreePlaces == slot.nbPlaces>
 													<td class="appointment-slot-avaiable appointment-row${slotSpan}">
-														${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+														${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}&nbsp;
+														<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}"  title="#i18n{appointment.createEntry.manageField.buttonItemsPerPage}">
+															<i class="glyphicon glyphicon-edit"></i>
+														</a>
 													</td>
 												<#else>
 													<td class="appointment-slot-full appointment-row${slotSpan}">
@@ -168,6 +171,9 @@
 										<#if slot.nbFreePlaces == slot.nbPlaces>
 											<td class="appointment-slot-avaiable">
 												${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}"  title="#i18n{appointment.createEntry.manageField.buttonItemsPerPage}">
+												<i class="glyphicon glyphicon-edit"></i>
+												</a>
 											</td>
 										<#else>
 											<td class="appointment-slot-full">
