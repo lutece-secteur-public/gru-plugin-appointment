@@ -246,6 +246,35 @@ public class AppointmentService
         return listDays;
     }
 
+    private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
+			List<AppointmentDay> listDays) {
+
+		Calendar objNow = new GregorianCalendar();
+		objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
+		for (int i = 0; i < listDays.size() ; i ++)
+		{
+			if (listDays.get( i ).getListSlots() == null )
+			{
+				listDays.get( i ).setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( listDays.get( i ).getIdDay(  ) ) );
+			}
+			if (listDays.get( i ).getListSlots() != null )
+			{
+				for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
+				{
+					Calendar tmpCal = new GregorianCalendar( );
+					tmpCal.setTime( listDays.get( i ).getDate() );
+					tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
+					tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
+					if (objNow.after( tmpCal ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
+					{
+						listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
+					}
+				}                		
+			}
+		}
+		return listDays;
+	}
+    
     /**
      * Get the list of days of a form to display them in a calendar. Days and
      * slots are not computed by this method but loaded from the database. The
@@ -294,7 +323,9 @@ public class AppointmentService
 
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
 
-        long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
+        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays);
+        
+/*        long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
 
         if ( bIsForFront )
         {
@@ -354,7 +385,7 @@ public class AppointmentService
 
                 nOffsetWeeks.increment(  );
             }
-        }
+        }*/
 
         return listDays;
     }
