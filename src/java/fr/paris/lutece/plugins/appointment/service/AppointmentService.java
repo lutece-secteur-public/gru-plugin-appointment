@@ -246,35 +246,67 @@ public class AppointmentService
         return listDays;
     }
 
+    /**
+     * Enable / Disable slots
+     * @param iDaysBeforeAppointment
+     * @param listDays
+     * @return
+     */
     private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
-			List<AppointmentDay> listDays) {
+			List<AppointmentDay> listDays , Calendar objStart, Calendar objEnd) {
 
 		Calendar objNow = new GregorianCalendar();
+		
 		objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
+		
 		for (int i = 0; i < listDays.size() ; i ++)
 		{
-			if (listDays.get( i ).getListSlots() == null )
+			
+			if (listDays.get( i ).getIsOpen())
 			{
-				listDays.get( i ).setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( listDays.get( i ).getIdDay(  ) ) );
-			}
-			if (listDays.get( i ).getListSlots() != null )
-			{
+				if (listDays.get( i ).getListSlots() == null )
+				{
+					listDays.get( i ).setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( listDays.get( i ).getIdDay(  ) ) );
+				}
 				for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
 				{
-					Calendar tmpCal = new GregorianCalendar( );
-					tmpCal.setTime( listDays.get( i ).getDate() );
+					Calendar tmpCal = new GregorianCalendar( Locale.FRENCH );
+					Calendar objNowClose = new GregorianCalendar( Locale.FRENCH );
+					
+					tmpCal.setTime( listDays.get( i ).getDate() );					
 					tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
 					tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
-					if (objNow.after( tmpCal ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
+					
+					objNowClose.setTime( listDays.get( i ).getDate() );
+					objNowClose.set(Calendar.HOUR_OF_DAY, objEnd.get(Calendar.HOUR_OF_DAY)- iDaysBeforeAppointment);
+					objNowClose.set(Calendar.MINUTE, objEnd.get(Calendar.MINUTE));
+
+					if ( ( objNow.after( tmpCal ) || tmpCal.after( objNowClose ) ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
 					{
 						listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
 					}
-				}                		
+				}                  		
 			}
 		}
 		return listDays;
 	}
     
+    /**
+     * Transform Date to Calendar
+     * @param objTime
+     * @param iHour
+     * @param iMinute
+     * @return
+     */
+    private static Calendar getCalendarTime ( Date objTime, int iHour, int iMinute) 
+    {
+    	Calendar calendar = GregorianCalendar.getInstance( Locale.FRENCH );
+        if (objTime != null)
+        	calendar.setTime( objTime );
+    	calendar.set(Calendar.HOUR_OF_DAY, iHour);
+    	calendar.set(Calendar.MINUTE, iMinute);
+        return calendar;
+    }
     /**
      * Get the list of days of a form to display them in a calendar. Days and
      * slots are not computed by this method but loaded from the database. The
@@ -322,8 +354,10 @@ public class AppointmentService
         Date dateMax = new Date( calendar.getTimeInMillis(  ) );
 
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
+        Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
+        Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
 
-        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays);
+        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays, calendarStart,calendarEnd);
         
 /*        long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
 

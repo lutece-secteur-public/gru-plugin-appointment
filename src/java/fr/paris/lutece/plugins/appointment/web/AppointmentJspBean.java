@@ -381,7 +381,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nMinAppointmentDuration = AppointmentService.getService(  )
                                                             .getListTimeBegin( listDays, form, listTimeBegin );
 
-            listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays);
+            Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
+            Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
+
+            listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays, calendarStart,calendarEnd);
             Map<String, Object> model = getModel(  );
 
             model.put( MARK_FORM, form );
@@ -399,6 +402,24 @@ public class AppointmentJspBean extends MVCAdminJspBean
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
+    /**
+     * Transform Date to Calendar
+     * @param objTime
+     * @param iHour
+     * @param iMinute
+     * @return
+     */
+    private static Calendar getCalendarTime ( Date objTime, int iHour, int iMinute) 
+    {
+    	Calendar calendar = GregorianCalendar.getInstance( Locale.FRENCH );
+        if (objTime != null)
+        	calendar.setTime( objTime );
+    	calendar.set(Calendar.HOUR_OF_DAY, iHour);
+    	calendar.set(Calendar.MINUTE, iMinute);
+        return calendar;
+    }
+
+    
     /**
      * Get the page to manage appointments
      * @param request The request
@@ -1005,8 +1026,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 int nMinAppointmentDuration = AppointmentService.getService(  )
                                                                 .getListTimeBegin( listDays, form, listTimeBegin );
                 
-                listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment(), listDays);
-                
+
+                Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
+                Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
+
+                listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays, calendarStart,calendarEnd);
+
                 model.put( MARK_LIST_DAYS, listDays );
                 model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
                 model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
@@ -1032,25 +1057,38 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	 * @param listDays
 	 */
 	private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
-			List<AppointmentDay> listDays) {
+			List<AppointmentDay> listDays, Calendar objStart, Calendar objEnd) {
 
-		Calendar objNow = new GregorianCalendar();
+		Calendar objNow = new GregorianCalendar( Locale.FRENCH );
+		
 		objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
+		
+			
 		for (int i = 0; i < listDays.size() ; i ++)
 		{
-			if (listDays.get( i ).getListSlots() != null )
+			if (listDays.get( i ).getIsOpen())
 			{
-				for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
+				if (listDays.get( i ).getListSlots() != null )
 				{
-					Calendar tmpCal = new GregorianCalendar( );
-					tmpCal.setTime( listDays.get( i ).getDate() );
-					tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
-					tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
-					if (objNow.after( tmpCal ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
+					for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
 					{
-						listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
-					}
-				}                		
+						Calendar tmpCal = new GregorianCalendar( Locale.FRENCH );
+						Calendar objNowClose = new GregorianCalendar( Locale.FRENCH );
+						
+						tmpCal.setTime( listDays.get( i ).getDate() );					
+						tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
+						tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
+						
+						objNowClose.setTime( listDays.get( i ).getDate() );
+						objNowClose.set(Calendar.HOUR_OF_DAY, objEnd.get(Calendar.HOUR_OF_DAY)- iDaysBeforeAppointment);
+						objNowClose.set(Calendar.MINUTE, objEnd.get(Calendar.MINUTE));
+
+						if ( ( objNow.after( tmpCal ) || tmpCal.after( objNowClose ) ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
+						{
+							listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
+						}
+					}                		
+				}
 			}
 		}
 		return listDays;
