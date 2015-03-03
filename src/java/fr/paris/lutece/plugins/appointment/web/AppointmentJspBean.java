@@ -306,20 +306,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             	 else
             	 {
             		 // Compute difference in week beetween now and date picked for the calendar button
-            		 Calendar objNow = new GregorianCalendar();
-            		 Calendar objAfter = new GregorianCalendar();
-            		 objAfter.setTime(objMyTime);
-            		 int startWeek = objNow.get(Calendar.WEEK_OF_YEAR);
-            		 int endWeek = objAfter.get(Calendar.WEEK_OF_YEAR); 
-            		 int idiff = objNow.get(Calendar.YEAR) - objAfter.get(Calendar.YEAR);
-            		 int ideltaYears = 0;
-            		 Calendar objTmp = objNow.after(objAfter) ? objAfter : objNow;
-        		     for(int i = 0;i < idiff;i++)
-        		     {
-        		    	 ideltaYears += objTmp.getWeeksInWeekYear( ) ;
-        		    	 objTmp.add(Calendar.YEAR, 1); 
-        		    }
-        		     nNbWeek = (endWeek + ideltaYears) - startWeek;
+            		 nNbWeek = computeWeek(objMyTime);
             	 }
             }
 
@@ -401,6 +388,30 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
+
+	/**
+	 * ComputeWeek in time
+	 * @param objMyTime
+	 * @return
+	 */
+	private static int computeWeek(Date objMyTime) {
+		int nNbWeek;
+		Calendar objNow = new GregorianCalendar();
+		Calendar objAfter = new GregorianCalendar();
+		objAfter.setTime(objMyTime);
+		int startWeek = objNow.get(Calendar.WEEK_OF_YEAR);
+		int endWeek = objAfter.get(Calendar.WEEK_OF_YEAR); 
+		int idiff = objNow.get(Calendar.YEAR) - objAfter.get(Calendar.YEAR);
+		int ideltaYears = 0;
+		Calendar objTmp = objNow.after(objAfter) ? objAfter : objNow;
+		for(int i = 0;i < idiff;i++)
+		{
+			ideltaYears += objTmp.getWeeksInWeekYear( ) ;
+			objTmp.add(Calendar.YEAR, 1); 
+		}
+		 nNbWeek = (endWeek + ideltaYears) - startWeek;
+		return nNbWeek;
+	}
 
     /**
      * Transform Date to Calendar
@@ -1268,8 +1279,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
         AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
+        return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) , PARAMETER_NB_WEEK, computeWeek( appointment.getDateAppointment() )  );
 
-        return redirect( request, getUrlManageAppointment( request, form.getIdForm(  ) ) );
+//        return redirect( request, getUrlManageAppointment( request, form.getIdForm(  ) ) );
     }
 
     /**
