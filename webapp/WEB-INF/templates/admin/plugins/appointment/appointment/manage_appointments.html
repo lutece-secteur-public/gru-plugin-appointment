@@ -105,12 +105,18 @@
 										</#if>
 								</a>
 							</th>
+							<th align = "right" style="text-align: right"><button class="btn btn-primary btn-sm" type="submit" id="eraseAll" name="eraseAll" value="eraseAll" disabled="true" >
+								<i class="glyphicon glyphicon-ok">&nbsp;</i>#i18n{appointment.permission.label.deleteMassAppointment}
+							</button></th>
 							</tr>
 							</table>
 						</center>
 						<#if appointment_list?? && appointment_list?size &gt; 0>
 							<table class="table table-condensed table-striped">
 								<tr>
+									<th>
+										<input type="checkbox" id="allCheck" title="#i18n{appointment.appointmentApp.infos}">
+									</th>
 									<th>
 										#i18n{appointment.manage_appointments.columnLastName}
 										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=true">
@@ -163,6 +169,7 @@
 								</tr>
 								<#list appointment_list as appointment >
 									<tr>
+										<td><input type="checkbox" name="apmt" id="apmt" value="${appointment.idAppointment}"></td>
 										<td>
 											${appointment.lastName}
 										</td>
@@ -255,6 +262,21 @@
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="dateAppointment" language=language />
 <script type="text/javascript">
+$('#allCheck').click(function() {
+    var etat = this.checked;
+    $( "input[name='apmt']" ).each(function() {
+        this.checked = etat;                        
+    });
+    $('#eraseAll').prop("disabled",!etat);                 
+});
+$( "input[name='apmt']" ).change ( function () {
+    $('#eraseAll').prop("disabled",true);
+    $( "input[name='apmt']" ).each(function() {    
+        if (this.checked) {
+	    $('#eraseAll').prop("disabled",!this.checked);
+	}                        
+    });
+});
 $('#dateAppointment').datepicker({
     language:		"${language}",
     weekStart: 1,

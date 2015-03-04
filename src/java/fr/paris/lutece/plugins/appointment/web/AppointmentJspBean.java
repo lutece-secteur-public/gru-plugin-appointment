@@ -168,6 +168,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_ADMIN_USER = "idAdminUser";
     private static final String PARAMETER_ID_RESPONSE = "idResponse";
     private static final String PARAMETER_ID_TIME="time";
+    private static final String PARAMETER_ID_APPOINTMENT_DELETE = "apmt";
+    private static final String PARAMETER_DELETE_AND_BACK =  "eraseAll";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -204,6 +206,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ALLDATES = "allDates";
+    
 
     // JSP
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -211,6 +214,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENT = "appointment.message.confirmRemoveAppointment";
+    private static final String MESSAGE_CONFIRM_REMOVE_MASSAPPOINTMENT = "appointment.message.confirmRemoveMassAppointment";
     private static final String MESSAGE_LABEL_STATUS_VALIDATED = "appointment.message.labelStatusValidated";
     private static final String MESSAGE_LABEL_STATUS_NOT_VALIDATED = "appointment.message.labelStatusNotValidated";
     private static final String MESSAGE_LABEL_STATUS_REJECTED = "appointment.message.labelStatusRejected";
@@ -232,7 +236,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Actions
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
     private static final String ACTION_REMOVE_APPOINTMENT = "removeAppointment";
+    private static final String ACTION_REMOVE_MASSAPPOINTMENT = "removeMassAppointment";
     private static final String ACTION_CONFIRM_REMOVE_APPOINTMENT = "confirmRemoveAppointment";
+    private static final String ACTION_CONFIRM_REMOVE_MASS_APPOINTMENT = "confirmRemoveMassAppointment";
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
     private static final String ACTION_DO_PROCESS_WORKFLOW_ACTION = "doProcessWorkflowAction";
     private static final String ACTION_DO_CHANGE_APPOINTMENT_STATUS = "doChangeAppointmentStatus";
@@ -241,6 +247,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENT_CREATED = "appointment.info.appointment.created";
     private static final String INFO_APPOINTMENT_UPDATED = "appointment.info.appointment.updated";
     private static final String INFO_APPOINTMENT_REMOVED = "appointment.info.appointment.removed";
+    private static final String INFO_APPOINTMENT_MASSREMOVED = "appointment.info.appointment.removed";
 
     // Session keys
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
@@ -442,14 +449,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
 
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
             _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
 
             int nIdForm = Integer.parseInt( strIdForm );
-
+            if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_DELETE_AND_BACK ) ) )
+            {
+            	String [] strTaberased = request.getParameterValues( PARAMETER_ID_APPOINTMENT_DELETE);
+            	if (strTaberased!= null)
+            	{
+             		   request.getSession(  ).setAttribute( PARAMETER_ID_APPOINTMENT_DELETE, strTaberased );
+            		   return getConfirmRemoveMassAppointment ( request ) ;
+            	}
+            	
+            }
             String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
                     (String) request.getSession(  ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
 
@@ -1105,6 +1120,23 @@ public class AppointmentJspBean extends MVCAdminJspBean
 		return listDays;
 	}
 
+	
+	 /**
+     * Manages the removal form of a appointment whose identifier is in the HTTP
+     * request
+     * @param request The HTTP request
+     * @return the HTML code to confirm
+     */
+    @Action( ACTION_CONFIRM_REMOVE_MASS_APPOINTMENT )
+    public String getConfirmRemoveMassAppointment( HttpServletRequest request )
+    {
+        UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_MASSAPPOINTMENT ) );
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_MASSAPPOINTMENT,
+                url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
+
+        return redirect( request, strMessageUrl );
+    }
+	
     /**
      * Manages the removal form of a appointment whose identifier is in the HTTP
      * request
@@ -1123,7 +1155,76 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return redirect( request, strMessageUrl );
     }
+    /**
+     * Handles the removal form of a appointment
+     * @param request The HTTP request
+     * @return the JSP URL to display the form to manage appointments
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
+     */
+    @Action( ACTION_REMOVE_MASSAPPOINTMENT )
+    public String doRemoveMassAppointment( HttpServletRequest request )
+        throws AccessDeniedException
+    {
+        String strTableaudelete[] = (String []) request.getSession().getAttribute(PARAMETER_ID_APPOINTMENT_DELETE);
+        request.getSession().removeAttribute(PARAMETER_ID_APPOINTMENT_DELETE);
+        if (strTableaudelete != null)
+        {
+        	boolean bIsError = false;
+        	for (String strTmp : strTableaudelete)
+        	{
+        		 if ( StringUtils.isEmpty( strTmp ) || !StringUtils.isNumeric( strTmp ) )
+        			 bIsError = true;
+        	}
+        	if (!bIsError)
+        	{
+        		Integer idForm = null;
+        		for (String strTmp : strTableaudelete)
+            	{
+        			idForm = doRemoveSingleAppointment ( strTmp, getUser ( ));
+            	}
+        		addInfo( INFO_APPOINTMENT_MASSREMOVED, getLocale(  ) );
+        		
+        		return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, idForm.intValue() );
+        	}
+        }
+        return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+    
+    /**
+     * Handles the removal form of a appointment
+     * @param request The HTTP request
+     * @return the JSP URL to display the form to manage appointments
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
+     */
+    private static Integer doRemoveSingleAppointment ( String strIdAppointment, AdminUser getUser )
+    throws AccessDeniedException
+    {
+    	Integer iReturn = null;
+    	if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
+        {
+    		 int nId = Integer.parseInt( strIdAppointment );
+             Appointment appointment = AppointmentHome.findByPrimaryKey( nId );
+             if ( appointment != null )
+             {
+                 AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+                 if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( slot.getIdForm(  ) ),
+                         AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, getUser ) )
+             {
+                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
+             }
 
+             if ( WorkflowService.getInstance(  ).isAvailable(  ) )
+             {
+                 WorkflowService.getInstance(  ).doRemoveWorkFlowResource( nId, Appointment.APPOINTMENT_RESOURCE_TYPE );
+             }
+             iReturn = slot.getIdForm();
+             AppointmentHome.remove( nId );
+             }
+        }
+    	return iReturn;
+    }
     /**
      * Handles the removal form of a appointment
      * @param request The HTTP request
@@ -1136,32 +1237,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
-
-        if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
+        Integer idForm = doRemoveSingleAppointment ( strIdAppointment, getUser ( ));
+        if ( idForm != null )
         {
-            int nId = Integer.parseInt( strIdAppointment );
-            Appointment appointment = AppointmentHome.findByPrimaryKey( nId );
-
-            if ( appointment != null )
-            {
-                AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
-
-                if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( slot.getIdForm(  ) ),
-                            AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, getUser(  ) ) )
-                {
-                    throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
-                }
-
-                if ( WorkflowService.getInstance(  ).isAvailable(  ) )
-                {
-                    WorkflowService.getInstance(  ).doRemoveWorkFlowResource( nId, Appointment.APPOINTMENT_RESOURCE_TYPE );
-                }
-
-                AppointmentHome.remove( nId );
-                addInfo( INFO_APPOINTMENT_REMOVED, getLocale(  ) );
-
-                return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, slot.getIdForm(  ) );
-            }
+         	addInfo( INFO_APPOINTMENT_REMOVED, getLocale(  ) );
+        	return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, idForm.intValue() );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
