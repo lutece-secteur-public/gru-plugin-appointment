@@ -111,7 +111,7 @@
 												<#assign slotSpan=rowspan >
 											</#if>
 											<#if slot.isEnabled>
-												<#if slot.nbFreePlaces == slot.nbPlaces>
+												<#if (slot.nbPlaces - slot.nbFreePlaces) <  slot.nbPlaces>
 													<td class="appointment-slot-avaiable appointment-row${slotSpan}">
 														${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}&nbsp;
 														<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
@@ -168,7 +168,7 @@
 										<#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
 									</td>
 									<#if slot.isEnabled>
-										<#if slot.nbFreePlaces == slot.nbPlaces>
+										<#if (slot.nbPlaces - slot.nbFreePlaces) < slot.nbPlaces>
 											<td class="appointment-slot-avaiable">
 												${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
 												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
