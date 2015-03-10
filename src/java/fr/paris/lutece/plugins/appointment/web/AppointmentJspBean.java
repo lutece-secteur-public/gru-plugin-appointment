@@ -708,6 +708,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
         String strSlot = null;
         String strDayComment = null;
+        int nMyWeek = 0;
         
         if ( ( form == null ) )
         {
@@ -723,7 +724,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         	if ( slot != null )
         	{
         		strSlot = String.valueOf( slot.getIdSlot() );
-        		strDayComment = getTitleComment ( slot.getIdSlot( ) );	
+        		strDayComment = getTitleComment ( slot.getIdSlot( ) );
+        		AppointmentDay day =  AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
+        		nMyWeek = computeWeek(day.getDate());
         	}
         }
 
@@ -757,7 +760,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
         model.put( MARK_FORM_HTML,
-            _appointmentFormService.getHtmlForm( strDayComment, strSlot, form, formMessages, getLocale(  ), false, request ) );
+            _appointmentFormService.getHtmlForm( nMyWeek, strDayComment, strSlot, form, formMessages, getLocale(  ), false, request ) );
 
         List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
                                                                                       .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );

@@ -117,7 +117,8 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_UPLOAD_HANDLER = "uploadHandler";
     private static final String MARK_APPOINTMENTSLOT = "appointmentSlot";
     private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
-    
+    private static final String MARK_WEEK = "nWeek";
+
     
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
@@ -162,7 +163,7 @@ public class AppointmentFormService implements Serializable
      * @param request HttpServletRequest
      * @return the HTML code of the form
      */
-    public String getHtmlForm( String strDay, String strSlot, AppointmentForm form, AppointmentFormMessages formMessages, Locale locale,
+    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form, AppointmentFormMessages formMessages, Locale locale,
         boolean bDisplayFront, HttpServletRequest request )
     {
     	 Map<String, Object> model = new HashMap<String, Object>(  );
@@ -181,7 +182,8 @@ public class AppointmentFormService implements Serializable
          model.put( MARK_FORM_MESSAGES, formMessages );
          model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
          model.put( MARK_LOCALE, locale );
-
+         model.put( MARK_WEEK, nWeek );
+        		 
          AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
 
          if ( appointment == null )
