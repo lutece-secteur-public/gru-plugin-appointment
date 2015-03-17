@@ -42,6 +42,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
+import java.sql.Date;
 import java.util.List;
 
 
@@ -159,5 +160,18 @@ public final class AppointmentFormHome
     public static List<AppointmentForm> getActiveAppointmentFormsList(  )
     {
         return _dao.selectActiveAppointmentFormsList( _plugin );
+    }
+    
+    /**
+     * Get Unavailable Date limited by Email of an appointment form from a user
+     * @param startDate
+     * @param limitedDate
+     * @param nForm
+     * @param strEmail
+     * @return
+     */
+    public static List<Date> getLimitedByMail(Date startDate, Date []limitedDate, int nForm, String strEmail)
+    {
+    	return _dao.getUnavailableDatesLimitedByMail(startDate, limitedDate, nForm, strEmail.trim(), _plugin);
     }
 }

@@ -278,7 +278,7 @@ public class AppointmentService
 					tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
 					
 					objNowClose.setTime( listDays.get( i ).getDate() );
-					objNowClose.set(Calendar.HOUR_OF_DAY, objEnd.get(Calendar.HOUR_OF_DAY)- iDaysBeforeAppointment);
+					objNowClose.set(Calendar.HOUR_OF_DAY, objEnd.get(Calendar.HOUR_OF_DAY) );
 					objNowClose.set(Calendar.MINUTE, objEnd.get(Calendar.MINUTE));
 
 					if ( ( objNow.after( tmpCal ) || tmpCal.after( objNowClose ) ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments

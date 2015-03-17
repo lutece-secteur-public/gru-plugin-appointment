@@ -38,7 +38,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
-
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +70,21 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     private static final String SQL_QUERY_SELECT_BY_ID_DAY = SQL_QUERY_SELECT +
         " WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND status != ? ) FROM appointment_slot slot WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
+    
+    private static final String SQL_QUERY_FIND_LIMITS_MOMENT="select count(*) nbre, TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') startHour, " +
+    		" ADDTIME (TIME_FORMAT(CONCAT_WS(':',slot.ending_hour,slot.ending_minute),'%H:%i:%s'),CONCAT_WS(':',form.min_days_before_app,'0')) maxRdv," +
+    		" form.people_per_appointment from appointment_appointment apmt, appointment_slot slot, appointment_form form" +
+    		" where apmt.id_slot=slot.id_slot and slot.id_day = ?" +
+    		" and form.id_form=slot.id_form and form.id_form= ? group by apmt.id_slot" +
+    		" order by TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') ";    
+    private static final String SQL_QUERY_FIND_SLOTS__UNAVAILABLED="select id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled from appointment_slot slot"+
+    		 " where slot.id_form=? and slot.id_day = ?"+
+    		 " and TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') >="+
+    		 " TIME_FORMAT(?,'%H:%i:%s')  and"+
+    		 " TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') <="+
+    		 " TIME_FORMAT(?,'%H:%i:%s')"+
+    		 " order by id_slot";
+    
     private int _nDefaultSlotListSize;
 
     /**
@@ -426,4 +441,104 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         this._nDefaultSlotListSize = nDefaultSlotListSize;
     }
+    
+    /**
+     * @param strToppings
+     * @param plugin
+     * @return
+     */
+    public List<AppointmentSlot> getSlotsUnavailable( int nIdDay, int nIdForm, Plugin plugin  )
+    {
+    	List<AppointmentSlot> objSlots = new ArrayList<AppointmentSlot>();
+    	List<String[]> objTab = updateAppointmentsUnavailable( nIdDay, nIdForm, plugin  );
+    	if (objTab.size() > 0)
+    	{
+    		
+    		objTab = computeSlotsUnavailable(objTab);
+    		for (String []tmpTab : objTab)
+			{
+    			if (Boolean.parseBoolean(tmpTab[4]))
+    			{
+    				DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_SLOTS__UNAVAILABLED, plugin );
+    				daoUtil.setInt( 1, nIdForm );
+    				daoUtil.setInt( 2, nIdDay );
+    				daoUtil.setString(3, tmpTab[1]);
+    				daoUtil.setString(4, tmpTab[2]);
+    				daoUtil.executeQuery(  );
+    				while ( daoUtil.next() )
+    				{
+    					objSlots.add( getSlotDataFromDAOUtil( daoUtil ) );
+    				}
+    				daoUtil.free(  );
+    			}
+			}
+    		
+    	}
+    	return objSlots;
+     }
+
+	/**
+	 * @param objTab
+	 * @return 
+	 * @throws NumberFormatException
+	 */
+	private static List<String[]> computeSlotsUnavailable(List<String[]> objTab) {
+		for (int i = 0; i < objTab.size(); i++)
+		{
+			int nNumberappointmentbySlot = Integer.valueOf( (objTab.get(i) )[0]);
+			Time tmpTimeStart = Time.valueOf((objTab.get(i) ) [1]);
+			Time tmpTimeMaxRDV = Time.valueOf((objTab.get(i) ) [2]);
+			int nMaxByAppointment = Integer.valueOf( (objTab.get(i) ) [3]);
+			if (nNumberappointmentbySlot >= nMaxByAppointment)
+				(objTab.get(i) )[4] = "true";
+			else
+			{
+				int nNumberRDV = nNumberappointmentbySlot;
+				for (int nj = i; nj < objTab.size(); nj++)
+				{
+					int nNumberappointmentbySlotNext = Integer.valueOf( (objTab.get(nj) )[0]);
+					Time tmpTimeStartNext = Time.valueOf((objTab.get(nj) ) [1]);
+					int nMaxByAppointmentNext = Integer.valueOf( (objTab.get(nj) ) [3]);
+					//If next rdv is beetwen 
+					if (tmpTimeStartNext.after(tmpTimeStart) && tmpTimeStartNext.before(tmpTimeMaxRDV))
+						nNumberRDV += nNumberappointmentbySlotNext;
+					if (nNumberRDV >= nMaxByAppointmentNext)
+						(objTab.get(i) )[4] = "true";
+				}
+			}
+		}
+		return objTab ;
+	}
+
+   /**
+     * Get maxLimits slots 
+     * @param slot
+     * @param plugin
+     */
+    private static List<String[]> updateAppointmentsUnavailable ( int nIdDay, int nIdForm, Plugin plugin )
+    {
+    	List<String[]> objTab = new ArrayList<String[]>();
+    	int nIndex = 1;
+    	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_LIMITS_MOMENT, plugin );
+    	daoUtil.setInt( 1, nIdDay);
+    	daoUtil.setInt( 2, nIdForm );
+    	
+        daoUtil.executeQuery(  );
+        
+        while ( daoUtil.next(  ) )
+        {
+        	String[] strToppings = new String[5];
+        	strToppings[0] = daoUtil.getString( nIndex++ ); //Nbre appointments in this case
+        	strToppings[1] = daoUtil.getString( nIndex++ ); //Slot from this appointment
+        	strToppings[2] = daoUtil.getString( nIndex++ ); // maximum Appointment Hour from this rdv
+        	strToppings[3] = daoUtil.getString( nIndex++ );   // People max by appointment
+        	strToppings[4] = "false";   // Tag true or false tu update
+        	nIndex = 1;
+        	objTab.add(strToppings);
+        }
+        
+        daoUtil.free(  );
+        return objTab;
+    }
+    
 }

@@ -33,9 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import fr.paris.lutece.portal.service.plugin.Plugin;
-
+import java.sql.Date;
 import java.util.List;
+
+import fr.paris.lutece.portal.service.plugin.Plugin;
 
 
 /**
@@ -92,4 +93,15 @@ public interface IAppointmentFormDAO
      *         objects
      */
     List<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin );
+    /**
+     * Get the unavailabled Date of appointments associated with a given form and with a
+     * date after a given date
+     * @param startDate
+     * @param limitedDate
+     * @param nForm
+     * @param strEmail
+     * @param plugin
+     * @return
+     */
+    List<Date> getUnavailableDatesLimitedByMail(Date startDate, Date[]limitedDate, int nForm, String strEmail, Plugin plugin);
 }

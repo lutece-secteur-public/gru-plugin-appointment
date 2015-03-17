@@ -245,4 +245,13 @@ public final class AppointmentSlotHome
         // TODO : save list slots in cache
         return _dao.findByIdDayWithFreePlaces( nIdDay, _plugin );
     }
+    
+    /**
+     * Get appointments slot associated unavailable with a given day
+     * @param nIdDay The id of the day to remove slots from
+     */
+    public static List<AppointmentSlot> getSlotsUnavailable( int nIdDay, int nIdForm )
+    {
+        return _dao.getSlotsUnavailable(nIdDay, nIdForm, _plugin);
+    }
 }

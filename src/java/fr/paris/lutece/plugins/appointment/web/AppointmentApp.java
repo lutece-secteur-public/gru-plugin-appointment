@@ -85,18 +85,16 @@ import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
+import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
-
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -107,7 +105,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.ConstraintViolation;
 
 
@@ -1051,6 +1048,25 @@ public class AppointmentApp extends MVCApplication
 
         if ( listDays != null )
         {
+        	listDays = computeUnavailableDays (form.getIdForm(), listDays);
+            Appointment myApmt =  appointmentFormService.getValidatedAppointmentFromSession( request.getSession ( ) );
+            if ( myApmt!= null && !StringUtils.isEmpty( myApmt.getEmail ( ) ))
+            {
+            	Date[] tmpLimit =  {listDays.get(0).getDate(),listDays.get(listDays.size ()-1).getDate()};
+            	List<Date> unvailableSlots = AppointmentFormHome.getLimitedByMail(null, tmpLimit, form.getIdForm(  ), myApmt.getEmail ( ) );
+            	for (int i = 0; i < listDays.size (); i++)
+            	{
+            		for (Date tmpDate: unvailableSlots)
+            		{
+            			if (getNumbersDay(listDays.get(i).getDate(), tmpDate) == 0)
+            			{
+            				listDays.get(i).setListSlots(eraseSlots(listDays.get(i).getListSlots ( )));
+            			}
+            		}
+            		
+            	}
+            	
+            }
             List<String> listTimeBegin = new ArrayList<String>(  );
             int nMinAppointmentDuration = AppointmentService.getService(  )
                                                             .getListTimeBegin( listDays, form, listTimeBegin );
@@ -1082,7 +1098,57 @@ public class AppointmentApp extends MVCApplication
 
     /**
      * Get the HTML content to display the list of forms
-     * @param request The request
+     * @param request The r	 * Compute unavailable Days
+	 * @param form
+	 * @param listDays
+	 */
+	private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<AppointmentDay> listDays) {
+		if (listDays!= null)
+		{
+			for (int i = 0; i < listDays.size(); i++)
+			{
+				List<AppointmentSlot> dayApp =  AppointmentSlotHome.getSlotsUnavailable(listDays.get(i).getIdDay(), nIdform );
+				if (dayApp.size() > 0 && listDays.get(i).getIsOpen())
+				{
+					List<AppointmentSlot> tmpSlots = new ArrayList<AppointmentSlot>();
+					for (AppointmentSlot mySlot :  listDays.get(i).getListSlots ( ))
+					{
+						for (AppointmentSlot myDayApp : dayApp)
+						{
+							if (myDayApp.getIdSlot() == mySlot.getIdSlot())
+								mySlot.setIsEnabled(false);
+	
+						}
+						tmpSlots.add(mySlot);
+					}
+					listDays.get(i).setListSlots(tmpSlots);
+				}
+				
+			}
+		}
+		return listDays;
+	}
+	
+	/**
+	 * Erase slots
+	 * @param objSlots
+	 * @return
+	 */
+	private static List<AppointmentSlot> eraseSlots ( List<AppointmentSlot> objSlots)
+	{
+		List<AppointmentSlot> returnSlots = objSlots;
+		if (objSlots!=null)
+		{
+			returnSlots = new ArrayList<AppointmentSlot>(); 
+			for (AppointmentSlot mySlot: objSlots)
+			{
+				mySlot.setIsEnabled ( false );
+				returnSlots.add( mySlot );
+			}
+		}
+		return returnSlots;
+	}
+	/**
      * @param appointmentFormService The service to use
      * @param strTitle The title to display, or null to display the default
      *            title.
@@ -1208,4 +1274,16 @@ public class AppointmentApp extends MVCApplication
     {
         return DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE );
     }
+    
+    /**
+	 * Compute Days beetween date
+	 * @param nStart
+	 * @param nEnd
+	 * @return
+	 */
+	private static int getNumbersDay(Date nStart, Date nEnd)
+	{
+		long timeDiff =  nEnd.getTime() - nStart.getTime();
+		return  (int)  timeDiff / 1000 /(24 * 60 * 60);
+	}
 }

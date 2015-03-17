@@ -127,7 +127,11 @@
 												</#if>
 											<#else>
 												<td class="appointment-slot-closed appointment-row${slotSpan}">
-													&nbsp;
+													<#if (slot.nbPlaces - slot.nbFreePlaces) gt 0 >
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
+															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+														</a>
+													</#if>
 												</td>
 											</#if>
 										</tr>
@@ -184,7 +188,11 @@
 										</#if>
 									<#else>
 										<td class="appointment-slot-closed">
-											&nbsp;
+											<#if (slot.nbPlaces - slot.nbFreePlaces) gt 0 >
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
+															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
+														</a>
+											</#if>
 										</td>
 									</#if>
 								</tr>

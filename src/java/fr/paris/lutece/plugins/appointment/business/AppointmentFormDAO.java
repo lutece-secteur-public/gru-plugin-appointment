@@ -34,10 +34,14 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.sql.DAOUtil;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -47,14 +51,24 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_form ) FROM appointment_form";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template FROM appointment_form ";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week FROM appointment_form ";
     private static final String SQL_QUERY_SELECTALL = SQL_QUERY_SELECT_COLUMNS + " ORDER BY title";
     private static final String SQL_QUERY_SELECTALL_ENABLED = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ? WHERE id_form = ?";
-
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ?, max_appointment_mail = ?, nb_appointment_week = ? WHERE id_form = ?";
+    private static final String SQL_QUERY_GET_MAX_APPOINTMENT = "select distinct count(*) nbre,form.max_appointment_mail,apmt.date_appointment,"+
+			" ADDDATE(apmt.date_appointment, INTERVAL (form.nb_appointment_week-1) DAY) date_max,"+
+			" ADDDATE(apmt.date_appointment, INTERVAL -(form.nb_appointment_week-1) DAY) date_min"+
+			" from appointment_appointment apmt, appointment_day myday, appointment_form form where"+
+			" apmt.status <>"+Appointment.STATUS_REJECTED+"  and myday.date_day=apmt.date_appointment"+
+			" and myday.date_day BETWEEN ADDDATE(?,INTERVAL -(form.nb_appointment_week-1) DAY)"+ 
+			" and ADDDATE(?,INTERVAL (form.nb_appointment_week-1) DAY)"+
+			" and TRIM(UCASE(apmt.email)) = TRIM(UCASE(?)) and myday.id_form = ?"+
+			" and form.id_form=myday.id_form"+
+			" group by apmt.email, apmt.date_appointment order by apmt.date_appointment";
+    
     /**
      * Generates a new primary key
      * @param plugin The Plugin
@@ -111,8 +125,10 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment(  ) );
-        daoUtil.setInt( nIndex, appointmentForm.getCalendarTemplateId(  ) );
-
+        daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments(  ) );
+        daoUtil.setInt( nIndex, appointmentForm.getWeeksLimits(  ) );
+        
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
@@ -184,7 +200,9 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId(  ) );
-        daoUtil.setInt( nIndex, appointmentForm.getIdForm(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getIdForm(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments(  ) );
+        daoUtil.setInt( nIndex, appointmentForm.getWeeksLimits(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
@@ -262,8 +280,91 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         appointmentForm.setEnableCaptcha( daoUtil.getBoolean( nIndex++ ) );
         appointmentForm.setAllowUsersToCancelAppointments( daoUtil.getBoolean( nIndex++ ) );
         appointmentForm.setMinDaysBeforeAppointment( daoUtil.getInt( nIndex++ ) );
-        appointmentForm.setCalendarTemplateId( daoUtil.getInt( nIndex ) );
+        appointmentForm.setCalendarTemplateId( daoUtil.getInt( nIndex++ ) );
+        appointmentForm.setMaxAppointmentMail( daoUtil.getInt( nIndex++ ) );
+        appointmentForm.setNbWeeksLimits( daoUtil.getInt( nIndex ) );
 
+        
         return appointmentForm;
     }
+    /**
+     * Get count of an appointment form from a user
+     * @param String Email from user
+     * @param int The Day concerned
+     * @param plugin The Plugin
+     * @return The sum of appointment by the user from date limited
+     */
+	@Override
+	public List<Date> getUnavailableDatesLimitedByMail(Date startDate, Date []endDate, int nForm, String strEmail, Plugin plugin) {
+		List<Date> nReturn = new ArrayList<Date>();
+		List<String[]> tabInfos = new ArrayList<String[]>();
+		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_MAX_APPOINTMENT, plugin );
+		if (endDate != null)
+		{
+			daoUtil.setDate( 1, endDate[0] );
+			daoUtil.setDate( 2, endDate[1] );
+		}
+		else
+		{
+			daoUtil.setDate( 1, startDate );
+			daoUtil.setDate( 2, startDate );
+		}
+		daoUtil.setString( 3, strEmail );
+		daoUtil.setInt( 4, nForm );
+		
+        daoUtil.executeQuery(  );
+        while ( daoUtil.next(  ) )
+        {
+        	String []strInfos = new String [5];
+        	strInfos[0] = daoUtil.getString( 1 ); //Get the number of appointments from this user from this date
+        	strInfos[1] = daoUtil.getString( 2 ); //Get the max Limits email recessed
+        	strInfos[2] = Long.valueOf(daoUtil.getDate ( 5 ).getTime()).toString(); //Date Limited start Off
+        	strInfos[3] = Long.valueOf(daoUtil.getDate ( 4 ).getTime()).toString(); //Date Limited End Off
+        	strInfos[4] = Long.valueOf(daoUtil.getDate ( 3 ).getTime()).toString(); //Valid Date Appointment
+        	tabInfos.add(strInfos);
+        }
+        daoUtil.free(  );
+        if (tabInfos.size() > 0)
+        {
+        	for (String[] tmpCount : tabInfos)
+        	{
+        		nReturn = computeDays(nReturn, tmpCount);
+        	}
+        }
+		return nReturn;
+	}
+
+	/**
+	 * @param nReturn
+	 * @param tmpCount
+	 * @throws NumberFormatException
+	 */
+	private static List<Date> computeDays(List<Date> nReturn, String[] tmpCount)
+	{
+		for (int i = 0; i <= getNumbersDay(new Date ( Long.valueOf(tmpCount[2])) , new Date ( Long.valueOf(tmpCount[3]))); i ++)
+		{
+			GregorianCalendar startCount  = new GregorianCalendar ( );
+			GregorianCalendar validDate  = new GregorianCalendar ( );
+			validDate.setTimeInMillis (Long.valueOf(tmpCount[4]));
+			startCount.setTimeInMillis(Long.valueOf(tmpCount[2]));
+			startCount.add(GregorianCalendar.DATE, i);
+			if (Integer.valueOf(tmpCount[0]) > 0 && Integer.valueOf(tmpCount[1]) > 0 &&
+				Integer.valueOf(tmpCount[0]) >= Integer.valueOf(tmpCount[1]))
+			{
+					nReturn.add( new Date (startCount.getTimeInMillis() ));
+			}
+		}
+		return nReturn;
+	}
+	/**
+	 * Compute Days beetween date
+	 * @param nStart
+	 * @param nEnd
+	 * @return
+	 */
+	private static int getNumbersDay(Date nStart, Date nEnd)
+	{
+		long timeDiff = nEnd.getTime() - nStart.getTime();
+		return  (int)  timeDiff / 1000 /(24 * 60 * 60);
+	}
 }

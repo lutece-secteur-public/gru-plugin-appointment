@@ -114,7 +114,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private boolean _bClosingMinutesInitialized;
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nCalendarTemplateId;
-
+    private int _nMaxAppointmentMail;
+    private int _nNbWeeksLimits;
     /**
      * Returns the IdForm
      * @return The IdForm
@@ -658,6 +659,43 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
         _nCalendarTemplateId = nCalendarTemplateId;
     }
 
+    /**
+     * Get the max for weeks of this appointment form to validate
+     * @param nMaxAppointment The nb of the max appointpents for weeks
+     *       of this  appointment form
+     */
+    public int getMaxAppointments()
+    {
+        return _nMaxAppointmentMail;
+    }    
+    /**
+     * Set the max for weeks of this appointment form to validate
+     *  @param nMaxAppointment The nb of the max appointpents for weeks
+     *       of this  appointment form
+     */
+    public void setMaxAppointmentMail( int nMaxAppointment)
+    {
+        _nMaxAppointmentMail = nMaxAppointment;
+    }
+
+    /**
+     * Get the limits for weeks of this appointment form to validate
+     * @param _nNbWeeksLimits The nb of the max appointpents for weeks
+     *       of this  appointment form
+     */
+    public int getWeeksLimits()
+    {
+        return _nNbWeeksLimits;
+    }    
+    /**
+     * Set the limits for weeks of this appointment form to validate
+     *  @param _nNbWeeksLimits The nb of the max appointpents for weeks
+     *       of this  appointment form
+     */
+    public void setNbWeeksLimits( int nWeekLimits)
+    {
+    	_nNbWeeksLimits = nWeekLimits;
+    }
     /**
      * Check if a day of the week is opened or not
      * @param nDayOfWeek The number of the day of the week : 1 for Monday, 2 for
