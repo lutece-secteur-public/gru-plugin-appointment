@@ -33,6 +33,8 @@ CREATE TABLE appointment_form (
 	users_can_cancel_appointments SMALLINT NOT NULL,
 	min_days_before_app SMALLINT NOT NULL,
 	id_calendar_template INT NOT NULL,
+	max_appointment_mail INT NOT NULL default '0',
+	nb_appointment_week  INT NOT NULL default '0'
 	PRIMARY KEY (id_form)
 );
 
