@@ -494,7 +494,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
 			else
 			{
 				int nNumberRDV = nNumberappointmentbySlot;
-				for (int nj = i; nj < objTab.size(); nj++)
+				for (int nj = i+1; nj < objTab.size(); nj++)
 				{
 					int nNumberappointmentbySlotNext = Integer.valueOf( (objTab.get(nj) )[0]);
 					Time tmpTimeStartNext = Time.valueOf((objTab.get(nj) ) [1]);

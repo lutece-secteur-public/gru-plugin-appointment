@@ -109,6 +109,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -375,7 +376,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
 
             
-            
+          
             
             listDays = computeUnavailableDays(form.getIdForm(), listDays);
             
@@ -383,12 +384,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
             List<String> listTimeBegin = new ArrayList<String>(  );
             int nMinAppointmentDuration = AppointmentService.getService(  )
                                                             .getListTimeBegin( listDays, form, listTimeBegin );
-
+/*
             Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
             Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
 
             listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays, calendarStart,calendarEnd);
-            Map<String, Object> model = getModel(  );
+ */           Map<String, Object> model = getModel(  );
 
             model.put( MARK_FORM, form );
             model.put( MARK_LIST_DAYS, listDays );
@@ -406,6 +407,28 @@ public class AppointmentJspBean extends MVCAdminJspBean
     }
 
 	/**
+	 * Erase unavailable slots
+	 * @param mySlots
+	 * @return
+	 */
+	private static List<AppointmentSlot> setSlotToErase ( Calendar precisedDateFromNow, List<AppointmentSlot> mySlots )
+	{
+		for  (int ni = 0; ni < mySlots.size();  ni++)
+		{
+			if (precisedDateFromNow == null)
+				mySlots.get( ni ).setIsEnabled( false );
+			else
+			{
+				Calendar now = new GregorianCalendar( Locale.FRENCH );
+				precisedDateFromNow = getCalendarTime(new Date ( precisedDateFromNow.getTimeInMillis() ) , Integer.valueOf(mySlots.get( ni ).getEndingHour()), Integer.valueOf( mySlots.get( ni ).getEndingMinute()) );
+				if (precisedDateFromNow.before( now) )
+					mySlots.get( ni ).setIsEnabled( false );
+			}
+		}
+		return mySlots;
+	}
+    
+    /**
 	 * Compute unavailable Days
 	 * @param form
 	 * @param listDays
@@ -413,25 +436,44 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<AppointmentDay> listDays) {
 		if (listDays!= null)
 		{
+			Calendar nMaxSlots = null;
 			for (int i = 0; i < listDays.size(); i++)
 			{
-				List<AppointmentSlot> dayApp =  AppointmentSlotHome.getSlotsUnavailable(listDays.get(i).getIdDay(), nIdform );
-				if (dayApp.size() > 0)
+				if (nMaxSlots == null || nMaxSlots.before( getCalendarTime(null, listDays.get(i).getClosingHour(), listDays.get(i).getClosingMinutes() ) ))
 				{
-					List<AppointmentSlot> tmpSlots = new ArrayList<AppointmentSlot>();
-					for (AppointmentSlot mySlot :  listDays.get(i).getListSlots ( ))
-					{
-						for (AppointmentSlot myDayApp : dayApp)
-						{
-							if (myDayApp.getIdSlot() == mySlot.getIdSlot())
-								mySlot.setIsEnabled(false);
-	
-						}
-						tmpSlots.add(mySlot);
-					}
-					listDays.get(i).setListSlots(tmpSlots);
+					nMaxSlots = getCalendarTime(null, listDays.get(i).getClosingHour(), listDays.get(i).getClosingMinutes() );
+					nMaxSlots.setTimeInMillis(nMaxSlots.getTimeInMillis()+TimeUnit.MINUTES.toMillis( listDays.get( i ).getAppointmentDuration() ));
 				}
-				
+				if (getNumbersDay(new Date( GregorianCalendar.getInstance().getTimeInMillis() ),  listDays.get ( i ).getDate() ) < 0 )
+				{					
+					listDays.get(i).setListSlots ( setSlotToErase( null, listDays.get(i).getListSlots() ) );
+				}
+				if (getNumbersDay(new Date( GregorianCalendar.getInstance().getTimeInMillis() ),  listDays.get ( i ).getDate() ) == 0 )
+				{
+							Calendar tmpCalendar = new GregorianCalendar ();
+							tmpCalendar.setTime( listDays.get(i).getDate() );
+							listDays.get(i).setListSlots ( setSlotToErase ( tmpCalendar, listDays.get(i).getListSlots()) );
+				}
+			}
+			
+			for (int i = 0; i < listDays.size(); i++)
+			{
+				if (listDays.get(i).getIsOpen() && listDays.get(i).getListSlots ( )!=null)
+				{
+					AppointmentSlot tmpSlot = listDays.get(i).getListSlots ( ).get( listDays.get(i).getListSlots ( ).size() - 1 ).clone();
+					Calendar tmpMich = getCalendarTime(null, tmpSlot.getEndingHour(), tmpSlot.getEndingMinute() );
+					tmpMich.setTimeInMillis(tmpMich.getTimeInMillis()+TimeUnit.MINUTES.toMillis( listDays.get( i ).getAppointmentDuration() ));
+					if (tmpMich.before(nMaxSlots))
+					{
+						tmpSlot.setStartingHour(tmpMich.get(Calendar.HOUR_OF_DAY));
+						tmpSlot.setStartingMinute(tmpMich.get(Calendar.MINUTE));
+						tmpSlot.setEndingHour(nMaxSlots.get(Calendar.HOUR_OF_DAY));
+						tmpSlot.setEndingMinute(nMaxSlots.get(Calendar.MINUTE));
+						tmpSlot.setIdSlot(-1);
+						tmpSlot.setIsEnabled(false);
+						listDays.get(i).getListSlots ( ).add( listDays.get(i).getListSlots ( ).size(), tmpSlot );
+					}
+				}
 			}
 		}
 		return listDays;
@@ -475,6 +517,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         	calendar.setTime( objTime );
     	calendar.set(Calendar.HOUR_OF_DAY, iHour);
     	calendar.set(Calendar.MINUTE, iMinute);
+    	calendar.set(Calendar.SECOND, 0);
         return calendar;
     }
 
@@ -985,7 +1028,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
             			for (Date myDate: unvailableSlots)
             			{
             				if ( getNumbersDay( day.getDate(), myDate)  == 0)
-            					bErr = true;
+            				{
+             					bErr = true;
+            				}
             			}
             			if ( bErr )
             			{
@@ -1127,7 +1172,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
 
                 listDays = computeUnavailableDays(form.getIdForm(), listDays);
-                listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays, calendarStart,calendarEnd);
+/*                listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays, calendarStart,calendarEnd);*/
                 Appointment myApmt =  _appointmentFormService.getValidatedAppointmentFromSession( request.getSession ( ) );
                 if ( myApmt!= null && !StringUtils.isEmpty( myApmt.getEmail ( ) ))
                 {

@@ -200,9 +200,9 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getIdForm(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments(  ) );
-        daoUtil.setInt( nIndex, appointmentForm.getWeeksLimits(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getWeeksLimits(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getIdForm(  ) );
 
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
