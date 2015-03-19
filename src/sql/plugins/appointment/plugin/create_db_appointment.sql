@@ -34,7 +34,8 @@ CREATE TABLE appointment_form (
 	min_days_before_app SMALLINT NOT NULL,
 	id_calendar_template INT NOT NULL,
 	max_appointment_mail INT NOT NULL default '0',
-	nb_appointment_week  INT NOT NULL default '0'
+	nb_appointment_week  INT NOT NULL default '0',
+	reference varchar(10)
 	PRIMARY KEY (id_form)
 );
 

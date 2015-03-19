@@ -36,17 +36,16 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
-
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
 
 /**
  * This is the business class for the object AppointmentForm
@@ -116,6 +115,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private int _nCalendarTemplateId;
     private int _nMaxAppointmentMail;
     private int _nNbWeeksLimits;
+    private String _strReference;
     /**
      * Returns the IdForm
      * @return The IdForm
@@ -170,6 +170,23 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
         this._strDescription = strDescription;
     }
 
+    /**
+     * Returns the _strReference
+     * @return The strRef
+     */
+    public String getReference(  )
+    {
+        return _strReference;
+    }
+
+    /**
+     * Sets the Reference
+     * @param strRef The strRef
+     */
+    public void setReference( String strRef )
+    {
+    	_strReference =  strRef;
+    } 
     /**
      * Returns the TimeStart
      * @return The TimeStart
