@@ -15,15 +15,17 @@
 		</legend>
 		<@tabs tab="calendar" form=form />
 		<@messages infos=infos />
-		<div class="pull-left">
+		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 			<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
 				<i class="glyphicon glyphicon-arrow-left"></i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
 			</a>
 		</div>
-		<button class="btn btn-primary btn-sm"  id="validityDate"  name="validityDate" >
-			<i class="glyphicon glyphicon-calendar" ></i>&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}
-		</button>
-		<div class="pull-right">
+		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+			<button class="btn btn-primary btn-sm"  id="validityDate"  name="validityDate" >
+				<i class="glyphicon glyphicon-calendar" ></i>&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}
+			</button>
+		</div>
+		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 			<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
 				#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>
 			</a>
