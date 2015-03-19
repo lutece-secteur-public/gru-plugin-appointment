@@ -119,7 +119,7 @@
 														</a>
 													</td>
 												<#else>
-													<td class="appointment-slot-full appointment-row${slotSpan}">
+													<td class="appointment-slot-full appointment-row${slotSpan}"  >
 														<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
 															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
 														</a>
@@ -180,7 +180,7 @@
 												</a>
 											</td>
 										<#else>
-											<td class="appointment-slot-full">
+											<td class="appointment-slot-full"  >
 												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&idSlot=${slot.idSlot}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
 													${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
 												</a>
