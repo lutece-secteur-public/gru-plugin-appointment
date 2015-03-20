@@ -103,7 +103,7 @@
 
 .appointment-datepicker-day-highlighted {
 	background-color: lightgray;
-	color: black !important;
+	color: black;
 }
 
 .table > tbody > tr > td.appointment-slot-horizontal, .table > tbody > tr > td.column-time-minute {
