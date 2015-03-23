@@ -72,7 +72,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     private static final String SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND status != ? ) FROM appointment_slot slot WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
     
     private static final String SQL_QUERY_FIND_LIMITS_MOMENT="select count(*) nbre, TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') startHour, " +
-    		" ADDTIME (TIME_FORMAT(CONCAT_WS(':',slot.ending_hour,slot.ending_minute),'%H:%i:%s'),CONCAT_WS(':',form.min_days_before_app,'0')) maxRdv," +
+    		" TIME_FORMAT( CONCAT_WS(':',slot.ending_hour,slot.ending_minute),'%H:%i:%s') maxRdv," +
     		" form.people_per_appointment from appointment_appointment apmt, appointment_slot slot, appointment_form form" +
     		" where apmt.id_slot=slot.id_slot and slot.id_day = ?" +
     		" and form.id_form=slot.id_form and form.id_form= ? group by apmt.id_slot" +
@@ -482,7 +482,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
 	 * @return 
 	 * @throws NumberFormatException
 	 */
-	private static List<String[]> computeSlotsUnavailable(List<String[]> objTab) {
+	private List<String[]> computeSlotsUnavailable(List<String[]> objTab) {
 		for (int i = 0; i < objTab.size(); i++)
 		{
 			int nNumberappointmentbySlot = Integer.valueOf( (objTab.get(i) )[0]);
@@ -491,21 +491,6 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
 			int nMaxByAppointment = Integer.valueOf( (objTab.get(i) ) [3]);
 			if (nNumberappointmentbySlot >= nMaxByAppointment)
 				(objTab.get(i) )[4] = "true";
-			else
-			{
-				int nNumberRDV = nNumberappointmentbySlot;
-				for (int nj = i+1; nj < objTab.size(); nj++)
-				{
-					int nNumberappointmentbySlotNext = Integer.valueOf( (objTab.get(nj) )[0]);
-					Time tmpTimeStartNext = Time.valueOf((objTab.get(nj) ) [1]);
-					int nMaxByAppointmentNext = Integer.valueOf( (objTab.get(nj) ) [3]);
-					//If next rdv is beetwen 
-					if (tmpTimeStartNext.after(tmpTimeStart) && tmpTimeStartNext.before(tmpTimeMaxRDV))
-						nNumberRDV += nNumberappointmentbySlotNext;
-					if (nNumberRDV >= nMaxByAppointmentNext)
-						(objTab.get(i) )[4] = "true";
-				}
-			}
 		}
 		return objTab ;
 	}
