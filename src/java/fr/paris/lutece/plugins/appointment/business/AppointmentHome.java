@@ -102,14 +102,14 @@ public final class AppointmentHome
         // If the status changed, we check if we need to update the number of free places of the associated day
         if ( appointment.getStatus(  ) != appointmentFromDb.getStatus(  ) )
         {
-            if ( ( appointmentFromDb.getStatus(  ) != Appointment.STATUS_REJECTED ) &&
-                    ( appointment.getStatus(  ) == Appointment.STATUS_REJECTED ) )
+            if ( ( appointmentFromDb.getStatus(  ) != Appointment.Status.STATUS_REJECTED.getValeur() ) &&
+                    ( appointment.getStatus(  ) == Appointment.Status.STATUS_REJECTED.getValeur() ) )
             {
                 AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
                 AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );
             }
-            else if ( ( appointmentFromDb.getStatus(  ) == Appointment.STATUS_REJECTED ) &&
-                    ( appointment.getStatus(  ) != Appointment.STATUS_REJECTED ) )
+            else if ( ( appointmentFromDb.getStatus(  ) == Appointment.Status.STATUS_REJECTED.getValeur() ) &&
+                    ( appointment.getStatus(  ) != Appointment.Status.STATUS_REJECTED.getValeur() ) )
             {
                 AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
                 AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay(  ) );
@@ -136,7 +136,7 @@ public final class AppointmentHome
         _dao.deleteAppointmentResponse( nAppointmentId, _plugin );
         _dao.delete( nAppointmentId, _plugin );
 
-        if ( appointment.getStatus(  ) != Appointment.STATUS_REJECTED )
+        if ( appointment.getStatus(  ) != Appointment.Status.STATUS_REJECTED.getValeur() )
         {
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
             AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );

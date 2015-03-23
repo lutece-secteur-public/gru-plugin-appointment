@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.service;
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
@@ -197,7 +198,7 @@ public class AppointmentFormService implements Serializable
 
          if ( bDisplayFront )
          {
-             model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep(  ) );
+             model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm() ) );
          }
 
          if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
@@ -269,7 +270,7 @@ public class AppointmentFormService implements Serializable
 
         if ( bDisplayFront )
         {
-            model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep(  ) );
+            model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm() ) );
         }
 
         if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
@@ -495,7 +496,7 @@ public class AppointmentFormService implements Serializable
 
                 if ( formError != null )
                 {
-                    formError.setUrl( getEntryUrl( entry ) );
+                    formError.setUrl( getEntryUrl( entry, appointment.getAppointmentForm().getIdForm() ) );
                 }
             }
             else
@@ -556,12 +557,12 @@ public class AppointmentFormService implements Serializable
      * @param entry the entry
      * @return The URL of the anchor of an entry
      */
-    public String getEntryUrl( Entry entry )
+    public String getEntryUrl( Entry entry, int nIdform )
     {
         UrlItem url = new UrlItem( AppPathService.getPortalUrl(  ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
         url.addParameter( MVCUtils.PARAMETER_VIEW,
-            isFormFirstStep(  ) ? AppointmentApp.VIEW_APPOINTMENT_FORM_FIRST_STEP
+            isFormFirstStep( nIdform ) ? AppointmentApp.VIEW_APPOINTMENT_FORM_FIRST_STEP
                                 : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP );
 
         if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
@@ -698,13 +699,10 @@ public class AppointmentFormService implements Serializable
      * @return True if the form is the first step of the creation of
      *         appointments, false otherwise
      */
-    public boolean isFormFirstStep(  )
+    public boolean isFormFirstStep( int nAppointmentFormId )
     {
-        if ( _bIsFormFirstStep == null )
-        {
-            _bIsFormFirstStep = Boolean.parseBoolean( AppPropertiesService.getProperty( PROPERTY_IS_FORM_FIRST_STEP ) );
-        }
-
+    	AppointmentForm myApmt = AppointmentFormHome.findByPrimaryKey( nAppointmentFormId );
+    	_bIsFormFirstStep = myApmt == null ? true : myApmt.getIsFormStep();
         return _bIsFormFirstStep;
     }
 

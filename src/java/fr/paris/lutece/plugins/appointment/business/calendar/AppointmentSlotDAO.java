@@ -258,7 +258,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACES, plugin );
         daoUtil.setDate( 1, date );
-        daoUtil.setInt( 2, Appointment.STATUS_REJECTED );
+        daoUtil.setInt( 2, Appointment.Status.STATUS_REJECTED.getValeur() );
         daoUtil.setInt( 3, nIdSlot );
         daoUtil.executeQuery(  );
 
@@ -348,7 +348,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     public List<AppointmentSlot> findByIdDayWithFreePlaces( int nIdDay, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES, plugin );
-        daoUtil.setInt( 1, Appointment.STATUS_REJECTED );
+        daoUtil.setInt( 1, Appointment.Status.STATUS_REJECTED.getValeur() );
         daoUtil.setInt( 2, nIdDay );
         daoUtil.executeQuery(  );
 

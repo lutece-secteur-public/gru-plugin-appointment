@@ -35,7 +35,8 @@ CREATE TABLE appointment_form (
 	id_calendar_template INT NOT NULL,
 	max_appointment_mail INT NOT NULL default '0',
 	nb_appointment_week  INT NOT NULL default '0',
-	reference varchar(10)
+	reference varchar(10),
+	is_form_step  INT NOT NULL default '0'
 	PRIMARY KEY (id_form)
 );
 

@@ -63,19 +63,19 @@ public class Appointment implements Serializable
     // If status values change, the template appointment/manage_appointments.html must be updated !
     /**
      * Status of appointments that have been rejected
-     */
+     
     public static final int STATUS_REJECTED = -10;
-
+*/
     /**
      * Status of appointments that have not been validated yet
-     */
+    
     public static final int STATUS_NOT_VALIDATED = 0;
-
+ */
     /**
      * Status of appointments that have been validated
-     */
+    
     public static final int STATUS_VALIDATED = 10;
-
+ */
     /**
      * Serial version UID
      */
@@ -107,6 +107,28 @@ public class Appointment implements Serializable
     private int _nIdActionCancel;
     private int _idAdminUser;
 
+    /**
+     * Status of appointments that have not been validated yet, validate or rejected
+     */
+    public enum Status {
+    	STATUS_VALIDATED (10, 	"appointment.message.labelStatusValidated"),
+    	STATUS_REJECTED (-10, 	"appointment.message.labelStatusRejected" ),
+    	STATUS_NOT_VALIDATED (0, "appointment.message.labelStatusNotValidated");
+    	
+    	private final int nValue;
+        private final String strLibelle;
+        
+        Status (int nValeur, String strMessage)
+        {
+        	this.nValue = nValeur;
+        	this.strLibelle = strMessage;
+        }
+        
+        public int getValeur(){ return this.nValue; }
+        public String getLibelle(){ return this.strLibelle; }
+    }
+    
+    
     /**
      * Returns the IdAppointment
      * @return The IdAppointment

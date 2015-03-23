@@ -112,7 +112,7 @@ public class AppointmentFormPortlet extends PortletHtmlContent
     public boolean canBeCachedForConnectedUsers(  )
     {
         // We only allow cache is the form is the first step of the appointment process
-        return _appointmentFormService.isFormFirstStep(  );
+        return _appointmentFormService.isFormFirstStep( _nIdAppointmentForm );
     }
 
     /**
@@ -122,7 +122,7 @@ public class AppointmentFormPortlet extends PortletHtmlContent
     public boolean canBeCachedForAnonymousUsers(  )
     {
         // We only allow cache is the form is the first step of the appointment process
-        return _appointmentFormService.isFormFirstStep(  );
+        return _appointmentFormService.isFormFirstStep( _nIdAppointmentForm );
     }
 
     /**

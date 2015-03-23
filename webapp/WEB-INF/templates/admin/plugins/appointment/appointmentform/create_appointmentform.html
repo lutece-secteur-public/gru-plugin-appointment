@@ -29,6 +29,7 @@
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenFriday' inputName='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSaturday' inputName='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsFormStep' inputName='is_form_step' value='true' checked=appointmentform.isFormStep!false />
 				<#if listWorkflows??>
 					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" />
 				</#if>

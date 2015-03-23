@@ -116,6 +116,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private int _nMaxAppointmentMail;
     private int _nNbWeeksLimits;
     private String _strReference;
+    private boolean _bIsFormStep;
+    
     /**
      * Returns the IdForm
      * @return The IdForm
@@ -188,6 +190,22 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     	_strReference =  strRef;
     } 
     /**
+     * Returns the _strReference
+     * @return The strRef
+     */
+    public boolean getIsFormStep(  )
+    {
+        return _bIsFormStep;
+    }
+
+    /**
+     * Sets the Reference
+     * @param strRef The strRef
+     */
+    public void setIsFormStep( boolean nStep )
+    {
+    	_bIsFormStep =  nStep;
+    } /**
      * Returns the TimeStart
      * @return The TimeStart
      */

@@ -266,7 +266,7 @@ public class AppointmentApp extends MVCApplication
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
-            if ( !_appointmentFormService.isFormFirstStep(  ) &&
+            if ( !_appointmentFormService.isFormFirstStep( nIdForm ) &&
                     ( ( _appointmentFormService.getAppointmentFromSession( request.getSession(  ) ) == null ) ||
                     ( _appointmentFormService.getAppointmentFromSession( request.getSession(  ) ).getIdSlot(  ) == 0 ) ) )
             {
@@ -331,7 +331,7 @@ public class AppointmentApp extends MVCApplication
             appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
-            appointment.setStatus( Appointment.STATUS_NOT_VALIDATED );
+            appointment.setStatus( Appointment.Status.STATUS_NOT_VALIDATED.getValeur() );
 
             if ( appointmentFromSession != null )
             {
@@ -375,13 +375,13 @@ public class AppointmentApp extends MVCApplication
             {
                 request.getSession(  ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
 
-                return redirect( request, getFormStepName(  ), PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, getFormStepName( nIdForm ), PARAMETER_ID_FORM, nIdForm );
             }
 
             _appointmentFormService.convertMapResponseToList( appointment );
             _appointmentFormService.saveValidatedAppointmentForm( request.getSession(  ), appointment );
 
-            if ( _appointmentFormService.isFormFirstStep(  ) )
+            if ( _appointmentFormService.isFormFirstStep( nIdForm ) )
             {
                 return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM, nIdForm );
             }
@@ -406,10 +406,10 @@ public class AppointmentApp extends MVCApplication
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
-            if ( _appointmentFormService.isFormFirstStep(  ) &&
+            if ( _appointmentFormService.isFormFirstStep( nIdForm ) &&
                     ( _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) ) == null ) )
             {
-                return redirect( request, getFormStepName(  ), PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, getFormStepName( nIdForm ), PARAMETER_ID_FORM, nIdForm );
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
@@ -474,7 +474,7 @@ public class AppointmentApp extends MVCApplication
 
             // If the calendar is the first step, then we must create the appointment object and save it into the session
             // Then we redirect the user to the second step
-            if ( !_appointmentFormService.isFormFirstStep(  ) )
+            if ( !_appointmentFormService.isFormFirstStep( form.getIdForm() ) )
             {
                 appointment = _appointmentFormService.getAppointmentFromSession( request.getSession(  ) );
 
@@ -602,7 +602,7 @@ public class AppointmentApp extends MVCApplication
         {
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
 
-            return redirect( request, getCalendarStepName(  ), PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
+            return redirect( request, getCalendarStepName( appointmentSlot.getIdForm(  ) ), PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
         }
 
         _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
@@ -739,7 +739,7 @@ public class AppointmentApp extends MVCApplication
                     }
                     else
                     {
-                        appointment.setStatus( Appointment.STATUS_REJECTED );
+                        appointment.setStatus( Appointment.Status.STATUS_REJECTED.getValeur() );
                         AppointmentHome.update( appointment );
                     }
 
@@ -842,11 +842,15 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_FORM_FIRST_STEP )
     public XPage getAppointmentFormFirstStep( HttpServletRequest request )
     {
-        if ( _appointmentFormService.isFormFirstStep(  ) )
+    	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
-            return getViewForm( request );
-        }
-
+            int nIdForm = Integer.parseInt( strIdForm );
+	        if ( _appointmentFormService.isFormFirstStep( nIdForm ) )
+	        {
+	            return getViewForm( request );
+	        }
+        }    
         return getAppointmentCalendar( request );
     }
 
@@ -858,12 +862,16 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_FORM_SECOND_STEP )
     public XPage getAppointmentFormSecondStep( HttpServletRequest request )
     {
-        if ( _appointmentFormService.isFormFirstStep(  ) )
+    	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
-            return getAppointmentCalendar( request );
+            int nIdForm = Integer.parseInt( strIdForm );
+	    	if ( _appointmentFormService.isFormFirstStep( nIdForm ) )
+	        {
+	            return getAppointmentCalendar( request );
+	        }
         }
-
-        return getViewForm( request );
+        return  getViewForm( request );
     }
 
     /**
@@ -908,8 +916,8 @@ public class AppointmentApp extends MVCApplication
 
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
-        model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
-        model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
+        model.put( MARK_STATUS_VALIDATED, Appointment.Status.STATUS_VALIDATED.getValeur() );
+        model.put( MARK_STATUS_REJECTED, Appointment.Status.STATUS_REJECTED.getValeur() );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
 
@@ -929,7 +937,7 @@ public class AppointmentApp extends MVCApplication
     public static String getHtmlFormFirstStep( HttpServletRequest request, AppointmentForm form,
         AppointmentFormService appointmentFormService, Map<String, Object> model, Locale locale )
     {
-        if ( appointmentFormService.isFormFirstStep(  ) )
+        if ( appointmentFormService.isFormFirstStep( form.getIdForm() ) )
         {
             return getAppointmentFormHtml( request, form, appointmentFormService, model, locale );
         }
@@ -1087,7 +1095,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_NB_WEEK, nNbWeek );
         model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
-        model.put( MARK_IS_FORM_FIRST_STEP, appointmentFormService.isFormFirstStep(  ) );
+        model.put( MARK_IS_FORM_FIRST_STEP, appointmentFormService.isFormFirstStep( form.getIdForm() ) );
 
         CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( form.getCalendarTemplateId(  ) );
 
@@ -1205,9 +1213,9 @@ public class AppointmentApp extends MVCApplication
      * Get the calendar step name
      * @return the calendar step name
      */
-    private String getCalendarStepName(  )
+    private String getCalendarStepName( int nIdForm )
     {
-        return _appointmentFormService.isFormFirstStep(  ) ? VIEW_APPOINTMENT_FORM_SECOND_STEP
+        return _appointmentFormService.isFormFirstStep( nIdForm ) ? VIEW_APPOINTMENT_FORM_SECOND_STEP
                                                            : VIEW_APPOINTMENT_FORM_FIRST_STEP;
     }
 
@@ -1215,9 +1223,9 @@ public class AppointmentApp extends MVCApplication
      * Get the form step name
      * @return The form step name
      */
-    private String getFormStepName(  )
+    private String getFormStepName(  int nIdForm  )
     {
-        return _appointmentFormService.isFormFirstStep(  ) ? VIEW_APPOINTMENT_FORM_FIRST_STEP
+        return _appointmentFormService.isFormFirstStep( nIdForm ) ? VIEW_APPOINTMENT_FORM_FIRST_STEP
                                                            : VIEW_APPOINTMENT_FORM_SECOND_STEP;
     }
 

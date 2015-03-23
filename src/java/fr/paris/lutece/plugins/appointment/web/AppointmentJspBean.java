@@ -101,6 +101,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -447,11 +448,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
 					nMaxSlots = getCalendarTime(null, listDays.get(i).getClosingHour(), listDays.get(i).getClosingMinutes() );
 					nMaxSlots.setTimeInMillis(nMaxSlots.getTimeInMillis()+TimeUnit.MINUTES.toMillis( listDays.get( i ).getAppointmentDuration() ));
 				}
-	/*			if (getNumbersDay(new Date( GregorianCalendar.getInstance().getTimeInMillis() ),  listDays.get ( i ).getDate() ) < 0 )
+				if (getNumbersDay(new Date( GregorianCalendar.getInstance().getTimeInMillis() ),  listDays.get ( i ).getDate() ) < 0 )
 				{	
 					listDays.get(i).setListSlots ( setSlotToErase( null, listDays.get(i).getListSlots(), bCheck ) );
-				}*/
-				if (getNumbersDay(new Date( GregorianCalendar.getInstance().getTimeInMillis() ),  listDays.get ( i ).getDate() ) <= 0 )
+				}
+				if (getNumbersDay(new Date( GregorianCalendar.getInstance().getTimeInMillis() ),  listDays.get ( i ).getDate() ) == 0 )
 				{
 							Calendar tmpCalendar = new GregorianCalendar ();
 							tmpCalendar.setTime( listDays.get(i).getDate() );
@@ -631,23 +632,28 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     getLocale(  ) );
 
             // PAGINATOR
-            ReferenceList refListStatus = new ReferenceList( 3 );
+            ReferenceList refListStatus = new ReferenceList();
             refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
-            refListStatus.addItem( Appointment.STATUS_VALIDATED,
+            List<Appointment.Status> listStats = Arrays.asList(Appointment.Status.values());
+            for (Appointment.Status tmpStat : listStats)
+            {
+            	refListStatus.addItem( tmpStat.getValeur(), I18nService.getLocalizedString( tmpStat.getLibelle(), getLocale() ) );
+            }
+            /*refListStatus.addItem( Appointment.Status.STATUS_VALIDATED.getValeur(),
                 I18nService.getLocalizedString( MESSAGE_LABEL_STATUS_VALIDATED, getLocale(  ) ) );
             refListStatus.addItem( Appointment.STATUS_NOT_VALIDATED,
                 I18nService.getLocalizedString( MESSAGE_LABEL_STATUS_NOT_VALIDATED, getLocale(  ) ) );
             refListStatus.addItem( Appointment.STATUS_REJECTED,
                 I18nService.getLocalizedString( MESSAGE_LABEL_STATUS_REJECTED, getLocale(  ) ) );
-
+*/
             Map<String, Object> model = getModel(  );
 
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
             model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
             model.put( MARK_PAGINATOR, delegatePaginator );
-            model.put( MARK_STATUS_VALIDATED, Appointment.STATUS_VALIDATED );
-            model.put( MARK_STATUS_REJECTED, Appointment.STATUS_REJECTED );
+            model.put( MARK_STATUS_VALIDATED, Appointment.Status.STATUS_VALIDATED.getValeur() );
+            model.put( MARK_STATUS_REJECTED, Appointment.Status.STATUS_REJECTED.getValeur() );
             model.put( MARK_LANGUAGE, getLocale() );
             model.put( MARK_ALLDATES, filter.getDateAppointmentMin() == null ? "false" : "true");
             
@@ -986,7 +992,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             else
             {
                 appointment = new AppointmentDTO(  );
-                appointment.setStatus( Appointment.STATUS_NOT_VALIDATED );
+                appointment.setStatus( Appointment.Status.STATUS_NOT_VALIDATED.getValeur() );
 
                 if ( SecurityService.isAuthenticationEnable(  ) )
                 {
@@ -1709,7 +1715,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             // We check that the status has changed to avoid doing unnecessary updates.
             // Also, it is not permitted to set the status of an appointment to not validated.
-            if ( ( appointment.getStatus(  ) != nNewStatus ) && ( nNewStatus != Appointment.STATUS_NOT_VALIDATED ) )
+            if ( ( appointment.getStatus(  ) != nNewStatus ) && ( nNewStatus != Appointment.Status.STATUS_NOT_VALIDATED.getValeur() ) )
             {
                 appointment.setStatus( nNewStatus );
                 AppointmentHome.update( appointment );
