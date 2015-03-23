@@ -91,6 +91,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
+import org.bouncycastle.util.Strings;
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
@@ -577,40 +578,44 @@ public class AppointmentApp extends MVCApplication
     public XPage doMakeAppointment( HttpServletRequest request )
     {
         Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
-        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
-                appointment.getDateAppointment(  ) );
-        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) );
-
-        if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
+        if ( appointment != null )
         {
-            return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM,
-                appointmentSlot.getIdForm(  ) );
+	        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
+	                appointment.getDateAppointment(  ) );
+	        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm(  ) );
+	
+	        if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
+	        {
+	            return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM,
+	                appointmentSlot.getIdForm(  ) );
+	        }
+	
+	        if ( form.getEnableCaptcha(  ) && getCaptchaService(  ).isAvailable(  ) )
+	        {
+	            if ( !getCaptchaService(  ).validate( request ) )
+	            {
+	                addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
+	
+	                return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_SLOT,
+	                    appointmentSlot.getIdSlot(  ) );
+	            }
+	        }
+	
+	        if ( !_appointmentFormService.doMakeAppointment( appointment, form, false ) )
+	        {
+	            addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+	
+	            return redirect( request, getCalendarStepName( appointmentSlot.getIdForm(  ) ), PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
+	        }
+	
+	        _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
+	
+	        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
+	
+	        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ),
+	            PARAMETER_ID_APPOINTMENT, appointment.getIdAppointment(  ) );
         }
-
-        if ( form.getEnableCaptcha(  ) && getCaptchaService(  ).isAvailable(  ) )
-        {
-            if ( !getCaptchaService(  ).validate( request ) )
-            {
-                addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
-
-                return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_SLOT,
-                    appointmentSlot.getIdSlot(  ) );
-            }
-        }
-
-        if ( !_appointmentFormService.doMakeAppointment( appointment, form, false ) )
-        {
-            addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-
-            return redirect( request, getCalendarStepName( appointmentSlot.getIdForm(  ) ), PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ) );
-        }
-
-        _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
-
-        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
-
-        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointmentSlot.getIdForm(  ),
-            PARAMETER_ID_APPOINTMENT, appointment.getIdAppointment(  ) );
+        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
     /**
@@ -638,10 +643,10 @@ public class AppointmentApp extends MVCApplication
                     slot.getStartingMinute(  ) );
             String strTimeEnd = _appointmentFormService.convertTimeIntoString( slot.getEndingHour(  ),
                     slot.getEndingMinute(  ) );
-
+            String strReference = StringUtils.isEmpty(form.getReference()) ? "" : Strings.toUpperCase(form.getReference().trim())+ " - " ;
+            strReference += AppointmentService.getService(  ).computeRefAppointment( appointment ); 
             formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated(  )
-                                                                .replaceAll( MARK_REF,
-                    AppointmentService.getService(  ).computeRefAppointment( appointment ) )
+                                                                .replaceAll( MARK_REF, strReference )
                                                                 .replaceAll( MARK_DATE_APP,
                     getDateFormat(  ).format( appointment.getDateAppointment(  ) ) )
                                                                 .replaceAll( MARK_TIME_BEGIN, strTimeBegin )
