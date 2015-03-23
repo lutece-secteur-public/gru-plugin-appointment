@@ -81,7 +81,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     		 " where slot.id_form=? and slot.id_day = ?"+
     		 " and TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') >="+
     		 " TIME_FORMAT(?,'%H:%i:%s')  and"+
-    		 " TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') <="+
+    		 " TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') <"+
     		 " TIME_FORMAT(?,'%H:%i:%s')"+
     		 " order by id_slot";
     
