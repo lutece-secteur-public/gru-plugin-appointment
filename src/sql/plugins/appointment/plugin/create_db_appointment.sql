@@ -36,7 +36,7 @@ CREATE TABLE appointment_form (
 	max_appointment_mail INT NOT NULL default '0',
 	nb_appointment_week  INT NOT NULL default '0',
 	reference varchar(10),
-	is_form_step  INT NOT NULL default '0'
+	is_form_step SMALLINT NOT NULL default '0',
 	PRIMARY KEY (id_form)
 );
 
