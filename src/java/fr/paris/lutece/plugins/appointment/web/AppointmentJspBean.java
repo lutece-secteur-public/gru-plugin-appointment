@@ -62,6 +62,10 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
+import fr.paris.lutece.plugins.workflowcore.service.state.IStateService;
+import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
@@ -267,7 +271,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String CONSTANT_SPACE = " ";
     private static final String CONSTANT_ZERO = "0";
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
-
+    private final StateService _stateService  = SpringContextService.getBean( StateService.BEAN_SERVICE );
     // Session variable to store working values
     private int _nDefaultItemsPerPage;
     private AppointmentFilter _filter;
@@ -462,7 +466,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 			
 			for (int i = 0; i < listDays.size(); i++)
 			{
-				if (listDays.get(i).getIsOpen() && listDays.get(i).getListSlots ( )!=null)
+				if (listDays.get(i).getIsOpen() && listDays.get(i).getListSlots ( )!=null && listDays.get(i).getListSlots ( ).size()>0)
 				{
 					AppointmentSlot tmpSlot = listDays.get(i).getListSlots ( ).get( listDays.get(i).getListSlots ( ).size() - 1 ).clone();
 					Calendar tmpMich = getCalendarTime(null, tmpSlot.getEndingHour(), tmpSlot.getEndingMinute() );
@@ -634,18 +638,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
             // PAGINATOR
             ReferenceList refListStatus = new ReferenceList();
             refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
-            List<Appointment.Status> listStats = Arrays.asList(Appointment.Status.values());
-            for (Appointment.Status tmpStat : listStats)
+            
+            StateFilter stateFilter = new StateFilter(  );
+    	    stateFilter.setIdWorkflow( form.getIdWorkflow() );	    
+
+            List<State> listStats = _stateService.getListStateByFilter( stateFilter );
+
+            for (State tmpStat : listStats )
             {
-            	refListStatus.addItem( tmpStat.getValeur(), I18nService.getLocalizedString( tmpStat.getLibelle(), getLocale() ) );
+            	refListStatus.addItem( tmpStat.getId(), tmpStat.getName() );
             }
-            /*refListStatus.addItem( Appointment.Status.STATUS_VALIDATED.getValeur(),
-                I18nService.getLocalizedString( MESSAGE_LABEL_STATUS_VALIDATED, getLocale(  ) ) );
-            refListStatus.addItem( Appointment.STATUS_NOT_VALIDATED,
-                I18nService.getLocalizedString( MESSAGE_LABEL_STATUS_NOT_VALIDATED, getLocale(  ) ) );
-            refListStatus.addItem( Appointment.STATUS_REJECTED,
-                I18nService.getLocalizedString( MESSAGE_LABEL_STATUS_REJECTED, getLocale(  ) ) );
-*/
+            
             Map<String, Object> model = getModel(  );
 
             model.put( MARK_FORM, form );
