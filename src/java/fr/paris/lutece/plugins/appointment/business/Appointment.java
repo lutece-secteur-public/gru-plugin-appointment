@@ -33,19 +33,18 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
-
 import fr.paris.lutece.plugins.genericattributes.business.Response;
-import org.hibernate.validator.constraints.Email;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
-
 import java.sql.Date;
-
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.Size;
 

@@ -59,6 +59,10 @@ import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
+import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
+import fr.paris.lutece.plugins.workflowcore.business.workflow.Workflow;
+import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
@@ -134,6 +138,9 @@ public class AppointmentApp extends MVCApplication
      * Default page title of XPages of this app
      */
     public static final String MESSAGE_DEFAULT_PAGE_TITLE = "appointment.appointmentApp.defaultTitle";
+    
+    /** Infos error WorkFlow */
+    private static final String INFO_APPOINTMENT_STATE_ERROR = "appointment.info.appointment.etatinitial";
 
     /**
      * The name of the XPage
@@ -212,6 +219,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_INFOS = "infos";
     private static final String MARK_ERRORS = "errors";
     private static final String MARK_DATE_LAST_MONDAY = "dateLastMonday";
+    private static final String MARK_STATUS = "libelled_status";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -229,6 +237,9 @@ public class AppointmentApp extends MVCApplication
 
     // Local variables
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
+    private final static StateService _stateService  = SpringContextService.getBean( StateService.BEAN_SERVICE );
+    private final fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService _stateServiceWorkFlow  = SpringContextService.getBean( fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService.BEAN_SERVICE );
+
     private transient CaptchaSecurityService _captchaSecurityService;
     private transient DateConverter _dateConverter;
 
@@ -299,6 +310,21 @@ public class AppointmentApp extends MVCApplication
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
 
+    private State getStatus( int nIdForm)
+    {
+    	State retour = null;
+    	AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
+    	if ( tmpForm != null )
+    	{
+    		Workflow wFlow = _stateServiceWorkFlow.findByPrimaryKey( tmpForm.getIdWorkflow() );
+    		if (wFlow != null)
+    		{
+    			retour = _stateService.getInitialState( wFlow.getId());
+    		}
+    	}
+    	return retour;
+    }
+    
     /**
      * Do validate data entered by a user to fill a form
      * @param request The request
@@ -321,7 +347,7 @@ public class AppointmentApp extends MVCApplication
             filter.setIdIsComment( EntryFilter.FILTER_FALSE );
 
             List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
-
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
             AppointmentDTO appointmentFromSession = _appointmentFormService.getAppointmentFromSession( request.getSession(  ) );
             _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
 
@@ -332,7 +358,7 @@ public class AppointmentApp extends MVCApplication
             appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
-            appointment.setStatus( Appointment.Status.STATUS_NOT_VALIDATED.getValeur() );
+            appointment.setAppointmentForm(form);
 
             if ( appointmentFromSession != null )
             {
@@ -349,12 +375,23 @@ public class AppointmentApp extends MVCApplication
                     appointment.setAuthenticationService( luteceUser.getAuthenticationService(  ) );
                 }
             }
-
+            State valid = getStatus ( nIdForm );
+            if ( valid != null )
+            {
+            	appointment.setStatus( valid.getId() );
+            }
+            
             // We save the appointment in session. The appointment object will contain responses of the user to the form
             _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointment );
 
             Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointment );
-
+            if ( valid == null )
+            {
+            	GenericAttributeError genAttError = new GenericAttributeError(  );
+            	genAttError.setErrorMessage( I18nService.getLocalizedString( INFO_APPOINTMENT_STATE_ERROR,
+	                        request.getLocale(  ) ));
+                listFormErrors.add( genAttError );
+            }
             if ( !listErrors.isEmpty(  ) )
             {
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
@@ -909,18 +946,26 @@ public class AppointmentApp extends MVCApplication
         List<Appointment> listAppointments = AppointmentHome.getAppointmentListByFilter( appointmentFilter );
 
         List<AppointmentDTO> listAppointmentDTO = new ArrayList<AppointmentDTO>( listAppointments.size(  ) );
-
+        
+        Map <String, String>lsSta = new HashMap<String, String>();
+        List<Integer>nidForm = new ArrayList<Integer>();
         for ( Appointment appointment : listAppointments )
         {
             AppointmentDTO appointmantDTO = new AppointmentDTO( appointment );
             appointmantDTO.setAppointmentSlot( AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) ) );
+            if (!nidForm.contains( Integer.valueOf( appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) ));
+            {
+            	nidForm.add(Integer.valueOf( appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) );
+            }
             appointmantDTO.setAppointmentForm( AppointmentFormHome.findByPrimaryKey( 
                     appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) );
             listAppointmentDTO.add( appointmantDTO );
         }
 
+ 
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
+        model.put( MARK_STATUS, getAllStatus (nidForm));
         model.put( MARK_STATUS_VALIDATED, Appointment.Status.STATUS_VALIDATED.getValeur() );
         model.put( MARK_STATUS_REJECTED, Appointment.Status.STATUS_REJECTED.getValeur() );
 
@@ -929,6 +974,29 @@ public class AppointmentApp extends MVCApplication
         return template.getHtml(  );
     }
 
+    /**
+     * Get Status
+     * @param nIdForm
+     * @return
+     */
+    private static Map <String, String> getAllStatus( List<Integer> nIdForm )
+    {
+        Map <String, String>lsSta = new HashMap<String, String>();
+        for (int i=0; i < nIdForm.size(); i++)
+        {
+        	AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey( nIdForm.get(i) );
+        	StateFilter stateFilter = new StateFilter(  );
+        	stateFilter.setIdWorkflow( tmpForm.getIdWorkflow() );	
+        	List<State> listStats = _stateService.getListStateByFilter( stateFilter );       	
+        	for (State tmpStat : listStats )
+        	{
+        		lsSta.put(String.valueOf(tmpStat.getId()), tmpStat.getName());
+        	}
+        }
+        
+        return lsSta;
+    }
+    
     /**
      * Get the HTML content of the first step of the form
      * @param request The request

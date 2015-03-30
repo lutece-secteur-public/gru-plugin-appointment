@@ -194,19 +194,15 @@
 											</#if>
 										</td>
 										<td>
-											<#if appointment.status == status_validated>
-												<span class="label label-success">
-													#i18n{appointment.message.labelStatusValidated}
+										<#if (libelled_status[appointment.status?string])?? >
+													<span class="label">
+												 	${libelled_status[appointment.status?string]}
+												 	</span>
+										 <#else>
+												 <span class="label label-important">
+													 #i18n{appointment.info.appointment.etatinconnu}
 												</span>
-											<#elseif appointment.status = status_rejected>
-												<span class="label label-important">
-													#i18n{appointment.message.labelStatusRejected}
-												</span>
-											<#else>
-												<span class="label">
-													#i18n{appointment.message.labelStatusNotValidated}
-												</span>
-											</#if>
+										</#if>
 										</td>
 										<td>
 											<#if rightModify?? && rightModify>
@@ -225,18 +221,6 @@
 														<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}" <#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if> title="${action.name}" alt="${action.name}"	/>
 													</a>
 												</#list>
-											</#if>
-											<#if rightChangeStatus>
-												<#if appointment.status != status_validated>
-													<a class="btn btn-xs btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_validated}" title="#i18n{appointment.manage_appointments.labelValidateAppointment}" >
-														<i class="glyphicon glyphicon-ok"></i>
-													</a>
-												</#if>
-												<#if appointment.status != status_rejected>
-													<a class="btn btn-xs btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_rejected}" title="#i18n{appointment.manage_appointments.labelRejectAppointment}" >
-														<i class="glyphicon glyphicon-remove"></i>
-													</a>
-												</#if>
 											</#if>
 											<#if rightDelete?? && rightDelete>
 												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_appointment=${appointment.idAppointment}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
