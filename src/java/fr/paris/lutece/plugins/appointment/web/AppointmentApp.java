@@ -309,7 +309,7 @@ public class AppointmentApp extends MVCApplication
 
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
-
+/*WORKFLOW FUTURE
     private State getStatus( int nIdForm)
     {
     	State retour = null;
@@ -324,7 +324,7 @@ public class AppointmentApp extends MVCApplication
     	}
     	return retour;
     }
-    
+*/    
     /**
      * Do validate data entered by a user to fill a form
      * @param request The request
@@ -358,6 +358,7 @@ public class AppointmentApp extends MVCApplication
             appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
+            appointment.setStatus( Appointment.Status.STATUS_NOT_VALIDATED.getValeur() );
             appointment.setAppointmentForm(form);
 
             if ( appointmentFromSession != null )
@@ -375,23 +376,26 @@ public class AppointmentApp extends MVCApplication
                     appointment.setAuthenticationService( luteceUser.getAuthenticationService(  ) );
                 }
             }
-            State valid = getStatus ( nIdForm );
+  /*WORKFLOW FUTURE
+             State valid = getStatus ( nIdForm );
+   
             if ( valid != null )
             {
             	appointment.setStatus( valid.getId() );
             }
-            
+*/            
             // We save the appointment in session. The appointment object will contain responses of the user to the form
             _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointment );
 
             Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointment );
-            if ( valid == null )
+/*WORKFLOW FUTURE            if ( valid == null )
             {
             	GenericAttributeError genAttError = new GenericAttributeError(  );
             	genAttError.setErrorMessage( I18nService.getLocalizedString( INFO_APPOINTMENT_STATE_ERROR,
 	                        request.getLocale(  ) ));
                 listFormErrors.add( genAttError );
             }
+*/            
             if ( !listErrors.isEmpty(  ) )
             {
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
@@ -953,10 +957,11 @@ public class AppointmentApp extends MVCApplication
         {
             AppointmentDTO appointmantDTO = new AppointmentDTO( appointment );
             appointmantDTO.setAppointmentSlot( AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) ) );
-            if (!nidForm.contains( Integer.valueOf( appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) ));
+/*WORKFLOW FUTURE            if (!nidForm.contains( Integer.valueOf( appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) ));
             {
             	nidForm.add(Integer.valueOf( appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) );
             }
+*/
             appointmantDTO.setAppointmentForm( AppointmentFormHome.findByPrimaryKey( 
                     appointmantDTO.getAppointmentSlot(  ).getIdForm(  ) ) );
             listAppointmentDTO.add( appointmantDTO );
@@ -965,7 +970,9 @@ public class AppointmentApp extends MVCApplication
  
         Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
+/*WORKFLOW FUTURE
         model.put( MARK_STATUS, getAllStatus (nidForm));
+*/        
         model.put( MARK_STATUS_VALIDATED, Appointment.Status.STATUS_VALIDATED.getValeur() );
         model.put( MARK_STATUS_REJECTED, Appointment.Status.STATUS_REJECTED.getValeur() );
 
@@ -974,11 +981,11 @@ public class AppointmentApp extends MVCApplication
         return template.getHtml(  );
     }
 
-    /**
+    /**WORKFLOW FUTURE
      * Get Status
      * @param nIdForm
      * @return
-     */
+     
     private static Map <String, String> getAllStatus( List<Integer> nIdForm )
     {
         Map <String, String>lsSta = new HashMap<String, String>();
@@ -995,7 +1002,7 @@ public class AppointmentApp extends MVCApplication
         }
         
         return lsSta;
-    }
+    }*/
     
     /**
      * Get the HTML content of the first step of the form
@@ -1364,7 +1371,8 @@ public class AppointmentApp extends MVCApplication
 	 */
 	private static int getNumbersDay(Date nStart, Date nEnd)
 	{
-		long timeDiff =  nEnd.getTime() - nStart.getTime();
-		return  (int)  timeDiff / 1000 /(24 * 60 * 60);
+  		long timeDiff =  nEnd.getTime() - nStart.getTime();
+  		timeDiff = timeDiff / 1000 /(24 * 60 * 60);
+  		return Integer.valueOf( String.valueOf(timeDiff)  ) ;
 	}
 }

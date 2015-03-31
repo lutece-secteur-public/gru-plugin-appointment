@@ -970,7 +970,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	 return bReturn;
     }
 
-
+    /*WORKFLOW_FUTURE 
     private State getStatus( int nIdForm)
     {
     	State retour = null;
@@ -985,7 +985,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	}
     	return retour;
     }
-    
+ */   
     /**
      * Do validate data entered by a user to fill a form
      * @param request The request
@@ -1003,7 +1003,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( ( strIdForm != null ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
-            State myState = getStatus( nIdForm );
+/*WORKFLOW_FUTURE            State myState = getStatus( nIdForm );*/
             EntryFilter filter = new EntryFilter(  );
             filter.setIdResource( nIdForm );
             filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
@@ -1029,10 +1029,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
             else
             {
                 appointment = new AppointmentDTO(  );
-                if ( myState != null )
+/*WORKFLOW_FUTURE                 if ( myState != null )
                 {
                 	appointment.setStatus( myState.getId() );
                 }
+*/
                 if ( SecurityService.isAuthenticationEnable(  ) )
                 {
                     LuteceUser luteceUser = SecurityService.getInstance(  ).getRegisteredUser( request );
@@ -1053,13 +1054,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
             _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointment );
 
             Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointment );
-            if ( myState == null )
+/*WORKFLOW_FUTURE             if ( myState == null )
             {
             	GenericAttributeError genAttError = new GenericAttributeError(  );
             	genAttError.setErrorMessage( I18nService.getLocalizedString( INFO_APPOINTMENT_STATE_ERROR,
 	                        request.getLocale(  ) ));
                 listFormErrors.add( genAttError );
             }
+            */
             if ( !listErrors.isEmpty(  ) )
             {
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
@@ -1282,7 +1284,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
   	private static int getNumbersDay(Date nStart, Date nEnd)
   	{
   		long timeDiff =  nEnd.getTime() - nStart.getTime();
-  		return  (int)  timeDiff / 1000 /(24 * 60 * 60);
+  		timeDiff = timeDiff / 1000 /(24 * 60 * 60);
+  		return Integer.valueOf( String.valueOf(timeDiff)  ) ;
   	}	
 	/**
 	 * Erase slots
@@ -1851,8 +1854,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
                 else
                 {
+/*WORKFLOW_FUTURE
+                	
                 	State tmpState = null;
-                	Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> tmpActions= WorkflowService.getInstance(  ).getActions(nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) );
+                	Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action>tmpActions = _stateServiceWorkFlow.getActions(nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ));
                 	for (fr.paris.lutece.plugins.workflowcore.business.action.Action myAction : tmpActions)
                 	{
                 		if ( myAction.getId() == nIdAction )
@@ -1865,14 +1870,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 		}
                 		
                 	}
-                    WorkflowService.getInstance(  )
+ */
+                     WorkflowService.getInstance(  )
                                    .doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                         form.getIdForm(  ), request, getLocale(  ), false );
-                    if ( tmpState != null && tmpState.getId()!= appointment.getStatus() )
+/*WORKFLOW_FUTURE                  if ( tmpState != null && tmpState.getId()!= appointment.getStatus() )
                     {
                     	appointment.setStatus( tmpState.getId() );
                     	AppointmentHome.update( appointment );
-                    }
+                    }*/
                 }
 
                 Map<String, String> mapParams = new HashMap<String, String>(  );

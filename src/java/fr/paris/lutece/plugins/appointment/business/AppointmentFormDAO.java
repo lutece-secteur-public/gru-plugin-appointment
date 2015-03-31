@@ -370,7 +370,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 	 */
 	private static int getNumbersDay(Date nStart, Date nEnd)
 	{
-		long timeDiff = nEnd.getTime() - nStart.getTime();
-		return  (int)  timeDiff / 1000 /(24 * 60 * 60);
+  		long timeDiff =  nEnd.getTime() - nStart.getTime();
+  		timeDiff = timeDiff / 1000 /(24 * 60 * 60);
+  		return Integer.valueOf( String.valueOf(timeDiff)  ) ;
 	}
 }
