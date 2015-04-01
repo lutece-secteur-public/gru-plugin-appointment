@@ -47,12 +47,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -246,6 +246,11 @@ public class AppointmentService
         return listDays;
     }
 
+    public static long getDateDiff(Date date1, Date date2) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return TimeUnit.MILLISECONDS.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
+
     /**
      * Enable / Disable slots
      * @param iDaysBeforeAppointment
@@ -257,8 +262,23 @@ public class AppointmentService
 
 		Calendar objNow = new GregorianCalendar();
 		
-		objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
-		
+		int nbHeuresDiff =  Long.valueOf(TimeUnit.MILLISECONDS.toHours(getDateDiff(new Date (objStart.getTimeInMillis()), new Date (objEnd.getTimeInMillis()) ) )).intValue() ;
+		if ( iDaysBeforeAppointment <= nbHeuresDiff )
+		{
+			objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
+		}
+		else
+		{
+			int nbDays = (int) iDaysBeforeAppointment / nbHeuresDiff;
+			int nbHour = iDaysBeforeAppointment % nbHeuresDiff;
+			while (nbHour > nbHeuresDiff)
+			{
+				nbDays += (int) nbHour / nbHeuresDiff;
+				nbHour = nbHour % nbHeuresDiff;
+			}
+			objNow.add(Calendar.DAY_OF_MONTH, nbDays);
+			objNow.set(Calendar.HOUR_OF_DAY, objStart.get(Calendar.HOUR_OF_DAY) + nbHour);
+		}
 		for (int i = 0; i < listDays.size() ; i ++)
 		{
 			
@@ -334,11 +354,6 @@ public class AppointmentService
         calendar.setTime( date );
 
         int nRealOffset = nOffsetWeeks.intValue(  );
-
-        if ( bIsForFront && ( form.getMinDaysBeforeAppointment(  ) > 7 ) )
-        {
-            nRealOffset += ( form.getMinDaysBeforeAppointment(  ) / 7 );
-        }
 
         // We set the week to the requested one 
         calendar.add( Calendar.DAY_OF_MONTH, 7 * nRealOffset );
