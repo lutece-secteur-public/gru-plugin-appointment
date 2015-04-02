@@ -643,9 +643,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     getLocale(  ) );
 
             // PAGINATOR
-            ReferenceList refListStatus = new ReferenceList();
+/*WORKFLOW FUTURE    
+			ReferenceList refListStatus = new ReferenceList();
             refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
-            
+ 
             StateFilter stateFilter = new StateFilter(  );
     	    stateFilter.setIdWorkflow( form.getIdWorkflow() );	    
 
@@ -656,7 +657,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
             	refListStatus.addItem( tmpStat.getId(), tmpStat.getName() );
             	lsSta.put(String.valueOf(tmpStat.getId()), tmpStat.getName());
             }
-           
+*/
+            ReferenceList refListStatus = new ReferenceList( 4 );
+            refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
+            refListStatus.addItem( Appointment.Status.STATUS_VALIDATED.getValeur(),
+                I18nService.getLocalizedString( Appointment.Status.STATUS_VALIDATED.getLibelle(), getLocale(  ) ) );
+            refListStatus.addItem( Appointment.Status.STATUS_NOT_VALIDATED.getValeur(),
+                I18nService.getLocalizedString( Appointment.Status.STATUS_NOT_VALIDATED.getLibelle(), getLocale(  ) ) );
+            refListStatus.addItem( Appointment.Status.STATUS_REJECTED.getValeur(),
+                I18nService.getLocalizedString( Appointment.Status.STATUS_REJECTED.getLibelle(), getLocale(  ) ) );
+
             Map<String, Object> model = getModel(  );
             model.put( MARK_STATUS, lsSta);
             model.put( MARK_FORM, form );
