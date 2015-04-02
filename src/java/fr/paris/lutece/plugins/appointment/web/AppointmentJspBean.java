@@ -668,7 +668,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 I18nService.getLocalizedString( Appointment.Status.STATUS_REJECTED.getLibelle(), getLocale(  ) ) );
 
             Map<String, Object> model = getModel(  );
-            model.put( MARK_STATUS, lsSta);
+            /*WORKFLOW FUTURE           model.put( MARK_STATUS, lsSta); */
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
             model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
