@@ -73,8 +73,9 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     
     private static final String SQL_QUERY_FIND_LIMITS_MOMENT="select count(*) nbre, TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') startHour, " +
     		" TIME_FORMAT( CONCAT_WS(':',slot.ending_hour,slot.ending_minute),'%H:%i:%s') maxRdv," +
-    		" form.people_per_appointment from appointment_appointment apmt, appointment_slot slot, appointment_form form" +
-    		" where apmt.id_slot=slot.id_slot and slot.id_day = ?" +
+    		"  slot.nb_places from appointment_appointment apmt, appointment_slot slot, appointment_form form" +
+    		" where  apmt.id_slot<>"+Appointment.Status.STATUS_REJECTED.getValeur() + " and apmt.status<>"+Appointment.Status.STATUS_REJECTED.getValeur()+ 
+    		" and apmt.id_slot=slot.id_slot and slot.id_day = ?" +
     		" and form.id_form=slot.id_form and form.id_form= ? group by apmt.id_slot" +
     		" order by TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') ";    
     private static final String SQL_QUERY_FIND_SLOTS__UNAVAILABLED="select id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled from appointment_slot slot"+
@@ -453,8 +454,6 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     	List<String[]> objTab = updateAppointmentsUnavailable( nIdDay, nIdForm, plugin  );
     	if (objTab.size() > 0)
     	{
-    		
-    		objTab = computeSlotsUnavailable(objTab);
     		for (String []tmpTab : objTab)
 			{
     			if (Boolean.parseBoolean(tmpTab[4]))
@@ -477,23 +476,6 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     	return objSlots;
      }
 
-	/**
-	 * @param objTab
-	 * @return 
-	 * @throws NumberFormatException
-	 */
-	private List<String[]> computeSlotsUnavailable(List<String[]> objTab) {
-		for (int i = 0; i < objTab.size(); i++)
-		{
-			int nNumberappointmentbySlot = Integer.valueOf( (objTab.get(i) )[0]);
-			Time tmpTimeStart = Time.valueOf((objTab.get(i) ) [1]);
-			Time tmpTimeMaxRDV = Time.valueOf((objTab.get(i) ) [2]);
-			int nMaxByAppointment = Integer.valueOf( (objTab.get(i) ) [3]);
-			if (nNumberappointmentbySlot >= nMaxByAppointment)
-				(objTab.get(i) )[4] = "true";
-		}
-		return objTab ;
-	}
 
    /**
      * Get maxLimits slots 
@@ -518,6 +500,10 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         	strToppings[2] = daoUtil.getString( nIndex++ ); // maximum Appointment Hour from this rdv
         	strToppings[3] = daoUtil.getString( nIndex++ );   // People max by appointment
         	strToppings[4] = "false";   // Tag true or false tu update
+        	int nNumberappointmentbySlot = Integer.valueOf( strToppings[0]);
+        	int nMaxByAppointment = Integer.valueOf( strToppings[3] );
+        	if (nNumberappointmentbySlot >= nMaxByAppointment)
+        		strToppings[4] = "true";
         	nIndex = 1;
         	objTab.add(strToppings);
         }

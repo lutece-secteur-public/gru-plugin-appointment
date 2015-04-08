@@ -680,7 +680,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
-                for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
+            	 /*WORKFLOW FUTURE                for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
                 {
                 	Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> resultActions = new ArrayList<fr.paris.lutece.plugins.workflowcore.business.action.Action>();
                 	Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> tmpActions = WorkflowService.getInstance(  )
@@ -695,6 +695,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     	}
                     }
                     appointment.setListWorkflowActions( resultActions );
+                }*/
+                for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
+                {
+                    appointment.setListWorkflowActions( WorkflowService.getInstance(  )
+                                                                       .getActions( appointment.getIdAppointment(  ),
+                            Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) ) );
                 }
             }
             // We add the list of admin users to filter appointments by admin users.

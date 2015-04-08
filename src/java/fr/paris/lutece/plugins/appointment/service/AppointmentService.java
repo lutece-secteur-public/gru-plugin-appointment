@@ -246,61 +246,67 @@ public class AppointmentService
         return listDays;
     }
 
+    /**
+     * Compute dateDiif
+     * @param date1
+     * @param date2
+     * @return
+     */
     public static long getDateDiff(Date date1, Date date2) {
         long diffInMillies = date2.getTime() - date1.getTime();
         return TimeUnit.MILLISECONDS.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
 
     /**
+     * Get Date to Midnight
+     * @param dateDesired
+     * @return
+     */
+    private static Calendar getDateMidnight()
+    {
+     	Calendar cal = Calendar.getInstance( Locale.FRENCH );
+    	cal.set(Calendar.HOUR_OF_DAY, 23);
+    	cal.set(Calendar.MINUTE, 59);
+    	cal.set(Calendar.SECOND, 59);
+     	return cal;
+    }
+    /**
      * Enable / Disable slots
+     * Whit Hours before appointmenet
      * @param iDaysBeforeAppointment
      * @param listDays
      * @return
      */
     private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
-			List<AppointmentDay> listDays , Calendar objStart, Calendar objEnd) {
+			List<AppointmentDay> listDays, Calendar calStart, Calendar calEnd) {
 
-		Calendar objNow = new GregorianCalendar();
-		
-		int nbHeuresDiff =  Long.valueOf(TimeUnit.MILLISECONDS.toHours(getDateDiff(new Date (objStart.getTimeInMillis()), new Date (objEnd.getTimeInMillis()) ) )).intValue() ;
-		if ( iDaysBeforeAppointment <= nbHeuresDiff )
-		{
-			objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
-		}
-		else
-		{
-			int nbDays = (int) iDaysBeforeAppointment / nbHeuresDiff;
-			int nbHour = iDaysBeforeAppointment % nbHeuresDiff;
-			while (nbHour > nbHeuresDiff)
-			{
-				nbDays += (int) nbHour / nbHeuresDiff;
-				nbHour = nbHour % nbHeuresDiff;
-			}
-			objNow.add(Calendar.DAY_OF_MONTH, nbDays);
-			objNow.set(Calendar.HOUR_OF_DAY, objStart.get(Calendar.HOUR_OF_DAY) + nbHour);
-		}
+    	Calendar objNow = new GregorianCalendar( Locale.FRENCH );
+    	int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue();
+    	objNow.add (Calendar.MILLISECOND, nbMilli);
+    	if (objNow.after( getDateMidnight( )))
+    	{
+    		objNow.setTime( getDateMidnight( ).getTime() );
+    	}
+
 		for (int i = 0; i < listDays.size() ; i ++)
 		{
 			
 			if (listDays.get( i ).getIsOpen())
 			{
+				Calendar objEnd =   getCalendarTime(listDays.get( i ).getDate(), listDays.get( i ).getClosingHour(), listDays.get( i ).getClosingMinutes());
+				if ( objEnd.after( calEnd ) )
+				{
+					objEnd.setTime( calEnd.getTime() );
+				}
 				if (listDays.get( i ).getListSlots() == null )
 				{
 					listDays.get( i ).setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( listDays.get( i ).getIdDay(  ) ) );
 				}
 				for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
 				{
-					Calendar tmpCal = new GregorianCalendar( Locale.FRENCH );
-					Calendar objNowClose = new GregorianCalendar( Locale.FRENCH );
+					Calendar tmpCal = getCalendarTime( listDays.get( i ).getDate(), listDays.get( i ).getListSlots().get( index ).getStartingHour(), listDays.get( i ).getListSlots().get( index ).getStartingMinute());
+					Calendar objNowClose = getCalendarTime( listDays.get( i ).getDate(), objEnd.get(Calendar.HOUR_OF_DAY), objEnd.get(Calendar.MINUTE));
 					
-					tmpCal.setTime( listDays.get( i ).getDate() );					
-					tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
-					tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
-					
-					objNowClose.setTime( listDays.get( i ).getDate() );
-					objNowClose.set(Calendar.HOUR_OF_DAY, objEnd.get(Calendar.HOUR_OF_DAY) );
-					objNowClose.set(Calendar.MINUTE, objEnd.get(Calendar.MINUTE));
-
 					if ( ( objNow.after( tmpCal ) || tmpCal.after( objNowClose ) ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
 					{
 						listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
@@ -371,8 +377,8 @@ public class AppointmentService
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
         Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
         Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
-
-        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays, calendarStart,calendarEnd);
+     
+        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays, calendarStart, calendarEnd );
         
 /*        long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
 
