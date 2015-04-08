@@ -90,6 +90,7 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.portal.web.LocalVariables;
 import fr.paris.lutece.portal.web.util.LocalizedDelegatePaginator;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
@@ -101,6 +102,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
+import org.springframework.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -435,7 +437,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 				{
 					Calendar now = new GregorianCalendar( Locale.FRENCH );
 					precisedDateFromNow = getCalendarTime(new Date ( precisedDateFromNow.getTimeInMillis() ) , Integer.valueOf(mySlots.get( ni ).getEndingHour()), Integer.valueOf( mySlots.get( ni ).getEndingMinute()) );
-					if (precisedDateFromNow.before( now) )
+					Calendar precisedDateStartNow = getCalendarTime(new Date ( precisedDateFromNow.getTimeInMillis() ) , Integer.valueOf(mySlots.get( ni ).getStartingHour()), Integer.valueOf( mySlots.get( ni ).getStartingMinute()) );
+					if (precisedDateFromNow.before( now) ||  precisedDateStartNow.before( now) )
 						mySlots.get( ni ).setIsEnabled( bCheck );
 				}
 			}
@@ -1552,7 +1555,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
-
     /**
      * Do save an appointment into the database if it is valid
      * @param request The request
@@ -1583,8 +1585,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
             throw new AccessDeniedException( bCreation ? AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT
                                                        : AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT );
         }
-
-        if ( _appointmentFormService.doMakeAppointment( appointment, form, true ) )
+        //Careful saving parameters from request to get URL Base for task.
+        HttpServletRequest tmpRequest =  LocalVariables.getRequest();
+        LocalVariables.setLocal( LocalVariables.getConfig(), request, LocalVariables.getResponse() );
+        boolean bResponse = _appointmentFormService.doMakeAppointment( appointment, form, true );
+        LocalVariables.setLocal( LocalVariables.getConfig(), tmpRequest,  LocalVariables.getResponse() );
+        if ( bResponse )
         {
             addInfo( bCreation ? INFO_APPOINTMENT_CREATED : INFO_APPOINTMENT_UPDATED, getLocale(  ) );
 
