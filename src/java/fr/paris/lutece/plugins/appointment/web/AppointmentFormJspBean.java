@@ -138,6 +138,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_LOCALE = "language";
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
+    private static final String MARK_PERMISSION_CHANGE = "permission_change";
+    private static final String MARK_PERMISSION_DELETE = "permission_delete";
+    private static final String MARK_PERMISSION_MODIFY = "permission_modify";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
     // Jsp
@@ -239,7 +242,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_PERMISSION_CREATE,
             RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
                 AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) );
-
+        model.put( MARK_PERMISSION_CHANGE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
+                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, AdminUserService.getAdminUser( request ) ) );
+        model.put( MARK_PERMISSION_MODIFY, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
+                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) );
+        model.put( MARK_PERMISSION_DELETE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,  "0",
+                AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) );
+        
+        
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 

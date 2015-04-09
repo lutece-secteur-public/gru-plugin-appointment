@@ -64,6 +64,9 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     private static final String MARK_ICON = "icon";
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
+    private static final String MARK_PERMISSION_CHANGE = "permission_change";
+    private static final String MARK_PERMISSION_DELETE = "permission_delete";
+    private static final String MARK_PERMISSION_MODIFY = "permission_modify";
 
     // TEMPALTES
     private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
@@ -89,6 +92,13 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
             RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
                 AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) );
 
+        model.put( MARK_PERMISSION_CHANGE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
+                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
+        model.put( MARK_PERMISSION_MODIFY, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
+                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
+        model.put( MARK_PERMISSION_DELETE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,  "0",
+                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
+                
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD,
                 AdminUserService.getLocale( request ), model );
 
