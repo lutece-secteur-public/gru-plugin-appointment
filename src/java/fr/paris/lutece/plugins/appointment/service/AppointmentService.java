@@ -334,6 +334,77 @@ public class AppointmentService
         return calendar;
     }
     /**
+     * Is week can be visible
+     * @param listDays
+     * @return
+     */
+    private static boolean isWeekEnabled ( List<AppointmentDay> listDays )
+    {
+    	boolean bRet = false;
+    	for (AppointmentDay tmpDay :  listDays)
+    	{
+    		if ( tmpDay.getIsOpen() )
+    		{
+    			 for (AppointmentSlot tmpApp : tmpDay.getListSlots())
+    			 {
+    				 if (tmpApp.getIsEnabled())
+    				 {
+    					 Calendar myCal = GregorianCalendar.getInstance( Locale.FRENCH );
+    					 Calendar tmpCal =  getCalendarTime(tmpDay.getDate(),  tmpApp.getStartingHour(), tmpApp.getStartingMinute());
+    					 if (tmpCal.after(myCal)) 
+    						 bRet = true;
+    				 }
+    			 }
+    		}
+    	}
+		return bRet;
+    }
+    
+    
+    /**
+     * Check monday from the offset
+     * @param nOffsetWeeks
+     * @return
+     */
+    private static Calendar[] getMondayWeek (  int nOffsetWeeks )
+    {
+    	Calendar retCal[] = new Calendar[2];
+    	Calendar dateMin = GregorianCalendar.getInstance( Locale.FRANCE );
+    	// We set the week to the requested one 
+    	dateMin.add( Calendar.DAY_OF_MONTH, 7 * nOffsetWeeks );
+
+        // We get the current day of the week
+        int nCurrentDayOfWeek = dateMin.get( Calendar.DAY_OF_WEEK );
+        // We add the day of the week to Monday on the calendar
+        dateMin.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+        retCal[0] = dateMin;
+        Calendar dateMax = (Calendar) dateMin.clone();
+        dateMax.add( Calendar.DAY_OF_MONTH, 6 );
+         retCal[1] = dateMax;
+        return retCal;
+    }
+    
+    /**
+     * Get all ListDays beetween 2 dates
+     * @param form
+     * @param nOffsetWeeks
+     * @return listDays
+     */
+    private List<AppointmentDay> getListDays( AppointmentForm form, MutableInt nOffsetWeeks )
+    {
+    	Calendar calendar []= getMondayWeek ( nOffsetWeeks.intValue() );
+
+        Date dateMin = new Date( calendar[0].getTimeInMillis() );
+
+        Date dateMax = new Date( calendar[1].getTimeInMillis() );
+
+        List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
+        Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
+        Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
+        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays, calendarStart, calendarEnd );
+        return listDays;
+    }
+    /**
      * Get the list of days of a form to display them in a calendar. Days and
      * slots are not computed by this method but loaded from the database. The
      * number of free places of each slot is also loaded. Pasted days are marked
@@ -355,32 +426,30 @@ public class AppointmentService
     public List<AppointmentDay> getDayListForCalendar( AppointmentForm form, MutableInt nOffsetWeeks,
         boolean bIsForFront, boolean bGetFirstEmptyWeek )
     {
-        Date date = new Date( System.currentTimeMillis(  ) );
-        Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
-        calendar.setTime( date );
-
-        int nRealOffset = nOffsetWeeks.intValue(  );
-
-        // We set the week to the requested one 
-        calendar.add( Calendar.DAY_OF_MONTH, 7 * nRealOffset );
-
-        // We get the current day of the week
-        int nCurrentDayOfWeek = calendar.get( Calendar.DAY_OF_WEEK );
-        // We add the day of the week to Monday on the calendar
-        calendar.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
-
-        Date dateMin = new Date( calendar.getTimeInMillis(  ) );
-        calendar.add( Calendar.DAY_OF_MONTH, 6 );
-
-        Date dateMax = new Date( calendar.getTimeInMillis(  ) );
-
-        List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
-        Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
-        Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
      
-        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays, calendarStart, calendarEnd );
-        
-/*        long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
+    	List<AppointmentDay>listDays = getListDays ( form, nOffsetWeeks);
+        if ( bIsForFront )
+        {
+        	 int nSave = nOffsetWeeks.intValue();
+        	 while (!isWeekEnabled ( listDays ) && nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ))
+        	 {	        	 
+        		 nOffsetWeeks.increment();
+	        	 listDays = getListDays ( form, nOffsetWeeks);
+        	 }
+        	 if (!isWeekEnabled ( listDays )) 
+        	 {
+        		 listDays = getListDays ( form, new MutableInt(nSave));
+        	 }
+        }
+  /*   
+        boolean bSlotFound = false;
+        while (  !bSlotFound && nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ) )
+        {
+        	
+        	if ()
+        	
+        }
+        long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
 
         if ( bIsForFront )
         {
