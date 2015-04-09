@@ -436,9 +436,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 				else
 				{
 					Calendar now = new GregorianCalendar( Locale.FRENCH );
-					precisedDateFromNow = getCalendarTime(new Date ( precisedDateFromNow.getTimeInMillis() ) , Integer.valueOf(mySlots.get( ni ).getEndingHour()), Integer.valueOf( mySlots.get( ni ).getEndingMinute()) );
-					Calendar precisedDateStartNow = getCalendarTime(new Date ( precisedDateFromNow.getTimeInMillis() ) , Integer.valueOf(mySlots.get( ni ).getStartingHour()), Integer.valueOf( mySlots.get( ni ).getStartingMinute()) );
-					if (precisedDateFromNow.before( now) ||  precisedDateStartNow.before( now) )
+					precisedDateFromNow = getCalendarTime(new Date ( precisedDateFromNow.getTimeInMillis() ) , Integer.valueOf(mySlots.get( ni ).getStartingHour()), Integer.valueOf( mySlots.get( ni ).getStartingMinute()) );
+					if (precisedDateFromNow.before( now)  )
 						mySlots.get( ni ).setIsEnabled( bCheck );
 				}
 			}
