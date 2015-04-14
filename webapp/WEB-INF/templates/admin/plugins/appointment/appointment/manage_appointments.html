@@ -107,7 +107,11 @@
 							</th>
 							<th align = "right" style="text-align: right"><button class="btn btn-primary btn-sm" type="submit" id="eraseAll" name="eraseAll" value="eraseAll" disabled="true" >
 								<i class="glyphicon glyphicon-ok">&nbsp;</i>#i18n{appointment.permission.label.deleteMassAppointment}
-							</button></th>
+							</button>
+							<a class="btn btn-info btn-flat" href="jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}&allDates=${allDates}"  >
+								<i class="glyphicon glyphicon-download">&nbsp;</i>#i18n{appointment.permission.label.exportMassAppointment}
+							</a>
+							</th>
 							</tr>
 							</table>
 						</center>

@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.web;
 
 import fr.paris.lutece.plugins.appointment.business.Appointment;
+import fr.paris.lutece.plugins.appointment.business.Appointment.Status;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
@@ -74,6 +75,7 @@ import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.csv.CSVReaderService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -104,9 +106,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.springframework.http.HttpRequest;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -120,6 +126,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import javax.naming.RefAddr;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -292,8 +299,111 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 10 );
     }
-
+    
     /**
+     * Get Sattus for CSV Writer
+     * @return
+     */
+    private Hashtable<Integer, String> getStatus ( Locale myLocale )
+    {
+    	Status[] mich = Appointment.Status.values();
+       	Hashtable<Integer, String> myStatus= new Hashtable<Integer, String>();
+       	for (Status tmpStatus: mich)
+       		myStatus.put(tmpStatus.getValeur(), I18nService.getLocalizedString( tmpStatus.getLibelle(),  myLocale ));
+       	return myStatus;
+    }
+    
+    /**
+     * Get Admin for CSV Writer
+     * @return
+     */
+    private static Hashtable<Integer, String> getAdmins ( )
+    {
+    	Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
+        Hashtable<Integer, String> myStatus= new Hashtable<Integer, String>();
+       	for (AdminUser tmpUser: listAdminUser)
+       		myStatus.put(tmpUser.getUserId(), tmpUser.getFirstName(  ) + CONSTANT_SPACE + tmpUser.getLastName(  ));
+       	return myStatus;
+    }
+    /**
+    * Do download a file from an appointment response
+    * @param request The request
+    * @param httpResponse The response
+    * @return nothing.
+    * @throws AccessDeniedException If the user is not authorized to access
+    *             this feature
+    */
+   public String getDownloadFileAppointment( HttpServletRequest request, HttpServletResponse response )
+       throws AccessDeniedException
+   {
+       String strIdResponse = request.getParameter( PARAMETER_ID_FORM );
+       String strcheckDate = request.getParameter( PARAMETER_DATE_MIN );
+       if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
+       {
+       	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+       }
+       if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
+               AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, getUser(  ) ) )
+       {
+       	throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
+   	}
+       AppointmentFilter filter = new AppointmentFilter(  );
+       filter.setIdAdminUser( -1 );
+       filter.setIdForm(Integer.valueOf(strIdResponse));
+       filter.setOrderBy("date_appointment");
+       filter.setOrderAsc(Boolean.FALSE.booleanValue());
+       filter = dateFiltered(strcheckDate, filter);
+       
+       List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
+
+       if ( listIdAppointments.size() > 0 )
+       {
+       	List<Appointment> listAppointments = AppointmentHome.getAppointmentListById( listIdAppointments,
+       			filter.getOrderBy(  ), filter.getOrderAsc(  ) );
+       	List<String[]>myWriter = new ArrayList<String[]>();
+
+
+         	
+       	for (Appointment tmpApp: listAppointments)
+       	{
+       		String[] strWriter = new String[7];
+       		strWriter[0]= tmpApp.getLastName();
+       		strWriter[1]= tmpApp.getFirstName();
+       		strWriter[2]= tmpApp.getEmail();
+       		strWriter[3]= DateUtil.getDateString(tmpApp.getDateAppointment(), getLocale( ) );
+       		strWriter[4]= new SimpleDateFormat("HH:MM").format(tmpApp.getStartAppointment()) + " ~ "+new SimpleDateFormat("HH:MM").format(tmpApp.getEndAppointment());
+       		strWriter[5]= getAdmins ( ).get(tmpApp.getIdAdminUser()) == null ?  StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
+       		strWriter[6]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
+       		myWriter.add(strWriter);
+       	}
+       	StringWriter strWriterBuffer = new StringWriter(  );
+       	CSVWriter csvWriter = new CSVWriter( strWriterBuffer,  CSVReaderService.getDefaultCSVSeparator() );
+       	csvWriter.writeAll( myWriter );
+       	byte[] byteFileOutPut = strWriterBuffer.toString(  ).getBytes(  );
+
+           try
+           {
+               response.setHeader( "Content-Disposition", "attachment; filename=\"rendez_sous.csv\";" );
+               response.setHeader( "Pragma", "public" );
+               response.setHeader( "Expires", "0" );
+               response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+               response.setContentType( "enctype=multipart/form-data" );
+
+               OutputStream os = response.getOutputStream(  );
+               os.write( byteFileOutPut );
+               os.close(  );
+
+               csvWriter.close(  );
+               strWriterBuffer.close(  );
+           }
+           catch ( IOException e )
+           {
+               AppLogService.error( e );
+           }
+       }
+
+       return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+   }/**
      * Get the page to manage appointments. Appointments are displayed in a
      * calendar.
      * @param request The request
