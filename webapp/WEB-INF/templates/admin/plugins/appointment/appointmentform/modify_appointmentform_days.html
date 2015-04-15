@@ -23,14 +23,18 @@
 	    			</div>
     		</legend>
 			<div class="pull-left">
+				<#if nb_week &gt; -max_week >
 				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
 					<i class="glyphicon glyphicon-arrow-left"></i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
 				</a>
+				</#if>
 			</div>
 			<div class="pull-right">
+				<#if nb_week < max_week>
 				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=${nb_week + 1}" title="#i18n{appointment.appointmentApp.nextWeek}">
 					#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>
 				</a>
+				</#if>
 			</div>
 			<#if listDays?? && listDays?size &gt; 0>
 				<table class="table table-striped">
@@ -127,12 +131,8 @@
 <script type="text/javascript">
 $('#validityDate').datepicker({
     language:		"${language}",
-    <#if appointmentform.dateStartValidity?? && appointmentform.dateStartValidity?has_content >
-    startDate:		"${appointmentform.dateStartValidity}",
-    </#if>
-    <#if appointmentform.dateEndValidity?? && appointmentform.dateEndValidity?has_content >
-    endDate:		"${appointmentform.dateEndValidity}",
-    </#if>
+    startDate:		"${bornDates[0]}",
+    endDate:		"${bornDates[1]}",
     todayBtn: true,
     todayHighLight: true,
     autoclose:		true

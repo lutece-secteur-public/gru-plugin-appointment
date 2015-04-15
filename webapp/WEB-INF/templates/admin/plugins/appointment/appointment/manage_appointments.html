@@ -95,15 +95,7 @@
 							<table class="table table-condensed table-striped">
 							<tr>
 							<th colspan="7" align="center">
-								<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&allDates=${allDates}">
-										<#if allDates?boolean>
-										<i class="glyphicon glyphicon-eye-open"></i>
-											#i18n{appointment.manage_appointments.fulltitle}
-										<#else>
-										<i class="glyphicon glyphicon-eye-close"></i>
-											#i18n{appointment.manage_appointments.lighttitle}
-										</#if>
-								</a>
+								<@comboWithParams name="statusExport" items=refListExports default_value="${allDates}" additionalParameters="class='form-control'" />
 							</th>
 							<th align = "right" style="text-align: right"><button class="btn btn-primary btn-sm" type="submit" id="eraseAll" name="eraseAll" value="eraseAll" disabled="true" >
 								<i class="glyphicon glyphicon-ok">&nbsp;</i>#i18n{appointment.permission.label.deleteMassAppointment}
@@ -287,5 +279,8 @@ $('#dateAppointment').datepicker({
     todayBtn: true,
     todayHighLight: true,
     autoclose: true
+});
+$('#statusExport').click(function() {
+	window.location.href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&allDates="+$('#statusExport option:selected').val();
 });
 </script>

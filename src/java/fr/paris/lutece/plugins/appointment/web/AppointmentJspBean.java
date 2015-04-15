@@ -104,6 +104,14 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.DateFormatConverter;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
 import org.springframework.http.HttpRequest;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -124,6 +132,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.RefAddr;
@@ -166,7 +175,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PROPERTY_PAGE_TITLE_APPOINTMENT_CALENDAR = "appointment.appointmentCalendar.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT = "appointment.appointmentApp.recap.title";
     private static final String PROPERTY_PAGE_TITLE_TASKS_FORM_WORKFLOW = "appointment.taskFormWorkflow.pageTitle";
-
+    private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
     // Parameters
     private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
     private static final String PARAMETER_ID_FORM = "id_form";
@@ -175,6 +184,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
     private static final String PARAMETER_NB_WEEK = "nb_week";
+    private static final String PARAMETER_MAX_WEEK = "max_week";
     private static final String PARAMETER_ID_SLOT = "idSlot";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_ID_ACTION = "id_action";
@@ -187,6 +197,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_TIME="time";
     private static final String PARAMETER_ID_APPOINTMENT_DELETE = "apmt";
     private static final String PARAMETER_DELETE_AND_BACK =  "eraseAll";
+    private static final String PARAMETER_LIM_DATES = "bornDates";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -213,6 +224,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_DAY = "day";
     private static final String MARK_FILTER = "filter";
     private static final String MARK_REF_LIST_STATUS = "refListStatus";
+    private static final String MARK_REF_LIST_EXPORT = "refListExports";
     private static final String MARK_FILTER_FROM_SESSION = "loadFilterFromSession";
     private static final String MARK_TASKS_FORM = "tasks_form";
     private static final String MARK_STATUS_VALIDATED = "status_validated";
@@ -281,6 +293,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek(  );
 
     // Constants
+    private static final int STATUS_CODE_ZERO = 0;
+    private static final int STATUS_CODE_ONE = 1;
+    private static final int STATUS_CODE_TWO = 2;
     private static final String DEFAULT_CURRENT_PAGE = "1";
     private static final String CONSTANT_SPACE = " ";
     private static final String CONSTANT_ZERO = "0";
@@ -292,6 +307,28 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private int _nDefaultItemsPerPage;
     private AppointmentFilter _filter;
 
+    /**
+     * Status of appointments that have not been validated yet, validate or rejected
+     */
+    public enum ExportFilter {
+     	DAY_ONLY (STATUS_CODE_ZERO, "appointment.manage_appointments.daytitle"),
+    	FROM_NOWDAY(STATUS_CODE_ONE, 	"appointment.manage_appointments.lighttitle" ),
+    	ALL_DAYS (STATUS_CODE_TWO, "appointment.manage_appointments.fulltitle");
+    	
+    	private final int nValue;
+        private final String strLibelle;
+        
+        ExportFilter (int nValeur, String strMessage)
+        {
+        	this.nValue = nValeur;
+        	this.strLibelle = strMessage;
+        }
+        
+        public int getValeur(){ return this.nValue; }
+        public String getLibelle(){ return this.strLibelle; }
+    }
+    
+    
     /**
      * Default constructor
      */
@@ -337,16 +374,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
        throws AccessDeniedException
    {
        String strIdResponse = request.getParameter( PARAMETER_ID_FORM );
-       String strcheckDate = request.getParameter( PARAMETER_DATE_MIN );
+       String strcheckDate = request.getParameter( PARAMETER_DATE_MIN ) == null ? "0" : request.getParameter( PARAMETER_DATE_MIN );
        if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
        {
        	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
        }
-       if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
+       if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdResponse,
                AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, getUser(  ) ) )
        {
        	throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
-   	}
+   		}
        AppointmentFilter filter = new AppointmentFilter(  );
        filter.setIdAdminUser( -1 );
        filter.setIdForm(Integer.valueOf(strIdResponse));
@@ -354,56 +391,101 @@ public class AppointmentJspBean extends MVCAdminJspBean
        filter.setOrderAsc(Boolean.FALSE.booleanValue());
        filter = dateFiltered(strcheckDate, filter);
        
+       List<Object[]> tmpObj = new ArrayList<Object[]>();
        List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
+       AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey(Integer.valueOf(strIdResponse));
+       HSSFWorkbook workbook = new HSSFWorkbook();
+       HSSFSheet sheet = workbook.createSheet(I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale() ));
 
+       if ( tmpForm!= null )
+       {
+    	   Object[] strWriter = new String[1];
+    	   strWriter[0] = tmpForm.getTitle();
+    	   tmpObj.add( strWriter );
+    	   Object[] strInfos= new String[8];
+    	   strInfos[0] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLastName", getLocale() );
+    	   strInfos[1] = I18nService.getLocalizedString( "appointment.manage_appointments.columnFirstName", getLocale());
+    	   strInfos[2] = I18nService.getLocalizedString( "appointment.manage_appointments.columnEmail", getLocale()    );
+    	   strInfos[3] = I18nService.getLocalizedString( "appointment.manage_appointments.columnDateAppointment", getLocale() );
+    	   strInfos[4] = I18nService.getLocalizedString( "appointment.model.entity.appointmentform.attribute.timeStart", getLocale() );
+    	   strInfos[5] = I18nService.getLocalizedString( "appointment.model.entity.appointmentform.attribute.timeEnd", getLocale() );
+    	   strInfos[6] = I18nService.getLocalizedString( "appointment.manage_appointments.columnAdminUser", getLocale() );
+    	   strInfos[7] = I18nService.getLocalizedString( "appointment.manage_appointments.columnStatus", getLocale() );
+    	   tmpObj.add( strInfos );
+       }
        if ( listIdAppointments.size() > 0 )
        {
-       	List<Appointment> listAppointments = AppointmentHome.getAppointmentListById( listIdAppointments,
-       			filter.getOrderBy(  ), filter.getOrderAsc(  ) );
-       	List<String[]>myWriter = new ArrayList<String[]>();
-
-
-         	
-       	for (Appointment tmpApp: listAppointments)
-       	{
-       		String[] strWriter = new String[7];
-       		strWriter[0]= tmpApp.getLastName();
-       		strWriter[1]= tmpApp.getFirstName();
-       		strWriter[2]= tmpApp.getEmail();
-       		strWriter[3]= DateUtil.getDateString(tmpApp.getDateAppointment(), getLocale( ) );
-       		strWriter[4]= new SimpleDateFormat("HH:MM").format(tmpApp.getStartAppointment()) + " ~ "+new SimpleDateFormat("HH:MM").format(tmpApp.getEndAppointment());
-       		strWriter[5]= getAdmins ( ).get(tmpApp.getIdAdminUser()) == null ?  StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
-       		strWriter[6]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
-       		myWriter.add(strWriter);
-       	}
-       	StringWriter strWriterBuffer = new StringWriter(  );
-       	CSVWriter csvWriter = new CSVWriter( strWriterBuffer,  CSVReaderService.getDefaultCSVSeparator() );
-       	csvWriter.writeAll( myWriter );
-       	byte[] byteFileOutPut = strWriterBuffer.toString(  ).getBytes(  );
-
+	       	List<Appointment> listAppointments = AppointmentHome.getAppointmentListById( listIdAppointments,
+	       			filter.getOrderBy(  ), filter.getOrderAsc(  ) );
+	      	for (Appointment tmpApp: listAppointments)
+	       	{
+	      		Object[] strWriter = new String[8];
+	       		strWriter[0]= tmpApp.getLastName();
+	       		strWriter[1]= tmpApp.getFirstName();
+	       		strWriter[2]= tmpApp.getEmail();
+	       		strWriter[3]= DateUtil.getDateString(tmpApp.getDateAppointment(), getLocale( ) );
+	       		strWriter[4]= new SimpleDateFormat("HH:MM").format(tmpApp.getStartAppointment()) ;
+	       		strWriter[5]=new SimpleDateFormat("HH:MM").format(tmpApp.getEndAppointment());
+	       		strWriter[6]= getAdmins ( ).get(tmpApp.getIdAdminUser()) == null ?  StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
+	       		strWriter[7]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
+	       		tmpObj.add(strWriter);
+	       	}
+       }
+       int nRownum = 0;
+       for (Object[] myObj : tmpObj)
+       {
+    	   Row row = sheet.createRow(nRownum++);
+    	   int nCellnum = 0;
+    	   for ( Object strLine : myObj)
+    	   {
+    		   Cell cell = row.createCell(nCellnum++);
+    		   if(strLine instanceof String)
+    			   cell.setCellValue((String) strLine);
+    		   else if(strLine instanceof Integer)
+                   cell.setCellValue((Integer) strLine);
+     	   }
+       }
+       	byte[]byteFileOutPut = workbook.getBytes();
            try
            {
-               response.setHeader( "Content-Disposition", "attachment; filename=\"rendez_sous.csv\";" );
+        	   response.setContentType("application/vnd.ms-excel");
+               response.setHeader( "Content-Disposition", "attachment; filename=\"rendez_vous.xls\";" );
                response.setHeader( "Pragma", "public" );
                response.setHeader( "Expires", "0" );
                response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
-               response.setContentType( "enctype=multipart/form-data" );
 
                OutputStream os = response.getOutputStream(  );
                os.write( byteFileOutPut );
                os.close(  );
-
-               csvWriter.close(  );
-               strWriterBuffer.close(  );
-           }
+            }
            catch ( IOException e )
            {
                AppLogService.error( e );
            }
-       }
 
        return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-   }/**
+   }
+   
+  /** 
+   *    Get Limited Date
+   * 	@param nBWeeks
+   * 	@return
+ */
+   private String[] getLimitedDate( int nBWeeks )
+   {
+	   Calendar startCal = GregorianCalendar.getInstance( Locale.FRENCH );	
+	   Calendar endCal   = GregorianCalendar.getInstance( Locale.FRENCH );	
+	   startCal.set(Calendar.WEEK_OF_YEAR, startCal.get(Calendar.WEEK_OF_YEAR)-nBWeeks);
+	   startCal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+	   endCal.set(Calendar.WEEK_OF_YEAR, endCal.get(Calendar.WEEK_OF_YEAR)+nBWeeks);
+	   endCal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+	   endCal.add(Calendar.DATE, -1);
+	   String[] retour = {DateUtil.getDateString(startCal.getTime(), getLocale() ),DateUtil.getDateString(endCal.getTime(), getLocale() )};
+	   return retour;
+	   
+   }
+   
+   /**
      * Get the page to manage appointments. Appointments are displayed in a
      * calendar.
      * @param request The request
@@ -421,34 +503,28 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
             _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
-
+            
             int nIdForm = Integer.parseInt( strIdForm );
             String strTime =  request.getParameter( PARAMETER_ID_TIME ) ;
           
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
+            int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 ) + form.getNbWeeksToDisplay();
             String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
             int nNbWeek = 0;
             if ( !StringUtils.isEmpty(strTimeMilli) || StringUtils.isNumeric( strTimeMilli ))
             {
             	 Date objMyTime = new Date ( Long.valueOf( strTimeMilli) );
-            	 if ( form == null || 
-            	    ( form.getDateStartValidity() != null && objMyTime.before( form.getDateStartValidity( ) ) ) || 
-            	    ( form.getDateEndValidity() != null &&   objMyTime.after( form.getDateEndValidity ( ) ) ) )
-            	 {
-            	       	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-            	 }
-            	 else
-            	 {
-            		 // Compute difference in week beetween now and date picked for the calendar button
-            		 nNbWeek = computeWeek(objMyTime);
-            	 }
+           		 // Compute difference in week beetween now and date picked for the calendar button
+           		 nNbWeek = computeWeek(objMyTime);
             }
 
             if ( StringUtils.isNotEmpty( strNbWeek ) )
             {
                 nNbWeek = AppointmentService.getService(  ).parseInt( strNbWeek );
-            }
+                if (Math.abs(nNbWeek) > nNbWeeksToCreate)
+                	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+             }
 
             List<AppointmentDay> listDays = AppointmentService.getService(  ).findAndComputeDayList( form, nNbWeek,
                     false );
@@ -518,6 +594,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_FORM, form );
             model.put( MARK_LIST_DAYS, listDays );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
+            model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate-1 );
+            model.put( PARAMETER_LIM_DATES, getLimitedDate( nNbWeeksToCreate) );
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
@@ -697,7 +775,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             url.addParameter( MARK_FILTER_FROM_SESSION, Boolean.TRUE.toString(  ) );
 
             String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
-            String strCheckDate = request.getParameter( PARAMETER_DATE_MIN );
+            String strCheckDate = request.getParameter( PARAMETER_DATE_MIN ) == null ? "0" :  request.getParameter( PARAMETER_DATE_MIN );
             AppointmentDay day = null;
             AppointmentSlot slot = null;
             AppointmentFilter filter;
@@ -737,7 +815,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     url.addParameter( PARAMETER_ID_SLOT, strIdSlot );
                 }
                 
-                _filter = dateFiltered(strCheckDate, filter);
+                filter = dateFiltered(strCheckDate, filter);
             }
 
             String strUrl = url.getUrl(  );
@@ -778,8 +856,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 I18nService.getLocalizedString( Appointment.Status.STATUS_NOT_VALIDATED.getLibelle(), getLocale(  ) ) );
             refListStatus.addItem( Appointment.Status.STATUS_REJECTED.getValeur(),
                 I18nService.getLocalizedString( Appointment.Status.STATUS_REJECTED.getLibelle(), getLocale(  ) ) );
+            ReferenceList refListExports = new ReferenceList( );
+            for (ExportFilter tmpFilter : ExportFilter.values())
+            	refListExports.addItem( tmpFilter.getValeur(), I18nService.getLocalizedString( tmpFilter.getLibelle(), getLocale(  ) ) );
 
-            Map<String, Object> model = getModel(  );
+            	Map<String, Object> model = getModel(  );
             /*WORKFLOW FUTURE           model.put( MARK_STATUS, lsSta); */
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
@@ -788,7 +869,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_STATUS_VALIDATED, Appointment.Status.STATUS_VALIDATED.getValeur() );
             model.put( MARK_STATUS_REJECTED, Appointment.Status.STATUS_REJECTED.getValeur() );
             model.put( MARK_LANGUAGE, getLocale() );
-            model.put( MARK_ALLDATES, filter.getDateAppointmentMin() == null ? "false" : "true");
+            model.put( MARK_ALLDATES, strCheckDate);
             
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
@@ -840,6 +921,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_DAY, day );
             model.put( MARK_FILTER, filter );
             model.put( MARK_REF_LIST_STATUS, refListStatus );
+            model.put( MARK_REF_LIST_EXPORT, refListExports );
             model.put( MARK_RIGHT_CREATE,
                 RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
                     AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
@@ -871,8 +953,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
 			if (filter.getIdSlot()<= 0)
 			{
 			    filter.setDateAppointmentMin( new Date ( System.currentTimeMillis() ) );
-			    if (  Boolean.valueOf (strCheckDate ) )
+			    filter.setDateAppointmentMax( new Date ( System.currentTimeMillis() ) );
+			    if ( String.valueOf(STATUS_CODE_ONE).equals(strCheckDate) )
+			    	filter.setDateAppointmentMax( null );
+			    if ( String.valueOf(STATUS_CODE_TWO).equals(strCheckDate) )
+			    {
 			    	filter.setDateAppointmentMin( null );
+			    	filter.setDateAppointmentMax( null );
+			    }
 			}
 		    return filter;
 	}
@@ -1328,7 +1416,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
 
             Map<String, Object> model = getModel(  );
-
+            int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 ) + form.getNbWeeksToDisplay();
             String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
             int nNbWeek = 0;
 
@@ -1370,8 +1458,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, formMessages );
-
+            model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate-1 );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
+            model.put( PARAMETER_LIM_DATES, getLimitedDate( nNbWeeksToCreate) );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
 
             return getPage( PROPERTY_PAGE_TITLE_APPOINTMENT_CALENDAR, TEMPLATE_APPOINTMENT_FORM_CALENDAR, model );

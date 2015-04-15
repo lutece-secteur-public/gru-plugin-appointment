@@ -62,11 +62,13 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 
@@ -90,6 +92,10 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String PARAMETER_APPOINTMENT_DURATION = "appointmentDuration";
     private static final String PARAMETER_PEOPLE_PER_APPOINTMENT = "peoplePerAppointment";
     private static final String PARAMETER_NB_WEEK = "nb_week";
+    private static final String PARAMETER_MAX_WEEK = "max_week";
+    private static final String PARAMETER_LIM_DATES = "bornDates";
+
+
 
     // Messages
     //    private static final String MESSAGE_CONFIRM_REMOVE_DAY = "appointment.message.confirmRemoveDay";
@@ -106,6 +112,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_HOUR_APPOINTMENT_MAXIMALE = "appointment.message.error.formatNumberAppointmentDurationMaximum";
     private static final String MESSAGE_CONFIRM_REFRESH_DAYS = "appointment.message.confirmRefreshDays";
     private static final String INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED = "appointment.info.appointmentDay.slotsUpdated";
+    private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
 
     // Page titles
     private static final String PROPERTY_CREATE_DAY_TITLE = "appointment.createDay.pageTitle";
@@ -170,7 +177,6 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
 
             int nIdForm = Integer.parseInt( strIdForm );
-
             String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
 
             if ( StringUtils.isNotEmpty( strNbWeek ) )
@@ -186,7 +192,13 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
 
             AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
-
+            int nNbWeeksToCreate =  AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 ) ;
+            if (appointmentForm !=null)
+            {
+            	nNbWeeksToCreate += appointmentForm.getNbWeeksToDisplay();
+            	if (Math.abs(_nNbWeek) > nNbWeeksToCreate)
+            		redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+            }
             Date dateMin = AppointmentService.getService(  ).getDateMonday( _nNbWeek );
             Calendar calendar = GregorianCalendar.getInstance( getLocale ( ) );
             calendar.setTime( dateMin );
@@ -200,8 +212,10 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             AppointmentDayHome.getDaysBetween( nIdForm, dateMin, dateMax );
 
             Map<String, Object> model = new HashMap<String, Object>(  );
-            model.put( MARK_LIST_DAYS, listDays );
+                        model.put( MARK_LIST_DAYS, listDays );
             model.put( PARAMETER_NB_WEEK, _nNbWeek );
+            model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate-1);
+            model.put( PARAMETER_LIM_DATES, getLimitedDate(nNbWeeksToCreate) );
             model.put( MARK_DATE_MIN, dateMin );
             model.put( MARK_DATE_MAX, dateMax );
             model.put( MARK_LOCALE, getLocale ( ) );
@@ -235,15 +249,15 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         
         int nIdForm = Integer.parseInt( strIdForm );
         Date objMyTime = new Date ( Long.valueOf( strTimeMilli) );
+        Calendar tmpCal = GregorianCalendar.getInstance( Locale.FRENCH );
+        tmpCal.setTimeInMillis( objMyTime.getTime() );
+        tmpCal.set(GregorianCalendar.getInstance( Locale.FRENCH ).get(Calendar.YEAR), 
+        		GregorianCalendar.getInstance( Locale.FRENCH ).get(Calendar.MONTH), 
+        		GregorianCalendar.getInstance( Locale.FRENCH ).get(Calendar.DAY_OF_MONTH));
+        Date nowTime = new Date ( tmpCal.getTimeInMillis() );
         
         AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
-        // Check date beetwen start and end validity
-        if ( appointmentForm == null || 
-           ( appointmentForm.getDateStartValidity() != null && objMyTime.before( appointmentForm.getDateStartValidity( ) ) ) || 
-           ( appointmentForm.getDateEndValidity() != null &&   objMyTime.after( appointmentForm.getDateEndValidity ( ) ) ) )
-        {
-        	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-        }
+        
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
                     AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser(  ) ) )
         {
@@ -252,6 +266,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         //Check the id if it s in th DB
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( appointmentForm.getIdForm(  ), objMyTime,
         		objMyTime );
+        
         
         // Default Values
 
@@ -266,7 +281,14 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         	_appointmentDay.setIdForm( nIdForm );
         	_appointmentDay.setDate( objMyTime );
         	AppointmentDayHome.create( _appointmentDay );
-        	_appointmentDay = copyDayFromDB( _appointmentDay );
+        	if ( !objMyTime.before(nowTime ) )
+            {
+        		 _appointmentDay = copyDayFromDB( _appointmentDay );
+            }
+        }
+        if ( objMyTime.before(nowTime ) )
+        {
+        	return redirect( request, VIEW_GET_VIEW_DAY, PARAMETER_ID_DAY, _appointmentDay.getIdDay() );
         }
         model.put( MARK_DAY, _appointmentDay );
         model.put( MARK_LOCALE, getLocale() );
@@ -276,7 +298,25 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         return getPage( PROPERTY_CREATE_DAY_TITLE, TEMPLATE_MODIFY_DAY, model );
     }
 
-    /**
+    /** 
+     *    Get Limited Date
+     * 	@param nBWeeks
+     * 	@return
+   */
+     private String[] getLimitedDate( int nBWeeks )
+     {
+  	   Calendar startCal = GregorianCalendar.getInstance( Locale.FRENCH );	
+  	   Calendar endCal   = GregorianCalendar.getInstance( Locale.FRENCH );	
+  	   startCal.set(Calendar.WEEK_OF_YEAR, startCal.get(Calendar.WEEK_OF_YEAR)-nBWeeks);
+  	   startCal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+  	   endCal.set(Calendar.WEEK_OF_YEAR, endCal.get(Calendar.WEEK_OF_YEAR)+nBWeeks);
+  	   endCal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+  	   endCal.add(Calendar.DATE, -1);
+  	   String[] retour = {DateUtil.getDateString(startCal.getTime(), getLocale() ),DateUtil.getDateString(endCal.getTime(), getLocale() )};
+  	   return retour;
+  	   
+     }
+     /**
      * Do create a day
      * @param request the request
      * @return The HTML code to display or the next URL to redirect to

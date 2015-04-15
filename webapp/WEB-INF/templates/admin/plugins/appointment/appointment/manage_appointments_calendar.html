@@ -16,9 +16,11 @@
 		<@tabs tab="calendar" form=form />
 		<@messages infos=infos />
 		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+		<#if nb_week &gt; -max_week >
 			<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
 				<i class="glyphicon glyphicon-arrow-left"></i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
 			</a>
+		</#if>
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 			<button class="btn btn-primary btn-sm"  id="validityDate"  name="validityDate" >
@@ -26,9 +28,11 @@
 			</button>
 		</div>
 		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+		<#if nb_week < max_week>
 			<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
 				#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>
 			</a>
+		</#if>
 		</div>
 	</div>
 </div>
@@ -215,12 +219,8 @@
 <script type="text/javascript">
 $('#validityDate').datepicker({
     language:		"${language}",
-    <#if form.dateStartValidity?? && form.dateStartValidity?has_content >
-    startDate:		"${form.dateStartValidity}",
-    </#if>
-    <#if form.dateEndValidity?? && form.dateEndValidity?has_content >
-    endDate:		"${form.dateEndValidity}",
-    </#if>
+    startDate:		"${bornDates[0]}",
+    endDate:		"${bornDates[1]}",
     todayBtn: true,
     todayHighLight: true,
     autoclose:		true
