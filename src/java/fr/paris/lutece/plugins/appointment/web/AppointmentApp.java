@@ -63,6 +63,8 @@ import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.business.workflow.Workflow;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
@@ -779,10 +781,11 @@ public class AppointmentApp extends MVCApplication
                 {
                     if ( appointment.getIdActionCancel(  ) > 0 )
                     {
+                    	boolean automaticUpdate =  AdminUserService.getAdminUser( request ) == null ? true : false;
                         WorkflowService.getInstance(  )
                                        .doProcessAction( appointment.getIdAppointment(  ),
                             Appointment.APPOINTMENT_RESOURCE_TYPE, appointment.getIdActionCancel(  ),
-                            form.getIdForm(  ), request, request.getLocale(  ), false );
+                            form.getIdForm(  ), request, request.getLocale(  ), automaticUpdate );
                     }
                     else
                     {
