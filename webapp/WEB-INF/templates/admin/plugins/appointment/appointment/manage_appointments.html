@@ -280,7 +280,7 @@ $('#dateAppointment').datepicker({
     todayHighLight: true,
     autoclose: true
 });
-$('#statusExport').click(function() {
+$('#statusExport').change(function() {
 	window.location.href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&allDates="+$('#statusExport option:selected').val();
 });
 </script>

@@ -33,6 +33,35 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolation;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.Appointment.Status;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
@@ -63,10 +92,6 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
-import fr.paris.lutece.plugins.workflowcore.business.state.State;
-import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
-import fr.paris.lutece.plugins.workflowcore.business.workflow.Workflow;
-import fr.paris.lutece.plugins.workflowcore.service.state.IStateService;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.business.file.FileHome;
@@ -75,7 +100,6 @@ import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.csv.CSVReaderService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -100,46 +124,6 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.util.DateFormatConverter;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
-import org.springframework.http.HttpRequest;
-
-import au.com.bytecode.opencsv.CSVWriter;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
-import javax.naming.RefAddr;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolation;
 
 
 /**
@@ -238,7 +222,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_ALLDATES = "allDates";
     
 
-    // JSP
+    // JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 
@@ -394,8 +378,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
        List<Object[]> tmpObj = new ArrayList<Object[]>();
        List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
        AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey(Integer.valueOf(strIdResponse));
-       HSSFWorkbook workbook = new HSSFWorkbook();
-       HSSFSheet sheet = workbook.createSheet(I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale() ));
+       XSSFWorkbook workbook = new XSSFWorkbook();
+       XSSFSheet sheet = workbook.createSheet(I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale() ));
 
        if ( tmpForm!= null )
        {
@@ -439,23 +423,28 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	   for ( Object strLine : myObj)
     	   {
     		   Cell cell = row.createCell(nCellnum++);
-    		   if(strLine instanceof String)
-    			   cell.setCellValue((String) strLine);
-    		   else if(strLine instanceof Integer)
-                   cell.setCellValue((Integer) strLine);
+    		   if (strLine instanceof String) {
+                   cell.setCellValue((String) strLine);
+               } else if (strLine instanceof Boolean) {
+                   cell.setCellValue((Boolean) strLine);
+               } else if (strLine instanceof Date) {
+                   cell.setCellValue((Date) strLine);
+               } else if (strLine instanceof Double) {
+                   cell.setCellValue((Double) strLine);
+               }
      	   }
        }
-       	byte[]byteFileOutPut = workbook.getBytes();
+
            try
            {
         	   response.setContentType("application/vnd.ms-excel");
-               response.setHeader( "Content-Disposition", "attachment; filename=\"rendez_vous.xls\";" );
+               response.setHeader( "Content-Disposition", "attachment; filename=\"rendez_vous.xlsx\";" );
                response.setHeader( "Pragma", "public" );
                response.setHeader( "Expires", "0" );
                response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
 
                OutputStream os = response.getOutputStream(  );
-               os.write( byteFileOutPut );
+               workbook.write( os );
                os.close(  );
             }
            catch ( IOException e )
