@@ -137,10 +137,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "language";
     private static final String MARK_LOCALE_TINY = "locale";
-    private static final String MARK_PERMISSION_CREATE = "permission_create";
-    private static final String MARK_PERMISSION_CHANGE = "permission_change";
-    private static final String MARK_PERMISSION_DELETE = "permission_delete";
-    private static final String MARK_PERMISSION_MODIFY = "permission_modify";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
     // Jsp
@@ -165,6 +161,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
     private static final String VIEW_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
     private static final String VIEW_MODIFY_FORM_MESSAGES = "modifyAppointmentFormMessages";
+    private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
     // Actions
     private static final String ACTION_CREATE_APPOINTMENTFORM = "createAppointmentForm";
@@ -227,7 +224,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
         String strUrl = url.getUrl(  );
         List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList(  );
-
+       
         // PAGINATOR
         LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms,
                 nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
@@ -236,23 +233,42 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_APPOINTMENTFORM_LIST,
+        
+         model.put( MARK_APPOINTMENTFORM_LIST,
             RBACService.getAuthorizedCollection( paginator.getPageItems(  ),
                 AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
-        model.put( MARK_PERMISSION_CREATE,
-            RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) );
-        model.put( MARK_PERMISSION_CHANGE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, AdminUserService.getAdminUser( request ) ) );
-        model.put( MARK_PERMISSION_MODIFY, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) );
-        model.put( MARK_PERMISSION_DELETE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,  "0",
-                AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) );
-        
-        
+               
+        model.put(VIEW_PERMISSIONS_FORM, getPermissions (paginator.getPageItems(  ),  AdminUserService.getAdminUser( request ) ) )   ;
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
+    /**
+     * Get Form Permissions
+     * @param listForms
+     * @param request
+     * @return
+     */
+    private static Boolean[][] getPermissions( List<AppointmentForm> listForms, AdminUser user )
+    {
+    	Boolean [][]retour  = new Boolean[listForms.size()][4];
+    	int nI = 0;
+    	for ( AppointmentForm tmpForm: listForms )
+    	{
+    		Boolean [] strRetour = new Boolean [listForms.size() ];
+    		strRetour[0] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ;
+    		strRetour[1] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user );
+    		strRetour[2] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) ;
+    		strRetour[3] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) ;
+    		retour[nI++] = strRetour;
+
+    	}
+    	return retour;
+    }
+    
     /**
      * Returns the form to create an appointment form
      *

@@ -63,10 +63,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     private static final String MARK_URL = "url";
     private static final String MARK_ICON = "icon";
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
-    private static final String MARK_PERMISSION_CREATE = "permission_create";
-    private static final String MARK_PERMISSION_CHANGE = "permission_change";
-    private static final String MARK_PERMISSION_DELETE = "permission_delete";
-    private static final String MARK_PERMISSION_MODIFY = "permission_modify";
+    private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
     // TEMPALTES
     private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
@@ -88,20 +85,37 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
                 AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl(  ) );
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-        model.put( MARK_PERMISSION_CREATE,
-            RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) );
-
-        model.put( MARK_PERMISSION_CHANGE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
-        model.put( MARK_PERMISSION_MODIFY, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
-        model.put( MARK_PERMISSION_DELETE, RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,  "0",
-                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
+        model.put(VIEW_PERMISSIONS_FORM, getPermissions (listAppointmentForms,  AdminUserService.getAdminUser( request ) ) )   ;
                 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD,
                 AdminUserService.getLocale( request ), model );
 
         return template.getHtml(  );
+    }
+    /**
+     * Get Form Permissions
+     * @param listForms
+     * @param request
+     * @return
+     */
+    private static Boolean[][] getPermissions( List<AppointmentForm> listForms, AdminUser user )
+    {
+    	Boolean [][]retour  = new Boolean[listForms.size()][4];
+    	int nI = 0;
+    	for ( AppointmentForm tmpForm: listForms )
+    	{
+    		Boolean [] strRetour = new Boolean [listForms.size() ];
+    		strRetour[0] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ;
+    		strRetour[1] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user );
+    		strRetour[2] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) ;
+    		strRetour[3] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) ;
+    		retour[nI++] = strRetour;
+
+    	}
+    	return retour;
     }
 }
