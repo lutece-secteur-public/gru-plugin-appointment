@@ -104,7 +104,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     	int nI = 0;
     	for ( AppointmentForm tmpForm: listForms )
     	{
-    		Boolean [] strRetour = new Boolean [listForms.size() ];
+    		Boolean [] strRetour = new Boolean [4];
     		strRetour[0] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
     		                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ;
     		strRetour[1] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,String.valueOf( tmpForm.getIdForm()),
