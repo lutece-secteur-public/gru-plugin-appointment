@@ -78,7 +78,8 @@ public class AppointmentFilter implements Serializable
     private int _nStatus = NO_STATUS_FILTER;
     private String _strOrderBy = CONSTANT_DEFAULT_ORDER_BY;
     private boolean _bOrderAsc;
-
+    private String _statusFilter;
+    
     /**
      * Get the id of the form
      * @return The id of the form
@@ -366,4 +367,23 @@ public class AppointmentFilter implements Serializable
     {
         this._bOrderAsc = bOrderAsc;
     }
+    
+    /**
+     * Get the order of the sort of this filter
+     * @return The _bOrderAsc
+     */
+    public String getStatusFilter(  )
+    {
+        return _statusFilter;
+    }
+
+    /**
+     * Set the order of the sort of this filter
+     * @param bOrderAsc True to sort ascending, false to sort descending,
+     */
+    public void setStatusFilter( String status )
+    {
+        this._statusFilter = status;
+    }
+    
 }

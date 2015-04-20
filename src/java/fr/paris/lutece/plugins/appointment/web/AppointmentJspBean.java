@@ -200,6 +200,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_APPOINTMENT_DELETE = "apmt";
     private static final String PARAMETER_DELETE_AND_BACK =  "eraseAll";
     private static final String PARAMETER_LIM_DATES = "bornDates";
+    private static final String PARAMETER_SEEK = "Rechercher";
+    private static final String PARAMETER_INDX = "page_index";
+    private static final String PARAMETER_MARK_FORCE = "force";
+    
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -386,13 +390,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
        {
        	throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
    		}
-       AppointmentFilter filter = new AppointmentFilter(  );
-       filter.setIdAdminUser( -1 );
-       filter.setIdForm(Integer.valueOf(strIdResponse));
-       filter.setOrderBy("date_appointment");
-       filter.setOrderAsc(Boolean.FALSE.booleanValue());
-       filter = dateFiltered(strcheckDate, filter);
-       
+       AppointmentFilter filter = (AppointmentFilter) request.getSession().getAttribute(MARK_FILTER);
+        
        List<Object[]> tmpObj = new ArrayList<Object[]>();
        List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
        AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey(Integer.valueOf(strIdResponse));
@@ -744,8 +743,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String getManageAppointments( HttpServletRequest request )
     {
         AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
-
+        boolean bTriForce = false;
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        if (Boolean.valueOf(request.getParameter(PARAMETER_MARK_FORCE)))
+        {
+        	bTriForce = true;
+        }
+        if (request.getParameter(PARAMETER_SEEK)!=null)
+        {
+        	request.getSession(  ).removeAttribute( PARAMETER_ID_APPOINTMENT_DELETE);
+        	request.getSession(  ).removeAttribute( SESSION_CURRENT_PAGE_INDEX);
+        	request.getSession(  ).removeAttribute( SESSION_ITEMS_PER_PAGE );
+        	request.getSession().removeAttribute(MARK_FILTER);
+        }
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
@@ -772,6 +782,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             request.getSession(  ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
 
+           
             int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
                     getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
             request.getSession(  ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
@@ -781,17 +792,23 @@ public class AppointmentJspBean extends MVCAdminJspBean
             url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
             url.addParameter( PARAMETER_ID_FORM, strIdForm );
             url.addParameter( MARK_FILTER_FROM_SESSION, Boolean.TRUE.toString(  ) );
+             
 
             String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
-            String strCheckDate = request.getParameter( PARAMETER_DATE_MIN ) == null ? "0" :  request.getParameter( PARAMETER_DATE_MIN );
+            String strCheckDate = request.getParameter( PARAMETER_DATE_MIN );
+            
             AppointmentDay day = null;
             AppointmentSlot slot = null;
             AppointmentFilter filter;
-
+            _filter  = (AppointmentFilter) request.getSession().getAttribute(MARK_FILTER);
             if ( ( _filter != null ) && Boolean.parseBoolean( request.getParameter( MARK_FILTER_FROM_SESSION ) ) )
             {
-                filter = dateFiltered(strCheckDate, _filter);
-
+            	filter = _filter;
+            	 if (bTriForce )
+                 {	
+               	   	filter.setStatusFilter(strCheckDate);
+               		filter = dateFiltered(filter);
+                 }
                 String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
 
                 if ( StringUtils.isNotEmpty( strOrderBy ) )
@@ -804,7 +821,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             else
             {
                 filter = new AppointmentFilter(  );
-                populate( filter, request );
+                if (!Boolean.parseBoolean( request.getParameter( MARK_FILTER_FROM_SESSION ) ))
+                	populate( filter, request );
 
                 // We manually set the id of the admin user to -1 if no parameter is specified to avoid a bug of population that set it to 0
                 String strIdAdminUser = request.getParameter( PARAMETER_ID_ADMIN_USER );
@@ -822,11 +840,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     filter.setIdSlot( nIdSlot );
                     url.addParameter( PARAMETER_ID_SLOT, strIdSlot );
                 }
-                
-                filter = dateFiltered(strCheckDate, filter);
-            }
+                if (strCheckDate == null)
+                {
+                	strCheckDate = request.getParameter( PARAMETER_DATE_MIN ) == null ?  String.valueOf(STATUS_CODE_ZERO) : request.getParameter( PARAMETER_DATE_MIN )  ;
+                	if (request.getParameter(PARAMETER_SEEK)!=null)
+                		strCheckDate = String.valueOf(STATUS_CODE_TWO);
+                }	
+               if (bTriForce || filter.getStatusFilter(  ) == null || strCheckDate.equalsIgnoreCase(filter.getStatusFilter(  )) )
+              {	
+            	   	filter.setStatusFilter(strCheckDate);
+            		filter = dateFiltered(filter);
+              }
+            
 
-            String strUrl = url.getUrl(  );
+            }
+             String strUrl = url.getUrl(  );
+             request.getSession().setAttribute(MARK_FILTER, filter );
 
             List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
 
@@ -956,15 +985,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	 * @param strCheckDate
 	 * @param filter
 	 */
-	private  static AppointmentFilter dateFiltered(String strCheckDate, AppointmentFilter filter) {
+	private  static AppointmentFilter dateFiltered(AppointmentFilter filter) {
 		//Check filter from Date. Be careful if a slot is enabled
 			if (filter.getIdSlot()<= 0)
 			{
 			    filter.setDateAppointmentMin( new Date ( System.currentTimeMillis() ) );
 			    filter.setDateAppointmentMax( new Date ( System.currentTimeMillis() ) );
-			    if ( String.valueOf(STATUS_CODE_ONE).equals(strCheckDate) )
+			    if ( String.valueOf(STATUS_CODE_ONE).equals(filter.getStatusFilter()) )
 			    	filter.setDateAppointmentMax( null );
-			    if ( String.valueOf(STATUS_CODE_TWO).equals(strCheckDate) )
+			    	if ( String.valueOf(STATUS_CODE_TWO).equals(filter.getStatusFilter()) )
 			    {
 			    	filter.setDateAppointmentMin( null );
 			    	filter.setDateAppointmentMax( null );

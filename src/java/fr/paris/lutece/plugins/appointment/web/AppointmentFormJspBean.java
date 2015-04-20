@@ -248,21 +248,21 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * @param request
      * @return
      */
-    private static Boolean[][] getPermissions( List<AppointmentForm> listForms, AdminUser user )
+    private static String[][] getPermissions( List<AppointmentForm> listForms, AdminUser user )
     {
-    	Boolean [][]retour  = new Boolean[listForms.size()][4];
+    	String [][]retour  = new String[listForms.size()][4];
     	int nI = 0;
     	for ( AppointmentForm tmpForm: listForms )
     	{
-    		Boolean [] strRetour = new Boolean [listForms.size() ];
-    		strRetour[0] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ;
-    		strRetour[1] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user );
-    		strRetour[2] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) ;
-    		strRetour[3] = RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) ;
+    		String [] strRetour = new String [4];
+    		strRetour[0] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user )) ;
+    		strRetour[1] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ));
+    		strRetour[2] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user )) ;
+    		strRetour[3] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
+    		                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user )) ;
     		retour[nI++] = strRetour;
 
     	}

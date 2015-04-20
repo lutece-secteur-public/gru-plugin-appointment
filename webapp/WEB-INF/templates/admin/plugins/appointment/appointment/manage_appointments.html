@@ -78,7 +78,7 @@
 								</#if>
 								<div class="form-group">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<button class="btn btn-primary btn-sm" title="#i18n{appointment.manage_appointments.labelSearch}">
+										<button class="btn btn-primary btn-sm" id="Rechercher" name="Rechercher" title="#i18n{appointment.manage_appointments.labelSearch}">
 											<i class="fa fa-search"></i> #i18n{appointment.manage_appointments.labelSearch}
 										</button>
 										<a class="btn btn-default btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments<#if form??>&id_form=${form.idForm}</#if>" title="#i18n{appointment.display_appointment_form.labelReset}">
@@ -95,12 +95,14 @@
 							<table class="table table-condensed table-striped">
 							<tr>
 							<th colspan="7" align="center">
-								<@comboWithParams name="statusExport" items=refListExports default_value="${allDates}" additionalParameters="class='form-control'" />
+								<@comboWithParams name="statusExport" items=refListExports default_value="${filter.statusFilter}" additionalParameters="class='input-xs'" /><button class="btn btn-xs" id="sortedDay" name="sortedDay" type="button" title="Actualiser" >
+									<i class="glyphicon glyphicon-repeat"></i>
+								</button>
 							</th>
 							<th align = "right" style="text-align: right"><button class="btn btn-primary btn-sm" type="submit" id="eraseAll" name="eraseAll" value="eraseAll" disabled="true" >
 								<i class="glyphicon glyphicon-ok">&nbsp;</i>#i18n{appointment.permission.label.deleteMassAppointment}
 							</button>
-							<a class="btn btn-info btn-flat" href="jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}&allDates=${allDates}"  >
+							<a class="btn btn-info btn-flat" href="jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}"  >
 								<i class="glyphicon glyphicon-download">&nbsp;</i>#i18n{appointment.permission.label.exportMassAppointment}
 							</a>
 							</th>
@@ -280,7 +282,7 @@ $('#dateAppointment').datepicker({
     todayHighLight: true,
     autoclose: true
 });
-$('#statusExport').change(function() {
-	window.location.href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&allDates="+$('#statusExport option:selected').val();
+$('#sortedDay').click(function() {
+	window.location.href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&loadFilterFromSession=true&force=true&allDates="+$('#statusExport option:selected').val();
 });
 </script>
