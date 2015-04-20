@@ -380,7 +380,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
        throws AccessDeniedException
    {
        String strIdResponse = request.getParameter( PARAMETER_ID_FORM );
-       String strcheckDate = request.getParameter( PARAMETER_DATE_MIN ) == null ? "0" : request.getParameter( PARAMETER_DATE_MIN );
        if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
        {
        	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -425,8 +424,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       		strWriter[1]= tmpApp.getFirstName();
 	       		strWriter[2]= tmpApp.getEmail();
 	       		strWriter[3]= DateUtil.getDateString(tmpApp.getDateAppointment(), getLocale( ) );
-	       		strWriter[4]= new SimpleDateFormat("HH:MM").format(tmpApp.getStartAppointment()) ;
-	       		strWriter[5]=new SimpleDateFormat("HH:MM").format(tmpApp.getEndAppointment());
+	       		Calendar tmpDate = GregorianCalendar.getInstance( Locale.FRENCH );
+	       		tmpDate.setTimeInMillis(tmpApp.getStartAppointment().getTime());
+	       		strWriter[4]= tmpDate.get(Calendar.HOUR_OF_DAY) +":"+tmpDate.get(Calendar.MINUTE)  ;
+	       		Calendar tmpDateEnd = GregorianCalendar.getInstance( Locale.FRENCH );
+	       		tmpDateEnd.setTimeInMillis(tmpApp.getEndAppointment().getTime());
+	       		strWriter[5]=tmpDate.get(Calendar.HOUR_OF_DAY) +":"+tmpDate.get(Calendar.MINUTE);
 	       		strWriter[6]= getAdmins ( ).get(tmpApp.getIdAdminUser()) == null ?  StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
 	       		strWriter[7]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
 	       		tmpObj.add(strWriter);
@@ -744,6 +747,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
         boolean bTriForce = false;
+        String strFil = null;
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if (Boolean.valueOf(request.getParameter(PARAMETER_MARK_FORCE)))
         {
@@ -754,8 +758,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         	request.getSession(  ).removeAttribute( PARAMETER_ID_APPOINTMENT_DELETE);
         	request.getSession(  ).removeAttribute( SESSION_CURRENT_PAGE_INDEX);
         	request.getSession(  ).removeAttribute( SESSION_ITEMS_PER_PAGE );
-        	request.getSession().removeAttribute(MARK_FILTER);
-        }
+            if ((AppointmentFilter ) request.getSession().getAttribute(MARK_FILTER )!=null)
+             	strFil = ((AppointmentFilter ) request.getSession().getAttribute(MARK_FILTER )).getStatusFilter();
+         }
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
@@ -821,6 +826,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             else
             {
                 filter = new AppointmentFilter(  );
+               
                 if (!Boolean.parseBoolean( request.getParameter( MARK_FILTER_FROM_SESSION ) ))
                 	populate( filter, request );
 
@@ -843,15 +849,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 if (strCheckDate == null)
                 {
                 	strCheckDate = request.getParameter( PARAMETER_DATE_MIN ) == null ?  String.valueOf(STATUS_CODE_ZERO) : request.getParameter( PARAMETER_DATE_MIN )  ;
-                	if (request.getParameter(PARAMETER_SEEK)!=null)
+                	if (request.getParameter(PARAMETER_SEEK)!=null && filter.getStatusFilter()==null)
                 		strCheckDate = String.valueOf(STATUS_CODE_TWO);
-                }	
+                }
+                if (request.getParameter(PARAMETER_SEEK)!=null)
+                {
+                	strCheckDate = strFil;
+                	bTriForce = true;
+                }
                if (bTriForce || filter.getStatusFilter(  ) == null || strCheckDate.equalsIgnoreCase(filter.getStatusFilter(  )) )
               {	
             	   	filter.setStatusFilter(strCheckDate);
             		filter = dateFiltered(filter);
               }
-            
+
 
             }
              String strUrl = url.getUrl(  );
