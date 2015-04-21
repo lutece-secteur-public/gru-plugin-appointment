@@ -426,10 +426,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       		strWriter[3]= DateUtil.getDateString(tmpApp.getDateAppointment(), getLocale( ) );
 	       		Calendar tmpDate = GregorianCalendar.getInstance( Locale.FRENCH );
 	       		tmpDate.setTimeInMillis(tmpApp.getStartAppointment().getTime());
-	       		strWriter[4]= tmpDate.get(Calendar.HOUR_OF_DAY) +":"+tmpDate.get(Calendar.MINUTE)  ;
+	       		strWriter[4]= new SimpleDateFormat("HH:mm").format(tmpDate.getTime()) ;
 	       		Calendar tmpDateEnd = GregorianCalendar.getInstance( Locale.FRENCH );
 	       		tmpDateEnd.setTimeInMillis(tmpApp.getEndAppointment().getTime());
-	       		strWriter[5]=tmpDate.get(Calendar.HOUR_OF_DAY) +":"+tmpDate.get(Calendar.MINUTE);
+	       		strWriter[5]=new SimpleDateFormat("HH:mm").format(tmpDateEnd.getTime());
 	       		strWriter[6]= getAdmins ( ).get(tmpApp.getIdAdminUser()) == null ?  StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
 	       		strWriter[7]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
 	       		tmpObj.add(strWriter);
@@ -473,7 +473,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                AppLogService.error( e );
            }
 
-       return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+       return null;
    }
    
   /** 
