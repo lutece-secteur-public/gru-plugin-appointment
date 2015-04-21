@@ -457,8 +457,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
            try
            {
+        	   String now = new SimpleDateFormat("yyyyMMdd-hhmm").format(GregorianCalendar.getInstance(getLocale()).getTime())+"_"+I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale());
         	   response.setContentType("application/vnd.ms-excel");
-               response.setHeader( "Content-Disposition", "attachment; filename=\"rendez_vous.xlsx\";" );
+               response.setHeader( "Content-Disposition", "attachment; filename=\""+now+"\";" );
                response.setHeader( "Pragma", "public" );
                response.setHeader( "Expires", "0" );
                response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
