@@ -17,13 +17,7 @@
 					<#list form_errors as form_error>
 						<#if form_error.isDisplayableError>
 							<p>
-								<#if form_error.url?? && form_error.url != ''>
-									<a href="${form_error.url!}">
-								</#if>
 								${form_error.errorMessage!}
-								<#if form_error.url?? && form_error.url != ''>
-									</a>
-								</#if>
 							</p>
 						</#if>
 					</#list>
