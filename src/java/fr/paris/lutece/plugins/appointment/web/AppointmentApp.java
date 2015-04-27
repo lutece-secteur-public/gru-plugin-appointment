@@ -1321,7 +1321,7 @@ public class AppointmentApp extends MVCApplication
      */
     public static String getCancelAppointmentUrl( HttpServletRequest request, Appointment appointment )
     {
-        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + AppPathService.getPortalUrl(  ) );
+        UrlItem urlItem = new UrlItem( AppPathService.getProdUrl( request ) + AppPathService.getPortalUrl(  ) );
         urlItem.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
         urlItem.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_CANCEL_APPOINTMENT );
         urlItem.addParameter( PARAMETER_DATE_APPOINTMENT, getDateFormat(  ).format( appointment.getDateAppointment(  ) ) );
