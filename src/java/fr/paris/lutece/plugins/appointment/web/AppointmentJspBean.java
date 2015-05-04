@@ -611,7 +611,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
             model.put( MARK_LANGUAGE, getLocale() );
-            model.put( MARK_URL,  StringUtils.isNotBlank(AppPathService.getProdUrl( request )) ? AppPathService.getProdUrl( request ) : AppPathService.getBaseUrl( request ) );
+            model.put( MARK_URL,  AppPathService.getBaseUrl( request ) );
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR,
                 model );
         }

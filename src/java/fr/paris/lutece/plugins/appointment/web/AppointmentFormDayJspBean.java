@@ -223,7 +223,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             model.put( MARK_LOCALE, getLocale ( ) );
             AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ),
                 getLocale(  ), model );
-            model.put( MARK_URL,  StringUtils.isNotBlank(AppPathService.getProdUrl( request )) ? AppPathService.getProdUrl( request ) : AppPathService.getBaseUrl( request ) );
+            model.put( MARK_URL, AppPathService.getBaseUrl( request ) );
             return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS, TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS, model );
         }
 
