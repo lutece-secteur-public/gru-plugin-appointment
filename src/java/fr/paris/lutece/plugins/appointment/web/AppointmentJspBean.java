@@ -242,7 +242,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ALLDATES = "allDates";
-    
+    private static final String MARK_URL = "myURL";
 
     // JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -611,7 +611,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
             model.put( MARK_LANGUAGE, getLocale() );
-            
+            model.put( MARK_URL,  StringUtils.isNotBlank(AppPathService.getProdUrl( request )) ? AppPathService.getProdUrl( request ) : AppPathService.getBaseUrl( request ) );
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR,
                 model );
         }
@@ -964,7 +964,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_LIST_ADMIN_USERS, refListAdmins );
 
             AdminUser user = getUser(  );
-
+            model.put( MARK_URL,  AppPathService.getProdUrl( request ) );
             model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems(  ) );
             model.put( MARK_SLOT, slot );
             model.put( MARK_DAY, day );

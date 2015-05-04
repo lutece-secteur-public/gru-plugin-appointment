@@ -137,6 +137,7 @@ $('#validityDate').datepicker({
     todayHighLight: true,
     autoclose:		true
 }).on('changeDate', function(ev){    
-	    window.location.href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}&time="+ev.date.getTime();
+	var myURL = "${myURL}"; 
+    window.location.href= myURL + "jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getCreateDay&id_form=${appointmentform.idForm}&time="+ev.date.getTime();
 	});
 </script>

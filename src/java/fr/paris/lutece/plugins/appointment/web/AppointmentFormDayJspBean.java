@@ -140,6 +140,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      private static final String MARK_LOCALE = "language";
     private static final String MARK_CHECK_ANTERIOR = "anteriorDate";
     private static final String MARK_APPOINTMENTFORM = "appointmentform";
+    private static final String MARK_URL = "myURL";
+
 
     // Templates
     private static final String TEMPLATE_MODIFY_DAY = "/admin/plugins/appointment/modify_days.html";
@@ -221,7 +223,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             model.put( MARK_LOCALE, getLocale ( ) );
             AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ),
                 getLocale(  ), model );
-
+            model.put( MARK_URL,  StringUtils.isNotBlank(AppPathService.getProdUrl( request )) ? AppPathService.getProdUrl( request ) : AppPathService.getBaseUrl( request ) );
             return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_DAYS, TEMPLATE_MODIFY_APPOINTMENTFORM_DAYS, model );
         }
 

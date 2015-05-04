@@ -283,6 +283,7 @@ $('#dateAppointment').datepicker({
     autoclose: true
 });
 $('#sortedDay').click(function() {
-	window.location.href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&loadFilterFromSession=true&force=true&allDates="+$('#statusExport option:selected').val();
+	var myURL = "${myURL}"; 
+	window.location.href= myURL + "jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&loadFilterFromSession=true&force=true&allDates="+$('#statusExport option:selected').val();
 });
 </script>
