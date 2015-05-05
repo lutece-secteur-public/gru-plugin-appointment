@@ -303,7 +303,10 @@
 
 				var nbWeek = Math.floor( (e.date - dateMonday) / 604800000 );
 	        	// TODO : compute nb weeks
-	        	window.location = "${myURL}" + hrefs[nbWeek];
+	        	var loc=""+location;
+	        	var n=loc.indexOf("jsp");
+	        	var urlbase=loc.substring(0,n);
+	        	window.location = urlbase + hrefs[nbWeek];
 	        }
 	    });
 	})

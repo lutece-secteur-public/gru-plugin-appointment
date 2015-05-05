@@ -225,7 +225,9 @@ $('#validityDate').datepicker({
     todayHighLight: true,
     autoclose:		true
 }).on('changeDate', function(ev){
-		var myURL = "${myURL}"; 
-		window.location.href= myURL + "jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&time="+ev.date.getTime();
+		var loc=""+location;
+		var n=loc.indexOf("jsp");
+		var urlbase=loc.substring(0,n);
+		window.location.href= urlbase + "jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&time="+ev.date.getTime();
 	});
 </script>

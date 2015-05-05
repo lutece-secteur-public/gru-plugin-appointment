@@ -223,7 +223,6 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_ERRORS = "errors";
     private static final String MARK_DATE_LAST_MONDAY = "dateLastMonday";
     private static final String MARK_STATUS = "libelled_status";
-    private static final String MARK_URL = "myURL";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -1181,7 +1180,6 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_NB_WEEK, nNbWeek );
         model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
         model.put( MARK_IS_FORM_FIRST_STEP, appointmentFormService.isFormFirstStep( form.getIdForm() ) );
-        model.put( MARK_URL,  AppPathService.getBaseUrl( request ) );
 
         CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( form.getCalendarTemplateId(  ) );
 

@@ -121,6 +121,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -242,8 +244,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ALLDATES = "allDates";
-    private static final String MARK_URL = "myURL";
-
+ 
     // JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -611,7 +612,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
             model.put( MARK_LANGUAGE, getLocale() );
-            model.put( MARK_URL,  AppPathService.getBaseUrl( request ) );
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR,
                 model );
         }
@@ -759,7 +759,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         	request.getSession(  ).removeAttribute( PARAMETER_ID_APPOINTMENT_DELETE);
         	request.getSession(  ).removeAttribute( SESSION_CURRENT_PAGE_INDEX);
         	request.getSession(  ).removeAttribute( SESSION_ITEMS_PER_PAGE );
-            if ((AppointmentFilter ) request.getSession().getAttribute(MARK_FILTER )!=null)
+			if ((AppointmentFilter ) request.getSession().getAttribute(MARK_FILTER )!=null)
              	strFil = ((AppointmentFilter ) request.getSession().getAttribute(MARK_FILTER )).getStatusFilter();
          }
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
@@ -867,6 +867,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             }
              String strUrl = url.getUrl(  );
+
              request.getSession().setAttribute(MARK_FILTER, filter );
 
             List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
@@ -964,8 +965,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_LIST_ADMIN_USERS, refListAdmins );
 
             AdminUser user = getUser(  );
-            model.put( MARK_URL,  AppPathService.getProdUrl( request ) );
-            model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems(  ) );
+             model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems(  ) );
             model.put( MARK_SLOT, slot );
             model.put( MARK_DAY, day );
             model.put( MARK_FILTER, filter );

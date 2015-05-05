@@ -78,7 +78,7 @@
 								</#if>
 								<div class="form-group">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<button class="btn btn-primary btn-sm" id="Rechercher" name="Rechercher" title="#i18n{appointment.manage_appointments.labelSearch}">
+										<button class="btn btn-primary btn-sm" id="Rechercher" name="Rechercher" title="#i18n{appointment.manage_appointments.labelSearch}" type="submit" >
 											<i class="fa fa-search"></i> #i18n{appointment.manage_appointments.labelSearch}
 										</button>
 										<a class="btn btn-default btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments<#if form??>&id_form=${form.idForm}</#if>" title="#i18n{appointment.display_appointment_form.labelReset}">
@@ -283,7 +283,9 @@ $('#dateAppointment').datepicker({
     autoclose: true
 });
 $('#sortedDay').click(function() {
-	var myURL = "${myURL}"; 
-	window.location.href= myURL + "jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&loadFilterFromSession=true&force=true&allDates="+$('#statusExport option:selected').val();
+	var loc=""+location;
+	var n=loc.indexOf("jsp");
+	var urlbase=loc.substring(0,n); 
+	window.location.href= urlbase + "jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&loadFilterFromSession=true&force=true&allDates="+$('#statusExport option:selected').val();
 });
 </script>
