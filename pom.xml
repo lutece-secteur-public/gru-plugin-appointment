@@ -50,8 +50,17 @@
         <jiraComponentId>12273</jiraComponentId>
     </properties>
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/applications/plugin-appointment</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/applications/plugin-appointment</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/applications/plugin-appointment</url>
+        <connection>scm:git:https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</connection>
+        <!--
+            Keep this note here
+            NOTE: this file was intentionally made to conflict with old
+            histories that contain the 2 commits (40160f9af8d and e42aed8b98),
+            because they add/remove files and make the
+            repository 60Mb larger than what it should be. These 2 commits have been
+            removed and the conflict prevents someone to bring them back with an
+            automatic successful merge.
+        -->
+        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</developerConnection>
+        <url>https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</url>
     </scm>
 </project>
