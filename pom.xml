@@ -50,8 +50,8 @@
         <jiraComponentId>12273</jiraComponentId>
     </properties>
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/applications/plugin-appointment</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/applications/plugin-appointment</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/applications/plugin-appointment</url>
+        <connection>scm:git:https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</connection>
+        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</developerConnection>
+        <url>https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</url>
     </scm>
 </project>
