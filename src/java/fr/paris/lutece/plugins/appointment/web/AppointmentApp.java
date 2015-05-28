@@ -171,6 +171,7 @@ public class AppointmentApp extends MVCApplication
     private static final String VIEW_GET_CANCEL_APPOINTMENT = "getCancelAppointment";
     private static final String VIEW_APPOINTMENT_CANCELED = "getAppointmentCanceled";
     private static final String VIEW_GET_MY_APPOINTMENTS = "getMyAppointments";
+    private static final String VIEW_GET_VIEW_CANCEL_APPOINTMENT = "getViewCancelAppointment";
 
     // Actions
     private static final String ACTION_DO_VALIDATE_FORM = "doValidateForm";
@@ -193,6 +194,8 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_REFERER = "referer";
 
     // Marks
+    private static final String MARK_REF_APPOINTMENT = "refAppointment";
+    private static final String MARK_DATE_APPOINTMENT = "dateAppointment";
     private static final String MARK_FORM_LIST = "form_list";
     private static final String MARK_FORM_HTML = "form_html";
     private static final String MARK_FORM_ERRORS = "form_errors";
@@ -213,8 +216,8 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_TIME_END = "%%HEURE_FIN%%";
     private static final String MARK_LIST_APPOINTMENTS = "list_appointments";
     private static final String MARK_BACK_URL = "backUrl";
-    private static final String MARK_STATUS_VALIDATED = "status_validated";
-    private static final String MARK_STATUS_REJECTED = "status_rejected";
+    private static final String MARK_STATUS_RESERVED = "status_reserved";
+    private static final String MARK_STATUS_UNRESERVED = "status_unreserved";
     private static final String MARK_FROM_URL = "fromUrl";
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_IS_FORM_FIRST_STEP = "isFormFirstStep";
@@ -361,7 +364,7 @@ public class AppointmentApp extends MVCApplication
             appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
-            appointment.setStatus( Appointment.Status.STATUS_NOT_VALIDATED.getValeur() );
+            appointment.setStatus( Appointment.Status.STATUS_RESERVED.getValeur() );
             appointment.setAppointmentForm(form);
 
             if ( appointmentFromSession != null )
@@ -737,6 +740,29 @@ public class AppointmentApp extends MVCApplication
 
         //        return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }
+    
+    /**
+     * Get the page to cancel an appointment
+     * @param request The request
+     * @return The XPage to display
+     */
+    @View( VIEW_GET_VIEW_CANCEL_APPOINTMENT )
+    public XPage getViewCancelAppointment( HttpServletRequest request )
+    {
+        String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
+        String dateAppointment = request.getParameter( PARAMETER_DATE_APPOINTMENT );
+        
+        Map<String, Object> model = new HashMap<String, Object>(  );
+
+        model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
+        model.put( MARK_DATE_APPOINTMENT, dateAppointment );
+        Locale locale = getLocale( request );
+        XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
+        xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
+
+        return xpage;
+
+    }
 
     /**
      * Do cancel an appointment
@@ -789,7 +815,7 @@ public class AppointmentApp extends MVCApplication
                     }
                     else
                     {
-                        appointment.setStatus( Appointment.Status.STATUS_REJECTED.getValeur() );
+                        appointment.setStatus( Appointment.Status.STATUS_UNRESERVED.getValeur() );
                         AppointmentHome.update( appointment );
                     }
 
@@ -977,8 +1003,8 @@ public class AppointmentApp extends MVCApplication
 /*WORKFLOW FUTURE
         model.put( MARK_STATUS, getAllStatus (nidForm));
 */        
-        model.put( MARK_STATUS_VALIDATED, Appointment.Status.STATUS_VALIDATED.getValeur() );
-        model.put( MARK_STATUS_REJECTED, Appointment.Status.STATUS_REJECTED.getValeur() );
+        model.put( MARK_STATUS_RESERVED, Appointment.Status.STATUS_RESERVED.getValeur() );
+        model.put( MARK_STATUS_UNRESERVED, Appointment.Status.STATUS_UNRESERVED.getValeur() );
 
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
 
@@ -1323,7 +1349,7 @@ public class AppointmentApp extends MVCApplication
     {
         UrlItem urlItem = new UrlItem( AppPathService.getProdUrl( request ) + AppPathService.getPortalUrl(  ) );
         urlItem.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
-        urlItem.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_CANCEL_APPOINTMENT );
+        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT );
         urlItem.addParameter( PARAMETER_DATE_APPOINTMENT, getDateFormat(  ).format( appointment.getDateAppointment(  ) ) );
         urlItem.addParameter( PARAMETER_REF_APPOINTMENT,
             AppointmentService.getService(  ).computeRefAppointment( appointment ) );
