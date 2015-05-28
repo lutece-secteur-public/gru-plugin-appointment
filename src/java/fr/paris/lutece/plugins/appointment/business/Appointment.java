@@ -110,10 +110,11 @@ public class Appointment implements Serializable
     /**
      * Status of appointments that have not been validated yet, validate or rejected
      */
-    public enum Status {
-    	STATUS_VALIDATED (10, 	"appointment.message.labelStatusValidated"),
-    	STATUS_REJECTED (-10, 	"appointment.message.labelStatusRejected" ),
-    	STATUS_NOT_VALIDATED (0, "appointment.message.labelStatusNotValidated");
+     public enum Status {
+    	
+    	STATUS_RESERVED (10, 	"appointment.message.labelStatusReserved"),
+    	STATUS_UNRESERVED (-10, 	"appointment.message.labelStatusUnreserved" );
+    	//STATUS_NOT_VALIDATED (0, "appointment.message.labelStatusNotValidated");
     	
     	private final int nValue;
         private final String strLibelle;

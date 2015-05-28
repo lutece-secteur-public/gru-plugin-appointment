@@ -24,11 +24,11 @@
 							<#if startingHour &lt; 10>0</#if>${startingHour}H<#if startingMinute &lt; 10>0</#if>${startingMinute}
 						</td>
 						<td>
-							<#if appointment.status == status_validated>
+							<#if appointment.status == status_reserved>
 								<span class="label label-success">
 									#i18n{appointment.message.labelStatusValidated}
 								</span>
-							<#elseif appointment.status == status_rejected>
+							<#elseif appointment.status == status_unreserved>
 								<span class="label label-important">
 									#i18n{appointment.message.labelStatusRejected}
 								</span>
@@ -39,7 +39,7 @@
 							</#if>
 						</td>
 						<td>
-							<#if appointment.appointmentForm.allowUsersToCancelAppointments && appointment.status != status_rejected >
+							<#if appointment.appointmentForm.allowUsersToCancelAppointments && appointment.status != status_unreserved >
 								<a class="btn btn-danger btn-small" title="#i18n{appointment.my_appointments.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&refAppointment=${appointment.refAppointment}&fromMyappointments=true">
 									<i class="glyphicon glyphicon-remove">&nbsp;</i>
 								</a>

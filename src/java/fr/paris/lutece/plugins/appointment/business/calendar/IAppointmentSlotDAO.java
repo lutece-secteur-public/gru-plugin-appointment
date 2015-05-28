@@ -168,4 +168,14 @@ public interface IAppointmentSlotDAO
     //     */
     //    List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin plugin );
     List<AppointmentSlot> getSlotsUnavailable (  int nIdDay, int nIdForm, Plugin plugin  );
+    
+    
+    /**
+     * Find a slot from its primary key
+     * @param nIdSlot the id of the slot to remove
+     * @param plugin The plugin
+     * @return The appointment slot
+     */
+    AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot, Plugin plugin );
+    
 }
