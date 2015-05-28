@@ -94,6 +94,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String PARAMETER_NB_WEEK = "nb_week";
     private static final String PARAMETER_MAX_WEEK = "max_week";
     private static final String PARAMETER_LIM_DATES = "bornDates";
+    private static final String PARAMETER_DATE_MIN = "dateMin";
 
 
 
@@ -122,6 +123,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
     // Views
     private static final String VIEW_MODIFY_APPOINTMENTFORM_DAYS = "modifyAppointmentFormDays";
+    private static final String VIEW_MANAGE_APPOINTMENTFORM_SLOT = "manageAppointmentSlots";
     private static final String VIEW_CONFIRM_REFRESH_DAYS = "confirmRefreshDays";
     private static final String VIEW_GET_CREATE_DAY = "getCreateDay";
     private static final String VIEW_GET_MODIFY_DAY = "getModifyDay";
@@ -150,7 +152,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
     // Urls
     private static final String JSP_MANAGE_APPOINTMENTFORMS_DAYS = "jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp";
-
+    private static final String JSP_MANAGE_APPOINTMENTFORMS_SLOT = "jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp";
     // Local variables
     private transient DateConverter _dateConverter;
     private transient AppointmentDay _appointmentDay;
@@ -593,6 +595,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String strDateMin = request.getParameter( PARAMETER_DATE_MIN );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
@@ -604,7 +607,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             UrlItem urlItem = new UrlItem( getActionUrl( ACTION_DO_REFRESH_DAYS ) );
             urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
-
+            urlItem.addParameter( PARAMETER_DATE_MIN, strDateMin );
+            
             return redirect( request,
                 AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REFRESH_DAYS, urlItem.getUrl(  ),
                     AdminMessage.TYPE_CONFIRMATION ) );
@@ -625,6 +629,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String strDateMin = request.getParameter( PARAMETER_DATE_MIN );
+        Date dateMin= new Date(DateUtil.getDate(strDateMin).getTime());
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
@@ -645,9 +651,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                         getURLManageAppointmentFormDays( request, strIdForm ), AdminMessage.TYPE_STOP ) );
             }
 
-            AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ) );
-
-            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM_DAYS, PARAMETER_ID_FORM, nIdForm );
+            AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ), dateMin );
+        
+            return redirect( request, getURLAppointmentSlotJspBean( request, nIdForm ) );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
@@ -820,6 +826,21 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     {
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS_DAYS );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_APPOINTMENTFORM_DAYS );
+        urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
+
+        return urlItem.getUrl(  );
+    }
+    
+    /**
+     * Get the URL to manage appointment slot
+     * @param request The request
+     * @param strIdForm The id of the form to manage days of
+     * @return The URL to manage appointment forms
+     */
+    public static String getURLAppointmentSlotJspBean( HttpServletRequest request, int strIdForm )
+    {
+        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS_SLOT );
+        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTFORM_SLOT );
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
         return urlItem.getUrl(  );
