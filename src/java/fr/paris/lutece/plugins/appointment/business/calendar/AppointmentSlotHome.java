@@ -189,6 +189,20 @@ public final class AppointmentSlotHome
 
         return slot;
     }
+    /**
+     * Find a slot from its primary key
+     * @param nIdSlot the id of the slot to remove
+     * @return The appointment slot
+     */
+    public static AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot )
+    {
+        
+        AppointmentSlot slot = _dao.findByPrimaryKeyWithFreePlace( nIdSlot, _plugin );
+
+        return slot;
+    }
+    
+    
 
     /**
      * Find a slot from its primary key

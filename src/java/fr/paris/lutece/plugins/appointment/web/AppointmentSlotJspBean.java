@@ -45,18 +45,23 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -106,6 +111,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String MARK_MAX_ENDING_MINUTE = "maxEndingMinute";
     private static final String MARK_READ_ONLY="readonly";
     private static final String MARK_LOCALE = "language";
+    private static final String MARK_BORN_DATE = "bornDates";
    
     // Views
     private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
@@ -137,7 +143,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         List<AppointmentSlot> listSlots = null;
         Map<String, Object> model = getModel(  );
-
+        int nNbWeeks= 0;
         AppointmentForm form = null;
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
@@ -145,7 +151,8 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             int nIdForm = Integer.parseInt( strIdForm );
             listSlots = AppointmentSlotHome.findByIdForm( nIdForm );
             form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-
+            nNbWeeks = form.getNbWeeksToDisplay();
+            
             boolean[] bArrayListDays = 
                 {
                     form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
@@ -244,6 +251,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         model.put( MARK_MAX_ENDING_HOUR, nMaxEndingHour );
         model.put( MARK_MAX_ENDING_MINUTE, nMaxEndingMinute );
         model.put( MARK_LOCALE, getLocale ( ) );
+        model.put( MARK_BORN_DATE, getLimitedDate(nNbWeeks));
         AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
 
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
@@ -518,4 +526,24 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
         return urlItem.getUrl(  );
     }
+    
+    /** 
+     *    Get Limited Date
+     * 	@param nBWeeks
+     * 	@return
+   */
+     private String[] getLimitedDate( int nBWeeks )
+     {
+  	   Calendar startCal = GregorianCalendar.getInstance( Locale.FRENCH );	
+  	   Calendar endCal   = GregorianCalendar.getInstance( Locale.FRENCH );	
+  	   startCal.set(Calendar.WEEK_OF_YEAR, startCal.get(Calendar.WEEK_OF_YEAR)-nBWeeks);
+  	   startCal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+  	   endCal.set(Calendar.WEEK_OF_YEAR, endCal.get(Calendar.WEEK_OF_YEAR)+nBWeeks);
+  	   endCal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+  	   endCal.add(Calendar.DATE, -1);
+  	   String[] retour = {DateUtil.getDateString(startCal.getTime(), getLocale() ),DateUtil.getDateString(endCal.getTime(), getLocale() )};
+  	   return retour;
+  	   
+     }
+       
 }

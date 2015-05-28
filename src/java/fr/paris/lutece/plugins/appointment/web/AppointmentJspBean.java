@@ -66,8 +66,13 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeSer
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.business.workflow.Workflow;
+import fr.paris.lutece.plugins.workflowcore.service.action.ActionService;
+import fr.paris.lutece.plugins.workflowcore.service.action.IActionService;
 import fr.paris.lutece.plugins.workflowcore.service.state.IStateService;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
+import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
+import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
+import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
@@ -139,6 +144,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.naming.RefAddr;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -235,8 +242,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_REF_LIST_EXPORT = "refListExports";
     private static final String MARK_FILTER_FROM_SESSION = "loadFilterFromSession";
     private static final String MARK_TASKS_FORM = "tasks_form";
-    private static final String MARK_STATUS_VALIDATED = "status_validated";
-    private static final String MARK_STATUS_REJECTED = "status_rejected";
+    private static final String MARK_STATUS_RESERVED = "status_reserved";
+    private static final String MARK_STATUS_UNRESERVED = "status_unreserved";
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_LIST_ADMIN_USERS = "list_admin_users";
     private static final String MARK_ADMIN_USER = "admin_user";
@@ -244,6 +251,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ALLDATES = "allDates";
+    private static final String MARK_ACTIVATE_WORKFLOW = "activateWorkflow";
  
     // JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -254,8 +262,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MESSAGE_CONFIRM_REMOVE_MASSAPPOINTMENT = "appointment.message.confirmRemoveMassAppointment";
     private static final String MESSAGE_LABEL_STATUS_VALIDATED = "appointment.message.labelStatusValidated";
     private static final String MESSAGE_LABEL_STATUS_NOT_VALIDATED = "appointment.message.labelStatusNotValidated";
-    private static final String MESSAGE_LABEL_STATUS_REJECTED = "appointment.message.labelStatusRejected";
+    private static final String MESSAGE_LABEL_STATUS_UNRESERVED = "appointment.message.labelStatusUnreserved";
     private static final String MESSAGE_APPOINTMENT_WITH_NO_ADMIN_USER = "appointment.manage_appointment.labelAppointmentWithNoAdminUser";
+    private static final String MESSAGE_UNVAILABLBLE_SLOT = "appointment.slot.unvailable";
     /** Infos error WorkFlow */
     private static final String INFO_APPOINTMENT_STATE_ERROR = "appointment.info.appointment.etatinitial";
 
@@ -295,7 +304,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
     
-    
     // Messages
     private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek(  );
 
@@ -309,11 +317,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private final StateService _stateService  = SpringContextService.getBean( StateService.BEAN_SERVICE );
     private final fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService _stateServiceWorkFlow  = SpringContextService.getBean( fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService.BEAN_SERVICE );
-
+    private final ITaskService _taskService  = SpringContextService.getBean( TaskService.BEAN_SERVICE );
     // Session variable to store working values
     private int _nDefaultItemsPerPage;
     private AppointmentFilter _filter;
 
+    public static final String ACTIVATEWORKFLOW = AppPropertiesService.getProperty( "appointment.activate.workflow" );
+   
     /**
      * Status of appointments that have not been validated yet, validate or rejected
      */
@@ -403,7 +413,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	   Object[] strWriter = new String[1];
     	   strWriter[0] = tmpForm.getTitle();
     	   tmpObj.add( strWriter );
-    	   Object[] strInfos= new String[8];
+    	   Object[] strInfos= new String[9];
     	   strInfos[0] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLastName", getLocale() );
     	   strInfos[1] = I18nService.getLocalizedString( "appointment.manage_appointments.columnFirstName", getLocale());
     	   strInfos[2] = I18nService.getLocalizedString( "appointment.manage_appointments.columnEmail", getLocale()    );
@@ -412,6 +422,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	   strInfos[5] = I18nService.getLocalizedString( "appointment.model.entity.appointmentform.attribute.timeEnd", getLocale() );
     	   strInfos[6] = I18nService.getLocalizedString( "appointment.manage_appointments.columnAdminUser", getLocale() );
     	   strInfos[7] = I18nService.getLocalizedString( "appointment.manage_appointments.columnStatus", getLocale() );
+    	   strInfos[8] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLogin", getLocale() );
     	   tmpObj.add( strInfos );
        }
        if ( listIdAppointments.size() > 0 )
@@ -420,7 +431,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       			filter.getOrderBy(  ), filter.getOrderAsc(  ) );
 	      	for (Appointment tmpApp: listAppointments)
 	       	{
-	      		Object[] strWriter = new String[8];
+	      		Object[] strWriter = new String[9];
 	       		strWriter[0]= tmpApp.getLastName();
 	       		strWriter[1]= tmpApp.getFirstName();
 	       		strWriter[2]= tmpApp.getEmail();
@@ -431,8 +442,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       		Calendar tmpDateEnd = GregorianCalendar.getInstance( Locale.FRENCH );
 	       		tmpDateEnd.setTimeInMillis(tmpApp.getEndAppointment().getTime());
 	       		strWriter[5]=new SimpleDateFormat("HH:mm").format(tmpDateEnd.getTime());
-	       		strWriter[6]= getAdmins ( ).get(tmpApp.getIdAdminUser()) == null ?  StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
+				strWriter[6] = getAdmins().get(tmpApp.getIdAdminUser()) == null ? StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
 	       		strWriter[7]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
+	       		strWriter[8]= tmpApp.getIdUser() == null ? StringUtils.EMPTY : tmpApp.getIdUser();
+	       		
 	       		tmpObj.add(strWriter);
 	       	}
        }
@@ -898,14 +911,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
             	lsSta.put(String.valueOf(tmpStat.getId()), tmpStat.getName());
             }
 */
-            ReferenceList refListStatus = new ReferenceList( 4 );
+            ReferenceList refListStatus = new ReferenceList( 3);
             refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
-            refListStatus.addItem( Appointment.Status.STATUS_VALIDATED.getValeur(),
-                I18nService.getLocalizedString( Appointment.Status.STATUS_VALIDATED.getLibelle(), getLocale(  ) ) );
-            refListStatus.addItem( Appointment.Status.STATUS_NOT_VALIDATED.getValeur(),
-                I18nService.getLocalizedString( Appointment.Status.STATUS_NOT_VALIDATED.getLibelle(), getLocale(  ) ) );
-            refListStatus.addItem( Appointment.Status.STATUS_REJECTED.getValeur(),
-                I18nService.getLocalizedString( Appointment.Status.STATUS_REJECTED.getLibelle(), getLocale(  ) ) );
+            refListStatus.addItem( Appointment.Status.STATUS_RESERVED.getValeur(),
+                I18nService.getLocalizedString( Appointment.Status.STATUS_RESERVED.getLibelle(), getLocale(  ) ) );
+           /* refListStatus.addItem( Appointment.Status.STATUS_RESERVED.getValeur(),
+                I18nService.getLocalizedString( Appointment.Status.STATUS_RESERVED.getLibelle(), getLocale(  ) ) );*/
+            refListStatus.addItem( Appointment.Status.STATUS_UNRESERVED.getValeur(),
+                I18nService.getLocalizedString( Appointment.Status.STATUS_UNRESERVED.getLibelle(), getLocale(  ) ) );
             ReferenceList refListExports = new ReferenceList( );
             for (ExportFilter tmpFilter : ExportFilter.values())
             	refListExports.addItem( tmpFilter.getValeur(), I18nService.getLocalizedString( tmpFilter.getLibelle(), getLocale(  ) ) );
@@ -916,35 +929,50 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( nIdForm ) );
             model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
             model.put( MARK_PAGINATOR, delegatePaginator );
-            model.put( MARK_STATUS_VALIDATED, Appointment.Status.STATUS_VALIDATED.getValeur() );
-            model.put( MARK_STATUS_REJECTED, Appointment.Status.STATUS_REJECTED.getValeur() );
+            model.put( MARK_STATUS_RESERVED, Appointment.Status.STATUS_RESERVED.getValeur() );
+            model.put( MARK_STATUS_UNRESERVED, Appointment.Status.STATUS_UNRESERVED.getValeur() );
             model.put( MARK_LANGUAGE, getLocale() );
             model.put( MARK_ALLDATES, strCheckDate);
+            model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
             
             if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
             {
-            	 /*WORKFLOW FUTURE                for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
+            	 
+            	
+            for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
                 {
-                	Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> resultActions = new ArrayList<fr.paris.lutece.plugins.workflowcore.business.action.Action>();
-                	Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> tmpActions = WorkflowService.getInstance(  )
+            	
+            
+         	    int nIdWorkflow = form.getIdWorkflow(  );
+                 
+         	    StateFilter stateFilter = new StateFilter(  );
+         	    stateFilter.setIdWorkflow( nIdWorkflow );	    
+
+                List<State> listState = _stateService.getListStateByFilter( stateFilter );
+                 
+                Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> resultActions = new ArrayList<fr.paris.lutece.plugins.workflowcore.business.action.Action>();
+                Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> tmpActions = WorkflowService.getInstance(  )
                             .getActions( appointment.getIdAppointment(  ),
                             		Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) );
-                    for (fr.paris.lutece.plugins.workflowcore.business.action.Action mcAction : tmpActions)
-                    {
-                    	State tmpSt = mcAction.getStateBefore();
-                     	if (tmpSt.getId() == appointment.getStatus())
-                    	{
-                    		resultActions.add(mcAction);
-                    	}
+                for (fr.paris.lutece.plugins.workflowcore.business.action.Action mcAction : tmpActions)
+                {
+                    State tmpSt = mcAction.getStateBefore();
+                    for(State state: listState ){
+	                     if (tmpSt.getId() == state.getId())
+	                    	{
+	                     		mcAction.setStateBefore(state);
+	                    	}
                     }
+                    resultActions.add(mcAction);
+                }
                     appointment.setListWorkflowActions( resultActions );
-                }*/
-                for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
+                }
+            /*    for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
                 {
                     appointment.setListWorkflowActions( WorkflowService.getInstance(  )
                                                                        .getActions( appointment.getIdAppointment(  ),
                             Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) ) );
-                }
+                }*/
             }
             // We add the list of admin users to filter appointments by admin users.
             Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
@@ -965,7 +993,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_LIST_ADMIN_USERS, refListAdmins );
 
             AdminUser user = getUser(  );
-             model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems(  ) );
+            model.put( MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems(  ) );
             model.put( MARK_SLOT, slot );
             model.put( MARK_DAY, day );
             model.put( MARK_FILTER, filter );
@@ -1301,15 +1329,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
 */
                 if ( SecurityService.isAuthenticationEnable(  ) )
                 {
-                    LuteceUser luteceUser = SecurityService.getInstance(  ).getRegisteredUser( request );
+                    AdminUser AdminUser = getUser( );
 
-                    if ( luteceUser != null )
+                    if ( AdminUser != null )
                     {
-                        appointment.setIdUser( luteceUser.getName(  ) );
+                        appointment.setIdUser(  AdminUser.getLastName(  )  + CONSTANT_SPACE + AdminUser.getFirstName(  )  );
                     }
                 }
             }
 
+            appointment.setStatus(Appointment.Status.STATUS_RESERVED.getValeur());
             appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
@@ -2033,7 +2062,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             // We check that the status has changed to avoid doing unnecessary updates.
             // Also, it is not permitted to set the status of an appointment to not validated.
-            if ( ( appointment.getStatus(  ) != nNewStatus ) && ( nNewStatus != Appointment.Status.STATUS_NOT_VALIDATED.getValeur() ) )
+            AppointmentSlot slotWhithFreePlace = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( appointment.getIdSlot(  ) );
+            if(slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
+      			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 ) && nNewStatus == Appointment.Status.STATUS_RESERVED.getValeur() ){
+      		
+      		  return redirect( request, AdminMessageService.getMessageUrl( request,  MESSAGE_UNVAILABLBLE_SLOT, AdminMessage.TYPE_STOP ) );
+      	  	}
+            
+            if ( ( appointment.getStatus(  ) != nNewStatus )/* && ( nNewStatus != Appointment.Status.STATUS_RESERVED.getValeur() ) */)
             {
                 appointment.setStatus( nNewStatus );
                 AppointmentHome.update( appointment );
@@ -2123,31 +2159,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
                 else
                 {
-/*WORKFLOW_FUTURE
-                	
-                	State tmpState = null;
-                	Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action>tmpActions = _stateServiceWorkFlow.getActions(nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ));
-                	for (fr.paris.lutece.plugins.workflowcore.business.action.Action myAction : tmpActions)
-                	{
-                		if ( myAction.getId() == nIdAction )
-                		{
-                			if ( myAction.getStateBefore().getId() == appointment.getStatus() )
-                			{
-                				tmpState = myAction.getStateAfter();
-                			}
-                			
-                		}
-                		
-                	}
- */
-                     WorkflowService.getInstance(  )
+                	  List<ITask> listActionTasks = _taskService.getListTaskByIdAction( nIdAction, getLocale(  ) );
+                	  AppointmentSlot slotWhithFreePlace = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( appointment.getIdSlot(  ) );
+                      for ( ITask task : listActionTasks )
+                      {
+                    	  if(task.getTaskType(  ).getKey( ).equals( "taskChangeAppointmentStatus" ) && slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
+                    			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 )){
+                    		
+                    		  return redirect( request, AdminMessageService.getMessageUrl( request,  MESSAGE_UNVAILABLBLE_SLOT, AdminMessage.TYPE_STOP ) );
+                    	  }
+                      }
+                      WorkflowService.getInstance(  )
                                    .doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                         form.getIdForm(  ), request, getLocale(  ), false );
-/*WORKFLOW_FUTURE                  if ( tmpState != null && tmpState.getId()!= appointment.getStatus() )
-                    {
-                    	appointment.setStatus( tmpState.getId() );
-                    	AppointmentHome.update( appointment );
-                    }*/
+                     	
                 }
 
                 Map<String, String> mapParams = new HashMap<String, String>(  );

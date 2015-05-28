@@ -64,7 +64,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 			" ADDDATE(apmt.date_appointment, INTERVAL (form.nb_appointment_week-1) DAY) date_max,"+
 			" ADDDATE(apmt.date_appointment, INTERVAL -(form.nb_appointment_week-1) DAY) date_min"+
 			" from appointment_appointment apmt, appointment_day myday, appointment_form form where"+
-			" apmt.status <>"+Appointment.Status.STATUS_REJECTED.getValeur()+"  and myday.date_day=apmt.date_appointment"+
+			" apmt.status <>"+Appointment.Status.STATUS_UNRESERVED.getValeur()+"  and myday.date_day=apmt.date_appointment"+
 			" and myday.date_day BETWEEN ADDDATE(?,INTERVAL -(form.nb_appointment_week-1) DAY)"+ 
 			" and ADDDATE(?,INTERVAL (form.nb_appointment_week-1) DAY)"+
 			" and TRIM(UCASE(apmt.email)) = TRIM(UCASE(?)) and myday.id_form = ?"+

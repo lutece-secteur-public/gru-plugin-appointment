@@ -74,7 +74,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     private static final String SQL_QUERY_FIND_LIMITS_MOMENT="select count(*) nbre, TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') startHour, " +
     		" TIME_FORMAT( CONCAT_WS(':',slot.ending_hour,slot.ending_minute),'%H:%i:%s') maxRdv," +
     		"  slot.nb_places from appointment_appointment apmt, appointment_slot slot, appointment_form form" +
-    		" where  apmt.id_slot<>"+Appointment.Status.STATUS_REJECTED.getValeur() + " and apmt.status<>"+Appointment.Status.STATUS_REJECTED.getValeur()+ 
+    		" where  apmt.id_slot<>"+Appointment.Status.STATUS_UNRESERVED.getValeur() + " and apmt.status<>"+Appointment.Status.STATUS_UNRESERVED.getValeur()+ 
     		" and apmt.id_slot=slot.id_slot and slot.id_day = ?" +
     		" and form.id_form=slot.id_form and form.id_form= ? group by apmt.id_slot" +
     		" order by TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') ";    
@@ -85,7 +85,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     		 " TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') <"+
     		 " TIME_FORMAT(?,'%H:%i:%s')"+
     		 " order by id_slot";
-    
+    private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACE = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot  AND status != ? ) FROM appointment_slot slot WHERE id_slot=?";
     private int _nDefaultSlotListSize;
 
     /**
@@ -259,7 +259,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACES, plugin );
         daoUtil.setDate( 1, date );
-        daoUtil.setInt( 2, Appointment.Status.STATUS_REJECTED.getValeur() );
+        daoUtil.setInt( 2, Appointment.Status.STATUS_UNRESERVED.getValeur() );
         daoUtil.setInt( 3, nIdSlot );
         daoUtil.executeQuery(  );
 
@@ -349,7 +349,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     public List<AppointmentSlot> findByIdDayWithFreePlaces( int nIdDay, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES, plugin );
-        daoUtil.setInt( 1, Appointment.Status.STATUS_REJECTED.getValeur() );
+        daoUtil.setInt( 1, Appointment.Status.STATUS_UNRESERVED.getValeur() );
         daoUtil.setInt( 2, nIdDay );
         daoUtil.executeQuery(  );
 
@@ -510,6 +510,44 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         
         daoUtil.free(  );
         return objTab;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACE, plugin );
+        daoUtil.setInt( 2, nIdSlot );
+        daoUtil.setInt( 1, Appointment.Status.STATUS_UNRESERVED.getValeur() );
+        daoUtil.executeQuery(  );
+
+        AppointmentSlot slot = new AppointmentSlot(  );
+
+        if ( daoUtil.next(  ) )
+        {
+        	
+             int nIndex = 1;
+             slot.setIdSlot( daoUtil.getInt( nIndex++ ) );
+             slot.setIdForm( daoUtil.getInt( nIndex++ ) );
+             slot.setIdDay( daoUtil.getInt( nIndex++ ) );
+             slot.setDayOfWeek( daoUtil.getInt( nIndex++ ) );
+             slot.setNbPlaces( daoUtil.getInt( nIndex++ ) );
+             slot.setStartingHour( daoUtil.getInt( nIndex++ ) );
+             slot.setStartingMinute( daoUtil.getInt( nIndex++ ) );
+             slot.setEndingHour( daoUtil.getInt( nIndex++ ) );
+             slot.setEndingMinute( daoUtil.getInt( nIndex++ ) );
+             slot.setIsEnabled( daoUtil.getBoolean( nIndex++ ) );
+             slot.setNbFreePlaces( slot.getNbPlaces( ) - daoUtil.getInt( nIndex ) );
+
+             return slot;
+        }
+
+        daoUtil.free(  );
+
+        return slot;
     }
     
 }
