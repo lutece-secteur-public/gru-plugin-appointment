@@ -9,6 +9,16 @@
     	</#if>
     	<fieldset>
     		<legend>#i18n{appointment.manageCalendarSlots.pageTitle}</legend>
+		<div class="pull-right">
+			<form class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp" method="post" name="" id=""  >	
+				à partir du :  <input class="btn btn-primary btn-sm" name="dateMin" id="dateMin" value=""  placeholder="chosir une date" required/>	
+				     <input type="hidden" name="id_form" id="id_form" value="${appointmentform.idForm}" />
+				     <input type="hidden" name="view" id="view" value="confirmRefreshDays" />
+			<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-refresh"></i> &nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}</button>
+	
+			
+			</form>
+		</div>
 			<table class="table appointment-table-slots">
 				<thead>
 					<#if day??>
@@ -130,4 +140,15 @@
 	</span> 
 </#macro>
 
-<link href="css/plugins/appointment/appointment.css" rel="stylesheet">
+<link href="css/plugins/appointment/appointment.css" rel="stylesheet"> 
+<@getDatePickerBootstrap idField="dateMin" language="fr" />
+<script type="text/javascript">
+$('#dateMin').datepicker({
+    language:		"${language}",
+    startDate:		 new Date(),
+    endDate:		"${bornDates[1]}",
+    todayBtn: true,
+    todayHighLight: true,
+    autoclose:		true
+}).on('changeDate', function(ev){});
+</script>
