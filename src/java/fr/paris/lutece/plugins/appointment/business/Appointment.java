@@ -33,16 +33,14 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
-
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
-import org.hibernate.validator.constraints.Email;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
-
 import java.sql.Date;
-
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -97,6 +95,7 @@ public class Appointment implements Serializable
     private String _strIdUser;
     private String _strAuthenticationService;
     private String _strLocation;
+    private State _state;
     private Date _dateAppointment;
     private java.util.Date startAppointment;
     private java.util.Date endAppointment;
@@ -414,4 +413,22 @@ public class Appointment implements Serializable
 	{
 		this.endAppointment = date;
 	}
+	
+	 /**
+     * Sets the State actual
+     * @param  The state
+     */
+    public void setState( State state )
+    {
+    	_state = state;
+    }
+
+    /**
+     * Returns the State
+     * @return The State
+     */
+    public State getState(  )
+    {
+        return _state;
+    }
 }
