@@ -947,32 +947,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
                  
          	    StateFilter stateFilter = new StateFilter(  );
          	    stateFilter.setIdWorkflow( nIdWorkflow );	    
-
-                List<State> listState = _stateService.getListStateByFilter( stateFilter );
-                 
-                Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> resultActions = new ArrayList<fr.paris.lutece.plugins.workflowcore.business.action.Action>();
-                Collection<fr.paris.lutece.plugins.workflowcore.business.action.Action> tmpActions = WorkflowService.getInstance(  )
-                            .getActions( appointment.getIdAppointment(  ),
-                            		Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) );
-                for (fr.paris.lutece.plugins.workflowcore.business.action.Action mcAction : tmpActions)
-                {
-                    State tmpSt = mcAction.getStateBefore();
-                    for(State state: listState ){
-	                     if (tmpSt.getId() == state.getId())
-	                    	{
-	                     		mcAction.setStateBefore(state);
-	                    	}
-                    }
-                    resultActions.add(mcAction);
+         	    State stateAppointment= _stateService.findByResource(appointment.getIdAppointment(), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
+         	    
+         	    if(stateAppointment != null ){
+         	    	
+         	    	appointment.setState(stateAppointment);
+         	    }
+         	    
+         	   appointment.setListWorkflowActions( WorkflowService.getInstance(  )
+                       .getActions( appointment.getIdAppointment(  ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) ) );
                 }
-                    appointment.setListWorkflowActions( resultActions );
-                }
-            /*    for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
-                {
-                    appointment.setListWorkflowActions( WorkflowService.getInstance(  )
-                                                                       .getActions( appointment.getIdAppointment(  ),
-                            Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) ) );
-                }*/
+           
             }
             // We add the list of admin users to filter appointments by admin users.
             Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );

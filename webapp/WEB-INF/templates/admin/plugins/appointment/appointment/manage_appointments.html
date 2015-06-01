@@ -212,11 +212,10 @@
 									class="label">
 										#i18n{appointment.message.labelStatusReserved} </span> </#if>
 								</td>
-								<td><#if appointment.listWorkflowActions?? &&
-									appointment.listWorkflowActions?size &gt; 0> <#assign
-									bool="false"> <#list appointment.listWorkflowActions as action>
-									<#if bool=="false"> <#assign bool="true">
-									${action.stateBefore.name} </#if> </#list> </#if></td>
+								<td><#if appointment.state?? && appointment.state.name??> 
+										${appointment.state.name!}
+									</#if>
+								</td>
 								<td><#if rightModify?? && rightModify> <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}"
 									class="btn btn-primary btn-xs"
