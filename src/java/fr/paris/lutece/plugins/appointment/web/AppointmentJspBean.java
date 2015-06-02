@@ -413,7 +413,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	   Object[] strWriter = new String[1];
     	   strWriter[0] = tmpForm.getTitle();
     	   tmpObj.add( strWriter );
-    	   Object[] strInfos= new String[9];
+    	   Object[] strInfos= new String[10];
     	   strInfos[0] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLastName", getLocale() );
     	   strInfos[1] = I18nService.getLocalizedString( "appointment.manage_appointments.columnFirstName", getLocale());
     	   strInfos[2] = I18nService.getLocalizedString( "appointment.manage_appointments.columnEmail", getLocale()    );
@@ -423,6 +423,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	   strInfos[6] = I18nService.getLocalizedString( "appointment.manage_appointments.columnAdminUser", getLocale() );
     	   strInfos[7] = I18nService.getLocalizedString( "appointment.manage_appointments.columnStatus", getLocale() );
     	   strInfos[8] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLogin", getLocale() );
+    	   strInfos[9] = I18nService.getLocalizedString( "appointment.manage_appointments.columnState", getLocale() );
+    	   
     	   tmpObj.add( strInfos );
        }
        if ( listIdAppointments.size() > 0 )
@@ -431,7 +433,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       			filter.getOrderBy(  ), filter.getOrderAsc(  ) );
 	      	for (Appointment tmpApp: listAppointments)
 	       	{
-	      		Object[] strWriter = new String[9];
+	      		 State stateAppointment= _stateService.findByResource(tmpApp.getIdAppointment(), Appointment.APPOINTMENT_RESOURCE_TYPE, tmpForm.getIdWorkflow());
+	       	    
+	       	    if(stateAppointment != null ){  		
+	    	       	tmpApp.setState(stateAppointment);
+	      	    }
+	       	     
+	      		Object[] strWriter = new String[10];
 	       		strWriter[0]= tmpApp.getLastName();
 	       		strWriter[1]= tmpApp.getFirstName();
 	       		strWriter[2]= tmpApp.getEmail();
@@ -445,7 +453,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 				strWriter[6] = getAdmins().get(tmpApp.getIdAdminUser()) == null ? StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
 	       		strWriter[7]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
 	       		strWriter[8]= tmpApp.getIdUser() == null ? StringUtils.EMPTY : tmpApp.getIdUser();
-	       		
+	       		strWriter[9]= tmpApp.getState() == null ? StringUtils.EMPTY : tmpApp.getState().getName();
+	     
 	       		tmpObj.add(strWriter);
 	       	}
        }
