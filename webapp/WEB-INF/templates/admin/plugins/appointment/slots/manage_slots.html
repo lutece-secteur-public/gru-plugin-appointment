@@ -11,7 +11,11 @@
     		<legend>#i18n{appointment.manageCalendarSlots.pageTitle}</legend>
 		<div class="pull-right">
 			<form class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp" method="post" name="" id=""  >	
-				à partir du :  <input class="btn btn-primary btn-sm" name="dateMin" id="dateMin" value=""  placeholder="chosir une date" required/>	
+				#i18n{appointment.manageCalendarSlots.labelRefreshInput}: 
+				<div class="input-group">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				 	<input class="input-small" name="dateMin" id="dateMin" value=""  placeholder="chosir une date" required/>
+				</div>	
 				     <input type="hidden" name="id_form" id="id_form" value="${appointmentform.idForm}" />
 				     <input type="hidden" name="view" id="view" value="confirmRefreshDays" />
 			<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-refresh"></i> &nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}</button>
@@ -137,7 +141,9 @@
 <#macro getCellTooltip appointmentSlot>
 	<span class="appointment-tooltip-title appointment-tooltip-title-fo">
 		<#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute} 
+		<div> #i18n{appointment.manageCalendarSlots.lablelNbPlace}: ${appointmentSlot.nbPlaces}</div>
 	</span> 
+
 </#macro>
 
 <link href="css/plugins/appointment/appointment.css" rel="stylesheet"> 

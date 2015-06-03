@@ -59,7 +59,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment ( id_appointment, first_name, last_name, email, id_user, authentication_service, localization, date_appointment, id_slot, status, id_action_cancel, id_admin_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, localization = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ?, id_admin_user = ? WHERE id_appointment = ?";
-    private static final String SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM = "SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE slot.id_form = ? AND app.date_appointment > ? ";
+    private static final String SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM = "SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE slot.id_form = ? AND app.date_appointment >= ? ";
     private static final String SQL_QUERY_SELECT_BY_LIST_ID = SQL_QUERY_SELECTALL + " WHERE id_appointment IN (";
     private static final String SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM = " SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE date_appointment = ? AND slot.id_form = ? ";
 
