@@ -641,8 +641,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
 
             int nIdForm = Integer.parseInt( strIdForm );
-            int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdForm,
-                    AppointmentService.getService(  ).getDateLastMonday(  ) );
+            int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdForm, dateMin );
 
             if ( nNbAppointments > 0 )
             {

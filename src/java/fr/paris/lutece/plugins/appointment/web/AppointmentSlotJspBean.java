@@ -129,6 +129,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String TEMPLATE_MANAGE_SLOTS = "admin/plugins/appointment/slots/manage_slots.html";
     private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modify_slot.html";
     private AppointmentSlot _slotInSession;
+    private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
 
     /**
      * Get the page to manage slots of a form or a day
@@ -244,6 +245,8 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             }
         }
 
+        int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
+        
         model.put( MARK_LIST_SLOTS, listSlots );
         model.put( MARK_MIN_SLOT_DURATION, nDuration );
         model.put( MARK_MIN_STARTING_HOUR, nMinStartingHour );
@@ -251,7 +254,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         model.put( MARK_MAX_ENDING_HOUR, nMaxEndingHour );
         model.put( MARK_MAX_ENDING_MINUTE, nMaxEndingMinute );
         model.put( MARK_LOCALE, getLocale ( ) );
-        model.put( MARK_BORN_DATE, getLimitedDate(nNbWeeks));
+        model.put( MARK_BORN_DATE, getLimitedDate(nNbWeeks + nNbWeeksToCreate));
         AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
 
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
