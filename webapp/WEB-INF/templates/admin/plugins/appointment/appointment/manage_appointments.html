@@ -185,7 +185,7 @@
 										<i class="glyphicon glyphicon-chevron-down"></i>
 								</a>
 								</th>
-								<th>#i18n{appointment.manage_appointments.columnState}</th>
+								<th>appointment.manage_appointments.columnState</th>
 
 								<th>#i18n{portal.util.labelActions}</th>
 							</tr>
@@ -216,7 +216,7 @@
 										${appointment.state.name!}
 									</#if>
 								</td>
-								<td><#if rightModify?? && rightModify> <a
+								<td><#if rightModify?? && rightModify &&  appointment.status == status_reserved> <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}"
 									class="btn btn-primary btn-xs"
 									title="#i18n{portal.util.labelModify}"> <i
