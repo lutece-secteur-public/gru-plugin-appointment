@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -109,4 +108,12 @@ public interface IAppointmentDayDAO
      * @param plugin The plugin
      */
     void updateDayFreePlaces( AppointmentDay day, boolean bIncrement, Plugin plugin );
+    /**
+     * Find every day associated with a given form and not associated with any
+     * day
+     * @param nIdForm the id of the form
+     * @param plugin The plugin
+     * @return The list of days
+     */
+    List<AppointmentDay> findByIdForm( int nIdForm, Plugin plugin );
 }

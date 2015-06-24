@@ -40,7 +40,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
-
 import java.util.List;
 
 
@@ -210,4 +209,15 @@ public final class AppointmentDayHome
         day.setFreePlaces( nFreePlaces );
         update( day );
     }
+    
+    /**
+     * Find every day associated with a given form.
+     * @param nIdForm the id of the form
+     * @return The list of slots
+     */
+    public static List<AppointmentDay> findByIdForm( int nIdForm )
+    {
+        return _dao.findByIdForm( nIdForm, _plugin );
+    }
+
 }

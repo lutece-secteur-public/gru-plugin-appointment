@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +57,8 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     private static final String SQL_QUERY_SELECT_DAY_BY_PRIMARY_KEY = SQL_QUERY_SELECT_DAY + " WHERE id_day = ?";
     private static final String SQL_QUERY_SELECT_DAY_BETWEEN = SQL_QUERY_SELECT_DAY +
         " WHERE id_form = ? AND date_day >= ? AND date_day <= ? ORDER BY date_day ASC ";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_DAY +
+            " WHERE id_form = ? ORDER BY date_day ASC";
 
     /**
      * Get a new primary key for a day
@@ -263,4 +264,27 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<AppointmentDay> findByIdForm( int nIdForm, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
+        daoUtil.setInt( 1, nIdForm );
+        daoUtil.executeQuery(  );
+
+        List<AppointmentDay> listDay = new ArrayList<AppointmentDay>(  );
+
+        while ( daoUtil.next(  ) )
+        {
+        	listDay.add( getDayFromDAO( daoUtil ) );
+        }
+
+        daoUtil.free(  );
+
+        return listDay;
+    }
+
 }
