@@ -185,7 +185,16 @@
 										<i class="glyphicon glyphicon-chevron-down"></i>
 								</a>
 								</th>
-								<th>#i18n{appointment.manage_appointments.columnState}</th>
+								</th>
+           <th>#i18n{appointment.manage_appointments.columnState}<a
+ href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=true">
+                                                                                 <i class="glyphicon glyphicon-chevron-up"></i>
+                                                                 </a> <a
+ href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=false">
+                                                                                 <i class="glyphicon glyphicon-chevron-down"></i>
+                                                                 </a>
+                                                                 </th>
+
 
 								<th>#i18n{portal.util.labelActions}</th>
 							</tr>
