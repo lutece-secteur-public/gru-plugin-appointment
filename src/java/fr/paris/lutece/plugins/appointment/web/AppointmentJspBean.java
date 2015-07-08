@@ -134,6 +134,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -828,6 +829,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             AppointmentDay day = null;
             AppointmentSlot slot = null;
             AppointmentFilter filter;
+            boolean bfilterByWorkFlow = false ;
             _filter  = (AppointmentFilter) request.getSession().getAttribute(MARK_FILTER);
             if ( ( _filter != null ) && Boolean.parseBoolean( request.getParameter( MARK_FILTER_FROM_SESSION ) ) )
             {
@@ -838,9 +840,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                		filter = dateFiltered(filter);
                  }
                 String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
-
                 if ( StringUtils.isNotEmpty( strOrderBy ) )
                 {
+                	bfilterByWorkFlow = "state".equalsIgnoreCase(strOrderBy) ? true : false;
+                	strOrderBy = bfilterByWorkFlow ? "status" : strOrderBy ;
                     filter.setOrderBy( strOrderBy );
                     filter.setOrderAsc( Boolean.parseBoolean( request.getParameter( PARAMETER_ORDER_ASC ) ) );
                 }
@@ -889,10 +892,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             }
              String strUrl = url.getUrl(  );
-
              request.getSession().setAttribute(MARK_FILTER, filter );
-
-            List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
+             List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
 
             LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>( listIdAppointments, nItemsPerPage,
                     strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
@@ -905,21 +906,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     getLocale(  ) );
 
             // PAGINATOR
-/*WORKFLOW FUTURE    
-			ReferenceList refListStatus = new ReferenceList();
-            refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
- 
-            StateFilter stateFilter = new StateFilter(  );
-    	    stateFilter.setIdWorkflow( form.getIdWorkflow() );	    
 
-            List<State> listStats = _stateService.getListStateByFilter( stateFilter );
-            Map <String, String>lsSta = new HashMap<String, String>();
-            for (State tmpStat : listStats )
-            {
-            	refListStatus.addItem( tmpStat.getId(), tmpStat.getName() );
-            	lsSta.put(String.valueOf(tmpStat.getId()), tmpStat.getName());
-            }
-*/
             ReferenceList refListStatus = new ReferenceList( 3);
             refListStatus.addItem( AppointmentFilter.NO_STATUS_FILTER, StringUtils.EMPTY );
             refListStatus.addItem( Appointment.Status.STATUS_RESERVED.getValeur(),
@@ -951,7 +938,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             for ( Appointment appointment : delegatePaginator.getPageItems(  ) )
                 {
             	
-            
          	    int nIdWorkflow = form.getIdWorkflow(  );
                  
          	    StateFilter stateFilter = new StateFilter(  );
@@ -968,6 +954,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
            
             }
+            if (bfilterByWorkFlow)
+            {
+            	Collections.sort(delegatePaginator.getPageItems(  ), new AppointmentFilterWorkFlow(filter.getOrderAsc()));
+            }
+
             // We add the list of admin users to filter appointments by admin users.
             Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
             ReferenceList refListAdmins = new ReferenceList(  );
