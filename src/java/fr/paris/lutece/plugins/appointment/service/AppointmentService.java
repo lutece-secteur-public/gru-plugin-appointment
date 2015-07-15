@@ -435,86 +435,30 @@ public class AppointmentService
         if ( bIsForFront )
         {
         	 int nSave = nOffsetWeeks.intValue();
-        	 
-        	 while (!isWeekEnabled ( listDays ) && nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ))
-        	 {	        	 
-        		 nOffsetWeeks.increment();    		
-	        	 listDays = getListDays ( form, nOffsetWeeks, objNow);
-        	 }
-        	 if (!isWeekEnabled ( listDays )) 
+        	 if (! bGetFirstEmptyWeek )
         	 {
-        		 listDays = getListDays ( form, new MutableInt(nSave), objNow);
+	        	 while (!isWeekEnabled ( listDays ) && nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ))
+	        	 {	        	 
+	        		 nOffsetWeeks.increment();    		
+		        	 listDays = getListDays ( form, nOffsetWeeks, objNow);
+	        	 }
+	        	 if (!isWeekEnabled ( listDays )) 
+	        	 {
+	        		 listDays = getListDays ( form, new MutableInt(nSave), objNow);
+	        	 }
+        	 } else {
+        		 objNow = GregorianCalendar.getInstance( Locale.FRANCE );
+        		 while (!isWeekEnabled ( listDays ) && nOffsetWeeks.intValue(  ) > 0)
+        		 {
+        			 nOffsetWeeks.decrement();    		
+		        	 listDays = getListDays ( form, nOffsetWeeks, GregorianCalendar.getInstance( Locale.FRANCE ));
+        		 }
+        		 if (!isWeekEnabled ( listDays )) 
+	        	 {
+	        		 listDays = getListDays ( form, new MutableInt(0), GregorianCalendar.getInstance( Locale.FRANCE ));
+	        	 }
         	 }
         }
-  /*   
-        boolean bSlotFound = false;
-        while (  !bSlotFound && nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ) )
-        {
-        	
-        	if ()
-        	
-        }
-        long lTimeOfYesterday = date.getTime(  ) - CONSTANT_MILISECONDS_IN_DAY;
-
-        if ( bIsForFront )
-        {
-            lTimeOfYesterday += ( ( form.getMinDaysBeforeAppointment(  ) % 7 ) * CONSTANT_MILISECONDS_IN_DAY );
-        }
-
-        boolean bSlotFound = false;
-
-        while ( !bSlotFound && ( nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ) ) )
-        {
-            if ( listDays != null )
-            {
-                for ( AppointmentDay day : listDays )
-                {
-                    if ( day.getDate(  ).getTime(  ) < lTimeOfYesterday )
-                    {
-                        day.setIsOpen( false );
-                    }
-                    else
-                    {
-                        if ( day.getIsOpen(  ) )
-                        {
-                            day.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) ) );
-                            bSlotFound = bSlotFound || ( day.getFreePlaces(  ) > 0 );
-                        }
-                        else
-                        {
-                            day.setListSlots( new ArrayList<AppointmentSlot>(  ) );
-                        }
-                    }
-                }
-            }
-
-            if ( !bGetFirstEmptyWeek )
-            {
-                bSlotFound = true;
-            }
-
-            // If no slot were found, we prepare to exit the loop or to make another iteration
-            if ( !bSlotFound )
-            {
-                // If the form has no slot available, we return a null list
-                if ( ( nOffsetWeeks.intValue(  ) + 1 ) >= form.getNbWeeksToDisplay(  ) )
-                {
-                    listDays = null;
-                }
-                else
-                {
-                    calendar.setTime( dateMin );
-                    calendar.add( Calendar.DAY_OF_MONTH, 7 );
-                    dateMin = new Date( calendar.getTimeInMillis(  ) );
-                    calendar.setTime( dateMax );
-                    calendar.add( Calendar.DAY_OF_MONTH, 7 );
-                    dateMax = new Date( calendar.getTimeInMillis(  ) );
-                    listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
-                }
-
-                nOffsetWeeks.increment(  );
-            }
-        }*/
 
         return listDays;
     }

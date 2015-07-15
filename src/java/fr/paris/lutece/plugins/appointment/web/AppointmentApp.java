@@ -182,6 +182,7 @@ public class AppointmentApp extends MVCApplication
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_NB_WEEK = "nb_week";
+    private static final String PARAMETER_DIRECTION = "dir";
     private static final String PARAMETER_EMAIL = "email";
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
@@ -1139,6 +1140,7 @@ public class AppointmentApp extends MVCApplication
         AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( form.getIdForm(  ) );
 
         String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
+        boolean bBack = StringUtils.isBlank(request.getParameter( PARAMETER_DIRECTION )) ? false : Boolean.valueOf(request.getParameter( PARAMETER_DIRECTION ).trim()) ;
         int nNbWeek = 0;
 
         if ( StringUtils.isNotEmpty( strNbWeek ) && StringUtils.isNumeric( strNbWeek ) )
@@ -1155,7 +1157,7 @@ public class AppointmentApp extends MVCApplication
 
         List<AppointmentDay> listDays = AppointmentService.getService(  )
                                                           .getDayListForCalendar( form, nMutableNbWeek, true,
-                StringUtils.isEmpty( strNbWeek ) );
+                                                        		  bBack );
 
         nNbWeek = nMutableNbWeek.intValue(  );
 
