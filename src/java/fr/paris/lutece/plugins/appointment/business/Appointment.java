@@ -41,7 +41,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -89,6 +88,8 @@ public class Appointment implements Serializable
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.Email.size}" )
     @Email( message = "#i18n{appointment.validation.appointment.Email.email}" )
     private String _strEmail;
+
+    
 
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
@@ -200,7 +201,7 @@ public class Appointment implements Serializable
     {
         _strEmail = strEmail;
     }
-
+    
     /**
      * Returns the id of the lutece user that made this appointment
      * @return The id of the lutece user that made this appointment

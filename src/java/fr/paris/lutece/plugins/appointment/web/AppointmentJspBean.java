@@ -84,6 +84,9 @@ import fr.paris.lutece.portal.service.csv.CSVReaderService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.message.SiteMessage;
+import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
@@ -192,6 +195,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_EMAIL = "email";
+    private static final String PARAMETER_EMAIL_CONFIRMATION = "emailConfirm";
     private static final String PARAMETER_DATE_MIN = "allDates";
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
@@ -253,6 +257,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ALLDATES = "allDates";
     private static final String MARK_ACTIVATE_WORKFLOW = "activateWorkflow";
+    private static final String MARK_CONSTANT_STR_NULL = "";
  
     // JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -298,7 +303,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENT_REMOVED = "appointment.info.appointment.removed";
     private static final String INFO_APPOINTMENT_MASSREMOVED = "appointment.info.appointment.removed";
     private static final String INFO_APPOINTMENT_EMAIL_ERROR = "appointment.info.appointment.emailerror";
-
+    
+    //Error
+    private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
+    private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+    
     // Session keys
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
     private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.itemsPerPage";
@@ -1270,10 +1279,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return The next URL to redirect to
      * @throws AccessDeniedException If the user is not authorized to access
      *             this feature
+     * @throws SiteMessageException 
      */
     @Action( ACTION_DO_VALIDATE_FORM )
     public String doValidateForm( HttpServletRequest request )
-        throws AccessDeniedException
+        throws AccessDeniedException, SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
@@ -1322,12 +1332,33 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     }
                 }
             }
-
-            appointment.setStatus(Appointment.Status.STATUS_RESERVED.getValeur());
-            appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
+            //Email confirmation
+            String strEmail = request.getParameter( PARAMETER_EMAIL );
+            String emailConfirm = request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) ;
+            
+            if( form.getEnableConfirmEmail( ) )
+            {
+	            if( StringUtils.isEmpty( emailConfirm ) )
+	            {
+	            	GenericAttributeError genAttError = new GenericAttributeError(  );
+					 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL,
+		                        request.getLocale(  ) ));
+					 listFormErrors.add( genAttError );
+					 
+	            }
+            }
+            if( !emailConfirm.equals( strEmail )  && !StringUtils.isEmpty( emailConfirm ) )
+            {
+            	GenericAttributeError genAttError = new GenericAttributeError(  );
+				 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_CONFIRM_EMAIL,
+	                        request.getLocale(  ) ) );
+				 listFormErrors.add( genAttError );
+            }
+            appointment.setEmail( strEmail );
+            appointment.setStatus( Appointment.Status.STATUS_RESERVED.getValeur( ) );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
-            appointment.setAppointmentForm(form);
+            appointment.setAppointmentForm( form );
 
             // We save the appointment in session. The appointment object will contain responses of the user to the form
             _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointment );
@@ -1352,18 +1383,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
             else
             {
-            	if (!StringUtils.isEmpty( appointment.getEmail ( ) ))
+            	if ( !StringUtils.isEmpty( appointment.getEmail ( ) ) )
                 {
-            		if (StringUtils.isNumeric( strIdSlot ) )
+            		if ( StringUtils.isNumeric( strIdSlot ) )
             		{
             			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( Integer.valueOf( strIdSlot ) );
             			AppointmentDay day =  AppointmentDayHome.findByPrimaryKey( slot.getIdDay() );
             			
-            			List<Date> unvailableSlots = AppointmentFormHome.getLimitedByMail(day.getDate(), null, nIdForm, appointment.getEmail() );
+            			List<Date> unvailableSlots = AppointmentFormHome.getLimitedByMail( day.getDate(), null, nIdForm, appointment.getEmail( ) );
             			boolean bErr = false;
-            			for (Date myDate: unvailableSlots)
+            			for ( Date myDate: unvailableSlots )
             			{
-            				if ( getNumbersDay( day.getDate(), myDate)  == 0)
+            				if ( getNumbersDay( day.getDate(), myDate)  == 0 )
             				{
              					bErr = true;
             				}
@@ -1372,7 +1403,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             			{
             				 GenericAttributeError genAttError = new GenericAttributeError(  );
             				 genAttError.setErrorMessage( I18nService.getLocalizedString( INFO_APPOINTMENT_EMAIL_ERROR,
-            	                        request.getLocale(  ) ));
+            	                        request.getLocale(  ) ) );
             				 listFormErrors.add( genAttError );
             			}
             		}
@@ -1391,7 +1422,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 request.getSession(  ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
                 if ( comeFromCalendarAppointment( strIdSlot ) )
                 {
-	               return redirect( request, VIEW_CREATE_APPOINTMENT, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT, Integer.parseInt( ( strIdSlot ) ));
+	               return redirect( request, VIEW_CREATE_APPOINTMENT, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT, Integer.parseInt( ( strIdSlot ) ) );
                 }
                 else
                 {
@@ -1504,15 +1535,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
                                                                 .getListTimeBegin( listDays, form, listTimeBegin );
                 
 
-                Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
-                Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
+                Calendar calendarEnd = getCalendarTime ( form.getDateEndValidity(), form.getClosingHour( ), form.getClosingMinutes( ) );
+                Calendar calendarStart = getCalendarTime ( form.getDateStartValidity(), form.getOpeningHour( ), form.getOpeningMinutes( ) );
 
-                listDays = computeUnavailableDays(form.getIdForm(), listDays, false);
+                listDays = computeUnavailableDays( form.getIdForm( ), listDays, false );
 /*                listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays, calendarStart,calendarEnd);*/
                 Appointment myApmt =  _appointmentFormService.getValidatedAppointmentFromSession( request.getSession ( ) );
-                if ( myApmt!= null && !StringUtils.isEmpty( myApmt.getEmail ( ) ))
+                if ( myApmt!= null && !StringUtils.isEmpty( myApmt.getEmail ( ) ) )
                 {
-                	listDays = computeIntervalsDays(form.getIdForm(), listDays, myApmt.getEmail());
+                	listDays = computeIntervalsDays(form.getIdForm( ), listDays, myApmt.getEmail( ) );
                 }
                 model.put( MARK_LIST_DAYS, listDays );
                 model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
@@ -1523,7 +1554,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_FORM_MESSAGES, formMessages );
             model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate-1 );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
-            model.put( PARAMETER_LIM_DATES, getLimitedDate( nNbWeeksToCreate) );
+            model.put( PARAMETER_LIM_DATES, getLimitedDate( nNbWeeksToCreate ) );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
 
             return getPage( PROPERTY_PAGE_TITLE_APPOINTMENT_CALENDAR, TEMPLATE_APPOINTMENT_FORM_CALENDAR, model );
@@ -1537,17 +1568,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	 * @param listDays
 	 * @param myApmt
 	 */
-	private List<AppointmentDay> computeIntervalsDays(int nIdForm,
-			List<AppointmentDay> listDays, String strMail) {
-		Date[] tmpLimit =  {listDays.get(0).getDate(),listDays.get(listDays.size ()-1).getDate()};
+	private List<AppointmentDay> computeIntervalsDays( int nIdForm,
+			List<AppointmentDay> listDays, String strMail ) {
+		Date[] tmpLimit =  { listDays.get( 0 ).getDate( ),listDays.get( listDays.size ()-1 ).getDate()};
 		List<Date> unvailableSlots = AppointmentFormHome.getLimitedByMail(null, tmpLimit, nIdForm, strMail );
-		for (int i = 0; i < listDays.size (); i++)
+		for ( int i = 0; i < listDays.size (); i++ )
 		{
-			for (Date tmpDate: unvailableSlots)
+			for ( Date tmpDate: unvailableSlots )
 			{
-				if (getNumbersDay(listDays.get(i).getDate(), tmpDate) == 0)
+				if ( getNumbersDay( listDays.get( i ).getDate( ), tmpDate ) == 0 )
 				{
-					listDays.get(i).setListSlots(eraseSlots(listDays.get(i).getListSlots ( )));
+					listDays.get( i ).setListSlots( eraseSlots( listDays.get( i ).getListSlots ( ) ) );
 				}
 			}
 			
@@ -1561,24 +1592,24 @@ public class AppointmentJspBean extends MVCAdminJspBean
   	 * @param nEnd
   	 * @return
   	 */
-  	private static int getNumbersDay(Date nStart, Date nEnd)
+  	private static int getNumbersDay( Date nStart, Date nEnd )
   	{
-  		long timeDiff =  nEnd.getTime() - nStart.getTime();
-  		timeDiff = timeDiff / 1000 /(24 * 60 * 60);
-  		return Integer.valueOf( String.valueOf(timeDiff)  ) ;
+  		long timeDiff =  nEnd.getTime() - nStart.getTime( );
+  		timeDiff = timeDiff / 1000 / ( 24 * 60 * 60 );
+  		return Integer.valueOf( String.valueOf( timeDiff )  ) ;
   	}	
 	/**
 	 * Erase slots
 	 * @param objSlots
 	 * @return
 	 */
-	private static List<AppointmentSlot> eraseSlots ( List<AppointmentSlot> objSlots)
+	private static List<AppointmentSlot> eraseSlots ( List<AppointmentSlot> objSlots )
 	{
 		List<AppointmentSlot> returnSlots = objSlots;
-		if (objSlots!=null)
+		if ( objSlots != null )
 		{
 			returnSlots = new ArrayList<AppointmentSlot>(); 
-			for (AppointmentSlot mySlot: objSlots)
+			for ( AppointmentSlot mySlot: objSlots )
 			{
 				mySlot.setIsEnabled ( false );
 				returnSlots.add( mySlot );
@@ -1595,19 +1626,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	 * @param form
 	 * @param listDays
 	 */
-	private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
-			List<AppointmentDay> listDays, Calendar objStart, Calendar objEnd) {
+	private static List<AppointmentDay> unvalidAppointmentsbeforeNow( int iDaysBeforeAppointment,
+			List<AppointmentDay> listDays, Calendar objStart, Calendar objEnd ) {
 
 		Calendar objNow = new GregorianCalendar( Locale.FRENCH );
 		
-		objNow.add(Calendar.HOUR_OF_DAY, iDaysBeforeAppointment);
+		objNow.add( Calendar.HOUR_OF_DAY, iDaysBeforeAppointment );
 		
 			
-		for (int i = 0; i < listDays.size() ; i ++)
+		for ( nt i = 0; i < listDays.size() ; i ++ )
 		{
-			if (listDays.get( i ).getIsOpen())
+			if ( listDays.get( i ).getIsOpen( ) )
 			{
-				if (listDays.get( i ).getListSlots() != null )
+				if ( listDays.get( i ).getListSlots() != null )
 				{
 					for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
 					{
@@ -1615,12 +1646,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
 						Calendar objNowClose = new GregorianCalendar( Locale.FRENCH );
 						
 						tmpCal.setTime( listDays.get( i ).getDate() );					
-						tmpCal.set(Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour() );
-						tmpCal.set(Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute() );
+						tmpCal.set( Calendar.HOUR_OF_DAY, listDays.get( i ).getListSlots().get( index ).getStartingHour( ) );
+						tmpCal.set( Calendar.MINUTE, listDays.get( i ).getListSlots().get( index ).getStartingMinute( ) );
 						
 						objNowClose.setTime( listDays.get( i ).getDate() );
-						objNowClose.set(Calendar.HOUR_OF_DAY, objEnd.get(Calendar.HOUR_OF_DAY));
-						objNowClose.set(Calendar.MINUTE, objEnd.get(Calendar.MINUTE));
+						objNowClose.set( Calendar.HOUR_OF_DAY, objEnd.get(Calendar.HOUR_OF_DAY) );
+						objNowClose.set( Calendar.MINUTE, objEnd.get(Calendar.MINUTE) );
 
 						if ( ( objNow.after( tmpCal ) || tmpCal.after( objNowClose ) ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
 						{
@@ -1679,20 +1710,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String doRemoveMassAppointment( HttpServletRequest request )
         throws AccessDeniedException
     {
-        String strTableaudelete[] = (String []) request.getSession().getAttribute(PARAMETER_ID_APPOINTMENT_DELETE);
-        request.getSession().removeAttribute(PARAMETER_ID_APPOINTMENT_DELETE);
-        if (strTableaudelete != null)
+        String strTableaudelete[] = ( String [] ) request.getSession( ).getAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
+        request.getSession().removeAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
+        if ( strTableaudelete != null ) 
         {
         	boolean bIsError = false;
-        	for (String strTmp : strTableaudelete)
+        	for ( String strTmp : strTableaudelete )
         	{
         		 if ( StringUtils.isEmpty( strTmp ) || !StringUtils.isNumeric( strTmp ) )
         			 bIsError = true;
         	}
-        	if (!bIsError)
+        	if ( !bIsError )
         	{
         		Integer idForm = null;
-        		for (String strTmp : strTableaudelete)
+        		for ( String strTmp : strTableaudelete )
             	{
         			idForm = doRemoveSingleAppointment ( strTmp, getUser ( ));
             	}
@@ -1750,7 +1781,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
-        Integer idForm = doRemoveSingleAppointment ( strIdAppointment, getUser ( ));
+        Integer idForm = doRemoveSingleAppointment ( strIdAppointment, getUser ( ) );
         if ( idForm != null )
         {
          	addInfo( INFO_APPOINTMENT_REMOVED, getLocale(  ) );
@@ -2048,7 +2079,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             // We check that the status has changed to avoid doing unnecessary updates.
             // Also, it is not permitted to set the status of an appointment to not validated.
             AppointmentSlot slotWhithFreePlace = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( appointment.getIdSlot(  ) );
-            if(slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
+            if( slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
       			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 ) && nNewStatus == Appointment.Status.STATUS_RESERVED.getValeur() ){
       		
       		  return redirect( request, AdminMessageService.getMessageUrl( request,  MESSAGE_UNVAILABLBLE_SLOT, AdminMessage.TYPE_STOP ) );
@@ -2148,8 +2179,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 	  AppointmentSlot slotWhithFreePlace = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( appointment.getIdSlot(  ) );
                       for ( ITask task : listActionTasks )
                       {
-                    	  if(task.getTaskType(  ).getKey( ).equals( "taskChangeAppointmentStatus" ) && slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
-                    			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 )){
+                    	  if( task.getTaskType(  ).getKey( ).equals( "taskChangeAppointmentStatus" ) && slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
+                    			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 ) ){
                     		
                     		  return redirect( request, AdminMessageService.getMessageUrl( request,  MESSAGE_UNVAILABLBLE_SLOT, AdminMessage.TYPE_STOP ) );
                     	  }

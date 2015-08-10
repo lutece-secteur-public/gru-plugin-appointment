@@ -117,6 +117,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private int _nNbWeeksLimits;
     private String _strReference;
     private boolean _bIsFormStep;
+    private boolean _bEnableConfirmEmail;
     
     /**
      * Returns the IdForm
@@ -748,8 +749,22 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
         return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened[nDayOfWeek - 1]
                                                                                   : false;
     }
-
     /**
+     * Get enable confirm email
+     * @return boolean  	enable confirm email
+     */
+    public boolean getEnableConfirmEmail() {
+		return _bEnableConfirmEmail;
+	}
+    /**
+     * Set enabme confirm email
+     * @param bEnableConfirmEmail
+     */
+	public void setEnableConfirmEmail(boolean bEnableConfirmEmail) {
+		this._bEnableConfirmEmail = bEnableConfirmEmail;
+	}
+
+	/**
      * {@inheritDoc}
      */
     @Override
