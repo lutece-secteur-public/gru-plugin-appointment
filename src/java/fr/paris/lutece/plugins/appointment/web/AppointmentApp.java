@@ -184,6 +184,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_NB_WEEK = "nb_week";
     private static final String PARAMETER_DIRECTION = "dir";
     private static final String PARAMETER_EMAIL = "email";
+    private static final String PARAMETER_EMAIL_CONFIRMATION = "emailConfirm";
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
     private static final String PARAMETER_ID_SLOT = "idSlot";
@@ -227,13 +228,16 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_ERRORS = "errors";
     private static final String MARK_DATE_LAST_MONDAY = "dateLastMonday";
     private static final String MARK_STATUS = "libelled_status";
+    private static final String MARK_CONSTANT_STR_NULL = "";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
     private static final String ERROR_MESSAGE_UNKNOWN_REF = "appointment.message.error.unknownRef";
     private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
-
+    private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
+    private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+    
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
@@ -336,9 +340,10 @@ public class AppointmentApp extends MVCApplication
      * Do validate data entered by a user to fill a form
      * @param request The request
      * @return The next URL to redirect to
+     * @throws SiteMessageException 
      */
     @Action( ACTION_DO_VALIDATE_FORM )
-    public XPage doValidateForm( HttpServletRequest request )
+    public XPage doValidateForm( HttpServletRequest request ) throws SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -353,20 +358,44 @@ public class AppointmentApp extends MVCApplication
             filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
             filter.setIdIsComment( EntryFilter.FILTER_FALSE );
 
-            List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
+            List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );	
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
             AppointmentDTO appointmentFromSession = _appointmentFormService.getAppointmentFromSession( request.getSession(  ) );
             _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
 
             List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>(  );
             Locale locale = request.getLocale(  );
-
+            
+            //Email confirmation
+            String strEmail = request.getParameter( PARAMETER_EMAIL );
+            String emailConfirm = request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) ;
+            
             AppointmentDTO appointment = new AppointmentDTO(  );
-            appointment.setEmail( request.getParameter( PARAMETER_EMAIL ) );
+            
+            if( form.getEnableConfirmEmail( ) )
+            {
+	            if( StringUtils.isEmpty(emailConfirm) )
+	            {
+	            	GenericAttributeError genAttError = new GenericAttributeError(  );
+					 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL,
+		                        request.getLocale(  ) ) );
+					 listFormErrors.add( genAttError );
+					 
+	            }
+            }
+            if( !emailConfirm.equals(strEmail)  && !StringUtils.isEmpty(emailConfirm) )
+            {
+            	GenericAttributeError genAttError = new GenericAttributeError(  );
+				 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_CONFIRM_EMAIL,
+	                        request.getLocale(  ) ) );
+				 listFormErrors.add( genAttError );
+            }
+            
+           	appointment.setEmail( strEmail );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
             appointment.setStatus( Appointment.Status.STATUS_RESERVED.getValeur() );
-            appointment.setAppointmentForm(form);
+            appointment.setAppointmentForm( form );
 
             if ( appointmentFromSession != null )
             {

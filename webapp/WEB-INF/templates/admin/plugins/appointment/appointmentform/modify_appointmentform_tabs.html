@@ -65,6 +65,8 @@
 				<#if isCaptchaEnabled>
 					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableConfirmEmail' inputName='enableConfirmEmail' value='true' checked=appointmentform.enableConfirmEmail!false />
+	            
 	            <div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<button name="action_modifyAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="18" >

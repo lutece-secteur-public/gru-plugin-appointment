@@ -140,3 +140,6 @@ ALTER TABLE appointment_form_messages ADD CONSTRAINT fk_app_form_messages_id_for
       REFERENCES appointment_form (id_form) ON DELETE CASCADE ON UPDATE RESTRICT ;
 ALTER TABLE appointment_appointment_response ADD CONSTRAINT fk_app_response_id_app FOREIGN KEY (id_appointment)
       REFERENCES appointment_appointment (id_appointment) ON DELETE CASCADE ON UPDATE RESTRICT ;
+      
+
+ALTER TABLE appointment_form ADD is_confirmEmail_enabled SMALLINT NOT NULL;
