@@ -84,7 +84,6 @@ public class Appointment implements Serializable
     @NotBlank( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.LastName.size}" )
     private String _strLastName;
-    @NotBlank( message = "#i18n{appointment.validation.appointment.Email.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointment.Email.size}" )
     @Email( message = "#i18n{appointment.validation.appointment.Email.email}" )
     private String _strEmail;

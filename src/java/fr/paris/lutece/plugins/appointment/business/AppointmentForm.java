@@ -118,6 +118,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private String _strReference;
     private boolean _bIsFormStep;
     private boolean _bEnableConfirmEmail;
+    private boolean _bEnableMandatoryEmail;
     
     /**
      * Returns the IdForm
@@ -751,17 +752,33 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     }
     /**
      * Get enable confirm email
-     * @return boolean  	enable confirm email
+     * @return boolean  enable confirm email
      */
     public boolean getEnableConfirmEmail() {
 		return _bEnableConfirmEmail;
 	}
     /**
-     * Set enabme confirm email
-     * @param bEnableConfirmEmail
+     * Set enable confirm email
+     * @param bEnableConfirmEmail confirm email
      */
 	public void setEnableConfirmEmail(boolean bEnableConfirmEmail) {
 		this._bEnableConfirmEmail = bEnableConfirmEmail;
+	}
+	
+	/**
+	 * Get enable mandatory email
+	 * @return enable mandatory email
+	 */
+	public boolean getEnableMandatoryEmail() {
+		return _bEnableMandatoryEmail;
+	}
+	
+	/**
+	 * Set enable mandatory email
+	 * @param bEnableMandatoryEmail mandatory email
+	 */
+	public void setEnableMandatoryEmail(boolean bEnableMandatoryEmail) {
+		this._bEnableMandatoryEmail = bEnableMandatoryEmail;
 	}
 
 	/**
