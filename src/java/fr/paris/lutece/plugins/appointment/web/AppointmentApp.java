@@ -237,6 +237,7 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
     private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+    private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
     
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
@@ -372,6 +373,16 @@ public class AppointmentApp extends MVCApplication
             
             AppointmentDTO appointment = new AppointmentDTO(  );
             
+            
+            if( form.getEnableMandatoryEmail() )
+            {
+            	if( StringUtils.isEmpty( strEmail ) )
+            	{
+            		GenericAttributeError genAttError = new GenericAttributeError(  );
+					 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_EMPTY_EMAIL , request.getLocale(  ) ) );
+					 listFormErrors.add( genAttError );
+            	}
+            }
             if( form.getEnableConfirmEmail( ) )
             {
 	            if( StringUtils.isEmpty(emailConfirm) )

@@ -305,6 +305,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENT_EMAIL_ERROR = "appointment.info.appointment.emailerror";
     
     //Error
+    private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
     private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     
@@ -1336,6 +1337,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
             String strEmail = request.getParameter( PARAMETER_EMAIL );
             String emailConfirm = request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) ;
             
+            if( form.getEnableMandatoryEmail() )
+            {
+            	if( StringUtils.isEmpty( strEmail ) )
+            	{
+            		GenericAttributeError genAttError = new GenericAttributeError(  );
+					 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_EMPTY_EMAIL , request.getLocale(  ) ) );
+					 listFormErrors.add( genAttError );
+            	}
+            }
             if( form.getEnableConfirmEmail( ) )
             {
 	            if( StringUtils.isEmpty( emailConfirm ) )
