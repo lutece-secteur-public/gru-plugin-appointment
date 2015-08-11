@@ -1634,13 +1634,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
 		objNow.add( Calendar.HOUR_OF_DAY, iDaysBeforeAppointment );
 		
 			
-		for ( nt i = 0; i < listDays.size() ; i ++ )
+		for ( int i = 0; i < listDays.size() ; i ++ )
 		{
 			if ( listDays.get( i ).getIsOpen( ) )
 			{
 				if ( listDays.get( i ).getListSlots() != null )
 				{
-					for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
+					for ( int index = 0; index < listDays.get( i ).getListSlots().size( ) ; index++ )
 					{
 						Calendar tmpCal = new GregorianCalendar( Locale.FRENCH );
 						Calendar objNowClose = new GregorianCalendar( Locale.FRENCH );
@@ -2079,7 +2079,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             // We check that the status has changed to avoid doing unnecessary updates.
             // Also, it is not permitted to set the status of an appointment to not validated.
             AppointmentSlot slotWhithFreePlace = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( appointment.getIdSlot(  ) );
-            if( slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
+            if(slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
       			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 ) && nNewStatus == Appointment.Status.STATUS_RESERVED.getValeur() ){
       		
       		  return redirect( request, AdminMessageService.getMessageUrl( request,  MESSAGE_UNVAILABLBLE_SLOT, AdminMessage.TYPE_STOP ) );
@@ -2179,8 +2179,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 	  AppointmentSlot slotWhithFreePlace = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( appointment.getIdSlot(  ) );
                       for ( ITask task : listActionTasks )
                       {
-                    	  if( task.getTaskType(  ).getKey( ).equals( "taskChangeAppointmentStatus" ) && slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
-                    			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 ) ){
+                    	  if(task.getTaskType(  ).getKey( ).equals( "taskChangeAppointmentStatus" ) && slotWhithFreePlace.getNbFreePlaces(  ) <= 0 
+                    			  && appointment.getStatus() == Appointment.Status.STATUS_UNRESERVED.getValeur(	 )){
                     		
                     		  return redirect( request, AdminMessageService.getMessageUrl( request,  MESSAGE_UNVAILABLBLE_SLOT, AdminMessage.TYPE_STOP ) );
                     	  }
