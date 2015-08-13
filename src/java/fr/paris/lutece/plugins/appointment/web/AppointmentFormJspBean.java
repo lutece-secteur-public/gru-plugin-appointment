@@ -33,9 +33,18 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,9 +54,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
@@ -68,12 +81,15 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
+import fr.paris.lutece.portal.service.image.ImageResource;
+import fr.paris.lutece.portal.service.image.ImageResourceManager;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -82,6 +98,7 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
+import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.date.DateUtil;
@@ -101,13 +118,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      */
     public static final String RIGHT_MANAGEAPPOINTMENTFORM = "APPOINTMENT_FORM_MANAGEMENT";
     private static final long serialVersionUID = -615061018633136997L;
-
+    // Constants
+    private static final String EMPTY_STRING = "";
     // templates
     private static final String TEMPLATE_MANAGE_APPOINTMENTFORMS = "/admin/plugins/appointment/appointmentform/manage_appointmentforms.html";
     private static final String TEMPLATE_CREATE_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/create_appointmentform.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES = "/admin/plugins/appointment/appointmentform/modify_appointmentform_messages.html";
-
+    
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_START = "date_start_validity";
@@ -116,6 +134,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
     private static final String PARAMETER_FORCE_RELOAD = "forceReload";
+    private static final String PARAMETER_ICON_RESSOURCE = "image_resource";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -139,6 +158,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
+    private static final String MARK_NULL = "NULL";
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
@@ -311,14 +331,16 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * @return The JSP URL of the process result
      * @throws AccessDeniedException If the user is not authorized to create
      *             appointment forms
+     * @throws FileNotFoundException 
      */
     @Action( ACTION_CREATE_APPOINTMENTFORM )
     public String doCreateAppointmentForm( HttpServletRequest request )
-        throws AccessDeniedException
+        throws AccessDeniedException, FileNotFoundException
     {
         AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-
+        
+        
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
                     AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
         {
@@ -329,6 +351,32 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             appointmentForm = new AppointmentForm(  );
         }
+        
+        MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
+        
+        FileItem item = mRequest.getFile( PARAMETER_ICON_RESSOURCE );
+        ImageResource img = new ImageResource( );
+        if ( ( item != null ) && ( item.getName(  ) != null ) && !EMPTY_STRING.equals( item.getName(  ) ) )
+        {
+	        byte[] bytes = item.get(  );
+	        String strMimeType = item.getContentType(  );
+	        
+	        img.setImage( bytes );
+	        img.setMimeType( strMimeType );
+	        
+	        appointmentForm.setIcon( img );
+        }
+        else
+        {
+        	img.setImage( new byte[]
+        			{
+        			
+        			}
+        	);
+        	img.setMimeType( MARK_NULL );
+        	appointmentForm.setIcon( img );
+        }
+        
        if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) && checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
         	populate( appointmentForm, request );
        else
@@ -357,7 +405,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
-
+            
+      
     /**
      * Manages the removal form of a appointment form whose identifier is in the
      * HTTP request
@@ -509,7 +558,23 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm );
         }
-
+        MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
+        
+        
+        FileItem item = mRequest.getFile( PARAMETER_ICON_RESSOURCE );
+        
+        if ( ( item != null ) && ( item.getName(  ) != null ) && !EMPTY_STRING.equals( item.getName(  ) ) )
+        {
+        
+	        byte[] bytes = item.get(  );
+	        String strMimeType = item.getContentType(  );
+	        ImageResource img = new ImageResource( );
+	        
+	        img.setImage( bytes );
+	        img.setMimeType( strMimeType );
+	        
+	        appointmentForm.setIcon( img );
+        }
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
                     Integer.toString( appointmentForm.getIdForm(  ) ),
                     AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )

@@ -3,10 +3,16 @@
 		<fieldset>
 			<legend><#if title??>${title}<#else>#i18n{appointment.xpage.formList.labelFormList}</#if></legend>
 			<ul>
-				<#list form_list as form>
+											
+				<#assign compteur=form_list?size - 1>
+				<#list 0..compteur as item>
 					<li>
-						<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form.idForm}">
-							${form.title}
+						<#if icons[item]!='NULL'>
+							<img src="${icons[item]}" class="icon" title="icon_form"/>
+						</#if>
+						
+						<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form_list[item].idForm}">
+							${form_list[item].title}
 						</a>
 					</li>
 				</#list>
