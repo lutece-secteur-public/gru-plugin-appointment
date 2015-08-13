@@ -67,6 +67,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
@@ -95,6 +96,7 @@ import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
@@ -229,7 +231,15 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_DATE_LAST_MONDAY = "dateLastMonday";
     private static final String MARK_STATUS = "libelled_status";
     private static final String MARK_CONSTANT_STR_NULL = "";
-
+    private static final String MARK_DATA = "data";
+    private static final String MARK_BASE_64 = "base64";
+    private static final String MARK_NULL =  "NULL" ;
+    private static final String MARK_SEMI_COLON = ";";
+    private static final String MARK_COMMA = ",";
+    private static final String MARK_COLON = ":" ; 
+    private static final String MARK_ICONS = "icons" ;
+    private static final String MARK_ICON_NULL =  "NULL";
+    
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
@@ -1325,6 +1335,27 @@ public class AppointmentApp extends MVCApplication
         Map<String, Object> model = new HashMap<String, Object>(  );
 
         Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList(  );
+        
+        List <String> icons = new ArrayList<String>( );
+        for ( AppointmentForm form : listAppointmentForm ) 
+        {
+        	ImageResource img = form.getIcon( );
+        	byte[] imgBytesAsBase64 = Base64.encodeBase64( img.getImage( ) );
+        	String imgDataAsBase64 = new String( imgBytesAsBase64 );
+        	String strMimeType = img.getMimeType( );
+        	String imgAsBase64 = MARK_DATA + MARK_COLON + strMimeType + MARK_SEMI_COLON + MARK_BASE_64 + MARK_COMMA + imgDataAsBase64;
+        	
+        	if ( strMimeType.equals( MARK_NULL ) || StringUtils.isBlank( strMimeType ) )
+        	{
+        		icons.add( MARK_ICON_NULL ) ;
+        	}
+        	else
+        	{
+        		icons.add( imgAsBase64 );
+        	}
+        }
+        
+        model.put(MARK_ICONS, icons);
         model.put( MARK_FORM_LIST, listAppointmentForm );
         model.put( MARK_TITLE, strTitle );
 

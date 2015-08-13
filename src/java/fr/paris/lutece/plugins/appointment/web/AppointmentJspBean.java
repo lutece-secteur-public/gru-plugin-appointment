@@ -623,7 +623,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             
           
             
-            listDays = computeUnavailableDays(form.getIdForm(), listDays, false);
+            listDays = computeUnavailableDays( form.getIdForm(), listDays, false );
             
             
             List<String> listTimeBegin = new ArrayList<String>(  );
@@ -926,7 +926,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             refListStatus.addItem( Appointment.Status.STATUS_UNRESERVED.getValeur(),
                 I18nService.getLocalizedString( Appointment.Status.STATUS_UNRESERVED.getLibelle(), getLocale(  ) ) );
             ReferenceList refListExports = new ReferenceList( );
-            for (ExportFilter tmpFilter : ExportFilter.values())
+            for ( ExportFilter tmpFilter : ExportFilter.values( ) )
             	refListExports.addItem( tmpFilter.getValeur(), I18nService.getLocalizedString( tmpFilter.getLibelle(), getLocale(  ) ) );
 
             	Map<String, Object> model = getModel(  );

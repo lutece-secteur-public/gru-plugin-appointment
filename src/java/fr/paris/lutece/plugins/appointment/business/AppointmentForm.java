@@ -33,10 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
@@ -120,6 +120,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private boolean _bEnableConfirmEmail;
     private boolean _bEnableMandatoryEmail;
     
+    private ImageResource _imageResource;
+    
     /**
      * Returns the IdForm
      * @return The IdForm
@@ -133,7 +135,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * Sets the IdForm
      * @param nIdForm The IdForm
      */
-    public void setIdForm( int nIdForm )
+    public void setIdForm( int nIdForm )	
     {
         _nIdForm = nIdForm;
     }
@@ -779,6 +781,15 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 	 */
 	public void setEnableMandatoryEmail(boolean bEnableMandatoryEmail) {
 		this._bEnableMandatoryEmail = bEnableMandatoryEmail;
+	}
+	
+	
+	public ImageResource getIcon() {
+		return _imageResource;
+	}
+
+	public void setIcon(ImageResource imgIcon) {
+		this._imageResource = imgIcon;
 	}
 
 	/**

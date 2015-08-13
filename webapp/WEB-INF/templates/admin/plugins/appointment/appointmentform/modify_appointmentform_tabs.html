@@ -30,7 +30,7 @@
 
 <#macro modifyAppointmentFormLeftColumn appointmentform >
 	<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 well">
-	    <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
+	    <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
 	        <fieldset>
 	            <@messages errors=errors />
 	            <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
@@ -68,6 +68,13 @@
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableConfirmEmail' inputName='enableConfirmEmail' value='true' checked=appointmentform.enableConfirmEmail!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
 	            
+				<div class="form-group">
+					<label class="control-label" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} :</label>
+						<div class="controls">
+						<input class="" id="icon" type="file" name="image_resource" accept="image/*">
+					</div>
+				</div>
+	           
 	            <div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<button name="action_modifyAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
