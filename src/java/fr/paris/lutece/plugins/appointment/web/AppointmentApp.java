@@ -1340,19 +1340,21 @@ public class AppointmentApp extends MVCApplication
         for ( AppointmentForm form : listAppointmentForm ) 
         {
         	ImageResource img = form.getIcon( );
-        	byte[] imgBytesAsBase64 = Base64.encodeBase64( img.getImage( ) );
-        	String imgDataAsBase64 = new String( imgBytesAsBase64 );
-        	String strMimeType = img.getMimeType( );
-        	String imgAsBase64 = MARK_DATA + MARK_COLON + strMimeType + MARK_SEMI_COLON + MARK_BASE_64 + MARK_COMMA + imgDataAsBase64;
         	
-        	if ( strMimeType.equals( MARK_NULL ) || StringUtils.isBlank( strMimeType ) )
+        	if ( img.getImage( ) == null || StringUtils.isBlank( img.getMimeType( ) ) )
         	{
         		icons.add( MARK_ICON_NULL ) ;
-        	}
+        	} 
         	else
         	{
-        		icons.add( imgAsBase64 );
+	        	byte[] imgBytesAsBase64 = Base64.encodeBase64( img.getImage( ) );
+	        	
+	        	String imgDataAsBase64 = new String( imgBytesAsBase64 );
+	        	String strMimeType = img.getMimeType( );
+	        	String imgAsBase64 = MARK_DATA + MARK_COLON + strMimeType + MARK_SEMI_COLON + MARK_BASE_64 + MARK_COMMA + imgDataAsBase64;
+	        	icons.add( imgAsBase64 );
         	}
+        	
         }
         
         model.put(MARK_ICONS, icons);
