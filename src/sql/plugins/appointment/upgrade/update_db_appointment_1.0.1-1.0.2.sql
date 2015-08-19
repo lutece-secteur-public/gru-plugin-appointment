@@ -12,7 +12,7 @@ ALTER TABLE appointment_appointment MODIFY email varchar(255) default '';
 ALTER TABLE appointment_form ADD icon_form_content long varbinary NULL;
 ALTER TABLE appointment_form ADD icon_form_mime_type varchar(255) default NULL;
 
-
+	
 
 
 

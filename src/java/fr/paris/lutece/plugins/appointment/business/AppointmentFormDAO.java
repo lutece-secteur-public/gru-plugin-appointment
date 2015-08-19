@@ -71,6 +71,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 			" and TRIM(UCASE(apmt.email)) = TRIM(UCASE(?)) and myday.id_form = ?"+
 			" and form.id_form=myday.id_form"+
 			" group by apmt.email, apmt.date_appointment order by apmt.date_appointment";
+    private static final String SQL_QUERY_UPDATE_ICON = " UPDATE appointment_form SET icon_form_content = null WHERE id_form = ? " ;
     
     /**
      * Generates a new primary key
@@ -93,7 +94,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 
         return nKey;
     }
-
+    
     /**
      * {@inheritDoc }
      */
@@ -183,7 +184,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     public void store( AppointmentForm appointmentForm, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
-
+        
         int nIndex = 1;
 
         daoUtil.setString( nIndex++, appointmentForm.getTitle(  ) );
@@ -392,4 +393,19 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
   		timeDiff = timeDiff / 1000 /(24 * 60 * 60);
   		return Integer.valueOf( String.valueOf(timeDiff)  ) ;
 	}
+//	/**
+//	 * 
+//	 * @param appointmentForm
+//	 * @param plugin
+//	 */
+//	private void setIconContentToNull ( AppointmentForm appointmentForm, Plugin plugin )
+//    {
+//        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_ICON, plugin );
+//
+//        int nIndex = 1;
+//        daoUtil.setInt( nIndex++, appointmentForm.getIdForm( ) );
+//    
+//        daoUtil.executeUpdate(  );
+//        daoUtil.free(  );
+//    }
 }
