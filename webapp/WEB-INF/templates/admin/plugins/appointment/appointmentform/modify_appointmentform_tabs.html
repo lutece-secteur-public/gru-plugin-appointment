@@ -1,9 +1,31 @@
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <link href="css/datepicker.css" rel="stylesheet">
+
+<section class="content ">
+	<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<fieldset>
+	<legend>#i18n{appointment.create_appointmentform.pageTitle}
+	    		<form class="form-inline pull-right spaced" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormsAdvanced.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}&forceReload=true">
+    		<button type="submit" class="btn btn-primary btn-sm btn-flat" /><i class="glyphicon glyphicon-cog"></i><span class="hidden-phone">&nbsp;Param&#232;tres avanc&#233;s</span></button>
+   		</form>
+  		
+	</legend>
+</fieldset>
+</div>
+</div>
+</section>
+
 <#macro tabs tab appointmentform >
     <div>
         <ul class="nav nav-tabs">
+    		<li <#if tab="params">class="active"</#if>>
+				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true">
+					Paramètres généraux 
+				</a>
+            </li>
             <li <#if tab="entries">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
+				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&page=form_rdv">
 					#i18n{appointment.modify_appointmentform.pageTitle}
 				</a>
             </li>
@@ -27,40 +49,36 @@
         </ul>
     </div>
 </#macro>
-
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-	<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 well">
-	    <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
-	        <fieldset>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	
+	<div class="row">
+	<fieldset>    
+	<legend> #i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</legend>
+	    
+	        <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
+	      
 	            <@messages errors=errors />
 	            <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-	            <@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />
-				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' />
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeStart' inputName='time_start' mandatory=true value=appointmentform.timeStart!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeStart.help' />
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeEnd' inputName='time_end' mandatory=true value=appointmentform.timeEnd!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeEnd.help' />
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelDurationAppointments' inputName='duration_appointments' mandatory=true value=appointmentform.durationAppointments!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDurationAppointments.help'   maxlength=3  />
+	            <input type="hidden" id="formName" name="formName" value="second_form"/>
+	            <@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.create_appointmentform.labelTitle' maxlength=255 /> 
+
+				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDescription'/>
+
+				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelMinDaysBeforeAppointments' inputName='min_days_before_appointment' value=appointmentform.minDaysBeforeAppointment!'0' i18nHelpBlockKey='appointment.create_appointmentform.labelMinDaysBeforeAppointments.help'  maxlength=2 />
-				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='input-small' />
-				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='input-small' />
+			
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelUserCanCancelAppointments' inputName='allow_users_to_cancel_appointments' value='true' checked=appointmentform.allowUsersToCancelAppointments!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbWeeksToDisplay' inputName='nb_weeks_to_display' mandatory=true value=appointmentform.nbWeeksToDisplay!'' i18nHelpBlockKey='appointment.create_appointmentform.labelNbWeeksToDisplay.help'   maxlength=3 />
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelPeoplePerAppointment' inputName='people_per_appointment' mandatory=true value=appointmentform.peoplePerAppointment!'' i18nHelpBlockKey='appointment.create_appointmentform.labelPeoplePerAppointment.help'  maxlength=3 />
+				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=true value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxByEmail' inputName='max_appointment_mail' mandatory=true value=appointmentform.maxAppointments!'0'  maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelMaxAppointments.help' />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxWeek'    inputName='nb_weeks_limits'  mandatory=true  value=appointmentform.weeksLimits!'0'     maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelWeeksLimits.help' />
-				<h4>#i18n{appointment.create_appointmentform.labelTitleDaysOpen}</h4>
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenMonday' inputName='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenTuesday' inputName='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenWednesday' inputName='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenThursday' inputName='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenFriday' inputName='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSaturday' inputName='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
+
+			
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsFormStep' inputName='is_form_step' value='true' checked=appointmentform.isFormStep!false />
-				<#if listWorkflows??>
-					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
-				</#if>
+				
 				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
 					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
@@ -69,12 +87,20 @@
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
 	            
 				<div class="form-group">
-					<label class="control-label" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} :</label>
-						<div class="controls">
-						<input class="" id="icon" type="file" name="image_resource" accept="image/*">
+					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="input-group">	
+							<input id="image_resource" type="file" name="image_resource" accept="image/*"/> 
+						</div>
+						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpFormatIcon}</p>
+					</div>
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<div class="input-group">
+							<i class="glyphicon glyphicon-remove-circle">&nbsp;</i> 
+							<input type="button"  value="Effacer" class="btn btn-default btn-sm" onclick ="$('#image_resource').val('')" /> 
+						</div>
 					</div>
 				</div>
-	           
 	            <div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<button name="action_modifyAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
@@ -85,9 +111,14 @@
 						</button>	
 					</div>
 	            </div>
-	        </fieldset>
+	        
 	    </form>
+	    </fieldset>
+	    </div>
     </div>
+
+
+
     <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 	<@getDatePickerBootstrap idField="date_start_validity" language=language />
 	<@getDatePickerBootstrap idField="date_end_validity"   language=language />
@@ -100,6 +131,13 @@ $('#date_start_validity').datepicker({
     autoclose: true
 });
 $('#date_end_validity').datepicker({
+    language:		"${language}",
+    weekStart: 1,
+    todayBtn: true,
+    todayHighLight: true,
+    autoclose: true
+});
+$('#dateMin').datepicker({
     language:		"${language}",
     weekStart: 1,
     todayBtn: true,

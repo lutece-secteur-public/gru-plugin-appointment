@@ -1,9 +1,10 @@
+
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <div class="row" >
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
 			<fieldset>
-				<legend>#i18n{appointment.create_appointmentform.pageTitle}</legend>
+				<legend>#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}</legend>
 				<@messages errors=errors />
 				<input type="hidden" id="id_form" name="id_form">
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />
@@ -21,6 +22,12 @@
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=true value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxByEmail' inputName='max_appointment_mail' mandatory=true value=appointmentform.maxAppointments!'0'  maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelMaxAppointments.help' />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxWeek'    inputName='nb_weeks_limits'  mandatory=true  value=appointmentform.weeksLimits!'0'     maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelWeeksLimits.help' />				
+					
+				</fieldset>
+				<fieldset>
+							
+				<legend>#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</legend>
+				
 				<h4>#i18n{appointment.create_appointmentform.labelTitleDaysOpen}</h4>
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenMonday' inputName='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenTuesday' inputName='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
@@ -43,12 +50,26 @@
 				
 				
 				<div class="form-group">
-					<label class="control-label" class="col-xs-12 col-sm-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} :</label>
-						<div class="controls">
-						<input class="" id="icon" type="file" name="image_resource" accept="image/*">
+					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
+					<div class="col-xs-12 col-sm-6 col-md-6">
+						<div class="input-group">
+							
+							<input id="image_resource" type="file" name="image_resource" accept="image/*"/> 
+						</div>
+						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpFormatIcon}</p>
+					</div>
+
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<div class="input-group">
+							
+						<div class="input-group">
+							<i class="glyphicon glyphicon-remove-circle">&nbsp;</i> 
+							<input type="button"  value="Effacer" class="btn btn-default btn-sm" onclick ="$('#image_resource').val('')" /> 
+						</div>
+						</div>
+						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpCancelUploadIcon}</p>
 					</div>
 				</div>
-				
 				<div class="form-group">
 					<button name="action_createAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="19">
 						<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelCreate}

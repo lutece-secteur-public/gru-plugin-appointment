@@ -710,6 +710,10 @@ public class AppointmentService
                             {
                                 if ( slot.getIsEnabled(  ) )
                                 {
+                                	if( day.getPeoplePerAppointment( ) != 0 )
+                                	{
+                                		slot.setNbPlaces( day.getPeoplePerAppointment( ) );
+                                	}
                                     nNbFreePlaces += slot.getNbPlaces(  );
                                 }
                             }
@@ -917,7 +921,7 @@ public class AppointmentService
      * form that are associated with a future date are removed and re-created
      * @param form The form to rest days of
      */
-    public void resetFormDays( AppointmentForm form, Date dateMin)
+    public void resetFormDays( AppointmentForm form, Date dateMin )
     {
         Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
         calendar.setTime( dateMin );
@@ -933,8 +937,58 @@ public class AppointmentService
         {
             AppointmentDayHome.remove( day.getIdDay(  ) );
         }
-
+        
         checkFormDays( form );
+    }
+    /**
+     * Modify the slots of a form
+     * @param form The form to rest days of
+     * @param dateMin the date after that the form will change
+     */
+    public void modifySlotsDays ( AppointmentForm form, Date dateMin )
+    {
+    	
+    	
+    	Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
+        calendar.setTime( dateMin );
+
+        // We add 
+        int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
+        calendar.add( Calendar.DAY_OF_WEEK, ( ( form.getNbWeeksToDisplay(  ) + nNbWeeksToCreate ) * 7 ) - 1 );
+        Date dateMax = new Date( calendar.getTimeInMillis(  ) );
+
+        List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
+
+        for ( AppointmentDay day : listDays )
+        {
+            AppointmentDayHome.remove( day.getIdDay(  ) );
+        }
+    	
+        for ( AppointmentDay day : listDays )
+        {
+            // If the day has not already been created, we create it
+            if ( day.getIdDay(  ) == 0 )
+            {
+                int nNbFreePlaces = 0;
+
+                for ( AppointmentSlot slot : day.getListSlots(  ) )
+                {
+                    if ( slot.getIsEnabled(  ) )
+                    {
+                        nNbFreePlaces += slot.getNbPlaces(  );
+                    }
+                }
+
+                day.setFreePlaces( nNbFreePlaces );
+                AppointmentDayHome.create( day );
+
+                for ( AppointmentSlot slot : day.getListSlots(  ) )
+                {
+                    slot.setIdDay( day.getIdDay(  ) );
+                    AppointmentSlotHome.create( slot );
+                }
+            }
+        }
     }
     
     

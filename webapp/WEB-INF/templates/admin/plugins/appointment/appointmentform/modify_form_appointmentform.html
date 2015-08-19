@@ -1,0 +1,174 @@
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<script>
+	$(document).ready(function() {
+		$("#selectAll").change( function() {
+	    if ( $(this).attr("checked") ){
+			// check all
+	        $("input[name='entry_id_move']").prop( "checked", "checked");
+			} else {
+	        // uncheck all
+	        $("input[name='entry_id_move']").prop( "checked", "");
+			}
+	    });
+	});
+</script>
+<div class="row" >
+	
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    	<@tabs tab="entries" appointmentform=appointmentform />
+    	<fieldset>
+    		<legend>#i18n{appointment.modify_appointmentform.pageTitle}</legend>
+			<form method="get" class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
+				<input type="hidden" value="getCreateEntry" name="view">
+				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
+				<label for="id_type">#i18n{appointment.modify_appointmentform.labelInsertEntry} :&#160;&#160;</label>
+				<div class="input-group">
+				<@comboWithParams name="id_type" items=entry_type_list default_value="-1" additionalParameters="class='form-control input-sm'"/>
+				<span class="input-group-btn">
+				<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modify_appointmentform.buttonInsertEntry}">
+					<i class="glyphicon glyphicon-plus"></i>
+				</button>
+				</span>
+				</div>
+			</form>
+			<form method="post"	action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" class="form-inline">
+				<input type="hidden" name="action" value="doChangeOrderEntry">
+				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
+				<#if entry_group_list?has_content>
+					<div>
+						<!-- List all entry of type group  -->
+						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"form-control\"" items=entry_group_list />  
+						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modify_appointmentform.move}" name="add_to_group" value="#i18n{appointment.modify_appointmentform.moveAll}">
+							<i class="glyphicon glyphicon-resize-vertical"></i>
+						</button>
+					</div>
+				</#if>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>
+								<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modify_appointmentform.selectAll}">
+							</th>
+							<th>
+								#i18n{appointment.createEntry.manageField.rowTitle} #i18n{appointment.modifyField.manageConditionalQuestion.rowType}
+							</th>
+							<th>
+								<i class="glyphicon glyphicon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>
+							</th>
+							<th>
+								#i18n{appointment.createEntry.manageField.rowOrder}
+							</th>
+							<th>
+								#i18n{appointment.createEntry.manageField.rowActions}&nbsp;
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<#list entry_list as entry>
+							<#if entry.entryType.group>
+								<#assign lastGroup = entry>
+							</#if>
+							<tr>
+								<td>
+									<!--  add checkbox if entry isn't a group --> 
+									<#if !entry.entryType.group>
+										<input type="checkbox" name="entry_id_move" value="${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.select}">
+									</#if>
+								</td>
+								<td>
+									<#if entry.entryType.group>
+										${entry.title}
+									<#elseif entry.parent?exists>
+										<#if entry.entryType.comment>
+											<blockquote>${entry.comment}</blockquote>
+										<#else>
+											<blockquote>${entry.title}</blockquote>
+										</#if>
+									<#elseif entry.entryType.myLuteceUser>
+											${entry.title}
+									<#else>
+										<#if entry.entryType.comment>
+											${entry.comment}
+										<#else>
+											${entry.title}
+										</#if>
+									</#if>
+									<#if !entry.entryType.group>
+										<span class="badge">${entry.entryType.title}</span>
+									</#if>
+								</td>
+								<td>
+									<#if entry.numberConditionalQuestion!=0>
+										${entry.numberConditionalQuestion}
+									</#if>
+								</td>
+								<!--  Change the order of the attribute -->
+								<#if entry.parent?exists>
+									<td>
+										<blockquote>
+											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=entry.parent.idEntry />
+											<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+												<i class="glyphicon glyphicon-ok"></i>
+											</button>
+										</blockquote>
+									</td>
+								<#else>
+									<td>
+										<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
+										<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+											<i class="glyphicon glyphicon-ok"></i>
+										</button>
+									</td>
+								</#if>
+								<td>
+									<#if !entry.entryType.myLuteceUser>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}" class="btn btn-primary btn-sm">
+											<i class="glyphicon glyphicon-edit"></i>
+										</a>
+									</#if>
+									<#if entry.parent?exists>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}" class="btn btn-primary btn-sm">
+											<i class="glyphicon glyphicon-chevron-right"></i>
+										</a>
+									</#if>
+									<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.createEntry.manageField.titleCopy}" class="btn btn-primary btn-sm">
+											<i class="glyphicon glyphicon-plus-sign"></i>
+										</a>
+									</#if>
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleDelete}" class="btn btn-danger btn-sm">
+										<i class="glyphicon glyphicon-trash"></i>
+									</a>
+								</td>
+							</tr>
+						</#list>
+					</tbody>
+				</table>
+			</form>
+    	</fieldset>
+    </div>
+</div>
+
+<#macro comboOrders name default_value idParent >
+		<select id="${name}" name="${name}" class="input-xs">
+			<#if idParent &gt; 0 && lastGroup??>
+				<#assign start_enum = lastGroup.position + 1 >
+				<#assign nb_entries = lastGroup.position + lastGroup.children?size >
+				<#list start_enum..nb_entries as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
+			<#else>
+				<#list listOrderFirstLevel as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
+			</#if>
+		</select>
+</#macro>

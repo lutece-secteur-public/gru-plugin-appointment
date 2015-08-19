@@ -1,0 +1,42 @@
+<#include "/admin/plugins/appointment/appointmentform/modify_appointment_form_tabs.html" />
+<script>
+	$(document).ready(function() {
+		$("#selectAll").change( function() {
+	    if ( $(this).attr("checked") ){
+			// check all
+	        $("input[name='entry_id_move']").prop( "checked", "checked");
+			} else {
+	        // uncheck all
+	        $("input[name='entry_id_move']").prop( "checked", "");
+			}
+	    });
+	});
+</script>
+<div class="row" >
+	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
+   
+</div>
+
+<#macro comboOrders name default_value idParent >
+		<select id="${name}" name="${name}" class="input-xs">
+			<#if idParent &gt; 0 && lastGroup??>
+				<#assign start_enum = lastGroup.position + 1 >
+				<#assign nb_entries = lastGroup.position + lastGroup.children?size >
+				<#list start_enum..nb_entries as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
+			<#else>
+				<#list listOrderFirstLevel as i>
+					<#if default_value == i>
+						<option selected="selected" value="${i}">${i}</option>
+					<#else>
+						<option value="${i}">${i}</option>
+					</#if>
+				</#list>
+			</#if>
+		</select>
+</#macro>
