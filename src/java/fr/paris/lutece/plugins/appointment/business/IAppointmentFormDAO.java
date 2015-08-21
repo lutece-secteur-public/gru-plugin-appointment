@@ -98,10 +98,10 @@ public interface IAppointmentFormDAO
      * date after a given date
      * @param startDate
      * @param limitedDate
-     * @param nForm
-     * @param strEmail
-     * @param plugin
-     * @return
+     * @param nForm the form 
+     * @param strEmail email
+     * @param plugin the plugin
+     * @return unvailable dates
      */
-    List<Date> getUnavailableDatesLimitedByMail(Date startDate, Date[]limitedDate, int nForm, String strEmail, Plugin plugin);
+    List<Date> getUnavailableDatesLimitedByMail( Date startDate, Date[]limitedDate, int nForm, String strEmail, Plugin plugin );
 }

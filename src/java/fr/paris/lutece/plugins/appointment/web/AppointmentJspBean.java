@@ -48,6 +48,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
@@ -80,6 +81,8 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -108,6 +111,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Date;
@@ -124,6 +128,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -230,7 +235,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ALLDATES = "allDates";
     private static final String MARK_ACTIVATE_WORKFLOW = "activateWorkflow";
-    private static final String MARK_CONSTANT_STR_NULL = "";
+    
  
     // JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -298,10 +303,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String DEFAULT_CURRENT_PAGE = "1";
     private static final String CONSTANT_SPACE = " ";
     private static final String CONSTANT_ZERO = "0";
+    private static final String CONSTANT_COMMA = ",";
+    
+    //services
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private final StateService _stateService  = SpringContextService.getBean( StateService.BEAN_SERVICE );
-    private final fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService _stateServiceWorkFlow  = SpringContextService.getBean( fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService.BEAN_SERVICE );
     private final ITaskService _taskService  = SpringContextService.getBean( TaskService.BEAN_SERVICE );
+
+    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
     // Session variable to store working values
     private int _nDefaultItemsPerPage;
     private AppointmentFilter _filter;
@@ -312,21 +321,27 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * Status of appointments that have not been validated yet, validate or rejected
      */
     public enum ExportFilter {
-     	DAY_ONLY (STATUS_CODE_ZERO, "appointment.manage_appointments.daytitle"),
-    	FROM_NOWDAY(STATUS_CODE_ONE, 	"appointment.manage_appointments.lighttitle" ),
-    	ALL_DAYS (STATUS_CODE_TWO, "appointment.manage_appointments.fulltitle");
+     	DAY_ONLY ( STATUS_CODE_ZERO, "appointment.manage_appointments.daytitle" ),
+    	FROM_NOWDAY( STATUS_CODE_ONE, "appointment.manage_appointments.lighttitle" ),
+    	ALL_DAYS ( STATUS_CODE_TWO, "appointment.manage_appointments.fulltitle" );
     	
-    	private final int nValue;
-        private final String strLibelle;
+    	private final int _nValue;
+        private final String _strLibelle;
         
         ExportFilter (int nValeur, String strMessage)
         {
-        	this.nValue = nValeur;
-        	this.strLibelle = strMessage;
+        	this._nValue = nValeur;
+        	this._strLibelle = strMessage;
         }
         
-        public int getValeur(){ return this.nValue; }
-        public String getLibelle(){ return this.strLibelle; }
+        public int getValeur( )
+        { 
+        	return this._nValue; 
+        }
+        public String getLibelle( )
+        {
+        	return this._strLibelle; 
+        }
     }
     
     
@@ -344,10 +359,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
      */
     private Hashtable<Integer, String> getStatus ( Locale myLocale )
     {
-    	Status[] mich = Appointment.Status.values();
-       	Hashtable<Integer, String> myStatus= new Hashtable<Integer, String>();
-       	for (Status tmpStatus: mich)
-       		myStatus.put(tmpStatus.getValeur(), I18nService.getLocalizedString( tmpStatus.getLibelle(),  myLocale ));
+    	Status[] mich = Appointment.Status.values( );
+       	Hashtable<Integer, String> myStatus= new Hashtable<Integer, String>( );
+       	for ( Status tmpStatus: mich)
+       		myStatus.put( tmpStatus.getValeur( ), I18nService.getLocalizedString( tmpStatus.getLibelle(),  myLocale ) );
        	return myStatus;
     }
     
@@ -358,15 +373,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static Hashtable<Integer, String> getAdmins ( )
     {
     	Collection<AdminUser> listAdminUser = AdminUserHome.findUserList(  );
-        Hashtable<Integer, String> myStatus= new Hashtable<Integer, String>();
-       	for (AdminUser tmpUser: listAdminUser)
-       		myStatus.put(tmpUser.getUserId(), tmpUser.getFirstName(  ) + CONSTANT_SPACE + tmpUser.getLastName(  ));
+        Hashtable<Integer, String> myStatus= new Hashtable<Integer, String>( );
+       	for ( AdminUser tmpUser: listAdminUser)
+       		myStatus.put( tmpUser.getUserId( ), tmpUser.getFirstName(  ) + CONSTANT_SPACE + tmpUser.getLastName(  ) );
        	return myStatus;
     }
     /**
     * Do download a file from an appointment response
     * @param request The request
-    * @param httpResponse The response
+    * @param response The response
     * @return nothing.
     * @throws AccessDeniedException If the user is not authorized to access
     *             this feature
@@ -384,30 +399,48 @@ public class AppointmentJspBean extends MVCAdminJspBean
        {
        	throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
    		}
-       AppointmentFilter filter = (AppointmentFilter) request.getSession().getAttribute(MARK_FILTER);
+       AppointmentFilter filter = (AppointmentFilter) request.getSession().getAttribute( MARK_FILTER );
         
        List<Object[]> tmpObj = new ArrayList<Object[]>();
        List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
-       AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey(Integer.valueOf(strIdResponse));
+       
+       
+       AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey( Integer.valueOf( strIdResponse ) );
        XSSFWorkbook workbook = new XSSFWorkbook();
-       XSSFSheet sheet = workbook.createSheet(I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale() ));
-
+       XSSFSheet sheet = workbook.createSheet( I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale() ));
+       
+       
+	   Map <Integer, String> listGenatt = EntryHome.findEntryByForm( _plugin, Integer.valueOf( strIdResponse ) );
+	   int nTaille = 10 + listGenatt.size() ;
+	   
        if ( tmpForm!= null )
        {
     	   Object[] strWriter = new String[1];
     	   strWriter[0] = tmpForm.getTitle();
     	   tmpObj.add( strWriter );
-    	   Object[] strInfos= new String[10];
-    	   strInfos[0] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLastName", getLocale() );
-    	   strInfos[1] = I18nService.getLocalizedString( "appointment.manage_appointments.columnFirstName", getLocale());
-    	   strInfos[2] = I18nService.getLocalizedString( "appointment.manage_appointments.columnEmail", getLocale()    );
-    	   strInfos[3] = I18nService.getLocalizedString( "appointment.manage_appointments.columnDateAppointment", getLocale() );
-    	   strInfos[4] = I18nService.getLocalizedString( "appointment.model.entity.appointmentform.attribute.timeStart", getLocale() );
-    	   strInfos[5] = I18nService.getLocalizedString( "appointment.model.entity.appointmentform.attribute.timeEnd", getLocale() );
-    	   strInfos[6] = I18nService.getLocalizedString( "appointment.manage_appointments.columnAdminUser", getLocale() );
-    	   strInfos[7] = I18nService.getLocalizedString( "appointment.manage_appointments.columnStatus", getLocale() );
-    	   strInfos[8] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLogin", getLocale() );
-    	   strInfos[9] = I18nService.getLocalizedString( "appointment.manage_appointments.columnState", getLocale() );
+    	  
+    	   
+    	   Object[] strInfos= new String[ nTaille ];
+    	   strInfos[0] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLastName", getLocale( ) );
+    	   strInfos[1] = I18nService.getLocalizedString( "appointment.manage_appointments.columnFirstName", getLocale( ) );
+    	   strInfos[2] = I18nService.getLocalizedString( "appointment.manage_appointments.columnEmail", getLocale( )    );
+    	   strInfos[3] = I18nService.getLocalizedString( "appointment.manage_appointments.columnDateAppointment", getLocale( ) );
+    	   strInfos[4] = I18nService.getLocalizedString( "appointment.model.entity.appointmentform.attribute.timeStart", getLocale( ) );
+    	   strInfos[5] = I18nService.getLocalizedString( "appointment.model.entity.appointmentform.attribute.timeEnd", getLocale( ) );
+    	   strInfos[6] = I18nService.getLocalizedString( "appointment.manage_appointments.columnAdminUser", getLocale( ) );
+    	   strInfos[7] = I18nService.getLocalizedString( "appointment.manage_appointments.columnStatus", getLocale( ) );
+    	   strInfos[8] = I18nService.getLocalizedString( "appointment.manage_appointments.columnLogin", getLocale( ) );
+    	   strInfos[9] = I18nService.getLocalizedString( "appointment.manage_appointments.columnState", getLocale( ) );
+    	   
+    	   if( listGenatt.size( ) > 0 )
+    	   {
+    		 int nIndex = 0 ;
+    		 for ( Integer key : listGenatt.keySet( ) )
+    		 {
+    			 strInfos[10 + nIndex] = listGenatt.get( key ) ; 
+    			 nIndex++;
+    		 }
+    	   }
     	   
     	   tmpObj.add( strInfos );
        }
@@ -415,56 +448,88 @@ public class AppointmentJspBean extends MVCAdminJspBean
        {
 	       	List<Appointment> listAppointments = AppointmentHome.getAppointmentListById( listIdAppointments,
 	       			filter.getOrderBy(  ), filter.getOrderAsc(  ) );
-	      	for (Appointment tmpApp: listAppointments)
+	       	
+	       
+	       	
+	      	for ( Appointment tmpApp: listAppointments )
 	       	{
-	      		 State stateAppointment= _stateService.findByResource(tmpApp.getIdAppointment(), Appointment.APPOINTMENT_RESOURCE_TYPE, tmpForm.getIdWorkflow());
+	      		 State stateAppointment= _stateService.findByResource( tmpApp.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, tmpForm.getIdWorkflow( ) );
 	       	    
-	       	    if(stateAppointment != null ){  		
-	    	       	tmpApp.setState(stateAppointment);
+	       	    if( stateAppointment != null )
+	       	    {  		
+	    	       	tmpApp.setState( stateAppointment );
 	      	    }
-	       	     
-	      		Object[] strWriter = new String[10];
-	       		strWriter[0]= tmpApp.getLastName();
-	       		strWriter[1]= tmpApp.getFirstName();
-	       		strWriter[2]= tmpApp.getEmail();
-	       		strWriter[3]= DateUtil.getDateString(tmpApp.getDateAppointment(), getLocale( ) );
+	       	    
+	       		List<Integer> listResponse = AppointmentHome.findListIdResponse( tmpApp.getIdAppointment( ) );
+	       		
+	       		
+	       		
+	      		Object[] strWriter = new String[nTaille];
+	       		strWriter[0] = tmpApp.getLastName();
+	       		strWriter[1] = tmpApp.getFirstName();
+	       		strWriter[2] = tmpApp.getEmail();
+	       		strWriter[3] = DateUtil.getDateString(tmpApp.getDateAppointment(), getLocale( ) );
 	       		Calendar tmpDate = GregorianCalendar.getInstance( Locale.FRENCH );
-	       		tmpDate.setTimeInMillis(tmpApp.getStartAppointment().getTime());
-	       		strWriter[4]= new SimpleDateFormat("HH:mm").format(tmpDate.getTime()) ;
+	       		tmpDate.setTimeInMillis(tmpApp.getStartAppointment( ).getTime( ) );
+	       		strWriter[4] = new SimpleDateFormat("HH:mm").format(tmpDate.getTime( ) ) ;
 	       		Calendar tmpDateEnd = GregorianCalendar.getInstance( Locale.FRENCH );
-	       		tmpDateEnd.setTimeInMillis(tmpApp.getEndAppointment().getTime());
-	       		strWriter[5]=new SimpleDateFormat("HH:mm").format(tmpDateEnd.getTime());
-				strWriter[6] = getAdmins().get(tmpApp.getIdAdminUser()) == null ? StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser());
-	       		strWriter[7]= getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus());
-	       		strWriter[8]= tmpApp.getIdUser() == null ? StringUtils.EMPTY : tmpApp.getIdUser();
-	       		strWriter[9]= tmpApp.getState() == null ? StringUtils.EMPTY : tmpApp.getState().getName();
-	     
-	       		tmpObj.add(strWriter);
+	       		tmpDateEnd.setTimeInMillis(tmpApp.getEndAppointment( ).getTime( ) );
+	       		strWriter[5] =new SimpleDateFormat("HH:mm").format(tmpDateEnd.getTime() );
+				strWriter[6] = getAdmins().get(tmpApp.getIdAdminUser( ) ) == null ? StringUtils.EMPTY : getAdmins ( ).get(tmpApp.getIdAdminUser( ) );
+	       		strWriter[7] = getStatus( getLocale() ).get(tmpApp.getStatus()) == null ? StringUtils.EMPTY :  getStatus( getLocale() ).get(tmpApp.getStatus( ) );
+	       		strWriter[8] = tmpApp.getIdUser() == null ? StringUtils.EMPTY : tmpApp.getIdUser( );
+	       		strWriter[9] = tmpApp.getState() == null ? StringUtils.EMPTY : tmpApp.getState( ).getName( );
+	       		
+	       		int nIndex = 0 ;
+	       		for( Integer id : listGenatt.keySet( ) )
+	       		{
+	       			String strValue = StringUtils.EMPTY, strPrefix = StringUtils.EMPTY;
+		       		for( Integer e : listResponse )
+		       		{
+		       			String strRes = EntryHome.getEntryValueByIdResponse( _plugin , id , e ) ;
+		       			
+		       			if ( strRes!=null && !strRes.isEmpty( ) )
+		       			{
+		       				strValue += strPrefix + strRes  ;
+		       				strPrefix= CONSTANT_COMMA;
+		       			}
+		       		}
+		       		if ( !strValue.isEmpty( ) )
+		       		{
+		       			strWriter[10 + nIndex] = strValue ;
+		       		}
+		       		nIndex++;
+	       		}
+	       		tmpObj.add( strWriter );
 	       	}
        }
        int nRownum = 0;
-       for (Object[] myObj : tmpObj)
+       for ( Object[] myObj : tmpObj )
        {
-    	   Row row = sheet.createRow(nRownum++);
+    	   Row row = sheet.createRow( nRownum++ );
     	   int nCellnum = 0;
     	   for ( Object strLine : myObj)
     	   {
-    		   Cell cell = row.createCell(nCellnum++);
-    		   if (strLine instanceof String) {
-                   cell.setCellValue((String) strLine);
-               } else if (strLine instanceof Boolean) {
-                   cell.setCellValue((Boolean) strLine);
-               } else if (strLine instanceof Date) {
-                   cell.setCellValue((Date) strLine);
-               } else if (strLine instanceof Double) {
-                   cell.setCellValue((Double) strLine);
+    		   Cell cell = row.createCell( nCellnum++ );
+    		   if ( strLine instanceof String ) 
+    		   {
+                   cell.setCellValue( (String) strLine );
+               } else if ( strLine instanceof Boolean ) 
+               {
+                   cell.setCellValue( ( Boolean ) strLine );
+               } else if ( strLine instanceof Date ) 
+               {
+                   cell.setCellValue( ( Date ) strLine );
+               } else if ( strLine instanceof Double ) 
+               {
+                   cell.setCellValue( ( Double ) strLine );
                }
      	   }
        }
 
            try
            {
-        	   String now = new SimpleDateFormat("yyyyMMdd-hhmm").format(GregorianCalendar.getInstance(getLocale()).getTime())+"_"+I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale());
+        	   String now = new SimpleDateFormat( "yyyyMMdd-hhmm" ).format( GregorianCalendar.getInstance( getLocale( ) ).getTime( ) )+"_"+I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale() );
         	   response.setContentType("application/vnd.ms-excel");
                response.setHeader( "Content-Disposition", "attachment; filename=\""+now+"\";" );
                response.setHeader( "Pragma", "public" );
@@ -530,11 +595,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 ) + form.getNbWeeksToDisplay();
             String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
             int nNbWeek = 0;
-            if ( !StringUtils.isEmpty(strTimeMilli) || StringUtils.isNumeric( strTimeMilli ))
+            if ( !StringUtils.isEmpty( strTimeMilli ) || StringUtils.isNumeric( strTimeMilli ) )
             {
-            	 Date objMyTime = new Date ( Long.valueOf( strTimeMilli) );
+            	 Date objMyTime = new Date ( Long.valueOf( strTimeMilli ) );
            		 // Compute difference in week beetween now and date picked for the calendar button
-           		 nNbWeek = computeWeek(objMyTime);
+           		 nNbWeek = computeWeek( objMyTime );
             }
 
             if ( StringUtils.isNotEmpty( strNbWeek ) )
@@ -1308,7 +1373,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
             //Email confirmation
             String strEmail = request.getParameter( PARAMETER_EMAIL );
-            String emailConfirm = request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) ;
+            String emailConfirm = request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null ? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) ;
             
             if( form.getEnableMandatoryEmail() )
             {
