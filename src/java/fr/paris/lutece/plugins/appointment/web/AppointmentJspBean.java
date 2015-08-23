@@ -57,10 +57,12 @@ import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronou
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenAttFileItem;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
@@ -409,8 +411,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
        XSSFWorkbook workbook = new XSSFWorkbook();
        XSSFSheet sheet = workbook.createSheet( I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale() ));
        
+       EntryFilter entryFilter = new EntryFilter(  );
+       entryFilter.setIdResource( Integer.valueOf( strIdResponse ) );
        
-	   Map <Integer, String> listGenatt = EntryHome.findEntryByForm( _plugin, Integer.valueOf( strIdResponse ) );
+       List<Entry> listEntry = EntryHome.getEntryList( entryFilter ) ;
+       
+	   Map <Integer, String> listGenatt = new HashMap <Integer, String> ();
+	   
+	   
+	   for ( Entry e : listEntry )
+	   {
+		   if ( e.getTitle( ) != null &&  !e.getTitle( ).isEmpty( ) )
+		   {
+			   listGenatt.put( e.getIdEntry( ), e.getTitle( ) );
+		   }
+	   }
 	   int nTaille = 10 + listGenatt.size() ;
 	   
        if ( tmpForm!= null )
@@ -462,8 +477,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       	    
 	       		List<Integer> listResponse = AppointmentHome.findListIdResponse( tmpApp.getIdAppointment( ) );
 	       		
-	       		
-	       		
 	      		Object[] strWriter = new String[nTaille];
 	       		strWriter[0] = tmpApp.getLastName();
 	       		strWriter[1] = tmpApp.getFirstName();
@@ -486,12 +499,38 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       			String strValue = StringUtils.EMPTY, strPrefix = StringUtils.EMPTY;
 		       		for( Integer e : listResponse )
 		       		{
-		       			String strRes = EntryHome.getEntryValueByIdResponse( _plugin , id , e ) ;
 		       			
-		       			if ( strRes!=null && !strRes.isEmpty( ) )
+		       			ResponseFilter respFilter = new ResponseFilter ( );
+		       			respFilter.setIdEntry(id);
+		       			List<Response> listResp = ResponseHome.getResponseList( respFilter );
+		       			
+		       			for ( Response resp :  listResp )
 		       			{
-		       				strValue += strPrefix + strRes  ;
-		       				strPrefix= CONSTANT_COMMA;
+		       				String strRes = StringUtils.EMPTY;
+		       				if ( e.equals( resp.getIdResponse( ) ) )
+		       				{
+		       					Field f = resp.getField( ) ;
+		       					int nfield = 0;
+		       					if( f != null )
+		       					{
+		       						nfield = f.getIdField( );
+		       						Field field = FieldHome.findByPrimaryKey( nfield ) ;
+			       					if ( field != null )
+			       					{
+			       						strRes = field.getTitle( );
+			       					}
+		       					}
+		       					else
+		       					{
+		       						strRes = resp.getResponseValue( );
+		       					}
+		       					
+		       				}
+		       				if ( strRes!=null && !strRes.isEmpty( ) )
+			       			{
+			       				strValue += strPrefix + strRes  ;
+			       				strPrefix= CONSTANT_COMMA;
+			       			}
 		       			}
 		       		}
 		       		if ( !strValue.isEmpty( ) )
