@@ -37,6 +37,10 @@ CREATE TABLE appointment_form (
 	nb_appointment_week  INT NOT NULL default '0',
 	reference varchar(10),
 	is_form_step SMALLINT NOT NULL default '0',
+	is_confirmEmail_enabled SMALLINT NOT NULL,
+	is_mandatoryEmail_enabled SMALLINT NOT NULL,
+	icon_form_content long varbinary NULL,
+	icon_form_mime_type varchar(255) default NULL,
 	PRIMARY KEY (id_form)
 );
 
@@ -79,7 +83,7 @@ CREATE TABLE appointment_appointment (
 	id_appointment int NOT NULL default '0',
 	first_name varchar(255) NOT NULL default '',
 	last_name varchar(255) NOT NULL default '',
-	email varchar(255) NOT NULL default '',
+	email varchar(255) default '',
 	id_user varchar(255) NULL default '',
 	authentication_service varchar(255) NULL default '',
 	localization varchar(255) NULL default '',
