@@ -85,22 +85,32 @@
 				</#if>
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableConfirmEmail' inputName='enableConfirmEmail' value='true' checked=appointmentform.enableConfirmEmail!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
-	            
+	           	<#assign icon= appointmentform.getIcon()>
+				<#if  icon.mimeType?? >
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.modify_appointmentForm.deleteIcon} &nbsp;:</label>				
+					<div class="col-xs-12 col-sm-9 col-md-9">
+						<input type="checkbox" name="deleteIcon" value="true" class="form-control"/> 
+					</div>
+				</div>
+				</#if>
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
-					<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="col-xs-12 col-sm-3 col-md-3">
 						<div class="input-group">	
 							<input id="image_resource" type="file" name="image_resource" accept="image/*"/> 
 						</div>
 						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpFormatIcon}</p>
 					</div>
-					<div class="col-xs-12 col-sm-3 col-md-3">
+					<div class="col-xs-12 col-sm-6 col-md-6">
 						<div class="input-group">
 							<i class="glyphicon glyphicon-remove-circle">&nbsp;</i> 
 							<input type="button"  value="Effacer" class="btn btn-default btn-sm" onclick ="$('#image_resource').val('')" /> 
 						</div>
-					</div>
+					</div>	
 				</div>
+
+				
 	            <div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<button name="action_modifyAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
@@ -116,8 +126,6 @@
 	    </fieldset>
 	    </div>
     </div>
-
-
 
     <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 	<@getDatePickerBootstrap idField="date_start_validity" language=language />

@@ -68,6 +68,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.ReminderAppointment;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
@@ -78,6 +79,7 @@ import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -143,6 +145,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_FIRST_FORM = "first_form";
     private static final String PARAMETER_SECOND_FORM = "second_form";
     private static final String PARAMETER_FORM_RDV = "form_rdv";
+    private static final String PARAMETER_NB_ALERT = "nbAlerts";
     
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -168,7 +171,18 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
     private static final String MARK_NULL = "NULL";
-    private static final String MARK_PAGE = "page";
+    private static final String MARK_PAGE = "page";   
+    private static final String MARK_FALSE = "false";
+    private static final String MARK_TIME_ALERT ="timeToAlert_" ;
+    private static final String MARK_EMAIL_NOTIFY ="emailNotify_";
+    private static final String MARK_SMS_NOTIFY ="smsNotify_" ;
+    private static final String MARK_ALERT_MESSAGE = "alert_message_" ;
+    private static final String MARK_ALERT_SUBJECT = "alert_subject_" ;
+    private static final String MARK_ERRORS = "errors";
+    
+    
+    
+    
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
@@ -186,7 +200,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String ERROR_MESSAGE_APPOINTMENT_DATES="appointment.message.error.dateStartTimeEnd";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS = "appointment.message.error.refreshDays.modifyFormHasAppointments";
-    
+    private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty" ;
+    private static final String MESSAGE_ERROR_ALERT_TIME_NO_VALID = "appointment.message.error.alerttimeNoValid";
+    private static final String MESSAGE_ERROR_SUBJECT_EMPTY = "appointment.message.error.subjectIsEmpty";
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
     private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
@@ -270,15 +286,15 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             RBACService.getAuthorizedCollection( paginator.getPageItems(  ),
                 AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
                
-        model.put(VIEW_PERMISSIONS_FORM, getPermissions (paginator.getPageItems(  ),  AdminUserService.getAdminUser( request ) ) )   ;
+        model.put( VIEW_PERMISSIONS_FORM, getPermissions ( paginator.getPageItems(  ),  AdminUserService.getAdminUser( request ) ) )   ;
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
     /**
      * Get Form Permissions
-     * @param listForms
-     * @param request
-     * @return
+     * @param listForms the list form
+     * @param user the user
+     * @return Form Permissions
      */
     private static String[][] getPermissions( List<AppointmentForm> listForms, AdminUser user )
     {
@@ -287,14 +303,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     	for ( AppointmentForm tmpForm: listForms )
     	{
     		String [] strRetour = new String [4];
-    		strRetour[0] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user )) ;
-    		strRetour[1] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ));
-    		strRetour[2] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user )) ;
-    		strRetour[3] = String.valueOf(RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm()),
-    		                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user )) ;
+    		strRetour[0] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+    		                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) ;
+    		strRetour[1] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,String.valueOf( tmpForm.getIdForm( ) ),
+    		                AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
+    		strRetour[2] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+    		                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) ) ;
+    		strRetour[3] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+    		                AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) ) ;
     		retour[nI++] = strRetour;
 
     	}
@@ -331,6 +347,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         Map<String, Object> model = getModel(  );
         model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList(  ) );
+        model.put( MARK_LOCALE, getLocale () );
+        model.put( MARK_LOCALE_TINY, getLocale () );
         addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
 
         //        model.put( MARK_LOCALE, AppointmentPlugin.getPluginLocale( getLocale( ) ) );
@@ -640,7 +658,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException If the user is not authorized to modify
      *             this appointment form
      */
-    @Action( ACTION_MODIFY_APPOINTMENTFORM )
+    @SuppressWarnings("deprecation")
+	@Action( ACTION_MODIFY_APPOINTMENTFORM )
     public String doModifyAppointmentForm( HttpServletRequest request )
         throws AccessDeniedException
     {
@@ -656,25 +675,28 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
         
         String strForm = request.getParameter( PARAMETER_NAME_FORM );
+        String strDeleteIcon =  request.getParameter( "deleteIcon" ) == null ? MARK_FALSE  : request.getParameter( "deleteIcon" ) ;
         
         if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty ( ) )
         {
-        	
-        MultipartHttpServletRequest mRequest = ( MultipartHttpServletRequest ) request;
-        
-        
+        	MultipartHttpServletRequest mRequest = ( MultipartHttpServletRequest ) request;
 	        FileItem item = mRequest.getFile( PARAMETER_ICON_RESSOURCE );
 	        
 	        if ( ( item != null ) && ( item.getName(  ) != null ) && !EMPTY_STRING.equals( item.getName(  ) ) )
 	        {
-	        
 		        byte[] bytes = item.get(  );
 		        String strMimeType = item.getContentType(  );
 		        ImageResource img = new ImageResource( );
 		        
 		        img.setImage( bytes );
 		        img.setMimeType( strMimeType );
-		        
+		        appointmentForm.setIcon( img );
+	        }
+	        if ( Boolean.parseBoolean( strDeleteIcon ) && appointmentForm.getIcon( ).getImage( ) != null )
+	        {
+	        	ImageResource img = new ImageResource( );
+	        	img.setImage( null );
+		        img.setMimeType( null );
 		        appointmentForm.setIcon( img );
 	        }
         }
@@ -727,8 +749,17 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty ( ) )
         {
         	
+        	String strDateMin = request.getParameter( PARAMETER_DATE_MIN ) == null ? StringUtils.EMPTY : request.getParameter( PARAMETER_DATE_MIN );
+        	if ( !strDateMin.isEmpty( ) )
+        	{
+        		dateMin= new java.sql.Date(DateUtil.getDate(strDateMin).getTime());
+        	}
             int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdAppointmentForm, dateMin );
-            String strDateMin = request.getParameter( PARAMETER_DATE_MIN );
+            if ( strDateMin.isEmpty() )
+            {
+            	addError( MESSAGE_ERROR_START_DATE_EMPTY, getLocale(  ) );
+    			return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+            }
             if ( nNbAppointments > 0 )
             {
                 return redirect( request,
@@ -736,11 +767,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                         getURLManageAppointmentFormDays( request, strIdForm ), AdminMessage.TYPE_STOP ) );
             }
            
-            if (strDateMin != null)
-            {
-            	dateMin= new java.sql.Date(DateUtil.getDate(strDateMin).getTime());
-            }
-            AppointmentService.getService(  ).resetFormDays(AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin );
+            AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin );
             
         }
         request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
@@ -770,12 +797,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * @return
      * @throws ParseException 
      */
-    private boolean checkConstraints( AppointmentForm appointmentForm) throws ParseException
+    private boolean checkConstraints( AppointmentForm appointmentForm ) throws ParseException
     {
     	 boolean bReturn = true;
-       	 SimpleDateFormat formatterHHMM = new SimpleDateFormat("HH:mm", Locale.FRENCH );
-    	 Date dtDate1 = (Date) formatterHHMM.parse( appointmentForm.getTimeStart ( ).replace('h', ':') );
-    	 Date dtDate2 = (Date) formatterHHMM.parse( appointmentForm.getTimeEnd   ( ).replace('h', ':') );
+       	 SimpleDateFormat formatterHHMM = new SimpleDateFormat( "HH:mm", Locale.FRENCH );
+    	 Date dtDate1 = (Date) formatterHHMM.parse( appointmentForm.getTimeStart ( ).replace( 'h', ':' ) );
+    	 Date dtDate2 = (Date) formatterHHMM.parse( appointmentForm.getTimeEnd   ( ).replace( 'h', ':' ) );
     	     	 
          if ( dtDate1.after( dtDate2 ) )
          {
@@ -798,7 +825,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
          	}
          	else
          	{
-         		long lMinutes = getDateDiff( dtDate1 , dtDate2, TimeUnit.MINUTES);
+         		long lMinutes = getDateDiff( dtDate1 , dtDate2, TimeUnit.MINUTES );
          		if ( appointmentForm.getMinDaysBeforeAppointment() > lMinutes )
          		{
          			bReturn = false;
@@ -854,9 +881,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
      * @param timeUnit the unit in which you want the diff
      * @return the diff value, in the provided unit
      */
-    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    public static long getDateDiff( Date date1, Date date2, TimeUnit timeUnit ) {
+        long diffInMillies = date2.getTime( ) - date1.getTime( );
+        return timeUnit.convert( diffInMillies,TimeUnit.MILLISECONDS );
     }
     
     /**
@@ -929,7 +956,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-
+        
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
@@ -948,7 +975,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES,
                 TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES, model );
         }
-
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
 
@@ -964,7 +990,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-
+        String strNbAlerts = request.getParameter( PARAMETER_NB_ALERT ) ;
+        String strApplyNbAlerts = request.getParameter( "apply_nbAlerts") ;
+        List <ReminderAppointment> listAppointment = new ArrayList<ReminderAppointment> ( ) ;
+        
+        
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) &&
                 ( request.getParameter( PARAMETER_BACK ) == null ) )
         {
@@ -975,19 +1005,111 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             }
 
             int nIdForm = Integer.parseInt( strIdForm );
-
+            UrlItem url = new UrlItem( getViewFullUrl( VIEW_MODIFY_FORM_MESSAGES ) );
+            url.addParameter( PARAMETER_ID_FORM, nIdForm );
+            int nbAlerts = 0 ;
+            
+            if ( strNbAlerts!= null )
+            {
+            	nbAlerts = Integer.parseInt( strNbAlerts ) ;
+            }
             AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
 
             populate( formMessages, request );
-
+            
+            List <ReminderAppointment> listReminder = formMessages.getListReminderAppointment( );
+            
+            if ( nbAlerts == 0  )
+        	{
+            	AppointmentFormMessagesHome.removeAppointmentReminder( nIdForm, nbAlerts ,true );
+            	listReminder.clear( );
+            	formMessages.setListReminderAppointment( listReminder );
+            	//formMessages.setNbAlerts( nbAlerts );
+        	}
+            
+            if ( nbAlerts < listReminder.size( ) && nbAlerts!=0 )
+            {	
+            	for( int i = nbAlerts +1 ; i <= listReminder.size( ); i++ )
+            	{
+            		AppointmentFormMessagesHome.removeAppointmentReminder( nIdForm, i, false );
+            		listReminder.remove( i - 1 );
+            	}
+            	//formMessages.setNbAlerts( nbAlerts );
+            	formMessages.setListReminderAppointment( listReminder );
+            }
+            if ( StringUtils.isNotEmpty( strNbAlerts ) && StringUtils.isNumeric( strNbAlerts ) )
+            {
+            	if ( nbAlerts != 0 )
+            	{
+            		for( int i = 1 ; i <= nbAlerts ; i++ )
+            		{
+            			ReminderAppointment reminderAppointment = new ReminderAppointment ( );
+                        String strTimeToAlert = request.getParameter( MARK_TIME_ALERT + i ) ;
+            			String strEmailNotify = request.getParameter( MARK_EMAIL_NOTIFY + i ) == null ? MARK_FALSE : request.getParameter( MARK_EMAIL_NOTIFY + i ) ;
+            			String strSmsNotify = request.getParameter( MARK_SMS_NOTIFY + i ) == null ? MARK_FALSE : request.getParameter( MARK_SMS_NOTIFY + i ) ;
+            			String strAlertMessage = request.getParameter( MARK_ALERT_MESSAGE + i ) == null ? StringUtils.EMPTY : request.getParameter( MARK_ALERT_MESSAGE + i );
+            			String strAlertSubject = request.getParameter( MARK_ALERT_SUBJECT + i ) == null ? StringUtils.EMPTY : request.getParameter( MARK_ALERT_SUBJECT + i );
+           			
+            			if ( StringUtils.isEmpty( strAlertSubject ) )
+            			{
+            				if ( strApplyNbAlerts == null )
+            				{
+            					return redirect( request,
+        		                    AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_SUBJECT_EMPTY,
+        		                        url.getUrl( ), AdminMessage.TYPE_STOP ) );
+            				}
+            			}
+            			if ( StringUtils.isEmpty( strTimeToAlert ) || !StringUtils.isNumeric( strTimeToAlert ) ) 
+            			{
+            				if ( strApplyNbAlerts == null )
+            				{
+//            				addError( MESSAGE_ERROR_ALERT_TIME_NO_VALID , getLocale(  ) );
+//            				return redirect( request, VIEW_MODIFY_FORM_MESSAGES	, PARAMETER_ID_FORM, nIdForm );
+            				 return redirect( request,
+            		                    AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_ALERT_TIME_NO_VALID,
+            		                        url.getUrl( ), AdminMessage.TYPE_STOP ) );
+            				}
+            			}
+            			else
+            			{
+            				reminderAppointment.setIdForm( nIdForm );
+            				reminderAppointment.setRank( i );
+            				reminderAppointment.setTimeToAlert( Integer.parseInt( strTimeToAlert ) );
+            				reminderAppointment.setEmailNotify( Boolean.parseBoolean( strEmailNotify ) );
+            				reminderAppointment.setSmsNotify( Boolean.parseBoolean( strSmsNotify ) );
+            				reminderAppointment.setAlertMessage( strAlertMessage );
+            				reminderAppointment.setAlertSubject( strAlertSubject );
+            				listAppointment.add( reminderAppointment ) ;
+            			}
+            		}
+            	}
+            }
+            
+            if ( listAppointment.size() > 0 )
+            {
+            	formMessages.setListReminderAppointment( listAppointment );
+            }
+            formMessages.setNbAlerts( nbAlerts );
             AppointmentFormMessagesHome.update( formMessages );
-
             return redirect( request, VIEW_MODIFY_FORM_MESSAGES, PARAMETER_ID_FORM, nIdForm );
         }
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
+    /**
+     * Get url manage appointment form 
+     * @param request the request
+     * @param strIdForm the id form
+     * @return url manage appointment form
+     */
+    public static String getURLManageAppointmentForm( HttpServletRequest request, String strIdForm )
+    {
+        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS );
+        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_FORM_MESSAGES );
+        urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
+        return urlItem.getUrl(  );
+    }
     /**
      * Get an integer attribute from the session
      * @param session The session
