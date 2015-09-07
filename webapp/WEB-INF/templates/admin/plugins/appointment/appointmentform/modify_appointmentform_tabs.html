@@ -81,18 +81,13 @@
 				
 				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
-					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableConfirmEmail' inputName='enableConfirmEmail' value='true' checked=appointmentform.enableConfirmEmail!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
-	           	<#assign icon= appointmentform.getIcon()>
+				<#assign icon= appointmentform.getIcon()>
 				<#if  icon.mimeType?? >
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.modify_appointmentForm.deleteIcon} &nbsp;:</label>				
-					<div class="col-xs-12 col-sm-9 col-md-9">
-						<input type="checkbox" name="deleteIcon" value="true" class="form-control"/> 
-					</div>
-				</div>
+				<@fieldInputCheckBox i18nLabelKey='appointment.modify_appointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
 				</#if>
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
