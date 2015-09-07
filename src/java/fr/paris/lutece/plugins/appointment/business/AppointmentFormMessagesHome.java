@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -90,7 +92,17 @@ public final class AppointmentFormMessagesHome
         _dao.delete( nAppointmentFormId, _plugin );
         _cacheService.removeKey( AppointmentFormCacheService.getFormMessageCacheKey( nAppointmentFormId ) );
     }
-
+    /**
+     * Remove a Appointment Reminder
+     * @param nAppointmentFormId id form appointment
+     * @param rank the rank
+     * @param bool to delete all reminders
+     */
+    public static void removeAppointmentReminder ( int nAppointmentFormId, int rank, boolean bool )
+    {
+    	_dao.deleteReminderAppointment( nAppointmentFormId, rank, bool, _plugin );
+    	_cacheService.removeKey( AppointmentFormCacheService.getFormMessageCacheKey( nAppointmentFormId ) );
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Finders
 
@@ -116,5 +128,14 @@ public final class AppointmentFormMessagesHome
         }
 
         return formMessage;
+    }
+    /**
+     * Get list reminders appointment by id form
+     * @param nAppointmentFormId id form
+     * @return list reminders appointment
+     */
+    public static List <ReminderAppointment> loadListRemindersAppointments( int nAppointmentFormId )
+    {
+    	return _dao.loadListReminderAppointment( nAppointmentFormId, _plugin );
     }
 }

@@ -105,6 +105,7 @@ public class Appointment implements Serializable
     private transient Collection<Action> _listWorkflowActions;
     private int _nIdActionCancel;
     private int _idAdminUser;
+    private int _nHasNotify;
 
     /**
      * Status of appointments that have not been validated yet, validate or rejected
@@ -431,4 +432,21 @@ public class Appointment implements Serializable
     {
         return _state;
     }
+    /**
+     * Returns notify status
+     * @return notify status
+     */
+	public int getHasNotify( ) 
+	{
+		return _nHasNotify;
+	}
+	/**
+	 * Sets notify
+	 * @param nHasNotify notify status
+	 */
+	public void setHasNotify( int nHasNotify ) 
+	{
+		this._nHasNotify = nHasNotify;
+	}
+    
 }

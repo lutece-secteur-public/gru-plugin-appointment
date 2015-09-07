@@ -92,6 +92,12 @@
 			<daemon-description>appointment.daemon.appointmentPublicationDaemon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.AppointmentPublicationDaemon</daemon-class>
 		</daemon>
+		<daemon>
+			<daemon-id>AppointmentReminderDaemon</daemon-id>
+			<daemon-name>appointment.daemon.AppointmentReminderDaemon.name</daemon-name>
+			<daemon-description>appointment.daemon.appointmentAppointmentReminderDaemon.description</daemon-description>
+			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.AppointmentReminderDaemon</daemon-class>
+		</daemon>
 	</daemons>
 	
 <!--    <javascript-files> -->
