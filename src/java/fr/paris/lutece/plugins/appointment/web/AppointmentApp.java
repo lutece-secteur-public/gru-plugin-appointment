@@ -1431,6 +1431,24 @@ public class AppointmentApp extends MVCApplication
 
         return urlItem.getUrl(  );
     }
+    
+    /**
+     * Get the URL
+     * @param request Get the URL to cancel an appointment in FO
+     * @param appointment The appointment
+     * @return The URL to cancel the appointment
+     */
+    public static String getCancelAppointmentUrl(  Appointment appointment )
+    {
+        UrlItem urlItem = new UrlItem( AppPathService.getProdUrl( ) + AppPathService.getPortalUrl(  ) );
+        urlItem.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
+        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT );
+        urlItem.addParameter( PARAMETER_DATE_APPOINTMENT, getDateFormat(  ).format( appointment.getDateAppointment(  ) ) );
+        urlItem.addParameter( PARAMETER_REF_APPOINTMENT,
+            AppointmentService.getService(  ).computeRefAppointment( appointment ) );
+
+        return urlItem.getUrl(  );
+    }
 
     /**
      * Add an info message to a model

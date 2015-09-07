@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS appointment_day;
 DROP TABLE IF EXISTS appointment_form_messages;
 DROP TABLE IF EXISTS appointment_form;
 DROP TABLE IF EXISTS appointment_calendar_template;
+DROP TABLE IF EXISTS appointment_reminder;
 
 CREATE TABLE appointment_form (
 	id_form int NOT NULL,
@@ -92,6 +93,7 @@ CREATE TABLE appointment_appointment (
 	status smallint NOT NULL,
 	id_action_cancel int NOT NULL,
 	id_admin_user int DEFAULT NULL,
+	has_notify INT DEFAULT 0,
 	PRIMARY KEY (id_appointment)
 );
 CREATE INDEX idx_appointment_id_slot ON appointment_appointment (id_slot);
@@ -120,6 +122,7 @@ CREATE TABLE appointment_form_messages (
 	calendar_description long varchar NOT NULL,
 	calendar_reserve_label varchar(255) NOT NULL default '',
 	calendar_full_label varchar(255) NOT NULL default '',
+	nb_alerts INT DEFAULT 0,
 	PRIMARY KEY (id_form)
 );
 
@@ -131,6 +134,17 @@ CREATE TABLE appointment_calendar_template (
 	PRIMARY KEY(id)
 );
 
+CREATE TABLE appointment_reminder
+(
+	id_form int NOT NULL,
+	rank int NOT NULL,
+	time_to_alert INT NOT NULL,     
+    email_notify SMALLINT NOT NULL, 
+	sms_notify SMALLINT NOT NULL,
+	alert_message long varchar,
+	alert_subject VARCHAR ( 30 ) NOT NULL,
+	PRIMARY KEY (id_form,rank)
+);
 
 ALTER TABLE appointment_form ADD CONSTRAINT fk_app_form_template FOREIGN KEY (id_calendar_template)
       REFERENCES appointment_calendar_template (id) ON DELETE CASCADE ON UPDATE RESTRICT ;

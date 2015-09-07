@@ -48,12 +48,13 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
-import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
+
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -142,7 +143,7 @@ import javax.validation.ConstraintViolation;
  * manage, create, modify, remove )
  */
 @Controller( controllerJsp = "ManageAppointments.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentJspBean extends MVCAdminJspBean
+public class AppointmentJspBean extends MVCAdminJspBean 
 {
     /**
      * Serial version UID
@@ -311,14 +312,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private final StateService _stateService  = SpringContextService.getBean( StateService.BEAN_SERVICE );
     private final ITaskService _taskService  = SpringContextService.getBean( TaskService.BEAN_SERVICE );
-
-    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+    
     // Session variable to store working values
     private int _nDefaultItemsPerPage;
     private AppointmentFilter _filter;
 
     public static final String ACTIVATEWORKFLOW = AppPropertiesService.getProperty( "appointment.activate.workflow" );
    
+    
     /**
      * Status of appointments that have not been validated yet, validate or rejected
      */
@@ -391,6 +392,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
    public String getDownloadFileAppointment( HttpServletRequest request, HttpServletResponse response )
        throws AccessDeniedException
    {
+	   
        String strIdResponse = request.getParameter( PARAMETER_ID_FORM );
        if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
        {
@@ -402,14 +404,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
        	throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
    		}
        AppointmentFilter filter = (AppointmentFilter) request.getSession().getAttribute( MARK_FILTER );
-        
-       List<Object[]> tmpObj = new ArrayList<Object[]>();
-       List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
        
        
        AppointmentForm tmpForm = AppointmentFormHome.findByPrimaryKey( Integer.valueOf( strIdResponse ) );
        XSSFWorkbook workbook = new XSSFWorkbook();
        XSSFSheet sheet = workbook.createSheet( I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale() ));
+       
+       List<Object[]> tmpObj = new ArrayList<Object[]>();
+       List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter( filter );
        
        EntryFilter entryFilter = new EntryFilter(  );
        entryFilter.setIdResource( Integer.valueOf( strIdResponse ) );
@@ -417,7 +419,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
        List<Entry> listEntry = EntryHome.getEntryList( entryFilter ) ;
        
 	   Map <Integer, String> listGenatt = new HashMap <Integer, String> ();
-	   
 	   
 	   for ( Entry e : listEntry )
 	   {
@@ -468,7 +469,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       	
 	      	for ( Appointment tmpApp: listAppointments )
 	       	{
-	      		 State stateAppointment= _stateService.findByResource( tmpApp.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, tmpForm.getIdWorkflow( ) );
+	      		
+	      		State stateAppointment= _stateService.findByResource( tmpApp.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, tmpForm.getIdWorkflow( ) );
 	       	    
 	       	    if( stateAppointment != null )
 	       	    {  		

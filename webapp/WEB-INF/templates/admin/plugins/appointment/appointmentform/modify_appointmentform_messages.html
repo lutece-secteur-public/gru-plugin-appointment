@@ -1,98 +1,169 @@
 <#include "/admin/util/editor/editor.html" />
+
+
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp">
+		<@messages errors=errors /> 
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarTitle">#i18n{appointment.modify_appointmentform_messages.labelCalendarTitle}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="calendarTitle" value="${formMessage.calendarTitle}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarDescription">#i18n{appointment.modify_appointmentform_messages.labelCalendarDescription}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<textarea class="richtext" name="calendarDescription" class="form-control">${formMessage.calendarDescription}</textarea>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldFirstNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameTitle}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="fieldFirstNameTitle" value="${formMessage.fieldFirstNameTitle}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldFirstNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldFirstNameHelp}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="fieldFirstNameHelp" value="${formMessage.fieldFirstNameHelp}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldLastNameTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameTitle}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="fieldLastNameTitle" value="${formMessage.fieldLastNameTitle}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldLastNameHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldLastNameHelp}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="fieldLastNameHelp" value="${formMessage.fieldLastNameHelp}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldEmailTitle">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailTitle}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="fieldEmailTitle" value="${formMessage.fieldEmailTitle}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="fieldEmailHelp">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailHelp}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="fieldEmailHelp" value="${formMessage.fieldEmailHelp}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarReserveLabel">#i18n{appointment.modify_appointmentform_messages.labelCalendarReserveLabel}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="calendarReserveLabel" value="${formMessage.calendarReserveLabel}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="calendarFullLabel">#i18n{appointment.modify_appointmentform_messages.labelCalendarFullLabel}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="calendarFullLabel" value="${formMessage.calendarFullLabel}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="textAppointmentCreated">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCreated}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<textarea class="richtext" name="textAppointmentCreated" >${formMessage.textAppointmentCreated}</textarea>
+					
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 					<span class="help-block">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCreatedHelp}</span>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="urlRedirectAfterCreation">#i18n{appointment.modify_appointmentform_messages.labelUrlRedirectAfterCreation}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="urlRedirectAfterCreation" value="${formMessage.urlRedirectAfterCreation}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="textAppointmentCanceled">#i18n{appointment.modify_appointmentform_messages.labelTextAppointmentCanceled}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<textarea class="richtext" name="textAppointmentCanceled" class="form-control">${formMessage.textAppointmentCanceled}</textarea>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="labelButtonRedirection">#i18n{appointment.modify_appointmentform_messages.labelLabelButtonRedirection}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="labelButtonRedirection" value="${formMessage.labelButtonRedirection}" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="noAvailableSlot">#i18n{appointment.modify_appointmentform_messages.labelNoAvailableSlot}</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 					<input type="text" maxlength="255" name="noAvailableSlot" value="${formMessage.noAvailableSlot}" class="form-control">
 				</div>
 			</div>
+
+			<#assign listSize = formMessage.nbAlerts!>
+			<#assign listReminders = formMessage.listReminderAppointment>
+			
+			<div class="form-group">
+				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="noAvailableSlot"> #i18n{appointment.modify_appointmentform_messages.labelNumberAlerts} :</label>
+				<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<input type="text" maxlength="1" name="nbAlerts" value="${formMessage.nbAlerts!}" class="form-control">
+					<span class="help-block">#i18n{appointment.modify_appointmentform_messages.labelNumberAlertsHelp} </span>
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+					<button class="btn btn-primary btn-small" type="submit" name="apply_nbAlerts">
+						<i class="icon-ok icon-white"></i>&nbsp;#i18n{appointment.modify_appointmentform_messages.button.apply}
+					</button>
+				</div>
+			</div>	
+			<#list 1..listSize as i>		
+				<#if listSize gte i && listSize!=0>
+				<fieldset  id="rappel_${i}">
+				<legend>  #i18n{appointment.modify_appointmentform_messages.labelTextAlert} ${i} :</legend>	
+				<div class="form-element-conditionnel" >		
+					<div class="form-group" >
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="timeToAlert_${i}"> #i18n{appointment.modify_appointmentform_messages.labelTextAvant} : *</label>
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<input type="text" maxlength="2" name="timeToAlert_${i}" value="<#if listReminders?? && listReminders[i-1]?has_content>${listReminders[i-1].timeToAlert}</#if>"  class="form-control"/>
+							<span class="help-block">#i18n{appointment.modify_appointmentform_messages.labelTextAvantHelp} </span>
+						</div>
+						
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="email_${i}">   #i18n{appointment.modify_appointmentform_messages.labelTextEmailAlert} :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<input type="checkbox" name="emailNotify_${i}" value="true" class="form-control" <#if listReminders?? && listReminders[i-1]?has_content><#if listReminders[i-1].emailNotify>checked="checked"</#if></#if>/>
+						</div>
+						
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="sms_${i}"> #i18n{appointment.modify_appointmentform_messages.labelTextSmsAlert} :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<input type="checkbox" name="smsNotify_${i}" value="true" class="form-control" <#if listReminders?? && listReminders[i-1]?has_content><#if listReminders[i-1].smsNotify>checked="checked"</#if></#if>/>
+						</div>
+					</div>
+					<div class="form-group" >
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="alert_subject_${i}"> #i18n{appointment.modify_appointmentform_messages.labelTextSubject} : *</label>
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<input type="text" maxlength="50" name="alert_subject_${i}" value="<#if listReminders?? && listReminders[i-1]?has_content>${listReminders[i-1].alertSubject}</#if>" class="form-control"/>	
+							
+					</div>
+					
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="alert_message_${i}">#i18n{appointment.modify_appointmentform_messages.labelTextAlertAppointment} :</label>
+						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<textarea class="richtext" name="alert_message_${i}" class="form-control"><br/><#if listReminders?? &&listReminders[i-1]?has_content> ${listReminders[i-1].alertMessage!}</#if></textarea>
+						</div>
+						<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+								<span class="help-block">#i18n{appointment.modify_appointmentform_messages.labelTextAlertAppointmentHelp} </span>
+						</div>
+					</div>
+				</div>
+				</fieldset>
+				</#if>
+			</#list>
+		
 			<div class="form-group">
 				<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
 					<input type="hidden" name="action" value="doModifyAppointmentFormMessages" />
