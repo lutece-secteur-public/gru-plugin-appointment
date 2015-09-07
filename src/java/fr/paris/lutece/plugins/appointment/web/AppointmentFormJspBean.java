@@ -677,6 +677,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         String strForm = request.getParameter( PARAMETER_NAME_FORM );
         String strDeleteIcon =  request.getParameter( "deleteIcon" ) == null ? MARK_FALSE  : request.getParameter( "deleteIcon" ) ;
         
+        AppointmentForm appointmentFormTmp = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
         if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty ( ) )
         {
         	MultipartHttpServletRequest mRequest = ( MultipartHttpServletRequest ) request;
@@ -707,7 +708,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
         if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) && checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
+        {
         	populate( appointmentForm, request );
+        	if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty ( ) )
+        		setParametersDays ( appointmentForm, appointmentFormTmp ) ;
+        }
        else
        {
     	   return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
@@ -775,7 +780,16 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
-    
+    private void setParametersDays ( AppointmentForm appointmentForm, AppointmentForm appointmentFormTmp )
+    {
+    	appointmentForm.setIsOpenMonday( appointmentFormTmp.getIsOpenMonday( ) );
+    	appointmentForm.setIsOpenTuesday( appointmentFormTmp.getIsOpenTuesday( ) );
+    	appointmentForm.setIsOpenWednesday( appointmentFormTmp.getIsOpenWednesday( ) );
+    	appointmentForm.setIsOpenThursday( appointmentFormTmp.getIsOpenThursday( )  );
+    	appointmentForm.setIsOpenFriday( appointmentFormTmp.getIsOpenFriday( ) );
+    	appointmentForm.setIsOpenSaturday( appointmentFormTmp.getIsOpenSaturday( ) );
+    	appointmentForm.setIsOpenSunday( appointmentFormTmp.getIsOpenSunday( ) );
+    }
     /**
      * Get the URL to manage appointment forms
      * @param request The request
