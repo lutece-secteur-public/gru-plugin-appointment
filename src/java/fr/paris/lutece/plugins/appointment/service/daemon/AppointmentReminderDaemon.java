@@ -161,7 +161,7 @@ public class AppointmentReminderDaemon extends Daemon
                  }
     			 catch ( Exception e )
                  {
-                     AppLogService.error( "AccountLifeTimeDaemon - Error sending reminder alert to : " +
+                     AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert to : " +
                          e.getMessage(  ), e );
                  }
         		
@@ -179,7 +179,7 @@ public class AppointmentReminderDaemon extends Daemon
 	                 }
 	    			 catch ( Exception e )
 	                 {
-	                     AppLogService.error( "AccountLifeTimeDaemon - Error sending reminder alert to : " +
+	                     AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert to : " +
 	                         e.getMessage(  ), e );
 	                 }
     			}
