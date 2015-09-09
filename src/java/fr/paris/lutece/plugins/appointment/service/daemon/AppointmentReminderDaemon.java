@@ -33,6 +33,7 @@ import fr.paris.lutece.portal.service.daemon.Daemon;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.web.l10n.LocaleService;
 
 /**
@@ -153,8 +154,16 @@ public class AppointmentReminderDaemon extends Daemon
     		}
     		if ( reminder.isEmailNotify( ) && !appointment.getEmail( ).isEmpty( ) )
     		{
-        		MailService.sendMailText( appointment.getEmail( ) , PROPERTY_MAIL_SENDER_NAME, strSenderMail ,reminder.getAlertSubject( ) , strText  );
-        		bNotified = true ;
+    			 try
+                 {
+    				 MailService.sendMailText( appointment.getEmail( ) , PROPERTY_MAIL_SENDER_NAME, strSenderMail ,reminder.getAlertSubject( ) , strText  );
+    				 bNotified = true ;
+                 }
+    			 catch ( Exception e )
+                 {
+                     AppLogService.error( "AccountLifeTimeDaemon - Error sending reminder alert to : " +
+                         e.getMessage(  ), e );
+                 }
         		
     		}
     		if ( reminder.isSmsNotify( ) )
@@ -162,9 +171,17 @@ public class AppointmentReminderDaemon extends Daemon
     			String strRecipient = getNumberPhone( nIdForm, appointment ) ;
     			if ( !strRecipient.isEmpty( ) )
     			{
-	    			strRecipient += MARK_PREFIX_SENDER ;
-	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
-	        		bNotified = true ;
+	        		 try
+	                 {
+	        			strRecipient += MARK_PREFIX_SENDER ;
+	 	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
+	 	        		bNotified = true ;
+	                 }
+	    			 catch ( Exception e )
+	                 {
+	                     AppLogService.error( "AccountLifeTimeDaemon - Error sending reminder alert to : " +
+	                         e.getMessage(  ), e );
+	                 }
     			}
     		}
     		if ( bNotified )
