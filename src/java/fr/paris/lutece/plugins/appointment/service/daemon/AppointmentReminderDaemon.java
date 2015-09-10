@@ -75,18 +75,6 @@ public class AppointmentReminderDaemon extends Daemon
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		AppLogService.info( "Current Date   : " + dateFormat.format( date ) );
-		try
-        {
-			MailService.sendMailHtml( "mouadjebali@gmail.com" , "lutece", MailService.getNoReplyEmail(  ) ,"test" , "corps du mail : test" );
-			AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert mail ");
-			MailService.sendMailHtml( "0614430798@contact-everyone.fr" , "lutece", MARK_SENDER_SMS ,"test" , "corps du mail : test sms" );
-			AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert mail ");
-        }
-		 catch ( Exception e )
-        {
-            AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert to : " +
-                e.getMessage(  ), e );
-        }
 		
         for ( Appointment appointment : listAppointments )
         {
