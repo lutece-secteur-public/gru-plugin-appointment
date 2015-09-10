@@ -70,7 +70,18 @@ public class AppointmentReminderDaemon extends Daemon
         calendar.setTime( date );
         Timestamp timestampDay = new Timestamp( calendar.getTimeInMillis(  ) );
 		List<Appointment> listAppointments = getListAppointment( ) ;
-        
+        		
+		try
+        {
+			MailService.sendMailHtml( "mouadjebali@gmail.com" , "lutece", MailService.getNoReplyEmail(  ) ,"test" , "corps du mail : test" );
+			AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert ");
+        }
+		 catch ( Exception e )
+        {
+            AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert to : " +
+                e.getMessage(  ), e );
+        }
+		
         for ( Appointment appointment : listAppointments )
         {
         	Calendar cal2 = new GregorianCalendar(  );
@@ -156,7 +167,7 @@ public class AppointmentReminderDaemon extends Daemon
     		{
     			 try
                  {
-    				 MailService.sendMailText( appointment.getEmail( ) , PROPERTY_MAIL_SENDER_NAME, strSenderMail ,reminder.getAlertSubject( ) , strText  );
+    				 MailService.sendMailHtml( appointment.getEmail( ) , PROPERTY_MAIL_SENDER_NAME, strSenderMail ,reminder.getAlertSubject( ) , strText  );
     				 bNotified = true ;
                  }
     			 catch ( Exception e )
