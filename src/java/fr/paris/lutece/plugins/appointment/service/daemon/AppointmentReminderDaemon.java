@@ -2,6 +2,7 @@ package fr.paris.lutece.plugins.appointment.service.daemon;
 
 	import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -70,11 +71,16 @@ public class AppointmentReminderDaemon extends Daemon
         calendar.setTime( date );
         Timestamp timestampDay = new Timestamp( calendar.getTimeInMillis(  ) );
 		List<Appointment> listAppointments = getListAppointment( ) ;
-        		
+        
+		
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		AppLogService.info( "Current Date   : " + dateFormat.format( date ) );
 		try
         {
 			MailService.sendMailHtml( "mouadjebali@gmail.com" , "lutece", MailService.getNoReplyEmail(  ) ,"test" , "corps du mail : test" );
-			AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert ");
+			AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert mail ");
+			MailService.sendMailHtml( "0614430798@contact-everyone.fr" , "lutece", MARK_SENDER_SMS ,"test" , "corps du mail : test sms" );
+			AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert mail ");
         }
 		 catch ( Exception e )
         {
@@ -89,6 +95,8 @@ public class AppointmentReminderDaemon extends Daemon
         	cal2.setTime( startAppointment );
         	Timestamp timeStartDate = new Timestamp( cal2.getTimeInMillis(  ) );
         	
+        	AppLogService.info( "Date appointment   : " + dateFormat.format( startAppointment ) ); 
+        	
         	if ( timeStartDate.getTime( ) > timestampDay.getTime( ) )
         	{
 	        	long lDiffTimeStamp = Math.abs ( timestampDay.getTime() - timeStartDate.getTime( ) ) ;
@@ -97,6 +105,10 @@ public class AppointmentReminderDaemon extends Daemon
 	        	int nDiffMin =  ( nDiffHours * 60 ) + ( int ) ( lDiffTimeStamp / ( 60 * 1000 ) % 60 ) ;
 	        	
 	        	List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
+	        	
+	        	AppLogService.info( "nDays  : " + nDays + "\n" );
+	        	AppLogService.info( "nDiffHours  : " + nDiffHours + "\n" );
+	        	AppLogService.info( "nDiffMin  : " + nDiffMin + "\n" );
 	        	
 	        	for ( AppointmentForm  form : listForms )
 	        	{
@@ -148,12 +160,23 @@ public class AppointmentReminderDaemon extends Daemon
 		int nMinTime = ( reminder.getTimeToAlert( ) * 60 ) - MARK_DURATION_LIMIT  ;
 		int nMaxTime = ( reminder.getTimeToAlert( ) * 60 ) + MARK_DURATION_LIMIT  ;
 		
+		AppLogService.info( "Alert time :" + reminder.getTimeToAlert( ) + "\n");
+		AppLogService.info( "nDiffMin :" + nDiffMin + "\n");
+		AppLogService.info( "nMinTime :" + nMinTime + "\n");
+		AppLogService.info( "nMaxTime :" + nMaxTime + "\n");
+		
     	if ( nDiffMin <= nMaxTime  &&  nDiffMin >= nMinTime && ( ( appointment.getHasNotify ( ) == 0 ) || ( appointment.getHasNotify ( ) != ( reminder.getRank( ) ) ) ) )
     	{
     		boolean bNotified = false ;
     		Locale locale = LocaleService.getDefault(  );
     		String strSenderMail = MailService.getNoReplyEmail(  );
     		String strSenderName = I18nService.getLocalizedString( PROPERTY_MAIL_SENDER_NAME, locale );
+    		
+    		AppLogService.info( "IN :");
+    		AppLogService.info( "strSenderMail :" + strSenderMail + "\n");
+    		AppLogService.info( "strSenderName :" + strSenderName + "\n");
+    		AppLogService.info( "Dest :" + appointment.getEmail( ) + "\n");
+    		AppLogService.info( "Objet :" + reminder.getAlertSubject( ) + "\n");
     		
     		String strText = reminder.getAlertMessage( ) ;
     		if ( strText!=null && !strText.isEmpty( ) )
@@ -169,10 +192,11 @@ public class AppointmentReminderDaemon extends Daemon
                  {
     				 MailService.sendMailHtml( appointment.getEmail( ) , PROPERTY_MAIL_SENDER_NAME, strSenderMail ,reminder.getAlertSubject( ) , strText  );
     				 bNotified = true ;
+    				 AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert mail to : " + appointment.getEmail( ));
                  }
     			 catch ( Exception e )
                  {
-                     AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert to : " +
+                     AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert MAIL to : " +
                          e.getMessage(  ), e );
                  }
         		
@@ -187,10 +211,11 @@ public class AppointmentReminderDaemon extends Daemon
 	        			strRecipient += MARK_PREFIX_SENDER ;
 	 	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
 	 	        		bNotified = true ;
+	 	        		AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert SMS to : " + appointment.getEmail( ));
 	                 }
 	    			 catch ( Exception e )
 	                 {
-	                     AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert to : " +
+	                     AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert SMS to : " +
 	                         e.getMessage(  ), e );
 	                 }
     			}
