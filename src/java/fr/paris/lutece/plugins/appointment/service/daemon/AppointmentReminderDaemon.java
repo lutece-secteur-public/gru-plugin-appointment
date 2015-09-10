@@ -70,60 +70,64 @@ public class AppointmentReminderDaemon extends Daemon
         Calendar calendar = new GregorianCalendar(  );
         calendar.setTime( date );
         Timestamp timestampDay = new Timestamp( calendar.getTimeInMillis(  ) );
-		List<Appointment> listAppointments = getListAppointment( ) ;
+		
         
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		AppLogService.info( "Current Date   : " + dateFormat.format( date ) );
 		
-        for ( Appointment appointment : listAppointments )
-        {
-        	Calendar cal2 = new GregorianCalendar(  );
-        	Date startAppointment = appointment.getStartAppointment( ) ;
-        	cal2.setTime( startAppointment );
-        	Timestamp timeStartDate = new Timestamp( cal2.getTimeInMillis(  ) );
-        	
-        	AppLogService.info( "Date appointment   : " + dateFormat.format( startAppointment ) ); 
-        	
-        	if ( timeStartDate.getTime( ) > timestampDay.getTime( ) )
-        	{
-	        	long lDiffTimeStamp = Math.abs ( timestampDay.getTime() - timeStartDate.getTime( ) ) ;
-	        	int nDays = ( int ) lDiffTimeStamp / (1000*60*60*24) ;
-	        	int nDiffHours = ( ( int ) lDiffTimeStamp /( 60 * 60 * 1000 ) % 24 ) + ( nDays * 24 ) ;
-	        	int nDiffMin =  ( nDiffHours * 60 ) + ( int ) ( lDiffTimeStamp / ( 60 * 1000 ) % 60 ) ;
+		List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
+		
+		for ( AppointmentForm  form : listForms )
+    	{
+			int nIdForm = form.getIdForm( ) ;
+			List< Appointment > listAppointments = getListAppointment( form ) ;
+    	
+	        for ( Appointment appointment : listAppointments )
+	        {
+	        	Calendar cal2 = new GregorianCalendar(  );
+	        	Date startAppointment = appointment.getStartAppointment( ) ;
+	        	cal2.setTime( startAppointment );
+	        	Timestamp timeStartDate = new Timestamp( cal2.getTimeInMillis(  ) );
 	        	
-	        	List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
+	        	AppLogService.info( "Date appointment   : " + dateFormat.format( startAppointment ) ); 
 	        	
-	        	AppLogService.info( "nDays  : " + nDays + "\n" );
-	        	AppLogService.info( "nDiffHours  : " + nDiffHours + "\n" );
-	        	AppLogService.info( "nDiffMin  : " + nDiffMin + "\n" );
-	        	
-	        	for ( AppointmentForm  form : listForms )
+	        	if ( timeStartDate.getTime( ) > timestampDay.getTime( ) )
 	        	{
-	        		int nIdForm = form.getIdForm( ) ;
+		        	long lDiffTimeStamp = Math.abs ( timestampDay.getTime() - timeStartDate.getTime( ) ) ;
+		        	int nDays = ( int ) lDiffTimeStamp / (1000*60*60*24) ;
+		        	int nDiffHours = ( ( int ) lDiffTimeStamp /( 60 * 60 * 1000 ) % 24 ) + ( nDays * 24 ) ;
+		        	int nDiffMin =  ( nDiffHours * 60 ) + ( int ) ( lDiffTimeStamp / ( 60 * 1000 ) % 60 ) ;
+		        	
+		        	AppLogService.info( "nDays  : " + nDays + "\n" );
+		        	AppLogService.info( "nDiffHours  : " + nDiffHours + "\n" );
+		        	AppLogService.info( "nDiffMin  : " + nDiffMin + "\n" );
+		        	
+		        		
 	        		List <ReminderAppointment> listReminders = AppointmentFormMessagesHome.loadListRemindersAppointments( nIdForm  ) ;
 	    		
 	    			for ( ReminderAppointment reminder : listReminders )
 	    			{
 	    				sendReminder ( appointment , reminder, startAppointment, nDiffMin, nIdForm ) ;
 	    			}
-	        	}
+		        	
+		        }
 	        }
-        }
+        
+    	}
 	}
 	/**
 	 * Get list appointment
 	 * @return list appointment
 	 */
-	private List<Appointment> getListAppointment ( )
+	private List<Appointment> getListAppointment ( AppointmentForm form )
 	{
 		List <Appointment> listAllAppointments = AppointmentHome.getAppointmentsList( ) ;
 		List <Integer> list = new ArrayList<Integer> ( ) ;
 		List<Appointment> listAppointments = new ArrayList<Appointment> ( ) ;
-		
 		for ( Appointment appointment : listAllAppointments )
 		{
-			State stateAppointment= _stateService.findByPrimaryKey( appointment.getStatus( ) ) ;
+			State stateAppointment= _stateService.findByResource( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ) );
 			if (stateAppointment != null )
 			{
 				if( stateAppointment.getName( ).equals( MARK_VALID_STATUT ) ) 
