@@ -25,10 +25,17 @@ CREATE TABLE appointment_reminder
     email_notify SMALLINT NOT NULL, 
 	sms_notify SMALLINT NOT NULL,
 	alert_message long varchar,
-	alert_subject VARCHAR ( 30 ) NOT NULL,
+	alert_subject VARCHAR ( 255 ) NOT NULL,
 	PRIMARY KEY (id_form,rank)
 );
 
+DROP TABLE IF EXISTS appointment_holidays;
+CREATE TABLE appointment_holidays
+(
+	id_form int NOT NULL,
+	date_day DATE NOT NULL,
+	PRIMARY KEY (id_form,date_day)
+)
 
 
 

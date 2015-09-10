@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS appointment_form_messages;
 DROP TABLE IF EXISTS appointment_form;
 DROP TABLE IF EXISTS appointment_calendar_template;
 DROP TABLE IF EXISTS appointment_reminder;
+DROP TABLE IF EXISTS appointment_holidays;
 
 CREATE TABLE appointment_form (
 	id_form int NOT NULL,
@@ -142,9 +143,16 @@ CREATE TABLE appointment_reminder
     email_notify SMALLINT NOT NULL, 
 	sms_notify SMALLINT NOT NULL,
 	alert_message long varchar,
-	alert_subject VARCHAR ( 30 ) NOT NULL,
+	alert_subject VARCHAR ( 255 ) NOT NULL,
 	PRIMARY KEY (id_form,rank)
 );
+
+CREATE TABLE appointment_holidays
+(
+	id_form int NOT NULL,
+	date_day DATE NOT NULL,
+	PRIMARY KEY (id_form,date_day)
+)
 
 ALTER TABLE appointment_form ADD CONSTRAINT fk_app_form_template FOREIGN KEY (id_calendar_template)
       REFERENCES appointment_calendar_template (id) ON DELETE CASCADE ON UPDATE RESTRICT ;
