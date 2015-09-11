@@ -59,20 +59,20 @@ public class AppointmentReminderDaemon extends Daemon
 	//properties
     private static final String PROPERTY_MAIL_SENDER_NAME = "appointment.reminder.mailSenderName";
     //constants
-    private static final DateFormat dateformat = DateFormat.getDateTimeInstance( DateFormat.MEDIUM,	DateFormat.MEDIUM);
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.FRENCH);
     //service 
     private final StateService _stateService  = SpringContextService.getBean( StateService.BEAN_SERVICE );
     
 	@Override
 	public void run( ) 
 	{
-		AppLogService.debug( "START DEBUG : \n");
+		AppLogService.info( "START DEBUG : \n");
 		Date date = new Date();
         Calendar calendar = new GregorianCalendar(  );
         calendar.setTime( date );
         Timestamp timestampDay = new Timestamp( calendar.getTimeInMillis(  ) );
-			
-		AppLogService.info( "Current Date   : " + dateformat.format( date ) );
+		
+		
 		
 		List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
 		
@@ -87,12 +87,12 @@ public class AppointmentReminderDaemon extends Daemon
 	        	Date startAppointment = appointment.getStartAppointment( ) ;
 	        	cal2.setTime( startAppointment );
 	        	Timestamp timeStartDate = new Timestamp( cal2.getTimeInMillis(  ) );
-	        	
-	        	AppLogService.info( "Date appointment   : " + dateformat.format( startAppointment ) ); 
+	        	AppLogService.info( "Current Date   : " + dateFormat.format( date ) );
+	        	AppLogService.info( "Date appointment   : " + dateFormat.format( startAppointment ) ); 
 	        	
 	        	if ( timeStartDate.getTime( ) > timestampDay.getTime( ) )
 	        	{
-		        	long lDiffTimeStamp = Math.abs ( timeStartDate.getTime( ) - timestampDay.getTime( ) ) ;
+		        	long lDiffTimeStamp = Math.abs ( timestampDay.getTime() - timeStartDate.getTime( ) ) ;
 		        	int nDays = ( int ) lDiffTimeStamp / (1000*60*60*24) ;
 		        	int nDiffHours = ( ( int ) lDiffTimeStamp /( 60 * 60 * 1000 ) % 24 ) + ( nDays * 24 ) ;
 		        	int nDiffMin =  ( nDiffHours * 60 ) + ( int ) ( lDiffTimeStamp / ( 60 * 1000 ) % 60 ) ;
@@ -113,7 +113,6 @@ public class AppointmentReminderDaemon extends Daemon
 	        }
         
     	}
-		AppLogService.debug( "END DEBUG : \n");
 	}
 	/**
 	 * Get list appointment
@@ -121,7 +120,7 @@ public class AppointmentReminderDaemon extends Daemon
 	 */
 	private List<Appointment> getListAppointment ( AppointmentForm form )
 	{
-		List <Appointment> listAllAppointments = AppointmentHome.getAppointmentsListByIdForm( form.getIdForm( ) ) ;
+		List <Appointment> listAllAppointments = AppointmentHome.getAppointmentsList( ) ;
 		List <Integer> list = new ArrayList<Integer> ( ) ;
 		List<Appointment> listAppointments = new ArrayList<Appointment> ( ) ;
 		for ( Appointment appointment : listAllAppointments )
@@ -174,14 +173,15 @@ public class AppointmentReminderDaemon extends Daemon
     		{
     			strText = strText.replaceAll( MARK_FIRST_NAME, appointment.getFirstName( ) );
     			strText = strText.replaceAll( MARK_LAST_NAME, appointment.getLastName( ) );
-    			strText = strText.replaceAll( MARK_DATE_APP,  dateformat.format( startAppointment ) );
+    			strText = strText.replaceAll( MARK_DATE_APP,  dateFormat.format( startAppointment ) );
     			strText = strText.replaceAll( MARK_CANCEL_APP , AppointmentApp.getCancelAppointmentUrl( appointment ) ) ;
     		}
     		if ( reminder.isEmailNotify( ) && !appointment.getEmail( ).isEmpty( ) )
     		{
     			 try
                  {
-    				 MailService.sendMailHtml( appointment.getEmail( ) , strSenderName , strSenderMail ,reminder.getAlertSubject( ) , strText  );
+    				 AppLogService.info( "try to send MAIL : \n " );
+    				 MailService.sendMailHtml( appointment.getEmail( ) , strSenderName, strSenderMail ,reminder.getAlertSubject( ) , strText  );
     				 bNotified = true ;
     				 AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert mail to : " + appointment.getEmail( ));
                  }
@@ -200,11 +200,12 @@ public class AppointmentReminderDaemon extends Daemon
 	        		 try
 	                 {
 	        			AppLogService.info( "strRecipient" + strRecipient + "\n");
-	        			AppLogService.info( "strSenderName" + strSenderName + "\n");
-	        			AppLogService.info( "MARK_SENDER_SMS" + MARK_SENDER_SMS + "\n" );
-	        			AppLogService.info( "strText" + strText+ "\n");
+		        		AppLogService.info( "strSenderName" + strSenderName + "\n");
+		        		AppLogService.info( "MARK_SENDER_SMS" + MARK_SENDER_SMS + "\n" );
+		        		AppLogService.info( "strText" + strText+ "\n");
 	        			strRecipient += MARK_PREFIX_SENDER ;
-	 	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS , StringUtils.EMPTY , strText  );
+	        			AppLogService.info( "try to send SMS : \n " );
+	 	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
 	 	        		bNotified = true ;
 	 	        		AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert SMS to : " + appointment.getEmail( ));
 	                 }
