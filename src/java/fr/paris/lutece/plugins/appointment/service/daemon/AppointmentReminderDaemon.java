@@ -73,7 +73,6 @@ public class AppointmentReminderDaemon extends Daemon
         Timestamp timestampDay = new Timestamp( calendar.getTimeInMillis(  ) );
 		
 		
-		
 		List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
 		
 		for ( AppointmentForm  form : listForms )
@@ -97,11 +96,6 @@ public class AppointmentReminderDaemon extends Daemon
 		        	int nDiffHours = ( ( int ) lDiffTimeStamp /( 60 * 60 * 1000 ) % 24 ) + ( nDays * 24 ) ;
 		        	int nDiffMin =  ( nDiffHours * 60 ) + ( int ) ( lDiffTimeStamp / ( 60 * 1000 ) % 60 ) ;
 		        	
-		        	AppLogService.info( "nDays  : " + nDays + "\n" );
-		        	AppLogService.info( "nDiffHours  : " + nDiffHours + "\n" );
-		        	AppLogService.info( "nDiffMin  : " + nDiffMin + "\n" );
-		        	
-		        		
 	        		List <ReminderAppointment> listReminders = AppointmentFormMessagesHome.loadListRemindersAppointments( nIdForm  ) ;
 	    		
 	    			for ( ReminderAppointment reminder : listReminders )
@@ -151,9 +145,8 @@ public class AppointmentReminderDaemon extends Daemon
 		int nMaxTime = ( reminder.getTimeToAlert( ) * 60 ) + MARK_DURATION_LIMIT  ;
 		
 		AppLogService.info( "Alert time :" + reminder.getTimeToAlert( ) + "\n");
-		AppLogService.info( "nDiffMin :" + nDiffMin + "\n");
-		AppLogService.info( "nMinTime :" + nMinTime + "\n");
-		AppLogService.info( "nMaxTime :" + nMaxTime + "\n");
+		AppLogService.info( "nDiffMin  : " + nDiffMin + "\n" );
+
 		
     	if ( nDiffMin <= nMaxTime  &&  nDiffMin >= nMinTime && ( ( appointment.getHasNotify ( ) == 0 ) || ( appointment.getHasNotify ( ) != ( reminder.getRank( ) ) ) ) )
     	{
@@ -192,9 +185,13 @@ public class AppointmentReminderDaemon extends Daemon
                  }
         		
     		}
+    		AppLogService.info( "SMS :  " + reminder.isSmsNotify( ) );
     		if ( reminder.isSmsNotify( ) )
     		{
+    			AppLogService.info( "try to send SMS : \n " );
     			String strRecipient = getNumberPhone( nIdForm, appointment ) ;
+    			AppLogService.info( "strRecipient_TEL : " + strRecipient );
+    			
     			if ( !strRecipient.isEmpty( ) )
     			{
 	        		 try
@@ -233,6 +230,7 @@ public class AppointmentReminderDaemon extends Daemon
 	{
 			AppLogService.info("GET NUMBER : ");
 			List<Integer> listResponse = AppointmentHome.findListIdResponse( app.getIdAppointment( ) );
+			AppLogService.info("listResponse.SIZE  : " + listResponse.size( ));
 			EntryFilter entryFilter = new EntryFilter(  );
 		    entryFilter.setIdResource( Integer.valueOf( nIdForm ) );
 	       
@@ -241,6 +239,7 @@ public class AppointmentReminderDaemon extends Daemon
 		    Map <Integer, EntryType> listGenatt = new HashMap <Integer, EntryType> ( );
 		    String strRes = StringUtils.EMPTY;
 		    
+		    AppLogService.info("listEntry.SIZE  : " + listEntry.size( ));
 			for ( Entry e : listEntry )
 			{
 				if ( e.getEntryType() != null && e.getEntryType( ).getTitle( ).equals( MARK_ENTRY_TYPE_PHONE ) )
@@ -248,6 +247,7 @@ public class AppointmentReminderDaemon extends Daemon
 					listGenatt.put( e.getIdEntry( ), e.getEntryType( ) );
 				}
 			}
+			AppLogService.info("listGenatt.SIZE  : " + listGenatt.size( ));
 			for( Integer id : listGenatt.keySet( ) )
 			{
 				for( Integer e : listResponse )
@@ -255,7 +255,7 @@ public class AppointmentReminderDaemon extends Daemon
 					ResponseFilter respFilter = new ResponseFilter ( );
 					respFilter.setIdEntry( id );
 					List<Response> listResp = ResponseHome.getResponseList( respFilter );
-					
+					AppLogService.info("listResp.SIZE  : " + listResp.size( ));
 					for ( Response resp :  listResp )
 					{
 						if ( e.equals( resp.getIdResponse( ) ) )
