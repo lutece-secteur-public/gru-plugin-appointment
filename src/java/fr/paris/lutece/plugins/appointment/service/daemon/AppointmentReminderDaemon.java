@@ -20,6 +20,9 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.ReminderAppointment;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypePhone;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -28,6 +31,8 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.service.daemon.Daemon;
@@ -35,6 +40,7 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.l10n.LocaleService;
 
 /**
@@ -49,17 +55,18 @@ public class AppointmentReminderDaemon extends Daemon
 	private static final String MARK_FIRST_NAME = "%%FIRST_NAME%%";
 	private static final String MARK_LAST_NAME = "%%LAST_NAME%%";
 	private static final String MARK_DATE_APP = "%%DATE%%";
+	private static final String MARK_LOCALIZATION = "%%LOCALIZATION%%";
 	private static final String MARK_CANCEL_APP = "%%CANCEL_APPOINTMENT%%" ;
 	private static final String MARK_PREFIX_SENDER = "@contact-everyone.fr" ;
     private static final String	MARK_SENDER_SMS = "magali.lemaire@paris.fr" ;
     private static final String MARK_ENTRY_TYPE_PHONE = "Numéro de téléphone" ;
-    private static final String 	MARK_VALID_STATUT = "Validé" ;
+    private static final String MARK_VALID_STATUT = "Validé" ;
     private static final int 	MARK_DURATION_LIMIT = 5;
     
 	//properties
     private static final String PROPERTY_MAIL_SENDER_NAME = "appointment.reminder.mailSenderName";
     //constants
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.FRENCH);
+    private static final DateFormat dateFormat = DateFormat.getDateInstance( DateFormat.DEFAULT );
     //service 
     private final StateService _stateService  = SpringContextService.getBean( StateService.BEAN_SERVICE );
     
@@ -77,11 +84,18 @@ public class AppointmentReminderDaemon extends Daemon
 		
 		for ( AppointmentForm  form : listForms )
     	{
+			
 			int nIdForm = form.getIdForm( ) ;
 			List< Appointment > listAppointments = getListAppointment( form ) ;
     	
 	        for ( Appointment appointment : listAppointments )
 	        {
+	        	String phone1 = getSmsFromAppointment ( appointment ) ;
+	        	String phone2 = getNumberPhone( nIdForm , appointment ) ;
+	        	
+	        	AppLogService.info("PHONE1 : " + phone1 );
+	        	AppLogService.info("PHONE2 : " + phone2 );
+	        	
 	        	Calendar cal2 = new GregorianCalendar(  );
 	        	Date startAppointment = appointment.getStartAppointment( ) ;
 	        	cal2.setTime( startAppointment );
@@ -114,7 +128,8 @@ public class AppointmentReminderDaemon extends Daemon
 	 */
 	private List<Appointment> getListAppointment ( AppointmentForm form )
 	{
-		List <Appointment> listAllAppointments = AppointmentHome.getAppointmentsList( ) ;
+		//List <Appointment> listAllAppointments = AppointmentHome.getAppointmentsList( ) ;
+		List <Appointment> listAllAppointments = AppointmentHome.getAppointmentsListByIdForm ( form.getIdForm( ) ) ; 
 		List <Integer> list = new ArrayList<Integer> ( ) ;
 		List<Appointment> listAppointments = new ArrayList<Appointment> ( ) ;
 		for ( Appointment appointment : listAllAppointments )
@@ -162,11 +177,13 @@ public class AppointmentReminderDaemon extends Daemon
     		AppLogService.info( "Objet :" + reminder.getAlertSubject( ) + "\n");
     		
     		String strText = reminder.getAlertMessage( ) ;
+    		String strLocation = appointment.getLocation( ) == null ? StringUtils.EMPTY : appointment.getLocation( ) ;
     		if ( strText!=null && !strText.isEmpty( ) )
     		{
     			strText = strText.replaceAll( MARK_FIRST_NAME, appointment.getFirstName( ) );
     			strText = strText.replaceAll( MARK_LAST_NAME, appointment.getLastName( ) );
     			strText = strText.replaceAll( MARK_DATE_APP,  dateFormat.format( startAppointment ) );
+    			strText = strText.replaceAll( MARK_LOCALIZATION, strLocation  );
     			strText = strText.replaceAll( MARK_CANCEL_APP , AppointmentApp.getCancelAppointmentUrl( appointment ) ) ;
     		}
     		if ( reminder.isEmailNotify( ) && !appointment.getEmail( ).isEmpty( ) )
@@ -189,7 +206,8 @@ public class AppointmentReminderDaemon extends Daemon
     		if ( reminder.isSmsNotify( ) )
     		{
     			AppLogService.info( "try to send SMS : \n " );
-    			String strRecipient = getNumberPhone( nIdForm, appointment ) ;
+    			//String strRecipient = getNumberPhone( nIdForm, appointment ) ;
+    			String strRecipient = getSmsFromAppointment ( appointment );
     			AppLogService.info( "strRecipient_TEL : " + strRecipient );
     			
     			if ( !strRecipient.isEmpty( ) )
@@ -220,6 +238,52 @@ public class AppointmentReminderDaemon extends Daemon
     		}
     	}
 	}
+	private String getSmsFromAppointment( Appointment appointment )
+    {
+		AppLogService.info(" getSmsFromAppointment GET NUMBER : ");
+        String strPhoneNumber = null;
+        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+        EntryFilter entryFilter = new EntryFilter(  );
+        entryFilter.setIdResource( slot.getIdForm(  ) );
+        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+
+        List<Integer> listIdResponse = AppointmentHome.findListIdResponse( appointment.getIdAppointment(  ) );
+        AppLogService.info("listIdResponse.SIZE  : " + listIdResponse.size( ) );
+        List<Response> listResponses = new ArrayList<Response>( listIdResponse.size(  ) );
+        AppLogService.info("listResponses.SIZE  : " + listResponses.size( ) );
+        for ( int nIdResponse : listIdResponse )
+        {
+            listResponses.add( ResponseHome.findByPrimaryKey( nIdResponse ) );
+        }
+
+        List<Entry> listEntries = EntryHome.getEntryList( entryFilter );
+        AppLogService.info("listEntries.SIZE  : " + listEntries.size( ) );
+        for ( Entry entry : listEntries )
+        {
+            IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
+
+            if ( entryTypeService instanceof EntryTypePhone )
+            {
+                for ( Response response : listResponses )
+                {
+                    if ( ( response.getEntry(  ).getIdEntry(  ) == entry.getIdEntry(  ) ) &&
+                            StringUtils.isNotBlank( response.getResponseValue(  ) ) )
+                    {
+                        strPhoneNumber = response.getResponseValue(  );
+
+                        break;
+                    }
+                }
+
+                if ( StringUtils.isNotEmpty( strPhoneNumber ) )
+                {
+                    break;
+                }
+            }
+        }
+        return strPhoneNumber;
+    }
 	/**
 	 * Get number phone
 	 * @param nIdForm the id form
