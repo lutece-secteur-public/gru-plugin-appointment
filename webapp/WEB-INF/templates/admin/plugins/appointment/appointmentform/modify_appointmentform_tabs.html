@@ -21,7 +21,7 @@
         <ul class="nav nav-tabs">
     		<li <#if tab="params">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true">
-					Paramètres généraux 
+					#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}
 				</a>
             </li>
             <li <#if tab="entries">class="active"</#if>>
@@ -37,6 +37,11 @@
             <li <#if tab="slots">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_form=${appointmentform.idForm}">
 					#i18n{appointment.manageCalendarSlots.pageTitle}
+				</a>
+            </li>
+             <li <#if tab="holidays">class="active"</#if>>
+				<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewManageHolidays&id_form=${appointmentform.idForm}">
+					#i18n{appointment.manageHolidays.pageTitle}
 				</a>
             </li>
             <#if isResourceInstalled?? && isResourceInstalled>
@@ -81,14 +86,16 @@
 				
 				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableConfirmEmail' inputName='enableConfirmEmail' value='true' checked=appointmentform.enableConfirmEmail!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
-				<#assign icon= appointmentform.getIcon()>
+	           	<#assign icon= appointmentform.getIcon()>
 				<#if  icon.mimeType?? >
 				<@fieldInputCheckBox i18nLabelKey='appointment.modify_appointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
 				</#if>
+
+
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
 					<div class="col-xs-12 col-sm-3 col-md-3">

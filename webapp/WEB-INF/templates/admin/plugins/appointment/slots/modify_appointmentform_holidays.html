@@ -1,0 +1,120 @@
+<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
+<link href="css/datepicker.css" rel="stylesheet">
+
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<div class="row" >
+	
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    	<@tabs tab="holidays" appointmentform=appointmentform />
+    	<@messages infos=infos errors=errors/>
+    	<fieldset>
+    		<legend>
+    			#i18n{appointment.manageHolidays.pageTitle}
+	    		<div class="pull-right">
+		    		<a class="btn btn-info btn-flat"
+					href="jsp/admin/plugins/appointment/DoExportClosingDays.jsp?id_form=${appointmentform.idForm}">
+					<i class="glyphicon glyphicon-download">&nbsp;</i>#i18n{appointment.manageHolidays.labelExport}
+					</a>
+	    		</div>	
+    		</legend>
+
+			<form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp" enctype="multipart/form-data">
+			<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
+    		<div class="form-group ">
+					<label class="col-xs-12 col-sm-6 col-md-6 " for="dateMin">#i18n{appointment.manageHolidays.labelClosingDay} *:</label>
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<div class="input-group">
+							<div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
+							<input class="input-small" id="dateHoliday" name="dateHoliday" type="text" placeholder="chosir une date" />
+						</div>
+						<p class="help-block"> #i18n{appointment.manageHolidays.labelClosinglabelFormatDate}</p>					
+					</div>
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<button name="action_doModifyHolidays" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
+							<i class="glyphicon glyphicon-ok">&nbsp;</i>&nbsp; #i18n{appointment.manageHolidays.labelClosingAdd}
+						</button>		
+					</div>
+				
+			</div>
+
+			<div class="form-group ">
+					<label class="col-xs-12 col-sm-6 col-md-6 " for="fileHolidays">#i18n{appointment.manageHolidays.labelImport} :</label>
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<div class="input-group">
+							<input id="fileSelect" type="file"  name="fileHolidays" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+						</div>
+						<p class="help-block"> #i18n{appointment.manageHolidays.labelClosinglabelFormatFile} </p>					
+					</div>
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<div class="input-group">
+							<i class="glyphicon glyphicon-remove-circle">&nbsp;</i> 
+							<input type="button"  value="Effacer" class="btn btn-default btn-sm" onclick ="$('#fileSelect').val('')" /> 
+						</div>	
+					</div>
+			</div>
+
+			<div class="form-group">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<button name="action_doModifyHolidays" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
+							<i class="glyphicon glyphicon-ok">&nbsp;</i>&nbsp;Modifier
+						</button>
+					</div>
+	        </div>
+
+			</form>
+
+    		<#if listDays?? && listDays?size &gt; 0>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>
+								#i18n{appointment.modify_appointmentformDays.labelDate}
+							</th>
+							<th>
+								#i18n{appointment.manageHolidays.labelDelete}
+							</th>
+							
+						</tr>
+					</thead>
+					<tbody>  
+						<#list listDays as day>
+						<#assign dateHoliDay= day?date>
+							<tr>
+								<td>
+									${day}
+								</td>
+								<td>
+								<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doModifyHolidays&id_form=${appointmentform.idForm}&dateDay=${dateHoliDay}" class="btn btn-danger btn-xs" title="Supprimer" >
+										<i class="glyphicon glyphicon-trash"></i>
+									</a>
+								</td>
+							</tr>
+						</#list>
+					</tbody>
+				</table>
+			<#else>
+				<div class="row" >
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<div class="alert alert-warning" role="alert"> #i18n{appointment.manageHolidays.labelNoPlannigClosingDays}</div>
+					</div>
+				</div>
+			</#if>
+				
+	           
+    	</fieldset>
+    	</div>
+    	</div>
+<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
+<@getDatePickerBootstrap idField="datesHolidays" language=language />
+
+
+<script type="text/javascript">
+	$('#dateHoliday').datepicker({
+	    language:		"${language}",
+	    startDate: 		new Date(),
+	    weekStart: 1,
+	    todayBtn: true,
+	    todayHighLight: true
+	});
+	
+</script>
