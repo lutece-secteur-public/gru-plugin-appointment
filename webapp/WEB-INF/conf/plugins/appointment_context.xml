@@ -38,5 +38,5 @@
 	<bean id="appointment.entryTypeImage" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage" />
 	<bean id="appointment.entryTypeFile" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeFile" />
 	<bean id="appointment.entryTypePhone" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypePhone" />
-	
+	<bean id="appointment.appointmentHoliDaysDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysDAO" />
 </beans>

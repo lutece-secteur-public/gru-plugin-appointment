@@ -47,6 +47,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.dozer.converters.DateConverter;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
@@ -54,6 +55,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
@@ -109,6 +111,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_FORM_HAS_APPOINTMENTS = "appointment.message.error.refreshDays.formHasAppointments";
     private static final String MESSAGE_ERROR_DAY_HAS_APPOINTMENT = "appointment.message.error.dayHasAppointment";
+    private static final String MESSAGE_ERROR_HOLI_DAY = "appointment.message.error.holiDay";
     private static final String MESSAGE_ERROR_HOUR_APPOINTMENT = "appointment.message.error.timeStartAfterTimeEnd";
     private static final String MESSAGE_ERROR_HOUR_APPOINTMENT_MAXIMALE = "appointment.message.error.formatNumberAppointmentDurationMaximum";
     private static final String MESSAGE_CONFIRM_REFRESH_DAYS = "appointment.message.confirmRefreshDays";
@@ -483,7 +486,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             int nIdDay = Integer.parseInt( strIdDay );
 
             AppointmentDay day = fillAppoinmentDay( nIdDay, AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
-            
+                        
             if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_CANCEL ) ) )
             {
             	return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
@@ -553,6 +556,17 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
                 return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
             }
+            List < Date > listClosingDays = AppointmentHoliDaysHome.findByIdForm( day.getIdForm( ) ) ;
+            // check closing days
+        	for ( Date closeDay : listClosingDays )
+        	{
+        		if ( DateUtils.isSameDay( closeDay, day.getDate( ) ) )
+            	{
+        			addError( MESSAGE_ERROR_HOLI_DAY , getLocale ( )  );
+
+                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
+            	}
+        	}
         }
 
         if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
