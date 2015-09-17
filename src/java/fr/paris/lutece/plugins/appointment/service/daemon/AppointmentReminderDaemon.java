@@ -59,6 +59,7 @@ public class AppointmentReminderDaemon extends Daemon
 	private static final String MARK_CANCEL_APP = "%%CANCEL_APPOINTMENT%%" ;
 	private static final String MARK_PREFIX_SENDER = "@contact-everyone.fr" ;
     private static final String	MARK_SENDER_SMS = "magali.lemaire@paris.fr" ;
+    private static final String	MARK_REGEX_SMS = "^(06|07)[0-9]{8}$" ;
     private static final String MARK_ENTRY_TYPE_PHONE = "Numéro de téléphone" ;
     private static final String MARK_VALID_STATUT = "Validé" ;
     private static final int 	MARK_DURATION_LIMIT = 5;
@@ -79,29 +80,23 @@ public class AppointmentReminderDaemon extends Daemon
         calendar.setTime( date );
         Timestamp timestampDay = new Timestamp( calendar.getTimeInMillis(  ) );
 		
-		
 		List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
 		
 		for ( AppointmentForm  form : listForms )
     	{
-			
 			int nIdForm = form.getIdForm( ) ;
 			List< Appointment > listAppointments = getListAppointment( form ) ;
     	
 	        for ( Appointment appointment : listAppointments )
 	        {
-	        	String phone1 = getSmsFromAppointment ( appointment ) ;
-	        	String phone2 = getNumberPhone( nIdForm , appointment ) ;
-	        	
-	        	AppLogService.info("PHONE1 : " + phone1 );
-	        	AppLogService.info("PHONE2 : " + phone2 );
-	        	
 	        	Calendar cal2 = new GregorianCalendar(  );
 	        	Date startAppointment = appointment.getStartAppointment( ) ;
 	        	cal2.setTime( startAppointment );
 	        	Timestamp timeStartDate = new Timestamp( cal2.getTimeInMillis(  ) );
 	        	AppLogService.info( "Current Date   : " + dateFormat.format( date ) );
 	        	AppLogService.info( "Date appointment   : " + dateFormat.format( startAppointment ) ); 
+	        	
+        		//List < String > getListNumbers = getListNumbersFromAppointment ( appointment ) ;
 	        	
 	        	if ( timeStartDate.getTime( ) > timestampDay.getTime( ) )
 	        	{
@@ -116,10 +111,8 @@ public class AppointmentReminderDaemon extends Daemon
 	    			{
 	    				sendReminder ( appointment , reminder, startAppointment, nDiffMin, nIdForm ) ;
 	    			}
-		        	
 		        }
 	        }
-        
     	}
 	}
 	/**
@@ -200,7 +193,6 @@ public class AppointmentReminderDaemon extends Daemon
                      AppLogService.error( "AppointmentReminderDaemon - Error sending reminder alert MAIL to : " +
                          e.getMessage(  ), e );
                  }
-        		
     		}
     		AppLogService.info( "SMS :  " + reminder.isSmsNotify( ) );
     		if ( reminder.isSmsNotify( ) )
@@ -208,9 +200,9 @@ public class AppointmentReminderDaemon extends Daemon
     			AppLogService.info( "try to send SMS : \n " );
     			//String strRecipient = getNumberPhone( nIdForm, appointment ) ;
     			String strRecipient = getSmsFromAppointment ( appointment );
-    			AppLogService.info( "strRecipient_TEL : " + strRecipient );
+    			AppLogService.info( "PHONE : " + strRecipient );
     			
-    			if ( !strRecipient.isEmpty( ) )
+    			if ( !strRecipient.isEmpty( ) && strRecipient.matches( MARK_REGEX_SMS ) )
     			{
 	        		 try
 	                 {
@@ -218,8 +210,10 @@ public class AppointmentReminderDaemon extends Daemon
 		        		AppLogService.info( "strSenderName" + strSenderName + "\n");
 		        		AppLogService.info( "MARK_SENDER_SMS" + MARK_SENDER_SMS + "\n" );
 		        		AppLogService.info( "strText" + strText+ "\n");
+		        	
 	        			strRecipient += MARK_PREFIX_SENDER ;
 	        			AppLogService.info( "try to send SMS : \n " );
+	        			
 	 	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
 	 	        		bNotified = true ;
 	 	        		AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert SMS to : " + appointment.getEmail( ));
@@ -254,7 +248,11 @@ public class AppointmentReminderDaemon extends Daemon
         AppLogService.info("listResponses.SIZE  : " + listResponses.size( ) );
         for ( int nIdResponse : listIdResponse )
         {
-            listResponses.add( ResponseHome.findByPrimaryKey( nIdResponse ) );
+        	Response response = ResponseHome.findByPrimaryKey( nIdResponse ) ;
+        	if ( response != null )
+        	{
+        		listResponses.add( response );
+        	}
         }
 
         List<Entry> listEntries = EntryHome.getEntryList( entryFilter );
@@ -284,52 +282,50 @@ public class AppointmentReminderDaemon extends Daemon
         }
         return strPhoneNumber;
     }
-	/**
-	 * Get number phone
-	 * @param nIdForm the id form
-	 * @param app the appointment
-	 * @return number phone
-	 */
-	private String getNumberPhone( int nIdForm, Appointment app )
-	{
-			AppLogService.info("GET NUMBER : ");
-			List<Integer> listResponse = AppointmentHome.findListIdResponse( app.getIdAppointment( ) );
-			AppLogService.info("listResponse.SIZE  : " + listResponse.size( ));
-			EntryFilter entryFilter = new EntryFilter(  );
-		    entryFilter.setIdResource( Integer.valueOf( nIdForm ) );
-	       
-		    List<Entry> listEntry = EntryHome.getEntryList( entryFilter ) ;
-	       
-		    Map <Integer, EntryType> listGenatt = new HashMap <Integer, EntryType> ( );
-		    String strRes = StringUtils.EMPTY;
-		    
-		    AppLogService.info("listEntry.SIZE  : " + listEntry.size( ));
-			for ( Entry e : listEntry )
-			{
-				if ( e.getEntryType() != null && e.getEntryType( ).getTitle( ).equals( MARK_ENTRY_TYPE_PHONE ) )
-				{
-					listGenatt.put( e.getIdEntry( ), e.getEntryType( ) );
-				}
-			}
-			AppLogService.info("listGenatt.SIZE  : " + listGenatt.size( ));
-			for( Integer id : listGenatt.keySet( ) )
-			{
-				for( Integer e : listResponse )
-				{
-					ResponseFilter respFilter = new ResponseFilter ( );
-					respFilter.setIdEntry( id );
-					List<Response> listResp = ResponseHome.getResponseList( respFilter );
-					AppLogService.info("listResp.SIZE  : " + listResp.size( ));
-					for ( Response resp :  listResp )
-					{
-						if ( e.equals( resp.getIdResponse( ) ) )
-						{
-							strRes = resp.getResponseValue( );
-						}
-					}
-				}
-			}
-			AppLogService.info("PHONE : " + strRes);
-		return strRes ;
-	}
+	
+	private  List < String > getListNumbersFromAppointment( Appointment appointment )
+    {
+		AppLogService.info(" getSmsFromAppointment GET NUMBER : ");
+        List < String > listPhoneNumbers = new ArrayList < String > ( );
+        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
+        EntryFilter entryFilter = new EntryFilter(  );
+        entryFilter.setIdResource( slot.getIdForm(  ) );
+        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+
+        List<Integer> listIdResponse = AppointmentHome.findListIdResponse( appointment.getIdAppointment(  ) );
+        AppLogService.info("listIdResponse.SIZE  : " + listIdResponse.size( ) );
+        List<Response> listResponses = new ArrayList<Response>( listIdResponse.size(  ) );
+        AppLogService.info("listResponses.SIZE  : " + listResponses.size( ) );
+        for ( int nIdResponse : listIdResponse )
+        {
+        	Response response = ResponseHome.findByPrimaryKey( nIdResponse ) ;
+        	if ( response != null )
+        	{
+        		listResponses.add( response );
+        	}
+        }
+        
+        List<Entry> listEntries = EntryHome.getEntryList( entryFilter );
+        AppLogService.info("listEntries.SIZE  : " + listEntries.size( ) );
+        for ( Entry entry : listEntries )
+        {
+            IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
+
+            if ( entryTypeService instanceof EntryTypePhone )
+            {
+                for ( Response response : listResponses )
+                {
+                    if ( ( response.getEntry(  ).getIdEntry(  ) == entry.getIdEntry(  ) ) &&
+                            StringUtils.isNotBlank( response.getResponseValue(  ) ) )
+                    {
+                    	listPhoneNumbers.add( response.getResponseValue(  ) );
+
+                        break;
+                    }
+                }
+            }
+        }
+        return listPhoneNumbers;
+    }
 }
