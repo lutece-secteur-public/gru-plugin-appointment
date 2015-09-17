@@ -82,9 +82,6 @@ public class AppointmentReminderDaemon extends Daemon
 		
 		List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
 		
-		AppLogService.info( "envoie du sms");
-		MailService.sendMailText( "0679835365@contact-everyone.fr"  , "Lutece rdv" ,  MARK_SENDER_SMS , "Test sms" , "Bonjour, test mairie de paris"  );
-		AppLogService.info( "sms envoyé");
 		
 		for ( AppointmentForm  form : listForms )
     	{
@@ -188,7 +185,7 @@ public class AppointmentReminderDaemon extends Daemon
     			 try
                  {
     				 AppLogService.info( "try to send MAIL : \n " );
-    				 MailService.sendMailHtml( appointment.getEmail( ) , strSenderName, strSenderMail ,reminder.getAlertSubject( ) , strText  );
+    				 //MailService.sendMailHtml( appointment.getEmail( ) , strSenderName, strSenderMail ,reminder.getAlertSubject( ) , strText  );
     				 bNotified = true ;
     				 AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert mail to : " + appointment.getEmail( ));
                  }
@@ -216,7 +213,7 @@ public class AppointmentReminderDaemon extends Daemon
 		        		AppLogService.info( "MARK_SENDER_SMS" + MARK_SENDER_SMS + "\n" );
 		        		AppLogService.info( "strText" + strText+ "\n");
 		        		
-	 	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
+	 	    			//MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
 	 	        		bNotified = true ;
 	 	        		AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert SMS to : " + strRecipient );
 	                 }
