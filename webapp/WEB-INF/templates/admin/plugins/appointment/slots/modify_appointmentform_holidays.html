@@ -81,7 +81,7 @@
 						<#assign dateHoliDay= day?date>
 							<tr>
 								<td>
-									${day}
+									${day?string["EEEE, dd  MMMM  yyyy "]}
 								</td>
 								<td>
 								<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doModifyHolidays&id_form=${appointmentform.idForm}&dateDay=${dateHoliDay}" class="btn btn-danger btn-xs" title="Supprimer" >
