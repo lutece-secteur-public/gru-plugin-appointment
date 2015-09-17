@@ -343,7 +343,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 	    	model.put( MARK_LOCALE, getLocale ( ) );
 	    	model.put( PARAMETER_APPOINTMENT_FORM, form );
 	    	model.put( MARK_LIST_DAYS , listDays );
-	    	
+	    	AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
 	    	return getPage( MESSAGE_MANAGE_HOLIDAYS_PAGE_TITLE, TEMPLATE_MANAGE_HOLIDAYS, model );
         }
     	return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
