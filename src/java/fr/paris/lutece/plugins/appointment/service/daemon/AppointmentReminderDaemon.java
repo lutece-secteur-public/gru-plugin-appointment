@@ -82,6 +82,10 @@ public class AppointmentReminderDaemon extends Daemon
 		
 		List<AppointmentForm> listForms =  AppointmentFormHome.getActiveAppointmentFormsList( );
 		
+		AppLogService.info( "envoie du sms");
+		MailService.sendMailText( "0679835365@contact-everyone.fr"  , "Lutece rdv" ,  MARK_SENDER_SMS , "Test sms" , "Bonjour, test mairie de paris"  );
+		AppLogService.info( "sms envoyé");
+		
 		for ( AppointmentForm  form : listForms )
     	{
 			int nIdForm = form.getIdForm( ) ;
@@ -197,7 +201,6 @@ public class AppointmentReminderDaemon extends Daemon
     		AppLogService.info( "SMS :  " + reminder.isSmsNotify( ) );
     		if ( reminder.isSmsNotify( ) )
     		{
-    			AppLogService.info( "try to send SMS : \n " );
     			//String strRecipient = getNumberPhone( nIdForm, appointment ) ;
     			String strRecipient = getSmsFromAppointment ( appointment );
     			AppLogService.info( "PHONE : " + strRecipient );
@@ -206,17 +209,16 @@ public class AppointmentReminderDaemon extends Daemon
     			{
 	        		 try
 	                 {
+	        			strRecipient += MARK_PREFIX_SENDER ;
+	        			AppLogService.info( "try to send SMS : \n " );
 	        			AppLogService.info( "strRecipient" + strRecipient + "\n");
 		        		AppLogService.info( "strSenderName" + strSenderName + "\n");
 		        		AppLogService.info( "MARK_SENDER_SMS" + MARK_SENDER_SMS + "\n" );
 		        		AppLogService.info( "strText" + strText+ "\n");
-		        	
-	        			strRecipient += MARK_PREFIX_SENDER ;
-	        			AppLogService.info( "try to send SMS : \n " );
-	        			
+		        		
 	 	    			MailService.sendMailText( strRecipient  , strSenderName ,  MARK_SENDER_SMS ,reminder.getAlertSubject( ) , strText  );
 	 	        		bNotified = true ;
-	 	        		AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert SMS to : " + appointment.getEmail( ));
+	 	        		AppLogService.info( "AppointmentReminderDaemon - Info sending reminder alert SMS to : " + strRecipient );
 	                 }
 	    			 catch ( Exception e )
 	                 {
@@ -229,6 +231,7 @@ public class AppointmentReminderDaemon extends Daemon
     		{
     			appointment.setHasNotify( reminder.getRank( ) );
     			AppointmentHome.update( appointment );
+    			AppLogService.info( "FLAG ON : ");
     		}
     	}
 	}
