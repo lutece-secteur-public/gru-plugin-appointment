@@ -496,19 +496,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       		strWriter[9] = tmpApp.getState() == null ? StringUtils.EMPTY : tmpApp.getState( ).getName( );
 	       		
 	       		int nIndex = 0 ;
-	       		for( Integer id : listGenatt.keySet( ) )
+	       		for( int i = 0 ; i < listGenatt.size( ) ; i++ )
 	       		{
-	       			AppLogService.info("id genatt : " + id );
 	       			String strValue = StringUtils.EMPTY, strPrefix = StringUtils.EMPTY;
 		       		for( Integer e : listResponse )
 		       		{
-		       			AppLogService.info("id response : " + e );
 		       	        entryFilter.setIdResource( tmpApp.getIdAppointment( ) );
 		       	        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
 		       	        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
-
 		       	        List<Integer> listIdResponse = AppointmentHome.findListIdResponse( tmpApp.getIdAppointment(  ) );
-		       	        AppLogService.info("listIdResponse.SIZE  : " + listIdResponse.size( ) );
 			       	    List<Response> listResponses = new ArrayList<Response>(  );
 			             
 			            for ( int nIdResponse : listIdResponse )
@@ -519,13 +515,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 			             		listResponses.add( resp );
 			             	}
 			            }
-			            AppLogService.info("listResponses.SIZE  : " + listResponses.size( ) );
-			            AppLogService.info("listResponses : " + listResponses );
-//		       			ResponseFilter respFilter = new ResponseFilter ( );
-//		       			respFilter.setIdEntry(id);
-//		       			List<Response> listResp = ResponseHome.getResponseList( respFilter );
-//		       			AppLogService.info("listResp.SIZE  : " + listResp.size( ) );
-		       			
 		       			for ( Response resp :  listResponses )
 		       			{
 		       				String strRes = StringUtils.EMPTY;
@@ -536,20 +525,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
 		       					if( f != null )
 		       					{
 		       						nfield = f.getIdField( );
-		       						AppLogService.info("f.getIdField( )  : " + f.getIdField( ) );
 		       						Field field = FieldHome.findByPrimaryKey( nfield ) ;
 			       					if ( field != null )
 			       					{
 			       						strRes = field.getTitle( );
-			       						AppLogService.info("field.getTitle( ): " + field.getTitle( ) );
 			       					}
 		       					}
 		       					else
 		       					{
 		       						strRes = resp.getResponseValue( );
-		       						AppLogService.info("resp.getResponseValue( ): " + resp.getResponseValue( ) );
 		       					}
-		       					
 		       				}
 		       				if ( strRes!=null && !strRes.isEmpty( ) )
 			       			{
@@ -558,8 +543,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 			       			}
 		       			}
 		       		}
-		       		
-		       		
 		       		if ( !strValue.isEmpty( ) )
 		       		{
 		       			strWriter[10 + nIndex] = strValue ;
