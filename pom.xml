@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <artifactId>lutece-plugins-pom</artifactId>
-        <groupId>fr.paris.lutece.plugins</groupId>
-        <version>3.7</version>
+        <artifactId>lutece-global-pom</artifactId>
+        <groupId>fr.paris.lutece.tools</groupId>
+        <version>3.0.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -49,9 +49,11 @@
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
         <jiraComponentId>12273</jiraComponentId>
     </properties>
+    
     <scm>
-        <connection>scm:git:https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</connection>
-        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</developerConnection>
-        <url>https://github.com/lutece-platform/lutece-apps-plugin-appointment.git</url>
+        <connection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</connection>
+        <developerConnection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</developerConnection>
+        <url>https://github.com/lutece-secteur-public/gru-plugin-appointment.git</url>
     </scm>
+    
 </project>
