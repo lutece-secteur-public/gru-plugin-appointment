@@ -504,7 +504,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     public String getModifyAppointmentForm( HttpServletRequest request )
         throws AccessDeniedException
     {
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
+    	AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
@@ -760,16 +760,16 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         		dateMin= new java.sql.Date(DateUtil.getDate(strDateMin).getTime());
         	}
             int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdAppointmentForm, dateMin );
-            if ( strDateMin.isEmpty() )
+            if ( strDateMin.isEmpty( ) )
             {
             	addError( MESSAGE_ERROR_START_DATE_EMPTY, getLocale(  ) );
     			return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
             }
             if ( nNbAppointments > 0 )
             {
-                return redirect( request,
-                    AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS,
-                        getURLManageAppointmentFormDays( request, strIdForm ), AdminMessage.TYPE_STOP ) );
+            	addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS, getLocale(  ) );
+    			return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+    			
             }
            
             AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin );
