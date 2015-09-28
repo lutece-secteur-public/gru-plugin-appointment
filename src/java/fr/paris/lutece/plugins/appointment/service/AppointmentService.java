@@ -37,14 +37,17 @@ import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang.time.DateUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -666,8 +669,10 @@ public class AppointmentService
      */
     public void checkFormDays( AppointmentForm form )
     {
+    	AppLogService.info( "checkFormDays IN ");
         int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
-
+        List < Date > listClosingDays = AppointmentHoliDaysHome.findByIdForm( form.getIdForm( ) ) ;
+        AppLogService.info( "listClosingDays SIZE IN "+ listClosingDays.size( ) );
         // We synchronize the method by id form to avoid collisions between manual and daemon checks
         synchronized ( AppointmentService.class + Integer.toString( form.getIdForm(  ) ) )
         {
@@ -701,6 +706,16 @@ public class AppointmentService
 
                     for ( AppointmentDay day : listDays )
                     {
+                    	// set closing days
+                    	for ( Date closeDay : listClosingDays )
+                    	{
+                    		AppLogService.info( "closeDay "+ closeDay.toString( ));
+                    		if ( DateUtils.isSameDay( closeDay, day.getDate( ) ) )
+	                    	{
+	                    		day.setIsOpen( false );
+	                    		AppLogService.info( "closing day : OK");
+	                    	}
+                    	}
                         // If the day has not already been created, we create it
                         if ( day.getIdDay(  ) == 0 )
                         {
@@ -741,7 +756,7 @@ public class AppointmentService
     {
         return getDateMonday( 0 );
     }
-
+    
     /**
      * Get the date of a Monday.
      * @param nOffsetWeek The offset of the week (0 for the current week, 1 for
