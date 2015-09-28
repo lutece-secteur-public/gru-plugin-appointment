@@ -989,6 +989,7 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_FORM_SECOND_STEP )
     public XPage getAppointmentFormSecondStep( HttpServletRequest request )
     {
+        _appointmentFormService.removeValidatedAppointmentFromSession(request.getSession());
     	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
