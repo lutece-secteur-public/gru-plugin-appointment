@@ -476,8 +476,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       	    {  		
 	    	       	tmpApp.setState( stateAppointment );
 	      	    }
-	       	    
-	       		List<Integer> listResponse = AppointmentHome.findListIdResponse( tmpApp.getIdAppointment( ) );
 	       		
 	      		Object[] strWriter = new String[nTaille];
 	       		strWriter[0] = tmpApp.getLastName();
@@ -495,30 +493,27 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	       		strWriter[8] = tmpApp.getIdUser() == null ? StringUtils.EMPTY : tmpApp.getIdUser( );
 	       		strWriter[9] = tmpApp.getState() == null ? StringUtils.EMPTY : tmpApp.getState( ).getName( );
 	       		
-	       		int nIndex = 0 ;
-	       		for( int i = 0 ; i < listGenatt.size( ) ; i++ )
+	       		List<Integer> listIdResponse = AppointmentHome.findListIdResponse( tmpApp.getIdAppointment(  ) );
+	       	    List<Response> listResponses = new ArrayList<Response>(  );
+	       	    int nIndex = 0 ; 
+	       	    
+	            for ( int nIdResponse : listIdResponse )
+	            {
+	            	Response resp = ResponseHome.findByPrimaryKey( nIdResponse ) ;
+	             	if ( resp != null )
+	             	{
+	             		listResponses.add( resp );
+	             	}
+	            }
+	       		
+	       		for( Integer key : listGenatt.keySet( ) )
 	       		{
 	       			String strValue = StringUtils.EMPTY, strPrefix = StringUtils.EMPTY;
-		       		for( Integer e : listResponse )
-		       		{
-		       	        entryFilter.setIdResource( tmpApp.getIdAppointment( ) );
-		       	        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
-		       	        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
-		       	        List<Integer> listIdResponse = AppointmentHome.findListIdResponse( tmpApp.getIdAppointment(  ) );
-			       	    List<Response> listResponses = new ArrayList<Response>(  );
-			             
-			            for ( int nIdResponse : listIdResponse )
-			            {
-			            	Response resp = ResponseHome.findByPrimaryKey( nIdResponse ) ;
-			             	if ( resp != null )
-			             	{
-			             		listResponses.add( resp );
-			             	}
-			            }
+		       	       
 		       			for ( Response resp :  listResponses )
 		       			{
 		       				String strRes = StringUtils.EMPTY;
-		       				if ( e.equals( resp.getIdResponse( ) ) )
+		       				if ( key.equals( resp.getEntry( ).getIdEntry( ) ) )
 		       				{
 		       					Field f = resp.getField( ) ;
 		       					int nfield = 0;
@@ -542,7 +537,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 			       				strPrefix= CONSTANT_COMMA;
 			       			}
 		       			}
-		       		}
+		       		
 		       		if ( !strValue.isEmpty( ) )
 		       		{
 		       			strWriter[10 + nIndex] = strValue ;
