@@ -771,9 +771,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     			return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
     			
             }
-           
+            AppLogService.info( "resetFormDays BEGIN");
             AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin );
-            
+            AppLogService.info( "resetFormDays END ");
         }
         request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale(  ) );
