@@ -122,7 +122,6 @@ CREATE TABLE appointment_form_messages (
 	calendar_description long varchar NOT NULL,
 	calendar_reserve_label varchar(255) NOT NULL default '',
 	calendar_full_label varchar(255) NOT NULL default '',
-	nb_alerts INT DEFAULT 0,
 	PRIMARY KEY (id_form)
 );
 

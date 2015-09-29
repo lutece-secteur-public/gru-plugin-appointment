@@ -33,18 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,22 +45,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
-
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
-import fr.paris.lutece.plugins.appointment.business.ReminderAppointment;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
@@ -79,13 +64,11 @@ import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.image.ImageResource;
-import fr.paris.lutece.portal.service.image.ImageResourceManager;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -142,10 +125,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ICON_RESSOURCE = "image_resource";
     private static final String PARAMETER_DATE_MIN = "dateMin";
     private static final String PARAMETER_NAME_FORM = "formName";
+    private static final String PARAMETER_DELETE_ICON = "deleteIcon" ;
     private static final String PARAMETER_FIRST_FORM = "first_form";
     private static final String PARAMETER_SECOND_FORM = "second_form";
     private static final String PARAMETER_FORM_RDV = "form_rdv";
-    private static final String PARAMETER_NB_ALERT = "nbAlerts";
     
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -173,16 +156,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_NULL = "NULL";
     private static final String MARK_PAGE = "page";   
     private static final String MARK_FALSE = "false";
-    private static final String MARK_TIME_ALERT ="timeToAlert_" ;
-    private static final String MARK_EMAIL_NOTIFY ="emailNotify_";
-    private static final String MARK_SMS_NOTIFY ="smsNotify_" ;
-    private static final String MARK_ALERT_MESSAGE = "alert_message_" ;
-    private static final String MARK_ALERT_SUBJECT = "alert_subject_" ;
-    private static final String MARK_ERRORS = "errors";
-    
-    
-    
-    
+
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
@@ -201,8 +175,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String ERROR_MESSAGE_APPOINTMENT_DATES="appointment.message.error.dateStartTimeEnd";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS = "appointment.message.error.refreshDays.modifyFormHasAppointments";
     private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty" ;
-    private static final String MESSAGE_ERROR_ALERT_TIME_NO_VALID = "appointment.message.error.alerttimeNoValid";
-    private static final String MESSAGE_ERROR_SUBJECT_EMPTY = "appointment.message.error.subjectIsEmpty";
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
     private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
@@ -675,7 +647,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
         
         String strForm = request.getParameter( PARAMETER_NAME_FORM );
-        String strDeleteIcon =  request.getParameter( "deleteIcon" ) == null ? MARK_FALSE  : request.getParameter( "deleteIcon" ) ;
+        String strDeleteIcon =  request.getParameter( PARAMETER_DELETE_ICON ) == null ? MARK_FALSE  : request.getParameter( "deleteIcon" ) ;
         
         AppointmentForm appointmentFormTmp = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
         if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty ( ) )
@@ -1004,10 +976,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        String strNbAlerts = request.getParameter( PARAMETER_NB_ALERT ) ;
-        String strApplyNbAlerts = request.getParameter( "apply_nbAlerts") ;
-        List <ReminderAppointment> listAppointment = new ArrayList<ReminderAppointment> ( ) ;
-        
         
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) &&
                 ( request.getParameter( PARAMETER_BACK ) == null ) )
@@ -1021,89 +989,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             int nIdForm = Integer.parseInt( strIdForm );
             UrlItem url = new UrlItem( getViewFullUrl( VIEW_MODIFY_FORM_MESSAGES ) );
             url.addParameter( PARAMETER_ID_FORM, nIdForm );
-            int nbAlerts = 0 ;
-            
-            if ( strNbAlerts!= null )
-            {
-            	nbAlerts = Integer.parseInt( strNbAlerts ) ;
-            }
+          
             AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
 
             populate( formMessages, request );
             
-            List <ReminderAppointment> listReminder = formMessages.getListReminderAppointment( );
-            
-            if ( nbAlerts == 0  )
-        	{
-            	AppointmentFormMessagesHome.removeAppointmentReminder( nIdForm, nbAlerts ,true );
-            	listReminder.clear( );
-            	formMessages.setListReminderAppointment( listReminder );
-            	//formMessages.setNbAlerts( nbAlerts );
-        	}
-            
-            if ( nbAlerts < listReminder.size( ) && nbAlerts!=0 )
-            {	
-            	for( int i = nbAlerts +1 ; i <= listReminder.size( ); i++ )
-            	{
-            		AppointmentFormMessagesHome.removeAppointmentReminder( nIdForm, i, false );
-            		listReminder.remove( i - 1 );
-            	}
-            	//formMessages.setNbAlerts( nbAlerts );
-            	formMessages.setListReminderAppointment( listReminder );
-            }
-            if ( StringUtils.isNotEmpty( strNbAlerts ) && StringUtils.isNumeric( strNbAlerts ) )
-            {
-            	if ( nbAlerts != 0 )
-            	{
-            		for( int i = 1 ; i <= nbAlerts ; i++ )
-            		{
-            			ReminderAppointment reminderAppointment = new ReminderAppointment ( );
-                        String strTimeToAlert = request.getParameter( MARK_TIME_ALERT + i ) ;
-            			String strEmailNotify = request.getParameter( MARK_EMAIL_NOTIFY + i ) == null ? MARK_FALSE : request.getParameter( MARK_EMAIL_NOTIFY + i ) ;
-            			String strSmsNotify = request.getParameter( MARK_SMS_NOTIFY + i ) == null ? MARK_FALSE : request.getParameter( MARK_SMS_NOTIFY + i ) ;
-            			String strAlertMessage = request.getParameter( MARK_ALERT_MESSAGE + i ) == null ? StringUtils.EMPTY : request.getParameter( MARK_ALERT_MESSAGE + i );
-            			String strAlertSubject = request.getParameter( MARK_ALERT_SUBJECT + i ) == null ? StringUtils.EMPTY : request.getParameter( MARK_ALERT_SUBJECT + i );
-           			
-            			if ( StringUtils.isEmpty( strAlertSubject ) )
-            			{
-            				if ( strApplyNbAlerts == null )
-            				{
-            					return redirect( request,
-        		                    AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_SUBJECT_EMPTY,
-        		                        url.getUrl( ), AdminMessage.TYPE_STOP ) );
-            				}
-            			}
-            			if ( StringUtils.isEmpty( strTimeToAlert ) || !StringUtils.isNumeric( strTimeToAlert ) ) 
-            			{
-            				if ( strApplyNbAlerts == null )
-            				{
-//            				addError( MESSAGE_ERROR_ALERT_TIME_NO_VALID , getLocale(  ) );
-//            				return redirect( request, VIEW_MODIFY_FORM_MESSAGES	, PARAMETER_ID_FORM, nIdForm );
-            				 return redirect( request,
-            		                    AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_ALERT_TIME_NO_VALID,
-            		                        url.getUrl( ), AdminMessage.TYPE_STOP ) );
-            				}
-            			}
-            			else
-            			{
-            				reminderAppointment.setIdForm( nIdForm );
-            				reminderAppointment.setRank( i );
-            				reminderAppointment.setTimeToAlert( Integer.parseInt( strTimeToAlert ) );
-            				reminderAppointment.setEmailNotify( Boolean.parseBoolean( strEmailNotify ) );
-            				reminderAppointment.setSmsNotify( Boolean.parseBoolean( strSmsNotify ) );
-            				reminderAppointment.setAlertMessage( strAlertMessage );
-            				reminderAppointment.setAlertSubject( strAlertSubject );
-            				listAppointment.add( reminderAppointment ) ;
-            			}
-            		}
-            	}
-            }
-            
-            if ( listAppointment.size() > 0 )
-            {
-            	formMessages.setListReminderAppointment( listAppointment );
-            }
-            formMessages.setNbAlerts( nbAlerts );
             AppointmentFormMessagesHome.update( formMessages );
             return redirect( request, VIEW_MODIFY_FORM_MESSAGES, PARAMETER_ID_FORM, nIdForm );
         }

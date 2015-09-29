@@ -76,21 +76,4 @@ public interface IAppointmentFormMessagesDAO
      */
     AppointmentFormMessages load( int nAppointmentFormId, Plugin plugin );
     
-    /**
-     * Delete a reminder
-     * @param nAppointmentFormId the appointment form ID 
-     * @param rank the rank of reminder
-     * @param b true if remove all reminders
-     * @param plugin the plugin
-     */
-
-	void deleteReminderAppointment( int nAppointmentFormId, int rank, boolean b, Plugin plugin );
-	
-	/**
-	 * Load list reminder appointment 
-	 * @param nAppointmentFormId id appointmen form
-	 * @param plugin the plugin
-	 * @return list reminders
-	 */
-	List<ReminderAppointment> loadListReminderAppointment( int nAppointmentFormId, Plugin plugin );
 }
