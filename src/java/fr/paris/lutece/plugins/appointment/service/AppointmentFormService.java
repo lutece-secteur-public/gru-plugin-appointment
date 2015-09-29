@@ -39,7 +39,6 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
-import fr.paris.lutece.plugins.appointment.business.ReminderAppointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
@@ -672,7 +671,6 @@ public class AppointmentFormService implements Serializable
                 PROPERTY_DEFAULT_CALENDAR_RESERVE_LABEL, StringUtils.EMPTY ) );
         formMessages.setCalendarFullLabel( AppPropertiesService.getProperty( PROPERTY_DEFAULT_CALENDAR_FULL_LABEL,
                 StringUtils.EMPTY ) );
-        formMessages.setListReminderAppointment(new ArrayList<ReminderAppointment>( ) );
         return formMessages;
     }
 

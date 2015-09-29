@@ -59,9 +59,7 @@ public class AppointmentFormMessages implements Cloneable
     private String _strCalendarDescription;
     private String _strCalendarReserveLabel;
     private String _strCalendarFullLabel;
-    private int _nNbAlerts;
-    private List <ReminderAppointment> _listReminderAppointment;
-
+   
     /**
      * Return the id of the associated form
      * @return The id of the associated form
@@ -370,38 +368,6 @@ public class AppointmentFormMessages implements Cloneable
     {
         this._strCalendarFullLabel = strCalendarFullLabel;
     }
-
-	/**
-	 * GET the list of reminder appointment
-	 * @return the list of reminder appointment
-	 */
-	public List<ReminderAppointment> getListReminderAppointment( ) 
-	{
-		return _listReminderAppointment;
-	}
-	/**
-	 * SET the list of reminder appointment
-	 * @param listReminderAppointment the list of reminder appointment
-	 */
-	public void setListReminderAppointment( List<ReminderAppointment> listReminderAppointment ) 
-	{
-		this._listReminderAppointment = listReminderAppointment;
-	}
-	/**
-	 * GET nubmer alerts
-	 * @return number alerts
-	 */
-	public int getNbAlerts() {
-		return _nNbAlerts;
-	}
-	/**
-	 * SET number alerts
-	 * @param nNbAlerts number alerts
-	 */
-	public void setNbAlerts(int nNbAlerts) {
-		this._nNbAlerts = nNbAlerts;
-	}
-
 	/**
      * {@inheritDoc}
      */
