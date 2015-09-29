@@ -403,22 +403,18 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         int nIndexField = getIndexFieldInFieldList( nIdField, listField );
 
-        if ( nIndexField != ( listField.size(  ) - 1 ) )
-        {
-            int nNewPosition;
-            Field fieldToInversePosition;
-            fieldToInversePosition = listField.get( bMoveUp ? ( nIndexField - 1 ) : ( nIndexField + 1 ) );
-            nNewPosition = fieldToInversePosition.getPosition(  );
-            fieldToInversePosition.setPosition( field.getPosition(  ) );
-            field.setPosition( nNewPosition );
-            FieldHome.update( field );
-            FieldHome.update( fieldToInversePosition );
+        int nNewPosition;
+        Field fieldToInversePosition;
+        fieldToInversePosition = listField.get( bMoveUp ? ( nIndexField - 1 ) : ( nIndexField + 1 ) );
+        nNewPosition = fieldToInversePosition.getPosition(  );
+        fieldToInversePosition.setPosition( field.getPosition(  ) );
+        field.setPosition( nNewPosition );
+        FieldHome.update( field );
+        FieldHome.update( fieldToInversePosition );
 
-            return redirect( request,
-                AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
-        }
+        return redirect( request,
+            AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
 
-        return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
     /**
