@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS appointment_day;
 DROP TABLE IF EXISTS appointment_form_messages;
 DROP TABLE IF EXISTS appointment_form;
 DROP TABLE IF EXISTS appointment_calendar_template;
-DROP TABLE IF EXISTS appointment_reminder;
 DROP TABLE IF EXISTS appointment_holidays;
 
 CREATE TABLE appointment_form (
@@ -133,18 +132,6 @@ CREATE TABLE appointment_calendar_template (
 	description varchar(255) NOT NULL default '',
 	template_path varchar(255) NOT NULL default '',
 	PRIMARY KEY(id)
-);
-
-CREATE TABLE appointment_reminder
-(
-	id_form int NOT NULL,
-	rank int NOT NULL,
-	time_to_alert INT NOT NULL,     
-    email_notify SMALLINT NOT NULL, 
-	sms_notify SMALLINT NOT NULL,
-	alert_message long varchar,
-	alert_subject VARCHAR ( 255 ) NOT NULL,
-	PRIMARY KEY (id_form,rank)
 );
 
 CREATE TABLE appointment_holidays
