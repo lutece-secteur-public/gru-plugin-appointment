@@ -1219,7 +1219,7 @@ public class AppointmentApp extends MVCApplication
 
         if ( listDays != null )
         {
-        	listDays = computeUnavailableDays (form.getIdForm(), listDays);
+
             Appointment myApmt =  appointmentFormService.getValidatedAppointmentFromSession( request.getSession ( ) );
             if ( myApmt!= null && !StringUtils.isEmpty( myApmt.getEmail ( ) ))
             {
