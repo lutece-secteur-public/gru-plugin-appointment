@@ -263,6 +263,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            conditional questions
      * @return The URL to go after performing the action
      */
+    //@Action( ACTION_DO_MODIFY_FIELD )
     private String doModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
@@ -277,13 +278,13 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         field = FieldHome.findByPrimaryKey( nIdField );
 
-        if ( request.getParameter( PARAMETER_CANCEL ) != null )
+        if ( request.getParameter( PARAMETER_CANCEL ) == null )
         {
             String strError = getFieldData( request, field );
 
             if ( strError != null )
             {
-                return strError;
+            	return redirect( request, strError );
             }
 
             FieldHome.update( field );
