@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.web;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -45,6 +46,7 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
+import fr.paris.lutece.plugins.genericattributes.service.GenericAttributesPlugin;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -59,6 +61,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
@@ -91,6 +94,13 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String PARAMETER_ID_ENTRY_GROUP = "id_entry_group";
     private static final String PARAMETER_ENTRY_ID_MOVE = "entry_id_move";
     private static final String PARAMETER_ID_EXPRESSION = "id_expression";
+    private static final String PARAMETER_TITLE = "title";
+    private static final String PARAMETER_VALUE = "value";
+    private static final String PARAMETER_DEFAULT_VALUE = "default_value";
+    private static final String PARAMETER_NO_DISPLAY_TITLE = "no_display_title";
+    private static final String PARAMETER_COMMENT = "comment";
+    private static final String FIELD_TITLE_FIELD = "appointment.createField.labelTitle";
+    private static final String FIELD_VALUE_FIELD = "appointment.createField.labelValue";
 
     // Urls
     private static final String JSP_URL_MANAGE_APPOINTMENT_FORM_ENTRIES = "jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp";
@@ -98,6 +108,10 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_ENTRY = "appointment.message.confirmRemoveEntry";
     private static final String MESSAGE_CANT_REMOVE_ENTRY = "advert.message.cantRemoveEntry";
+    private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
+    private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.field_value_field";
+    
+    
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
     private static final String PROPERTY_MODIFY_QUESTION_TITLE = "appointment.modifyEntry.titleQuestion";
     private static final String PROPERTY_COPY_ENTRY_TITLE = "appointment.copyEntry.title";
@@ -280,7 +294,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     @View( VIEW_GET_MODIFY_ENTRY )
     public String getModifyEntry( HttpServletRequest request )
     {
-        Plugin plugin = getPlugin(  );
+        Plugin plugin = AppointmentPlugin.getPlugin(  );
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
 
         if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
@@ -295,13 +309,13 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
             List<Field> listField = new ArrayList<Field>( entry.getFields(  ).size(  ) );
-
+            
             for ( Field field : entry.getFields(  ) )
             {
                 field = FieldHome.findByPrimaryKey( field.getIdField(  ) );
                 listField.add( field );
             }
-
+            
             entry.setFields( listField );
 
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
@@ -331,7 +345,54 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
+    /**
+     * Get the request data and if there is no error insert the data in the
+     * field specified in parameter. return null if there is no error or else
+     * return the error page URL
+     * @param request the request
+     * @param field field
+     * @return null if there is no error or else return the error page URL
+     */
+    private String getFieldData( HttpServletRequest request, Field field )
+    {
+        String strTitle = request.getParameter( PARAMETER_TITLE );
+        String strValue = request.getParameter( PARAMETER_VALUE );
+        String strDefaultValue = request.getParameter( PARAMETER_DEFAULT_VALUE );
+        String strNoDisplayTitle = request.getParameter( PARAMETER_NO_DISPLAY_TITLE );
+        String strComment = request.getParameter( PARAMETER_COMMENT );
 
+        String strFieldError = null;
+
+        if ( StringUtils.isEmpty( strTitle ) )
+        {
+            strFieldError = FIELD_TITLE_FIELD;
+        }
+        else if ( StringUtils.isEmpty( strValue ) )
+        {
+            strFieldError = FIELD_VALUE_FIELD;
+        }
+        else if ( !StringUtil.checkCodeKey( strValue ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_FIELD_VALUE_FIELD, AdminMessage.TYPE_STOP );
+        }
+
+        if ( strFieldError != null )
+        {
+            Object[] tabRequiredFields = { I18nService.getLocalizedString( strFieldError, getLocale(  ) ) };
+
+            return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields,
+                AdminMessage.TYPE_STOP );
+        }
+
+        field.setTitle( strTitle );
+        field.setValue( strValue );
+        field.setComment( strComment );
+
+        field.setDefaultValue( strDefaultValue != null );
+        field.setNoDisplayTitle( strNoDisplayTitle != null );
+
+        return null; // No error
+    }
     /**
      * Perform the entry modification
      * @param request The HTTP request
