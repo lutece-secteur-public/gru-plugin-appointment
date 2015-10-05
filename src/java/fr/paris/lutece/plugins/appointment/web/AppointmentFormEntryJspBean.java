@@ -294,7 +294,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     @View( VIEW_GET_MODIFY_ENTRY )
     public String getModifyEntry( HttpServletRequest request )
     {
-        Plugin plugin = AppointmentPlugin.getPlugin(  );
+        Plugin plugin = getPlugin(  );
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
 
         if ( StringUtils.isNotEmpty( strIdEntry ) && StringUtils.isNumeric( strIdEntry ) )
