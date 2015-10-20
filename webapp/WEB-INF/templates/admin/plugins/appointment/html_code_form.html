@@ -42,17 +42,17 @@
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email" class="form-control">
 						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
-							<span class="help-block">${form_messages.fieldEmailHelp}</span>
+							<span class="help-block">${form_messages.fieldEmailHelp!}</span>
 						</#if>
 					</div>
 				</div>
 				<#if form.enableConfirmEmail>
 				<div class="form-group">
-					<label for="emailConfirm" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.appointmentApp.labelEmailConfirmation}*</label>
+					<label for="emailConfirm" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldConfirmationEmail!}*</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
-						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
-							<span class="help-block">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailConfirmationHelp}</span>
+						<#if form_messages.fieldConfirmationEmail?? && form_messages.fieldConfirmationEmailHelp != ''>
+							<span class="help-block">${form_messages.fieldConfirmationEmailHelp!}</span>
 						</#if>
 					</div>
 				</div>

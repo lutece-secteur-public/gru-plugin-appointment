@@ -42,9 +42,9 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
 {
-    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_form, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label FROM appointment_form_messages WHERE id_form = ?";
-    private static final String SQL_QUERY_INSERT_FORM_MESSAGE = "INSERT INTO appointment_form_messages(id_form, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    private static final String SQL_QUERY_UPDATE_FORM_MESSAGE = "UPDATE appointment_form_messages SET calendar_title = ?, field_firstname_title = ?, field_firstname_help = ?, field_lastname_title = ?, field_lastname_help = ?, field_email_title = ?, field_email_help = ?, text_appointment_created = ?, url_redirect_after_creation = ?, text_appointment_canceled = ?, label_button_redirection = ?, no_available_slot = ?, calendar_description = ?, calendar_reserve_label = ?, calendar_full_label = ?  WHERE id_form = ?";
+    private static final String SQL_QUERY_FIND_BY_PRIMARY_KEY = "SELECT id_form, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help,field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label FROM appointment_form_messages WHERE id_form = ?";
+    private static final String SQL_QUERY_INSERT_FORM_MESSAGE = "INSERT INTO appointment_form_messages(id_form, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help,field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String SQL_QUERY_UPDATE_FORM_MESSAGE = "UPDATE appointment_form_messages SET calendar_title = ?, field_firstname_title = ?, field_firstname_help = ?, field_lastname_title = ?, field_lastname_help = ?, field_email_title = ?, field_email_help = ?, field_confirmationEmail_title = ?, field_confirmationEmail_help = ?, text_appointment_created = ?, url_redirect_after_creation = ?, text_appointment_canceled = ?, label_button_redirection = ?, no_available_slot = ?, calendar_description = ?, calendar_reserve_label = ?, calendar_full_label = ?  WHERE id_form = ?";
     private static final String SQL_QUERY_DELETE_FORM_MESSAGE = "DELETE FROM appointment_form_messages WHERE id_form = ?";
     
     
@@ -64,6 +64,8 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
         daoUtil.setString( nIndex++, formMessage.getFieldLastNameHelp(  ) );
         daoUtil.setString( nIndex++, formMessage.getFieldEmailTitle(  ) );
         daoUtil.setString( nIndex++, formMessage.getFieldEmailHelp(  ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmail(  ) ) ;
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmailHelp(  ) ) ;
         daoUtil.setString( nIndex++, formMessage.getTextAppointmentCreated(  ) );
         daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation(  ) );
         daoUtil.setString( nIndex++, formMessage.getTextAppointmentCanceled(  ) );
@@ -92,6 +94,8 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
         daoUtil.setString( nIndex++, formMessage.getFieldLastNameHelp(  ) );
         daoUtil.setString( nIndex++, formMessage.getFieldEmailTitle(  ) );
         daoUtil.setString( nIndex++, formMessage.getFieldEmailHelp(  ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmail(  ) ) ;
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmailHelp(  ) ) ;
         daoUtil.setString( nIndex++, formMessage.getTextAppointmentCreated(  ) );
         daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation(  ) );
         daoUtil.setString( nIndex++, formMessage.getTextAppointmentCanceled(  ) );
@@ -144,6 +148,8 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
             formMessage.setFieldLastNameHelp( daoUtil.getString( nIndex++ ) );
             formMessage.setFieldEmailTitle( daoUtil.getString( nIndex++ ) );
             formMessage.setFieldEmailHelp( daoUtil.getString( nIndex++ ) );
+            formMessage.setFieldConfirmationEmail( daoUtil.getString( nIndex++ ) );
+            formMessage.setFieldConfirmationEmailHelp( daoUtil.getString( nIndex++ ) );
             formMessage.setTextAppointmentCreated( daoUtil.getString( nIndex++ ) );
             formMessage.setUrlRedirectAfterCreation( daoUtil.getString( nIndex++ ) );
             formMessage.setTextAppointmentCanceled( daoUtil.getString( nIndex++ ) );

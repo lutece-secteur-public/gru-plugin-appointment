@@ -50,11 +50,11 @@
 				</div>
 				<#if form.enableConfirmEmail>
 				<div class="form-group">
-					<label class="col-sm-2 control-label" for="emailConfirm" class="col-sm-2 control-label">#i18n{appointment.appointmentApp.labelEmailConfirmation}*</label>
+					<label class="col-sm-2 control-label" for="emailConfirm" class="col-sm-2 control-label">${form_messages.fieldConfirmationEmail!}*</label>
 					<div class="col-sm-8">
 						<input type="text" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
-						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
-							<span class="help-block">#i18n{appointment.modify_appointmentform_messages.labelFieldEmailConfirmationHelp}</span>
+						<#if form_messages.fieldConfirmationEmail?? && form_messages.fieldConfirmationEmailHelp != ''>
+							<span class="help-block">${form_messages.fieldConfirmationEmailHelp!}</span>
 						</#if>
 					</div>
 				</div>

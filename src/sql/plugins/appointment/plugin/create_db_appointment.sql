@@ -114,6 +114,8 @@ CREATE TABLE appointment_form_messages (
 	field_lastname_help varchar(255) NOT NULL default '',
 	field_email_title varchar(255) NOT NULL default '',
 	field_email_help varchar(255) NOT NULL default '',
+	field_confirmationEmail_title varchar(255) NOT NULL default '',
+	field_confirmationEmail_help varchar(255) NOT NULL default '',
 	text_appointment_created long varchar NOT NULL,
 	url_redirect_after_creation varchar(255) NOT NULL default '',
 	text_appointment_canceled long varchar NOT NULL,

@@ -51,6 +51,8 @@ public class AppointmentFormMessages implements Cloneable
     private String _strFieldLastNameHelp;
     private String _strFieldEmailTitle;
     private String _strFieldEmailHelp;
+    private String _strFieldConfirmationEmail;
+    private String _strFieldConfirmationEmailHelp;
     private String _strUrlRedirectAfterCreation;
     private String _strTextAppointmentCreated;
     private String _strTextAppointmentCanceled;
@@ -209,8 +211,44 @@ public class AppointmentFormMessages implements Cloneable
     {
         this._strFieldEmailHelp = strFieldEmailHelp;
     }
-
+    
     /**
+     * Get Field confirmation email
+     * @return The field of confirmation email
+     */
+    public String getFieldConfirmationEmail(  ) 
+    {
+		return _strFieldConfirmationEmail;
+	}
+    
+    /**
+     * Set field confirmation email
+     * @param strFieldConfirmationEmail
+     */
+	public void setFieldConfirmationEmail( String strFieldConfirmationEmail )
+	{
+		this._strFieldConfirmationEmail = strFieldConfirmationEmail;
+	}
+	
+	/**
+	 * Get field confirmation email help
+	 * @return The confirmation email help
+	 */
+	public String getFieldConfirmationEmailHelp(  ) 
+	{
+		return _strFieldConfirmationEmailHelp;
+	}
+	
+	/**
+	 * Set the field email confirmation help
+	 * @param fieldConfirmationEmailHelp
+	 */
+	public void setFieldConfirmationEmailHelp( String fieldConfirmationEmailHelp )
+	{
+		this._strFieldConfirmationEmailHelp = fieldConfirmationEmailHelp;
+	}
+
+	/**
      * Get the URL to redirect the user to after creation of an appointment
      * @return The URL to redirect the user to after creation of an
      *         appointment
