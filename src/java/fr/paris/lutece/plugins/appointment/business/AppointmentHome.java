@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -102,14 +102,14 @@ public final class AppointmentHome
         // If the status changed, we check if we need to update the number of free places of the associated day
         if ( appointment.getStatus(  ) != appointmentFromDb.getStatus(  ) )
         {
-            if ( ( appointmentFromDb.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur() ) &&
-                    ( appointment.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur() ) )
+            if ( ( appointmentFromDb.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) &&
+                    ( appointment.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) )
             {
                 AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
                 AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );
             }
-            else if ( ( appointmentFromDb.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur() ) &&
-                    ( appointment.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur() ) )
+            else if ( ( appointmentFromDb.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) &&
+                    ( appointment.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) )
             {
                 AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
                 AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay(  ) );
@@ -136,7 +136,7 @@ public final class AppointmentHome
         _dao.deleteAppointmentResponse( nAppointmentId, _plugin );
         _dao.delete( nAppointmentId, _plugin );
 
-        if ( appointment.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur() )
+        if ( appointment.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) )
         {
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
             AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );

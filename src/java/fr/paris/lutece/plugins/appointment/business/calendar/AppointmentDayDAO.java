@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     private static final String SQL_QUERY_SELECT_DAY_BETWEEN = SQL_QUERY_SELECT_DAY +
         " WHERE id_form = ? AND date_day >= ? AND date_day <= ? ORDER BY date_day ASC ";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_DAY +
-            " WHERE id_form = ? ORDER BY date_day ASC";
+        " WHERE id_form = ? ORDER BY date_day ASC";
 
     /**
      * Get a new primary key for a day
@@ -264,7 +265,7 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -279,12 +280,11 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
 
         while ( daoUtil.next(  ) )
         {
-        	listDay.add( getDayFromDAO( daoUtil ) );
+            listDay.add( getDayFromDAO( daoUtil ) );
         }
 
         daoUtil.free(  );
 
         return listDay;
     }
-
 }

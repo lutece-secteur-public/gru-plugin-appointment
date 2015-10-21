@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,12 +40,14 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
+
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
 
 /**
  * This is the business class for the object AppointmentForm
@@ -119,9 +121,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private boolean _bIsFormStep;
     private boolean _bEnableConfirmEmail;
     private boolean _bEnableMandatoryEmail;
-    
     private ImageResource _imageResource;
-    
+
     /**
      * Returns the IdForm
      * @return The IdForm
@@ -135,7 +136,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * Sets the IdForm
      * @param nIdForm The IdForm
      */
-    public void setIdForm( int nIdForm )	
+    public void setIdForm( int nIdForm )
     {
         _nIdForm = nIdForm;
     }
@@ -191,8 +192,9 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      */
     public void setReference( String strRef )
     {
-    	_strReference =  strRef;
-    } 
+        _strReference = strRef;
+    }
+
     /**
      * Returns the _strReference
      * @return The strRef
@@ -208,11 +210,13 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      */
     public void setIsFormStep( boolean nStep )
     {
-    	_bIsFormStep =  nStep;
-    } /**
-     * Returns the TimeStart
-     * @return The TimeStart
-     */
+        _bIsFormStep = nStep;
+    }
+
+    /**
+    * Returns the TimeStart
+    * @return The TimeStart
+    */
     public String getTimeStart(  )
     {
         return _strTimeStart;
@@ -703,16 +707,17 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * @param nMaxAppointment The nb of the max appointpents for weeks
      *       of this  appointment form
      */
-    public int getMaxAppointments()
+    public int getMaxAppointments(  )
     {
         return _nMaxAppointmentMail;
-    }    
+    }
+
     /**
      * Set the max for weeks of this appointment form to validate
      *  @param nMaxAppointment The nb of the max appointpents for weeks
      *       of this  appointment form
      */
-    public void setMaxAppointmentMail( int nMaxAppointment)
+    public void setMaxAppointmentMail( int nMaxAppointment )
     {
         _nMaxAppointmentMail = nMaxAppointment;
     }
@@ -722,19 +727,21 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * @param _nNbWeeksLimits The nb of the max appointpents for weeks
      *       of this  appointment form
      */
-    public int getWeeksLimits()
+    public int getWeeksLimits(  )
     {
         return _nNbWeeksLimits;
-    }    
+    }
+
     /**
      * Set the limits for weeks of this appointment form to validate
      *  @param _nNbWeeksLimits The nb of the max appointpents for weeks
      *       of this  appointment form
      */
-    public void setNbWeeksLimits( int nWeekLimits)
+    public void setNbWeeksLimits( int nWeekLimits )
     {
-    	_nNbWeeksLimits = nWeekLimits;
+        _nNbWeeksLimits = nWeekLimits;
     }
+
     /**
      * Check if a day of the week is opened or not
      * @param nDayOfWeek The number of the day of the week : 1 for Monday, 2 for
@@ -752,49 +759,56 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
         return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened[nDayOfWeek - 1]
                                                                                   : false;
     }
+
     /**
      * Get enable confirm email
      * @return boolean  enable confirm email
      */
-    public boolean getEnableConfirmEmail() {
-		return _bEnableConfirmEmail;
-	}
+    public boolean getEnableConfirmEmail(  )
+    {
+        return _bEnableConfirmEmail;
+    }
+
     /**
      * Set enable confirm email
      * @param bEnableConfirmEmail confirm email
      */
-	public void setEnableConfirmEmail(boolean bEnableConfirmEmail) {
-		this._bEnableConfirmEmail = bEnableConfirmEmail;
-	}
-	
-	/**
-	 * Get enable mandatory email
-	 * @return enable mandatory email
-	 */
-	public boolean getEnableMandatoryEmail() {
-		return _bEnableMandatoryEmail;
-	}
-	
-	/**
-	 * Set enable mandatory email
-	 * @param bEnableMandatoryEmail mandatory email
-	 */
-	public void setEnableMandatoryEmail(boolean bEnableMandatoryEmail) {
-		this._bEnableMandatoryEmail = bEnableMandatoryEmail;
-	}
-	
-	
-	public ImageResource getIcon() {
-		return _imageResource;
-	}
+    public void setEnableConfirmEmail( boolean bEnableConfirmEmail )
+    {
+        this._bEnableConfirmEmail = bEnableConfirmEmail;
+    }
 
-	public void setIcon(ImageResource imgIcon) {
-		this._imageResource = imgIcon;
-	}
-
-	/**
-     * {@inheritDoc}
+    /**
+     * Get enable mandatory email
+     * @return enable mandatory email
      */
+    public boolean getEnableMandatoryEmail(  )
+    {
+        return _bEnableMandatoryEmail;
+    }
+
+    /**
+     * Set enable mandatory email
+     * @param bEnableMandatoryEmail mandatory email
+     */
+    public void setEnableMandatoryEmail( boolean bEnableMandatoryEmail )
+    {
+        this._bEnableMandatoryEmail = bEnableMandatoryEmail;
+    }
+
+    public ImageResource getIcon(  )
+    {
+        return _imageResource;
+    }
+
+    public void setIcon( ImageResource imgIcon )
+    {
+        this._imageResource = imgIcon;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
     @Override
     public String getResourceTypeCode(  )
     {

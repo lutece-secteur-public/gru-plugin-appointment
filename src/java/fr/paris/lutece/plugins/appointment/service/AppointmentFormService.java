@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,6 +75,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,7 +121,6 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
     private static final String MARK_WEEK = "nWeek";
 
-    
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
     private static final String SESSION_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.validatedAppointment";
@@ -152,83 +152,84 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_IS_FORM_FIRST_STEP = "appointment.isFormFirstStep";
     private transient volatile Boolean _bIsFormFirstStep;
 
-    
     /**
      * Return the HTML code of the form
      * @param form the form which HTML code must be return
      * @param formMessages The form messages associated with the form
      * @param locale the locale
-     * @param 
+     * @param
      * @param bDisplayFront True if the entry will be displayed in Front Office,
      *            false if it will be displayed in Back Office.
      * @param request HttpServletRequest
      * @return the HTML code of the form
      */
-    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form, AppointmentFormMessages formMessages, Locale locale,
-        boolean bDisplayFront, HttpServletRequest request )
+    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form,
+        AppointmentFormMessages formMessages, Locale locale, boolean bDisplayFront, HttpServletRequest request )
     {
-    	 Map<String, Object> model = new HashMap<String, Object>(  );
-         StringBuffer strBuffer = new StringBuffer(  );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        StringBuffer strBuffer = new StringBuffer(  );
 
-         List<Entry> listEntryFirstLevel = getFilter ( form.getIdForm() );
+        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
 
-         for ( Entry entry : listEntryFirstLevel )
-         {
-             getHtmlEntry( entry.getIdEntry(  ), strBuffer, locale, bDisplayFront, request );
-         }
-         
-         model.put( MARK_APPOINTMENTSLOT, strSlot );
-         model.put( MARK_APPOINTMENTSLOTDAY,  strDay );
-         model.put( MARK_FORM, form );
-         model.put( MARK_FORM_MESSAGES, formMessages );
-         model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
-         model.put( MARK_LOCALE, locale );
-         model.put( MARK_WEEK, nWeek );
-        		 
-         AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
+        for ( Entry entry : listEntryFirstLevel )
+        {
+            getHtmlEntry( entry.getIdEntry(  ), strBuffer, locale, bDisplayFront, request );
+        }
 
-         if ( appointment == null )
-         {
-             appointment = new AppointmentDTO(  );
+        model.put( MARK_APPOINTMENTSLOT, strSlot );
+        model.put( MARK_APPOINTMENTSLOTDAY, strDay );
+        model.put( MARK_FORM, form );
+        model.put( MARK_FORM_MESSAGES, formMessages );
+        model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
+        model.put( MARK_LOCALE, locale );
+        model.put( MARK_WEEK, nWeek );
 
-             setUserInfo( request, appointment );
-         }
+        AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
 
-         model.put( MARK_APPOINTMENT, appointment );
+        if ( appointment == null )
+        {
+            appointment = new AppointmentDTO(  );
 
-         if ( bDisplayFront )
-         {
-             model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm() ) );
-         }
+            setUserInfo( request, appointment );
+        }
 
-         if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
-         {
-             model.put( MARK_ADDON,
-                 AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), locale ) );
-         }
+        model.put( MARK_APPOINTMENT, appointment );
 
-         
-         HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
-                                                                               : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
-                 model );
+        if ( bDisplayFront )
+        {
+            model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm(  ) ) );
+        }
 
-         return template.getHtml(  );
+        if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
+        {
+            model.put( MARK_ADDON,
+                AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), locale ) );
+        }
+
+        HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
+                                                                              : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
+                model );
+
+        return template.getHtml(  );
     }
-    
+
     /**
      * Get an Entry Filter
      * @return
      */
-    private static List<Entry> getFilter ( int iform )
+    private static List<Entry> getFilter( int iform )
     {
-    	EntryFilter filter = new EntryFilter(  );
+        EntryFilter filter = new EntryFilter(  );
         filter.setIdResource( iform );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+
         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
+
         return listEntryFirstLevel;
     }
+
     /**
      * Return the HTML code of the form
      * @param form the form which HTML code must be return
@@ -245,7 +246,7 @@ public class AppointmentFormService implements Serializable
         Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strBuffer = new StringBuffer(  );
 
-        List<Entry> listEntryFirstLevel = getFilter ( form.getIdForm() );
+        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
 
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -270,7 +271,7 @@ public class AppointmentFormService implements Serializable
 
         if ( bDisplayFront )
         {
-            model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm() ) );
+            model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm(  ) ) );
         }
 
         if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
@@ -279,7 +280,6 @@ public class AppointmentFormService implements Serializable
                 AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), locale ) );
         }
 
-        
         HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
                                                                               : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
                 model );
@@ -496,7 +496,7 @@ public class AppointmentFormService implements Serializable
 
                 if ( formError != null )
                 {
-                    formError.setUrl( getEntryUrl( entry, appointment.getAppointmentForm().getIdForm() ) );
+                    formError.setUrl( getEntryUrl( entry, appointment.getAppointmentForm(  ).getIdForm(  ) ) );
                 }
             }
             else
@@ -563,7 +563,7 @@ public class AppointmentFormService implements Serializable
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
         url.addParameter( MVCUtils.PARAMETER_VIEW,
             isFormFirstStep( nIdform ) ? AppointmentApp.VIEW_APPOINTMENT_FORM_FIRST_STEP
-                                : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP );
+                                       : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP );
 
         if ( ( entry != null ) && ( entry.getIdResource(  ) > 0 ) )
         {
@@ -671,6 +671,7 @@ public class AppointmentFormService implements Serializable
                 PROPERTY_DEFAULT_CALENDAR_RESERVE_LABEL, StringUtils.EMPTY ) );
         formMessages.setCalendarFullLabel( AppPropertiesService.getProperty( PROPERTY_DEFAULT_CALENDAR_FULL_LABEL,
                 StringUtils.EMPTY ) );
+
         return formMessages;
     }
 
@@ -700,8 +701,9 @@ public class AppointmentFormService implements Serializable
      */
     public boolean isFormFirstStep( int nAppointmentFormId )
     {
-    	AppointmentForm myApmt = AppointmentFormHome.findByPrimaryKey( nAppointmentFormId );
-    	_bIsFormFirstStep = myApmt == null ? true : myApmt.getIsFormStep();
+        AppointmentForm myApmt = AppointmentFormHome.findByPrimaryKey( nAppointmentFormId );
+        _bIsFormFirstStep = ( myApmt == null ) ? true : myApmt.getIsFormStep(  );
+
         return _bIsFormFirstStep;
     }
 

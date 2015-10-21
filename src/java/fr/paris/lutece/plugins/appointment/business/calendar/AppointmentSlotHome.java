@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -189,6 +189,7 @@ public final class AppointmentSlotHome
 
         return slot;
     }
+
     /**
      * Find a slot from its primary key
      * @param nIdSlot the id of the slot to remove
@@ -196,13 +197,10 @@ public final class AppointmentSlotHome
      */
     public static AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot )
     {
-        
         AppointmentSlot slot = _dao.findByPrimaryKeyWithFreePlace( nIdSlot, _plugin );
 
         return slot;
     }
-    
-    
 
     /**
      * Find a slot from its primary key
@@ -259,13 +257,13 @@ public final class AppointmentSlotHome
         // TODO : save list slots in cache
         return _dao.findByIdDayWithFreePlaces( nIdDay, _plugin );
     }
-    
+
     /**
      * Get appointments slot associated unavailable with a given day
      * @param nIdDay The id of the day to remove slots from
      */
     public static List<AppointmentSlot> getSlotsUnavailable( int nIdDay, int nIdForm )
     {
-        return _dao.getSlotsUnavailable(nIdDay, nIdForm, _plugin);
+        return _dao.getSlotsUnavailable( nIdDay, nIdForm, _plugin );
     }
 }

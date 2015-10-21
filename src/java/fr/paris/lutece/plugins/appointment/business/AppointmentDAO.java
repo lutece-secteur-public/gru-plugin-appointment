@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -317,7 +317,7 @@ public final class AppointmentDAO implements IAppointmentDAO
 
             if ( StringUtils.isNotEmpty( strOrderBy ) )
             {
-            	String strOrderType = bSortAsc ? CONSTANT_ASC : CONSTANT_DESC;
+                String strOrderType = bSortAsc ? CONSTANT_ASC : CONSTANT_DESC;
                 sbSql.append( CONSTANT_ORDER_BY );
                 sbSql.append( strOrderBy.replaceAll( ",", strOrderType + "," ) );
                 sbSql.append( strOrderType );
@@ -554,9 +554,9 @@ public final class AppointmentDAO implements IAppointmentDAO
 
         if ( StringUtils.isNotBlank( appointmentFilter.getOrderBy(  ) ) )
         {
-        	String strOrderType = appointmentFilter.getOrderAsc(  ) ? CONSTANT_ASC : CONSTANT_DESC;
+            String strOrderType = appointmentFilter.getOrderAsc(  ) ? CONSTANT_ASC : CONSTANT_DESC;
             sbSql.append( CONSTANT_ORDER_BY );
-            sbSql.append( appointmentFilter.getOrderBy(  ).replaceAll(",", strOrderType + ",") );
+            sbSql.append( appointmentFilter.getOrderBy(  ).replaceAll( ",", strOrderType + "," ) );
             sbSql.append( strOrderType );
         }
 
@@ -643,7 +643,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     private Appointment getAppointmentFormValues( DAOUtil daoUtil )
     {
         Appointment appointment = new Appointment(  );
-        Calendar dateAppointment = Calendar.getInstance();
+        Calendar dateAppointment = Calendar.getInstance(  );
         int nIndex = 1;
         appointment.setIdAppointment( daoUtil.getInt( nIndex++ ) );
         appointment.setFirstName( daoUtil.getString( nIndex++ ) );
@@ -652,8 +652,8 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setIdUser( daoUtil.getString( nIndex++ ) );
         appointment.setAuthenticationService( daoUtil.getString( nIndex++ ) );
         appointment.setLocation( daoUtil.getString( nIndex++ ) );
-        dateAppointment.setTime(daoUtil.getDate( nIndex++ ) );
-        appointment.setDateAppointment( new Date( dateAppointment .getTimeInMillis() ) );
+        dateAppointment.setTime( daoUtil.getDate( nIndex++ ) );
+        appointment.setDateAppointment( new Date( dateAppointment.getTimeInMillis(  ) ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
         appointment.setStatus( daoUtil.getInt( nIndex++ ) );
         appointment.setIdActionCancel( daoUtil.getInt( nIndex++ ) );
@@ -661,10 +661,10 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setHasNotify( daoUtil.getInt( nIndex++ ) );
         dateAppointment.set( Calendar.HOUR_OF_DAY, daoUtil.getInt( nIndex++ ) );
         dateAppointment.set( Calendar.MINUTE, daoUtil.getInt( nIndex++ ) );
-        appointment.setStartAppointment( dateAppointment.getTime() );
+        appointment.setStartAppointment( dateAppointment.getTime(  ) );
         dateAppointment.set( Calendar.HOUR_OF_DAY, daoUtil.getInt( nIndex++ ) );
         dateAppointment.set( Calendar.MINUTE, daoUtil.getInt( nIndex++ ) );
-        appointment.setEndAppointment( dateAppointment.getTime() );
+        appointment.setEndAppointment( dateAppointment.getTime(  ) );
 
         return appointment;
     }

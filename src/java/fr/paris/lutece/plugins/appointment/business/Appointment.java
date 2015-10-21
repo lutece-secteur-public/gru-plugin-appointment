@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,15 +32,18 @@
  * License 1.0
  */
 package fr.paris.lutece.plugins.appointment.business;
+
+import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
-import fr.paris.lutece.plugins.genericattributes.business.Response;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
+
 import java.sql.Date;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -60,19 +63,22 @@ public class Appointment implements Serializable
     // If status values change, the template appointment/manage_appointments.html must be updated !
     /**
      * Status of appointments that have been rejected
-     
+
     public static final int STATUS_REJECTED = -10;
-*/
+    */
+
     /**
      * Status of appointments that have not been validated yet
-    
+
     public static final int STATUS_NOT_VALIDATED = 0;
- */
+    */
+
     /**
      * Status of appointments that have been validated
-    
+
     public static final int STATUS_VALIDATED = 10;
- */
+    */
+
     /**
      * Serial version UID
      */
@@ -88,8 +94,6 @@ public class Appointment implements Serializable
     @Email( message = "#i18n{appointment.validation.appointment.Email.email}" )
     private String _strEmail;
 
-    
-
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
     @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
     private String _strIdUser;
@@ -97,8 +101,8 @@ public class Appointment implements Serializable
     private String _strLocation;
     private State _state;
     private Date _dateAppointment;
-    private java.util.Date startAppointment;
-    private java.util.Date endAppointment;
+    private java.util.Date _dateStartAppointment;
+    private java.util.Date _dateEndAppointment;
     private int _nIdSlot;
     private int _nStatus;
     private List<Response> _listResponse;
@@ -107,29 +111,6 @@ public class Appointment implements Serializable
     private int _idAdminUser;
     private int _nHasNotify;
 
-    /**
-     * Status of appointments that have not been validated yet, validate or rejected
-     */
-     public enum Status {
-    	
-    	STATUS_RESERVED (10, 	"appointment.message.labelStatusReserved"),
-    	STATUS_UNRESERVED (-10, 	"appointment.message.labelStatusUnreserved" );
-    	//STATUS_NOT_VALIDATED (0, "appointment.message.labelStatusNotValidated");
-    	
-    	private final int nValue;
-        private final String strLibelle;
-        
-        Status (int nValeur, String strMessage)
-        {
-        	this.nValue = nValeur;
-        	this.strLibelle = strMessage;
-        }
-        
-        public int getValeur(){ return this.nValue; }
-        public String getLibelle(){ return this.strLibelle; }
-    }
-    
-    
     /**
      * Returns the IdAppointment
      * @return The IdAppointment
@@ -201,7 +182,7 @@ public class Appointment implements Serializable
     {
         _strEmail = strEmail;
     }
-    
+
     /**
      * Returns the id of the lutece user that made this appointment
      * @return The id of the lutece user that made this appointment
@@ -395,33 +376,33 @@ public class Appointment implements Serializable
         this._idAdminUser = nIdAdminUser;
     }
 
-	public java.util.Date getStartAppointment()
-	{
-		return startAppointment;
-	}
+    public java.util.Date getStartAppointment(  )
+    {
+        return _dateStartAppointment;
+    }
 
-	public void setStartAppointment(java.util.Date date)
-	{
-		this.startAppointment = date;
-	}
+    public void setStartAppointment( java.util.Date date )
+    {
+        this._dateStartAppointment = date;
+    }
 
-	public java.util.Date getEndAppointment()
-	{
-		return endAppointment;
-	}
+    public java.util.Date getEndAppointment(  )
+    {
+        return _dateEndAppointment;
+    }
 
-	public void setEndAppointment(java.util.Date date)
-	{
-		this.endAppointment = date;
-	}
-	
-	 /**
-     * Sets the State actual
-     * @param  The state
-     */
+    public void setEndAppointment( java.util.Date date )
+    {
+        this._dateEndAppointment = date;
+    }
+
+    /**
+    * Sets the State actual
+    * @param  The state
+    */
     public void setState( State state )
     {
-    	_state = state;
+        _state = state;
     }
 
     /**
@@ -432,21 +413,53 @@ public class Appointment implements Serializable
     {
         return _state;
     }
+
     /**
      * Returns notify status
      * @return notify status
      */
-	public int getHasNotify( ) 
-	{
-		return _nHasNotify;
-	}
-	/**
-	 * Sets notify
-	 * @param nHasNotify notify status
-	 */
-	public void setHasNotify( int nHasNotify ) 
-	{
-		this._nHasNotify = nHasNotify;
-	}
+    public int getHasNotify(  )
+    {
+        return _nHasNotify;
+    }
+
+    /**
+     * Sets notify
+     * @param nHasNotify notify status
+     */
+    public void setHasNotify( int nHasNotify )
+    {
+        this._nHasNotify = nHasNotify;
+    }
+
+    /**
+     * Status of appointments that have not been validated yet, validate or rejected
+     */
+    public enum Status
+    {
+    	 STATUS_RESERVED( 10, "appointment.message.labelStatusReserved" ),
+         STATUS_UNRESERVED( -10, "appointment.message.labelStatusUnreserved" );
+    	 
+    	 //STATUS_NOT_VALIDATED (0, "appointment.message.labelStatusNotValidated");
+        private final int nValue;
+        private final String strLibelle;
+
+        Status( int nValeur, String strMessage )
+        {
+            this.nValue = nValeur;
+            this.strLibelle = strMessage;
+        }
+
+        public int getValeur(  )
+        {
+            return this.nValue;
+        }
+
+        public String getLibelle(  )
+        {
+            return this.strLibelle;
+        }
+       
+    }
     
 }

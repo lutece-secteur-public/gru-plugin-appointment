@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,7 @@ import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -97,7 +98,6 @@ public class AppointmentService
     private static final int CONSTANT_NB_DAYS_IN_WEEK = 7;
     private static final long CONSTANT_MILISECONDS_IN_DAY = 86400000L;
     private static final String CONSTANT_SHA256 = "SHA-256";
-
 
     /**
      * Instance of the service
@@ -256,9 +256,11 @@ public class AppointmentService
      * @param date2
      * @return
      */
-    public static long getDateDiff(Date date1, Date date2) {
-        long diffInMillies = date2.getTime() - date1.getTime();
-        return TimeUnit.MILLISECONDS.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    public static long getDateDiff( Date date1, Date date2 )
+    {
+        long diffInMillies = date2.getTime(  ) - date1.getTime(  );
+
+        return TimeUnit.MILLISECONDS.convert( diffInMillies, TimeUnit.MILLISECONDS );
     }
 
     /**
@@ -266,14 +268,16 @@ public class AppointmentService
      * @param dateDesired
      * @return
      */
-    private static Calendar getDateMidnight()
+    private static Calendar getDateMidnight(  )
     {
-     	Calendar cal = Calendar.getInstance( Locale.FRENCH );
-    	cal.set(Calendar.HOUR_OF_DAY, 23);
-    	cal.set(Calendar.MINUTE, 59);
-    	cal.set(Calendar.SECOND, 59);
-     	return cal;
+        Calendar cal = Calendar.getInstance( Locale.FRENCH );
+        cal.set( Calendar.HOUR_OF_DAY, 23 );
+        cal.set( Calendar.MINUTE, 59 );
+        cal.set( Calendar.SECOND, 59 );
+
+        return cal;
     }
+
     /**
      * Enable / Disable slots
      * Whit Hours before appointmenet
@@ -281,47 +285,56 @@ public class AppointmentService
      * @param listDays
      * @return
      */
-    private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
-			List<AppointmentDay> listDays, Calendar calStart, Calendar calEnd, Calendar objNow) {
-    	
-    	
-    	 
-    	int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue();
-    	objNow.add (Calendar.MILLISECOND, nbMilli);
-    	if (objNow.after( getDateMidnight( )))
-    	{
-    		//objNow.setTime( getDateMidnight( ).getTime() );
-    	}
+    private static List<AppointmentDay> unvalidAppointmentsbeforeNow( int iDaysBeforeAppointment,
+        List<AppointmentDay> listDays, Calendar calStart, Calendar calEnd, Calendar objNow )
+    {
+        int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue(  );
+        objNow.add( Calendar.MILLISECOND, nbMilli );
 
-		for (int i = 0; i < listDays.size() ; i ++)
-		{
-			
-			if (listDays.get( i ).getIsOpen())
-			{
-				Calendar objEnd =   getCalendarTime(listDays.get( i ).getDate(), listDays.get( i ).getClosingHour(), listDays.get( i ).getClosingMinutes());
-				if ( objEnd.after( calEnd ) )
-				{
-					objEnd.setTime( calEnd.getTime() );
-				}
-				if (listDays.get( i ).getListSlots() == null )
-				{
-					listDays.get( i ).setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( listDays.get( i ).getIdDay(  ) ) );
-				}
-				for ( int index = 0; index < listDays.get( i ).getListSlots().size() ; index++)
-				{
-					Calendar tmpCal = getCalendarTime( listDays.get( i ).getDate(), listDays.get( i ).getListSlots().get( index ).getStartingHour(), listDays.get( i ).getListSlots().get( index ).getStartingMinute());
-					Calendar objNowClose = getCalendarTime( listDays.get( i ).getDate(), objEnd.get(Calendar.HOUR_OF_DAY), objEnd.get(Calendar.MINUTE));
-					
-					if ( ( objNow.after( tmpCal ) || tmpCal.after( objNowClose ) ) && listDays.get( i ).getListSlots().get( index ).getNbFreePlaces() > 0 ) //Already an appointments
-					{
-						listDays.get( i ).getListSlots().get( index ).setIsEnabled( false );
-					}
-				}                  		
-			}
-		}
-		return listDays;
-	}
-    
+        if ( objNow.after( getDateMidnight(  ) ) )
+        {
+            //objNow.setTime( getDateMidnight( ).getTime() );
+        }
+
+        for ( int i = 0; i < listDays.size(  ); i++ )
+        {
+            if ( listDays.get( i ).getIsOpen(  ) )
+            {
+                Calendar objEnd = getCalendarTime( listDays.get( i ).getDate(  ), listDays.get( i ).getClosingHour(  ),
+                        listDays.get( i ).getClosingMinutes(  ) );
+
+                if ( objEnd.after( calEnd ) )
+                {
+                    objEnd.setTime( calEnd.getTime(  ) );
+                }
+
+                if ( listDays.get( i ).getListSlots(  ) == null )
+                {
+                    listDays.get( i )
+                            .setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( 
+                            listDays.get( i ).getIdDay(  ) ) );
+                }
+
+                for ( int index = 0; index < listDays.get( i ).getListSlots(  ).size(  ); index++ )
+                {
+                    Calendar tmpCal = getCalendarTime( listDays.get( i ).getDate(  ),
+                            listDays.get( i ).getListSlots(  ).get( index ).getStartingHour(  ),
+                            listDays.get( i ).getListSlots(  ).get( index ).getStartingMinute(  ) );
+                    Calendar objNowClose = getCalendarTime( listDays.get( i ).getDate(  ),
+                            objEnd.get( Calendar.HOUR_OF_DAY ), objEnd.get( Calendar.MINUTE ) );
+
+                    if ( ( objNow.after( tmpCal ) || tmpCal.after( objNowClose ) ) &&
+                            ( listDays.get( i ).getListSlots(  ).get( index ).getNbFreePlaces(  ) > 0 ) ) //Already an appointments
+                    {
+                        listDays.get( i ).getListSlots(  ).get( index ).setIsEnabled( false );
+                    }
+                }
+            }
+        }
+
+        return listDays;
+    }
+
     /**
      * Transform Date to Calendar
      * @param objTime
@@ -329,66 +342,79 @@ public class AppointmentService
      * @param iMinute
      * @return
      */
-    private static Calendar getCalendarTime ( Date objTime, int iHour, int iMinute) 
+    private static Calendar getCalendarTime( Date objTime, int iHour, int iMinute )
     {
-    	Calendar calendar = GregorianCalendar.getInstance( Locale.FRENCH );
-        if (objTime != null)
-        	calendar.setTime( objTime );
-    	calendar.set(Calendar.HOUR_OF_DAY, iHour);
-    	calendar.set(Calendar.MINUTE, iMinute);
+        Calendar calendar = GregorianCalendar.getInstance( Locale.FRENCH );
+
+        if ( objTime != null )
+        {
+            calendar.setTime( objTime );
+        }
+
+        calendar.set( Calendar.HOUR_OF_DAY, iHour );
+        calendar.set( Calendar.MINUTE, iMinute );
+
         return calendar;
     }
+
     /**
      * Is week can be visible
      * @param listDays
      * @return
      */
-    private static boolean isWeekEnabled ( List<AppointmentDay> listDays )
+    private static boolean isWeekEnabled( List<AppointmentDay> listDays )
     {
-    	boolean bRet = false;
-    	for (AppointmentDay tmpDay :  listDays)
-    	{
-    		if ( tmpDay.getIsOpen() )
-    		{
-    			 for (AppointmentSlot tmpApp : tmpDay.getListSlots())
-    			 {
-    				 if (tmpApp.getIsEnabled())
-    				 {
-    					 Calendar myCal = GregorianCalendar.getInstance( Locale.FRENCH );
-    					 Calendar tmpCal =  getCalendarTime(tmpDay.getDate(),  tmpApp.getStartingHour(), tmpApp.getStartingMinute());
-    					 if (tmpCal.after(myCal)) 
-    						 bRet = true;
-    				 }
-    			 }
-    		}
-    	}
-		return bRet;
+        boolean bRet = false;
+
+        for ( AppointmentDay tmpDay : listDays )
+        {
+            if ( tmpDay.getIsOpen(  ) )
+            {
+                for ( AppointmentSlot tmpApp : tmpDay.getListSlots(  ) )
+                {
+                    if ( tmpApp.getIsEnabled(  ) )
+                    {
+                        Calendar myCal = GregorianCalendar.getInstance( Locale.FRENCH );
+                        Calendar tmpCal = getCalendarTime( tmpDay.getDate(  ), tmpApp.getStartingHour(  ),
+                                tmpApp.getStartingMinute(  ) );
+
+                        if ( tmpCal.after( myCal ) )
+                        {
+                            bRet = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return bRet;
     }
-    
-    
+
     /**
      * Check monday from the offset
      * @param nOffsetWeeks
      * @return
      */
-    private static Calendar[] getMondayWeek (  int nOffsetWeeks )
+    private static Calendar[] getMondayWeek( int nOffsetWeeks )
     {
-    	Calendar retCal[] = new Calendar[2];
-    	Calendar dateMin = GregorianCalendar.getInstance( Locale.FRANCE );
-    	// We set the week to the requested one 
-    	dateMin.add( Calendar.DAY_OF_MONTH, 7 * nOffsetWeeks );
+        Calendar[] retCal = new Calendar[2];
+        Calendar dateMin = GregorianCalendar.getInstance( Locale.FRANCE );
+        // We set the week to the requested one 
+        dateMin.add( Calendar.DAY_OF_MONTH, 7 * nOffsetWeeks );
 
         // We get the current day of the week
         int nCurrentDayOfWeek = dateMin.get( Calendar.DAY_OF_WEEK );
         // We add the day of the week to Monday on the calendar
         dateMin.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
         retCal[0] = dateMin;
-        Calendar dateMax = (Calendar) dateMin.clone();
+
+        Calendar dateMax = (Calendar) dateMin.clone(  );
         dateMax.add( Calendar.DAY_OF_MONTH, 6 );
-         retCal[1] = dateMax;
+        retCal[1] = dateMax;
+
         return retCal;
     }
-    
+
     /**
      * Get all ListDays beetween 2 dates
      * @param form
@@ -397,19 +423,24 @@ public class AppointmentService
      */
     private List<AppointmentDay> getListDays( AppointmentForm form, MutableInt nOffsetWeeks, Calendar objNow )
     {
-    	Calendar calendar []= getMondayWeek ( nOffsetWeeks.intValue() );
+        Calendar[] calendar = getMondayWeek( nOffsetWeeks.intValue(  ) );
 
-        Date dateMin = new Date( calendar[0].getTimeInMillis() );
+        Date dateMin = new Date( calendar[0].getTimeInMillis(  ) );
 
-        Date dateMax = new Date( calendar[1].getTimeInMillis() );
+        Date dateMax = new Date( calendar[1].getTimeInMillis(  ) );
 
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
-        Calendar calendarEnd = getCalendarTime (form.getDateEndValidity(), form.getClosingHour(), form.getClosingMinutes() );
-        Calendar calendarStart = getCalendarTime (form.getDateStartValidity(), form.getOpeningHour(), form.getOpeningMinutes() );
-        
-        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment ( ), listDays, calendarStart, calendarEnd,  objNow );
+        Calendar calendarEnd = getCalendarTime( form.getDateEndValidity(  ), form.getClosingHour(  ),
+                form.getClosingMinutes(  ) );
+        Calendar calendarStart = getCalendarTime( form.getDateStartValidity(  ), form.getOpeningHour(  ),
+                form.getOpeningMinutes(  ) );
+
+        listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment(  ), listDays, calendarStart,
+                calendarEnd, objNow );
+
         return listDays;
     }
+
     /**
      * Get the list of days of a form to display them in a calendar. Days and
      * slots are not computed by this method but loaded from the database. The
@@ -432,35 +463,42 @@ public class AppointmentService
     public List<AppointmentDay> getDayListForCalendar( AppointmentForm form, MutableInt nOffsetWeeks,
         boolean bIsForFront, boolean bGetFirstEmptyWeek )
     {
-    	Calendar objNow = GregorianCalendar.getInstance( Locale.FRANCE );
-    	List<AppointmentDay>listDays = getListDays ( form, nOffsetWeeks, objNow);
-    	objNow = calculateNextSlotOpen( listDays,form, nOffsetWeeks);
+        Calendar objNow = GregorianCalendar.getInstance( Locale.FRANCE );
+        List<AppointmentDay> listDays = getListDays( form, nOffsetWeeks, objNow );
+        objNow = calculateNextSlotOpen( listDays, form, nOffsetWeeks );
+
         if ( bIsForFront )
         {
-        	 int nSave = nOffsetWeeks.intValue();
-        	 if (! bGetFirstEmptyWeek )
-        	 {
-	        	 while (!isWeekEnabled ( listDays ) && nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ))
-	        	 {	        	 
-	        		 nOffsetWeeks.increment();    		
-		        	 listDays = getListDays ( form, nOffsetWeeks, objNow);
-	        	 }
-	        	 if (!isWeekEnabled ( listDays )) 
-	        	 {
-	        		 listDays = getListDays ( form, new MutableInt(nSave), objNow);
-	        	 }
-        	 } else {
-        		 objNow = GregorianCalendar.getInstance( Locale.FRANCE );
-        		 while (!isWeekEnabled ( listDays ) && nOffsetWeeks.intValue(  ) > 0)
-        		 {
-        			 nOffsetWeeks.decrement();    		
-		        	 listDays = getListDays ( form, nOffsetWeeks, GregorianCalendar.getInstance( Locale.FRANCE ));
-        		 }
-        		 if (!isWeekEnabled ( listDays )) 
-	        	 {
-	        		 listDays = getListDays ( form, new MutableInt(0), GregorianCalendar.getInstance( Locale.FRANCE ));
-	        	 }
-        	 }
+            int nSave = nOffsetWeeks.intValue(  );
+
+            if ( !bGetFirstEmptyWeek )
+            {
+                while ( !isWeekEnabled( listDays ) && ( nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ) ) )
+                {
+                    nOffsetWeeks.increment(  );
+                    listDays = getListDays( form, nOffsetWeeks, objNow );
+                }
+
+                if ( !isWeekEnabled( listDays ) )
+                {
+                    listDays = getListDays( form, new MutableInt( nSave ), objNow );
+                }
+            }
+            else
+            {
+                objNow = GregorianCalendar.getInstance( Locale.FRANCE );
+
+                while ( !isWeekEnabled( listDays ) && ( nOffsetWeeks.intValue(  ) > 0 ) )
+                {
+                    nOffsetWeeks.decrement(  );
+                    listDays = getListDays( form, nOffsetWeeks, GregorianCalendar.getInstance( Locale.FRANCE ) );
+                }
+
+                if ( !isWeekEnabled( listDays ) )
+                {
+                    listDays = getListDays( form, new MutableInt( 0 ), GregorianCalendar.getInstance( Locale.FRANCE ) );
+                }
+            }
         }
 
         return listDays;
@@ -669,10 +707,12 @@ public class AppointmentService
      */
     public void checkFormDays( AppointmentForm form )
     {
-    	AppLogService.info( "checkFormDays IN ");
+        AppLogService.info( "checkFormDays IN " );
+
         int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
-        List < Date > listClosingDays = AppointmentHoliDaysHome.findByIdForm( form.getIdForm( ) ) ;
-        AppLogService.info( "listClosingDays SIZE IN "+ listClosingDays.size( ) );
+        List<Date> listClosingDays = AppointmentHoliDaysHome.findByIdForm( form.getIdForm(  ) );
+        AppLogService.info( "listClosingDays SIZE IN " + listClosingDays.size(  ) );
+
         // We synchronize the method by id form to avoid collisions between manual and daemon checks
         synchronized ( AppointmentService.class + Integer.toString( form.getIdForm(  ) ) )
         {
@@ -706,16 +746,18 @@ public class AppointmentService
 
                     for ( AppointmentDay day : listDays )
                     {
-                    	// set closing days
-                    	for ( Date closeDay : listClosingDays )
-                    	{
-                    		AppLogService.info( "closeDay "+ closeDay.toString( ));
-                    		if ( DateUtils.isSameDay( closeDay, day.getDate( ) ) )
-	                    	{
-	                    		day.setIsOpen( false );
-	                    		AppLogService.info( "closing day : OK");
-	                    	}
-                    	}
+                        // set closing days
+                        for ( Date closeDay : listClosingDays )
+                        {
+                            AppLogService.info( "closeDay " + closeDay.toString(  ) );
+
+                            if ( DateUtils.isSameDay( closeDay, day.getDate(  ) ) )
+                            {
+                                day.setIsOpen( false );
+                                AppLogService.info( "closing day : OK" );
+                            }
+                        }
+
                         // If the day has not already been created, we create it
                         if ( day.getIdDay(  ) == 0 )
                         {
@@ -725,10 +767,11 @@ public class AppointmentService
                             {
                                 if ( slot.getIsEnabled(  ) )
                                 {
-                                	if( day.getPeoplePerAppointment( ) != 0 )
-                                	{
-                                		slot.setNbPlaces( day.getPeoplePerAppointment( ) );
-                                	}
+                                    if ( day.getPeoplePerAppointment(  ) != 0 )
+                                    {
+                                        slot.setNbPlaces( day.getPeoplePerAppointment(  ) );
+                                    }
+
                                     nNbFreePlaces += slot.getNbPlaces(  );
                                 }
                             }
@@ -756,7 +799,7 @@ public class AppointmentService
     {
         return getDateMonday( 0 );
     }
-    
+
     /**
      * Get the date of a Monday.
      * @param nOffsetWeek The offset of the week (0 for the current week, 1 for
@@ -930,7 +973,6 @@ public class AppointmentService
         return nNumber;
     }
 
-    
     /**
      * Reset days and slots of a form. Each day and each associated slot of the
      * form that are associated with a future date are removed and re-created
@@ -944,6 +986,7 @@ public class AppointmentService
         // We add 
         int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
         calendar.add( Calendar.DAY_OF_WEEK, ( ( form.getNbWeeksToDisplay(  ) + nNbWeeksToCreate ) * 7 ) - 1 );
+
         Date dateMax = new Date( calendar.getTimeInMillis(  ) );
 
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
@@ -952,24 +995,24 @@ public class AppointmentService
         {
             AppointmentDayHome.remove( day.getIdDay(  ) );
         }
-        
+
         checkFormDays( form );
     }
+
     /**
      * Modify the slots of a form
      * @param form The form to rest days of
      * @param dateMin the date after that the form will change
      */
-    public void modifySlotsDays ( AppointmentForm form, Date dateMin )
+    public void modifySlotsDays( AppointmentForm form, Date dateMin )
     {
-    	
-    	
-    	Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
+        Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
         calendar.setTime( dateMin );
 
         // We add 
         int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
         calendar.add( Calendar.DAY_OF_WEEK, ( ( form.getNbWeeksToDisplay(  ) + nNbWeeksToCreate ) * 7 ) - 1 );
+
         Date dateMax = new Date( calendar.getTimeInMillis(  ) );
 
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
@@ -978,7 +1021,7 @@ public class AppointmentService
         {
             AppointmentDayHome.remove( day.getIdDay(  ) );
         }
-    	
+
         for ( AppointmentDay day : listDays )
         {
             // If the day has not already been created, we create it
@@ -1005,8 +1048,7 @@ public class AppointmentService
             }
         }
     }
-    
-    
+
     /**
      * Convert a duration from hours and minutes to its time format. The time
      * format is equal to the number of minutes of the given duration.
@@ -1018,41 +1060,52 @@ public class AppointmentService
     {
         return ( nHour * 60 ) + nMinute;
     }
+
     /**
-     * return day 
+     * return day
      * @param listDays
      * @return
      */
-    private  Calendar calculateNextSlotOpen( List<AppointmentDay> listDays, AppointmentForm form, MutableInt nOffsetWeeks ){
-	 	
-    	List<AppointmentDay> day= AppointmentDayHome.findByIdForm(form.getIdForm());
-    	boolean bool = false;
-    	Calendar objNow = GregorianCalendar.getInstance( Locale.FRANCE );
-					
-	    	for ( int index = 0; index < day.size() ; index++)
-			{
-	    		
-	    		AppointmentDay dayTmp= day.get(index);
-	    		if(dayTmp.getDate( ).after(objNow.getTime( )))
-	    		{
-	    			
-	    			if (dayTmp.getListSlots() == null )
-					{
-	    				dayTmp.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( dayTmp.getIdDay(  ) ) );
-					}
-	    			for(int i= 0; i< dayTmp.getListSlots().size(); i++ ){
-		    			Calendar tmpCal = getCalendarTime( dayTmp.getDate(), dayTmp.getListSlots().get(i).getStartingHour(), dayTmp.getListSlots().get(i).getStartingMinute());
-		    			
-		    			if(dayTmp.getListSlots().get(i).getIsEnabled() && dayTmp.getListSlots().get(i).getNbFreePlaces()> 0 && tmpCal.after(objNow)){	    				
-		    				objNow = tmpCal;
-		    				bool= true;
-		    				break;
-		    			}
-	    			}
-	    		}
-	    		
-	    		if(bool) break;
-			}	
-		return objNow;
+    private Calendar calculateNextSlotOpen( List<AppointmentDay> listDays, AppointmentForm form, MutableInt nOffsetWeeks )
+    {
+        List<AppointmentDay> day = AppointmentDayHome.findByIdForm( form.getIdForm(  ) );
+        boolean bool = false;
+        Calendar objNow = GregorianCalendar.getInstance( Locale.FRANCE );
+
+        for ( int index = 0; index < day.size(  ); index++ )
+        {
+            AppointmentDay dayTmp = day.get( index );
+
+            if ( dayTmp.getDate(  ).after( objNow.getTime(  ) ) )
+            {
+                if ( dayTmp.getListSlots(  ) == null )
+                {
+                    dayTmp.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( dayTmp.getIdDay(  ) ) );
+                }
+
+                for ( int i = 0; i < dayTmp.getListSlots(  ).size(  ); i++ )
+                {
+                    Calendar tmpCal = getCalendarTime( dayTmp.getDate(  ),
+                            dayTmp.getListSlots(  ).get( i ).getStartingHour(  ),
+                            dayTmp.getListSlots(  ).get( i ).getStartingMinute(  ) );
+
+                    if ( dayTmp.getListSlots(  ).get( i ).getIsEnabled(  ) &&
+                            ( dayTmp.getListSlots(  ).get( i ).getNbFreePlaces(  ) > 0 ) && tmpCal.after( objNow ) )
+                    {
+                        objNow = tmpCal;
+                        bool = true;
+
+                        break;
+                    }
+                }
+            }
+
+            if ( bool )
+            {
+                break;
+            }
+        }
+
+        return objNow;
     }
 }

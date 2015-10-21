@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -161,7 +162,7 @@ public final class AppointmentFormHome
     {
         return _dao.selectActiveAppointmentFormsList( _plugin );
     }
-    
+
     /**
      * Get Unavailable Date limited by Email of an appointment form from a user
      * @param startDate
@@ -170,8 +171,8 @@ public final class AppointmentFormHome
      * @param strEmail
      * @return
      */
-    public static List<Date> getLimitedByMail(Date startDate, Date []limitedDate, int nForm, String strEmail)
+    public static List<Date> getLimitedByMail( Date startDate, Date[] limitedDate, int nForm, String strEmail )
     {
-    	return _dao.getUnavailableDatesLimitedByMail(startDate, limitedDate, nForm, strEmail.trim(), _plugin);
+        return _dao.getUnavailableDatesLimitedByMail( startDate, limitedDate, nForm, strEmail.trim(  ), _plugin );
     }
 }

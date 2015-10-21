@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -110,8 +110,6 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String MESSAGE_CANT_REMOVE_ENTRY = "advert.message.cantRemoveEntry";
     private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
     private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.field_value_field";
-    
-    
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
     private static final String PROPERTY_MODIFY_QUESTION_TITLE = "appointment.modifyEntry.titleQuestion";
     private static final String PROPERTY_COPY_ENTRY_TITLE = "appointment.copyEntry.title";
@@ -309,13 +307,13 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
             List<Field> listField = new ArrayList<Field>( entry.getFields(  ).size(  ) );
-            
+
             for ( Field field : entry.getFields(  ) )
             {
                 field = FieldHome.findByPrimaryKey( field.getIdField(  ) );
                 listField.add( field );
             }
-            
+
             entry.setFields( listField );
 
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
@@ -345,6 +343,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
+
     /**
      * Get the request data and if there is no error insert the data in the
      * field specified in parameter. return null if there is no error or else
@@ -393,6 +392,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
 
         return null; // No error
     }
+
     /**
      * Perform the entry modification
      * @param request The HTTP request

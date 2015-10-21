@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ public class AppointmentFilter implements Serializable
     private String _strOrderBy = CONSTANT_DEFAULT_ORDER_BY;
     private boolean _bOrderAsc;
     private String _statusFilter;
-    
+
     /**
      * Get the id of the form
      * @return The id of the form
@@ -335,14 +335,14 @@ public class AppointmentFilter implements Serializable
 
         if ( bValidOrderBy )
         {
-        	if (strOrderBy.equalsIgnoreCase( "date_appointment" ) )
-        	{
-        		this._strOrderBy = "date_appointment,starting_hour,starting_minute";
-        	}
-        	else
-        	{
-        		this._strOrderBy = strOrderBy;
-        	}
+            if ( strOrderBy.equalsIgnoreCase( "date_appointment" ) )
+            {
+                this._strOrderBy = "date_appointment,starting_hour,starting_minute";
+            }
+            else
+            {
+                this._strOrderBy = strOrderBy;
+            }
         }
         else
         {
@@ -367,7 +367,7 @@ public class AppointmentFilter implements Serializable
     {
         this._bOrderAsc = bOrderAsc;
     }
-    
+
     /**
      * Get the order of the sort of this filter
      * @return The _bOrderAsc
@@ -385,5 +385,4 @@ public class AppointmentFilter implements Serializable
     {
         this._statusFilter = status;
     }
-    
 }

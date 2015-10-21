@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -167,9 +168,8 @@ public interface IAppointmentSlotDAO
     //     * @return the list of slots
     //     */
     //    List<AppointmentSlot> findByIdFormWithFreePlaces( int nIdForm, int nDayOfWeek, Date dateDay, Plugin plugin );
-    List<AppointmentSlot> getSlotsUnavailable (  int nIdDay, int nIdForm, Plugin plugin  );
-    
-    
+    List<AppointmentSlot> getSlotsUnavailable( int nIdDay, int nIdForm, Plugin plugin );
+
     /**
      * Find a slot from its primary key
      * @param nIdSlot the id of the slot to remove
@@ -177,5 +177,4 @@ public interface IAppointmentSlotDAO
      * @return The appointment slot
      */
     AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot, Plugin plugin );
-    
 }

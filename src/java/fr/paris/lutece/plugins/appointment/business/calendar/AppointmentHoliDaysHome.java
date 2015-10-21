@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -65,9 +66,9 @@ public final class AppointmentHoliDaysHome
      * @param listHolidays list holidays
      * @param nIdForm id form
      */
-    public static void create(Date holiday, int nIdForm )
+    public static void create( Date holiday, int nIdForm )
     {
-        _dao.insert( holiday, nIdForm , _plugin );
+        _dao.insert( holiday, nIdForm, _plugin );
     }
 
     /**
@@ -76,12 +77,11 @@ public final class AppointmentHoliDaysHome
      */
     public static void remove( Date date, int nIdForm )
     {
-        _dao.remove( date , nIdForm, _plugin );
+        _dao.remove( date, nIdForm, _plugin );
     }
-    
+
     public static List<Date> findByIdForm( int nIdForm )
     {
         return _dao.findByIdForm( nIdForm, _plugin );
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -263,6 +263,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
      *            conditional questions
      * @return The URL to go after performing the action
      */
+
     //@Action( ACTION_DO_MODIFY_FIELD )
     private String doModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
@@ -284,7 +285,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
             if ( strError != null )
             {
-            	return redirect( request, strError );
+                return redirect( request, strError );
             }
 
             FieldHome.update( field );
@@ -415,7 +416,6 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         return redirect( request,
             AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
-
     }
 
     /**

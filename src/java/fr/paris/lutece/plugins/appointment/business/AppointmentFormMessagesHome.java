@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,13 +33,13 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import java.util.List;
-
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+
+import java.util.List;
 
 
 /**
@@ -92,6 +92,7 @@ public final class AppointmentFormMessagesHome
         _dao.delete( nAppointmentFormId, _plugin );
         _cacheService.removeKey( AppointmentFormCacheService.getFormMessageCacheKey( nAppointmentFormId ) );
     }
+
     ///////////////////////////////////////////////////////////////////////////
     // Finders
 

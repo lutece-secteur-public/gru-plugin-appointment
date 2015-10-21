@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.sql.Date;
+
 import java.util.List;
 
 
@@ -209,7 +210,7 @@ public final class AppointmentDayHome
         day.setFreePlaces( nFreePlaces );
         update( day );
     }
-    
+
     /**
      * Find every day associated with a given form.
      * @param nIdForm the id of the form
@@ -219,5 +220,4 @@ public final class AppointmentDayHome
     {
         return _dao.findByIdForm( nIdForm, _plugin );
     }
-
 }

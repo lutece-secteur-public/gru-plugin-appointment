@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -78,22 +78,21 @@ public class AppointmentSlotService
     {
         List<AppointmentSlot> listSlots;
 
-        
-// form could be updated after the form is created so the form 
-//        if ( ( form.getOpeningHour(  ) == day.getOpeningHour(  ) ) &&
-//                ( form.getOpeningMinutes(  ) == day.getOpeningMinutes(  ) ) &&
-//                ( form.getClosingHour(  ) == day.getClosingHour(  ) ) &&
-//                ( form.getClosingMinutes(  ) == day.getClosingMinutes(  ) ) &&
-//                ( form.getDurationAppointments(  ) == day.getAppointmentDuration(  ) ) )
-//        {
-//            int nDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( day.getDate(  ) );
-//            listSlots = AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), nDayOfWeek );
-//        }
-//        else
-//        {
-            listSlots = AppointmentService.getService(  ).computeDaySlots( day );
-//        }
+        // form could be updated after the form is created so the form 
+        //        if ( ( form.getOpeningHour(  ) == day.getOpeningHour(  ) ) &&
+        //                ( form.getOpeningMinutes(  ) == day.getOpeningMinutes(  ) ) &&
+        //                ( form.getClosingHour(  ) == day.getClosingHour(  ) ) &&
+        //                ( form.getClosingMinutes(  ) == day.getClosingMinutes(  ) ) &&
+        //                ( form.getDurationAppointments(  ) == day.getAppointmentDuration(  ) ) )
+        //        {
+        //            int nDayOfWeek = AppointmentService.getService(  ).getDayOfWeek( day.getDate(  ) );
+        //            listSlots = AppointmentSlotHome.findByIdFormAndDayOfWeek( form.getIdForm(  ), nDayOfWeek );
+        //        }
+        //        else
+        //        {
+        listSlots = AppointmentService.getService(  ).computeDaySlots( day );
 
+        //        }
         for ( AppointmentSlot slot : listSlots )
         {
             slot.setIdDay( day.getIdDay(  ) );

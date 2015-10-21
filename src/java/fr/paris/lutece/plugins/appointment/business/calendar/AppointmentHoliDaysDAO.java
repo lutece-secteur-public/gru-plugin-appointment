@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,21 +51,21 @@ public class AppointmentHoliDaysDAO implements IAppointmentHoliDaysDAO
     private static final String SQL_QUERY_REMOVE_HOLIDAYS = "DELETE FROM appointment_holidays WHERE id_form = ? AND date_day= ?";
     private static final String SQL_QUERY_SELECT_DAY = "SELECT date_day FROM appointment_holidays WHERE id_form = ? ";
 
-
-    public void insert ( Date date, int nIdForm, Plugin plugin  )
+    public void insert( Date date, int nIdForm, Plugin plugin )
     {
-    	DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_HOLIDAYS, plugin );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_HOLIDAYS, plugin );
         int nIndex = 1;
-        
-    	daoUtil.setInt( nIndex++, nIdForm );
-    	daoUtil.setDate( nIndex, date );
-    	daoUtil.executeUpdate(  );
-    	daoUtil.free(  );
+
+        daoUtil.setInt( nIndex++, nIdForm );
+        daoUtil.setDate( nIndex, date );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
     }
+
     /**
      * {@inheritDoc}
      */
-    public void remove(Date date, int nIdForm, Plugin plugin )
+    public void remove( Date date, int nIdForm, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_HOLIDAYS, plugin );
         daoUtil.setInt( 1, nIdForm );
@@ -87,12 +88,11 @@ public class AppointmentHoliDaysDAO implements IAppointmentHoliDaysDAO
 
         while ( daoUtil.next(  ) )
         {
-        	listDays.add( daoUtil.getDate( 1 ) );
+            listDays.add( daoUtil.getDate( 1 ) );
         }
 
         daoUtil.free(  );
 
         return listDays;
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,10 +33,11 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import java.sql.Date;
-import java.util.List;
-
 import fr.paris.lutece.portal.service.plugin.Plugin;
+
+import java.sql.Date;
+
+import java.util.List;
 
 
 /**
@@ -93,15 +94,17 @@ public interface IAppointmentFormDAO
      *         objects
      */
     List<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin );
+
     /**
      * Get the unavailabled Date of appointments associated with a given form and with a
      * date after a given date
      * @param startDate
      * @param limitedDate
-     * @param nForm the form 
+     * @param nForm the form
      * @param strEmail email
      * @param plugin the plugin
      * @return unvailable dates
      */
-    List<Date> getUnavailableDatesLimitedByMail( Date startDate, Date[]limitedDate, int nForm, String strEmail, Plugin plugin );
+    List<Date> getUnavailableDatesLimitedByMail( Date startDate, Date[] limitedDate, int nForm, String strEmail,
+        Plugin plugin );
 }

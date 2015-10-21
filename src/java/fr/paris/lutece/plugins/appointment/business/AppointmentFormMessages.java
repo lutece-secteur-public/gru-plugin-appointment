@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2015, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import java.util.List;
-
 import fr.paris.lutece.portal.service.util.AppLogService;
+
+import java.util.List;
 
 
 /**
@@ -61,7 +61,7 @@ public class AppointmentFormMessages implements Cloneable
     private String _strCalendarDescription;
     private String _strCalendarReserveLabel;
     private String _strCalendarFullLabel;
-   
+
     /**
      * Return the id of the associated form
      * @return The id of the associated form
@@ -211,48 +211,48 @@ public class AppointmentFormMessages implements Cloneable
     {
         this._strFieldEmailHelp = strFieldEmailHelp;
     }
-    
+
     /**
      * Get Field confirmation email
      * @return The field of confirmation email
      */
-    public String getFieldConfirmationEmail(  ) 
+    public String getFieldConfirmationEmail(  )
     {
-		return _strFieldConfirmationEmail;
-	}
-    
+        return _strFieldConfirmationEmail;
+    }
+
     /**
      * Set field confirmation email
      * @param strFieldConfirmationEmail
      */
-	public void setFieldConfirmationEmail( String strFieldConfirmationEmail )
-	{
-		this._strFieldConfirmationEmail = strFieldConfirmationEmail;
-	}
-	
-	/**
-	 * Get field confirmation email help
-	 * @return The confirmation email help
-	 */
-	public String getFieldConfirmationEmailHelp(  ) 
-	{
-		return _strFieldConfirmationEmailHelp;
-	}
-	
-	/**
-	 * Set the field email confirmation help
-	 * @param fieldConfirmationEmailHelp
-	 */
-	public void setFieldConfirmationEmailHelp( String fieldConfirmationEmailHelp )
-	{
-		this._strFieldConfirmationEmailHelp = fieldConfirmationEmailHelp;
-	}
+    public void setFieldConfirmationEmail( String strFieldConfirmationEmail )
+    {
+        this._strFieldConfirmationEmail = strFieldConfirmationEmail;
+    }
 
-	/**
-     * Get the URL to redirect the user to after creation of an appointment
-     * @return The URL to redirect the user to after creation of an
-     *         appointment
+    /**
+     * Get field confirmation email help
+     * @return The confirmation email help
      */
+    public String getFieldConfirmationEmailHelp(  )
+    {
+        return _strFieldConfirmationEmailHelp;
+    }
+
+    /**
+     * Set the field email confirmation help
+     * @param fieldConfirmationEmailHelp
+     */
+    public void setFieldConfirmationEmailHelp( String fieldConfirmationEmailHelp )
+    {
+        this._strFieldConfirmationEmailHelp = fieldConfirmationEmailHelp;
+    }
+
+    /**
+    * Get the URL to redirect the user to after creation of an appointment
+    * @return The URL to redirect the user to after creation of an
+    *         appointment
+    */
     public String getUrlRedirectAfterCreation(  )
     {
         return _strUrlRedirectAfterCreation;
@@ -406,9 +406,10 @@ public class AppointmentFormMessages implements Cloneable
     {
         this._strCalendarFullLabel = strCalendarFullLabel;
     }
-	/**
-     * {@inheritDoc}
-     */
+
+    /**
+    * {@inheritDoc}
+    */
     @Override
     public Object clone(  )
     {
