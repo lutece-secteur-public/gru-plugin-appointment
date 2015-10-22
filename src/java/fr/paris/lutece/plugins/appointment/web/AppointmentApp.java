@@ -494,7 +494,8 @@ public class AppointmentApp extends MVCApplication
 
             if ( _appointmentFormService.isFormFirstStep( nIdForm ) )
             {
-                return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM, nIdForm );
+                //return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM, nIdForm );
+                return getAppointmentCalendar( request );
             }
 
             return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
