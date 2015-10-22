@@ -253,7 +253,8 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
-
+    private static final String ERROR_MESSAGE_MAX_APPOINTMENT = "appointment.message.error.MaxAppointmentPeriode";
+  
     // Session keys
     private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
@@ -268,7 +269,7 @@ public class AppointmentApp extends MVCApplication
     private final fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService _stateServiceWorkFlow = SpringContextService.getBean( fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService.BEAN_SERVICE );
     private transient CaptchaSecurityService _captchaSecurityService;
     private transient DateConverter _dateConverter;
-
+    private static final long lConversionDayMilisecond=24*60*60*1000;
     //    private transient DateConverter _dateConverter;
 
     /**
@@ -383,12 +384,41 @@ public class AppointmentApp extends MVCApplication
 
             List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>(  );
             Locale locale = request.getLocale(  );
+            
+            
+            
 
             //Email confirmation
             String strEmail = request.getParameter( PARAMETER_EMAIL );
             String emailConfirm = ( request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null )
                 ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
-
+             
+            //Validator MaxAppointments per WeeksLimits config
+        	int nMaxAppointments =  form.getMaxAppointments( );           
+			int nWeeksLimits =  form.getWeeksLimits( );			
+            AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointmentFromSession.getIdSlot(  ) );
+            AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay(  ) );
+            Date dDateAppointement=(Date) day.getDate(  ).clone(  );         
+		    AppointmentFilter filterEmail = new AppointmentFilter(  );
+            filterEmail.setEmail( strEmail ); 
+            filterEmail.setIdForm( nIdForm );
+            long nNbmilisecond = dDateAppointement.getTime( );  
+            Date dDateMax=new Date ( nNbmilisecond );
+            Date dDateMin=new Date ( nNbmilisecond-nWeeksLimits*lConversionDayMilisecond );    
+            filterEmail.setDateAppointmentMax( dDateMax );
+            filterEmail.setDateAppointmentMin( dDateMin );
+            List<Appointment> listAppointmentForEmail=  AppointmentHome.getAppointmentListByFilter(filterEmail);
+            int nAppointments =  listAppointmentForEmail.size();
+            if(nMaxAppointments!=0 && nWeeksLimits!=0) 
+            {
+            	if( nAppointments>=nMaxAppointments )
+            	{
+            		GenericAttributeError genAttError = new GenericAttributeError(  );
+    				 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_MAX_APPOINTMENT , request.getLocale(  ) ) );
+    				 listFormErrors.add( genAttError );
+            	}
+            }
+            //end Validator MaxAppointments per WeeksLimits config
             AppointmentDTO appointment = new AppointmentDTO(  );
 
             if ( form.getEnableMandatoryEmail(  ) )
