@@ -138,6 +138,8 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_DEFAULT_FIELD_LAST_NAME_HELP = "appointment.formMessages.defaultFieldLastNameHelp";
     private static final String PROPERTY_DEFAULT_FIELD_EMAIL_TITLE = "appointment.formMessages.defaultFieldEmailTitle";
     private static final String PROPERTY_DEFAULT_FIELD_EMAIL_HELP = "appointment.formMessages.defaultFieldEmailHelp";
+    private static final String PROPERTY_DEFAULT_FIELD_CONFIRMATION_EMAIL_TITLE = "appointment.formMessages.defaultFieldConfirmationEmailTitle";
+    private static final String PROPERTY_DEFAULT_FIELD_CONFIRMATION_EMAIL_HELP = "appointment.formMessages.defaultFieldConfirmationEmailHelp";
     private static final String PROPERTY_DEFAULT_URL_REDIRECTION = "appointment.formMessages.defaultUrlRedirection";
     private static final String PROPERTY_DEFAULT_LABEL_BUTTON_REDIRECT = "appointment.formMessages.defaultLabelButtonRedirect";
     private static final String PROPERTY_DEFAULT_TEXT_APPOINTMENT_CREATED = "appointment.formMessages.defaultTextAppointmentCreated";
@@ -215,7 +217,8 @@ public class AppointmentFormService implements Serializable
 
     /**
      * Get an Entry Filter
-     * @return
+     * @param iform the id form
+     * @return List a filter Entry 
      */
     private static List<Entry> getFilter( int iform )
     {
@@ -654,6 +657,10 @@ public class AppointmentFormService implements Serializable
         formMessages.setFieldEmailTitle( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_EMAIL_TITLE,
                 StringUtils.EMPTY ) );
         formMessages.setFieldEmailHelp( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_EMAIL_HELP,
+                StringUtils.EMPTY ) );
+        formMessages.setFieldConfirmationEmail( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_CONFIRMATION_EMAIL_TITLE,
+                StringUtils.EMPTY ) );
+        formMessages.setFieldConfirmationEmailHelp( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_CONFIRMATION_EMAIL_HELP,
                 StringUtils.EMPTY ) );
         formMessages.setUrlRedirectAfterCreation( AppPropertiesService.getProperty( PROPERTY_DEFAULT_URL_REDIRECTION,
                 StringUtils.EMPTY ) );

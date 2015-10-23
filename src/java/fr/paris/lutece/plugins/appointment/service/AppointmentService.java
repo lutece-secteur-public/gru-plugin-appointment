@@ -251,10 +251,10 @@ public class AppointmentService
     }
 
     /**
-     * Compute dateDiif
-     * @param date1
-     * @param date2
-     * @return
+     * Compute dateDiff
+     * @param date1 first date
+     * @param date2 second date
+     * @return diffrence of date
      */
     public static long getDateDiff( Date date1, Date date2 )
     {
@@ -265,8 +265,7 @@ public class AppointmentService
 
     /**
      * Get Date to Midnight
-     * @param dateDesired
-     * @return
+     * @return calendar date midnight
      */
     private static Calendar getDateMidnight(  )
     {
@@ -279,23 +278,20 @@ public class AppointmentService
     }
 
     /**
-     * Enable / Disable slots
-     * Whit Hours before appointmenet
-     * @param iDaysBeforeAppointment
-     * @param listDays
-     * @return
+     * 
+     * @param iDaysBeforeAppointment the days before the date 
+     * @param listDays list of days
+     * @param calStart start clendar
+     * @param calEnd end calendar
+     * @param objNow calendar current date
+     * @return a unvalid Appointments before Now
      */
     private static List<AppointmentDay> unvalidAppointmentsbeforeNow( int iDaysBeforeAppointment,
         List<AppointmentDay> listDays, Calendar calStart, Calendar calEnd, Calendar objNow )
     {
         int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue(  );
         objNow.add( Calendar.MILLISECOND, nbMilli );
-
-        if ( objNow.after( getDateMidnight(  ) ) )
-        {
-            //objNow.setTime( getDateMidnight( ).getTime() );
-        }
-
+  
         for ( int i = 0; i < listDays.size(  ); i++ )
         {
             if ( listDays.get( i ).getIsOpen(  ) )
@@ -337,10 +333,10 @@ public class AppointmentService
 
     /**
      * Transform Date to Calendar
-     * @param objTime
-     * @param iHour
-     * @param iMinute
-     * @return
+     * @param objTime the time 
+     * @param iHour the hours
+     * @param iMinute the minutes
+     * @return Calendar Time 
      */
     private static Calendar getCalendarTime( Date objTime, int iHour, int iMinute )
     {
@@ -359,8 +355,8 @@ public class AppointmentService
 
     /**
      * Is week can be visible
-     * @param listDays
-     * @return
+     * @param listDays the list days
+     * @return enable week 
      */
     private static boolean isWeekEnabled( List<AppointmentDay> listDays )
     {
@@ -392,8 +388,8 @@ public class AppointmentService
 
     /**
      * Check monday from the offset
-     * @param nOffsetWeeks
-     * @return
+     * @param nOffsetWeeks offset weeks
+     * @return Monday Week
      */
     private static Calendar[] getMondayWeek( int nOffsetWeeks )
     {
@@ -417,9 +413,9 @@ public class AppointmentService
 
     /**
      * Get all ListDays beetween 2 dates
-     * @param form
-     * @param nOffsetWeeks
-     * @return listDays
+     * @param form the form 
+     * @param nOffsetWeeks nOffsetWeeks
+     * @return list Days
      */
     private List<AppointmentDay> getListDays( AppointmentForm form, MutableInt nOffsetWeeks, Calendar objNow )
     {
