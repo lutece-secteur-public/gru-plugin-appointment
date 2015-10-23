@@ -212,8 +212,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getWeeksLimits(  ) );
-        daoUtil.setString( nIndex++,
-            StringUtils.isEmpty( appointmentForm.getReference(  ) ) ? null : appointmentForm.getReference(  ) );
+        daoUtil.setString( nIndex++, StringUtils.isEmpty( appointmentForm.getReference(  ) ) ? null : appointmentForm.getReference(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getIsFormStep(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getEnableConfirmEmail(  ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getEnableMandatoryEmail(  ) );
@@ -309,7 +308,6 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         img.setImage( daoUtil.getBytes( nIndex++ ) );
         img.setMimeType( daoUtil.getString( nIndex ) );
         appointmentForm.setIcon( img );
-
         return appointmentForm;
     }
 

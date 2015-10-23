@@ -53,7 +53,7 @@ import javax.validation.constraints.Size;
 /**
  * This is the business class for the object Appointment
  */
-public class Appointment implements Serializable
+public class Appointment implements  Serializable
 {
     /**
      * Appointment resource type
