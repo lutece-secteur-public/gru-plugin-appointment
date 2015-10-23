@@ -140,7 +140,7 @@ CREATE TABLE appointment_holidays
 	id_form int NOT NULL,
 	date_day DATE NOT NULL,
 	PRIMARY KEY (id_form,date_day)
-)
+);
 
 ALTER TABLE appointment_form ADD CONSTRAINT fk_app_form_template FOREIGN KEY (id_calendar_template)
       REFERENCES appointment_calendar_template (id) ON DELETE CASCADE ON UPDATE RESTRICT ;
