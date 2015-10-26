@@ -385,13 +385,10 @@ public class AppointmentApp extends MVCApplication
 
             List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>(  );
             Locale locale = request.getLocale(  );
-            
-            
-            
 
             //Email confirmation
             String strEmail = request.getParameter( PARAMETER_EMAIL );
-            String emailConfirm = ( request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null )
+            String strConfirmEmail = ( request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null )
                 ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
              
             //Validator MaxAppointments per WeeksLimits config
@@ -435,7 +432,7 @@ public class AppointmentApp extends MVCApplication
 
             if ( form.getEnableConfirmEmail(  ) )
             {
-                if ( StringUtils.isEmpty( emailConfirm ) )
+                if ( StringUtils.isEmpty( strConfirmEmail ) )
                 {
                     GenericAttributeError genAttError = new GenericAttributeError(  );
                     genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL,
@@ -444,7 +441,7 @@ public class AppointmentApp extends MVCApplication
                 }
             }
 
-            if ( !emailConfirm.equals( strEmail ) && !StringUtils.isEmpty( emailConfirm ) )
+            if ( !strConfirmEmail.equals( strEmail ) && !StringUtils.isEmpty( strConfirmEmail ) )
             {
                 GenericAttributeError genAttError = new GenericAttributeError(  );
                 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_CONFIRM_EMAIL,
@@ -1398,7 +1395,6 @@ public class AppointmentApp extends MVCApplication
     public static String getFormListHtml( HttpServletRequest request, AppointmentFormService appointmentFormService,
         String strTitle, Locale locale )
     {
-        appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
         appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
         AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
 
