@@ -589,9 +589,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
                     Integer.toString( appointmentForm.getIdForm(  ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
+                    AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, AdminUserService.getAdminUser( request ) ) )
         {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
 
         EntryFilter entryFilter = new EntryFilter(  );
@@ -656,6 +656,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                                                                    .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdAppointmentForm = Integer.parseInt( strIdForm );
+        
         java.sql.Date dateMin = null;
 
         if ( ( appointmentForm == null ) || ( nIdAppointmentForm != appointmentForm.getIdForm(  ) ) )
@@ -759,6 +760,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  ) )
         {
+        	if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, getUser(  ) ) )
+            {
+            	throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+            }
+        	
             String strDateMin = ( request.getParameter( PARAMETER_DATE_MIN ) == null ) ? StringUtils.EMPTY
                                                                                        : request.getParameter( PARAMETER_DATE_MIN );
 

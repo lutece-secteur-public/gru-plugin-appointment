@@ -70,6 +70,9 @@ public class AppointmentResourceIdService extends ResourceIdService
     /** Permission for modifying a form */
     public static final String PERMISSION_MODIFY_FORM = "MODIFY_FORM";
 
+    /** Permission for modifying an advanced setting form */
+    public static final String PERMISSION_MODIFY_ADVANCED_SETTING_FORM = "MODIFY_ADVANCED_SETTING_FORM";
+    
     /** Permission for modifying appointments of the form */
     public static final String PERMISSION_MODIFY_APPOINTMENT = "MODIFY_APPOINTMENT";
 
@@ -92,6 +95,7 @@ public class AppointmentResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_DELETE_FORM = "appointment.permission.label.deleteForm";
     private static final String PROPERTY_LABEL_DELETE_APPOINTMENT = "appointment.permission.label.deleteAppointment";
     private static final String PROPERTY_LABEL_MODIFY_FORM = "appointment.permission.label.modifyForm";
+    private static final String PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM = "appointment.permission.label.modifyAdvancedSettingForm";
     private static final String PROPERTY_LABEL_MODIFY_APPOINTMENT = "appointment.permission.label.modifyAppointment";
     private static final String PROPERTY_LABEL_VIEW_FORM = "appointment.permission.label.viewForm";
     private static final String PROPERTY_LABEL_VIEW_APPOINTMENT = "appointment.permission.label.viewAppointment";
@@ -130,10 +134,15 @@ public class AppointmentResourceIdService extends ResourceIdService
         p.setPermissionKey( PERMISSION_MODIFY_FORM );
         p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_FORM );
         rt.registerPermission( p );
-
+        
         p = new Permission(  );
-        p.setPermissionKey( PERMISSION_MODIFY_APPOINTMENT );
-        p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_APPOINTMENT );
+        p.setPermissionKey( PERMISSION_MODIFY_FORM );
+        p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_FORM );
+        rt.registerPermission( p );
+        
+        p = new Permission(  );
+        p.setPermissionKey( PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM );
         rt.registerPermission( p );
 
         p = new Permission(  );
