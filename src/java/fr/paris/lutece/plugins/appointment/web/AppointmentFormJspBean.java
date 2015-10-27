@@ -667,7 +667,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         String strForm = request.getParameter( PARAMETER_NAME_FORM );
         String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE
                                                                                          : request.getParameter( 
-                "deleteIcon" );
+                                                                                        		 PARAMETER_DELETE_ICON );
 
         AppointmentForm appointmentFormTmp = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
 
@@ -711,6 +711,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty(  ) )
             {
                 setParametersDays( appointmentForm, appointmentFormTmp );
+            }
+            if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  ) )
+            {
+                setAlterablesParameters( appointmentForm, appointmentFormTmp );
             }
         }
         else
@@ -792,10 +796,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                     appointmentForm.getIdForm(  ) );
             }
 
-            AppLogService.info( "resetFormDays BEGIN" );
             AppointmentService.getService(  )
                               .resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin );
-            AppLogService.info( "resetFormDays END " );
         }
 
         request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
@@ -814,7 +816,17 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         appointmentForm.setIsOpenSaturday( appointmentFormTmp.getIsOpenSaturday(  ) );
         appointmentForm.setIsOpenSunday( appointmentFormTmp.getIsOpenSunday(  ) );
     }
-
+    
+    private void setAlterablesParameters( AppointmentForm appointmentForm, AppointmentForm appointmentFormTmp )
+    {
+    	 appointmentForm.setAllowUsersToCancelAppointments( appointmentFormTmp.getAllowUsersToCancelAppointments( ) );
+    	 appointmentForm.setDisplayTitleFo( appointmentFormTmp.getDisplayTitleFo( ) ) ;
+    	 appointmentForm.setIsFormStep( appointmentFormTmp.getIsFormStep( ) );
+    	 appointmentForm.setEnableCaptcha( appointmentFormTmp.getEnableCaptcha( ) );
+    	 appointmentForm.setEnableConfirmEmail( appointmentFormTmp.getEnableConfirmEmail( ) );
+    	 appointmentForm.setEnableMandatoryEmail( appointmentFormTmp.getEnableMandatoryEmail( ) );
+    	
+    }
     /**
      * Get the URL to manage appointment forms
      * @param request The request
