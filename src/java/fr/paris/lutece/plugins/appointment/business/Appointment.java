@@ -111,7 +111,7 @@ public class Appointment implements  Serializable
     private int _idAdminUser;
     private int _nHasNotify;
 
-    /**
+	/**
      * Returns the IdAppointment
      * @return The IdAppointment
      */
