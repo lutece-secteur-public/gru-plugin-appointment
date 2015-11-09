@@ -41,7 +41,11 @@ ${entry.CSSClass!}
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 			<div class="alert alert-error alert-danger">
 			<#assign error = response.entry.error>
-				<#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if>
+				<#if error.mandatoryError>
+						${error.errorMessage}
+					<#else>
+						#i18n{appointment.message.mandatory.entry}
+					</#if>
 			</div>
 		</#if>
 	</#list>

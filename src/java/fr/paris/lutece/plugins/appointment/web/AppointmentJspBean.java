@@ -1488,6 +1488,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String doValidateForm( HttpServletRequest request )
         throws AccessDeniedException, SiteMessageException
     {
+    	
+    	
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
 
@@ -1598,7 +1600,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
                 {
                     GenericAttributeError genAttError = new GenericAttributeError(  );
-                    genAttError.setErrorMessage( constraintViolation.getMessage(  ) );
+                    String strErrorMessage = I18nService.getLocalizedString( constraintViolation.getMessageTemplate( ),
+                            request.getLocale(  ) ) ;
+                    genAttError.setErrorMessage( strErrorMessage );
                     listFormErrors.add( genAttError );
                 }
             }

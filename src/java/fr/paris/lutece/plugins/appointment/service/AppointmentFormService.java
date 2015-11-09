@@ -55,6 +55,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.content.XPageAppService;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
@@ -73,7 +74,6 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,6 +108,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_STR_LIST_CHILDREN = "str_list_entry_children";
     private static final String MARK_FORM = "form";
     private static final String MARK_FORM_MESSAGES = "form_messages";
+    private static final String MARK_FORM_ERRORS = "form_errors";
     private static final String MARK_STR_ENTRY = "str_entry";
     private static final String MARK_USER = "user";
     private static final String MARK_LIST_RESPONSES = "list_responses";
@@ -118,10 +119,12 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_APPOINTMENTSLOT = "appointmentSlot";
     private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
     private static final String MARK_WEEK = "nWeek";
+    private static final String MARK_LIST_ERRORS = "listAllErrors" ;
 
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
     private static final String SESSION_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.validatedAppointment";
+    private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
     // Templates
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
@@ -149,6 +152,12 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
+    private static final String PROPERTY_EMPTY_FIELD_FIRST_NAME = "appointment.validation.appointment.FirstName.notEmpty" ;
+    private static final String PROPERTY_EMPTY_FIELD_LAST_NAME = "appointment.validation.appointment.LastName.notEmpty" ;
+    private static final String PROPERTY_UNVAILABLE_EMAIL = "appointment.validation.appointment.Email.email" ; 
+    private static final String PROPERTY_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
+    private static final String PROPERTY_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email" ;
+    private static final String PROPERTY_UNVAILABLE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail" ;
     private transient volatile Boolean _bIsFormFirstStep;
 
     /**
@@ -174,7 +183,10 @@ public class AppointmentFormService implements Serializable
         {
             getHtmlEntry( entry.getIdEntry(  ), strBuffer, locale, bDisplayFront, request );
         }
-
+        List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
+                .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+        
+        model.put( MARK_FORM_ERRORS, listErrors );
         model.put( MARK_APPOINTMENTSLOT, strSlot );
         model.put( MARK_APPOINTMENTSLOTDAY, strDay );
         model.put( MARK_FORM, form );
@@ -182,7 +194,8 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_WEEK, nWeek );
-
+        
+        
         AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
 
         if ( appointment == null )
@@ -191,9 +204,17 @@ public class AppointmentFormService implements Serializable
 
             setUserInfo( request, appointment );
         }
-
-        model.put( MARK_APPOINTMENT, appointment );
-
+        List <String> listAllErrors = new ArrayList <String>(4) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_LAST_NAME , request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_EMAIL, request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
+        
+        model.put( MARK_APPOINTMENT , appointment );
+        model.put( MARK_LIST_ERRORS , listAllErrors );
+        
         if ( bDisplayFront )
         {
             model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm(  ) ) );
@@ -279,7 +300,20 @@ public class AppointmentFormService implements Serializable
             model.put( MARK_ADDON,
                 AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), locale ) );
         }
-
+        
+        List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
+                .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+        
+        List <String> listAllErrors = new ArrayList <String>(4) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_LAST_NAME , request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_EMAIL, request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
+        
+        model.put( MARK_FORM_ERRORS, listErrors );
+        model.put( MARK_LIST_ERRORS , listAllErrors );
         HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
                                                                               : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
                 model );

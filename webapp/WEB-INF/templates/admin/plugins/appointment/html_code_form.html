@@ -28,6 +28,26 @@
 						</#if>
 					</div>
 				</div>
+					<#if form_errors??>
+					<#assign hasDisplayableError = false>
+					<#list form_errors as form_error>
+						<#if form_error.isDisplayableError>
+							<#assign hasDisplayableError = true>
+							<#break >
+						</#if>
+					</#list>
+					<#if hasDisplayableError>
+							<#list form_errors as form_error>	
+								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
+									<div class="alert alert-error alert-danger">
+										<p>
+										  	${form_error.errorMessage}
+										</p>
+									</div>
+								</#if>	
+							</#list>
+					</#if>
+					</#if>
 				<div class="form-group">
 					<label for="firstname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldFirstNameTitle!} *</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -37,6 +57,26 @@
 						</#if>
 					</div>
 				</div>
+				<#if form_errors??>
+					<#assign hasDisplayableError = false>
+					<#list form_errors as form_error>
+						<#if form_error.isDisplayableError>
+							<#assign hasDisplayableError = true>
+							<#break >
+						</#if>
+					</#list>
+					<#if hasDisplayableError>
+							<#list form_errors as form_error>	
+								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
+									<div class="alert alert-error alert-danger">
+										<p>
+										  	${form_error.errorMessage}
+										</p>
+									</div>
+								</#if>	
+							</#list>
+					</#if>
+					</#if>
 				<div class="form-group">
 					<label for="email" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if> </label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -46,6 +86,26 @@
 						</#if>
 					</div>
 				</div>
+					<#if form_errors??>
+					<#assign hasDisplayableError = false>
+					<#list form_errors as form_error>
+						<#if form_error.isDisplayableError>
+							<#assign hasDisplayableError = true>
+							<#break >
+						</#if>
+					</#list>
+					<#if hasDisplayableError>
+							<#list form_errors as form_error>	
+								<#if form.enableMandatoryEmail && form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
+								<div class="alert alert-error alert-danger">
+									<p>
+									  	${form_error.errorMessage}
+									</p>
+								</div>
+								</#if>	
+							</#list>
+					</#if>
+					</#if>
 				<#if form.enableConfirmEmail>
 				<div class="form-group">
 					<label for="emailConfirm" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldConfirmationEmail!}*</label>
@@ -56,9 +116,29 @@
 						</#if>
 					</div>
 				</div>
+					<#if form_errors??>
+					<#assign hasDisplayableError = false>
+					<#list form_errors as form_error>
+						<#if form_error.isDisplayableError>
+							<#assign hasDisplayableError = true>
+							<#break >
+						</#if>
+					</#list>
+					<#if hasDisplayableError>
+							<#list form_errors as form_error>	
+								<#if form_error.isDisplayableError && (form_error.errorMessage == listAllErrors[4] || form_error.errorMessage == listAllErrors[5] )>
+									<div class="alert alert-error alert-danger">
+										<p>
+										  	${form_error.errorMessage} 
+										</p>
+									</div>
+								</#if>	
+							</#list>
+					</#if>
+					</#if>
 				</#if>
-				${str_entry}
-				${addon!}
+				${str_entry} 
+				${addon!}  
 				<div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
 						<#if appointment.idAppointment &gt; 0>

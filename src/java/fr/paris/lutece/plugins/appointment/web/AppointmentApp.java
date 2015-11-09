@@ -498,7 +498,7 @@ public class AppointmentApp extends MVCApplication
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
                 {
                     GenericAttributeError genAttError = new GenericAttributeError(  );
-                    genAttError.setErrorMessage( constraintViolation.getMessageTemplate(  ) );
+                    genAttError.setErrorMessage( I18nService.getLocalizedString( constraintViolation.getMessageTemplate(  ),request.getLocale(  ) ) );
                     listFormErrors.add( genAttError );
                 }
             }
@@ -582,7 +582,7 @@ public class AppointmentApp extends MVCApplication
     @Action( ACTION_DO_SELECT_SLOT )
     public XPage doSelectSlot( HttpServletRequest request )
     {
-        String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
+    	String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
 
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
         {
