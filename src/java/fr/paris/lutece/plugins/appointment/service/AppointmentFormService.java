@@ -204,16 +204,9 @@ public class AppointmentFormService implements Serializable
 
             setUserInfo( request, appointment );
         }
-        List <String> listAllErrors = new ArrayList <String>(4) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_LAST_NAME , request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_EMAIL, request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
-        
+              
         model.put( MARK_APPOINTMENT , appointment );
-        model.put( MARK_LIST_ERRORS , listAllErrors );
+        model.put( MARK_LIST_ERRORS , getAllErrors( request ) );
         
         if ( bDisplayFront )
         {
@@ -304,23 +297,28 @@ public class AppointmentFormService implements Serializable
         List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
                 .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
         
-        List <String> listAllErrors = new ArrayList <String>(4) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_LAST_NAME , request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_EMAIL, request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
-        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
-        
         model.put( MARK_FORM_ERRORS, listErrors );
-        model.put( MARK_LIST_ERRORS , listAllErrors );
+        model.put( MARK_LIST_ERRORS , getAllErrors( request ) );
         HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
                                                                               : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
                 model );
 
         return template.getHtml(  );
     }
-
+    
+    private List <String> getAllErrors( HttpServletRequest request )
+    {
+    	  List <String> listAllErrors = new ArrayList <String>( ) ;
+    	  
+          listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_LAST_NAME , request.getLocale( ) ) ) ;
+          listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale( ) ) ) ;
+          listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_EMAIL, request.getLocale( ) ) ) ;
+          listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale( ) ) ) ;
+          listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
+          listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_CONFIRM_EMAIL , request.getLocale( ) ) ) ;
+         
+          return listAllErrors ;
+    }
     /**
      * Set the info of the current LuteceUser to an appointment. If there is no
      * current lutece user, then do nothing
