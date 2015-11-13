@@ -141,6 +141,12 @@ public class AppointmentResourceIdService extends ResourceIdService
         rt.registerPermission( p );
         
         p = new Permission(  );
+        p.setPermissionKey( PERMISSION_MODIFY_APPOINTMENT );
+        p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_APPOINTMENT );
+        rt.registerPermission( p );
+
+        
+        p = new Permission(  );
         p.setPermissionKey( PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM );
         rt.registerPermission( p );

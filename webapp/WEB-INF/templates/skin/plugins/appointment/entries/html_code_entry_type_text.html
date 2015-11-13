@@ -1,8 +1,8 @@
-<div class="control-group">
-	<label class="control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
+<div class="form-group">
+	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 	<#list entry.fields as field>
-	<div class="controls">
-		<input type="text" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}" 
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<input class="form-control" type="text" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}" 
 			<#if list_responses??>
 				<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry>
@@ -35,15 +35,15 @@
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
 			<#assign error = response.entry.error>
-			<div class="alert alert-error alert-danger"><#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if></div>
+			<div class="alert alert-error alert-danger"> <#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></div>
 		</#if>
 	</#list>
 </#if>
 <#if entry.confirmField>
-<div class="control-group">
-	<label class="control-label" for="attribute${entry.idEntry}_confirm_field">${entry.confirmFieldTitle}<#if entry.mandatory> *</#if></label>
+<div class="form-group">
+	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}_confirm_field">${entry.confirmFieldTitle}<#if entry.mandatory> *</#if></label>
 	<#list entry.fields as field>
-	<div class="controls">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<input type="text" name="attribute${entry.idEntry}_confirm_field" id="attribute${entry.idEntry}_confirm_field" size="${field.width}" value="" 
 		<#if field.maxSizeEnter!=-1>maxlength="${field.maxSizeEnter}"</#if>/>
 	</div>
