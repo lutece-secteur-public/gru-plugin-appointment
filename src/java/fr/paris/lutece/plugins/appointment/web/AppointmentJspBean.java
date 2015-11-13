@@ -1359,7 +1359,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_FORM_HTML,
             _appointmentFormService.getHtmlForm( nMyWeek, strDayComment, strSlot, form, formMessages, getLocale(),
                 false, request ) );
-
+        
         List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
                                                                                       .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
 
@@ -1486,12 +1486,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String doValidateForm( HttpServletRequest request )
         throws AccessDeniedException, SiteMessageException
     {
-    	
-    	
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
 
-        if ( ( strIdForm != null ) && Srequest.getSession().getAttribute( PARAMETER_EMAIL_CONFIRMATION  );tringUtils.isNumeric( strIdForm ) )
+        if ( ( strIdForm != null ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
 
@@ -1542,7 +1540,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             //Email confirmation
             String strEmail = request.getParameter( PARAMETER_EMAIL );
              String emailConfirmation = ( request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
-             
+                
             if ( form.getEnableMandatoryEmail(  ) )
             {
                 if ( StringUtils.isEmpty( strEmail ) )
@@ -1596,9 +1594,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
                 {
                     GenericAttributeError genAttError = new GenericAttributeError(  );
-                    String strErrorMessage = I18nService.getLocalizedString( constraintViolation.getMessageTemplate( ),
-                            request.getLocale(  ) ) ;
-                    genAttError.setErrorMessage( strErrorMessage );
+                    genAttError.setErrorMessage( constraintViolation.getMessage(  ) );
                     listFormErrors.add( genAttError );
                 }
             }
