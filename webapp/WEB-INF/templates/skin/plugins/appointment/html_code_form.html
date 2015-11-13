@@ -52,7 +52,7 @@
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="emailConfirm" class="col-sm-2 control-label">${form_messages.fieldConfirmationEmail!}*</label>
 					<div class="col-sm-8">
-						<input type="text" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
+						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
 						<#if form_messages.fieldConfirmationEmail?? && form_messages.fieldConfirmationEmailHelp != ''>
 							<span class="help-block">${form_messages.fieldConfirmationEmailHelp!}</span>
 						</#if>
