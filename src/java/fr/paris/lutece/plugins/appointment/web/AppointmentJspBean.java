@@ -50,7 +50,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -282,7 +281,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENT_REMOVED = "appointment.info.appointment.removed";
     private static final String INFO_APPOINTMENT_MASSREMOVED = "appointment.info.appointment.removed";
     private static final String INFO_APPOINTMENT_EMAIL_ERROR = "appointment.info.appointment.emailerror";
-
+    private static final String INFO_LAST_NAME_ERROR = "appointment.validation.appointment.LastName.notEmpty";
+    private static final String INFO_FIRST_NAME_ERROR ="appointment.validation.appointment.FirstName.notEmpty";
     //Error
     private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
     private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
@@ -1540,7 +1540,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
             //Email confirmation
             String strEmail = request.getParameter( PARAMETER_EMAIL );
              String emailConfirmation = ( request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
-                
+              
+             String lastName = request.getParameter(PARAMETER_LAST_NAME) == null ? String.valueOf( StringUtils.EMPTY ) : request.getParameter(PARAMETER_LAST_NAME);
+             String firstName = request.getParameter(PARAMETER_FIRST_NAME)== null ? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_FIRST_NAME );
+             
             if ( form.getEnableMandatoryEmail(  ) )
             {
                 if ( StringUtils.isEmpty( strEmail ) )
@@ -1552,6 +1555,25 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 }
             }
 
+           
+                if ( StringUtils.isEmpty( lastName ) )
+                {
+                    GenericAttributeError genAttError = new GenericAttributeError(  );
+                    genAttError.setErrorMessage( I18nService.getLocalizedString( INFO_LAST_NAME_ERROR,
+                            request.getLocale(  ) ) );
+                    listFormErrors.add( genAttError );
+                }
+                
+                if ( StringUtils.isEmpty( firstName ) )
+                {
+                    GenericAttributeError genAttError = new GenericAttributeError(  );
+                    genAttError.setErrorMessage( I18nService.getLocalizedString( INFO_FIRST_NAME_ERROR,
+                            request.getLocale(  ) ) );
+                    listFormErrors.add( genAttError );
+                }
+            
+            
+            
             if ( form.getEnableConfirmEmail(  ) )
             {
                 if ( StringUtils.isEmpty( emailConfirmation ) )
