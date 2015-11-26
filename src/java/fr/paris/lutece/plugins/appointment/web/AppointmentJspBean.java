@@ -304,7 +304,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String CONSTANT_SPACE = " ";
     private static final String CONSTANT_ZERO = "0";
     private static final String CONSTANT_COMMA = ",";
-    public static final String ACTIVATEWORKFLOW = AppPropertiesService.getProperty( "appointment.activate.workflow" );
+    public static final String ACTIVATEWORKFLOW = AppPropertiesService.getProperty( "appointment.activate.workflow" ) ;
 
     //services
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
@@ -2204,6 +2204,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+//        String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
+//        int nIdAction = Integer.parseInt( strIdAction );
+        
+        
+        int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
+                getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
 
         if ( StringUtils.isEmpty( strIdAppointment ) || !StringUtils.isNumeric( strIdAppointment ) )
         {
@@ -2230,7 +2237,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 response.setFile( FileHome.findByPrimaryKey( response.getFile(  ).getIdFile(  ) ) );
             }
         }
-
+        
         appointment.setListResponse( listResponse );
 
         Map<String, Object> model = getModel(  );
@@ -2239,15 +2246,35 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_SLOT, slot );
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey( slot.getIdForm(  ) ) );
+        model.put( MARK_FORM, form );
+        model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
 
         if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
         {
-            model.put( MARK_RESOURCE_HISTORY,
-                WorkflowService.getInstance(  )
-                               .getDisplayDocumentHistory( nId, Appointment.APPOINTMENT_RESOURCE_TYPE,
-                    form.getIdWorkflow(  ), request, getLocale(  ) ) );
+            model.put( MARK_RESOURCE_HISTORY,WorkflowService.getInstance(  ).getDisplayDocumentHistory( nId, Appointment.APPOINTMENT_RESOURCE_TYPE,form.getIdWorkflow(  ), request, getLocale(  ) ) );
         }
+ 
+        
+        if ( ( form.getIdWorkflow(  ) > 0 ) && WorkflowService.getInstance(  ).isAvailable(  ) )
+        {   
+        	int nIdWorkflow = form.getIdWorkflow(  );
 
+                StateFilter stateFilter = new StateFilter(  );
+                stateFilter.setIdWorkflow( nIdWorkflow );
+
+                State stateAppointment = _stateService.findByResource( appointment.getIdAppointment(  ),
+                        Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow );
+
+                if ( stateAppointment != null )
+                {
+                    appointment.setState( stateAppointment );
+                }
+
+                appointment.setListWorkflowActions( WorkflowService.getInstance(  )
+                                                                   .getActions( appointment.getIdAppointment(  ),
+                        Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(  ), getUser(  ) ) );
+             
+        }
         if ( appointment.getIdAdminUser(  ) > 0 )
         {
             model.put( MARK_ADMIN_USER, AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser(  ) ) );
@@ -2267,8 +2294,30 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
 
-        model.put( MARK_ADDON,
-            AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), getLocale(  ) ) );
+        model.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), getLocale(  ) ) );
+        
+        AdminUser user = getUser(  );
+        model.put( MARK_RIGHT_CREATE,
+                RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
+            model.put( MARK_RIGHT_MODIFY,
+                RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, user ) );
+            model.put( MARK_RIGHT_DELETE,
+                RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, user ) );
+            model.put( MARK_RIGHT_VIEW,
+                RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, user ) );
+            model.put( MARK_RIGHT_CHANGE_STATUS,
+                RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
+                    AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, user ) );
+            
+            model.put( MARK_STATUS_RESERVED, Appointment.Status.STATUS_RESERVED.getValeur(  ) );
+            model.put( MARK_STATUS_UNRESERVED, Appointment.Status.STATUS_UNRESERVED.getValeur(  ) );
+            model.put( MARK_LANGUAGE, getLocale(  ) );
+            model.put( MARK_ACTIVATE_WORKFLOW,  ACTIVATEWORKFLOW );
+//            model.put( PARAMETER_ID_ACTION, nIdAction );
 
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
     }
@@ -2285,6 +2334,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         throws AccessDeniedException
     {
         String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
+        
 
         if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
         {

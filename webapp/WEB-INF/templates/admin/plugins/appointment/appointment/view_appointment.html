@@ -1,3 +1,4 @@
+
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-horizontal">
 		<fieldset>
@@ -50,6 +51,8 @@
 					${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointmentFrom} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute} #i18n{appointment.appointmentApp.labelTimeAppointmentTo} <#if slot.endingHour &lt; 10 >0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}
 				</div>
 			</div>
+
+
 			
 			<#if admin_user??>
 				<div class="form-group">
@@ -59,6 +62,76 @@
 					</div>
 				</div>
 			</#if>
+
+<fieldset>
+			<div class="form-group" align = "center">
+				<table>
+					<tr>
+						<th>#i18n{portal.util.labelActions}</th>
+					</tr>
+				<tr>
+						<td><#if rightModify?? && rightModify &&  appointment.status == status_reserved> 
+							<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}"
+									class="btn btn-primary btn-xs"
+									title="#i18n{portal.util.labelModify}">
+							<i class="glyphicon glyphicon-edit"></i>
+							</a> 
+
+								</#if>
+
+								 <#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0>
+									 <#list	appointment.listWorkflowActions as action>
+
+									 <a class="btn btn-xs btn-primary"
+										href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}">
+
+										<img	src="image?resource_type=workflow_icon_img&id=${action.icon.id}"
+											<#if action.icon.width!=-1> width="${action.icon.width}" </#if>
+
+											<#if action.icon.height!=-1> height="${action.icon.height}"</#if>
+
+										title="${action.name}" alt="${action.name}" />
+								</a> 
+								</#list> 
+								
+								</#if>
+								
+								 <#if activateWorkflow == "true" > 
+								 <#if rightChangeStatus> 
+								 <#if appointment.status != status_reserved>
+									<a class="btn btn-xs btn-success"
+									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_reserved}"
+									title="#i18n{appointment.manage_appointments.labelValidateAppointment}">
+										<i class="glyphicon glyphicon-ok"></i>
+									</a> 
+								</#if>
+								
+								 <#if appointment.status != status_unreserved> 
+								 <a	class="btn btn-xs btn-danger"
+									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_unreserved}"
+									title="#i18n{appointment.manage_appointments.labelRejectAppointment}">
+										<i class="glyphicon glyphicon-remove"></i>
+								</a> 
+								</#if> 
+								</#if> 
+								</#if>
+
+								 <#if rightDelete?? && rightDelete> 
+								 	<a	href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_appointment=${appointment.idAppointment}"
+										class="btn btn-danger btn-xs"
+										title="#i18n{portal.util.labelDelete}"> <i
+										class="glyphicon glyphicon-trash"></i>
+									</a> 
+								</#if>
+								
+								</td>
+</tr>
+</table>
+</div>
+</fieldset>
+
+
+
 			
 			${addon!}
 		
@@ -76,3 +149,4 @@
 		</fieldset>
 	</div>
 </div>
+
