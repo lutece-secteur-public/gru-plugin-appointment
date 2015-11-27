@@ -2205,9 +2205,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-//        String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
-//        int nIdAction = Integer.parseInt( strIdAction );
-        
         
         int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
                 getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
@@ -2317,7 +2314,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( MARK_STATUS_UNRESERVED, Appointment.Status.STATUS_UNRESERVED.getValeur(  ) );
             model.put( MARK_LANGUAGE, getLocale(  ) );
             model.put( MARK_ACTIVATE_WORKFLOW,  ACTIVATEWORKFLOW );
-//            model.put( PARAMETER_ID_ACTION, nIdAction );
 
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
     }
