@@ -7,7 +7,7 @@
 		<#if listDays??>
 			<div class="row-fluid">
 				<div class="span4">
-					<#if nb_week &gt; 0>
+					<#if nb_week &gt; 2>
 						<div class="pull-left">
 							<a class="btn btn-primary btn-small" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
 								<i class="icon-arrow-left icon-white">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}

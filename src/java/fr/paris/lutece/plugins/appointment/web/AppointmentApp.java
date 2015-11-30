@@ -33,6 +33,29 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang.time.DateUtils;
+import org.bouncycastle.util.Strings;
+import org.dozer.converters.DateConverter;
+
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
@@ -59,11 +82,7 @@ import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
-import fr.paris.lutece.plugins.workflowcore.business.state.State;
-import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
-import fr.paris.lutece.plugins.workflowcore.business.workflow.Workflow;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
-import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -80,6 +99,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -87,41 +107,14 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCMessage;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
-import fr.paris.lutece.portal.web.LocalVariables;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
+import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
-import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.commons.lang.time.DateUtils;
-
-import org.bouncycastle.util.Strings;
-
-import org.dozer.converters.DateConverter;
-
-import java.sql.Date;
-
-import java.text.DateFormat;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.validation.ConstraintViolation;
-
+import fr.paris.lutece.portal.web.admin.AdminFeaturesPageJspBean;
 
 /**
  * This class provides a simple implementation of an XPage
@@ -170,6 +163,7 @@ public class AppointmentApp extends MVCApplication
     private static final String TEMPLATE_CANCEL_APPOINTMENT = "skin/plugins/appointment/cancel_appointment.html";
     private static final String TEMPLATE_APPOINTMENT_CANCELED = "skin/plugins/appointment/appointment_canceled.html";
     private static final String TEMPLATE_MY_APPOINTMENTS = "skin/plugins/appointment/my_appointments.html";
+    private static final String TEMPLATE_APPOINTMENT_SLOTS_CALENDAR = "skin/plugins/appointment/calendar/appointment_form_list_open_slots.html";
 
     // Views
     private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
@@ -201,7 +195,15 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_DATE_APPOINTMENT = "dateAppointment";
     private static final String PARAMETER_FROM_MY_APPOINTMENTS = "fromMyappointments";
     private static final String PARAMETER_REFERER = "referer";
-
+    
+    private static final String PARAMETER_ID_TIME = "time";
+    
+    private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
+    private static final String PARAMETER_MAX_WEEK = "max_week";
+    private static final String PARAMETER_LIM_DATES = "bornDates";
+    private static final String MARK_LANGUAGE = "language";
+    private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR = "appointment.manage_appointment_calendar.pageTitle";
+    private static final String TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR = "/admin/plugins/appointment/appointment/manage_appointments_calendar.html";
     // Marks
     private static final String MARK_REF_APPOINTMENT = "refAppointment";
     private static final String MARK_DATE_APPOINTMENT = "dateAppointment";
@@ -310,7 +312,7 @@ public class AppointmentApp extends MVCApplication
                     ( ( _appointmentFormService.getAppointmentFromSession( request.getSession(  ) ) == null ) ||
                     ( _appointmentFormService.getAppointmentFromSession( request.getSession(  ) ).getIdSlot(  ) == 0 ) ) )
             {
-                return redirect( request, VIEW_APPOINTMENT_FORM_FIRST_STEP, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, VIEW_APPOINTMENT_FORM_FIRST_STEP, PARAMETER_ID_FORM, nIdForm);
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
@@ -1006,6 +1008,7 @@ public class AppointmentApp extends MVCApplication
 
         return xpage;
     }
+    
 
     /**
      * Get the first step of the form
@@ -1023,7 +1026,7 @@ public class AppointmentApp extends MVCApplication
 
             if ( _appointmentFormService.isFormFirstStep( nIdForm ) )
             {
-                return getViewForm( request );
+              return getViewForm( request );
             }
         }
 
@@ -1173,7 +1176,7 @@ public class AppointmentApp extends MVCApplication
      */
     private static String getAppointmentFormHtml( HttpServletRequest request, AppointmentForm form,
         AppointmentFormService appointmentFormService, Map<String, Object> model, Locale locale )
-    {
+    {    	
         if ( ( form == null ) || !form.getIsActive(  ) )
         {
             return StringUtils.EMPTY;
