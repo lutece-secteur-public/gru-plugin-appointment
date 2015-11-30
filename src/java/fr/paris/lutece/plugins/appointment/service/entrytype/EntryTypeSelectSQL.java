@@ -55,6 +55,7 @@ public class EntryTypeSelectSQL extends AbstractEntryTypeSelectSQL
     @Override
     public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
     {
+        entry.setFields(getSqlQueryFields(entry));
         return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
     }
 
