@@ -2274,6 +2274,64 @@ public class AppointmentJspBean extends MVCAdminJspBean
     }
 
     /**
+     * Do download a file from an appointment response stored in session and not yet on server fs
+     * @param request The request
+     * @param httpResponse The response
+     * @return nothing.
+     * @throws AccessDeniedException If the user is not authorized to access
+     *             this feature
+     */
+    public String getDownloadFileFromSession( HttpServletRequest request, HttpServletResponse httpResponse )
+            throws AccessDeniedException
+        {
+            String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
+            File respfile = null;
+            if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
+            {
+                return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+            }
+
+            int nIdResponse = Integer.parseInt( strIdResponse );
+            List<Response> lResponse = _appointmentFormService.getValidatedAppointmentFromSession(request.getSession()).getListResponse();
+            
+
+            for ( Response response : lResponse) 
+            {
+                if ( response.getEntry().getIdEntry() == nIdResponse && response.getFile() != null) {
+                    respfile = response.getFile() ;
+                    break ;
+                }
+            }
+            
+            if ( respfile == null )
+            {
+                return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+            }
+            
+            httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + respfile.getTitle(  ) + "\";" );
+            httpResponse.setHeader( "Content-type", respfile.getMimeType(  ) );
+            httpResponse.addHeader( "Content-Encoding", "UTF-8" );
+            httpResponse.addHeader( "Pragma", "public" );
+            httpResponse.addHeader( "Expires", "0" );
+            httpResponse.addHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+
+            try
+            {
+                OutputStream os = httpResponse.getOutputStream(  );
+                os.write( respfile.getPhysicalFile().getValue(  ) );
+                // We do not close the output stream in finally clause because it is the response stream,
+                // and an error message needs to be displayed if an exception occurs
+                os.close(  );
+            }
+            catch ( IOException e )
+            {
+                AppLogService.error( e.getStackTrace(  ), e );
+            }
+
+            return StringUtils.EMPTY;          
+        }
+    
+    /**
      * Do download a file from an appointment response
      * @param request The request
      * @param httpResponse The response
