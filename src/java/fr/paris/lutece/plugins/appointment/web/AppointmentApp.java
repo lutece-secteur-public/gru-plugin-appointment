@@ -394,19 +394,23 @@ public class AppointmentApp extends MVCApplication
                 ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
              
             //Validator MaxAppointments per WeeksLimits config
-        	int nMaxAppointments =  form.getMaxAppointments( );           
-			int nWeeksLimits =  form.getWeeksLimits( );			
-            AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointmentFromSession.getIdSlot(  ) );
-            AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay(  ) );
-            Date dDateAppointement = (Date) day.getDate(  ).clone(  );         
-		    AppointmentFilter filterEmail = new AppointmentFilter(  );
+            int nMaxAppointments =  form.getMaxAppointments( );           
+            int nWeeksLimits =  form.getWeeksLimits( );
+            AppointmentSlot appointmentSlot = null ;
+            AppointmentFilter filterEmail = new AppointmentFilter(  );
             filterEmail.setEmail( strEmail ); 
             filterEmail.setIdForm( nIdForm );
-            long nNbmilisecond = dDateAppointement.getTime( );  
-            Date dDateMax = new Date ( nNbmilisecond );
-            Date dDateMin = new Date ( nNbmilisecond-nWeeksLimits*lConversionDayMilisecond );    
-            filterEmail.setDateAppointmentMax( dDateMax );
-            filterEmail.setDateAppointmentMin( dDateMin );
+            if( appointmentFromSession != null ) 
+            {
+                appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointmentFromSession.getIdSlot(  ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay(  ) );
+                Date dDateAppointement = (Date) day.getDate(  ).clone(  );
+                long nNbmilisecond = dDateAppointement.getTime( );
+                Date dDateMax = new Date ( nNbmilisecond );
+                Date dDateMin = new Date ( nNbmilisecond-nWeeksLimits*lConversionDayMilisecond );
+                filterEmail.setDateAppointmentMax( dDateMax );
+                filterEmail.setDateAppointmentMin( dDateMin );
+            }
             List<Appointment> listAppointmentForEmail =  AppointmentHome.getAppointmentListByFilter( filterEmail );
             int nAppointments =  listAppointmentForEmail.size();
             if( nMaxAppointments !=0 && nWeeksLimits !=0 ) 
