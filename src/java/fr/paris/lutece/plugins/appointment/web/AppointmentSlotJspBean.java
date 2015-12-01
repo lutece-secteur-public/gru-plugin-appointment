@@ -562,8 +562,8 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         {
             String now = new SimpleDateFormat( "ddMMyyyy-hhmm" ).format( GregorianCalendar.getInstance( getLocale(  ) )
                                                                                           .getTime(  ) ) + "_" +
-                I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale(  ) );
-            response.setContentType( "application/vnd.ms-excel" );
+                I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale(  ) ) + DownloadConstants.EXCEL_FILE_EXTENSION;
+            response.setContentType( DownloadConstants.EXCEL_MIME_TYPE );
             response.setHeader( "Content-Disposition", "attachment; filename=\"" + now + "\";" );
             response.setHeader( "Pragma", "public" );
             response.setHeader( "Expires", "0" );
