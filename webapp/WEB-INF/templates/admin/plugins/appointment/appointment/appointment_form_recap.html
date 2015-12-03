@@ -30,16 +30,22 @@
 						${appointment.email}
 					</div>
 				</div>
-				<#list listResponseRecapDTO as response>
-					<#if response.recapValue?has_content>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-							${response.recapValue}
-						</div>
-					</div>
-					</#if>
-				</#list>
+                <#list listResponseRecapDTO as response>
+                    <#if response.recapValue?has_content>
+                        <div class="form-group">
+	                        <label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+	                        <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+	                            <#if response.file?? >
+	                                <a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}">
+               	                         ${response.recapValue}
+	                                </a>
+	                            <#else>    
+               	                    ${response.recapValue}	                                
+	                            </#if>
+	                        </div>
+	                    </div>
+                    </#if>
+                </#list>
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">

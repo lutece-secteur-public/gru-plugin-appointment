@@ -38,13 +38,11 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -99,7 +97,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -110,11 +107,9 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
-import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.url.UrlItem;
-import fr.paris.lutece.portal.web.admin.AdminFeaturesPageJspBean;
 
 /**
  * This class provides a simple implementation of an XPage
@@ -394,19 +389,24 @@ public class AppointmentApp extends MVCApplication
                 ? String.valueOf( MARK_CONSTANT_STR_NULL ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
              
             //Validator MaxAppointments per WeeksLimits config
-        	int nMaxAppointments =  form.getMaxAppointments( );           
-			int nWeeksLimits =  form.getWeeksLimits( );			
-            AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointmentFromSession.getIdSlot(  ) );
-            AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay(  ) );
-            Date dDateAppointement = (Date) day.getDate(  ).clone(  );         
-		    AppointmentFilter filterEmail = new AppointmentFilter(  );
+            int nMaxAppointments =  form.getMaxAppointments( );           
+            int nWeeksLimits =  form.getWeeksLimits( );
+            AppointmentSlot appointmentSlot = null ;
+            AppointmentFilter filterEmail = new AppointmentFilter(  );
             filterEmail.setEmail( strEmail ); 
             filterEmail.setIdForm( nIdForm );
-            long nNbmilisecond = dDateAppointement.getTime( );  
-            Date dDateMax = new Date ( nNbmilisecond );
-            Date dDateMin = new Date ( nNbmilisecond-nWeeksLimits*lConversionDayMilisecond );    
-            filterEmail.setDateAppointmentMax( dDateMax );
-            filterEmail.setDateAppointmentMin( dDateMin );
+            if ( appointmentFromSession != null
+                    && appointmentFromSession.getIdSlot ( ) != 0 )
+            {
+                appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointmentFromSession.getIdSlot(  ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay(  ) );
+                Date dDateAppointement = (Date) day.getDate(  ).clone(  );
+                long nNbmilisecond = dDateAppointement.getTime( );
+                Date dDateMax = new Date ( nNbmilisecond );
+                Date dDateMin = new Date ( nNbmilisecond-nWeeksLimits*lConversionDayMilisecond );
+                filterEmail.setDateAppointmentMax( dDateMax );
+                filterEmail.setDateAppointmentMin( dDateMin );
+            }
             List<Appointment> listAppointmentForEmail =  AppointmentHome.getAppointmentListByFilter( filterEmail );
             int nAppointments =  listAppointmentForEmail.size();
             if( nMaxAppointments !=0 && nWeeksLimits !=0 ) 

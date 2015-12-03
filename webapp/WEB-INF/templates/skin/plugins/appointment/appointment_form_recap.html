@@ -31,17 +31,21 @@
 						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.email}">
 					</div>
 				</div>
-				<#list listResponseRecapDTO as response>
-					<#if response.recapValue?? && response.recapValue?has_content>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-							<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-								<input type="text" class="form-control" disabled readonly="readonly" value="${response.recapValue}">
-							</div>
-						</div>
-					</#if>
-				</#list>
-				<div class="form-group">
+                <#list listResponseRecapDTO as response>
+                    <#if  response.recapValue?? && response.recapValue?has_content>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <#if response.file?? >
+                                    <a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}">${response.recapValue}</a>
+                                <#else>
+                                    <input type="text" class="form-control" disabled readonly="readonly" value="${response.recapValue}">         
+                                </#if>
+                            </div>
+                        </div>
+                    </#if>
+                </#list>
+                <div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointmentFrom} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute} #i18n{appointment.appointmentApp.labelTimeAppointmentTo} <#if slot.endingHour &lt; 10 >0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}">
