@@ -194,7 +194,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_SEEK = "Rechercher";
     private static final String PARAMETER_INDX = "page_index";
     private static final String PARAMETER_MARK_FORCE = "force";
-    private static final String PARAMETER_CONFIRMATION_EMAIL = "email_confirmation";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -234,7 +233,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ALLDATES = "allDates";
     private static final String MARK_ACTIVATE_WORKFLOW = "activateWorkflow";
-    private static final String MARK_EMAIL_CONFIRMATION = "emaiconfirmation";
 
     // JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -893,16 +891,26 @@ public class AppointmentJspBean extends MVCAdminJspBean
         int startWeek = objNow.get( Calendar.WEEK_OF_YEAR );
         int endWeek = objAfter.get( Calendar.WEEK_OF_YEAR );
         int idiff = objNow.get( Calendar.YEAR ) - objAfter.get( Calendar.YEAR );
-        int ideltaYears = 0;
-        Calendar objTmp = objNow.after( objAfter ) ? objAfter : objNow;
-
-        for ( int i = 0; i < idiff; i++ )
+        if ( ( idiff<0 ) & ( endWeek<startWeek ) )
         {
+        	int ideltaYears = 0;
+            Calendar objTmp = objNow.after( objAfter ) ? objAfter : objNow;
             ideltaYears += objTmp.getWeeksInWeekYear(  );
-            objTmp.add( Calendar.YEAR, 1 );
+            nNbWeek = ( endWeek + ideltaYears ) - startWeek;	
         }
+        else
+        {
+        	int ideltaYears = 0;
+            Calendar objTmp = objNow.after( objAfter ) ? objAfter : objNow;
 
-        nNbWeek = ( endWeek + ideltaYears ) - startWeek;
+            for ( int i = 0; i < idiff; i++ )
+            {
+                ideltaYears += objTmp.getWeeksInWeekYear(  );
+                objTmp.add( Calendar.YEAR, 1 );
+            }
+
+            nNbWeek = ( endWeek + ideltaYears ) - startWeek;
+        }
 
         return nNbWeek;
     }
