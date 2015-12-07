@@ -74,7 +74,6 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -87,12 +86,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import java.sql.Date;
-
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -164,11 +161,18 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String MARK_BORN_DATE = "bornDates";
     private static final String MARK_HOLIDAY = "dateHoliday";
     private static final String MARK_LIST_DAYS = "listDays";
+    private static final String MARK_COLUMN = "column";
+    private static final String MARK_ROW = "row";
+    private static final String MARK_EXCEL_EXTENSION_XLSX = "xlsx" ;
+    private static final String MARK_FORMAT_DATE = "dd/MM/yyyy";
     private static final String MARK_FILE_CLOSING_DAYS = "fileHolidays";
     private static final String MARK_COLUMN_DAY = "appointment.manageHolidays.export_holidays.columnDay";
     private static final String MARK_COLUMN_MONTH = "appointment.manageHolidays.export_holidays.columnMonth";
     private static final String MARK_COLUMN_YEAR = "appointment.manageHolidays.export_holidays.columnYeay";
     private static final String MARK_COLUMN_DATE = "appointment.manageHolidays.export_holidays.columnShortDate";
+    private static final String MARK_FORMAT_DATE_REGEX = "([0-9]{2})/([0-9]{2})/([0-9]{4})" ;
+    private static final String MARK_ERROR_MSG = "appointment.manageHolidays.error.formatDate" ;
+    private static final String MARK_ERROR_FORMAT_DATE = "appointment.manageHolidays.error.typeFormatNotValid" ;
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
@@ -520,7 +524,6 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                 strWriter[1] = strmonth;
                 strWriter[2] = String.valueOf( year );
                 strWriter[3] = DateUtil.getDateString( date, getLocale(  ) );
-
                 tmpObj.add( strWriter );
             }
         }
@@ -559,8 +562,8 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         {
             String now = new SimpleDateFormat( "ddMMyyyy-hhmm" ).format( GregorianCalendar.getInstance( getLocale(  ) )
                                                                                           .getTime(  ) ) + "_" +
-                I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale(  ) );
-            response.setContentType( "application/vnd.ms-excel" );
+                I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale(  ) ) + DownloadConstants.EXCEL_FILE_EXTENSION;
+            response.setContentType( DownloadConstants.EXCEL_MIME_TYPE );
             response.setHeader( "Content-Disposition", "attachment; filename=\"" + now + "\";" );
             response.setHeader( "Pragma", "public" );
             response.setHeader( "Expires", "0" );
@@ -585,72 +588,87 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     {
         List<Date> listDays = new ArrayList<Date>(  );
         FileInputStream fis = null;
-
-        try
+        String strExtension =  FilenameUtils.getExtension( item.getName( ) ); 
+        DateFormat dateFormat = new SimpleDateFormat( MARK_FORMAT_DATE );
+        if ( strExtension.equals( MARK_EXCEL_EXTENSION_XLSX ) )
         {
-            fis = (FileInputStream) item.getInputStream(  );
-
-            // Using XSSF for xlsx format, for xls use HSSF
-            Workbook workbook = new XSSFWorkbook( fis );
-
-            int numberOfSheets = workbook.getNumberOfSheets(  );
-
-            //looping over each workbook sheet
-            for ( int i = 0; i < numberOfSheets; i++ )
-            {
-                Sheet sheet = workbook.getSheetAt( i );
-                Iterator<Row> rowIterator = sheet.iterator(  );
-
-                //iterating over each row
-                while ( rowIterator.hasNext(  ) )
-                {
-                    Row row = (Row) rowIterator.next(  );
-
-                    if ( row.getRowNum(  ) > 1 )
-                    {
-                        Iterator<Cell> cellIterator = row.cellIterator(  );
-
-                        //Iterating over each cell (column wise)  in a particular row.
-                        while ( cellIterator.hasNext(  ) )
-                        {
-                            Cell cell = (Cell) cellIterator.next(  );
-
-                            //The Cell Containing String will is name.
-                            if ( cell.getColumnIndex(  ) == 3 )
-                            {
-                                String strdate = cell.getStringCellValue(  );
-
-                                if ( !strdate.isEmpty(  ) )
-                                {
-                                    if ( strdate.matches( "([0-9]{2})/([0-9]{2})/([0-9]{4})" ) )
-                                    {
-                                        Date date = new Date( DateUtil.getDate( strdate ).getTime(  ) );
-                                        listDays.add( date );
-                                    }
-                                    else
-                                    {
-                                        AppLogService.error( 
-                                            "Format Date imported is not valid, format should be as dd/mm/yyyy" );
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            fis.close(  );
+	        try
+	        {
+	            fis = (FileInputStream) item.getInputStream(  );
+	            // Using XSSF for xlsx format, for xls use HSSF
+	            Workbook workbook = new XSSFWorkbook( fis );
+	
+	            int numberOfSheets = workbook.getNumberOfSheets(  );
+	
+	            //looping over each workbook sheet
+	            for ( int i = 0; i < numberOfSheets; i++ )
+	            {
+	                Sheet sheet = workbook.getSheetAt( i );
+	                Iterator<Row> rowIterator = sheet.iterator(  );
+	
+	                //iterating over each row
+	                while ( rowIterator.hasNext(  ) )
+	                {
+	                    Row row = (Row) rowIterator.next(  );
+	
+	                    if ( row.getRowNum(  ) > 1 )
+	                    {
+	                        Iterator<Cell> cellIterator = row.cellIterator(  );
+	
+	                        //Iterating over each cell (column wise)  in a particular row.
+	                        while ( cellIterator.hasNext(  ) )
+	                        {
+	                            Cell cell = (Cell) cellIterator.next(  );
+	
+	                            //The Cell Containing String will is name.
+	                            if ( cell.getColumnIndex(  ) == 3 )
+	                            {
+	                                String strdate = StringUtils.EMPTY ;
+	                                
+	                                if ( cell.getCellType( ) == 0 )
+	                                {
+	                                	java.util.Date date = cell.getDateCellValue( );
+	                                	
+	                                	strdate = dateFormat.format( date ) ;
+	                                }
+	                                if ( cell.getCellType( ) == 1 )
+	                                {
+	                                	strdate = cell.getStringCellValue( ) ;
+	                                }
+	                                else
+	                                {
+	                                	 AppLogService.error( MARK_ERROR_FORMAT_DATE + MARK_COLUMN +" : " + ( cell.getColumnIndex(  ) + 1 )  + MARK_ROW + " : " + row.getRowNum(  ) );
+	                                }
+	                                if ( StringUtils.isNotEmpty( strdate ) )
+	                                {
+	                                    if ( strdate.matches( MARK_FORMAT_DATE_REGEX ) )
+	                                    {
+	                                        Date date = new Date( DateUtil.getDate( strdate ).getTime(  ) );
+	                                        listDays.add( date );
+	                                    }
+	                                    else
+	                                    {
+	                                        AppLogService.error( MARK_ERROR_MSG );
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	            fis.close(  );
+	            workbook.close( );
+	        }
+	        catch ( FileNotFoundException e )
+	        {
+	            e.printStackTrace(  );
+	        }
+	        catch ( IOException e )
+	        {
+	            e.printStackTrace(  );
+	        }
         }
-        catch ( FileNotFoundException e )
-        {
-            e.printStackTrace(  );
-        }
-        catch ( IOException e )
-        {
-            e.printStackTrace(  );
-        }
-
-        return listDays;
+        return listDays; 
     }
 
     /**

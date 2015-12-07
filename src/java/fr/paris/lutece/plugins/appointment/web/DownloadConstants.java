@@ -31,49 +31,22 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.service.entrytype;
-
-import fr.paris.lutece.plugins.genericattributes.business.Entry;
-import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeSelectSQL;
-
+package fr.paris.lutece.plugins.appointment.web;
 
 /**
- *
- * class EntryTypeSelectSQL
+ * Class containing constants for the download of files in Appointment plugin
  *
  */
-public class EntryTypeSelectSQL extends AbstractEntryTypeSelectSQL
+public final class DownloadConstants 
 {
-    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_select_sql.html";
-    private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_select_sql.html";
-    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_select_sql.html";
-    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_select_sql.html";
+    public static final String EXCEL_FILE_EXTENSION = ".xlsx";
+    public static final String EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     /**
-     * {@inheritDoc}
+     * Private default constructor because this class is an utility class
      */
-    @Override
-    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
+    private DownloadConstants( )
     {
-        entry.setFields(getSqlQueryFields(entry));
-        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateCreate( Entry entry, boolean bDisplayFront )
-    {
-        return TEMPLATE_CREATE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateModify( Entry entry, boolean bDisplayFront )
-    {
-        return TEMPLATE_MODIFY;
+        
     }
 }

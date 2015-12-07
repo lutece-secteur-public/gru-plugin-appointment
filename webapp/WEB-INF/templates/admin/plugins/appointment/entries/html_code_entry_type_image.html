@@ -22,11 +22,7 @@
 			<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
 				<div class="alert alert-error">
 					<#assign error = response_error.entry.error>
-					<#if error.mandatoryError>
-						#i18n{appointment.message.mandatory.entry}
-					<#else>
-						${error.errorMessage}
-					</#if>
+					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
 				</div>
 			</#if>
 		</#if>

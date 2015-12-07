@@ -15,7 +15,7 @@
 				slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if
 				slot.endingMinute &lt; 10>0</#if>${slot.endingMinute} </#if> <#if
 				rightCreate?? && rightCreate> <a
-					href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}"
+					href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&nb_week=1"
 					class="btn btn-primary btn-sm pull-right" type="submit"> <i
 					class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{appointment.manage_appointments.buttonAdd}
 				</a> </#if>
@@ -175,7 +175,7 @@
 										<i class="glyphicon glyphicon-chevron-down"></i>
 								</a>
 								</th>
-								<th>#i18n{appointment.manage_appointments.columnAdminUser}
+								<th class="hidden-xs hidden-sm hidden-md">#i18n{appointment.manage_appointments.columnAdminUser}
 								</th>
 								<th>#i18n{appointment.manage_appointments.columnStatus} <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=true">
@@ -208,7 +208,7 @@
 								<td>${appointment.dateAppointment}
 									#i18n{appointment.manage_appointment_calendar.labelFrom}&nbsp;${appointment.startAppointment?time?string["HH:mm"]}&nbsp;#i18n{appointment.manage_appointment_calendar.labelTo}&nbsp;${appointment.endAppointment?time?string["HH:mm"]}
 								</td>
-								<td><#if appointment.idAdminUser &gt; 0> <#list
+								<td  class="hidden-xs hidden-sm hidden-md"><#if appointment.idAdminUser &gt; 0> <#list
 									list_admin_users as refItemAdmin> <#if refItemAdmin.code ==
 									appointment.idAdminUser?string> ${refItemAdmin.name} <#break>
 									</#if> </#list> </#if></td>
