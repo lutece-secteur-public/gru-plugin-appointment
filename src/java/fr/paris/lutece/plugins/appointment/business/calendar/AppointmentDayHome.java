@@ -210,7 +210,24 @@ public final class AppointmentDayHome
         day.setFreePlaces( nFreePlaces );
         update( day );
     }
+    
+    public static synchronized void resetDayPlaces ( AppointmentDay day, int nIdForm, int nDayOfWeek ) 
+    {
+       
+        List<AppointmentSlot> listAppointmentSlot = AppointmentSlotHome.findByIdFormAndDayOfWeek( nIdForm, nDayOfWeek );
+        int nPlaces = day.getPeoplePerAppointment( );
 
+        for ( AppointmentSlot slot : listAppointmentSlot )
+        {
+            if ( slot.getIsEnabled(  ) & slot.getIdDay( )==0 )
+            
+            {
+                slot.setNbPlaces( nPlaces );
+                AppointmentSlotHome.update( slot );
+            }
+        }
+    }
+    
     /**
      * Find every day associated with a given form.
      * @param nIdForm the id of the form

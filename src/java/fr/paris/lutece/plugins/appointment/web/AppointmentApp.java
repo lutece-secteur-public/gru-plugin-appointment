@@ -906,11 +906,10 @@ public class AppointmentApp extends MVCApplication
                 {
                     if ( appointment.getIdActionCancel(  ) > 0 )
                     {
-                        boolean automaticUpdate = ( AdminUserService.getAdminUser( request ) == null ) ? true : false;
-                        WorkflowService.getInstance(  )
-                                       .doProcessAction( appointment.getIdAppointment(  ),
+                    		boolean automaticUpdate = ( AdminUserService.getAdminUser( request ) == null ) ? true : false;
+                    		WorkflowService.getInstance(  ).doProcessAction( appointment.getIdAppointment(  ),
                             Appointment.APPOINTMENT_RESOURCE_TYPE, appointment.getIdActionCancel(  ),
-                            form.getIdForm(  ), request, request.getLocale(  ), automaticUpdate );
+                            form.getIdForm(  ), request, request.getLocale(  ), automaticUpdate);
                     }
                     else
                     {
