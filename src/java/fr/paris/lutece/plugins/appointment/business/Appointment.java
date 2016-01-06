@@ -110,6 +110,8 @@ public class Appointment implements  Serializable
     private int _nIdActionCancel;
     private int _idAdminUser;
     private int _nHasNotify;
+    
+    
 
 	/**
      * Returns the IdAppointment

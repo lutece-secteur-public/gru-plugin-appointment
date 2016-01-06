@@ -608,6 +608,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
         }
+        
+        if ( day.getPeoplePerAppointment( )!=dayFromDb.getPeoplePerAppointment( ) )
+        {
+        	AppointmentDayHome.resetDayPlaces( day, day.getIdForm( ), getDayOfWeek( day.getDate(  ) ) );
+        }
 
         AppointmentDayHome.update( day );
 
@@ -622,6 +627,27 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         }
 
         return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
+    }
+    
+    
+    /**
+     * Get the day of the week of a date.
+     * @param date The date to get the day of the week of
+     * @return 1 for Monday, 2 for Tuesday, ..., 7 for Sunday
+     */
+    public int getDayOfWeek( Date date )
+    {
+        Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
+        calendar.setTime( date );
+
+        int nDayOfWeek = calendar.get( Calendar.DAY_OF_WEEK ) - 1;
+
+        if ( nDayOfWeek <= 0 )
+        {
+            nDayOfWeek = nDayOfWeek + 7;
+        }
+
+        return nDayOfWeek;
     }
 
     /**
