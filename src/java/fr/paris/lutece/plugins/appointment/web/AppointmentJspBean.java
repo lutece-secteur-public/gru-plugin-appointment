@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.web;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +77,7 @@ import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDisponiblity;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
@@ -194,6 +196,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_SEEK = "Rechercher";
     private static final String PARAMETER_INDX = "page_index";
     private static final String PARAMETER_MARK_FORCE = "force";
+    private static final String PARAMETER_ID_SLOT_ACTIVE = "idSlotActive";
+    private static final String PARAMETER_SLOT_LIST_DISPONIBILITY = "slotListDisponibility";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -312,7 +316,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Session variable to store working values
     private int _nDefaultItemsPerPage;
     private AppointmentFilter _filter;
-
+    private int idSlot ;
     
     
     /**
@@ -661,6 +665,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strTimeMilli = request.getParameter( PARAMETER_ID_TIME );
+        Map<String, Object> model = new HashMap<String, Object>(  ); 
+        model=getModel();
+        List<AppointmentSlotDisponiblity>  listAppointmentSlotDisponiblity = AppointmentApp.getListAppointmentSlotDisponiblity();
+        
+        
+        if (!listAppointmentSlotDisponiblity.isEmpty())
+        {        
+        	AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity();
+        	model.put(PARAMETER_ID_SLOT_ACTIVE, appointmentSlotDisponiblity);
+        	model.put( PARAMETER_SLOT_LIST_DISPONIBILITY, listAppointmentSlotDisponiblity);
+        }
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
@@ -755,7 +770,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                         listDays = unvalidAppointmentsbeforeNow(form.getMinDaysBeforeAppointment() , listDays, calendarStart,calendarEnd);
              */
-            Map<String, Object> model = getModel(  );
+       
 
             model.put( MARK_FORM, form );
             model.put( MARK_LIST_DAYS, listDays );
@@ -1272,7 +1287,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
-
+        idSlot=Integer.parseInt( strIdSlot );
+         
+        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( idSlot);
+        
         int nIdForm;
         clearUploadFilesIfNeeded( request.getSession(  ) );
 
@@ -1285,6 +1303,34 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
 
             nIdForm = Integer.parseInt( strIdForm );
+            
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            
+            AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity();
+            
+            appointmentSlotDisponiblity.setNIdSlot(idSlot);
+            appointmentSlotDisponiblity.setIdSession( request.getSession().getId() );
+            Timestamp time= new Timestamp( new java.util.Date( ).getTime( ));
+            time.setMinutes(time.getMinutes()+form.getSeizureDuration());
+            appointmentSlotDisponiblity.setFreeDate(time);
+            appointmentSlotDisponiblity.setAppointmentSlot( appointmentSlot );
+            
+            boolean notExist = true;
+            List<AppointmentSlotDisponiblity>  listAppointmentSlotDisponiblity = AppointmentApp.getListAppointmentSlotDisponiblity();
+            
+            for ( int i= 0 ; i< listAppointmentSlotDisponiblity.size();i++) 
+            {
+           	 if (listAppointmentSlotDisponiblity.get(i).getIdSlot() == idSlot)
+           		 notExist = false;
+            }
+            
+            if (notExist)
+            {
+           	 listAppointmentSlotDisponiblity.add(appointmentSlotDisponiblity);
+           	 AppointmentApp.setListAppointmentSlotDisponiblity(listAppointmentSlotDisponiblity);
+            }
+
+            
         }
         else
         {

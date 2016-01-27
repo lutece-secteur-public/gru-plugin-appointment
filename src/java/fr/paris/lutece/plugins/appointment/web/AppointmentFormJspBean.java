@@ -140,6 +140,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM = "appointment.modify_appointmentForm.titleAlterablesParameters";
+    private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_TIME_OUT = "appointment.modify_appointmentForm.timeOutDuration";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENT_FORM = "appointment.modify_appointmentform.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.create_appointmentform.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentform_messages.pageTitle";
@@ -322,7 +323,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
                     AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
-        {
+        {		
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
 

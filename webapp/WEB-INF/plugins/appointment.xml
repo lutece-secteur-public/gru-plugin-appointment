@@ -94,6 +94,17 @@
 		</daemon>
 	</daemons>
 	
+	<daemons>
+   		<daemon>
+			<daemon-id>AppointmentSlotDisponibilityDaemon</daemon-id>
+			<daemon-name>appointment.Daemon.AppointmentSlotDisponibilityDaemon.name</daemon-name>
+			<daemon-description>appointment.Daemon.AppointmentSlotDisponibilityDaemon.description</daemon-description>
+			<daemon-class>fr.paris.lutece.plugins.appointment.Daemon.AppointmentSlotDisponibilityDaemon</daemon-class>
+		</daemon>
+   </daemons>
+   
+   
+	
 <!--    <javascript-files> -->
 <!--         <javascript-files-scope>portal</javascript-files-scope> -->
 <!--         <javascript-file>appointment/appointment.js</javascript-file> -->
