@@ -1,50 +1,54 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>
-			<h1 class="text-center">${formMessages.calendarTitle}</h3>
-		</#if>
+		<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''><legend>${formMessages.calendarTitle}</legend></#if>
 		<#if infos?? && errors??>
 			<@messages infos=infos errors=errors />
 		</#if>
-		<hr>
+		<#if listDays??>
+			<div class="row">
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<#if nb_week &gt; 0>
+						<div class="pull-left">
+							<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true" title="#i18n{appointment.appointmentApp.previousWeek}">
+								<i class="glyphicon glyphicon-arrow-left">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
+							</a>
+						</div>
+					</#if>
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<div>
+						<center>
+							<button class="btn btn-sm btn-primary" id="buttonCalendarAvailableDays" type="button" style="display: none;">
+								<i class="glyphicon glyphicon-calendar">&nbsp;</i>&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}
+							</button>
+						</center>
+					</div>
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<#if nb_week &lt; form.nbWeeksToDisplay - 1>
+						<div class="pull-right">
+							<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
+								#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="glyphicon glyphicon-arrow-right">&nbsp;</i>
+							</a>
+						</div>
+					</#if>
+				</div>
+			</div>
+		</#if>
+		<br />
 	</div>
 </div>
-<div class="row">
-		<#if listDays??>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-				<#if nb_week &gt; 0>
-					<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true" title="#i18n{appointment.appointmentApp.previousWeek}">
-						<i class="glyphicon glyphicon-arrow-left"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentApp.previousWeek}</span>
-					</a>
-				</#if>
-			</div>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
-				<button class="btn btn-primary btn-sm" id="buttonCalendarAvailableDays" type="button">
-					<i class="glyphicon glyphicon-calendar"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}</span>
-				</button>
-			</div>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-				<#if nb_week &lt; form.nbWeeksToDisplay - 1>
-					<a class="btn btn-primary btn-sm pull-right" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
-						<i class="glyphicon glyphicon-arrow-right"></i>
-						<span class="hidden-xs">#i18n{appointment.appointmentApp.nextWeek}&nbsp;</span>
-					</a>
-				</#if>
-			</div>
-	</#if>
-</div>
-<br>
- 
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<#if listDays??>
 			<div class="visible-desktop">
-				<table class="table desktop-table appointment-table-container">
+				<table class="table appointment-table-container">
 					<tr>
 						<td>
 							<table class="table appointment-inner-table">
 								<tr>
-									<td style="height:60px;">
+									<td>
+										<br />
 										<#if nb_week &gt; 0>
 											<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true">
 												<i class="glyphicon glyphicon-arrow-left">&nbsp;</i>
@@ -67,8 +71,9 @@
 							</table>
 						</td>
 						<#list listDays as day>
+							<#if day.isOpen>
 							<td>
-								<table class="table appointment-inner-table">
+								<table class="table table-stripped appointment-inner-table">
 									<tr>
 										<th>
 											#i18n{${list_days_of_week[day_index]}}<br />
@@ -109,70 +114,29 @@
 												<#else>
 													<#assign slotSpan=rowspan >
 												</#if>
-
-												<#if slot.isEnabled >
-													<#assign listDeSlot ='false' >
-
+												<#if slot.isEnabled>
 													<#if slot.nbFreePlaces &gt; 0>
-														 
-															<#if list_slot??>
-																<#assign listDeSlot ='true'>
-																<#assign bool ='false' >
-													           	<#list list_slot as idSlotActive>
-																 
-																	<#if (slot.idSlot) == (idSlotActive.idSlot)  >
-
-																		<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
-																			${formMessages.calendarFullLabel}
-																			<@getCellTooltip appointmentSlot=slot />
-																		</td>
-																		<#assign bool ='true'>																
-																	</#if>
-
-																</#list>	
-																<#if bool =='false' >
-
-																<td class="appointment-slot-available appointment-row${slotSpan} appointment-tooltip">
-																	<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}"> 
-																		${formMessages.calendarReserveLabel} 
-																	</a>
-
-																	<@getCellTooltip appointmentSlot=slot />
-																</td>	
-																								   
-																</#if>
-															</#if>
-
-															<#if listDeSlot =='false'>
-																<td class="appointment-slot-avaiable appointment-row${slotSpan} appointment-tooltip">
-																<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
-																	${formMessages.calendarReserveLabel}
-																</a>
-																<@getCellTooltip appointmentSlot=slot />
-																</td>
-																
-															 
-															</#if>
+														<td class="appointment-slot-avaiable appointment-row${slotSpan} appointment-tooltip">
+															<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
+																${formMessages.calendarReserveLabel}
+															</a>
+															<@getCellTooltip appointmentSlot=slot />
+														</td>
+													<#else>
+														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
+															${formMessages.calendarFullLabel}
+															<@getCellTooltip appointmentSlot=slot />
+														</td>
 													</#if>
-
-															
-															
- 													
-															
-														
-														
 												<#else>
 													<td class="appointment-slot-closed appointment-row${slotSpan} appointment-tooltip">
 														&nbsp;
 														<@getCellTooltip appointmentSlot=slot />
 													</td>
 												</#if>
-												
 												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
-
 											</tr>
 										</#list>
-
 										<#if nbSlotsFilled &lt; list_time_begin?size - 1>
 											<#list nbSlotsFilled..(list_time_begin?size - 1) as slotToFill>
 												<tr>
@@ -193,6 +157,7 @@
 									</#if>
 								</table>
 							</td>
+							</#if>
 						</#list>
 					</tr>
 				</table>
@@ -200,9 +165,12 @@
 			<div class="hidden-desktop">
 				<#list listDays as day>
 					<#if day.isOpen>
-						<table class="table table-responsive appointment-inner-table">
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<table class="table appointment-inner-table">
 								<tr>
-									<th colspan="2">
+									<th>
+									</th>
+									<th>
 										<center>
 											#i18n{${list_days_of_week[day_index]}}
 											${day.date}
@@ -211,12 +179,12 @@
 								</tr>
 								<#list day.listSlots as slot>
 									<tr>
-										<td class="appointment-row1">
+										<td>
 											<#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
 										</td>
 										<#if slot.isEnabled>
 											<#if slot.nbFreePlaces &gt; 0>
-												<td class="appointment-slot-available">
+												<td class="appointment-slot-avaiable">
 													<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
 														${formMessages.calendarReserveLabel}
 													</a>
@@ -234,23 +202,18 @@
 									</tr>
 								</#list>
 							</table>
+						</div>
 					</#if>
 				</#list>
 			</div>
 		</#if>
 		&nbsp;
 		<#if isFormFirstStep>
-			<div class="hidden-md hidden-lg">
-				<a class="btn btn-primary btn-block btn-md" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form.idForm}">
+			<div class="form-actions">
+				<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form.idForm}">
 					#i18n{portal.util.labelBack}
 				</a>
 			</div>
-			<div class="hidden-xs hidden-sm">
-				<a class="btn btn-primary btn-md" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form.idForm}">
-					#i18n{portal.util.labelBack}
-				</a>
-			</div>
-			<br>
 		</#if>
 	</div>
 </div>
@@ -317,24 +280,13 @@
 	        	
 // 	        	var nbWeek = Math.ceil( (dateNearestMonday - dateLastMonday) / 604800000 );
 
-			var nbWeek = Math.floor( (e.date - dateMonday) / 604800000 );
-	       	// TODO : compute nb weeks
-	       	var loc=""+location;
-	       	var n=loc.indexOf("jsp");
-	       	var urlbase=loc.substring(0,n);
-	       	window.location = urlbase + hrefs[nbWeek];
+				var nbWeek = Math.floor( (e.date - dateMonday) / 604800000 );
+	        	// TODO : compute nb weeks
+	        	var loc=""+location;
+	        	var n=loc.indexOf("jsp");
+	        	var urlbase=loc.substring(0,n);
+	        	window.location = urlbase + hrefs[nbWeek];
 	        }
 	    });
-		
-		// Affiche infos
-		$("#infos").css("cursor","pointer").css("color","#3276B1");
-		$("#infos").click( function(){
-			$("#messages_infos_div").toggle();
-		});
-		$("a.close").click( function( e ){
-			e.preventDefault();
-			$("#messages_infos_div").toggle();
-		});
-		
-	});
+	})
 </script>
