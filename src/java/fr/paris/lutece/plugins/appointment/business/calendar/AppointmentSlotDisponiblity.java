@@ -5,11 +5,6 @@ import java.sql.Timestamp;
 
 public class AppointmentSlotDisponiblity  
 	{
-	
-		/**
-	     * Serial version UID
-	     */
-	    private static final long serialVersionUID = -3143858870219992098L;
 		  
 	    private int _nIdSlot;
 	    private AppointmentSlot _appointmentSlot ;

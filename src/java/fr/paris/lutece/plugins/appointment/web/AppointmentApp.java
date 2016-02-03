@@ -276,7 +276,7 @@ public class AppointmentApp extends MVCApplication
    
     //    private transient DateConverter _dateConverter;
     
-    private int idSlot ;
+    private static int idSlot ;
     private static  List<AppointmentSlotDisponiblity>  listAppointmentSlotDisponiblity = new ArrayList<AppointmentSlotDisponiblity>();
    
     public static List<AppointmentSlotDisponiblity> getListAppointmentSlotDisponiblity ()
@@ -289,6 +289,7 @@ public class AppointmentApp extends MVCApplication
      listAppointmentSlotDisponiblity=list;
     }
     
+     
  
 
     /**
@@ -318,6 +319,7 @@ public class AppointmentApp extends MVCApplication
     //    @View( VIEW_GET_FORM )
     public XPage getViewForm( HttpServletRequest request )
     {
+	
          String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         
          idSlot = _appointmentFormService.getAppointmentFromSession( request.getSession(  ) ).getIdSlot(  );
@@ -360,7 +362,7 @@ public class AppointmentApp extends MVCApplication
             {
                 return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
             }
-
+             
             String strHtmlContent = getAppointmentFormHtml( request, form, _appointmentFormService,getModel(),
                     getLocale( request ) );
 
@@ -1101,7 +1103,7 @@ public class AppointmentApp extends MVCApplication
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
-
+            
             if ( _appointmentFormService.isFormFirstStep( nIdForm ) )
             {
                 return getAppointmentCalendar( request );
@@ -1177,7 +1179,7 @@ public class AppointmentApp extends MVCApplication
      * @param nIdForm
      * @return
 
-    private static Map <String, String> getAllStatus( List<Integer> nIdForm )
+    private static Map <String, String> getAl••••••••••lStatus( List<Integer> nIdForm )
     {
         Map <String, String>lsSta = new HashMap<String, String>();
         for (int i=0; i < nIdForm.size(); i++)
@@ -1230,39 +1232,33 @@ public class AppointmentApp extends MVCApplication
     private static String getAppointmentFormHtml( HttpServletRequest request, AppointmentForm form,
         AppointmentFormService appointmentFormService, Map<String, Object> model, Locale locale )
     {    	
+    	 LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
+ 
+     
+    	 
         if ( ( form == null ) || !form.getIsActive(  ) )
         {
             return StringUtils.EMPTY;
         }
 
         AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( form.getIdForm(  ) );
-
-        Appointment appointment = appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
-
-        if ( appointment != null )
+       
+         if ( user!=null   )
         {
-            AppointmentDTO appointmentDTO = new AppointmentDTO(  );
-            appointmentDTO.setEmail( appointment.getEmail(  ) );
-            appointmentDTO.setFirstName( appointment.getFirstName(  ) );
-            appointmentDTO.setLastName( appointment.getLastName(  ) );
-            appointmentDTO.setIdSlot( appointment.getIdSlot(  ) );
-
-            Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry(  );
-
-            for ( Response response : appointment.getListResponse(  ) )
-            {
-                List<Response> listResponse = mapResponsesByIdEntry.get( response.getEntry(  ).getIdEntry(  ) );
-
-                if ( listResponse == null )
-                {
-                    listResponse = new ArrayList<Response>(  );
-                    mapResponsesByIdEntry.put( response.getEntry(  ).getIdEntry(  ), listResponse );
-                }
-
-                listResponse.add( response );
-            }
-
-            appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
+       		 Map<String, String> map = user.getUserInfos();
+	       	 AppointmentDTO appointmentDTO = new AppointmentDTO(  );
+	         appointmentDTO.setEmail( map.get("user.business-info.online.email") ); // METTRE EN CONSTANTES
+	         appointmentDTO.setFirstName( map.get("user.name.given") );
+	         appointmentDTO.setLastName( map.get("user.name.family") );
+	         appointmentDTO.setIdSlot( idSlot );
+	         appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
+        }else if (user == null )
+        { AppointmentDTO appointmentDTO = new AppointmentDTO(  );
+	         appointmentDTO.setEmail( null);  
+	         appointmentDTO.setFirstName( null);
+	         appointmentDTO.setLastName(null );
+	         appointmentDTO.setIdSlot( idSlot );
+	         appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
         }
 
         model.put( MARK_FORM_HTML, appointmentFormService.getHtmlForm( form, formMessages, locale, true, request ) );

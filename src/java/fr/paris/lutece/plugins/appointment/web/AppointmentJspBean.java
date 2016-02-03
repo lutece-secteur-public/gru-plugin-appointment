@@ -198,6 +198,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_MARK_FORCE = "force";
     private static final String PARAMETER_ID_SLOT_ACTIVE = "idSlotActive";
     private static final String PARAMETER_SLOT_LIST_DISPONIBILITY = "slotListDisponibility";
+    
+    private static final String PARAMETER_FIRSTNAME = "fn";
+    private static final String PARAMETER_LASTNAME = "ln";
+    private static final String PARAMETER_PHONE = "ph";
+    private static final String PARAMETER_EMAILM = "em";
+    private static final String APPOINTMENT_GRU_USER = "appointmentGruUser";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -667,6 +673,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strTimeMilli = request.getParameter( PARAMETER_ID_TIME );
         Map<String, Object> model = new HashMap<String, Object>(  ); 
         model=getModel();
+        
+        
+        String strFirstName= request.getParameter( PARAMETER_FIRSTNAME );
+        String strLastName = request.getParameter( PARAMETER_LASTNAME);
+        String strNemberPhone = request.getParameter( PARAMETER_PHONE );
+        String strEmail = request.getParameter( PARAMETER_EMAILM );
+        
+        model.put(PARAMETER_FIRSTNAME,strFirstName);
+        model.put(PARAMETER_LASTNAME,strLastName);
+        model.put(PARAMETER_PHONE,strNemberPhone);
+        model.put( PARAMETER_EMAILM,strEmail);
+        
         List<AppointmentSlotDisponiblity>  listAppointmentSlotDisponiblity = AppointmentApp.getListAppointmentSlotDisponiblity();
         
         
@@ -1288,6 +1306,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         idSlot=Integer.parseInt( strIdSlot );
+        
+
+        String strFirstName= request.getParameter( PARAMETER_FIRSTNAME );
+        String strLastName = request.getParameter( PARAMETER_LASTNAME);
+        String strNemberPhone = request.getParameter( PARAMETER_PHONE );
+        String strEmail = request.getParameter( PARAMETER_EMAILM );
          
         AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( idSlot);
         
@@ -1408,7 +1432,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
         }
+        
+        if (strEmail!=null || strFirstName!=null || strLastName!=null )
+        {
+        	AppointmentDTO appointmentDTO = new AppointmentDTO(  );
+            appointmentDTO.setEmail( strEmail );
+            appointmentDTO.setFirstName( strFirstName );
+            appointmentDTO.setLastName( strLastName );
+            
+            _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
+        	
+        }
+        
 
+        
         AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
         model.put( MARK_FORM_HTML,
             _appointmentFormService.getHtmlForm( nMyWeek, strDayComment, strSlot, form, formMessages, getLocale(),
