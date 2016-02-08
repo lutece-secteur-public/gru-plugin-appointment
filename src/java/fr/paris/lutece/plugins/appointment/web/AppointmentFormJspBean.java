@@ -79,10 +79,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.FileNotFoundException;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,6 +113,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     // templates
     private static final String TEMPLATE_MANAGE_APPOINTMENTFORMS = "/admin/plugins/appointment/appointmentform/manage_appointmentforms.html";
+    private static final String TEMPLATE_MANAGE_APPOINTMENTFORMSFIRSTSTEP = "/admin/plugins/appointment/appointmentform/manage_appointmentforms_gru_appointment.html";
     private static final String TEMPLATE_CREATE_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/create_appointmentform.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES = "/admin/plugins/appointment/appointmentform/modify_appointmentform_messages.html";
@@ -136,6 +135,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_FIRST_FORM = "first_form";
     private static final String PARAMETER_SECOND_FORM = "second_form";
     private static final String PARAMETER_FORM_RDV = "form_rdv";
+    
+    private static final String PARAMETER_FIRSTNAME = "fn";
+    private static final String PARAMETER_LASTNAME = "ln";
+    private static final String PARAMETER_PHONE = "ph";
+    private static final String PARAMETER_EMAILM = "em";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -187,6 +191,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
+    private static final String VIEW_MANAGE_APPOINTMENTFIRSTFORMS = "manageAppointmentFirstForms";
     private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
     private static final String VIEW_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
     private static final String VIEW_ADVANCED_MODIFY_APPOINTMENTFORM = "modifyAppointmentFormAdvanced";
@@ -274,6 +279,68 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
+    
+    
+    /**
+     * Get the page to manage appointment forms
+     * @param request the request
+     * @return The HTML content to display
+     */
+    @View( value = VIEW_MANAGE_APPOINTMENTFIRSTFORMS )
+    public String getManageAppointmentFirstForms( HttpServletRequest request )
+    {
+        String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
+                (String) request.getSession(  ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
+        
+        Map<String, Object> model = new HashMap<String, Object>(  ); 
+        model=getModel();
+        
+        String strFirstName= request.getParameter( PARAMETER_FIRSTNAME );
+        String strLastName = request.getParameter( PARAMETER_LASTNAME);
+        String strNemberPhone = request.getParameter( PARAMETER_PHONE );
+        String strEmail = request.getParameter( PARAMETER_EMAILM );
+        
+        model.put(PARAMETER_FIRSTNAME,strFirstName);
+        model.put(PARAMETER_LASTNAME,strLastName);
+        model.put(PARAMETER_PHONE,strNemberPhone);
+        model.put( PARAMETER_EMAILM,strEmail);
+        
+        if ( strCurrentPageIndex == null )
+        {
+            strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
+        }
+
+        request.getSession(  ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
+
+        int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
+                getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
+        request.getSession(  ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
+
+        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+
+        UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
+        String strUrl = url.getUrl(  );
+        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList(  );
+
+        // PAGINATOR
+        LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms,
+                nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
+
+        model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
+        model.put( MARK_PAGINATOR, paginator );
+
+        model.put( MARK_APPOINTMENTFORM_LIST,
+            RBACService.getAuthorizedCollection( paginator.getPageItems(  ),
+                AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
+
+        model.put( VIEW_PERMISSIONS_FORM,
+            getPermissions( paginator.getPageItems(  ), AdminUserService.getAdminUser( request ) ) );
+
+        return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMSFIRSTSTEP, model );
+    }
+    
+    
+    
     /**
      * Get Form Permissions
      * @param listForms the list form

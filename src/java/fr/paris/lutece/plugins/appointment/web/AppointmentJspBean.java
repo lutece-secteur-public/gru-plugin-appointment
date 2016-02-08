@@ -203,7 +203,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_LASTNAME = "ln";
     private static final String PARAMETER_PHONE = "ph";
     private static final String PARAMETER_EMAILM = "em";
-    private static final String APPOINTMENT_GRU_USER = "appointmentGruUser";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -671,9 +670,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strTimeMilli = request.getParameter( PARAMETER_ID_TIME );
+        
         Map<String, Object> model = new HashMap<String, Object>(  ); 
         model=getModel();
-        
         
         String strFirstName= request.getParameter( PARAMETER_FIRSTNAME );
         String strLastName = request.getParameter( PARAMETER_LASTNAME);
