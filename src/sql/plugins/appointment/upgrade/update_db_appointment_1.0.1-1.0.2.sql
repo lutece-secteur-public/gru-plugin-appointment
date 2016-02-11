@@ -20,7 +20,7 @@ CREATE TABLE appointment_holidays
 	id_form int NOT NULL,
 	date_day DATE NOT NULL,
 	PRIMARY KEY (id_form,date_day)
-)
+);
 
 
 ALTER TABLE appointment_form_messages ADD field_confirmationEmail_title varchar(255) NOT NULL default '';
