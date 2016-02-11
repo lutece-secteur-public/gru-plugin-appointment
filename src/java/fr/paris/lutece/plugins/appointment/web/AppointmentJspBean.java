@@ -1300,12 +1300,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String getCreateAppointment( HttpServletRequest request )
         throws AccessDeniedException
         {    	
-    	 Map<String, Object> model = new HashMap<String, Object>(  );
+    	boolean notNull = true;
+    	Map<String, Object> model = new HashMap<String, Object>(  );
     	
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
-        idSlot=Integer.parseInt( strIdSlot );
+        if (strIdSlot!=null || idSlot!=0)
+        {
+       // idSlot=Integer.parseInt( strIdSlot );
+        notNull = false;
+        }
         
+        if ( notNull)
+        {
+        	idSlot=Integer.parseInt( strIdSlot );
+        	
+        }
 
         String strFirstName= request.getParameter( PARAMETER_FIRSTNAME );
         String strLastName = request.getParameter( PARAMETER_LASTNAME);

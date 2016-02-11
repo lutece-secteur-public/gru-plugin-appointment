@@ -1234,7 +1234,7 @@ public class AppointmentApp extends MVCApplication
     {    	
     	 LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
  
-     
+    	 Appointment appointment = appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
     	 
         if ( ( form == null ) || !form.getIsActive(  ) )
         {
@@ -1252,11 +1252,13 @@ public class AppointmentApp extends MVCApplication
 	         appointmentDTO.setLastName( map.get("user.name.family") );
 	         appointmentDTO.setIdSlot( idSlot );
 	         appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
-        }else if (user == null )
-        { AppointmentDTO appointmentDTO = new AppointmentDTO(  );
-	         appointmentDTO.setEmail( null);  
-	         appointmentDTO.setFirstName( null);
-	         appointmentDTO.setLastName(null );
+        
+        }else if (user == null & appointment!=null)
+        { 
+        	AppointmentDTO appointmentDTO = new AppointmentDTO(  );
+        	appointmentDTO.setEmail( appointment.getEmail(  ) );
+        	appointmentDTO.setFirstName( appointment.getFirstName(  ) );
+        	appointmentDTO.setLastName( appointment.getLastName(  ) );
 	         appointmentDTO.setIdSlot( idSlot );
 	         appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
         }

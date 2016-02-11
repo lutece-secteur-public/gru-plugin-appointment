@@ -92,9 +92,7 @@
 			<daemon-description>appointment.daemon.appointmentPublicationDaemon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.AppointmentPublicationDaemon</daemon-class>
 		</daemon>
-	</daemons>
 	
-	<daemons>
    		<daemon>
 			<daemon-id>AppointmentSlotDisponibilityDaemon</daemon-id>
 			<daemon-name>appointment.Daemon.AppointmentSlotDisponibilityDaemon.name</daemon-name>
