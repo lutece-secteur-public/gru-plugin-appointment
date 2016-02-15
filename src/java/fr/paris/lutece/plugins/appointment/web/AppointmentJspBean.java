@@ -1305,7 +1305,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
-        if (strIdSlot!=null || idSlot!=0)
+        if (strIdSlot==null || idSlot==0)
         {
        // idSlot=Integer.parseInt( strIdSlot );
         notNull = false;
