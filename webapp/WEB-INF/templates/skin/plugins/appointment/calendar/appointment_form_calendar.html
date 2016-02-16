@@ -115,10 +115,10 @@
 
 													<#if slot.nbFreePlaces &gt; 0>
 														 
-															<#if list_slot??>
+															<#if slotListDisponibility??>
 																<#assign listDeSlot ='true'>
 																<#assign bool ='false' >
-													           	<#list list_slot as idSlotActive>
+													           	<#list slotListDisponibility as idSlotActive>
 																 
 																	<#if (slot.idSlot) == (idSlotActive.idSlot)  >
 

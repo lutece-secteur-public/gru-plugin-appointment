@@ -1305,13 +1305,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
     	
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
-        if (strIdSlot==null || idSlot==0)
+        if (strIdSlot==null)
         {
        // idSlot=Integer.parseInt( strIdSlot );
         notNull = false;
+        idSlot=0;
         }
         
-        if ( notNull)
+        if ( notNull )
         {
         	idSlot=Integer.parseInt( strIdSlot );
         	
@@ -1353,9 +1354,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
             
             for ( int i= 0 ; i< listAppointmentSlotDisponiblity.size();i++) 
             {
-           	 if (listAppointmentSlotDisponiblity.get(i).getIdSlot() == idSlot)
-           		 notExist = false;
-            }
+            	if ( idSlot!=0 )
+            	{
+            		if (listAppointmentSlotDisponiblity.get(i).getIdSlot() == idSlot)
+                  		 notExist = false;
+                   }
+            	}
+           	 
             
             if (notExist)
             {
