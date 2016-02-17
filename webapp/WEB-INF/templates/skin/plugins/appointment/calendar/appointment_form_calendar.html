@@ -122,7 +122,7 @@
 																 
 																	<#if (slot.idSlot) == (idSlotActive.idSlot)  >
 
-																		<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
+																		<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">  
 																			${formMessages.calendarFullLabel}
 																			<@getCellTooltip appointmentSlot=slot />
 																		</td>
@@ -133,7 +133,7 @@
 																<#if bool =='false' >
 
 																<td class="appointment-slot-available appointment-row${slotSpan} appointment-tooltip">
-																	<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}"> 
+																	<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">  
 																		${formMessages.calendarReserveLabel} 
 																	</a>
 
@@ -153,7 +153,14 @@
 																
 															 
 															</#if>
-													</#if>
+													<#else>
+													<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">  
+																			${formMessages.calendarFullLabel}
+																			<@getCellTooltip appointmentSlot=slot />
+																		</td>
+												</#if>
+												
+											 
 
 															
 															
@@ -162,10 +169,10 @@
 														
 														
 												<#else>
-													<td class="appointment-slot-closed appointment-row${slotSpan} appointment-tooltip">
-														&nbsp;
-														<@getCellTooltip appointmentSlot=slot />
-													</td>
+													<td class="appointment-slot-closed">  
+																			${formMessages.calendarFullLabel}
+																			<@getCellTooltip appointmentSlot=slot />
+																		</td>
 												</#if>
 												
 												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
