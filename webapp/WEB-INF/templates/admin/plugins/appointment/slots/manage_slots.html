@@ -1,137 +1,159 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
 <div class="row" >
-	
+   
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    	<#if day??>
-    		<@tabs tab="days" appointmentform=appointmentform />
-    	<#else>
-    		<@tabs tab="slots" appointmentform=appointmentform />
-    	</#if>
-    	<fieldset>
-    		<legend>#i18n{appointment.manageCalendarSlots.pageTitle}</legend>
-    	<#if !day??>    
-		<div class="pull-right">
-			<form class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp" method="post" name="" id=""  >	
-				#i18n{appointment.manageCalendarSlots.labelRefreshInput}: 
-				<div class="input-group">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-				 	<input class="input-small" name="dateMin" id="dateMin" value=""  placeholder="chosir une date" required/>
-				</div>	
-				     <input type="hidden" name="id_form" id="id_form" value="${appointmentform.idForm}" />
-				     <input type="hidden" name="view" id="view" value="confirmRefreshDays" />
-			<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-refresh"></i> &nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}</button>
-			</form>
-		</div>
-		</#if>
-			<table class="table appointment-table-slots">
-				<thead>
-					<#if day??>
-						<tr>
-							<th>
-							</th>
-							<th>
-								${day.date}
-							</th>
-						</tr>
-					<#else>
-						<tr>
-							<th>
-							</th>
-							<th>
-								#i18n{appointment.manageCalendarSlots.labelMonday}
-							</th>
-							<th>
-								#i18n{appointment.manageCalendarSlots.labelTuesday}
-							</th>
-							<th>
-								#i18n{appointment.manageCalendarSlots.labelWednesday}
-							</th>
-							<th>
-								#i18n{appointment.manageCalendarSlots.labelThursday}
-							</th>
-							<th>
-								#i18n{appointment.manageCalendarSlots.labelFriday}
-							</th>
-							<th>
-								#i18n{appointment.manageCalendarSlots.labelSaturday}
-							</th>
-							<th>
-								#i18n{appointment.manageCalendarSlots.labelSunday}
-							</th>
-						</tr>
-					</#if>
-				</thead>
-				<tbody>
-					<#assign startingHour = minStartingHour>
-					<#assign startingMinute = minStartingMinute>
-					<tr>
-						<td class="column-time">
-							<#if startingHour &lt; 10 >0</#if>${startingHour}h<#if startingMinute &lt; 10 >0</#if>${startingMinute}
-						</td>
-						<#list listSlots as slot>
-							<#if ( slot.startingHour * 60 + slot.startingMinute ) &gt; ( startingHour * 60 + startingMinute ) >
-								
-								<#assign nbHeadersToAdd = ((slot.startingHour * 60 + slot.startingMinute) - (startingHour * 60 + startingMinute) ) / minDuration>
-								
-								<#list 1..nbHeadersToAdd as i >
-									<#assign startingMinute = startingMinute + minDuration >
-									<#if startingMinute &gt;= 60>
-										<#assign startingHour = startingHour + (startingMinute / 60)?floor>
-										<#assign startingMinute = startingMinute % 60>
-									</#if>
-									</tr>
-									<tr>
-										<td class="column-time">
-											<#if startingHour &lt; 10 >0</#if>${startingHour}h<#if startingMinute &lt; 10 >0</#if>${startingMinute}
-										</td>
-								</#list>
-							</#if>
-							<#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - (slot.startingHour * 60 + slot.startingMinute) >
-							<#if slotDuration &gt; minDuration>
-								<#assign rowspan=(slotDuration/minDuration)?round>
-							<#else>
-								<#assign rowspan=1>
-							</#if>
-							<td rowspan="${rowspan}" class="appointment-tooltip" >
-								<#if slot.idSlot &gt; 0>
-									<#if !readonly >									 
-									<a id="${slot.idSlot}" class="btn btn-xs btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}">
-									
-										<#if slot.isEnabled>
-											#i18n{appointment.manageCalendarSlots.labelOpened}
-										<#else>
-											#i18n{appointment.manageCalendarSlots.labelClosed}
-										</#if>
-									</a>
-									<a class="btn btn-default btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_slot=${slot.idSlot}" title="#i18n{portal.util.labelModify}">
-										<i class="glyphicon glyphicon-edit"></i>
-									</a>
-									<#else>
-									<i  class="btn-xs btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" >									
-										<#if slot.isEnabled>
-											#i18n{appointment.manageCalendarSlots.labelOpened}
-										<#else>
-											#i18n{appointment.manageCalendarSlots.labelClosed}
-										</#if>
-									</i>
-									</#if>
-								<#else>
-									<button type="button" class="btn btn-primary btn-danger btn-xs" >#i18n{appointment.manageCalendarSlots.labelClosed}</button>
-								</#if>
-								<@getCellTooltip appointmentSlot=slot />
-							</td>
-						</#list>
-					</tr>
-				</tbody>
-			</table>
-			<#if day??>
-				<div class="form-group">
-					<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
-						<i class="glyphicon glyphicon-remove-circle">&nbsp;</i>#i18n{portal.util.labelBack}
-					</a>
-				</div>
-			</#if>
-    	</fieldset>
+        <#if day??>
+            <@tabs tab="days" appointmentform=appointmentform />
+        <#else>
+            <@tabs tab="slots" appointmentform=appointmentform />
+        </#if>
+        <fieldset>
+            <legend>#i18n{appointment.manageCalendarSlots.pageTitle}</legend>
+        <#if !day??>   
+        <div class="pull-right">
+            <form class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp" method="post" name="" id=""  >   
+                #i18n{appointment.manageCalendarSlots.labelRefreshInput}:
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                     <input class="input-small" name="dateMin" id="dateMin" value=""  placeholder="chosir une date" required/>
+                </div>   
+                     <input type="hidden" name="id_form" id="id_form" value="${appointmentform.idForm}" />
+                     <input type="hidden" name="view" id="view" value="confirmRefreshDays" />
+            <button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-refresh"></i> &nbsp;#i18n{appointment.modify_appointmentformDays.labelRefreshDays}</button>
+            </form>
+        </div>
+        </#if>
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="hidden-phone">
+            <table class="table appointment-table-container">
+                <tr>
+
+                    <td>
+                        <table class="table appointment-inner-table">
+                            <tr>
+                                <td rowspan="rowspan"  class="appointment-tooltip " >
+                                        <a   class="btn btn-xs btn-primary   "  >
+                                                      +++
+                                        </a>
+                                </td>
+                               
+                            </tr>
+                            <#list list_time_begin as time_begin>
+                                <tr>
+                                       <td rowspan="rowspan"  class="appointment-tooltip " >
+                                        <a   class="btn btn-xs btn-primary   "  >
+                                        ${time_begin}
+                                    </a>
+                                    </td>
+                                </tr>
+                            </#list>
+                        </table>
+                    </td>
+                     
+                    <#list listDays as day>
+                        <td>
+                            <table class="table table-stripped appointment-inner-table">
+                                <tr>
+                                    <th>
+                                         
+                                            #i18n{${list_days_of_week[day_index]}}
+                                             
+                                         
+                                    </th>
+                                </tr>
+                                <#if day.isOpen>
+                                    <#assign rowspan=day.appointmentDuration/min_duration_appointments>
+                                    <#assign first_slot = day.listSlots?first>
+                                    <#if first_slot.startingHour &lt; 10>
+                                        <#assign first_time = '0' + first_slot.startingHour + 'h'>
+                                    <#else>
+                                        <#assign first_time = first_slot.startingHour + 'h'>
+                                    </#if>
+                                    <#if first_slot.startingMinute &lt; 10>
+                                        <#assign first_time = first_time + '0' + first_slot.startingMinute>
+                                    <#else>
+                                        <#assign first_time = first_time + first_slot.startingMinute>
+                                    </#if>
+                                    <#list list_time_begin as time_begin>
+                                        <#if time_begin != first_time>
+                                            <tr>
+                                                <td class="appointment-slot-closed appointment-row1">
+                                                    &nbsp;
+                                                </td>
+                                            </tr>
+                                        <#else>
+                                            <#break>
+                                        </#if>
+                                    </#list>
+                                    <#list day.listSlots as slot>
+                                        <tr>
+                                            <#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - ( slot.startingHour * 60 + slot.startingMinute ) >
+                                            <#if slotDuration != day.appointmentDuration>
+                                                <#assign slotSpan= (slotDuration / min_duration_appointments)?round >
+                                            <#else>
+                                                <#assign slotSpan=rowspan >
+                                            </#if>
+                             
+                                                <td   class="appointment-tooltip " >
+                                                                                    
+                                                                <a id="${slot.idSlot}" class="btn btn-xs btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" 
+
+                                                                    href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}&id_form=${appointmentform.idForm}">
+                                                             
+                                                                <#if slot.isEnabled>
+                                                                    #i18n{appointment.manageCalendarSlots.labelOpened}
+                                                                <#else>
+                                                                    #i18n{appointment.manageCalendarSlots.labelClosed}
+                                                                </#if>
+                                                            </a>
+                                                            
+                                                            <a class="btn btn-default btn-xs" 
+                                                            href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_slot=${slot.idSlot}" title="#i18n{portal.util.labelModify}">
+                                                                <i class="glyphicon glyphicon-edit"></i>
+                                                            </a>
+                                                         
+                                                    <@getCellTooltip appointmentSlot=slot />
+                                                  
+                                                </td>            
+ 
+                                     
+                                        </tr>
+                                    </#list>
+                                <#else>
+                                    <#list list_time_begin as time_begin>
+                                        <tr>
+                                            <td class="appointment-slot-closed appointment-row1">
+                                                 <a   class="btn btn-xs btn-primary  btn-danger "  >
+                                                             
+                                                                 
+                                                                    #i18n{appointment.manageCalendarSlots.labelClosed}
+                                                              
+                                                            </a>
+                                            </td>
+                                        </tr>
+                                    </#list>
+                                </#if>
+                            </table>
+                        </td>
+                    </#list>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>     
+
+       
+            <#if day??>
+                <div class="form-group">
+                    <a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
+                        <i class="glyphicon glyphicon-remove-circle">&nbsp;</i>#i18n{portal.util.labelBack}
+                    </a>
+                </div>
+            </#if>
+        </fieldset>
     </div>
 </div>
 
@@ -139,22 +161,22 @@
 <br />
 
 <#macro getCellTooltip appointmentSlot>
-	<span class="appointment-tooltip-title appointment-tooltip-title-fo">
-		<#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute} 
-		<div> #i18n{appointment.manageCalendarSlots.lablelNbPlace}: ${appointmentSlot.nbPlaces}</div>
-	</span> 
+    <span class="appointment-tooltip-title appointment-tooltip-title-fo">
+        <#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute}
+        <div> #i18n{appointment.manageCalendarSlots.lablelNbPlace}: ${appointmentSlot.nbPlaces}</div>
+    </span>
 
 </#macro>
 
-<link href="css/plugins/appointment/appointment.css" rel="stylesheet"> 
+<link href="css/plugins/appointment/appointment.css" rel="stylesheet">
 <@getDatePickerBootstrap idField="dateMin" language="fr" />
 <script type="text/javascript">
 $('#dateMin').datepicker({
-    language:		"${language}",
-    startDate:		 new Date(),
-    endDate:		"${bornDates[1]}",
+    language:        "${language}",
+    startDate:         new Date(),
+    endDate:        "${bornDates[1]}",
     todayBtn: true,
     todayHighLight: true,
-    autoclose:		true
+    autoclose:        true
 }).on('changeDate', function(ev){});
 </script>

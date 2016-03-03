@@ -1,0 +1,41 @@
+	 
+<legend>#i18n{appointment.manage_appointmentforms.pageTitle}</legend>	
+<div class="row" >
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<@messages infos=infos />
+		<@paginationAdmin paginator=paginator combo=1 />
+		<table class="table table-condensed table-striped">
+			<tr>
+				<th>#i18n{appointment.manage_appointmentforms.columnTitle}</th>
+				 
+			</tr>
+			<#list appointmentform_list as appointmentform >
+				<tr>
+					<td>
+						<!-- <#if appointmentform.isActive>
+							<span class="label label-success">
+								<i class="glyphicon glyphicon-ok-sign"></i>
+							</span>
+						<#else>
+							<span class="label label-important">
+								<i class="glyphicon glyphicon-remove-circle"></i>
+							</span>
+						</#if> -->
+						<!--&nbsp;${appointmentform.title}-->
+						<#if appointmentform.isActive>
+						<!-- &nbsp;${appointmentform.title}
+							<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${appointmentform.idForm}&nb_week=1">
+								<i class="glyphicon glyphicon-globe">&nbsp;</i>
+							</a> -->
+							<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelManageAppointments}">
+							<i class="fa fa-calendar"> &nbsp; ${appointmentform.title} &nbsp; </i>
+						</a>
+						</#if>
+					</td>
+					 
+				</tr>
+			</#list>
+		</table>
+		<@paginationAdmin paginator=paginator />
+	</div>
+</div>

@@ -42,6 +42,7 @@ CREATE TABLE appointment_form (
 	is_mandatoryEmail_enabled SMALLINT NOT NULL,
 	icon_form_content long varbinary NULL,
 	icon_form_mime_type varchar(255) default NULL,
+	seizure_duration INT NOT NULL default '0',
 	PRIMARY KEY (id_form)
 );
 

@@ -126,7 +126,7 @@ public final class AppointmentFormHome
 
         if ( form == null )
         {
-            form = _dao.load( nAppointmentFormId, _plugin );
+         form = _dao.load( nAppointmentFormId, _plugin );
 
             if ( form != null )
             {

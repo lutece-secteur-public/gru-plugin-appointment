@@ -45,14 +45,17 @@
 				<table class="table table-stripped">
 					<tr>
 						<#list listDays as day>
+							<#if day.isOpen>
 							<th class="well">
 								#i18n{${list_days_of_week[day_index]}}<br />
 								${day.date}
 							</th>
+							</#if>
 						</#list>
 					</tr>
 					<tr>
 						<#list listDays as day>
+						<#if day.isOpen>
 							<td class="appointment-td-border">
 								<#if day.isOpen>
 									<#list day.listSlots as slot>
@@ -65,6 +68,7 @@
 									</#list>
 								</#if>
 							</td>
+						</#if>
 						</#list>
 					</tr>
 				</table>
