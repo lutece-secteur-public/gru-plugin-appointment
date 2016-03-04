@@ -1113,19 +1113,18 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
         {
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
+           if ( slot.getIdDay(  ) > 0 )
+           {
+               AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
 
-//            if ( slot.getIdDay(  ) > 0 )
-//            {
-//                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
-//
-////                if ( day.getIsOpen(  ) )
-////                {
-//                    // we can only change enabling of opened days
-//                    slot.setIsEnabled( !slot.getIsEnabled(  ) );
-////                }
-//            }
-//            else
-//            {
+               if ( day.getIsOpen(  ) )
+               {
+                  // we can only change enabling of opened days
+            	   slot.setIsEnabled( !slot.getIsEnabled(  ) );
+                }
+           }
+            else
+            {
                 AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
 
                 if ( form.isDayOfWeekOpened( slot.getDayOfWeek(  ) ) )
@@ -1133,7 +1132,7 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
                     // we can only change enabling of opened days
                     slot.setIsEnabled( !slot.getIsEnabled(  ) );
                 }
-//            }
+             }
 
             AppointmentSlotHome.update( slot );
 
