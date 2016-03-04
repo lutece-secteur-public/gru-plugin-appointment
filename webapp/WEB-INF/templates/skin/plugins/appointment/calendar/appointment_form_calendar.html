@@ -44,7 +44,7 @@
 						<td>
 							<table class="table appointment-inner-table">
 								<tr>
-									<td style="height:60px;">
+									<td style="height:40px;">
 										<#if nb_week &gt; 0>
 											<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true">
 												<i class="glyphicon glyphicon-arrow-left">&nbsp;</i>
@@ -169,7 +169,7 @@
 														
 														
 												<#else>
-													<td class="appointment-slot-closed">  
+													<td class="appointment-slot-closed appointment-tooltip">  
 																			${formMessages.calendarFullLabel}
 																			<@getCellTooltip appointmentSlot=slot />
 																		</td>
@@ -204,7 +204,7 @@
 					</tr>
 				</table>
 			</div>
-			<div class="hidden-desktop">
+			<div class="hidden-md hidden-lg">
 				<#list listDays as day>
 					<#if day.isOpen>
 						<table class="table table-responsive appointment-inner-table">
