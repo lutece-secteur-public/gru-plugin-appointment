@@ -140,6 +140,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_LASTNAME = "ln";
     private static final String PARAMETER_PHONE = "ph";
     private static final String PARAMETER_EMAILM = "em";
+    private static final String PARAMETER_CUSTOMER_ID = "cid";
+    private static final String PARAMETER_USER_ID_OPAM = "guid";
+    
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -300,10 +303,17 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         String strNemberPhone = request.getParameter( PARAMETER_PHONE );
         String strEmail = request.getParameter( PARAMETER_EMAILM );
         
+        String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
+        String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
+        
+        model.put(PARAMETER_CUSTOMER_ID,strCustomerId );
+        model.put( PARAMETER_USER_ID_OPAM,strUserIdOpam);
+        
         model.put(PARAMETER_FIRSTNAME,strFirstName);
         model.put(PARAMETER_LASTNAME,strLastName);
         model.put(PARAMETER_PHONE,strNemberPhone);
         model.put( PARAMETER_EMAILM,strEmail);
+        
         
         if ( strCurrentPageIndex == null )
         {

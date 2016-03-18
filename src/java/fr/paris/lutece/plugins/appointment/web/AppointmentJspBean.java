@@ -203,6 +203,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_LASTNAME = "ln";
     private static final String PARAMETER_PHONE = "ph";
     private static final String PARAMETER_EMAILM = "em";
+    private static final String PARAMETER_CUSTOMER_ID = "cid";
+    private static final String PARAMETER_USER_ID_OPAM = "guid";
 
     // Markers
     private static final String MARK_APPOINTMENT_LIST = "appointment_list";
@@ -678,6 +680,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strLastName = request.getParameter( PARAMETER_LASTNAME);
         String strNemberPhone = request.getParameter( PARAMETER_PHONE );
         String strEmail = request.getParameter( PARAMETER_EMAILM );
+        
+        String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
+        String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
+        
+        model.put(PARAMETER_CUSTOMER_ID,strCustomerId );
+        model.put( PARAMETER_USER_ID_OPAM,strUserIdOpam);
+        
         
         model.put(PARAMETER_FIRSTNAME,strFirstName);
         model.put(PARAMETER_LASTNAME,strLastName);
@@ -1322,6 +1331,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strLastName = request.getParameter( PARAMETER_LASTNAME);
         String strNemberPhone = request.getParameter( PARAMETER_PHONE );
         String strEmail = request.getParameter( PARAMETER_EMAILM );
+        String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
+        String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
          
         AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( idSlot);
         
@@ -1453,6 +1464,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             appointmentDTO.setEmail( strEmail );
             appointmentDTO.setFirstName( strFirstName );
             appointmentDTO.setLastName( strLastName );
+            appointmentDTO.setIdUser(strUserIdOpam);
             
             _appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
         	
