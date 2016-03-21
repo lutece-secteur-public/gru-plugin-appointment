@@ -1643,17 +1643,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
                                         appointment.setStatus( myState.getId() );
                                 }
                 */
-                if ( SecurityService.isAuthenticationEnable(  ) )
-                {
-                    AdminUser AdminUser = getUser(  );
-
-                    if ( AdminUser != null )
-                    {
-                        appointment.setIdUser( AdminUser.getLastName(  ) + CONSTANT_SPACE + AdminUser.getFirstName(  ) );
-                    }
-                }
+//                if ( SecurityService.isAuthenticationEnable(  ) )
+//                {
+//                    AdminUser AdminUser = getUser(  );
+//
+//                    if ( AdminUser != null )
+//                    {
+//                        appointment.setIdUser( AdminUser.getLastName(  ) + CONSTANT_SPACE + AdminUser.getFirstName(  ) );
+//                    }
+//                }
             }
-
+            
+            
+            //guid
+            String strGuid = (request.getParameter( PARAMETER_USER_ID_OPAM )== null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_USER_ID_OPAM  );
+            appointment.setIdUser(strGuid); 
+            
             //Email confirmation
             String strEmail = request.getParameter( PARAMETER_EMAIL );
              String emailConfirmation = ( request.getParameter( PARAMETER_EMAIL_CONFIRMATION ) == null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_EMAIL_CONFIRMATION );
