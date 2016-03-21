@@ -19,6 +19,7 @@
 					${form.description!}
 				</div>
 				<br /> 
+<input type="hidden" value="<#if appointment??>${appointment.idUser!}</#if>"  id="guid" name="guid" />
 				<div class="form-group">
 					<label for="lastname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldLastNameTitle!} *</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">

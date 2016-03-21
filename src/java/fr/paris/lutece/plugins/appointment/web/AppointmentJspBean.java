@@ -1438,6 +1438,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             appointmentDTO.setEmail( appointment.getEmail() );
             appointmentDTO.setFirstName( appointment.getFirstName(  ) );
             appointmentDTO.setLastName( appointment.getLastName(  ) );
+            appointmentDTO.setIdUser(strUserIdOpam); 
             appointmentDTO.setIdAppointment( appointment.getIdAppointment(  ) );
             
             Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO.getMapResponsesByIdEntry(  );
