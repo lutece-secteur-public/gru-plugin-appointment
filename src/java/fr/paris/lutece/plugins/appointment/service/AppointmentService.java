@@ -752,11 +752,11 @@ public class AppointmentService
                     calEnd.setTime( form.getDateLimit(  ) );
                 }
 
-                long diff = calEnd.getTimeInMillis(  ) - cal.getTimeInMillis(  );
+                long diff = calEnd.getTimeInMillis(  ) - cal.getTimeInMillis(  ) + 1;
                 long diffDays = diff / ( 24 * 60 * 60 * 1000 );
 
-                maxWeek = (int) diffDays / 7;
-                maxWeek = maxWeek + 1;
+                maxWeek = ((int) diffDays / 7 ) + 1;
+              
             }
 
             // We check every weeks from the current to the first not displayable
@@ -828,33 +828,33 @@ public class AppointmentService
                             }
                         }
                         
-                        // If the day has not already been created, we create it
-                        if ( day.getIdDay(  ) != 0 )
-                        {
-                            int nNbFreePlaces = 0;
-
-                            for ( AppointmentSlot slot : day.getListSlots(  ) )
-                            {
-                                if ( slot.getIsEnabled(  ) )
-                                {
-                                    if ( day.getPeoplePerAppointment(  ) != 0 )
-                                    {
-                                        slot.setNbPlaces(slot.getNbPlaces(  ) );
-                                    }
-
-                                    nNbFreePlaces += slot.getNbPlaces(  );
-                                }
-                            }
-
-                            day.setFreePlaces( nNbFreePlaces );
-                            AppointmentDayHome.create( day );
-
-                            for ( AppointmentSlot slot : day.getListSlots(  ) )
-                            {
-                                slot.setIdDay( day.getIdDay(  ) );
-                                AppointmentSlotHome.create( slot );
-                            }
-                        }
+//                        // If the day has not already been created, we create it
+//                        if ( day.getIdDay(  ) != 0 )
+//                        {
+//                            int nNbFreePlaces = 0;
+//
+//                            for ( AppointmentSlot slot : day.getListSlots(  ) )
+//                            {
+//                                if ( slot.getIsEnabled(  ) )
+//                                {
+//                                    if ( day.getPeoplePerAppointment(  ) != 0 )
+//                                    {
+//                                        slot.setNbPlaces(slot.getNbPlaces(  ) );
+//                                    }
+//
+//                                    nNbFreePlaces += slot.getNbPlaces(  );
+//                                }
+//                            }
+//
+//                            day.setFreePlaces( nNbFreePlaces );
+//                            AppointmentDayHome.create( day );
+//
+//                            for ( AppointmentSlot slot : day.getListSlots(  ) )
+//                            {
+//                                slot.setIdDay( day.getIdDay(  ) );
+//                                AppointmentSlotHome.create( slot );
+//                            }
+//                        }
                         
                         
                     }
