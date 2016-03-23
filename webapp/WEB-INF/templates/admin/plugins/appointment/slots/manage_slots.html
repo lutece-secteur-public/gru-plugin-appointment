@@ -34,10 +34,29 @@
                     <td>
                         <table class="table appointment-inner-table">
                             <tr>
-                                <td rowspan="rowspan"  class="appointment-tooltip " >
-                                        <a   class="btn btn-xs btn-primary   "  >
-                                                      +++
-                                        </a>
+                               <td>
+                                    <#if nb_week != 0>
+                                        <div>
+                                            <center>
+                                                <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}&nb_week=0" title="#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}">
+                                                    <i class="glyphicon glyphicon-calendar"></i>
+                                                </a>
+                                            </center>
+                                        </div>
+                                    <#else>
+                                        <br />
+                                    </#if>
+                                    <#if nb_week &gt; -max_week & nb_week &gt; 0  >
+                                    <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewmanageAppointmentSlots&id_form=${appointmentform.idForm}&nb_week=${nb_week - 1}"  title="#i18n{appointment.appointmentApp.previousWeek}">
+                                        <i class="glyphicon glyphicon-arrow-left"></i> 
+                                    </a>
+                                    </#if>
+                                    <#if nb_week < max_week>
+                                    <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewmanageAppointmentSlots&id_form=${appointmentform.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}" >
+                                        <i class="glyphicon glyphicon-arrow-right"></i> 
+                                    </a>
+                                    </#if>
+
                                 </td>
                                
                             </tr>
@@ -59,7 +78,8 @@
                                 <tr>
                                     <th>
                                          
-                                            #i18n{${list_days_of_week[day_index]}}
+                                            #i18n{${list_days_of_week[day_index]}}<br />
+                                            ${day.date}
                                              
                                          
                                     </th>

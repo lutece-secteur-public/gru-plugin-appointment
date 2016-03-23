@@ -827,6 +827,36 @@ public class AppointmentService
                                 AppointmentSlotHome.create( slot );
                             }
                         }
+                        
+                        // If the day has not already been created, we create it
+                        if ( day.getIdDay(  ) != 0 )
+                        {
+                            int nNbFreePlaces = 0;
+
+                            for ( AppointmentSlot slot : day.getListSlots(  ) )
+                            {
+                                if ( slot.getIsEnabled(  ) )
+                                {
+                                    if ( day.getPeoplePerAppointment(  ) != 0 )
+                                    {
+                                        slot.setNbPlaces(slot.getNbPlaces(  ) );
+                                    }
+
+                                    nNbFreePlaces += slot.getNbPlaces(  );
+                                }
+                            }
+
+                            day.setFreePlaces( nNbFreePlaces );
+                            AppointmentDayHome.create( day );
+
+                            for ( AppointmentSlot slot : day.getListSlots(  ) )
+                            {
+                                slot.setIdDay( day.getIdDay(  ) );
+                                AppointmentSlotHome.create( slot );
+                            }
+                        }
+                        
+                        
                     }
                 }
             }
