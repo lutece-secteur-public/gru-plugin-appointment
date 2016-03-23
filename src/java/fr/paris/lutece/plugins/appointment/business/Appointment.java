@@ -53,7 +53,7 @@ import javax.validation.constraints.Size;
 /**
  * This is the business class for the object Appointment
  */
-public class Appointment implements  Serializable
+public class Appointment implements Serializable
 {
     /**
      * Appointment resource type
@@ -110,13 +110,11 @@ public class Appointment implements  Serializable
     private int _nIdActionCancel;
     private int _idAdminUser;
     private int _nHasNotify;
-    
-    
 
-	/**
-     * Returns the IdAppointment
-     * @return The IdAppointment
-     */
+    /**
+    * Returns the IdAppointment
+    * @return The IdAppointment
+    */
     public int getIdAppointment(  )
     {
         return _nIdAppointment;
@@ -463,5 +461,4 @@ public class Appointment implements  Serializable
         }
        
     }
-    
 }

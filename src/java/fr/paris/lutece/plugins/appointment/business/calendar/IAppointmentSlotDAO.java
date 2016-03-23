@@ -177,4 +177,12 @@ public interface IAppointmentSlotDAO
      * @return The appointment slot
      */
     AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot, Plugin plugin );
+
+    /**
+     *
+     * @param nIdForm
+     * @param plugin
+     * @return
+     */
+    List<AppointmentSlot> findByIdFormAll( int nIdForm, Plugin plugin );
 }

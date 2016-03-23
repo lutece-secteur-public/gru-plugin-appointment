@@ -343,4 +343,128 @@ public class AppointmentDay implements Cloneable
 
         return null;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode(  )
+    {
+        final int prime = 31;
+        int result = 1;
+        result = ( prime * result ) + ( _bIsOpen ? 1231 : 1237 );
+        result = ( prime * result ) + ( ( _date == null ) ? 0 : _date.hashCode(  ) );
+        result = ( prime * result ) + ( ( _listSlots == null ) ? 0 : _listSlots.hashCode(  ) );
+        result = ( prime * result ) + _nAppointmentDuration;
+        result = ( prime * result ) + _nClosingHour;
+        result = ( prime * result ) + _nClosingMinutes;
+        result = ( prime * result ) + _nDayFreePlaces;
+        result = ( prime * result ) + _nIdDay;
+        result = ( prime * result ) + _nIdForm;
+        result = ( prime * result ) + _nOpeningHour;
+        result = ( prime * result ) + _nOpeningMinutes;
+        result = ( prime * result ) + _nPeoplePerAppointment;
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
+        {
+            return true;
+        }
+
+        if ( obj == null )
+        {
+            return false;
+        }
+
+        if ( getClass(  ) != obj.getClass(  ) )
+        {
+            return false;
+        }
+
+        AppointmentDay other = (AppointmentDay) obj;
+
+        if ( _bIsOpen != other._bIsOpen )
+        {
+            return false;
+        }
+
+        if ( _date == null )
+        {
+            if ( other._date != null )
+            {
+                return false;
+            }
+        }
+        else if ( !_date.equals( other._date ) )
+        {
+            return false;
+        }
+
+        if ( _listSlots == null )
+        {
+            if ( other._listSlots != null )
+            {
+                return false;
+            }
+        }
+        else if ( !_listSlots.equals( other._listSlots ) )
+        {
+            return false;
+        }
+
+        if ( _nAppointmentDuration != other._nAppointmentDuration )
+        {
+            return false;
+        }
+
+        if ( _nClosingHour != other._nClosingHour )
+        {
+            return false;
+        }
+
+        if ( _nClosingMinutes != other._nClosingMinutes )
+        {
+            return false;
+        }
+
+        if ( _nDayFreePlaces != other._nDayFreePlaces )
+        {
+            return false;
+        }
+
+        if ( _nIdDay != other._nIdDay )
+        {
+            return false;
+        }
+
+        if ( _nIdForm != other._nIdForm )
+        {
+            return false;
+        }
+
+        if ( _nOpeningHour != other._nOpeningHour )
+        {
+            return false;
+        }
+
+        if ( _nOpeningMinutes != other._nOpeningMinutes )
+        {
+            return false;
+        }
+
+        if ( _nPeoplePerAppointment != other._nPeoplePerAppointment )
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

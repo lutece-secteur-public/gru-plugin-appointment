@@ -50,6 +50,7 @@ public class AppointmentHoliDaysDAO implements IAppointmentHoliDaysDAO
     private static final String SQL_QUERY_INSERT_HOLIDAYS = "INSERT INTO appointment_holidays (id_form,date_day) VALUES (?,?)";
     private static final String SQL_QUERY_REMOVE_HOLIDAYS = "DELETE FROM appointment_holidays WHERE id_form = ? AND date_day= ?";
     private static final String SQL_QUERY_SELECT_DAY = "SELECT date_day FROM appointment_holidays WHERE id_form = ? ";
+    private static final String SQL_QUERY_REMOVE_DAYS_HOLIDAYS = "DELETE FROM appointment_holidays WHERE id_form = ? ";
 
     public void insert( Date date, int nIdForm, Plugin plugin )
     {
@@ -70,6 +71,14 @@ public class AppointmentHoliDaysDAO implements IAppointmentHoliDaysDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_HOLIDAYS, plugin );
         daoUtil.setInt( 1, nIdForm );
         daoUtil.setDate( 2, date );
+        daoUtil.executeUpdate(  );
+        daoUtil.free(  );
+    }
+
+    public void remove( int nIdForm, Plugin plugin )
+    {
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_DAYS_HOLIDAYS, plugin );
+        daoUtil.setInt( 1, nIdForm );
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }

@@ -17,7 +17,52 @@
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='input-small' />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelUserCanCancelAppointments' inputName='allow_users_to_cancel_appointments' value='true' checked=appointmentform.allowUsersToCancelAppointments!false />
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbWeeksToDisplay' inputName='nb_weeks_to_display' mandatory=true value=appointmentform.nbWeeksToDisplay!'' i18nHelpBlockKey='appointment.create_appointmentform.labelNbWeeksToDisplay.help' maxlength=3 />
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpenWeek" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<div class="btn">
+							<label>
+							<input type="radio" id="isOpenWeek" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();" checked="">&#160;
+							</label>
+							
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group" id="divNbWeek">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="nb_weeks_to_display" ></label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" maxlength=3 class="input-small" checked="checked">
+						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpenDate" >#i18n{appointment.create_appointmentform.labelNbDaysToDisplay} :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<div class="btn">
+							<label>
+							<input type="radio" id="isOpenDate" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();"/>&#160;
+							</label>
+							
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group" id="divNbDate">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="dateLimit" ></label>
+					<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+					<div class="input-group" >
+					    <div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
+						<input type="text" id="dateLimit" name="dateLimit" value="${appointmentform.dateLimit!''}" maxlength=3 class="input-small">
+					</div>	
+						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysToDisplay.help}</span>
+					</div>
+				</div>
+
+				
+				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelPeoplePerAppointment' inputName='people_per_appointment' mandatory=true value=appointmentform.peoplePerAppointment!'' i18nHelpBlockKey='appointment.create_appointmentform.labelPeoplePerAppointment.help' maxlength=3 />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=true value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxByEmail' inputName='max_appointment_mail' mandatory=true value=appointmentform.maxAppointments!'0'  maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelMaxAppointments.help' />
@@ -87,6 +132,8 @@
 </div>
    <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 	<script type="text/javascript">
+	$('#dateLimit').datepicker({language: 'fr'});
+	$("#divNbDate").toggle(false);
 	$('#date_start_validity').datepicker({
 	    language:		"${language}",
 	    startDate: 		new Date(),
@@ -103,4 +150,19 @@
 	    todayHighLight: true,
 	    autoclose: true
 	});
+	function switchVisibilityDate(){
+		$("#divNbDate").toggle(true);
+		$("#divNbWeek").toggle(true);
+		if($("#isOpenWeek").prop("checked")){
+			  $("#isOpenDate").prop("checked" , false)
+              $("#dateLimit").val("");
+              $("#divNbDate").toggle(false);
+		}
+		else if($("#isOpenDate").prop("checked")){
+			  $("#isOpenWeek").prop("checked" , false)
+              $("#nb_weeks_to_display").val("");
+              $("#divNbWeek").toggle(false);
+		};
+		
+	}
 	</script>

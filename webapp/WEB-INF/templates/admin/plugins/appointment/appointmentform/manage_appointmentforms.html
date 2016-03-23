@@ -34,7 +34,10 @@
 						
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
 							<i class="glyphicon glyphicon-edit"></i>
-						</a>						
+						</a>	
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelCopy}">
+								<i class="fa fa-plus-circle"></i>
+					    </a>					
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">
 							<i class="fa fa-comment"></i>
 						</a>

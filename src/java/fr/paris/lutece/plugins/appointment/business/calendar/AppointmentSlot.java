@@ -342,4 +342,16 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
         return null;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString(  )
+    {
+        return "AppointmentSlot [_nIdSlot=" + _nIdSlot + ", _nIdForm=" + _nIdForm + ", _nIdDay=" + _nIdDay +
+        ", _nDayOfWeek=" + _nDayOfWeek + ", _nNbPlaces=" + _nNbPlaces + ", _nNbFreePlaces=" + _nNbFreePlaces +
+        ", _nStartingHour=" + _nStartingHour + ", _nStartingMinute=" + _nStartingMinute + ", _nEndingHour=" +
+        _nEndingHour + ", _nEndingMinute=" + _nEndingMinute + ", _bIsEnabled=" + _bIsEnabled + "]";
+    }
 }

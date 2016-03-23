@@ -97,8 +97,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private Date _dateDateEndValidity;
     private boolean _bIsActive;
     private boolean _bDisplayTitleFo;
-    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nNbWeeksToDisplay;
+    private Date _dateDateLimit;
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nPeoplePerAppointment;
     private int _nIdWorkflow;
@@ -125,15 +125,16 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     @Min( value = 5, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}" )
     private int _nseizureDuration;
 
-    
-    public int getSeizureDuration() {
-  		return _nseizureDuration;
-  	}
+    public int getSeizureDuration(  )
+    {
+        return _nseizureDuration;
+    }
 
+    public void setSeizureDuration( int _nseizureDuration )
+    {
+        this._nseizureDuration = _nseizureDuration;
+    }
 
-  	public void setSeizureDuration(int _nseizureDuration) {
-  		this._nseizureDuration = _nseizureDuration;
-  	}
     /**
      * Returns the IdForm
      * @return The IdForm
@@ -835,9 +836,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
         return Integer.toString( getIdForm(  ) );
     }
 
+    public Date getDateLimit(  )
+    {
+        return _dateDateLimit;
+    }
+
+    public void setDateLimit( Date dateDateLimit )
+    {
+        this._dateDateLimit = dateDateLimit;
+    }
+
     /**
-     * {@inheritDoc}
-     */
+    * {@inheritDoc}
+    */
     @Override
     public Object clone(  )
     {

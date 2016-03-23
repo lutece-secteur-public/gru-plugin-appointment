@@ -33,11 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+
 /**
  * Class containing constants for the download of files in Appointment plugin
  *
  */
-public final class DownloadConstants 
+public final class DownloadConstants
 {
     public static final String EXCEL_FILE_EXTENSION = ".xlsx";
     public static final String EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -45,8 +46,7 @@ public final class DownloadConstants
     /**
      * Private default constructor because this class is an utility class
      */
-    private DownloadConstants( )
+    private DownloadConstants(  )
     {
-        
     }
 }

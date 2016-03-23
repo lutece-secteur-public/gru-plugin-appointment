@@ -59,11 +59,14 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -99,6 +102,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     private static final String PARAMETER_LIM_DATES = "bornDates";
     private static final String PARAMETER_DATE_MIN = "dateMin";
     private static final String PARAMETER_APPOINTMENT_FORM = "appointmentform";
+
     // Messages
     //    private static final String MESSAGE_CONFIRM_REMOVE_DAY = "appointment.message.confirmRemoveDay";
     private static final String MESSAGE_ERROR_OPENING_TIME_FORMAT = "appointment.modify_appointmentForm.patternTimeStart";
@@ -222,9 +226,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             AppointmentDayHome.getDaysBetween( nIdForm, dateMin, dateMax );
 
             Map<String, Object> model = new HashMap<String, Object>(  );
-                
+
             model.put( PARAMETER_APPOINTMENT_FORM, nIdForm );
-            
+
             model.put( MARK_LIST_DAYS, listDays );
             model.put( PARAMETER_NB_WEEK, _nNbWeek );
             model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate - 1 );
@@ -508,7 +512,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     {
         String strIdDay = request.getParameter( PARAMETER_ID_DAY );
         Map<String, Object> model = getModel(  );
-        
+
         if ( StringUtils.isNotEmpty( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
         {
             int nIdDay = Integer.parseInt( strIdDay );
@@ -520,10 +524,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 return redirect( request,
                     getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
             }
-            
-               model = fillFreeMarker( day );
 
-             
+            model = fillFreeMarker( day );
+
             return getPage( PROPERTY_MODIFY_DAY_TITLE, TEMPLATE_MODIFY_DAY, model );
         }
 
@@ -611,10 +614,10 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
             return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay(  ) );
         }
-        
-        if ( day.getPeoplePerAppointment( )!=dayFromDb.getPeoplePerAppointment( ) )
+
+        if ( day.getPeoplePerAppointment(  ) != dayFromDb.getPeoplePerAppointment(  ) )
         {
-        	AppointmentDayHome.resetDayPlaces( day, day.getIdForm( ), getDayOfWeek( day.getDate(  ) ) );
+            AppointmentDayHome.resetDayPlaces( day, day.getIdForm(  ), getDayOfWeek( day.getDate(  ) ) );
         }
 
         AppointmentDayHome.update( day );
@@ -631,8 +634,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
         return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
     }
-    
-    
+
     /**
      * Get the day of the week of a date.
      * @param date The date to get the day of the week of

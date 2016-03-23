@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
@@ -42,22 +41,12 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDisponiblity;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentSlotService;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
-import fr.paris.lutece.plugins.genericattributes.business.Entry;
-import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
-import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.plugins.genericattributes.business.Field;
-import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
-import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
-import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -78,6 +67,7 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -85,17 +75,17 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import java.sql.Date;
+
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -104,6 +94,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
@@ -155,7 +146,6 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String PARAMETER_NB_WEEK = "nb_week";
     private static final String PARAMETER_MAX_WEEK = "max_week";
     private static final String PARAMETER_LIM_DATES = "bornDates";
-   
 
     // Marks
     private static final String MARK_LIST_SLOTS = "listSlots";
@@ -173,22 +163,22 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String MARK_LIST_DAYS = "listDays";
     private static final String MARK_COLUMN = "column";
     private static final String MARK_ROW = "row";
-    private static final String MARK_EXCEL_EXTENSION_XLSX = "xlsx" ;
+    private static final String MARK_EXCEL_EXTENSION_XLSX = "xlsx";
     private static final String MARK_FORMAT_DATE = "dd/MM/yyyy";
     private static final String MARK_FILE_CLOSING_DAYS = "fileHolidays";
     private static final String MARK_COLUMN_DAY = "appointment.manageHolidays.export_holidays.columnDay";
     private static final String MARK_COLUMN_MONTH = "appointment.manageHolidays.export_holidays.columnMonth";
     private static final String MARK_COLUMN_YEAR = "appointment.manageHolidays.export_holidays.columnYeay";
     private static final String MARK_COLUMN_DATE = "appointment.manageHolidays.export_holidays.columnShortDate";
-    private static final String MARK_FORMAT_DATE_REGEX = "([0-9]{2})/([0-9]{2})/([0-9]{4})" ;
-    private static final String MARK_ERROR_MSG = "appointment.manageHolidays.error.formatDate" ;
-    private static final String MARK_ERROR_FORMAT_DATE = "appointment.manageHolidays.error.typeFormatNotValid" ;
+    private static final String MARK_FORMAT_DATE_REGEX = "([0-9]{2})/([0-9]{2})/([0-9]{4})";
+    private static final String MARK_ERROR_MSG = "appointment.manageHolidays.error.formatDate";
+    private static final String MARK_ERROR_FORMAT_DATE = "appointment.manageHolidays.error.typeFormatNotValid";
     private static final String MARK_FORM = "form";
     private static final String MARK_LIST_TIME_BEGIN = "list_time_begin";
     private static final String MARK_MIN_DURATION_APPOINTMENT = "min_duration_appointments";
     private static final String MARK_LIST_DAYS_OF_WEEK = "list_days_of_week";
     private static final String MARK_LANGUAGE = "language";
-    private static final String MARK_NB_SLOT_DAY ="nbrSlotDay";
+    private static final String MARK_NB_SLOT_DAY = "nbrSlotDay";
     private static final String MARK_LIST_OPEN_DAY = "listOpenDay";
 
     // Views
@@ -210,18 +200,15 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modify_slot.html";
     private static final String TEMPLATE_MANAGE_HOLIDAYS = "admin/plugins/appointment/slots/modify_appointmentform_holidays.html";
     private static final String PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT = "appointment.form.nbWeekToCreate";
-    private AppointmentSlot _slotInSession;
-    
+
     // Messages
     private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek(  );
-    
-  //services
-    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
+    private AppointmentSlot _slotInSession;
 
+    //services
+    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private transient AppointmentDay _appointmentDay;
-    
-    
-    
+
     /**
      * Get an Appointment day Copied
      * @param day
@@ -252,7 +239,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
         return copyDayFromDB( day );
     }
-    
+
     /**
      * Copy fields from Days
      * @param day
@@ -274,289 +261,291 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
         return objRetour;
     }
-    
-    
+
     /**
      * Get the page to manage slots of a form or a day
      * @param request The request
      * @return The HTML content to display or the next URL to redirect to
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( defaultView = true, value = VIEW_MANAGE_APPOINTMENT_SLOTS )
-    public String getManageSlots( HttpServletRequest request ) throws AccessDeniedException  
-    { 
-    	AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
-    
-    	int nIdForm= 0;
-    String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-    String strTimeMilli = request.getParameter( PARAMETER_ID_TIME );
-    String strIdDay = request.getParameter( PARAMETER_ID_DAY );
-    
-    if ( StringUtils.isNotEmpty( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
+    public String getManageSlots( HttpServletRequest request )
+        throws AccessDeniedException
     {
-        int nIdDay = Integer.parseInt( strIdDay );
+        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
 
-        AppointmentDay day = fillAppoinmentDay( nIdDay, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
-        if ( StringUtils.isEmpty( strIdForm ) )
-        { 
-        	nIdForm = day.getIdForm();
-        }
-    }
-    
-    Map<String, Object> model = new HashMap<String, Object>(  ); 
-    model=getModel();
-    
-     
+        int nIdForm = 0;
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String strTimeMilli = request.getParameter( PARAMETER_ID_TIME );
+        String strIdDay = request.getParameter( PARAMETER_ID_DAY );
 
-    if ( (StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ))|| (nIdForm!=0) )
-    {
-        _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
-        _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
-        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm )){
-        	nIdForm = Integer.parseInt( strIdForm );
-        }
-         
-        String strTime = request.getParameter( PARAMETER_ID_TIME );
-
-        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-
-        int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 ) +
-            form.getNbWeeksToDisplay(  );
-        String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
-        int nNbWeek = 0;
-
-        if ( !StringUtils.isEmpty( strTimeMilli ) || StringUtils.isNumeric( strTimeMilli ) )
+        if ( StringUtils.isNotEmpty( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
         {
-            Date objMyTime = new Date( Long.valueOf( strTimeMilli ) );
-            // Compute difference in week beetween now and date picked for the calendar button
-            nNbWeek = computeWeek( objMyTime );
-        }
+            int nIdDay = Integer.parseInt( strIdDay );
 
-        if ( StringUtils.isNotEmpty( strNbWeek ) )
-        {
-            nNbWeek = AppointmentService.getService(  ).parseInt( strNbWeek );
+            AppointmentDay day = fillAppoinmentDay( nIdDay, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
 
-            if ( Math.abs( nNbWeek ) > nNbWeeksToCreate )
+            if ( StringUtils.isEmpty( strIdForm ) )
             {
-                return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+                nIdForm = day.getIdForm(  );
             }
         }
 
-        List<AppointmentDay> listDays = AppointmentService.getService(  ).findAndComputeDayList( form, nNbWeek,
-                false );
+        Map<String, Object> model = new HashMap<String, Object>(  );
+        model = getModel(  );
 
-        for ( AppointmentDay day : listDays )
+        if ( ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) ) || ( nIdForm != 0 ) )
         {
-            if ( nNbWeek < 0 )
-            {
-                if ( day.getIdDay(  ) > 0 )
-                {
-                    List<AppointmentSlot> listSlots = AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) );
+            _appointmentFormService.removeAppointmentFromSession( request.getSession(  ) );
+            _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
 
-                    for ( AppointmentSlot slotFromDb : listSlots )
+            if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
+            {
+                nIdForm = Integer.parseInt( strIdForm );
+            }
+
+            String strTime = request.getParameter( PARAMETER_ID_TIME );
+
+            AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+
+            int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 ) +
+                form.getNbWeeksToDisplay(  );
+            String strNbWeek = request.getParameter( PARAMETER_NB_WEEK );
+            int nNbWeek = 0;
+
+            if ( !StringUtils.isEmpty( strTimeMilli ) || StringUtils.isNumeric( strTimeMilli ) )
+            {
+                Date objMyTime = new Date( Long.valueOf( strTimeMilli ) );
+                // Compute difference in week beetween now and date picked for the calendar button
+                nNbWeek = computeWeek( objMyTime );
+            }
+
+            if ( StringUtils.isNotEmpty( strNbWeek ) )
+            {
+                nNbWeek = AppointmentService.getService(  ).parseInt( strNbWeek );
+
+                if ( Math.abs( nNbWeek ) > nNbWeeksToCreate )
+                {
+                    return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+                }
+            }
+
+            List<AppointmentDay> listDays = AppointmentService.getService(  ).findAndComputeDayList( form, nNbWeek,
+                    false );
+
+            for ( AppointmentDay day : listDays )
+            {
+                if ( nNbWeek < 0 )
+                {
+                    if ( day.getIdDay(  ) > 0 )
                     {
+                        List<AppointmentSlot> listSlots = AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) );
+
+                        for ( AppointmentSlot slotFromDb : listSlots )
+                        {
+                            for ( AppointmentSlot slotComputed : day.getListSlots(  ) )
+                            {
+                                if ( ( slotFromDb.getStartingHour(  ) == slotComputed.getStartingHour(  ) ) &&
+                                        ( slotFromDb.getStartingMinute(  ) == slotComputed.getStartingMinute(  ) ) )
+                                {
+                                    slotComputed.setNbFreePlaces( slotFromDb.getNbFreePlaces(  ) );
+                                    slotComputed.setNbPlaces( slotFromDb.getNbPlaces(  ) );
+                                    slotComputed.setIdSlot( slotFromDb.getIdSlot(  ) );
+                                }
+                            }
+                        }
+
                         for ( AppointmentSlot slotComputed : day.getListSlots(  ) )
                         {
-                            if ( ( slotFromDb.getStartingHour(  ) == slotComputed.getStartingHour(  ) ) &&
-                                    ( slotFromDb.getStartingMinute(  ) == slotComputed.getStartingMinute(  ) ) )
+                            if ( slotComputed.getIdSlot(  ) == 0 )
                             {
-                                slotComputed.setNbFreePlaces( slotFromDb.getNbFreePlaces(  ) );
-                                slotComputed.setNbPlaces( slotFromDb.getNbPlaces(  ) );
-                                slotComputed.setIdSlot( slotFromDb.getIdSlot(  ) );
+                                slotComputed.setIsEnabled( false );
                             }
                         }
                     }
-
-                    for ( AppointmentSlot slotComputed : day.getListSlots(  ) )
+                    else
                     {
-                        if ( slotComputed.getIdSlot(  ) == 0 )
-                        {
-                            slotComputed.setIsEnabled( false );
-                        }
+                        day.setIsOpen( false );
                     }
                 }
                 else
                 {
-                    day.setIsOpen( false );
+                    // If the day has not been loaded from the database, we load its slots
+                    // Otherwise, we use default computed slots
+                    if ( day.getIdDay(  ) > 0 )
+                    {
+                        day.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) ) );
+                    }
                 }
             }
-            else
+
+            listDays = computeUnavailableDays( form.getIdForm(  ), listDays, false );
+
+            List<String> listTimeBegin = new ArrayList<String>(  );
+            int nMinAppointmentDuration = AppointmentService.getService(  )
+                                                            .getListTimeBegin( listDays, form, listTimeBegin );
+
+            //            int nIdForm = Integer.parseInt( strIdForm );
+            //            listSlots = AppointmentSlotHome.findByIdForm( nIdForm );
+            //            form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            //            nNbWeeks = form.getNbWeeksToDisplay(  );
+            //
+            //            boolean[] bArrayListDays = 
+            //                {
+            //                    form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
+            //                    form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
+            //                    form.getIsOpenSunday(  ),
+            //                };
+            //            AppointmentDay day = AppointmentService.getService(  ).getAppointmentDayFromForm( form );
+            //            day.setIsOpen( false );
+            //            model.put( MARK_READ_ONLY, false );
+            //
+            //            boolean bHasClosedDay = false;
+            //
+            //            for ( int i = 0; i < bArrayListDays.length; i++ )
+            //            {
+            //                if ( !bArrayListDays[i] )
+            //                {
+            //                    listSlots.addAll( AppointmentService.getService(  ).computeDaySlots( day, i + 1 ) );
+            //                    bHasClosedDay = true;
+            //                }
+            //            }
+            //
+            //            if ( bHasClosedDay )
+            //            {
+            //                Collections.sort( listSlots );
+            //            }
+            //        }
+            //        else
+            //        {
+            //            String strIdDay = request.getParameter( PARAMETER_ID_DAY );
+            //
+            //            if ( StringUtils.isNotBlank( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
+            //            {
+            //                int nIdDay = Integer.parseInt( strIdDay );
+            //                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( nIdDay );
+            //
+            //                if ( !day.getIsOpen(  ) )
+            //                {
+            //                    return redirect( request,
+            //                        AppointmentFormDayJspBean.getURLManageAppointmentFormDays( request, strIdDay ) );
+            //                }
+            //
+            //                listSlots = AppointmentSlotHome.findByIdDay( nIdDay );
+            //                model.put( MARK_DAY, day );
+            //                model.put( MARK_READ_ONLY, isReadonly( day.getDate(  ) ) );
+            //                form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
+            //            }
+            //        }
+            //
+            //        if ( listSlots == null )
+            //        {
+            //            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+            //        }
+            //
+            //        int nDuration = 0;
+            //        int nMinStartingTime = 0;
+            //        int nMaxEndingTime = 0;
+            //        int nMinStartingHour = 0;
+            //        int nMinStartingMinute = 0;
+            //        int nMaxEndingHour = 0;
+            //        int nMaxEndingMinute = 0;
+            //
+            //        for ( AppointmentSlot slot : listSlots )
+            //        {
+            //            int nSlotStartingTime = ( slot.getStartingHour(  ) * 60 ) + slot.getStartingMinute(  );
+            //            int nSlotEndingTime = ( slot.getEndingHour(  ) * 60 ) + slot.getEndingMinute(  );
+            //            int nSlotDuration = nSlotEndingTime - nSlotStartingTime;
+            //
+            //            if ( nSlotDuration < 0 )
+            //            {
+            //                nSlotDuration = -1 * nSlotDuration;
+            //            }
+            //
+            //            if ( ( nDuration == 0 ) || ( nSlotDuration < nDuration ) )
+            //            {
+            //                nDuration = nSlotDuration;
+            //            }
+            //
+            //            if ( ( nMinStartingTime == 0 ) || ( nSlotStartingTime < nMinStartingTime ) )
+            //            {
+            //                nMinStartingTime = nSlotStartingTime;
+            //                nMinStartingHour = slot.getStartingHour(  );
+            //                nMinStartingMinute = slot.getStartingMinute(  );
+            //            }
+            //
+            //            if ( nSlotEndingTime > nMaxEndingTime )
+            //            {
+            //                nMaxEndingTime = nSlotEndingTime;
+            //                nMaxEndingHour = slot.getEndingHour(  );
+            //                nMaxEndingMinute = slot.getEndingMinute(  );
+            //            }
+            //        }
+            //
+            //        int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
+
+            //        model.put( MARK_LIST_SLOTS, listSlots );
+            //        model.put( MARK_MIN_SLOT_DURATION, nDuration );
+            //        model.put( MARK_MIN_STARTING_HOUR, nMinStartingHour );
+            //        model.put( MARK_MIN_STARTING_MINUTE, nMinStartingMinute );
+            //        model.put( MARK_MAX_ENDING_HOUR, nMaxEndingHour );
+            //        model.put( MARK_MAX_ENDING_MINUTE, nMaxEndingMinute );
+            //        model.put( MARK_LOCALE, getLocale(  ) );
+            //        model.put( MARK_BORN_DATE, getLimitedDate( nNbWeeks + nNbWeeksToCreate ) );
+            //        AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
+            int nbSlotDay = 0;
+
+            List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>(  );
+            List<Boolean> listOpenDay = new ArrayList<Boolean>(  );
+
+            for ( AppointmentDay day : listDays )
             {
-                // If the day has not been loaded from the database, we load its slots
-                // Otherwise, we use default computed slots
-                if ( day.getIdDay(  ) > 0 )
+                List<AppointmentSlot> listSlotsDay = AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) );
+
+                if ( listSlotsDay.isEmpty(  ) )
                 {
-                    day.setListSlots( AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) ) );
+                    listOpenDay.add( false );
+
+                    for ( int i = 0; i < nbSlotDay; i++ )
+                    {
+                        AppointmentSlot appointmentSlot = new AppointmentSlot(  );
+                        listSlots.add( appointmentSlot );
+                    }
+                }
+                else
+                {
+                    listOpenDay.add( true );
+                    listSlots.addAll( listSlotsDay );
+                    nbSlotDay = listSlotsDay.size(  );
                 }
             }
+
+            Collections.sort( listSlots );
+            model.put( MARK_LIST_OPEN_DAY, listOpenDay );
+            model.put( MARK_NB_SLOT_DAY, nbSlotDay );
+            model.put( MARK_MIN_STARTING_HOUR, form.getOpeningHour(  ) );
+            model.put( MARK_MIN_STARTING_MINUTE, form.getOpeningMinutes(  ) );
+            model.put( MARK_MAX_ENDING_HOUR, form.getClosingHour(  ) );
+            model.put( MARK_MAX_ENDING_MINUTE, form.getClosingMinutes(  ) );
+            model.put( MARK_LIST_SLOTS, listSlots );
+            model.put( PARAMETER_APPOINTMENT_FORM, form );
+            model.put( MARK_LIST_DAYS, listDays );
+            model.put( PARAMETER_NB_WEEK, nNbWeek );
+            model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate - 1 );
+            model.put( PARAMETER_LIM_DATES, getLimitedDate( nNbWeeksToCreate ) );
+            model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
+            model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
+            model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
+            model.put( MARK_LANGUAGE, getLocale(  ) );
+
+            return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
         }
 
-        listDays = computeUnavailableDays( form.getIdForm(  ), listDays, false );
-
-        List<String> listTimeBegin = new ArrayList<String>(  );
-        int nMinAppointmentDuration = AppointmentService.getService(  )
-                                                        .getListTimeBegin( listDays, form, listTimeBegin );
-//            int nIdForm = Integer.parseInt( strIdForm );
-//            listSlots = AppointmentSlotHome.findByIdForm( nIdForm );
-//            form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-//            nNbWeeks = form.getNbWeeksToDisplay(  );
-//
-//            boolean[] bArrayListDays = 
-//                {
-//                    form.getIsOpenMonday(  ), form.getIsOpenTuesday(  ), form.getIsOpenWednesday(  ),
-//                    form.getIsOpenThursday(  ), form.getIsOpenFriday(  ), form.getIsOpenSaturday(  ),
-//                    form.getIsOpenSunday(  ),
-//                };
-//            AppointmentDay day = AppointmentService.getService(  ).getAppointmentDayFromForm( form );
-//            day.setIsOpen( false );
-//            model.put( MARK_READ_ONLY, false );
-//
-//            boolean bHasClosedDay = false;
-//
-//            for ( int i = 0; i < bArrayListDays.length; i++ )
-//            {
-//                if ( !bArrayListDays[i] )
-//                {
-//                    listSlots.addAll( AppointmentService.getService(  ).computeDaySlots( day, i + 1 ) );
-//                    bHasClosedDay = true;
-//                }
-//            }
-//
-//            if ( bHasClosedDay )
-//            {
-//                Collections.sort( listSlots );
-//            }
-//        }
-//        else
-//        {
-//            String strIdDay = request.getParameter( PARAMETER_ID_DAY );
-//
-//            if ( StringUtils.isNotBlank( strIdDay ) && StringUtils.isNumeric( strIdDay ) )
-//            {
-//                int nIdDay = Integer.parseInt( strIdDay );
-//                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( nIdDay );
-//
-//                if ( !day.getIsOpen(  ) )
-//                {
-//                    return redirect( request,
-//                        AppointmentFormDayJspBean.getURLManageAppointmentFormDays( request, strIdDay ) );
-//                }
-//
-//                listSlots = AppointmentSlotHome.findByIdDay( nIdDay );
-//                model.put( MARK_DAY, day );
-//                model.put( MARK_READ_ONLY, isReadonly( day.getDate(  ) ) );
-//                form = AppointmentFormHome.findByPrimaryKey( day.getIdForm(  ) );
-//            }
-//        }
-//
-//        if ( listSlots == null )
-//        {
-//            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-//        }
-//
-//        int nDuration = 0;
-//        int nMinStartingTime = 0;
-//        int nMaxEndingTime = 0;
-//        int nMinStartingHour = 0;
-//        int nMinStartingMinute = 0;
-//        int nMaxEndingHour = 0;
-//        int nMaxEndingMinute = 0;
-//
-//        for ( AppointmentSlot slot : listSlots )
-//        {
-//            int nSlotStartingTime = ( slot.getStartingHour(  ) * 60 ) + slot.getStartingMinute(  );
-//            int nSlotEndingTime = ( slot.getEndingHour(  ) * 60 ) + slot.getEndingMinute(  );
-//            int nSlotDuration = nSlotEndingTime - nSlotStartingTime;
-//
-//            if ( nSlotDuration < 0 )
-//            {
-//                nSlotDuration = -1 * nSlotDuration;
-//            }
-//
-//            if ( ( nDuration == 0 ) || ( nSlotDuration < nDuration ) )
-//            {
-//                nDuration = nSlotDuration;
-//            }
-//
-//            if ( ( nMinStartingTime == 0 ) || ( nSlotStartingTime < nMinStartingTime ) )
-//            {
-//                nMinStartingTime = nSlotStartingTime;
-//                nMinStartingHour = slot.getStartingHour(  );
-//                nMinStartingMinute = slot.getStartingMinute(  );
-//            }
-//
-//            if ( nSlotEndingTime > nMaxEndingTime )
-//            {
-//                nMaxEndingTime = nSlotEndingTime;
-//                nMaxEndingHour = slot.getEndingHour(  );
-//                nMaxEndingMinute = slot.getEndingMinute(  );
-//            }
-//        }
-//
-//        int nNbWeeksToCreate = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_CREATE_FOR_BO_MANAGEMENT, 1 );
-
-//        model.put( MARK_LIST_SLOTS, listSlots );
-//        model.put( MARK_MIN_SLOT_DURATION, nDuration );
-//        model.put( MARK_MIN_STARTING_HOUR, nMinStartingHour );
-//        model.put( MARK_MIN_STARTING_MINUTE, nMinStartingMinute );
-//        model.put( MARK_MAX_ENDING_HOUR, nMaxEndingHour );
-//        model.put( MARK_MAX_ENDING_MINUTE, nMaxEndingMinute );
-//        model.put( MARK_LOCALE, getLocale(  ) );
-//        model.put( MARK_BORN_DATE, getLimitedDate( nNbWeeks + nNbWeeksToCreate ) );
-//        AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser(  ), getLocale(  ), model );
-
-        
-        
-        
-     int nbSlotDay=0;
-      
-      List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>() ;
-      List<Boolean> listOpenDay =new ArrayList<Boolean>();
-      for ( AppointmentDay day : listDays )
-      {
-           List<AppointmentSlot> listSlotsDay = AppointmentSlotHome.findByIdDayWithFreePlaces( day.getIdDay(  ) );
-           if (listSlotsDay.isEmpty())
-           { listOpenDay.add(false);
-        	   for (int i=0;i<nbSlotDay;i++)
-           		{ 
-        	   		AppointmentSlot appointmentSlot = new AppointmentSlot();
-           			listSlots.add( appointmentSlot );
-           		}
-           }else{
-        	   listOpenDay.add(true);
-        	   		listSlots.addAll(listSlotsDay);
-        	   		nbSlotDay=listSlotsDay.size();
-           		}
-      }
-      
-      Collections.sort( listSlots );
-        model.put( MARK_LIST_OPEN_DAY, listOpenDay );
-      	model.put(MARK_NB_SLOT_DAY, nbSlotDay);
-        model.put( MARK_MIN_STARTING_HOUR, form.getOpeningHour() );
-        model.put( MARK_MIN_STARTING_MINUTE, form.getOpeningMinutes());
-        model.put( MARK_MAX_ENDING_HOUR, form.getClosingHour());
-        model.put( MARK_MAX_ENDING_MINUTE, form.getClosingMinutes() );
-        model.put( MARK_LIST_SLOTS, listSlots );
-        model.put( PARAMETER_APPOINTMENT_FORM, form );
-        model.put( MARK_LIST_DAYS, listDays );
-        model.put( PARAMETER_NB_WEEK, nNbWeek );
-        model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate - 1 );
-        model.put( PARAMETER_LIM_DATES, getLimitedDate( nNbWeeksToCreate ) );
-        model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
-        model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
-        model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
-        model.put( MARK_LANGUAGE, getLocale(  ) );
-
+        //     return redirect( request,
+        //           AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, strIdDay ) );
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
     }
- 
-//     return redirect( request,
-//           AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, strIdDay ) );
-return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
-    }
-    
-    
-    
+
     /**
      * Transform Date to Calendar
      * @param objTime
@@ -580,124 +569,121 @@ return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
         return calendar;
     }
 
-    
     /**
      * Compute Days beetween date
      * @param nStart
      * @param nEnd
      * @return
      */
-private static int getNumbersDay( Date nStart, Date nEnd )
-{
-  long timeDiff = nEnd.getTime(  ) - nStart.getTime(  );
-  timeDiff = timeDiff / 1000 / ( 24 * 60 * 60 );
-
-  return Integer.valueOf( String.valueOf( timeDiff ) );
-}
-    
-/**
- * Erase unavailable slots
- * @param mySlots
- * @return
- */
-private static List<AppointmentSlot> setSlotToErase( Calendar precisedDateFromNow, List<AppointmentSlot> mySlots,
-    boolean bCheck )
-{
-    if ( mySlots != null )
+    private static int getNumbersDay( Date nStart, Date nEnd )
     {
-        for ( int ni = 0; ni < mySlots.size(  ); ni++ )
-        {
-            if ( precisedDateFromNow == null )
-            {
-                mySlots.get( ni ).setIsEnabled( bCheck );
-            }
-            else
-            {
-                Calendar now = new GregorianCalendar( Locale.FRENCH );
-                precisedDateFromNow = getCalendarTime( new Date( precisedDateFromNow.getTimeInMillis(  ) ),
-                        Integer.valueOf( mySlots.get( ni ).getStartingHour(  ) ),
-                        Integer.valueOf( mySlots.get( ni ).getStartingMinute(  ) ) );
+        long timeDiff = nEnd.getTime(  ) - nStart.getTime(  );
+        timeDiff = timeDiff / 1000 / ( 24 * 60 * 60 );
 
-                if ( precisedDateFromNow.before( now ) )
+        return Integer.valueOf( String.valueOf( timeDiff ) );
+    }
+
+    /**
+     * Erase unavailable slots
+     * @param mySlots
+     * @return
+     */
+    private static List<AppointmentSlot> setSlotToErase( Calendar precisedDateFromNow, List<AppointmentSlot> mySlots,
+        boolean bCheck )
+    {
+        if ( mySlots != null )
+        {
+            for ( int ni = 0; ni < mySlots.size(  ); ni++ )
+            {
+                if ( precisedDateFromNow == null )
                 {
                     mySlots.get( ni ).setIsEnabled( bCheck );
                 }
+                else
+                {
+                    Calendar now = new GregorianCalendar( Locale.FRENCH );
+                    precisedDateFromNow = getCalendarTime( new Date( precisedDateFromNow.getTimeInMillis(  ) ),
+                            Integer.valueOf( mySlots.get( ni ).getStartingHour(  ) ),
+                            Integer.valueOf( mySlots.get( ni ).getStartingMinute(  ) ) );
+
+                    if ( precisedDateFromNow.before( now ) )
+                    {
+                        mySlots.get( ni ).setIsEnabled( bCheck );
+                    }
+                }
             }
         }
+
+        return mySlots;
     }
 
-    return mySlots;
-}
-    
-    
     /**
      * Compute unavailable Days
      * @param form
      * @param listDays
      */
-private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<AppointmentDay> listDays,
-    boolean bCheck )
-{
-    if ( listDays != null )
+    private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<AppointmentDay> listDays,
+        boolean bCheck )
     {
-        Calendar nMaxSlots = null;
-
-        for ( int i = 0; i < listDays.size(  ); i++ )
+        if ( listDays != null )
         {
-            if ( ( nMaxSlots == null ) ||
-                    nMaxSlots.before( getCalendarTime( null, listDays.get( i ).getClosingHour(  ),
-                            listDays.get( i ).getClosingMinutes(  ) ) ) )
-            {
-                nMaxSlots = getCalendarTime( null, listDays.get( i ).getClosingHour(  ),
-                        listDays.get( i ).getClosingMinutes(  ) );
-                nMaxSlots.setTimeInMillis( nMaxSlots.getTimeInMillis(  ) +
-                    TimeUnit.MINUTES.toMillis( listDays.get( i ).getAppointmentDuration(  ) ) );
-            }
+            Calendar nMaxSlots = null;
 
-            if ( getNumbersDay( new Date( GregorianCalendar.getInstance(  ).getTimeInMillis(  ) ),
-                        listDays.get( i ).getDate(  ) ) < 0 )
+            for ( int i = 0; i < listDays.size(  ); i++ )
             {
-                listDays.get( i ).setListSlots( setSlotToErase( null, listDays.get( i ).getListSlots(  ), bCheck ) );
-            }
-
-            if ( getNumbersDay( new Date( GregorianCalendar.getInstance(  ).getTimeInMillis(  ) ),
-                        listDays.get( i ).getDate(  ) ) == 0 )
-            {
-                Calendar tmpCalendar = new GregorianCalendar(  );
-                tmpCalendar.setTime( listDays.get( i ).getDate(  ) );
-                listDays.get( i )
-                        .setListSlots( setSlotToErase( tmpCalendar, listDays.get( i ).getListSlots(  ), bCheck ) );
-            }
-        }
-
-        for ( int i = 0; i < listDays.size(  ); i++ )
-        {
-            if ( listDays.get( i ).getIsOpen(  ) && ( listDays.get( i ).getListSlots(  ) != null ) &&
-                    ( listDays.get( i ).getListSlots(  ).size(  ) > 0 ) )
-            {
-                AppointmentSlot tmpSlot = listDays.get( i ).getListSlots(  )
-                                                  .get( listDays.get( i ).getListSlots(  ).size(  ) - 1 ).clone(  );
-                Calendar tmpMich = getCalendarTime( null, tmpSlot.getEndingHour(  ), tmpSlot.getEndingMinute(  ) );
-                tmpMich.setTimeInMillis( tmpMich.getTimeInMillis(  ) +
-                    TimeUnit.MINUTES.toMillis( listDays.get( i ).getAppointmentDuration(  ) ) );
-
-                if ( tmpMich.before( nMaxSlots ) )
+                if ( ( nMaxSlots == null ) ||
+                        nMaxSlots.before( getCalendarTime( null, listDays.get( i ).getClosingHour(  ),
+                                listDays.get( i ).getClosingMinutes(  ) ) ) )
                 {
-                    tmpSlot.setStartingHour( tmpMich.get( Calendar.HOUR_OF_DAY ) );
-                    tmpSlot.setStartingMinute( tmpMich.get( Calendar.MINUTE ) );
-                    tmpSlot.setEndingHour( nMaxSlots.get( Calendar.HOUR_OF_DAY ) );
-                    tmpSlot.setEndingMinute( nMaxSlots.get( Calendar.MINUTE ) );
-                    tmpSlot.setIdSlot( -1 );
-                    tmpSlot.setIsEnabled( false );
-                    listDays.get( i ).getListSlots(  ).add( listDays.get( i ).getListSlots(  ).size(  ), tmpSlot );
+                    nMaxSlots = getCalendarTime( null, listDays.get( i ).getClosingHour(  ),
+                            listDays.get( i ).getClosingMinutes(  ) );
+                    nMaxSlots.setTimeInMillis( nMaxSlots.getTimeInMillis(  ) +
+                        TimeUnit.MINUTES.toMillis( listDays.get( i ).getAppointmentDuration(  ) ) );
+                }
+
+                if ( getNumbersDay( new Date( GregorianCalendar.getInstance(  ).getTimeInMillis(  ) ),
+                            listDays.get( i ).getDate(  ) ) < 0 )
+                {
+                    listDays.get( i ).setListSlots( setSlotToErase( null, listDays.get( i ).getListSlots(  ), bCheck ) );
+                }
+
+                if ( getNumbersDay( new Date( GregorianCalendar.getInstance(  ).getTimeInMillis(  ) ),
+                            listDays.get( i ).getDate(  ) ) == 0 )
+                {
+                    Calendar tmpCalendar = new GregorianCalendar(  );
+                    tmpCalendar.setTime( listDays.get( i ).getDate(  ) );
+                    listDays.get( i )
+                            .setListSlots( setSlotToErase( tmpCalendar, listDays.get( i ).getListSlots(  ), bCheck ) );
+                }
+            }
+
+            for ( int i = 0; i < listDays.size(  ); i++ )
+            {
+                if ( listDays.get( i ).getIsOpen(  ) && ( listDays.get( i ).getListSlots(  ) != null ) &&
+                        ( listDays.get( i ).getListSlots(  ).size(  ) > 0 ) )
+                {
+                    AppointmentSlot tmpSlot = listDays.get( i ).getListSlots(  )
+                                                      .get( listDays.get( i ).getListSlots(  ).size(  ) - 1 ).clone(  );
+                    Calendar tmpMich = getCalendarTime( null, tmpSlot.getEndingHour(  ), tmpSlot.getEndingMinute(  ) );
+                    tmpMich.setTimeInMillis( tmpMich.getTimeInMillis(  ) +
+                        TimeUnit.MINUTES.toMillis( listDays.get( i ).getAppointmentDuration(  ) ) );
+
+                    if ( tmpMich.before( nMaxSlots ) )
+                    {
+                        tmpSlot.setStartingHour( tmpMich.get( Calendar.HOUR_OF_DAY ) );
+                        tmpSlot.setStartingMinute( tmpMich.get( Calendar.MINUTE ) );
+                        tmpSlot.setEndingHour( nMaxSlots.get( Calendar.HOUR_OF_DAY ) );
+                        tmpSlot.setEndingMinute( nMaxSlots.get( Calendar.MINUTE ) );
+                        tmpSlot.setIdSlot( -1 );
+                        tmpSlot.setIsEnabled( false );
+                        listDays.get( i ).getListSlots(  ).add( listDays.get( i ).getListSlots(  ).size(  ), tmpSlot );
+                    }
                 }
             }
         }
+
+        return listDays;
     }
-
-    return listDays;
-}
-
 
     /**
      * ComputeWeek in time
@@ -714,16 +700,17 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
         int startWeek = objNow.get( Calendar.WEEK_OF_YEAR );
         int endWeek = objAfter.get( Calendar.WEEK_OF_YEAR );
         int idiff = objNow.get( Calendar.YEAR ) - objAfter.get( Calendar.YEAR );
-        if ( ( idiff<0 ) & ( endWeek<startWeek ) )
+
+        if ( ( idiff < 0 ) & ( endWeek < startWeek ) )
         {
-        	int ideltaYears = 0;
+            int ideltaYears = 0;
             Calendar objTmp = objNow.after( objAfter ) ? objAfter : objNow;
             ideltaYears += objTmp.getWeeksInWeekYear(  );
-            nNbWeek = ( endWeek + ideltaYears ) - startWeek;	
+            nNbWeek = ( endWeek + ideltaYears ) - startWeek;
         }
         else
         {
-        	int ideltaYears = 0;
+            int ideltaYears = 0;
             Calendar objTmp = objNow.after( objAfter ) ? objAfter : objNow;
 
             for ( int i = 0; i < idiff; i++ )
@@ -737,7 +724,6 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
 
         return nNbWeek;
     }
-    
 
     @View( VIEW_MANAGE_HOLIDAYS )
     public String getManageHolidays( HttpServletRequest request )
@@ -976,7 +962,8 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
         {
             String now = new SimpleDateFormat( "ddMMyyyy-hhmm" ).format( GregorianCalendar.getInstance( getLocale(  ) )
                                                                                           .getTime(  ) ) + "_" +
-                I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale(  ) ) + DownloadConstants.EXCEL_FILE_EXTENSION;
+                I18nService.getLocalizedString( "appointment.permission.label.resourceType", getLocale(  ) ) +
+                DownloadConstants.EXCEL_FILE_EXTENSION;
             response.setContentType( DownloadConstants.EXCEL_MIME_TYPE );
             response.setHeader( "Content-Disposition", "attachment; filename=\"" + now + "\";" );
             response.setHeader( "Pragma", "public" );
@@ -1002,87 +989,94 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
     {
         List<Date> listDays = new ArrayList<Date>(  );
         FileInputStream fis = null;
-        String strExtension =  FilenameUtils.getExtension( item.getName( ) ); 
+        String strExtension = FilenameUtils.getExtension( item.getName(  ) );
         DateFormat dateFormat = new SimpleDateFormat( MARK_FORMAT_DATE );
+
         if ( strExtension.equals( MARK_EXCEL_EXTENSION_XLSX ) )
         {
-	        try
-	        {
-	            fis = (FileInputStream) item.getInputStream(  );
-	            // Using XSSF for xlsx format, for xls use HSSF
-	            Workbook workbook = new XSSFWorkbook( fis );
-	
-	            int numberOfSheets = workbook.getNumberOfSheets(  );
-	
-	            //looping over each workbook sheet
-	            for ( int i = 0; i < numberOfSheets; i++ )
-	            {
-	                Sheet sheet = workbook.getSheetAt( i );
-	                Iterator<Row> rowIterator = sheet.iterator(  );
-	
-	                //iterating over each row
-	                while ( rowIterator.hasNext(  ) )
-	                {
-	                    Row row = (Row) rowIterator.next(  );
-	
-	                    if ( row.getRowNum(  ) > 1 )
-	                    {
-	                        Iterator<Cell> cellIterator = row.cellIterator(  );
-	
-	                        //Iterating over each cell (column wise)  in a particular row.
-	                        while ( cellIterator.hasNext(  ) )
-	                        {
-	                            Cell cell = (Cell) cellIterator.next(  );
-	
-	                            //The Cell Containing String will is name.
-	                            if ( cell.getColumnIndex(  ) == 3 )
-	                            {
-	                                String strdate = StringUtils.EMPTY ;
-	                                
-	                                if ( cell.getCellType( ) == 0 )
-	                                {
-	                                	java.util.Date date = cell.getDateCellValue( );
-	                                	
-	                                	strdate = dateFormat.format( date ) ;
-	                                }
-	                                if ( cell.getCellType( ) == 1 )
-	                                {
-	                                	strdate = cell.getStringCellValue( ) ;
-	                                }
-	                                else
-	                                {
-	                                	 AppLogService.error( MARK_ERROR_FORMAT_DATE + MARK_COLUMN +" : " + ( cell.getColumnIndex(  ) + 1 )  + MARK_ROW + " : " + row.getRowNum(  ) );
-	                                }
-	                                if ( StringUtils.isNotEmpty( strdate ) )
-	                                {
-	                                    if ( strdate.matches( MARK_FORMAT_DATE_REGEX ) )
-	                                    {
-	                                        Date date = new Date( DateUtil.getDate( strdate ).getTime(  ) );
-	                                        listDays.add( date );
-	                                    }
-	                                    else
-	                                    {
-	                                        AppLogService.error( MARK_ERROR_MSG );
-	                                    }
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	            fis.close(  );
-	            workbook.close( );
-	        }
-	        catch ( FileNotFoundException e )
-	        {
-	            e.printStackTrace(  );
-	        }
-	        catch ( IOException e )
-	        {
-	            e.printStackTrace(  );
-	        }
+            try
+            {
+                fis = (FileInputStream) item.getInputStream(  );
+
+                // Using XSSF for xlsx format, for xls use HSSF
+                Workbook workbook = new XSSFWorkbook( fis );
+
+                int numberOfSheets = workbook.getNumberOfSheets(  );
+
+                //looping over each workbook sheet
+                for ( int i = 0; i < numberOfSheets; i++ )
+                {
+                    Sheet sheet = workbook.getSheetAt( i );
+                    Iterator<Row> rowIterator = sheet.iterator(  );
+
+                    //iterating over each row
+                    while ( rowIterator.hasNext(  ) )
+                    {
+                        Row row = (Row) rowIterator.next(  );
+
+                        if ( row.getRowNum(  ) > 1 )
+                        {
+                            Iterator<Cell> cellIterator = row.cellIterator(  );
+
+                            //Iterating over each cell (column wise)  in a particular row.
+                            while ( cellIterator.hasNext(  ) )
+                            {
+                                Cell cell = (Cell) cellIterator.next(  );
+
+                                //The Cell Containing String will is name.
+                                if ( cell.getColumnIndex(  ) == 3 )
+                                {
+                                    String strdate = StringUtils.EMPTY;
+
+                                    if ( cell.getCellType(  ) == 0 )
+                                    {
+                                        java.util.Date date = cell.getDateCellValue(  );
+
+                                        strdate = dateFormat.format( date );
+                                    }
+
+                                    if ( cell.getCellType(  ) == 1 )
+                                    {
+                                        strdate = cell.getStringCellValue(  );
+                                    }
+                                    else
+                                    {
+                                        AppLogService.error( MARK_ERROR_FORMAT_DATE + MARK_COLUMN + " : " +
+                                            ( cell.getColumnIndex(  ) + 1 ) + MARK_ROW + " : " + row.getRowNum(  ) );
+                                    }
+
+                                    if ( StringUtils.isNotEmpty( strdate ) )
+                                    {
+                                        if ( strdate.matches( MARK_FORMAT_DATE_REGEX ) )
+                                        {
+                                            Date date = new Date( DateUtil.getDate( strdate ).getTime(  ) );
+                                            listDays.add( date );
+                                        }
+                                        else
+                                        {
+                                            AppLogService.error( MARK_ERROR_MSG );
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                fis.close(  );
+                workbook.close(  );
+            }
+            catch ( FileNotFoundException e )
+            {
+                e.printStackTrace(  );
+            }
+            catch ( IOException e )
+            {
+                e.printStackTrace(  );
+            }
         }
-        return listDays; 
+
+        return listDays;
     }
 
     /**
@@ -1113,16 +1107,17 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
         {
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
-           if ( slot.getIdDay(  ) > 0 )
-           {
-               AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
 
-               if ( day.getIsOpen(  ) )
-               {
-                  // we can only change enabling of opened days
-            	   slot.setIsEnabled( !slot.getIsEnabled(  ) );
+            if ( slot.getIdDay(  ) > 0 )
+            {
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
+
+                if ( day.getIsOpen(  ) )
+                {
+                    // we can only change enabling of opened days
+                    slot.setIsEnabled( !slot.getIsEnabled(  ) );
                 }
-           }
+            }
             else
             {
                 AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
@@ -1132,13 +1127,13 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
                     // we can only change enabling of opened days
                     slot.setIsEnabled( !slot.getIsEnabled(  ) );
                 }
-             }
+            }
 
             AppointmentSlotHome.update( slot );
 
             if ( slot.getIdDay(  ) > 0 )
             {
-                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, nIdForm);
+                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, nIdForm );
             }
 
             return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(  ) );
@@ -1158,14 +1153,13 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         AppointmentSlot slot;
-        
+
         Map<String, Object> model = getModel(  );
-        
+
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
             int nIdForm = Integer.parseInt( strIdForm );
             model.put( PARAMETER_APPOINTMENT_FORM, nIdForm );
-            
         }
 
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
@@ -1182,7 +1176,6 @@ private static List<AppointmentDay> computeUnavailableDays( int nIdform, List<Ap
         {
             addInfo( MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale(  ) );
 
-           
             model.put( MARK_SLOT, slot );
             model.put( MARK_LOCALE, getLocale(  ) );
 

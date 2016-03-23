@@ -266,4 +266,14 @@ public final class AppointmentSlotHome
     {
         return _dao.getSlotsUnavailable( nIdDay, nIdForm, _plugin );
     }
+
+    /**
+     *
+     * @param nIdForm
+     * @return
+     */
+    public static List<AppointmentSlot> findByIdFormAll( int nIdForm )
+    {
+        return _dao.findByIdFormAll( nIdForm, _plugin );
+    }
 }

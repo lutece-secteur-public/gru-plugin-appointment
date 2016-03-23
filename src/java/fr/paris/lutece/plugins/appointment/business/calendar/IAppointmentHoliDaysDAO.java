@@ -67,4 +67,11 @@ public interface IAppointmentHoliDaysDAO
      * @return
      */
     List<Date> findByIdForm( int nIdForm, Plugin plugin );
+
+    /**
+     *
+     * @param nIdForm
+     * @param plugin
+     */
+    void remove( int nIdForm, Plugin plugin );
 }

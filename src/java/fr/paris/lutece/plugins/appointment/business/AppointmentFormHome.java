@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
@@ -106,6 +107,7 @@ public final class AppointmentFormHome
         AppointmentDayHome.removeByIdForm( nAppointmentFormId );
         AppointmentSlotHome.deleteAllByIdForm( nAppointmentFormId );
         AppointmentFormMessagesHome.remove( nAppointmentFormId );
+        AppointmentHoliDaysHome.remove( nAppointmentFormId );
         _dao.delete( nAppointmentFormId, _plugin );
         _cacheService.removeKey( AppointmentFormCacheService.getFormCacheKey( nAppointmentFormId ) );
     }
@@ -126,7 +128,7 @@ public final class AppointmentFormHome
 
         if ( form == null )
         {
-         form = _dao.load( nAppointmentFormId, _plugin );
+            form = _dao.load( nAppointmentFormId, _plugin );
 
             if ( form != null )
             {

@@ -80,6 +80,11 @@ public final class AppointmentHoliDaysHome
         _dao.remove( date, nIdForm, _plugin );
     }
 
+    public static void remove( int nIdForm )
+    {
+        _dao.remove( nIdForm, _plugin );
+    }
+
     public static List<Date> findByIdForm( int nIdForm )
     {
         return _dao.findByIdForm( nIdForm, _plugin );

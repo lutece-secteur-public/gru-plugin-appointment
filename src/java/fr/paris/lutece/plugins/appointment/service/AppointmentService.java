@@ -33,18 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.commons.lang.time.DateUtils;
-
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
@@ -56,6 +44,21 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang.time.DateUtils;
+
+import java.sql.Date;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -160,7 +163,6 @@ public class AppointmentService
             day.setDate( new Date( lMilisecDate ) );
             day.setIsOpen( bArrayIsOpen[i] );
             day.setListSlots( computeDaySlots( day ) );
-            
 
             listDays.add( day );
             lMilisecDate += CONSTANT_MILISECONDS_IN_DAY;
@@ -182,6 +184,7 @@ public class AppointmentService
      */
     public List<AppointmentDay> findAndComputeDayList( AppointmentForm form, int nOffsetWeeks, boolean bLoadSlotsFromDb )
     {
+        Date dateLimit = form.getDateLimit(  );
         Date dateMin = getDateMonday( nOffsetWeeks );
         Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
         calendar.setTime( dateMin );
@@ -189,7 +192,12 @@ public class AppointmentService
 
         Date dateMax = new Date( calendar.getTimeInMillis(  ) );
 
-        List<AppointmentDay> listDaysFound = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
+        if ( ( dateLimit != null ) && dateMax.after( dateLimit ) )
+        {
+            dateMax = dateLimit;
+        }
+
+        List<AppointmentDay> listDaysFound = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax ); /* recupere une semaine entre lundi - samedi d'une semaine donnée  c a d numweek = 2  de mars => 7/03 - 12/03 */
 
         String[] strOpeningTime = form.getTimeStart(  ).split( CONSTANT_H );
         String[] strClosingTime = form.getTimeEnd(  ).split( CONSTANT_H );
@@ -244,7 +252,22 @@ public class AppointmentService
             }
 
             listDays.add( day );
-            lMilisecDate += CONSTANT_MILISECONDS_IN_DAY;
+
+            if ( dateLimit != null )
+            {
+                if ( lMilisecDate < dateLimit.getTime(  ) )
+                {
+                    lMilisecDate += CONSTANT_MILISECONDS_IN_DAY;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                lMilisecDate += CONSTANT_MILISECONDS_IN_DAY;
+            }
         }
 
         return listDays;
@@ -278,8 +301,8 @@ public class AppointmentService
     }
 
     /**
-     * 
-     * @param iDaysBeforeAppointment the days before the date 
+     *
+     * @param iDaysBeforeAppointment the days before the date
      * @param listDays list of days
      * @param calStart start clendar
      * @param calEnd end calendar
@@ -291,7 +314,7 @@ public class AppointmentService
     {
         int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue(  );
         objNow.add( Calendar.MILLISECOND, nbMilli );
-  
+
         for ( int i = 0; i < listDays.size(  ); i++ )
         {
             if ( listDays.get( i ).getIsOpen(  ) )
@@ -333,10 +356,10 @@ public class AppointmentService
 
     /**
      * Transform Date to Calendar
-     * @param objTime the time 
+     * @param objTime the time
      * @param iHour the hours
      * @param iMinute the minutes
-     * @return Calendar Time 
+     * @return Calendar Time
      */
     private static Calendar getCalendarTime( Date objTime, int iHour, int iMinute )
     {
@@ -356,7 +379,7 @@ public class AppointmentService
     /**
      * Is week can be visible
      * @param listDays the list days
-     * @return enable week 
+     * @return enable week
      */
     private static boolean isWeekEnabled( List<AppointmentDay> listDays )
     {
@@ -413,7 +436,7 @@ public class AppointmentService
 
     /**
      * Get all ListDays beetween 2 dates
-     * @param form the form 
+     * @param form the form
      * @param nOffsetWeeks nOffsetWeeks
      * @return list Days
      */
@@ -712,9 +735,32 @@ public class AppointmentService
         // We synchronize the method by id form to avoid collisions between manual and daemon checks
         synchronized ( AppointmentService.class + Integer.toString( form.getIdForm(  ) ) )
         {
+            int maxWeek = form.getNbWeeksToDisplay(  ) + nNbWeeksToCreate;
+
+            if ( form.getNbWeeksToDisplay(  ) == 0 )
+            {
+                Calendar cal = GregorianCalendar.getInstance( Locale.FRANCE );
+                Calendar calEnd = GregorianCalendar.getInstance(  );
+
+                if ( ( form.getDateEndValidity(  ) != null ) &&
+                        form.getDateEndValidity(  ).after( form.getDateLimit(  ) ) )
+                {
+                    calEnd.setTime( form.getDateEndValidity(  ) );
+                }
+                else
+                {
+                    calEnd.setTime( form.getDateLimit(  ) );
+                }
+
+                long diff = calEnd.getTimeInMillis(  ) - cal.getTimeInMillis(  );
+                long diffDays = diff / ( 24 * 60 * 60 * 1000 );
+
+                maxWeek = (int) diffDays / 7;
+                maxWeek = maxWeek + 1;
+            }
+
             // We check every weeks from the current to the first not displayable
-            for ( int nOffsetWeeks = 0; nOffsetWeeks < ( form.getNbWeeksToDisplay(  ) + nNbWeeksToCreate );
-                    nOffsetWeeks++ )
+            for ( int nOffsetWeeks = 0; nOffsetWeeks < maxWeek; nOffsetWeeks++ )
             {
                 Date date = new Date( System.currentTimeMillis(  ) );
                 Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );

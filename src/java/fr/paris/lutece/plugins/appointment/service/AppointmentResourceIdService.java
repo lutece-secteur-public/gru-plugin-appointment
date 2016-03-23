@@ -72,7 +72,7 @@ public class AppointmentResourceIdService extends ResourceIdService
 
     /** Permission for modifying an advanced setting form */
     public static final String PERMISSION_MODIFY_ADVANCED_SETTING_FORM = "MODIFY_ADVANCED_SETTING_FORM";
-    
+
     /** Permission for modifying appointments of the form */
     public static final String PERMISSION_MODIFY_APPOINTMENT = "MODIFY_APPOINTMENT";
 
@@ -134,18 +134,17 @@ public class AppointmentResourceIdService extends ResourceIdService
         p.setPermissionKey( PERMISSION_MODIFY_FORM );
         p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_FORM );
         rt.registerPermission( p );
-        
+
         p = new Permission(  );
         p.setPermissionKey( PERMISSION_MODIFY_FORM );
         p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_FORM );
         rt.registerPermission( p );
-        
+
         p = new Permission(  );
         p.setPermissionKey( PERMISSION_MODIFY_APPOINTMENT );
         p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_APPOINTMENT );
         rt.registerPermission( p );
 
-        
         p = new Permission(  );
         p.setPermissionKey( PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         p.setPermissionTitleKey( PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM );
