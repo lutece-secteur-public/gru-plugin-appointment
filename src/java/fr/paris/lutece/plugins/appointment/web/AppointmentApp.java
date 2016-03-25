@@ -95,19 +95,16 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
-
 import org.bouncycastle.util.Strings;
-
 import org.dozer.converters.DateConverter;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-
 import java.text.DateFormat;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -115,7 +112,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.validation.ConstraintViolation;
 
 
@@ -1642,8 +1638,23 @@ public class AppointmentApp extends MVCApplication
 			}
 			long diff = form.getDateLimit().getTime() - dateMin.getTime();
 			long diffDays = diff / (24 * 60 * 60 * 1000);
-			return ((int) diffDays / 7) ;
-			
+			int maxWeek = (int) diffDays / 7 ;
+			Calendar cal = GregorianCalendar.getInstance( Locale.FRANCE );
+			int nCurrentDayOfWeek = cal.get( cal.DAY_OF_WEEK );
+            cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+            Date datMax = null;
+            do{
+              	cal.add(Calendar.WEEK_OF_YEAR , maxWeek);
+              	datMax = new Date(cal.getTimeInMillis());
+              	if(datMax.before(form.getDateLimit())){
+              		maxWeek = maxWeek + 1;
+              	}
+              	cal = GregorianCalendar.getInstance( Locale.FRANCE );
+                cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+            }while(datMax.before(form.getDateLimit()));
+            
+            return maxWeek ;
+            
 		} else {
 			return nbWeekToCreate ;
 			

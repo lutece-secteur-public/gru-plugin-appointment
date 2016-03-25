@@ -203,12 +203,12 @@ function switchVisibilityDate(){
 		$("#divNbWeek").toggle(true);
 		if($("#isOpenWeek").prop("checked")){
 			  $("#isOpenDate").prop("checked" , false)
-             // $("#dateLimit").val("");
+              $("#dateLimit").val("");
               $("#divNbDate").toggle(false);
 		}
 		else if($("#isOpenDate").prop("checked")){
 			  $("#isOpenWeek").prop("checked" , false)
-            //  $("#nb_weeks_to_display").val("");
+              $("#nb_weeks_to_display").val("");
               $("#divNbWeek").toggle(false);
 		};
 }

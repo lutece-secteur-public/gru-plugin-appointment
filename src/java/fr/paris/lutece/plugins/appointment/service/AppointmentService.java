@@ -448,6 +448,11 @@ public class AppointmentService
 
         Date dateMax = new Date( calendar[1].getTimeInMillis(  ) );
 
+        if ( ( form.getDateLimit() != null ) && dateMax.after( form.getDateLimit() ) )
+        {
+            dateMax = form.getDateLimit();
+        }
+        
         List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin, dateMax );
         Calendar calendarEnd = getCalendarTime( form.getDateEndValidity(  ), form.getClosingHour(  ),
                 form.getClosingMinutes(  ) );
@@ -752,10 +757,23 @@ public class AppointmentService
                     calEnd.setTime( form.getDateLimit(  ) );
                 }
 
-                long diff = calEnd.getTimeInMillis(  ) - cal.getTimeInMillis(  ) + 1;
+                long diff = calEnd.getTimeInMillis(  ) - cal.getTimeInMillis(  );
                 long diffDays = diff / ( 24 * 60 * 60 * 1000 );
-
-                maxWeek = ((int) diffDays / 7 ) + 1;
+                diffDays = diffDays + 1 ;  
+                maxWeek = (int)diffDays / 7;
+                int nCurrentDayOfWeek = cal.get( cal.DAY_OF_WEEK );
+                cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+                Date datMax = null;
+                do{
+                  	cal.add(Calendar.WEEK_OF_YEAR , maxWeek);
+                  	datMax = new Date(cal.getTimeInMillis());
+                  	if(datMax.before(form.getDateLimit())){
+                  		maxWeek = maxWeek + 1;
+                  	}
+                  	cal = GregorianCalendar.getInstance( Locale.FRANCE );
+                    cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+                }while(datMax.before(form.getDateLimit()));
+                
               
             }
 
@@ -777,7 +795,9 @@ public class AppointmentService
                 calendar.add( Calendar.DAY_OF_MONTH, 6 );
 
                 Date dateMax = new Date( calendar.getTimeInMillis(  ) );
-
+                
+               
+                
                 List<AppointmentDay> listDaysFound = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateMin,
                         dateMax );
 
