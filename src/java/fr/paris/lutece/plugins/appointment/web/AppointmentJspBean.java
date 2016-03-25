@@ -720,15 +720,16 @@ public class AppointmentJspBean extends MVCAdminJspBean {
         model.put(PARAMETER_CUSTOMER_ID,strCustomerId );
         model.put( PARAMETER_USER_ID_OPAM,strUserIdOpam);
 		
-
+  
 		model.put(PARAMETER_FIRSTNAME, strFirstName);
 		model.put(PARAMETER_LASTNAME, strLastName);
 		model.put(PARAMETER_PHONE, strNemberPhone);
-		model.put(PARAMETER_EMAILM, strEmail);
-
+		model.put(PARAMETER_EMAILM, strEmail);  
+      
 		List<AppointmentSlotDisponiblity> listAppointmentSlotDisponiblity = AppointmentApp
 				.getListAppointmentSlotDisponiblity();
-
+      
+		
 		if (!listAppointmentSlotDisponiblity.isEmpty()) {
 			AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity();
 			model.put(PARAMETER_ID_SLOT_ACTIVE, appointmentSlotDisponiblity);
