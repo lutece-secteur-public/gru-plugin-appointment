@@ -63,6 +63,7 @@ import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -74,7 +75,6 @@ import fr.paris.lutece.util.url.UrlItem;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -205,6 +205,9 @@ public class AppointmentFormService implements Serializable
         
         String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
         String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
+       AppLogService.info("Appintment To GRU : strCustomerId "+strCustomerId);
+       AppLogService.info("Appintment To GRU : strUserIdOpam "+strUserIdOpam);
+       
         
         model.put(MARK_CUSTOMER_ID,strCustomerId );
         model.put( MARK_USER_ID_OPAM,strUserIdOpam);

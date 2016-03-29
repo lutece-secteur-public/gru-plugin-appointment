@@ -1514,6 +1514,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 			if (slot != null) {
 				strSlot = String.valueOf(slot.getIdSlot());
+				
 				strDayComment = getTitleComment(slot.getIdSlot());
 
 				AppointmentDay day = AppointmentDayHome.findByPrimaryKey(slot
@@ -1565,6 +1566,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		AppointmentFormMessages formMessages = AppointmentFormMessagesHome
 				.findByPrimaryKey(nIdForm);
+		
+		   String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
+	        String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
+	       AppLogService.info("Appintment To GRU : strCustomerId request"+strCustomerId);
+	       AppLogService.info("Appintment To GRU : strUserIdOpam request"+strUserIdOpam);
+	       
 		model.put(MARK_FORM_HTML, _appointmentFormService.getHtmlForm(nMyWeek,
 				strDayComment, strSlot, form, formMessages, getLocale(), false,
 				request));
