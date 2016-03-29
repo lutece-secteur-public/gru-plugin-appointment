@@ -203,8 +203,8 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_LOCALE, locale );
         model.put( MARK_WEEK, nWeek );
         
-        String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
-        String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
+        String strCustomerId = (String) request.getAttribute( PARAMETER_CUSTOMER_ID );
+        String strUserIdOpam = (String) request.getAttribute( PARAMETER_USER_ID_OPAM );
        AppLogService.info("Appintment To GRU : strCustomerId "+strCustomerId);
        AppLogService.info("Appintment To GRU : strUserIdOpam "+strUserIdOpam);
        
