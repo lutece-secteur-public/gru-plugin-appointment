@@ -124,7 +124,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
     private static final String MARK_WEEK = "nWeek";
     private static final String MARK_LIST_ERRORS = "listAllErrors";
-    private static final String  MARK_CUSTOMER_ID = "cuid";
+    private static final String  MARK_CUSTOMER_ID = "cid";
     private static final String  MARK_USER_ID_OPAM = "guid";
 
 
