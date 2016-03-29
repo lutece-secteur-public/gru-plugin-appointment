@@ -201,7 +201,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_LASTNAME = "ln";
 	private static final String PARAMETER_PHONE = "ph";
 	private static final String PARAMETER_EMAILM = "em";
-	private static final String PARAMETER_CUSTOMER_ID = "cid";
+	private static final String PARAMETER_CUSTOMER_ID = "cuid";
 	private static final String PARAMETER_USER_ID_OPAM = "guid";
 
 	// Markers
@@ -1767,6 +1767,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			 // set guid/cuid for GRU 
 			 String strGuid = (request.getParameter( PARAMETER_USER_ID_OPAM )== null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_USER_ID_OPAM  );
 			 String strCuid = (request.getParameter( PARAMETER_CUSTOMER_ID )== null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_CUSTOMER_ID  );
+			 
+		     AppLogService.info("Appintment To GRU : strGuid CREATE "+strGuid);
+		       AppLogService.info("Appintment To GRU : strCuid CREATE "+strCuid);
+		       
 			if( strGuid!=null)
 			{
 			 appointment.setIdUser(strGuid);
