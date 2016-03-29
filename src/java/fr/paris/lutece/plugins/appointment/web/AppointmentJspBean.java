@@ -416,7 +416,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 							.getURLManageAppointmentForms(request));
 		}
 
-		if (!RBACService.isAutPARAMETER_CUSTOMER_IDhorized(AppointmentForm.RESOURCE_TYPE,
+		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
 				strIdResponse,
 				AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT,
 				getUser())) {
@@ -454,7 +454,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		if (tmpForm != null) {
 			Object[] strWriter = new String[1];
-			strWriter[0] = tPARAMETER_CUSTOMER_IDmpForm.getTitle();
+			strWriter[0] = tmpForm.getTitle();
 			tmpObj.add(strWriter);
 
 			Object[] strInfos = new String[nTaille];
@@ -1767,22 +1767,19 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			 // set guid/cuid for GRU 
 			 String strGuid = (request.getParameter( PARAMETER_USER_ID_OPAM )== null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_USER_ID_OPAM  );
 			 String strCuid = (request.getParameter( PARAMETER_CUSTOMER_ID )== null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_CUSTOMER_ID  );
-			 
-		  
-		    
-			   AppLogService.info("\n\n\n\n\n\n\n\n\n\n\n\n\n ");
+			   AppLogService.info("\n\n\n\n\n\n\n\n\n\n\n ");
 		       
 		       
-			if( StringUtils.isNotBlank(strGuid) )
-			{
-				   AppLogService.info("Appintment To GRU : strGuid CREATE "+strGuid);
-			 appointment.setIdUser(strGuid);
-			}
-			else if( StringUtils.isNotBlank(strCuid) )
-			{
-				   AppLogService.info("Appintment To GRU : strCuid CREATE "+strCuid);
-				appointment.setIdUser(strCuid);
-			}
+				if( StringUtils.isNotBlank(strGuid) )
+				{
+					   AppLogService.info("Appintment To GRU : strGuid CREATE "+strGuid);
+				 appointment.setIdUser(strGuid);
+				}
+				else if( StringUtils.isNotBlank(strCuid) )
+				{
+					   AppLogService.info("Appintment To GRU : strCuid CREATE "+strCuid);
+					appointment.setIdUser(strCuid);
+				}
 			 //END set guid/cuid for GRU 
 
 			// Email confirmation
