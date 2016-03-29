@@ -101,6 +101,9 @@ public class AppointmentFormService implements Serializable
     private static final long serialVersionUID = 6197939507943704211L;
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PREFIX_ATTRIBUTE = "attribute";
+    
+    private static final String PARAMETER_CUSTOMER_ID = "cuid";
+    private static final String PARAMETER_USER_ID_OPAM = "guid";
 
     // marks
     private static final String MARK_LOCALE = "locale";
@@ -121,6 +124,9 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
     private static final String MARK_WEEK = "nWeek";
     private static final String MARK_LIST_ERRORS = "listAllErrors";
+    private static final String  MARK_CUSTOMER_ID = "cuid";
+    private static final String  MARK_USER_ID_OPAM = "guid";
+
 
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
@@ -196,6 +202,12 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_WEEK, nWeek );
+        
+        String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
+        String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
+        
+        model.put(MARK_CUSTOMER_ID,strCustomerId );
+        model.put( MARK_USER_ID_OPAM,strUserIdOpam);
 
         AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
 

@@ -1753,6 +1753,19 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					}
 				}
 			}
+			
+			 // set guid/cuid for GRU 
+			 String strGuid = (request.getParameter( PARAMETER_USER_ID_OPAM )== null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_USER_ID_OPAM  );
+			 String strCuid = (request.getParameter( PARAMETER_CUSTOMER_ID )== null )? String.valueOf( StringUtils.EMPTY ) : request.getParameter( PARAMETER_CUSTOMER_ID  );
+			if( strGuid!=null)
+			{
+			 appointment.setIdUser(strGuid);
+			}
+			else if (strCuid!=null)
+			{
+				appointment.setIdUser(strCuid);
+			}
+			 //END set guid/cuid for GRU 
 
 			// Email confirmation
 			String strEmail = request.getParameter(PARAMETER_EMAIL);
