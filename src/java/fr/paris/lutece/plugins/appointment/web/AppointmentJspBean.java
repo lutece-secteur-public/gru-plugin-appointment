@@ -1577,7 +1577,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	       request.setAttribute(PARAMETER_USER_ID_OPAM, strUserIdOpam);
 		model.put(MARK_FORM_HTML, _appointmentFormService.getHtmlForm(nMyWeek,
 				strDayComment, strSlot, form, formMessages, getLocale(), false,
-				request));
+				request,strCustomerId,strUserIdOpam));
 
 		List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request
 				.getSession().getAttribute(SESSION_APPOINTMENT_FORM_ERRORS);

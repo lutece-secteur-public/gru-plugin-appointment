@@ -179,7 +179,7 @@ public class AppointmentFormService implements Serializable
      * @return the HTML code of the form
      */
     public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form,
-        AppointmentFormMessages formMessages, Locale locale, boolean bDisplayFront, HttpServletRequest request )
+        AppointmentFormMessages formMessages, Locale locale, boolean bDisplayFront, HttpServletRequest request, String strCustomerId, String strUserIdOpam)
     {
         Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strBuffer = new StringBuffer(  );
@@ -203,8 +203,7 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_LOCALE, locale );
         model.put( MARK_WEEK, nWeek );
         
-        String strCustomerId = (String) request.getAttribute( PARAMETER_CUSTOMER_ID );
-        String strUserIdOpam = (String) request.getAttribute( PARAMETER_USER_ID_OPAM );
+
        AppLogService.info("Appintment To GRU : strCustomerId "+strCustomerId);
        AppLogService.info("Appintment To GRU : strUserIdOpam "+strUserIdOpam);
        
