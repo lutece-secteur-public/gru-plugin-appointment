@@ -168,15 +168,91 @@ public class AppointmentFormService implements Serializable
     private transient volatile Boolean _bIsFormFirstStep;
 
     /**
-     * Return the HTML code of the form
-     * @param form the form which HTML code must be return
-     * @param formMessages The form messages associated with the form
+     * Gets the html form.
+     *
+     * @param nWeek the n week
+     * @param strDay the str day
+     * @param strSlot the str slot
+     * @param form the form
+     * @param formMessages the form messages
      * @param locale the locale
-     * @param
-     * @param bDisplayFront True if the entry will be displayed in Front Office,
-     *            false if it will be displayed in Back Office.
-     * @param request HttpServletRequest
-     * @return the HTML code of the form
+     * @param bDisplayFront the b display front
+     * @param request the request
+     * @return the html form
+     */
+    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form,
+            AppointmentFormMessages formMessages, Locale locale, boolean bDisplayFront, HttpServletRequest request)
+        {
+            Map<String, Object> model = new HashMap<String, Object>(  );
+            StringBuffer strBuffer = new StringBuffer(  );
+
+            List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
+
+            for ( Entry entry : listEntryFirstLevel )
+            {
+                getHtmlEntry( entry.getIdEntry(  ), strBuffer, locale, bDisplayFront, request );
+            }
+
+            List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession(  )
+                                                                                          .getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+
+            model.put( MARK_FORM_ERRORS, listErrors );
+            model.put( MARK_APPOINTMENTSLOT, strSlot );
+            model.put( MARK_APPOINTMENTSLOTDAY, strDay );
+            model.put( MARK_FORM, form );
+            model.put( MARK_FORM_MESSAGES, formMessages );
+            model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
+            model.put( MARK_LOCALE, locale );
+            model.put( MARK_WEEK, nWeek );
+         
+            
+            model.put(MARK_CUSTOMER_ID,"" );
+            model.put( MARK_USER_ID_OPAM,"");
+
+            AppointmentDTO appointment = getAppointmentFromSession( request.getSession(  ) );
+
+            if ( appointment == null )
+            {
+                appointment = new AppointmentDTO(  );
+
+                setUserInfo( request, appointment );
+            }
+
+            model.put( MARK_APPOINTMENT, appointment );
+            model.put( MARK_LIST_ERRORS, getAllErrors( request ) );
+
+            if ( bDisplayFront )
+            {
+                model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm(  ) ) );
+            }
+
+            if ( !bDisplayFront && ( appointment.getIdAppointment(  ) > 0 ) )
+            {
+                model.put( MARK_ADDON,
+                    AppointmentAddOnManager.getAppointmentAddOn( appointment.getIdAppointment(  ), locale ) );
+            }
+
+            HtmlTemplate template = AppTemplateService.getTemplate( bDisplayFront ? TEMPLATE_HTML_CODE_FORM
+                                                                                  : TEMPLATE_HTML_CODE_FORM_ADMIN, locale,
+                    model );
+
+            return template.getHtml(  );
+        }
+    
+    /**
+     * Gets the html form.
+     *
+     * @param nWeek the n week
+     * @param strDay the str day
+     * @param strSlot the str slot
+     * @param form the form
+     * @param formMessages the form messages
+     * @param locale the locale
+     * @param bDisplayFront the b display front
+     * @param request the request
+     * @param strCustomerId the str customer id
+     * @param strUserIdOpam the str user id opam
+     * @return the html form
      */
     public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form,
         AppointmentFormMessages formMessages, Locale locale, boolean bDisplayFront, HttpServletRequest request, String strCustomerId, String strUserIdOpam)
