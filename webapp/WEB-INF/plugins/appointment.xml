@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><plug-in>
     <name>appointment</name>
     <class>fr.paris.lutece.plugins.appointment.service.AppointmentPlugin</class>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
     <documentation/>
     <installation/>
     <changes/>
