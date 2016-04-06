@@ -672,23 +672,42 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return retour;
 	}
 
-	public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
-		if (form.getDateLimit() != null) {
-			Date dateMin = null;
-			List<AppointmentDay> listDays = AppointmentDayHome
-					.findByIdForm(form.getIdForm());
-			if (!listDays.isEmpty()) {
-				dateMin = listDays.get(0).getDate();
+	 public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
+			if (form.getDateLimit() != null) {
+				Date dateMin = null;
+				List<AppointmentDay> listDays = AppointmentDayHome
+						.findByIdForm(form.getIdForm());
+				if (!listDays.isEmpty()) {
+					dateMin = listDays.get(0).getDate();
+				}
+				if(dateMin == null){
+					Calendar c =  Calendar.getInstance();
+					dateMin = new Date(c.getTimeInMillis());
+				}
+				long diff = form.getDateLimit().getTime() - dateMin.getTime();
+				long diffDays = diff / (24 * 60 * 60 * 1000);
+				int maxWeek = (int) diffDays / 7 ;
+				Calendar cal = GregorianCalendar.getInstance( Locale.FRANCE );
+				int nCurrentDayOfWeek = cal.get( cal.DAY_OF_WEEK );
+	            cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+	            Date datMax = null;
+	            do{
+	              	cal.add(Calendar.WEEK_OF_YEAR , maxWeek);
+	              	datMax = new Date(cal.getTimeInMillis());
+	              	if(datMax.before(form.getDateLimit())){
+	              		maxWeek = maxWeek + 1;
+	              	}
+	              	cal = GregorianCalendar.getInstance( Locale.FRANCE );
+	                cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+	            }while(datMax.before(form.getDateLimit()));
+	            
+	            return maxWeek ;
+	            
+			} else {
+				return nbWeekToCreate ;
+				
 			}
-			long diff = form.getDateLimit().getTime() - dateMin.getTime();
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-			return (int) diffDays / 7 ;
-			
-		} else {
-			return nbWeekToCreate - 1;
-			
 		}
-	}
 
 	/**
 	 * Get the page to manage appointments. Appointments are displayed in a
@@ -2017,7 +2036,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					&& StringUtils.isNumeric(strNbWeek)) {
 				nNbWeek = Integer.parseInt(strNbWeek);
 
-				if (nNbWeek > (form.getNbWeeksToDisplay() - 1)) {
+				if (nNbWeek > (form.getNbWeeksToDisplay() - 1) && form.getDateLimit() == null) {
 					nNbWeek = form.getNbWeeksToDisplay() - 1;
 				}
 			}

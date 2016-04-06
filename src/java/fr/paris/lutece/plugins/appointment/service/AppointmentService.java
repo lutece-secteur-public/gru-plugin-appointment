@@ -756,28 +756,38 @@ public class AppointmentService
                 {
                     calEnd.setTime( form.getDateLimit(  ) );
                 }
-
+                
                 long diff = calEnd.getTimeInMillis(  ) - cal.getTimeInMillis(  );
                 long diffDays = diff / ( 24 * 60 * 60 * 1000 );
                 diffDays = diffDays + 1 ;  
                 maxWeek = (int)diffDays / 7;
-                int nCurrentDayOfWeek = cal.get( cal.DAY_OF_WEEK );
-                cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
-                Date datMax = null;
-                do{
-                  	cal.add(Calendar.WEEK_OF_YEAR , maxWeek);
-                  	datMax = new Date(cal.getTimeInMillis());
-                  	if(datMax.before(form.getDateLimit())){
-                  		maxWeek = maxWeek + 1;
-                  	}
-                  	cal = GregorianCalendar.getInstance( Locale.FRANCE );
-                    cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
-                }while(datMax.before(form.getDateLimit()));
+               
+					int nCurrentDayOfWeek = cal.get(cal.DAY_OF_WEEK);
+					cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY
+							- nCurrentDayOfWeek);
+					Date datMax = null;
+					do {
+						cal.add(Calendar.WEEK_OF_YEAR, maxWeek);
+						datMax = new Date(cal.getTimeInMillis());
+						if (datMax.before(form.getDateLimit())) {
+							maxWeek = maxWeek + 1;
+						}
+						cal = GregorianCalendar.getInstance(Locale.FRANCE);
+						cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY
+								- nCurrentDayOfWeek);
+					} while (datMax.before(form.getDateLimit()));
+				
                 
               
             }
 
-            // We check every weeks from the current to the first not displayable
+            List<AppointmentDay> listDaysR = AppointmentDayHome.findByIdForm(form.getIdForm());
+            if (listDaysR != null) {
+				for (AppointmentDay day : listDaysR) {
+					AppointmentDayHome.remove(day.getIdDay());
+				}
+			}
+			// We check every weeks from the current to the first not displayable
             for ( int nOffsetWeeks = 0; nOffsetWeeks < maxWeek; nOffsetWeeks++ )
             {
                 Date date = new Date( System.currentTimeMillis(  ) );
