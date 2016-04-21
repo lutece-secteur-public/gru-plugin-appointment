@@ -2584,6 +2584,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 							nId, Appointment.APPOINTMENT_RESOURCE_TYPE,
 							form.getIdWorkflow(), request, getLocale()));
 		}
+		
+		
 
 		if ((form.getIdWorkflow() > 0)
 				&& WorkflowService.getInstance().isAvailable()) {
