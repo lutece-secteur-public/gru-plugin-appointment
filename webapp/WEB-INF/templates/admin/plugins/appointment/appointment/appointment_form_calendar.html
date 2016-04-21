@@ -12,7 +12,7 @@
 					</a>
 				</div>
 			</#if>
-			<#if nb_week &lt; form.nbWeeksToDisplay - 1>
+			<#if nb_week &lt; max_week - 1>
 				<div class="pull-right">
 					<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
 						#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>
@@ -38,7 +38,7 @@
 												<i class="glyphicon glyphicon-arrow-left"></i>
 											</a>
 										</#if>
-										<#if nb_week &lt; form.nbWeeksToDisplay>
+										<#if nb_week &lt; max_week>
 											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=getAppointmentCalendar&id_form=${form.idForm}&nb_week=${nb_week+1}">
 												<i class="glyphicon glyphicon-arrow-right"></i>
 											</a>

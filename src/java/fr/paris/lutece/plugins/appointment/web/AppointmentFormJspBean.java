@@ -852,6 +852,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
 
+        if(formFromDb.getDateLimit() != null && appointmentForm.getNbWeeksToDisplay() > 0){
+        	    appointmentForm.setDateLimit(null);
+        }
+        if(formFromDb.getNbWeeksToDisplay() > 0 && appointmentForm.getDateLimit() != null){
+        	appointmentForm.setNbWeeksToDisplay(0);
+        }
         // The populate set the active flag to false, so we have to restore it
         appointmentForm.setIsActive( formFromDb.getIsActive(  ) );
         AppointmentFormHome.update( appointmentForm );
@@ -859,6 +865,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         if ( AppointmentSlotService.getInstance(  ).checkForFormModification( appointmentForm, formFromDb ) )
         {
             addInfo( INFO_MODIFY_APPOINTMENTFORM_SLOTS_UPDATED, getLocale(  ) );
+        }
+        
+        if(!strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  )){
+        	
+        	AppointmentService.getService().checkFormDays(appointmentForm);
         }
 
         if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  ) )
