@@ -1,73 +1,80 @@
 <#include "/admin/util/editor/editor.html" />
 <div class="row">
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-<fieldset>
-<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-	<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
-	<input name="id_entry" value="${entry.idEntry}" type="hidden">
-	<input name="action" value="doModifyEntry" type="hidden">
-	<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
-		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-			<input type="text" name="title" id="title" value="${entry.title}"  maxlength="255" class="form-control">
-			<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
-		</div>
-	</div>
-	<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} : </label>
-		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-			<textarea  name="help_message" id="help_message" rows="5" class="form-control">${entry.helpMessage}</textarea>
-			<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
-		</div>
-	</div>
-	<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
-		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-			<textarea name="comment" rows="5" class="form-control">${entry.comment}</textarea>
-			<span class="help-block">#i18n{appointment.createEntry.labelType} :  ${entry.entryType.title}</span>
-		</div>
-	</div>
-	<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="date">#i18n{appointment.createEntry.labelValueDefault} : </label>
-		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-			<#list entry.fields as field>
-				<div class="input-group">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-					<input type="text" name="value" id="date" class="form-control" value="${field.valueTypeDate?if_exists}">
+	<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</h3>
+			</div>
+			<div class="box-body">
+				<fieldset>
+				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+					<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
+					<input name="id_entry" value="${entry.idEntry}" type="hidden">
+					<input name="action" value="doModifyEntry" type="hidden">
+					<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<input type="text" name="title" id="title" value="${entry.title}"  maxlength="255" class="form-control">
+							<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
+						</div>
+					</div>
+					<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<textarea  name="help_message" id="help_message" rows="5" class="form-control">${entry.helpMessage}</textarea>
+							<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
+						</div>
+					</div>
+					<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<textarea name="comment" rows="5" class="form-control">${entry.comment}</textarea>
+							<span class="help-block">#i18n{appointment.createEntry.labelType} :  ${entry.entryType.title}</span>
+						</div>
+					</div>
+					<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="date">#i18n{appointment.createEntry.labelValueDefault} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<#list entry.fields as field>
+								<div class="input-group">
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+									<input type="text" name="value" id="date" class="form-control" value="${field.valueTypeDate?if_exists}">
+								</div>
+							</#list>
+						</div>
+					</div>
+					<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<div class="checkbox">
+								<label>
+									<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked"</#if>	 />&#160;
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="form-control">
+							<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
+							<button class="btn btn-primary btn-sm" type="submit">
+								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
+							</button>
+							<button class="btn btn-sm" type="submit" name="cancel" value="cancel" >
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+							</button>
+						</div>	
+					</div>	
+					</form>
+				  </fieldset>
 				</div>
-			</#list>
-		</div>
-	</div>
-	<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
-		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-			<div class="checkbox">
-				<label>
-					<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked"</#if>	 />&#160;
-				</label>
 			</div>
 		</div>
-	</div>
-	<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-			<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="form-control">
-			<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
-			<button class="btn btn-primary btn-sm" type="submit">
-				<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
-			</button>
-			<button class="btn btn-sm" type="submit" name="cancel" value="cancel" >
-				<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
-			</button>
-		</div>	
-	</div>	
-	</form>
-  </fieldset>
- </div>
 </div>
 
  <@initEditor />

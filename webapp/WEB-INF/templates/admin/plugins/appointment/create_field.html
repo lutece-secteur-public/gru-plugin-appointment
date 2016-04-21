@@ -1,7 +1,13 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{appointment.createField.title} : '${field.parentEntry.title}'</h3>
+			</div>
+			<div class="box-body">
+			
 		<fieldset>
-			<legend>#i18n{appointment.createField.title} : '${field.parentEntry.title}'</legend>
+			<legend class="hidden">#i18n{appointment.createField.title} : '${field.parentEntry.title}'</legend>
 			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp" method="post" name="" id=""  >
 				<input type="hidden" name="action" value="doCreateField" />
 				<input type="hidden" name="id_entry" value="${field.parentEntry.idEntry}" />
@@ -46,12 +52,14 @@
 			  	<div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
 						<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.createEntry.buttonSave}</button>
-						<button class="btn btn-primary btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}</button>
+						<button class="btn btn-default btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}</button>
 					</div>
 				</div>
 			</form>
 		</fieldset>
 	</div>
+</div>
+</div>
 </div>
 
 
