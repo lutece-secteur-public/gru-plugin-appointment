@@ -12,10 +12,10 @@
 	    });
 	});
 </script>
-<div class="row" >
-	
+<div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     	<@tabs tab="entries" appointmentform=appointmentform />
+		<div class="tab-content">
     	<fieldset>
     		<legend>#i18n{appointment.modify_appointmentform.pageTitle}</legend>
 			<form method="get" class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
@@ -114,10 +114,14 @@
 									</td>
 								<#else>
 									<td>
-										<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
-										<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
-											<i class="glyphicon glyphicon-ok"></i>
-										</button>
+										<div class="input-group">
+											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
+											<div class="input-group-btn">
+												<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+													<i class="glyphicon glyphicon-ok"></i>
+												</button>
+											</div>
+										</div>
 									</td>
 								</#if>
 								<td>
@@ -146,11 +150,12 @@
 				</table>
 			</form>
     	</fieldset>
+		</div>
     </div>
 </div>
 
 <#macro comboOrders name default_value idParent >
-		<select id="${name}" name="${name}" class="input-xs">
+		<select id="${name}" name="${name}" class="form-control input-sm">
 			<#if idParent &gt; 0 && lastGroup??>
 				<#assign start_enum = lastGroup.position + 1 >
 				<#assign nb_entries = lastGroup.position + lastGroup.children?size >

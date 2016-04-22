@@ -21,11 +21,10 @@
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpenWeek" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<div class="btn">
+						<div class="radio">
 							<label>
-							<input type="radio" id="isOpenWeek" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();" checked="">&#160;
+								<input type="radio" id="isOpenWeek" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();" checked="">&#160;
 							</label>
-							
 						</div>
 					</div>
 				</div>
@@ -33,7 +32,7 @@
 				<div class="form-group" id="divNbWeek">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="nb_weeks_to_display" ></label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" maxlength=3 class="input-small" checked="checked">
+						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" maxlength=3 class="form-control input-sm" checked="checked">
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</span>
 					</div>
 				</div>
@@ -41,11 +40,10 @@
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpenDate" >#i18n{appointment.create_appointmentform.labelNbDaysToDisplay} :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<div class="btn">
+						<div class="radio">
 							<label>
-							<input type="radio" id="isOpenDate" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();"/>&#160;
+								<input type="radio" id="isOpenDate" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();"/>&#160;
 							</label>
-							
 						</div>
 					</div>
 				</div>
@@ -55,7 +53,7 @@
 					<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
 					<div class="input-group" >
 					    <div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
-						<input type="text" id="dateLimit" name="dateLimit" value="${appointmentform.dateLimit!''}" maxlength=3 class="input-small">
+						<input type="text" id="dateLimit" name="dateLimit" value="${appointmentform.dateLimit!''}" maxlength=3 class="form-control input-sm">
 					</div>	
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysToDisplay.help}</span>
 					</div>
