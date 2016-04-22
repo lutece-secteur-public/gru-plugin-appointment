@@ -831,7 +831,7 @@ public class AppointmentService
                                 {
                                     if ( day.getPeoplePerAppointment(  ) != 0 )
                                     {
-                                        slot.setNbPlaces( day.getPeoplePerAppointment(  ) );
+                                        slot.setNbPlaces( slot.getNbPlaces() /*day.getPeoplePerAppointment(  )*/);
                                     }
 
                                     nNbFreePlaces += slot.getNbPlaces(  );

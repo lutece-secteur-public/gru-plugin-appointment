@@ -122,7 +122,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private boolean _bEnableConfirmEmail;
     private boolean _bEnableMandatoryEmail;
     private ImageResource _imageResource;
-    @Min( value = 5, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}" )
+    @Min( value = 0, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}" )
     private int _nseizureDuration;
 
     public int getSeizureDuration(  )

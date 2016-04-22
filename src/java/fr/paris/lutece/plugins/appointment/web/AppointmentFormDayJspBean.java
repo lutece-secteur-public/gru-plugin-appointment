@@ -130,6 +130,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     // Views
     private static final String VIEW_MODIFY_APPOINTMENTFORM_DAYS = "modifyAppointmentFormDays";
     private static final String VIEW_MANAGE_APPOINTMENTFORM_SLOT = "manageAppointmentSlots";
+    private static final String VIEW_MANAGE_APPOINTMENTFORM_SLOT_ = "manageAppointmentSlotss";
     private static final String VIEW_CONFIRM_REFRESH_DAYS = "confirmRefreshDays";
     private static final String VIEW_GET_CREATE_DAY = "getCreateDay";
     private static final String VIEW_GET_MODIFY_DAY = "getModifyDay";
@@ -914,7 +915,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
     public static String getURLAppointmentSlotJspBean( HttpServletRequest request, int strIdForm )
     {
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS_SLOT );
-        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTFORM_SLOT );
+        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTFORM_SLOT_ );
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
         return urlItem.getUrl(  );

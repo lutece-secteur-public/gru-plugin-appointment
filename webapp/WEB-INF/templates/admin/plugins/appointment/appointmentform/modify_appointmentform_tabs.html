@@ -39,11 +39,17 @@
 					#i18n{appointment.manageCalendarSlots.pageTitle}
 				</a>
             </li>
+             <li <#if tab="typicalWeek">class="active"</#if>>
+				<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlotss&id_form=${appointmentform.idForm}">
+					#i18n{appointment.typicalWeek.pageTitle}
+				</a>
+            </li>
              <li <#if tab="holidays">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewManageHolidays&id_form=${appointmentform.idForm}">
 					#i18n{appointment.manageHolidays.pageTitle}
 				</a>
             </li>
+              
             <#if isResourceInstalled?? && isResourceInstalled>
             	<li <#if tab="resources">class="active"</#if>>
 					<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
