@@ -1,10 +1,15 @@
-
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <div class="row" >
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
-			<fieldset>
-				<legend>#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}</legend>
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{appointment.create_appointmentform.title}</h3>
+			</div>
+			<div class="box-body">
+			
+			<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
+				<fieldset>
+				<legend class="hidden">#i18n{appointment.create_appointmentform.title}</legend>
 				<@messages errors=errors />
 				<input type="hidden" id="id_form" name="id_form">
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />
@@ -19,8 +24,8 @@
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />
 
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpenWeek" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} :</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="isOpenWeek">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} :</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="radio">
 							<label>
 								<input type="radio" id="isOpenWeek" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();" checked="">&#160;
@@ -30,16 +35,16 @@
 				</div>
 
 				<div class="form-group" id="divNbWeek">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="nb_weeks_to_display" ></label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="nb_weeks_to_display" ></label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-3">
 						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" maxlength=3 class="form-control input-sm" checked="checked">
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</span>
 					</div>
 				</div>
 
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpenDate" >#i18n{appointment.create_appointmentform.labelNbDaysToDisplay} :</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="isOpenDate" >#i18n{appointment.create_appointmentform.labelNbDaysToDisplay} :</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="radio">
 							<label>
 								<input type="radio" id="isOpenDate" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();"/>&#160;
@@ -49,8 +54,8 @@
 				</div>
 
 				<div class="form-group" id="divNbDate">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="dateLimit" ></label>
-					<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="dateLimit" ></label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-3">
 					<div class="input-group" >
 					    <div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
 						<input type="text" id="dateLimit" name="dateLimit" value="${appointmentform.dateLimit!''}" maxlength=3 class="form-control input-sm">
@@ -68,9 +73,18 @@
 				
 					
 				</fieldset>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">	
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</h3>
+			</div>
+			<div class="box-body">
 				<fieldset>
 							
-				<legend>#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</legend>
+				<legend class="hidden">#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</legend>
 				
 				<h4>#i18n{appointment.create_appointmentform.labelTitleDaysOpen}</h4>
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenMonday' inputName='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
@@ -96,37 +110,38 @@
 				
 				
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
-					<div class="col-xs-12 col-sm-6 col-md-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
+					<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
 						<div class="input-group">
-							
 							<input id="image_resource" type="file" name="image_resource" accept="image/*"/> 
 						</div>
 						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpFormatIcon}</p>
 					</div>
 
-					<div class="col-xs-12 col-sm-3 col-md-3">
-						<div class="input-group">a.
-							
+					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
 						<div class="input-group">
-							<i class="glyphicon glyphicon-remove-circle">&nbsp;</i> 
-							<input type="button"  value="Effacer" class="btn btn-default btn-sm" onclick ="$('#image_resource').val('')" /> 
-						</div>
+							<a class="btn btn-danger btn-sm" onclick="$('#image_resource').val('')">
+								<i class="fa fa-times-circle" aria-hidden="true"></i> Effacer
+							</a>
 						</div>
 						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpCancelUploadIcon}</p>
 					</div>
 				</div>
 				<div class="form-group">
-					<button name="action_createAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="19">
-						<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelCreate}
-					</button>
-					<button name="view_manageAppointmentForms" class="btn btn-default btn-sm" type="submit" tabindex="20">
-						<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelCancel}
-					</button>
+					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
+						<button name="action_createAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="19">
+							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelCreate}
+						</button>
+						<button name="view_manageAppointmentForms" class="btn btn-default btn-sm" type="submit" tabindex="20">
+							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelCancel}
+						</button>
+					</div>
 				</div>
 			</fieldset>
 		</form>
 	</div>
+</div>
+</div>
 </div>
    <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 	<script type="text/javascript">
