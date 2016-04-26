@@ -2,9 +2,9 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<#if slot.idDay &gt; 0>
-    		<@tabs tab="days" appointmentform=appointmentform />
-    	<#else>
-    		<@tabs tab="slots" appointmentform=appointmentform />
+     		<@tabs tab="slots" appointmentform=appointmentform />
+    	<#else>  
+    		<@tabs tab="typicalWeek" appointmentform=appointmentform />
     	</#if>
 		<div class="tab-content">
 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
@@ -36,9 +36,17 @@
 						<button class="btn btn-sm btn-primary">
 							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
 						</button>
-						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if>">
+
+						<#if slot.idDay &gt; 0>
+     						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if>">
 							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-						</a>
+							</a>
+    					<#else>  
+    						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlotss&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if>">
+							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+							</a>
+    					</#if>
+						
 					</div>
 				</div>
 			</fieldset>
