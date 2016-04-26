@@ -1,5 +1,5 @@
 <#macro tabs tab form >
-    <div>
+    <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li <#if tab="calendar">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=0">
@@ -12,5 +12,8 @@
 				</a>
             </li>
         </ul>
+		<div class="tab-content">
+			<#nested>
+		</div>
     </div>
 </#macro>

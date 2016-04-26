@@ -1,10 +1,11 @@
 <link href="css/datepicker.css" rel="stylesheet">
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
-<div class="row" >
+<div class="row">
 	
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     	<@tabs tab="days" appointmentform=appointmentform />
     	<@messages infos=infos />
+		<div class="tab-content">
     	<fieldset>
     		<legend>
     			#i18n{appointment.modify_appointmentformDays.pageTitle}
@@ -56,11 +57,11 @@
 								<td>
 									<#if day.isOpen>
 										<span class="label label-success">
-											<i class="glyphicon glyphicon-ok-sign"></i>
+											<i class="fa fa-check-circle" aria-hidden="true"></i>
 										</span>
 									<#else>
 										<span class="label label-important">
-											<i class="glyphicon glyphicon-remove-circle"></i>
+											<i class="fa fa-times-circle" aria-hidden="true"></i>
 										</span>
 									</#if>
 								</td>
@@ -69,16 +70,16 @@
 								<#assign aDate = aDateTime?date>
 								<#assign myDate = day.date?date>
 								<#if aDate < myDate || aDate?iso_local == myDate?iso_local>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=getModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-sm" title="#i18n{portal.util.labelModify}">
 										<i class="glyphicon glyphicon-edit"></i>
 									</a>
 								<#else>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=viewModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-xs" title="#i18n{appointment.viewDay.see}">
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=viewModifyDay&id_day=${day.idDay}" class="btn btn-primary btn-sm" title="#i18n{appointment.viewDay.see}">
 										<i class="glyphicon glyphicon-eye-open"></i>
 									</a>
 								</#if>
 									<#if day.isOpen>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_day=${day.idDay}" class="btn btn-primary btn-xs" title="#i18n{appointment.modify_appointmentformDays.labelManageSlots}">
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_day=${day.idDay}" class="btn btn-primary btn-sm" title="#i18n{appointment.modify_appointmentformDays.labelManageSlots}">
 											<i class="fa fa-calendar"></i>
 										</a>
 									</#if>
@@ -96,6 +97,7 @@
 				</div>
 			</#if>
     	</fieldset>
+		</div>
     </div>
 </div>
 

@@ -23,8 +23,8 @@
 <input type="hidden" value="${cid!}"   id="cid" name="cid" />
 
 				<div class="form-group">
-					<label for="lastname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldLastNameTitle!} *</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label for="lastname" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${form_messages.fieldLastNameTitle!} *</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname" class="form-control">
 						<#if form_messages.fieldLastNameHelp?? && form_messages.fieldLastNameHelp != ''>
 							<span class="help-block">${form_messages.fieldLastNameHelp}</span>
@@ -52,8 +52,8 @@
 					</#if>
 					</#if>
 				<div class="form-group">
-					<label for="firstname" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldFirstNameTitle!} *</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label for="firstname" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${form_messages.fieldFirstNameTitle!} *</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname" class="form-control">
 						<#if form_messages.fieldFirstNameHelp?? && form_messages.fieldFirstNameHelp != ''>
 							<span class="help-block">${form_messages.fieldFirstNameHelp}</span>
@@ -81,8 +81,8 @@
 					</#if>
 					</#if>
 				<div class="form-group">
-					<label for="email" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if> </label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label for="email" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${form_messages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if> </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email" class="form-control">
 						<#if form_messages.fieldEmailHelp?? && form_messages.fieldEmailHelp != ''>
 							<span class="help-block">${form_messages.fieldEmailHelp!}</span>
@@ -111,8 +111,8 @@
 					</#if>
 				<#if form.enableConfirmEmail>
 				<div class="form-group">
-					<label for="emailConfirm" class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">${form_messages.fieldConfirmationEmail!}*</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label for="emailConfirm" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${form_messages.fieldConfirmationEmail!}*</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
 						<#if form_messages.fieldConfirmationEmail?? && form_messages.fieldConfirmationEmailHelp != ''>
 							<span class="help-block">${form_messages.fieldConfirmationEmailHelp!}</span>
@@ -143,7 +143,7 @@
 				${str_entry} 
 				${addon!}  
 				<div class="form-group">
-					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
 						<#if appointment.idAppointment &gt; 0>
 						<button class="btn btn-primary btn-sm" type="submit" name="saveAndBack" value="saveAndBack">
 							<i class="glyphicon glyphicon-ok">&nbsp;</i>&nbsp;#i18n{appointment.display_appointment_form.labelValidate}
@@ -163,7 +163,7 @@
 							<input type="hidden" name="id_appointment" value="${appointment.idAppointment}">
 						</#if>
 						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nWeek}" title="#i18n{portal.util.labelBack}">
-							<i class="glyphicon glyphicon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelBack}
+							<i class="fa fa-times" aria-hidden="true"></i> #i18n{portal.util.labelBack}
 						</a>
 					</div>
 				</div>

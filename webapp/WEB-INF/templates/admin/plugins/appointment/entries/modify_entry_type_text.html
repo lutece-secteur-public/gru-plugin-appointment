@@ -13,41 +13,41 @@
 				<input name="id_entry" value="${entry.idEntry}" type="hidden" />
 				<input name="action" value="doModifyEntry" type="hidden" />
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * </label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" name="title" id="title" value="${entry.title}"  maxlength="255" class="form-control">
 						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} </label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<textarea name="help_message" id="help_message" rows="2" class="form-control">${entry.helpMessage}</textarea>
 						<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} </label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<textarea name="comment" rows="2" class="form-control">${entry.comment}</textarea>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createEntry.labelType} :</label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.createEntry.labelType} :</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						${entry.entryType.title}
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createEntry.labelValueDefault} :</label>
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createEntry.labelValueDefault} :</label>
 					<#list entry.fields as field>
-						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">							<input type="text" name="value" id="value" value="${field.value}" class="form-control">
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">							<input type="text" name="value" id="value" value="${field.value}" class="form-control">
 						</div>
 					</#list>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="">&nbsp;</label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="">&nbsp;</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="checkbox">
 							<label for="mandatory">
 								<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked" </#if> />
@@ -57,24 +57,24 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="errorMessage"> #i18n{appointment.createEntry.labelMandatoryErrorMessage} : </label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="errorMessage"> #i18n{appointment.createEntry.labelMandatoryErrorMessage} : </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<textarea name="errorMessage" rows="2" class="form-control">${entry.errorMessage!}</textarea>
 						<span class="help-block">#i18n{appointment.createEntry.labelMandatoryErrorMessageHelp}</span>
 					</div>
 				</div>
 				<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="width">#i18n{appointment.createEntry.labelWidth} * : </label>
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="width">#i18n{appointment.createEntry.labelWidth} * : </label>
 					<#list entry.fields as field>
-						<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 							<input  type="text" name="width" id="width" value="${field.width}" class="form-control">
 						</div>
 						<#assign id_field=field.idField> 
 					</#list>
 				</div>
 				<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="max_size_enter">#i18n{appointment.createEntry.labelMaxSizeEnter} : </label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="max_size_enter">#i18n{appointment.createEntry.labelMaxSizeEnter} : </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<#list entry.fields as field>
 							<#if field.maxSizeEnter!=-1>
 								<input type="text" name="max_size_enter" id="max_size_enter" size="5" value="${field.maxSizeEnter}" class="form-control">
@@ -85,8 +85,8 @@
 					</div>
 				</div>	
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="">&nbsp; </label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="">&nbsp; </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="checkbox">
 							<label for="confirm_field">
 								<input name="confirm_field" id="confirm_field" value="1" type="checkbox" onchange="javascript:changeVisilityConfirmFieldTitle();" <#if entry.confirmField> 	checked="checked"</#if>/>
@@ -96,20 +96,20 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="confirm_field_title">#i18n{appointment.createEntry.labelConfirmFieldTitle} *</label>
-					 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="confirm_field_title">#i18n{appointment.createEntry.labelConfirmFieldTitle} *</label>
+					 <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" name="confirm_field_title" id="confirm_field_title" value="${entry.confirmFieldTitle!}" maxlength="255" class="form-control">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="form-control">
 						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
 						<button class="btn btn-primary btn-sm" name="save" type="submit">
 							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
 						</button>
@@ -140,14 +140,16 @@
 						<input name="id_field" value="${id_field}" type="hidden" />
 						<input name="action" value="doInsertRegularExpression" type="hidden" />
 						<div class="form-group">
-							<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="id_expression">#i18n{appointment.createEntry.manageRegularExpression.labelInsert} :</label>
-							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="id_expression">#i18n{appointment.createEntry.manageRegularExpression.labelInsert} :</label>
+							<div class="col-xs-12 col-sm-9 col-md-3 col-lg-2">
 								<div class="input-group">
-									<@comboWithParams name="id_expression" items=regular_expression_list default_value="-1" additionalParameters="class='form-control input-sm'" />
+									<@comboWithParams name="id_expression" items=regular_expression_list default_value="-1" additionalParameters="class='form-control input-xs'" />
 									<div class="input-group-btn">
-										<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">#i18n{appointment.createEntry.manageRegularExpression.buttonInsert}</span></button>
+										<button class="btn btn-primary btn-xs" type="submit" ><i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">#i18n{appointment.createEntry.manageRegularExpression.buttonInsert}</span></button>
 									</div>
 								</div>
+							</div>
+							<div class="col-xs-12 col-sm-offset-3 col-sm-9 col-md-offset-3 col-md-9 col-lg-offset-3 col-lg-9">
 								<span class="help-block">#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}</span>
 							</div>
 						</div>

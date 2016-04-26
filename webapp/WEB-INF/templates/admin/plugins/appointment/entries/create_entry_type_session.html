@@ -1,8 +1,15 @@
 <#include "/admin/plugins/appointment/commons.html" />
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<fieldset>
-			<legend>#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">
+					#i18n{appointment.createEntry.titleQuestion} : '${form.title}'
+				</h3>
+			</div>
+			<div class="box-body">
+			<fieldset>
+			<legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
 			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post">
 				<input name="id_form" value="${form.idForm}" type="hidden">
 				<input name="action" value="doCreateEntry" type="hidden">
@@ -11,14 +18,14 @@
 					<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
 				</#if>
 				<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * :</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * :</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" name="title" id="title" class="form-control" value="" maxlength="255">
 					</div>
 				</div>
 				<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory}</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="checkbox">
 							<label>
 								<input name="mandatory" value="1" type="checkbox">&#160;
@@ -28,8 +35,8 @@
 					</div>
 				</div>
 				<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createEntry.labelAttributeName} * : </label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createEntry.labelAttributeName} * : </label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" name="value" id="value" class="form-control" maxlength="255" value="">
 						<span class="help-block">#i18n{appointment.createEntry.labelAttributeNameComment}</span>
 					</div>
@@ -46,4 +53,6 @@
 			</form>
 		</fieldset>
 	</div>
+ </div>
+ </div>
  </div>

@@ -35,12 +35,14 @@
 				<input type="hidden" name="action" value="doChangeOrderEntry">
 				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
 				<#if entry_group_list?has_content>
-					<div>
+					<div class="input-group">
 						<!-- List all entry of type group  -->
-						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"form-control\"" items=entry_group_list />  
+						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"form-control input-sm\"" items=entry_group_list />
+						<span class="input-group-btn">
 						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modify_appointmentform.move}" name="add_to_group" value="#i18n{appointment.modify_appointmentform.moveAll}">
 							<i class="glyphicon glyphicon-resize-vertical"></i>
 						</button>
+						</span>
 					</div>
 				</#if>
 				<table class="table table-striped">

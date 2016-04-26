@@ -1,69 +1,81 @@
-	<a class="btn btn-primary btn-sm pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm&forceReload=true">
-		<i class="glyphicon glyphicon-plus">&nbsp;</i>&nbsp;#i18n{appointment.manage_appointmentforms.buttonAdd}
-	</a>
-<legend>#i18n{appointment.manage_appointmentforms.pageTitle}</legend>	
-<div class="row" >
+<div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<@messages infos=infos />
-		<@paginationAdmin paginator=paginator combo=1 />
-		<table class="table table-condensed table-striped">
-			<tr>
-				<th>#i18n{appointment.manage_appointmentforms.columnTitle}</th>
-				<th>#i18n{portal.util.labelActions}</th>
-			</tr>
-			<#list appointmentform_list as appointmentform >
-				<tr>
-					<td>
-						<#if appointmentform.isActive>
-							<span class="label label-success">
-								<i class="glyphicon glyphicon-ok-sign"></i>
-							</span>
-						<#else>
-							<span class="label label-important">
-								<i class="glyphicon glyphicon-remove-circle"></i>
-							</span>
-						</#if>
-						&nbsp;${appointmentform.title}
-						<#if appointmentform.isActive>
-							<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${appointmentform.idForm}&nb_week=1">
-								<i class="glyphicon glyphicon-globe">&nbsp;</i>
-							</a>
-						</#if>
-					</td>
-					<td>
-						
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
-							<i class="glyphicon glyphicon-edit"></i>
-						</a>	
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelCopy}">
-								<i class="fa fa-plus-circle"></i>
-					    </a>					
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">
-							<i class="fa fa-comment"></i>
-						</a>
-						
-						<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelManageAppointments}">
-							<i class="fa fa-calendar"></i>
-						</a>
-						
-						<#if appointmentform.isActive>
-							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{appointment.manage_appointmentforms.labelDisable}">
-								<i class="glyphicon glyphicon-stop"></i>
-							</a>
-						<#else>
-							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-success btn-xs" title="#i18n{appointment.manage_appointmentforms.labelEnable}">
-								<i class="glyphicon glyphicon-ok"></i>
-							</a>
-						</#if>
-						
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
-							<i class="glyphicon glyphicon-trash"></i>
-						</a>
-						
-					</td>
-				</tr>
-			</#list>
-		</table>
-		<@paginationAdmin paginator=paginator />
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{appointment.manage_appointmentforms.pageTitle}</h3>
+				<div class="box-tools">
+					<a class="btn btn-primary btn-sm pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm&forceReload=true">
+						<i class="fa fa-plus" aria-hidden="true"></i><span class="hidden-xs"> #i18n{appointment.manage_appointmentforms.buttonAdd}</span>
+					</a>
+				</div>
+			</div>
+			<div class="box-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<@messages infos=infos />
+						<@paginationAdmin paginator=paginator combo=1 />
+						<table class="table table-condensed table-striped">
+							<tr>
+								<th>#i18n{appointment.manage_appointmentforms.columnTitle}</th>
+								<th>#i18n{portal.util.labelActions}</th>
+							</tr>
+							<#list appointmentform_list as appointmentform >
+								<tr>
+									<td>
+										<#if appointmentform.isActive>
+											<span class="label label-success">
+												<i class="fa fa-check-circle" aria-hidden="true"></i>
+											</span>
+										<#else>
+											<span class="label label-important">
+												<i class="fa fa-times-circle" aria-hidden="true"></i>
+											</span>
+										</#if>
+										&nbsp;${appointmentform.title}
+										<#if appointmentform.isActive>
+											<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${appointmentform.idForm}&nb_week=1">
+												<i class="fa fa-globe" aria-hidden="true"></i>
+											</a>
+										</#if>
+									</td>
+									<td>
+										
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
+											<i class="glyphicon glyphicon-edit"></i>
+										</a>	
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelCopy}">
+											<i class="fa fa-plus-circle" aria-hidden="true"></i>
+										</a>					
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelModifyMessages}">
+											<i class="fa fa-comment" aria-hidden="true"></i>
+										</a>
+										
+										<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointmentforms.labelManageAppointments}">
+											<i class="fa fa-calendar" aria-hidden="true"></i>
+										</a>
+										
+										<#if appointmentform.isActive>
+											<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{appointment.manage_appointmentforms.labelDisable}">
+												<i class="fa fa-stop" aria-hidden="true"></i>
+											</a>
+										<#else>
+											<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-success btn-xs" title="#i18n{appointment.manage_appointmentforms.labelEnable}">
+												<i class="glyphicon glyphicon-ok"></i>
+											</a>
+										</#if>
+										
+										<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
+											<i class="glyphicon glyphicon-trash"></i>
+										</a>
+										
+									</td>
+								</tr>
+							</#list>
+						</table>
+						<@paginationAdmin paginator=paginator />
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>

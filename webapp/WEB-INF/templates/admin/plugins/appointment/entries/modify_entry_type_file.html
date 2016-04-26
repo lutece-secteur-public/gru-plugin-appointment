@@ -2,129 +2,154 @@
 <#include "/admin/plugins/appointment/commons.html" />
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-	<fieldset>
-	<legend>#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
-			<input name="id_entry" value="${entry.idEntry}" type="hidden">
-			<input name="action" value="doModifyEntry" type="hidden">
-			<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * </label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					<input type="text" name="title" id="title" value="${entry.title}" maxlength="255" class="form-control">
-					<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
-				</div>
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">
+					#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'
+				</h3>
 			</div>
-			<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} </label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					<textarea name="help_message" id="help_message" rows="10" class="form-control">${entry.helpMessage}</textarea>
-					<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
-				</div>
-			 </div>
-			 <div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					<textarea name="comment" rows="2" class="form-control">${entry.comment}</textarea>
-				</div>
-			 </div>
-			 <div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="">#i18n{appointment.createEntry.labelType} : </label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					${entry.entryType.title}
-				</div>
-			</div>
-			 <div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					<div class="checkbox">
-						<label>
-							<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked" </#if>	 />&#160;
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="width">#i18n{appointment.createEntry.labelWidth} * </label>
-				<#list entry.fields as field>
-					<#if !field.title??>
-						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-							<input type="text" name="width" id="width" class="form-control" value="${field.width}">
+			<div class="box-body">
+			<fieldset>
+			<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+				<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
+					<input name="id_entry" value="${entry.idEntry}" type="hidden">
+					<input name="action" value="doModifyEntry" type="hidden">
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<input type="text" name="title" id="title" value="${entry.title}" maxlength="255" class="form-control">
+							<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
 						</div>
-						<#assign id_field=field.idField>
-						<#break>
-					</#if> 
-				</#list>
-			</div>
-			<div class="form-group">
-			<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="file_max_size">#i18n{appointment.createEntry.labelFileMaxSize} *</label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					<input type="text" name="file_max_size" id="file_max_size" class="form-control" value="${getFileMaxSize(entry)}" />
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="max_files">#i18n{appointment.createEntry.labelMaxFiles} * </label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					<input name="max_files" type="text" size="2" value="${getMaxFiles(entry)}" maxlength="2" class="form-control">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-				<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-					<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="form-control">
-					<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
-					<button class="btn btn-primary btn-sm" name="save" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}</button>
-					<button class="btn btn-primary btn-sm" name="apply" type="submit" ><i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}</button>
-					<button class="btn btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonCancel}</button>
-				</div>
-			</div>
-		</form>
-	</fieldset>
-	<#if regular_expression_list?exists>
-		<fieldset>
-		<legend>#i18n{appointment.createEntry.manageRegularExpression.title}</legend>
-			<div class="well">
-				<form class="form-horizontal"  method="post"  action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list">
-				<input name="id_field" value="${id_field}" type="hidden" />
-				<input name="action" value="doInsertRegularExpression" type="hidden" />
-				<div class="form-group">
-				<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="id_expression">#i18n{appointment.createEntry.manageRegularExpression.labelInsert} :</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<@combo name="id_expression" items=regular_expression_list default_value=-1 />
-						<button class="btn btn-primary btn-xs" name="" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.createEntry.manageRegularExpression.buttonInsert}</button>
-						<p class="help-block">#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}</p>
 					</div>
-				</div>
-				<a name="list" id="list"></a>
-				<table class="table table-striped">
-					<tr> 
-						<th>#i18n{appointment.createEntry.manageRegularExpression.rowTitle}</th>
-						<th>#i18n{appointment.createEntry.manageRegularExpression.rowInformationMessage}</th>
-						<th>#i18n{appointment.createEntry.manageRegularExpression.rowValidExemple}</th>
-						<th>#i18n{appointment.createEntry.manageField.rowActions}</th>
-					</tr>
-					<#list entry.fields as field>
-						<#list field.regularExpressionList as expression>
-						<tr>
-							<td>${expression.title}</td>
-							<td>${expression.informationMessage}</td>
-							<td>${expression.validExemple}</td>
-							<td>
-								<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${id_field}#list"  title="#i18n{appointment.createEntry.manageField.titleDelete}" >
-									<i class="glyphicon glyphicon-trash"></i>
-								</a>
-							</td>
-						</tr>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<textarea name="help_message" id="help_message" rows="10" class="form-control">${entry.helpMessage}</textarea>
+							<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
+						</div>
+					 </div>
+					 <div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<textarea name="comment" rows="2" class="form-control">${entry.comment}</textarea>
+						</div>
+					 </div>
+					 <div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="">#i18n{appointment.createEntry.labelType} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							${entry.entryType.title}
+						</div>
+					</div>
+					 <div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<div class="checkbox">
+								<label>
+									<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked" </#if>	 />&#160;
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="width">#i18n{appointment.createEntry.labelWidth} * </label>
+						<#list entry.fields as field>
+							<#if !field.title??>
+								<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+									<input type="text" name="width" id="width" class="form-control" value="${field.width}">
+								</div>
+								<#assign id_field=field.idField>
+								<#break>
+							</#if> 
 						</#list>
-					</#list>
-				</table>
+					</div>
+					<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="file_max_size">#i18n{appointment.createEntry.labelFileMaxSize} *</label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<input type="text" name="file_max_size" id="file_max_size" class="form-control" value="${getFileMaxSize(entry)}" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="max_files">#i18n{appointment.createEntry.labelMaxFiles} * </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<input name="max_files" type="text" size="2" value="${getMaxFiles(entry)}" maxlength="2" class="form-control">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="form-control">
+							<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
+							<button class="btn btn-primary btn-sm" name="save" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}</button>
+							<button class="btn btn-primary btn-sm" name="apply" type="submit" ><i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}</button>
+							<button class="btn btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonCancel}</button>
+						</div>
+					</div>
 				</form>
-			</div>
-		</fieldset>
-	</#if>
+			</fieldset>
+		</div>
 	</div>
+	
+	<#if regular_expression_list?exists>
+	<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">
+					#i18n{appointment.createEntry.manageRegularExpression.title}
+				</h3>
+			</div>
+			<div class="box-body">
+				<fieldset>
+				<legend class="hidden">#i18n{appointment.createEntry.manageRegularExpression.title}</legend>
+					<div class="well">
+						<form class="form-horizontal"  method="post"  action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list">
+						<input name="id_field" value="${id_field}" type="hidden" />
+						<input name="action" value="doInsertRegularExpression" type="hidden" />
+						<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="id_expression">#i18n{appointment.createEntry.manageRegularExpression.labelInsert} :</label>
+							<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+								<div class="input-group">
+								<@comboWithParams name="id_expression" items=regular_expression_list default_value="-1" additionalParameters="class=\"form-control input-xs\"" />
+								<span class="input-group-btn">
+									<button class="btn btn-primary btn-xs" name="" type="submit" ><i class="glyphicon glyphicon-ok"></i><span class="hidden-xs">&nbsp;#i18n{appointment.createEntry.manageRegularExpression.buttonInsert}</span></button>
+								</span>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-offset-3 col-sm-9 col-md-offset-3 col-md-9 col-lg-offset-3 col-lg-9">
+								<p class="help-block">#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}</p>
+							</div>
+						</div>
+						<a name="list" id="list"></a>
+						<table class="table table-striped">
+							<tr> 
+								<th>#i18n{appointment.createEntry.manageRegularExpression.rowTitle}</th>
+								<th>#i18n{appointment.createEntry.manageRegularExpression.rowInformationMessage}</th>
+								<th>#i18n{appointment.createEntry.manageRegularExpression.rowValidExemple}</th>
+								<th>#i18n{appointment.createEntry.manageField.rowActions}</th>
+							</tr>
+							<#list entry.fields as field>
+								<#list field.regularExpressionList as expression>
+								<tr>
+									<td>${expression.title}</td>
+									<td>${expression.informationMessage}</td>
+									<td>${expression.validExemple}</td>
+									<td>
+										<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${id_field}#list"  title="#i18n{appointment.createEntry.manageField.titleDelete}" >
+											<i class="glyphicon glyphicon-trash"></i>
+										</a>
+									</td>
+								</tr>
+								</#list>
+							</#list>
+						</table>
+						</form>
+					</div>
+				</fieldset>
+				</div>
+			</div>
+		</#if>
+</div>
 </div>
 <@initEditor />
