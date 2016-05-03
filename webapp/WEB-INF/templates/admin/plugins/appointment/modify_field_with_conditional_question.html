@@ -6,26 +6,26 @@
 				<input type="hidden" name="action" value="doModifyFieldCC" />
 				<input name="id_field" value="${field.idField}" type="hidden" />
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createField.labelTitle} * : </label>
-						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createField.labelTitle} * : </label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 							<input type="text" name="title" id="title" value="${field.title}" class="form-control">
 					</div>
 				</div>
 			    <div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelValue} * : </label>
-			    	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelValue} * : </label>
+			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" name="value" id="value" size="80" value="${field.value}" class="form-control">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelComment} : </label>
-			    	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelComment} : </label>
+			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<textarea name="comment" id="comment" class="form-control">${field.comment!}</textarea>
 					</div>
 				</div>
 			    <div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="default_value">#i18n{appointment.createField.labelDefaultValue}</label>
-			    	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="default_value">#i18n{appointment.createField.labelDefaultValue}</label>
+			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="checkbox">
 							<label for="default_value">
 								<input name="default_value" value="1" type="checkbox" <#if field.defaultValue>checked="checked"</#if>>&#160;
@@ -34,8 +34,8 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="no_display_title">#i18n{appointment.createField.labelNoDisplayTitle}</label>
-			    		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="no_display_title">#i18n{appointment.createField.labelNoDisplayTitle}</label>
+			    		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="checkbox">
 							<label class="checkbox" for="no_display_title">
 							<input name="no_display_title" value="1" type="checkbox" <#if field.noDisplayTitle>checked="checked"</#if>>

@@ -1,26 +1,37 @@
 <link href="css/datepicker.css" rel="stylesheet">
 <#include
 "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
+
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<fieldset>
-			<legend>
-				${form.title} - #i18n{appointment.manage_appointments.pageTitle}
-				<#if day??>#i18n{appointment.manage_appointment_calendar.labelOf}
-				${day.date}</#if> <#if slot??>
-				#i18n{appointment.manage_appointment_calendar.labelFrom} <#if
-				slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if
-				slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
-				#i18n{appointment.manage_appointment_calendar.labelTo} <#if
-				slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if
-				slot.endingMinute &lt; 10>0</#if>${slot.endingMinute} </#if> <#if
-				rightCreate?? && rightCreate> <a
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">
+					${form.title} - #i18n{appointment.manage_appointments.pageTitle}
+					<#if day??>#i18n{appointment.manage_appointment_calendar.labelOf}
+					${day.date}</#if>
+					<#if slot??>
+					#i18n{appointment.manage_appointment_calendar.labelFrom} <#if
+					slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if
+					slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
+					#i18n{appointment.manage_appointment_calendar.labelTo} <#if
+					slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if
+					slot.endingMinute &lt; 10>0</#if>${slot.endingMinute} </#if>
+				</h3>
+				<@headerButtons>
+					<#if rightCreate?? && rightCreate>
+					<a
 					href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&nb_week=1"
 					class="btn btn-primary btn-sm pull-right" type="submit"> <i
-					class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{appointment.manage_appointments.buttonAdd}
-				</a> </#if>
-			</legend>
-			<@tabs tab="filter" form=form /> <@messages infos=infos />
+					class="glyphicon glyphicon-plus"></i><span class="hidden-xs">&nbsp;#i18n{appointment.manage_appointments.buttonAdd}</span>
+					</a> </#if>
+				</@headerButtons>
+			</div>
+		</div>
+		
+		<@tabs tab="filter" form=form>
+			
+			<@messages infos=infos />
 			<form name="form" id="form"
 				action="jsp/admin/plugins/appointment/ManageAppointments.jsp"
 				method="post">
@@ -33,10 +44,18 @@
 					name="orderBy" value=${filter.orderBy}> <input
 					type="hidden" name="orderAsc" value=${filter.orderAsc?string}>
 				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-						<div class="well">
-							<fieldset>
-								<legend>#i18n{appointment.manage_appointments.labelSearch}</legend>
+					<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+						<div class="box box-default box-solid">
+							<div class="box-header with-border">
+								<h3 class="box-title">
+									#i18n{appointment.manage_appointments.labelSearch}
+								</h3>
+								<div class="box-tools pull-right">
+									<button class="btn btn-box-tool" type="button" data-widget="collapse">
+										<i class="fa fa-minus" aria-hidden="true"></i>
+								</div>
+							</div>
+							<div class="box-body">
 								<div class="form-group">
 									<label
 										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">${formMessages.fieldLastNameTitle}</label>
@@ -107,35 +126,51 @@
 										</a>
 									</div>
 								</div>
-							</fieldset>
+							</div>
 						</div>
 					</div>
-					<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-						<center>
-							<@paginationAdmin paginator=paginator combo=1 form=0 />
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<div class="box box-default">
+							<div class="box-header with-border">
+								<h3></h3>
+								<div class="box-tools">
+									<div class="form-inline">
+										<div class="input-group">
+											<@comboWithParams
+											name="statusExport" items=refListExports
+											default_value="${filter.statusFilter}"
+											additionalParameters="class='form-control input-sm'" />
+											<div class="input-group-btn">
+											<button class="btn btn-default btn-sm" id="sortedDay" name="sortedDay"
+												type="button" title="Actualiser">
+												<i class="glyphicon glyphicon-repeat"></i>
+											</button>
+											</div>
+										</div>
+										<div class="input-group">
+											<button
+												class="btn btn-danger btn-sm" type="submit" id="eraseAll"
+												name="eraseAll" value="eraseAll" disabled="true">
+												<i class="fa fa-trash" aria-hidden="true"></i>
+												<span class="hidden-xs">#i18n{appointment.permission.label.deleteMassAppointment}</span>
+											</button> <a class="btn btn-info btn-sm"
+											href="jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}">
+												<i class="fa fa-download" aria-hidden="true"></i>
+												<span class="hidden-xs">#i18n{appointment.permission.label.exportMassAppointment}</span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="box-body">
 							<table class="table table-condensed table-striped">
 								<tr>
-									<th colspan="7" align="center"><@comboWithParams
-										name="statusExport" items=refListExports
-										default_value="${filter.statusFilter}"
-										additionalParameters="class='input-xs'" />
-										<button class="btn btn-xs" id="sortedDay" name="sortedDay"
-											type="button" title="Actualiser">
-											<i class="glyphicon glyphicon-repeat"></i>
-										</button>
+									<th colspan="7" align="center">
+									<@paginationAdmin paginator=paginator combo=1 form=0 />	
 									</th>
-
-									<th align="right" style="text-align: right"><button
-											class="btn btn-primary btn-sm" type="submit" id="eraseAll"
-											name="eraseAll" value="eraseAll" disabled="true">
-											<i class="glyphicon glyphicon-ok">&nbsp;</i>#i18n{appointment.permission.label.deleteMassAppointment}
-										</button> <a class="btn btn-info btn-flat"
-										href="jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}">
-											<i class="glyphicon glyphicon-download">&nbsp;</i>#i18n{appointment.permission.label.exportMassAppointment}
-									</a></th>
 								</tr>
 							</table>
-						</center>
+
 						<#if appointment_list?? && appointment_list?size &gt; 0>
 						<table class="table table-condensed table-striped">
 							<tr>
@@ -143,57 +178,57 @@
 									title="#i18n{appointment.appointmentApp.infos}"></th>
 								<th>#i18n{appointment.manage_appointments.columnLastName} <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=true">
-										<i class="glyphicon glyphicon-chevron-up"></i>
+										<i class="fa fa-chevron-up" aria-hidden="true"></i>
 								</a> <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=false">
-										<i class="glyphicon glyphicon-chevron-down"></i>
+										<i class="fa fa-chevron-down" aria-hidden="true"></i>
 								</a>
 								</th>
 								<th>#i18n{appointment.manage_appointments.columnFirstName}
 									<a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=true">
-										<i class="glyphicon glyphicon-chevron-up"></i>
+										<i class="fa fa-chevron-up" aria-hidden="true"></i>
 								</a> <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=false">
-										<i class="glyphicon glyphicon-chevron-down"></i>
+										<i class="fa fa-chevron-down" aria-hidden="true"></i>
 								</a>
 								</th>
 								<th>#i18n{appointment.manage_appointments.columnEmail} <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=email&orderAsc=true">
-										<i class="glyphicon glyphicon-chevron-up"></i>
+										<i class="fa fa-chevron-up" aria-hidden="true"></i>
 								</a> <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=email&orderAsc=false">
-										<i class="glyphicon glyphicon-chevron-down"></i>
+										<i class="fa fa-chevron-down" aria-hidden="true"></i>
 								</a>
 								</th>
 								<th>
 									#i18n{appointment.manage_appointments.columnDateAppointment} <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=date_appointment&orderAsc=true">
-										<i class="glyphicon glyphicon-chevron-up"></i>
+										<i class="fa fa-chevron-up" aria-hidden="true"></i>
 								</a> <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=date_appointment&orderAsc=false">
-										<i class="glyphicon glyphicon-chevron-down"></i>
+										<i class="fa fa-chevron-down" aria-hidden="true"></i>
 								</a>
 								</th>
 								<th class="hidden-xs hidden-sm hidden-md">#i18n{appointment.manage_appointments.columnAdminUser}
 								</th>
 								<th>#i18n{appointment.manage_appointments.columnStatus} <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=true">
-										<i class="glyphicon glyphicon-chevron-up"></i>
+										<i class="fa fa-chevron-up" aria-hidden="true"></i>
 								</a> <a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=false">
-										<i class="glyphicon glyphicon-chevron-down"></i>
+										<i class="fa fa-chevron-down" aria-hidden="true"></i>
 								</a>
 								</th>
+
+								<th>#i18n{appointment.manage_appointments.columnState}
+								<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=true">
+									<i class="fa fa-chevron-up" aria-hidden="true"></i>
+								</a>
+								<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=false">
+									<i class="fa fa-chevron-down" aria-hidden="true"></i>
+								</a>
 								</th>
-           <th>#i18n{appointment.manage_appointments.columnState}<a
- href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=true">
-                                                                                 <i class="glyphicon glyphicon-chevron-up"></i>
-                                                                 </a> <a
- href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=false">
-                                                                                 <i class="glyphicon glyphicon-chevron-down"></i>
-                                                                 </a>
-                                                                 </th>
 
 
 								<th>#i18n{portal.util.labelActions}</th>
@@ -270,9 +305,11 @@
 						<center><@paginationAdmin paginator=paginator form=0 /></center>
 					</div>
 				</div>
+			</div>
+			</div>
 			</form>
-		</fieldset>
-	</div>
+			</@tabs>
+</div>
 </div>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="dateAppointment" language=language />
