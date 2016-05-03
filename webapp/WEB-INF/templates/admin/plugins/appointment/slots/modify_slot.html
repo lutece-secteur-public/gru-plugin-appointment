@@ -12,6 +12,7 @@
 				<@messages errors=errors infos=infos />
 				<input type="hidden" name="action" value="doModifySlot">
 				<input type="hidden" name="id_slot" value="${slot.idSlot}" >
+				<input type="hidden" name="nb_week" value="${nb_week!}" >
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelPeoplePerAppointment}</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -37,11 +38,11 @@
 						</button>
 
 						<#if slot.idDay &gt; 0>
-     						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if>">
+     						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if><#if nb_week??>&nb_week=${nb_week!} </#if>" >
 							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
 							</a>
     					<#else>  
-    						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlotss&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if>">
+    						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlotss&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if><#if nb_week??>&nb_week=${nb_week!} </#if>">
 							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
 							</a>
     					</#if>

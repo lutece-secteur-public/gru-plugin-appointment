@@ -1239,10 +1239,21 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     {
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String nb_week = request.getParameter( PARAMETER_NB_WEEK );
+        
+        int nNb_week=0;
+        
+            
+            
         int nIdForm = Integer.parseInt( strIdForm );
 
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
         {
+        	if ( StringUtils.isNotEmpty( nb_week ) && StringUtils.isNumeric( nb_week) )
+            {
+                 nNb_week = Integer.parseInt( nb_week );
+            }
+        	
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
 
@@ -1271,7 +1282,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
             if ( slot.getIdDay(  ) > 0 )
             {
-                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, nIdForm );
+                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(),PARAMETER_NB_WEEK, nNb_week);
             }
 
             return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS_, PARAMETER_ID_FORM, slot.getIdForm(  ) );
@@ -1290,6 +1301,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     {
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String nb_week = request.getParameter( PARAMETER_NB_WEEK );
         AppointmentSlot slot;
 
         Map<String, Object> model = getModel(  );
@@ -1315,6 +1327,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             addInfo( MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale(  ) );
 
             model.put( MARK_SLOT, slot );
+            model.put( PARAMETER_NB_WEEK, nb_week);
             model.put( MARK_LOCALE, getLocale(  ) );
 
             AppointmentForm appointmentForm = AppointmentFormHome.findByPrimaryKey( slot.getIdForm(  ) );
@@ -1337,11 +1350,19 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     {
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String nb_week = request.getParameter( PARAMETER_NB_WEEK );
+        
+        int nNb_week=0;
         int nIdForm=0;
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
            nIdForm = Integer.parseInt( strIdForm );
+        }
+        
+        if ( StringUtils.isNotEmpty( nb_week ) && StringUtils.isNumeric( nb_week) )
+        {
+             nNb_week = Integer.parseInt( nb_week );
         }
 
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
@@ -1448,7 +1469,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                 
                 if ( slot.getIdDay(  ) > 0 )
                 {
-                    return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(  ) );
+                    return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(  ),PARAMETER_NB_WEEK, nNb_week);
                 }
 
                 return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS_, PARAMETER_ID_FORM, slot.getIdForm(  ) );
