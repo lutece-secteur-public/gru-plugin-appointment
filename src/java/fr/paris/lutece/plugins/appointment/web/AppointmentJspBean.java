@@ -2448,7 +2448,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				.findByPrimaryKey(appointmentSlot.getIdForm());
 
 		if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_BACK))) {
-			return redirect(request, VIEW_GET_APPOINTMENT_CALENDAR,
+			return redirect(request, VIEW_CALENDAR_MANAGE_APPOINTMENTS,
 					PARAMETER_ID_FORM, appointmentSlot.getIdForm());
 		}
 
