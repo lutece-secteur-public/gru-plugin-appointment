@@ -316,10 +316,14 @@ public class AppointmentApp extends MVCApplication
     public XPage getViewForm( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-
-        idSlot = _appointmentFormService.getAppointmentFromSession( request.getSession(  ) ).getIdSlot(  );
-
-        AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( idSlot );
+        
+//        if(_appointmentFormService.getAppointmentFromSession( request.getSession(  )).getIdSlot(  )!=0)
+//        {
+//
+//        idSlot = _appointmentFormService.getAppointmentFromSession( request.getSession(  )).getIdSlot(  );
+//        }
+//
+//        //AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( idSlot );
 
         if ( ( strIdForm != null ) && StringUtils.isNumeric( strIdForm ) )
         {
@@ -335,6 +339,15 @@ public class AppointmentApp extends MVCApplication
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
             AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity(  );
+            
+            if(_appointmentFormService.getAppointmentFromSession( request.getSession(  )).getIdSlot(  )!=0)
+            {
+
+            idSlot = _appointmentFormService.getAppointmentFromSession( request.getSession(  )).getIdSlot(  );
+            
+
+            AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( idSlot );
+
 
             appointmentSlotDisponiblity.setNIdSlot( idSlot );
             appointmentSlotDisponiblity.setIdSession( request.getSession(  ).getId(  ) );
@@ -357,6 +370,7 @@ public class AppointmentApp extends MVCApplication
             if ( notExist )
             {
                 listAppointmentSlotDisponiblity.add( appointmentSlotDisponiblity );
+            }
             }
 
             if ( ( form == null ) || !form.getIsActive(  ) )
