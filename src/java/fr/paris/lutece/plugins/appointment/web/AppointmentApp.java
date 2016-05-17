@@ -1670,7 +1670,7 @@ public class AppointmentApp extends MVCApplication
               	cal = GregorianCalendar.getInstance( Locale.FRANCE );
                 cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
             }while(datMax.before(form.getDateLimit()));
-            maxWeek = maxWeek + 1;
+            
             return maxWeek ;
             
 		} else {
