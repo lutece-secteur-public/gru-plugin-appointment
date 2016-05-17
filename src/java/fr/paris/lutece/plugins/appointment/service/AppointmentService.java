@@ -831,7 +831,7 @@ public class AppointmentService
                 {
                     List<AppointmentDay> listDays = findAndComputeDayList( form, nOffsetWeeks, true );
 
-                    for ( AppointmentDay day : listDays )
+                 for ( AppointmentDay day : listDays )
                     {
                         
                     	// set closing days
@@ -852,12 +852,9 @@ public class AppointmentService
                             int nNbFreePlaces = 0;
                             
                             
-                         /*   Boolean isOpen = mapIsOpen.get(day.getDate().toString());
-                            if(isOpen != null && day.getIsOpen() != isOpen)
-                            {
-                                  day.setIsOpen(isOpen.booleanValue());	
-                            }
-                         */   
+                         
+                            
+                         
 
                             for ( AppointmentSlot slot : day.getListSlots(  ) )
                             {
@@ -875,9 +872,20 @@ public class AppointmentService
                             day.setFreePlaces( nNbFreePlaces );
                           
                          
-                     
+                            Boolean isOpen = mapIsOpen.get(day.getDate().toString());
+                            boolean modif = false ;
+                            if(isOpen != null && day.getIsOpen() != isOpen)
+                            {
+                                  day.setIsOpen(isOpen.booleanValue());	
+                                  modif = true ;
+                            }
                           
                             AppointmentDayHome.create( day );
+                            
+                            if(modif)
+                            {
+                            	AppointmentSlotService.getInstance().computeAndCreateSlotsForDay(day, form);
+                            }
 
                             for ( AppointmentSlot slot : day.getListSlots(  ) )
                             {
