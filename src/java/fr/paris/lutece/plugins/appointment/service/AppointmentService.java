@@ -40,6 +40,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -557,7 +558,7 @@ public class AppointmentService
 
         Calendar calendarTo = GregorianCalendar.getInstance( Locale.FRANCE );
         calendarTo.setTime( getDateLastMonday(  ) );
-        calendarTo.add( Calendar.WEEK_OF_MONTH, form.getNbWeeksToDisplay(  ) );
+        calendarTo.add( Calendar.WEEK_OF_MONTH, AppointmentApp.getMaxWeek(form.getNbWeeksToDisplay(), form) );
         // We remove the last monday
         calendarTo.add( Calendar.DAY_OF_MONTH, -1 );
 
