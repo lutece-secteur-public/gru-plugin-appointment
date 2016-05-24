@@ -21,6 +21,7 @@
 		
 		<@tabs tab="calendar" form=form>
 			<@messages infos=infos />
+			<div class="row">
 			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 			<#if nb_week &gt; -max_week >
 				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.appointmentApp.previousWeek}">
@@ -40,8 +41,9 @@
 				</a>
 			</#if>
 			</div>
+			</div>
 			
-			<div class="hidden-phone">
+			<div class="hidden-xs">
 			<table class="table appointment-table-container">
 				<tr>
 					<td>
@@ -192,7 +194,7 @@
 				</tr>
 			</table>
 		</div>
-		<div class="visible-phone">
+		<div class="visible-xs">
 			<#list listDays as day>
 				<#if day.isOpen>
 					<div class="span1">
