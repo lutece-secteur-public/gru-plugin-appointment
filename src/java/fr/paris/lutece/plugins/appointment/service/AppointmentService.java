@@ -561,7 +561,7 @@ public class AppointmentService
         calendarTo.add( Calendar.WEEK_OF_MONTH, AppointmentApp.getMaxWeek(form.getNbWeeksToDisplay(), form) );
         // We remove the last monday
         calendarTo.add( Calendar.DAY_OF_MONTH, -1 );
-
+        
         return AppointmentDayHome.getDaysBetween( form.getIdForm(  ), new Date( calendarFrom.getTimeInMillis(  ) ),
             new Date( calendarTo.getTimeInMillis(  ) ) );
     }
