@@ -794,15 +794,23 @@ public class AppointmentService
 					  maxWeek = maxWeek + 1;
               
             }
+            /*
             Map<String,Boolean> mapIsOpen = new HashedMap();
             List<AppointmentDay> listDaysR = AppointmentDayHome.findByIdForm(form.getIdForm());
+            List listDay = null;
             if (listDaysR != null) {
 				for (AppointmentDay day : listDaysR) {
 					mapIsOpen.put(day.getDate().toString(),day.getIsOpen());
-					AppointmentDayHome.remove(day.getIdDay());
+					listDay = AppointmentSlotHome.findByCrossIdDay(day.getIdDay());
+					if(listDay != null && listDay.isEmpty()){
+						AppointmentDayHome.remove(day.getIdDay());
+					}
+					listDay = null;
+					
+					
 				}
 			}
-          
+          */
 			// We check every weeks from the current to the first not displayable
             for ( int nOffsetWeeks = 0; nOffsetWeeks < maxWeek; nOffsetWeeks++ )
             {
@@ -872,7 +880,7 @@ public class AppointmentService
 
                             day.setFreePlaces( nNbFreePlaces );
                           
-                         
+                         /*
                             Boolean isOpen = mapIsOpen.get(day.getDate().toString());
                             boolean modif = false ;
                             if(isOpen != null && day.getIsOpen() != isOpen)
@@ -887,7 +895,7 @@ public class AppointmentService
                             {
                             	AppointmentSlotService.getInstance().computeAndCreateSlotsForDay(day, form);
                             }
-
+                   */
                             for ( AppointmentSlot slot : day.getListSlots(  ) )
                             {
                                 slot.setIdDay( day.getIdDay(  ) );
