@@ -880,22 +880,11 @@ public class AppointmentService
 
                             day.setFreePlaces( nNbFreePlaces );
                           
-                         /*
-                            Boolean isOpen = mapIsOpen.get(day.getDate().toString());
-                            boolean modif = false ;
-                            if(isOpen != null && day.getIsOpen() != isOpen)
-                            {
-                                  day.setIsOpen(isOpen.booleanValue());	
-                                  modif = true ;
-                            }
+                       
                           
                             AppointmentDayHome.create( day );
                             
-                            if(modif)
-                            {
-                            	AppointmentSlotService.getInstance().computeAndCreateSlotsForDay(day, form);
-                            }
-                   */
+                           
                             for ( AppointmentSlot slot : day.getListSlots(  ) )
                             {
                                 slot.setIdDay( day.getIdDay(  ) );
