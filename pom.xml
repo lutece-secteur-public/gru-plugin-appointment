@@ -41,8 +41,15 @@
 			<artifactId>poi</artifactId>
 			<version>3.10.1</version>
 		</dependency>
-		 --> 
+		 -->
+		<dependency>
+            <groupId>fr.paris.lutece.plugins</groupId>
+            <artifactId>plugin-workflow</artifactId>
+            <version>[4.2.3,)</version>
+            <type>lutece-plugin</type>
+        </dependency>
     </dependencies>
+    
 
     <properties>
         <componentName>appointment</componentName>
