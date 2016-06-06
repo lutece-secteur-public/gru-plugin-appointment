@@ -45,6 +45,9 @@ CREATE TABLE appointment_form (
 	seizure_duration INT NOT NULL default '0',
 	date_limit date NULL,
 	maximum_number_of_booked_seats INT NOT NULL default '0',
+	address long varchar NULL,
+	longitude float NULL,
+	latitude float NULL,
 	PRIMARY KEY (id_form)
 );
 

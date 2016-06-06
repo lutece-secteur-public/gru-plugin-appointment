@@ -144,6 +144,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_FIRST_FORM = "first_form";
     private static final String PARAMETER_SECOND_FORM = "second_form";
     private static final String PARAMETER_FORM_RDV = "form_rdv";
+    private static final String PARAMETER_GEOLOC_ADDRESS  = "geoloc_address";
+    private static final String PARAMETER_GEOLOC_LATITUDE  = "geoloc_latitude";
+    private static final String PARAMETER_GEOLOC_LONGITUDE  = "geoloc_longitude";
+
     private static final String PARAMETER_FIRSTNAME = "fn";
     private static final String PARAMETER_LASTNAME = "ln";
     private static final String PARAMETER_PHONE = "ph";
@@ -479,6 +483,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                 checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
         {
             populate( appointmentForm, request );
+            populateAddress( appointmentForm, request );
         }
         else
         {
@@ -513,6 +518,35 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale(  ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+    }
+
+    private void populateAddress(AppointmentForm appointmentForm,
+            HttpServletRequest request)
+    {
+            String strGeolocAddress = request.getParameter ( PARAMETER_GEOLOC_ADDRESS );
+            String strGeolocLatitude = request.getParameter ( PARAMETER_GEOLOC_LATITUDE );
+            String strGeolocLongitude = request.getParameter ( PARAMETER_GEOLOC_LONGITUDE );
+
+            //If missing from the form, don't do anything (like populate does)
+            if ( strGeolocAddress == null || strGeolocAddress == null || strGeolocLongitude == null )
+            {
+                return;
+            }
+
+            if ( StringUtils.isNotBlank( strGeolocAddress ) &&
+                 StringUtils.isNotBlank( strGeolocLatitude ) &&
+                 StringUtils.isNotBlank( strGeolocLongitude ))
+            {
+                appointmentForm.setAddress( strGeolocAddress );
+                appointmentForm.setLatitude( Double.valueOf ( strGeolocLatitude ) );
+                appointmentForm.setLongitude( Double.valueOf( strGeolocLongitude ) );
+            }
+            else
+            {
+                appointmentForm.setAddress( null );
+                appointmentForm.setLatitude( null );
+                appointmentForm.setLongitude( null );
+            }
     }
 
     /**
@@ -798,6 +832,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                 checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
         {
             populate( appointmentForm, request );
+            populateAddress( appointmentForm, request );
 
             if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty(  ) )
             {
