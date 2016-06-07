@@ -40,23 +40,26 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
 
 import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -192,8 +195,19 @@ public class AppointmentService
 
         Date dateMax = new Date( calendar.getTimeInMillis(  ) );
 
+        if(dateLimit != null)
+        {
+        	Calendar calEnd = Calendar.getInstance();
+         	calEnd.setTime(dateLimit);
+         	calEnd.add(Calendar.DAY_OF_MONTH, 6); 
+         	int diff = Calendar.SATURDAY - calEnd.get(Calendar.DAY_OF_WEEK) ;
+         	calEnd.add(Calendar.DATE, diff);
+            dateLimit = new java.sql.Date(calEnd.getTime().getTime());
+        }
+      
         if ( ( dateLimit != null ) && dateMax.after( dateLimit ) )
         {
+        	
             dateMax = dateLimit;
         }
 
@@ -544,10 +558,10 @@ public class AppointmentService
 
         Calendar calendarTo = GregorianCalendar.getInstance( Locale.FRANCE );
         calendarTo.setTime( getDateLastMonday(  ) );
-        calendarTo.add( Calendar.WEEK_OF_MONTH, form.getNbWeeksToDisplay(  ) );
+        calendarTo.add( Calendar.WEEK_OF_MONTH, AppointmentApp.getMaxWeek(form.getNbWeeksToDisplay(), form) );
         // We remove the last monday
         calendarTo.add( Calendar.DAY_OF_MONTH, -1 );
-
+        
         return AppointmentDayHome.getDaysBetween( form.getIdForm(  ), new Date( calendarFrom.getTimeInMillis(  ) ),
             new Date( calendarTo.getTimeInMillis(  ) ) );
     }
@@ -777,16 +791,26 @@ public class AppointmentService
 								- nCurrentDayOfWeek);
 					} while (datMax.before(form.getDateLimit()));
 				
-                
+					  maxWeek = maxWeek + 1;
               
             }
-
+            /*
+            Map<String,Boolean> mapIsOpen = new HashedMap();
             List<AppointmentDay> listDaysR = AppointmentDayHome.findByIdForm(form.getIdForm());
+            List listDay = null;
             if (listDaysR != null) {
 				for (AppointmentDay day : listDaysR) {
-					AppointmentDayHome.remove(day.getIdDay());
+					mapIsOpen.put(day.getDate().toString(),day.getIsOpen());
+					listDay = AppointmentSlotHome.findByCrossIdDay(day.getIdDay());
+					if(listDay != null && listDay.isEmpty()){
+						AppointmentDayHome.remove(day.getIdDay());
+					}
+					listDay = null;
+					
+					
 				}
 			}
+          */
 			// We check every weeks from the current to the first not displayable
             for ( int nOffsetWeeks = 0; nOffsetWeeks < maxWeek; nOffsetWeeks++ )
             {
@@ -816,9 +840,10 @@ public class AppointmentService
                 {
                     List<AppointmentDay> listDays = findAndComputeDayList( form, nOffsetWeeks, true );
 
-                    for ( AppointmentDay day : listDays )
+                 for ( AppointmentDay day : listDays )
                     {
-                        // set closing days
+                        
+                    	// set closing days
                         for ( Date closeDay : listClosingDays )
                         {
                             AppLogService.info( "closeDay " + closeDay.toString(  ) );
@@ -834,6 +859,11 @@ public class AppointmentService
                         if ( day.getIdDay(  ) == 0 )
                         {
                             int nNbFreePlaces = 0;
+                            
+                            
+                         
+                            
+                         
 
                             for ( AppointmentSlot slot : day.getListSlots(  ) )
                             {
@@ -849,8 +879,12 @@ public class AppointmentService
                             }
 
                             day.setFreePlaces( nNbFreePlaces );
+                          
+                       
+                          
                             AppointmentDayHome.create( day );
-
+                            
+                           
                             for ( AppointmentSlot slot : day.getListSlots(  ) )
                             {
                                 slot.setIdDay( day.getIdDay(  ) );

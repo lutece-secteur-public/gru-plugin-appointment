@@ -1329,7 +1329,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             String newNameForCopy = I18nService.getLocalizedString( PROPERTY_COPY_OF_FORM, request.getLocale(  ) ) +
                 formCopy.getTitle(  );
             formCopy.setTitle( newNameForCopy );
-
+            formCopy.setIsActive(false);
             AppointmentFormMessages appointmentFormMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
             AppointmentFormHome.create( formCopy, appointmentFormMessages );
 

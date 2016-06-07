@@ -42,7 +42,7 @@ import fr.paris.lutece.portal.business.file.File;
 /**
  * DTO that represent a response to display a recap
  */
-public class ResponseRecapDTO extends Response
+public class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO>
 {
     /**
      * Serial version UID
@@ -150,5 +150,15 @@ public class ResponseRecapDTO extends Response
     public File getFile(  )
     {
         return _response.getFile(  );
+    }
+
+    @Override
+    public int compareTo(ResponseRecapDTO o) {
+	
+	if( this._response .getEntry() !=null && o._response .getEntry()!=null)
+	{
+	   return ( this._response .getEntry().getPosition() - o._response .getEntry().getPosition() );
+	}
+	return 0;
     }
 }

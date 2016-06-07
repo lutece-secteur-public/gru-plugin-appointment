@@ -326,7 +326,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             {
                 nNbWeek = AppointmentService.getService(  ).parseInt( strNbWeek );
 
-                if ( Math.abs( nNbWeek ) > nNbWeeksToCreate )
+                if ( Math.abs( nNbWeek ) > nNbWeeksToCreate && form.getDateLimit() == null)
                 {
                     return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
                 }
@@ -533,7 +533,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             model.put( PARAMETER_APPOINTMENT_FORM, form );
             model.put( MARK_LIST_DAYS, listDays );
             model.put( PARAMETER_NB_WEEK, nNbWeek );
-            model.put( PARAMETER_MAX_WEEK, nNbWeeksToCreate - 1 );
+            model.put( PARAMETER_MAX_WEEK, getMaxWeek(nNbWeeksToCreate - 1 , form) );
             model.put( PARAMETER_LIM_DATES, getLimitedDate( nNbWeeksToCreate ) );
             model.put( MARK_LIST_TIME_BEGIN, listTimeBegin );
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
@@ -1563,4 +1563,42 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
         return urlItem.getUrl(  );
     }
+    
+    public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
+		if (form.getDateLimit() != null) {
+			Date dateMin = null;
+			List<AppointmentDay> listDays = AppointmentDayHome
+					.findByIdForm(form.getIdForm());
+			if (!listDays.isEmpty()) {
+				dateMin = listDays.get(0).getDate();
+			}
+			if(dateMin == null){
+				Calendar c =  Calendar.getInstance();
+				dateMin = new Date(c.getTimeInMillis());
+			}
+			long diff = form.getDateLimit().getTime() - dateMin.getTime();
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			int maxWeek = (int) diffDays / 7 ;
+			Calendar cal = GregorianCalendar.getInstance( Locale.FRANCE );
+			int nCurrentDayOfWeek = cal.get( cal.DAY_OF_WEEK );
+            cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+            Date datMax = null;
+            do{
+              	cal.add(Calendar.WEEK_OF_YEAR , maxWeek);
+              	datMax = new Date(cal.getTimeInMillis());
+              	if(datMax.before(form.getDateLimit())){
+              		maxWeek = maxWeek + 1;
+              	}
+              	cal = GregorianCalendar.getInstance( Locale.FRANCE );
+                cal.add( Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek );
+            }while(datMax.before(form.getDateLimit()));
+            
+            return maxWeek ;
+            
+		} else {
+			return nbWeekToCreate ;
+			
+		}
+	}
+    
 }

@@ -186,7 +186,7 @@ public class AppointmentFormService implements Serializable
             Map<String, Object> model = new HashMap<String, Object>(  );
             StringBuffer strBuffer = new StringBuffer(  );
 
-            List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
+            List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ),bDisplayFront );
 
             for ( Entry entry : listEntryFirstLevel )
             {
@@ -260,7 +260,7 @@ public class AppointmentFormService implements Serializable
         Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strBuffer = new StringBuffer(  );
 
-        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
+        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ),bDisplayFront );
 
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -320,17 +320,21 @@ public class AppointmentFormService implements Serializable
     /**
      * Get an Entry Filter
      * @param iform the id form
+     * @param bDisplayFront true if the list of entry must contained only front office entry 
      * @return List a filter Entry
      */
-    private static List<Entry> getFilter( int iform )
+    private static List<Entry> getFilter( int iform ,boolean bDisplayFront)
     {
         EntryFilter filter = new EntryFilter(  );
         filter.setIdResource( iform );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
-
-        List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
+        if( bDisplayFront )
+        {
+           filter.setIsOnlyDisplayInBack( EntryFilter.FILTER_FALSE );
+        }
+         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
 
         return listEntryFirstLevel;
     }
@@ -351,7 +355,7 @@ public class AppointmentFormService implements Serializable
         Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strBuffer = new StringBuffer(  );
 
-        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
+        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) ,bDisplayFront);
 
         for ( Entry entry : listEntryFirstLevel )
         {

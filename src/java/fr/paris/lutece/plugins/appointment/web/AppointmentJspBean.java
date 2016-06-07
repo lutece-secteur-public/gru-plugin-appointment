@@ -319,7 +319,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private final AppointmentFormService _appointmentFormService = SpringContextService
 			.getBean(AppointmentFormService.BEAN_NAME);
 	private final StateService _stateService = SpringContextService
-			.getBean(StateService.BEAN_SERVICE);
+		.getBean(StateService.BEAN_SERVICE);
 	private final ITaskService _taskService = SpringContextService
 			.getBean(TaskService.BEAN_SERVICE);
 
@@ -507,10 +507,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 							filter.getOrderBy(), filter.getOrderAsc());
 
 			for (Appointment tmpApp : listAppointments) {
-				State stateAppointment = _stateService.findByResource(
-						tmpApp.getIdAppointment(),
-						Appointment.APPOINTMENT_RESOURCE_TYPE,
-						tmpForm.getIdWorkflow());
+			    State stateAppointment = _stateService.findByResource(
+					tmpApp.getIdAppointment(),
+					Appointment.APPOINTMENT_RESOURCE_TYPE,
+					tmpForm.getIdWorkflow());
 
 				if (stateAppointment != null) {
 					tmpApp.setState(stateAppointment);
@@ -1271,8 +1271,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					stateFilter.setIdWorkflow(nIdWorkflow);
 
 					State stateAppointment = _stateService.findByResource(
-							appointment.getIdAppointment(),
-							Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
+						appointment.getIdAppointment(),
+						Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
 
 					if (stateAppointment != null) {
 						appointment.setState(stateAppointment);
@@ -2595,8 +2595,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			stateFilter.setIdWorkflow(nIdWorkflow);
 
 			State stateAppointment = _stateService.findByResource(
-					appointment.getIdAppointment(),
-					Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
+				appointment.getIdAppointment(),
+				Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
 
 			if (stateAppointment != null) {
 				appointment.setState(stateAppointment);
@@ -2619,13 +2619,17 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				appointment.getListResponse().size());
 
 		for (Response response : appointment.getListResponse()) {
-			IEntryTypeService entryTypeService = EntryTypeServiceManager
+			
+		    	//load all property of an entry for sorting response
+		    	response.setEntry(EntryHome.findByPrimaryKey(response.getEntry().getIdEntry()));
+		    	IEntryTypeService entryTypeService = EntryTypeServiceManager
 					.getEntryTypeService(response.getEntry());
 			listResponseRecapDTO.add(new ResponseRecapDTO(response,
 					entryTypeService.getResponseValueForRecap(
 							response.getEntry(), request, response, locale)));
 		}
-
+		//sort response using the entry order
+		Collections.sort(listResponseRecapDTO);
 		model.put(MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO);
 
 		model.put(
