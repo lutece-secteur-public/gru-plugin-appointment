@@ -513,6 +513,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         AppointmentFormHome.create( appointmentForm, _appointmentFormService.getDefaultAppointmentFormMessage(  ) );
 
         AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForForm( appointmentForm );
+        AppointmentService.getService(  ).notifyAppointmentFormModified( appointmentForm.getIdForm() );
 
         request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale(  ) );
@@ -600,6 +601,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         _entryService.removeEntriesByIdAppointmentForm( nId );
 
         AppointmentFormHome.remove( nId );
+        AppointmentService.getService(  ).notifyAppointmentFormModified( nId );
         addInfo( INFO_APPOINTMENTFORM_REMOVED, getLocale(  ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
@@ -945,6 +947,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                               .resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin );
         }
 
+        AppointmentService.getService(  ).notifyAppointmentFormModified( nIdAppointmentForm );
         request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale(  ) );
 
@@ -1147,6 +1150,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
             form.setIsActive( !form.getIsActive(  ) );
             AppointmentFormHome.update( form );
+            AppointmentService.getService(  ).notifyAppointmentFormModified( form.getIdForm() );
         }
 
         if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )
