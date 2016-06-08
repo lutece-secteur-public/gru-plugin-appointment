@@ -48,6 +48,7 @@ CREATE TABLE appointment_form (
 	address long varchar NULL,
 	longitude float NULL,
 	latitude float NULL,
+	category varchar(255) NOT NULL default '',
 	PRIMARY KEY (id_form)
 );
 

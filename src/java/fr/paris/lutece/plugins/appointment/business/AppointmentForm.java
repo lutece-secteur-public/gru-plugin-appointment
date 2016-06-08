@@ -130,6 +130,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private Double _dLongitude;
     private Double _dLatitude;
     private String _strAddress;
+
+    private String _strCategory;
     
 
     public int getMaximumNumberOfBookedSeats() {
@@ -925,6 +927,20 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      */
     public void setAddress(String strAddress) {
         this._strAddress = strAddress;
+    }
+
+    /**
+     * @return the category
+     */
+    public String getCategory() {
+        return _strCategory;
+    }
+
+    /**
+     * @param category the category to set
+     */
+    public void setCategory(String strCategory) {
+        _strCategory = strCategory;
     }
 
 }

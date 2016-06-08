@@ -13,6 +13,7 @@
 				<@messages errors=errors />
 				<input type="hidden" id="id_form" name="id_form">
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='category' mandatory=false value=appointmentform.category!'' maxlength=255 />
 				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeStart' inputName='time_start' mandatory=true value=appointmentform.timeStart!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeStart.help' />
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeEnd' inputName='time_end' mandatory=true value=appointmentform.timeEnd!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeEnd.help' />

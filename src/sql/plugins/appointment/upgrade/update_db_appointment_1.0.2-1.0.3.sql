@@ -6,3 +6,4 @@ ALTER TABLE appointment_form ADD COLUMN maximum_number_of_booked_seats INT NOT N
 ALTER TABLE appointment_form ADD COLUMN address long varchar NULL;
 ALTER TABLE appointment_form ADD COLUMN longitude float NULL;
 ALTER TABLE appointment_form ADD COLUMN latitude float NULL;
+ALTER TABLE appointment_form ADD COLUMN category varchar(255) NOT NULL default '';
