@@ -101,6 +101,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private Date _dateDateLimit;
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nPeoplePerAppointment;
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
+    private int _nMaximumNumberOfBookedSeats;
     private int _nIdWorkflow;
     private int _nOpeningHour;
     private int _nOpeningMinutes;
@@ -124,8 +126,18 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private ImageResource _imageResource;
     @Min( value = 0, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}" )
     private int _nseizureDuration;
+    
+    
 
-    public int getSeizureDuration(  )
+    public int getMaximumNumberOfBookedSeats() {
+		return _nMaximumNumberOfBookedSeats;
+	}
+
+	public void setMaximumNumberOfBookedSeats(int _nMaximumNumberOfBookedSeats) {
+		this._nMaximumNumberOfBookedSeats = _nMaximumNumberOfBookedSeats;
+	}
+
+	public int getSeizureDuration(  )
     {
         return _nseizureDuration;
     }

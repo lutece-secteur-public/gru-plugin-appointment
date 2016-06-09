@@ -44,6 +44,7 @@ CREATE TABLE appointment_form (
 	icon_form_mime_type varchar(255) default NULL,
 	seizure_duration INT NOT NULL default '0',
 	date_limit varchar(10) NOT NULL default '0',
+	maximum_number_of_booked_seats INT NOT NULL default '0',
 	PRIMARY KEY (id_form)
 );
 

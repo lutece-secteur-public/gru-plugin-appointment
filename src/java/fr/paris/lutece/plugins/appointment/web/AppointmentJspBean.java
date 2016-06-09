@@ -196,7 +196,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_MARK_FORCE = "force";
 	private static final String PARAMETER_ID_SLOT_ACTIVE = "idSlotActive";
 	private static final String PARAMETER_SLOT_LIST_DISPONIBILITY = "slotListDisponibility";
-
+	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberOfBookedSeats";
 	private static final String PARAMETER_FIRSTNAME = "fn";
 	private static final String PARAMETER_LASTNAME = "ln";
 	private static final String PARAMETER_PHONE = "ph";
@@ -1863,6 +1863,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					.setFirstName(request.getParameter(PARAMETER_FIRST_NAME));
 			appointment.setLastName(request.getParameter(PARAMETER_LAST_NAME));
 			appointment.setAppointmentForm(form);
+			int nbBookedSeats = Integer.parseInt(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS));
+			appointment.setNumberOfBookedSeats(nbBookedSeats);
 			// We save the appointment in session. The appointment object will
 			// contain responses of the user to the form
 			_appointmentFormService.saveAppointmentInSession(
