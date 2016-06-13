@@ -294,7 +294,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
 	private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
 	private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
-
+	private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT ="appointment.validation.appointment.NbBookedSeat.notEmpty";
+	private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 	// Session keys
 	private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
 	private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.itemsPerPage";
@@ -1863,8 +1864,34 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					.setFirstName(request.getParameter(PARAMETER_FIRST_NAME));
 			appointment.setLastName(request.getParameter(PARAMETER_LAST_NAME));
 			appointment.setAppointmentForm(form);
-			int nbBookedSeats = Integer.parseInt(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS));
-			appointment.setNumberOfBookedSeats(nbBookedSeats);
+			String nbSeat = request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS);
+			if (StringUtils.isEmpty(nbSeat)) {
+				GenericAttributeError genAttError = new GenericAttributeError();
+				genAttError.setErrorMessage(I18nService.getLocalizedString(
+						ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT, request.getLocale()));
+				listFormErrors.add(genAttError);
+			} 
+			if(StringUtils.isNotBlank(nbSeat)){
+				int nbBookedSeats = Integer.parseInt(nbSeat);
+
+				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strIdSlot));
+				
+				
+				
+				if(nbBookedSeats > slot.getNbPlaces()){
+					GenericAttributeError genAttError = new GenericAttributeError();
+					genAttError.setErrorMessage(I18nService.getLocalizedString(
+							ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, request.getLocale()));
+					listFormErrors.add(genAttError);
+				} else {
+				
+				appointment.setNumberOfBookedSeats(nbBookedSeats);
+				}
+			} else  {
+				appointment.setNumberOfBookedSeats(0);
+			}
+			
+			
 			// We save the appointment in session. The appointment object will
 			// contain responses of the user to the form
 			_appointmentFormService.saveAppointmentInSession(
@@ -2448,12 +2475,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				.findByPrimaryKey(appointment.getIdSlot());
 		AppointmentForm form = AppointmentFormHome
 				.findByPrimaryKey(appointmentSlot.getIdForm());
-
+       
 		if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_BACK))) {
 			return redirect(request, VIEW_CREATE_APPOINTMENT,
 					PARAMETER_ID_FORM, appointmentSlot.getIdForm());
 		}
-
+		 appointmentSlot.setNbPlaces(appointmentSlot.getNbPlaces()-appointment.getNumberOfBookedSeats());
+ 		AppointmentSlotHome.update(appointmentSlot);
+ 		
 		boolean bCreation = appointment.getIdAppointment() == 0;
 
 		if (!RBACService

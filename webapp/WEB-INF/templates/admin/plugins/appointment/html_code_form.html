@@ -140,6 +140,64 @@
 					</#if>
 					</#if>
 				</#if>
+				<#if form.maximumNumberOfBookedSeats &gt; 1>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label"for="numberOfBookedSeats">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment}*</label>
+					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+						<input type="text"  maxlength="255" id="numberOfBookedSeats" name="numberOfBookedSeats" class="form-control" >
+							<span class="help-block">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment.help!}</span>
+					</div>
+				</div>
+
+				</#if>
+				<#if form_errors??>
+					<#assign hasDisplayableError = false>
+					<#list form_errors as form_error>
+						<#if form_error.isDisplayableError>
+							<#assign hasDisplayableError = true>
+							<#break >
+						</#if>
+					</#list>
+					<#if hasDisplayableError>
+						
+							<#list form_errors as form_error>	
+																	
+								 <#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage = listAllErrors[7]) > 
+									<div class="alert alert-error alert-danger">
+										<p>
+										  	${form_error.errorMessage}
+										</p>
+									</div>
+								 </#if>	 
+							</#list>
+						
+					</#if>
+					</#if>
+					
+					<#if form_errors??>
+					<#assign hasDisplayableError = false>
+					<#list form_errors as form_error>
+						<#if form_error.isDisplayableError>
+							<#assign hasDisplayableError = true>
+							<#break >
+						</#if>
+					</#list>
+					<#if hasDisplayableError>
+						
+							<#list form_errors as form_error>	
+																	
+							
+									<div class="alert alert-error alert-danger">
+										<p>
+										  	${form_error.errorMessage}
+										</p>
+									</div>
+								
+							</#list>
+						
+					</#if>
+					</#if>
+					
 				${str_entry} 
 				${addon!}  
 				<div class="form-group">
