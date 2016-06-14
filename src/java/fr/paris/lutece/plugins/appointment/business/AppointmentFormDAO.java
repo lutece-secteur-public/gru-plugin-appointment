@@ -55,13 +55,13 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 {
     // Constants
     private static final String SQL_QUERY_NEW_PK = "SELECT max( id_form ) FROM appointment_form";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration , date_limit FROM appointment_form ";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration, date_limit, maximum_number_of_booked_seats, address, longitude, latitude, category FROM appointment_form ";
     private static final String SQL_QUERY_SELECTALL = SQL_QUERY_SELECT_COLUMNS + " ORDER BY title";
     private static final String SQL_QUERY_SELECTALL_ENABLED = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration , date_limit ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?) ";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration, date_limit, maximum_number_of_booked_seats, address, longitude, latitude, category ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ? ? ?, ?) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ?, max_appointment_mail = ?, nb_appointment_week = ?, reference = ?, is_form_step = ?, is_confirmEmail_enabled = ?, is_mandatoryEmail_enabled = ?, icon_form_content = ?, icon_form_mime_type = ?, seizure_duration = ? , date_limit = ? WHERE id_form = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ?, max_appointment_mail = ?, nb_appointment_week = ?, reference = ?, is_form_step = ?, is_confirmEmail_enabled = ?, is_mandatoryEmail_enabled = ?, icon_form_content = ?, icon_form_mime_type = ?, seizure_duration = ? , date_limit = ?, maximum_number_of_booked_seats = ?, address = ?, longitude = ?, latitude = ?, category = ? WHERE id_form = ?";
     private static final String SQL_QUERY_GET_MAX_APPOINTMENT = "select distinct count(*) nbre,form.max_appointment_mail,apmt.date_appointment," +
         " ADDDATE(apmt.date_appointment, INTERVAL (form.nb_appointment_week-1) DAY) date_max," +
         " ADDDATE(apmt.date_appointment, INTERVAL -(form.nb_appointment_week-1) DAY) date_min" +
@@ -139,7 +139,23 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setBytes( nIndex++, appointmentForm.getIcon(  ).getImage(  ) );
         daoUtil.setString( nIndex++, appointmentForm.getIcon(  ).getMimeType(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getSeizureDuration(  ) );
-        daoUtil.setDate( nIndex, appointmentForm.getDateLimit(  ) );
+        daoUtil.setDate( nIndex++, appointmentForm.getDateLimit(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats() );
+
+        daoUtil.setString( nIndex++, appointmentForm.getAddress(  ) );
+        if ( appointmentForm.getLongitude(  ) != null ) {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLongitude(  ) );
+        } else {
+            daoUtil.setDoubleNull( nIndex++ );
+        }
+        if ( appointmentForm.getLatitude(  ) != null ) {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLatitude(  ) );
+        } else {
+            daoUtil.setDoubleNull( nIndex++ );
+        }
+
+        daoUtil.setString( nIndex++, appointmentForm.getCategory(  ) );
+
         daoUtil.executeUpdate(  );
         daoUtil.free(  );
     }
@@ -222,6 +238,21 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setString( nIndex++, appointmentForm.getIcon(  ).getMimeType(  ) );
         daoUtil.setInt( nIndex++, appointmentForm.getSeizureDuration(  ) );
         daoUtil.setDate( nIndex++, appointmentForm.getDateLimit(  ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats() );
+
+        daoUtil.setString( nIndex++, appointmentForm.getAddress(  ) );
+        if ( appointmentForm.getLongitude(  ) != null ) {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLongitude(  ) );
+        } else {
+            daoUtil.setDoubleNull( nIndex++ );
+        }
+        if ( appointmentForm.getLatitude(  ) != null ) {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLatitude(  ) );
+        } else {
+            daoUtil.setDoubleNull( nIndex++ );
+        }
+        daoUtil.setString( nIndex++, appointmentForm.getCategory(  ) );
+
         daoUtil.setInt( nIndex, appointmentForm.getIdForm(  ) );
 
         daoUtil.executeUpdate(  );
@@ -313,8 +344,19 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         img.setMimeType( daoUtil.getString( nIndex++ ) );
         appointmentForm.setIcon( img );
         appointmentForm.setSeizureDuration( daoUtil.getInt( nIndex++ ) );
-        appointmentForm.setDateLimit( daoUtil.getDate( nIndex ) );
+        appointmentForm.setDateLimit( daoUtil.getDate( nIndex++ ) );
+        appointmentForm.setMaximumNumberOfBookedSeats( daoUtil.getInt( nIndex++ ) );
 
+        appointmentForm.setAddress(daoUtil.getString( nIndex++ ));
+        Float fLongitude = ((Float) daoUtil.getObject( nIndex++ ));
+        if (fLongitude != null) {
+            appointmentForm.setLongitude(fLongitude.doubleValue());
+        }
+        Float fLatitude = ((Float) daoUtil.getObject( nIndex++ ));
+        if (fLatitude != null) {
+            appointmentForm.setLatitude(fLatitude.doubleValue());
+        }
+        appointmentForm.setCategory(daoUtil.getString( nIndex++ ));
         return appointmentForm;
     }
 

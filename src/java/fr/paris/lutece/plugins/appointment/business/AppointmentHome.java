@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
+import fr.paris.lutece.plugins.appointment.service.listeners.IAppointmentCreationListener;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
@@ -49,6 +50,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import java.sql.Date;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -85,7 +87,21 @@ public final class AppointmentHome
         AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
         AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay(  ) );
 
+        //2016-06-06, for now used for solr indexing
+        NotifyAppointmentCreated(slot.getIdSlot());
+
         return appointment;
+    }
+
+    /**
+     * Notify listeners, for example indexers
+     * @param nSlotId The slot id
+     */
+    private static void NotifyAppointmentCreated(int nSlotId) {
+        Collection<IAppointmentCreationListener> listeners = SpringContextService.getBeansOfType( IAppointmentCreationListener.class );
+        for (IAppointmentCreationListener listener: listeners) {
+            listener.onAppointmentCreated( nSlotId );
+        }
     }
 
     /**

@@ -6,7 +6,8 @@
    
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-</div><!---close row from another page ----->
+</div>
+
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="box box-primary">
@@ -29,7 +30,10 @@
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelDurationAppointments' inputName='duration_appointments' mandatory=true value=appointmentform.durationAppointments!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDurationAppointments.help'   maxlength=3  />
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='form-control input-sm' />
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='form-control input-sm' />
+
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelPeoplePerAppointment' inputName='people_per_appointment' mandatory=true value=appointmentform.peoplePerAppointment!'' i18nHelpBlockKey='appointment.create_appointmentform.labelPeoplePerAppointment.help' maxlength=3 />
+
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelMaximumNumberOfBookedseatsPerAppointment' inputName='maximum_number_of_booked_seats' mandatory=true value=appointmentform.maximumNumberOfBookedSeats!'' i18nHelpBlockKey='appointment.create_appointmentform.labelMaximumNumberOfBookedseatsPerAppointment.help' maxlength=3 />
 			</fieldset>
 
 			<fieldset>

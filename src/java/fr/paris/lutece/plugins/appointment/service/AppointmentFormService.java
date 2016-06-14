@@ -165,6 +165,9 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
     private static final String PROPERTY_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     private static final String PROPERTY_UNVAILABLE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+    private static final String PROPERTY_EMPTY_NB_SEATS ="appointment.validation.appointment.NbBookedSeat.notEmpty";
+	private static final String PROPERTY_UNVAILABLE_NB_SEATS = "validation.appointment.NbBookedSeat.error";
+    
     private transient volatile Boolean _bIsFormFirstStep;
 
     /**
@@ -332,7 +335,7 @@ public class AppointmentFormService implements Serializable
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
         if( bDisplayFront )
         {
-           filter.setIsOnlyDisplayInBack( EntryFilter.FILTER_FALSE );
+          // filter.setIsOnlyDisplayInBack( EntryFilter.FILTER_FALSE );
         }
          List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
 
@@ -375,9 +378,10 @@ public class AppointmentFormService implements Serializable
 
             setUserInfo( request, appointment );
         }
-
+        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(getAppointmentFromSession(request.getSession()).getIdSlot());
+        appointment.setNumberOfBookedSeats(slot.getNbPlaces());
         model.put( MARK_APPOINTMENT, appointment );
-
+        model.put(MARK_APPOINTMENTSLOT,getAppointmentFromSession(request.getSession()).getIdSlot()); 
         if ( bDisplayFront )
         {
             model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm(  ) ) );
@@ -412,7 +416,8 @@ public class AppointmentFormService implements Serializable
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale(  ) ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_CONFIRM_EMAIL, request.getLocale(  ) ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_CONFIRM_EMAIL, request.getLocale(  ) ) );
-
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_NB_SEATS, request.getLocale(  ) ) );
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_NB_SEATS, request.getLocale(  ) ) );  
         return listAllErrors;
     }
 

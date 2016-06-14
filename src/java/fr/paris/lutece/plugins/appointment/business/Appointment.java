@@ -110,8 +110,20 @@ public class Appointment implements Serializable
     private int _nIdActionCancel;
     private int _idAdminUser;
     private int _nHasNotify;
+    
+    private int _nNumberOfBookedSeats;
 
-    /**
+    
+    
+    public int getNumberOfBookedSeats() {
+		return _nNumberOfBookedSeats;
+	}
+
+	public void setNumberOfBookedSeats(int nNumberOfBookedSeats) {
+		 _nNumberOfBookedSeats = nNumberOfBookedSeats;
+	}
+
+	/**
     * Returns the IdAppointment
     * @return The IdAppointment
     */
