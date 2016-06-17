@@ -97,7 +97,7 @@ CREATE TABLE appointment_appointment (
 	id_action_cancel int NOT NULL,
 	id_admin_user int DEFAULT NULL,
 	has_notify INT DEFAULT 0,
-        nb_place_reserved INT DEFAULT 0,  
+        nb_place_reserved INT DEFAULT 1,  
         
 	PRIMARY KEY (id_appointment)
 );
