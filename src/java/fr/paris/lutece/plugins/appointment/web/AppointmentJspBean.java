@@ -447,10 +447,32 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		List<Entry> listEntry = EntryHome.getEntryList(entryFilter);
 
 		Map<Integer, String> listGenatt = new HashMap<Integer, String>();
+		Map<Integer, String> mapDefaultValueGenAttBackOffice = new HashMap<Integer, String>();
+		
 
 		for (Entry e : listEntry) {
 			if ((e.getTitle() != null) && !e.getTitle().isEmpty()) {
 				listGenatt.put(e.getIdEntry(), e.getTitle());
+			}
+			if(e.isOnlyDisplayInBack())
+			{
+			   
+			   e=EntryHome.findByPrimaryKey(e.getIdEntry());
+			   if(e.getFields()!=null && e.getFields().size()==1 && !StringUtils.isEmpty(e.getFields().get(0).getValue()))
+			   {
+			       mapDefaultValueGenAttBackOffice.put(e.getIdEntry(), e.getFields().get(0).getValue());
+       			
+			   }
+			   else if(e.getFields()!=null)
+			   {
+        			   for(Field field:e.getFields())
+        			   {
+        			       if(field.isDefaultValue())
+        			       {
+        				   mapDefaultValueGenAttBackOffice.put(e.getIdEntry(), field.getValue());
+        			       }
+        			   }
+			   }
 			}
 		}
 
@@ -595,10 +617,16 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 							strPrefix = CONSTANT_COMMA;
 						}
 					}
+					
+					if(strValue.isEmpty() && mapDefaultValueGenAttBackOffice.containsKey(key))
+					{
+					    strValue=mapDefaultValueGenAttBackOffice.get(key);
+					}
 
 					if (!strValue.isEmpty()) {
 						strWriter[10 + nIndex] = strValue;
 					}
+					
 
 					nIndex++;
 				}

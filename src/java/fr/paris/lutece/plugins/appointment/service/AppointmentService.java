@@ -40,6 +40,7 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.service.listeners.IAppointmentFormListener;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -54,6 +55,7 @@ import org.apache.commons.lang.time.DateUtils;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -1244,4 +1246,17 @@ public class AppointmentService
 
         return objNow;
     }
+
+
+    /**
+     * Notify listeners, for example indexers
+     * @param nAppointmentFormId The slot id
+     */
+    public void notifyAppointmentFormModified(int nAppointmentFormId) {
+        Collection<IAppointmentFormListener> listeners = SpringContextService.getBeansOfType( IAppointmentFormListener.class );
+        for (IAppointmentFormListener listener: listeners) {
+            listener.onFormModifed( nAppointmentFormId );
+        }
+    }
+
 }

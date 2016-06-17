@@ -126,7 +126,12 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private ImageResource _imageResource;
     @Min( value = 0, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}" )
     private int _nseizureDuration;
-    
+
+    private Double _dLongitude;
+    private Double _dLatitude;
+    private String _strAddress;
+
+    private String _strCategory;
     
 
     public int getMaximumNumberOfBookedSeats() {
@@ -875,4 +880,67 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
             return null;
         }
     }
+
+    /**
+     * Get latitude
+     * @return latitude
+     */
+    public Double getLatitude() {
+        return _dLatitude;
+    }
+
+    /**
+     * Set latitude
+     * @param dLatitude latitude
+     */
+    public void setLatitude(Double dLatitude) {
+        this._dLatitude = dLatitude;
+    }
+
+    /**
+     * Get longitude
+     * @return longitude
+     */
+    public Double getLongitude() {
+        return _dLongitude;
+    }
+
+    /**
+     * Set longitude
+     * @param dLongitude longitude
+     */
+    public void setLongitude(Double dLongitude) {
+        this._dLongitude = dLongitude;
+    }
+
+    /**
+     * Get address
+     * @return address
+     */
+    public String getAddress() {
+        return _strAddress;
+    }
+
+    /**
+     * Set address
+     * @param strAddress address
+     */
+    public void setAddress(String strAddress) {
+        this._strAddress = strAddress;
+    }
+
+    /**
+     * @return the category
+     */
+    public String getCategory() {
+        return _strCategory;
+    }
+
+    /**
+     * @param category the category to set
+     */
+    public void setCategory(String strCategory) {
+        _strCategory = strCategory;
+    }
+
 }
