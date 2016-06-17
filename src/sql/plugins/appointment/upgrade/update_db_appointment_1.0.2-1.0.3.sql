@@ -3,7 +3,7 @@ INSERT INTO appointment_calendar_template (id, title, description, template_path
 ALTER TABLE appointment_form ADD COLUMN date_limit DATE NULL ;
 ALTER TABLE appointment_form ADD COLUMN seizure_duration INT NOT NULL default '0';
 ALTER TABLE appointment_form ADD COLUMN maximum_number_of_booked_seats INT NOT NULL default '0';
-
+ALTER TABLE appointment_appointment ADD COLUMN nb_place_reserved INT  default '0';  
 
 	
 

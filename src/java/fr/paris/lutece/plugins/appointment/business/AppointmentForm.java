@@ -102,7 +102,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nPeoplePerAppointment;
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nMaximumNumberOfBookedSeats;
+    private int _nMaximumNumberOfBookedSeats = 0;
     private int _nIdWorkflow;
     private int _nOpeningHour;
     private int _nOpeningMinutes;

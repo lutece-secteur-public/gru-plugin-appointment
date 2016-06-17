@@ -110,7 +110,7 @@ public class Appointment implements Serializable
     private int _nIdActionCancel;
     private int _idAdminUser;
     private int _nHasNotify;
-    
+    private int _nNumberPlacesReserved;
     private int _nNumberOfBookedSeats;
 
     
@@ -473,4 +473,12 @@ public class Appointment implements Serializable
         }
        
     }
+
+	public int getNumberPlacesReserved() {
+		return _nNumberPlacesReserved;
+	}
+
+	public void setNumberPlacesReserved(int numberPlacesReserved) {
+		this._nNumberPlacesReserved = numberPlacesReserved;
+	}
 }

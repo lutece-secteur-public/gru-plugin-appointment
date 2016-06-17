@@ -77,6 +77,7 @@ import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDAO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDisponiblity;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
@@ -196,7 +197,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_MARK_FORCE = "force";
 	private static final String PARAMETER_ID_SLOT_ACTIVE = "idSlotActive";
 	private static final String PARAMETER_SLOT_LIST_DISPONIBILITY = "slotListDisponibility";
-	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberOfBookedSeats";
+	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberPlacesReserved";
 	private static final String PARAMETER_FIRSTNAME = "fn";
 	private static final String PARAMETER_LASTNAME = "ln";
 	private static final String PARAMETER_PHONE = "ph";
@@ -296,6 +297,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
 	private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT ="appointment.validation.appointment.NbBookedSeat.notEmpty";
 	private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
+	private static final String ERROR_MESSAGE_NUMERIC_NB_BOOKED_SEAT ="appointment.validation.appointment.NbBookedSeat.numeric" ;
+	private static final String ERROR_MESSAGE_POSITIF_NB_BOOKED_SEAT ="appointment.validation.appointment.NbBookedSeat.positif";
 	// Session keys
 	private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
 	private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.itemsPerPage";
@@ -320,7 +323,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private final AppointmentFormService _appointmentFormService = SpringContextService
 			.getBean(AppointmentFormService.BEAN_NAME);
 	private final StateService _stateService = SpringContextService
-		.getBean(StateService.BEAN_SERVICE);
+			.getBean(StateService.BEAN_SERVICE);
 	private final ITaskService _taskService = SpringContextService
 			.getBean(TaskService.BEAN_SERVICE);
 
@@ -451,7 +454,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			}
 		}
 
-		int nTaille = 10 + listGenatt.size();
+		int nTaille = 10 + (listGenatt.size() + 1);
 
 		if (tmpForm != null) {
 			Object[] strWriter = new String[1];
@@ -489,6 +492,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					"appointment.manage_appointments.columnLogin", getLocale());
 			strInfos[9] = I18nService.getLocalizedString(
 					"appointment.manage_appointments.columnState", getLocale());
+			
+			strInfos[10] = I18nService.getLocalizedString(
+					"appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment", getLocale());
 
 			if (listGenatt.size() > 0) {
 				int nIndex = 0;
@@ -508,10 +514,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 							filter.getOrderBy(), filter.getOrderAsc());
 
 			for (Appointment tmpApp : listAppointments) {
-			    State stateAppointment = _stateService.findByResource(
-					tmpApp.getIdAppointment(),
-					Appointment.APPOINTMENT_RESOURCE_TYPE,
-					tmpForm.getIdWorkflow());
+				State stateAppointment = _stateService.findByResource(
+						tmpApp.getIdAppointment(),
+						Appointment.APPOINTMENT_RESOURCE_TYPE,
+						tmpForm.getIdWorkflow());
 
 				if (stateAppointment != null) {
 					tmpApp.setState(stateAppointment);
@@ -543,7 +549,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 						: tmpApp.getIdUser();
 				strWriter[9] = (tmpApp.getState() == null) ? StringUtils.EMPTY
 						: tmpApp.getState().getName();
-
+                
+                strWriter[10] = ""+tmpApp.getNumberPlacesReserved();
+				
 				List<Integer> listIdResponse = AppointmentHome
 						.findListIdResponse(tmpApp.getIdAppointment());
 				List<Response> listResponses = new ArrayList<Response>();
@@ -1051,6 +1059,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		boolean bTriForce = false;
 		String strFil = null;
+		Map<String, Object> model = getModel();
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 
 		if (Boolean.valueOf(request.getParameter(PARAMETER_MARK_FORCE))) {
@@ -1124,7 +1133,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			String strCheckDate = request.getParameter(PARAMETER_DATE_MIN);
 
 			AppointmentDay day = null;
-			AppointmentSlot slot = null;
+			
 			AppointmentFilter filter;
 			boolean bfilterByWorkFlow = false;
 			_filter = (AppointmentFilter) request.getSession().getAttribute(
@@ -1171,10 +1180,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				if (StringUtils.isNotEmpty(strIdSlot)
 						&& StringUtils.isNumeric(strIdSlot)) {
 					int nIdSlot = Integer.parseInt(strIdSlot);
-					slot = AppointmentSlotHome.findByPrimaryKey(nIdSlot);
+					AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(nIdSlot);
 					day = AppointmentDayHome.findByPrimaryKey(slot.getIdDay());
 					filter.setIdSlot(nIdSlot);
 					url.addParameter(PARAMETER_ID_SLOT, strIdSlot);
+                    model.put(MARK_SLOT, slot);
 				}
 
 				if (strCheckDate == null) {
@@ -1248,7 +1258,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 						I18nService.getLocalizedString(tmpFilter.getLibelle(),
 								getLocale()));
 
-			Map<String, Object> model = getModel();
+			
 			/* WORKFLOW FUTURE model.put( MARK_STATUS, lsSta); */
 			model.put(MARK_FORM, form);
 			model.put(MARK_FORM_MESSAGES,
@@ -1262,7 +1272,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			model.put(MARK_LANGUAGE, getLocale());
 			model.put(MARK_ALLDATES, strCheckDate);
 			model.put(MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW);
-
+			
 			if ((form.getIdWorkflow() > 0)
 					&& WorkflowService.getInstance().isAvailable()) {
 				for (Appointment appointment : delegatePaginator.getPageItems()) {
@@ -1272,8 +1282,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					stateFilter.setIdWorkflow(nIdWorkflow);
 
 					State stateAppointment = _stateService.findByResource(
-						appointment.getIdAppointment(),
-						Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
+							appointment.getIdAppointment(),
+							Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
 
 					if (stateAppointment != null) {
 						appointment.setState(stateAppointment);
@@ -1317,7 +1327,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 			AdminUser user = getUser();
 			model.put(MARK_APPOINTMENT_LIST, delegatePaginator.getPageItems());
-			model.put(MARK_SLOT, slot);
+			
 			model.put(MARK_DAY, day);
 			model.put(MARK_FILTER, filter);
 			model.put(MARK_REF_LIST_STATUS, refListStatus);
@@ -1525,11 +1535,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					AppointmentFormJspBean
 							.getURLManageAppointmentForms(request));
 		}
-
+		AppointmentSlot slot =  null;
 		if (StringUtils.isNotEmpty(strIdSlot)
 				&& StringUtils.isNumeric(strIdSlot)) {
 			int nIdSlot = Integer.parseInt(strIdSlot);
-			AppointmentSlot slot = AppointmentSlotHome
+			slot = AppointmentSlotHome
 					.findByPrimaryKey(nIdSlot);
 
 			if (slot != null) {
@@ -1551,6 +1561,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			appointmentDTO.setEmail(appointment.getEmail());
 			appointmentDTO.setFirstName(appointment.getFirstName());
 			appointmentDTO.setLastName(appointment.getLastName());
+			appointmentDTO.setNumberPlacesReserved(appointment.getNumberPlacesReserved());
 			appointmentDTO.setIdAppointment(appointment.getIdAppointment());
 
 			Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO
@@ -1633,15 +1644,21 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		String strIdAppointment = request
 				.getParameter(PARAMETER_ID_APPOINTMENT);
-
+       
+        
 		if (StringUtils.isNotEmpty(strIdAppointment)
 				&& StringUtils.isNumeric(strIdAppointment)) {
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
 
 			Appointment appointment = AppointmentHome
 					.findByPrimaryKey(nIdAppointment);
+			
+			
+			   
+			
 			List<Integer> listIdResponse = AppointmentHome
 					.findListIdResponse(appointment.getIdAppointment());
+	
 			List<Response> listResponses = new ArrayList<Response>(
 					listIdResponse.size());
 
@@ -1864,33 +1881,41 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					.setFirstName(request.getParameter(PARAMETER_FIRST_NAME));
 			appointment.setLastName(request.getParameter(PARAMETER_LAST_NAME));
 			appointment.setAppointmentForm(form);
-			String nbSeat = request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS);
-			if (StringUtils.isEmpty(nbSeat)) {
+			String nbSeat = StringUtils.isBlank(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS)) ? String.valueOf(StringUtils.EMPTY) : request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS) ;
+			if(form.getMaximumNumberOfBookedSeats() == 1) {
+				nbSeat = "1";	
+			} else if(StringUtils.isNumeric(nbSeat.trim())==false) {
+				GenericAttributeError genAttError = new GenericAttributeError();
+				genAttError.setErrorMessage(I18nService.getLocalizedString(
+						ERROR_MESSAGE_NUMERIC_NB_BOOKED_SEAT, request.getLocale()));
+				listFormErrors.add(genAttError);
+			} else if (StringUtils.isBlank(nbSeat)) {
 				GenericAttributeError genAttError = new GenericAttributeError();
 				genAttError.setErrorMessage(I18nService.getLocalizedString(
 						ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT, request.getLocale()));
 				listFormErrors.add(genAttError);
-			} 
-			if(StringUtils.isNotBlank(nbSeat)){
+			} else if (Integer.parseInt(nbSeat.trim()) <= 0) 
+			{
+				GenericAttributeError genAttError = new GenericAttributeError();
+				genAttError.setErrorMessage(I18nService.getLocalizedString(
+						ERROR_MESSAGE_POSITIF_NB_BOOKED_SEAT, request.getLocale()));
+				listFormErrors.add(genAttError);
+				
+			}  else if(StringUtils.isNotBlank(nbSeat)){
 				int nbBookedSeats = Integer.parseInt(nbSeat);
-
 				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strIdSlot));
 				
 				
 				
-				if(nbBookedSeats > slot.getNbPlaces()){
+				if((nbBookedSeats > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats())){
 					GenericAttributeError genAttError = new GenericAttributeError();
 					genAttError.setErrorMessage(I18nService.getLocalizedString(
 							ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, request.getLocale()));
 					listFormErrors.add(genAttError);
 				} else {
-				
-				appointment.setNumberOfBookedSeats(nbBookedSeats);
+					appointment.setNumberPlacesReserved(nbBookedSeats);
 				}
-			} else  {
-				appointment.setNumberOfBookedSeats(0);
-			}
-			
+			} 
 			
 			// We save the appointment in session. The appointment object will
 			// contain responses of the user to the form
@@ -2476,12 +2501,15 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		AppointmentForm form = AppointmentFormHome
 				.findByPrimaryKey(appointmentSlot.getIdForm());
        
-		if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_BACK))) {
+		if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_BACK))) 
+		{
 			return redirect(request, VIEW_CREATE_APPOINTMENT,
 					PARAMETER_ID_FORM, appointmentSlot.getIdForm());
 		}
-		 appointmentSlot.setNbPlaces(appointmentSlot.getNbPlaces()-appointment.getNumberOfBookedSeats());
- 		AppointmentSlotHome.update(appointmentSlot);
+		 int nbPlace = appointmentSlot.getNbPlaces()-appointment.getNumberPlacesReserved();
+		 appointmentSlot.setNbPlaces(nbPlace);
+		 AppointmentSlotHome.update(appointmentSlot);
+ 		 
  		
 		boolean bCreation = appointment.getIdAppointment() == 0;
 
@@ -2557,7 +2585,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		String strIdAppointment = request
 				.getParameter(PARAMETER_ID_APPOINTMENT);
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
-
+        
 		int nItemsPerPage = Paginator.getItemsPerPage(
 				request,
 				Paginator.PARAMETER_ITEMS_PER_PAGE,
@@ -2577,7 +2605,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				.getIdSlot());
 		AppointmentForm form = AppointmentFormHome.findByPrimaryKey(slot
 				.getIdForm());
-
+       
+        	appointment.setNumberOfBookedSeats(form.getPeoplePerAppointment() - slot.getNbPlaces());
+        
 		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
 				Integer.toString(slot.getIdForm()),
 				AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT,
@@ -2626,8 +2656,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			stateFilter.setIdWorkflow(nIdWorkflow);
 
 			State stateAppointment = _stateService.findByResource(
-				appointment.getIdAppointment(),
-				Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
+					appointment.getIdAppointment(),
+					Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
 
 			if (stateAppointment != null) {
 				appointment.setState(stateAppointment);
@@ -2650,17 +2680,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				appointment.getListResponse().size());
 
 		for (Response response : appointment.getListResponse()) {
-			
-		    	//load all property of an entry for sorting response
-		    	response.setEntry(EntryHome.findByPrimaryKey(response.getEntry().getIdEntry()));
-		    	IEntryTypeService entryTypeService = EntryTypeServiceManager
+			IEntryTypeService entryTypeService = EntryTypeServiceManager
 					.getEntryTypeService(response.getEntry());
 			listResponseRecapDTO.add(new ResponseRecapDTO(response,
 					entryTypeService.getResponseValueForRecap(
 							response.getEntry(), request, response, locale)));
 		}
-		//sort response using the entry order
-		Collections.sort(listResponseRecapDTO);
+
 		model.put(MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO);
 
 		model.put(

@@ -124,9 +124,9 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_APPOINTMENTSLOTDAY = "appointmentSlotDay";
     private static final String MARK_WEEK = "nWeek";
     private static final String MARK_LIST_ERRORS = "listAllErrors";
-    private static final String  MARK_CUSTOMER_ID = "cid";
-    private static final String  MARK_USER_ID_OPAM = "guid";
-
+    private static final String MARK_CUSTOMER_ID = "cid";
+    private static final String MARK_USER_ID_OPAM = "guid";
+    private static final String MARK_PLACES = "nbplaces";
 
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
@@ -189,7 +189,7 @@ public class AppointmentFormService implements Serializable
             Map<String, Object> model = new HashMap<String, Object>(  );
             StringBuffer strBuffer = new StringBuffer(  );
 
-            List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ),bDisplayFront );
+            List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
 
             for ( Entry entry : listEntryFirstLevel )
             {
@@ -207,7 +207,7 @@ public class AppointmentFormService implements Serializable
             model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
             model.put( MARK_LOCALE, locale );
             model.put( MARK_WEEK, nWeek );
-         
+            model.put( MARK_PLACES, AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strSlot)).getNbPlaces());
             
             model.put(MARK_CUSTOMER_ID,"" );
             model.put( MARK_USER_ID_OPAM,"");
@@ -263,7 +263,7 @@ public class AppointmentFormService implements Serializable
         Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strBuffer = new StringBuffer(  );
 
-        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ),bDisplayFront );
+        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
 
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -281,9 +281,13 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_WEEK, nWeek );
-        
-
-       AppLogService.info("Appintment To GRU : strCustomerId "+strCustomerId);
+        if (StringUtils.isNotBlank(strSlot)) {
+			int nIdSlot = Integer.parseInt(strSlot);
+			AppointmentSlot slot = AppointmentSlotHome
+					.findByPrimaryKey(nIdSlot);
+			model.put(MARK_PLACES, slot.getNbPlaces());
+		}
+	AppLogService.info("Appintment To GRU : strCustomerId "+strCustomerId);
        AppLogService.info("Appintment To GRU : strUserIdOpam "+strUserIdOpam);
        
         
@@ -323,20 +327,21 @@ public class AppointmentFormService implements Serializable
     /**
      * Get an Entry Filter
      * @param iform the id form
-     * @param bDisplayFront true if the list of entry must contained only front office entry 
      * @return List a filter Entry
      */
-    private static List<Entry> getFilter( int iform ,boolean bDisplayFront)
+    private static List<Entry> getFilter( int iform )
     {
         EntryFilter filter = new EntryFilter(  );
         filter.setIdResource( iform );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
-        if( bDisplayFront )
+
+       /** if( bDisplayFront )
         {
           // filter.setIsOnlyDisplayInBack( EntryFilter.FILTER_FALSE );
         }
+        **/
          List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
 
         return listEntryFirstLevel;
@@ -358,7 +363,7 @@ public class AppointmentFormService implements Serializable
         Map<String, Object> model = new HashMap<String, Object>(  );
         StringBuffer strBuffer = new StringBuffer(  );
 
-        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) ,bDisplayFront);
+        List<Entry> listEntryFirstLevel = getFilter( form.getIdForm(  ) );
 
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -378,8 +383,14 @@ public class AppointmentFormService implements Serializable
 
             setUserInfo( request, appointment );
         }
-        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(getAppointmentFromSession(request.getSession()).getIdSlot());
-        appointment.setNumberOfBookedSeats(slot.getNbPlaces());
+        if(getAppointmentFromSession(request.getSession()) != null)
+        {
+        	AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(getAppointmentFromSession(request.getSession()).getIdSlot());
+            model.put(MARK_PLACES,Math.min(slot.getNbPlaces(),form.getMaximumNumberOfBookedSeats()));
+        } else {
+        	 model.put(MARK_PLACES,0);
+        }
+        
         model.put( MARK_APPOINTMENT, appointment );
         model.put(MARK_APPOINTMENTSLOT,getAppointmentFromSession(request.getSession()).getIdSlot()); 
         if ( bDisplayFront )
@@ -890,7 +901,7 @@ public class AppointmentFormService implements Serializable
         AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot(  ),
                 appointment.getDateAppointment(  ) );
 
-        if ( ( slot == null ) || ( slot.getNbFreePlaces(  ) <= 0 ) )
+        if ( ( slot == null ) || ( slot.getNbPlaces() < 0 ) )
         {
             return false;
         }

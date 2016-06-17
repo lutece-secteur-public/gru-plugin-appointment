@@ -33,29 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.commons.lang.time.DateUtils;
-import org.bouncycastle.util.Strings;
-import org.dozer.converters.DateConverter;
-
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
@@ -113,6 +90,29 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.url.UrlItem;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang.time.DateUtils;
+import org.bouncycastle.util.Strings;
+import org.dozer.converters.DateConverter;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
 
 
 /**
@@ -187,7 +187,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_EMAIL_CONFIRMATION = "emailConfirm";
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
-    private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberOfBookedSeats";
+    private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberPlacesReserved";
     private static final String PARAMETER_ID_SLOT = "idSlot";
     private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
     private static final String PARAMETER_BACK = "back";
@@ -260,6 +260,8 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_MAX_APPOINTMENT = "appointment.message.error.MaxAppointmentPeriode";
     private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT ="appointment.validation.appointment.NbBookedSeat.notEmpty";
 	private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
+	private static final String ERROR_MESSAGE_NUMERIC_NB_BOOKED_SEAT ="appointment.validation.appointment.NbBookedSeat.numeric" ;
+	private static final String ERROR_MESSAGE_POSITIF_NB_BOOKED_SEAT ="appointment.validation.appointment.NbBookedSeat.positif";
     private static final long lConversionDayMilisecond = 24 * 60 * 60 * 1000;
 
     // Session keys
@@ -343,7 +345,7 @@ public class AppointmentApp extends MVCApplication
 
             AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity(  );
             
-            if(_appointmentFormService.getAppointmentFromSession( request.getSession(  )).getIdSlot(  )!=0)
+            if((_appointmentFormService.getAppointmentFromSession( request.getSession(  )) != null ) && _appointmentFormService.getAppointmentFromSession( request.getSession(  )).getIdSlot(  )!=0)
             {
 
             idSlot = _appointmentFormService.getAppointmentFromSession( request.getSession(  )).getIdSlot(  );
@@ -512,31 +514,44 @@ public class AppointmentApp extends MVCApplication
                 }
             }
 
-            String nbBookedSeat = request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS) == null ? String.valueOf(StringUtils.EMPTY) : request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS);
-            if (StringUtils.isEmpty(nbBookedSeat)) {
+            String nbBookedSeat = StringUtils.isBlank(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS)) ? String.valueOf(StringUtils.EMPTY) : request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS);
+            if(form.getMaximumNumberOfBookedSeats() == 1) {
+				nbBookedSeat = "1";
+			}  if(!StringUtils.isNumeric(nbBookedSeat.trim()) && form.getMaximumNumberOfBookedSeats() > 1) {
+				GenericAttributeError genAttError = new GenericAttributeError();
+				genAttError.setErrorMessage(I18nService.getLocalizedString(
+						ERROR_MESSAGE_NUMERIC_NB_BOOKED_SEAT, request.getLocale()));
+				listFormErrors.add(genAttError);
+			} else if (StringUtils.isBlank(nbBookedSeat)&& form.getMaximumNumberOfBookedSeats() > 1) {
 				GenericAttributeError genAttError = new GenericAttributeError();
 				genAttError.setErrorMessage(I18nService.getLocalizedString(
 						ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT, request.getLocale()));
 				listFormErrors.add(genAttError);
-			} 
-            
-            if ((nbBookedSeat != null) && StringUtils.isNotEmpty(nbBookedSeat)) {
+			} else if (Integer.parseInt(nbBookedSeat.trim()) <= 0) 
+			{
+				GenericAttributeError genAttError = new GenericAttributeError();
+				genAttError.setErrorMessage(I18nService.getLocalizedString(
+						ERROR_MESSAGE_POSITIF_NB_BOOKED_SEAT, request.getLocale()));
+				listFormErrors.add(genAttError);
+				
+			}else if ((nbBookedSeat != null) && StringUtils.isNotBlank(nbBookedSeat)) {
 			int nbBookedSeats = Integer.parseInt(nbBookedSeat);
 
 			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strIdSlot));
 			
 			
 			
-			if(nbBookedSeats > slot.getNbPlaces()){
+			if((nbBookedSeats > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats()))
+			{
 				GenericAttributeError genAttError = new GenericAttributeError();
 				genAttError.setErrorMessage(I18nService.getLocalizedString(
 						ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, request.getLocale()));
 				listFormErrors.add(genAttError);
-			}else{
-				appointment.setNumberOfBookedSeats(nbBookedSeats);
-			}
+			} else {
+				appointment.setNumberPlacesReserved(Integer.parseInt(nbBookedSeat));
 			}
             
+			} 
             if ( !strConfirmEmail.equals( strEmail ) && !StringUtils.isEmpty( strConfirmEmail ) )
             {
                 GenericAttributeError genAttError = new GenericAttributeError(  );
@@ -548,11 +563,7 @@ public class AppointmentApp extends MVCApplication
             appointment.setEmail( strEmail );
             appointment.setFirstName( request.getParameter( PARAMETER_FIRST_NAME ) );
             appointment.setLastName( request.getParameter( PARAMETER_LAST_NAME ) );
-            if(StringUtils.isNotBlank(nbBookedSeat)){
-            	appointment.setNumberOfBookedSeats(Integer.parseInt(nbBookedSeat));
-            } else {
-            	appointment.setNumberOfBookedSeats(0);
-            }
+            
             	
             appointment.setStatus( Appointment.Status.STATUS_RESERVED.getValeur(  ) );
             appointment.setAppointmentForm( form );
@@ -842,8 +853,8 @@ public class AppointmentApp extends MVCApplication
                 return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM,
                     appointmentSlot.getIdForm(  ) );
             }
-            
-            appointmentSlot.setNbPlaces(appointmentSlot.getNbPlaces()-appointment.getNumberOfBookedSeats());
+            int nbPlaces = appointmentSlot.getNbPlaces()-appointment.getNumberPlacesReserved();
+            appointmentSlot.setNbPlaces(nbPlaces);
     		AppointmentSlotHome.update(appointmentSlot);
             
 
@@ -1319,7 +1330,7 @@ public class AppointmentApp extends MVCApplication
             appointmentDTO.setEmail( appointment.getEmail(  ) );
             appointmentDTO.setFirstName( appointment.getFirstName(  ) );
             appointmentDTO.setLastName( appointment.getLastName(  ) );
-          
+            appointmentDTO.setNumberPlacesReserved(appointment.getNumberPlacesReserved());
             appointmentDTO.setIdSlot( idSlot );
             appointmentFormService.saveAppointmentInSession( request.getSession(  ), appointmentDTO );
         }

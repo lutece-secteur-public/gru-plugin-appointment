@@ -62,7 +62,7 @@ public class AppointmentFilter implements Serializable
     private static final String[] LIST_ORDER_BY = 
         {
             CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name", "id_user", "authentication_service",
-            "date_appointment", "status", "email",
+            "date_appointment", "status", "email","nb_place_reserved"
         };
     private int _nIdSlot;
     private int _nIdForm;
@@ -79,6 +79,7 @@ public class AppointmentFilter implements Serializable
     private String _strOrderBy = CONSTANT_DEFAULT_ORDER_BY;
     private boolean _bOrderAsc;
     private String _statusFilter;
+    private int 	_nNb_place_reserved ;
 
     /**
      * Get the id of the form
@@ -385,4 +386,12 @@ public class AppointmentFilter implements Serializable
     {
         this._statusFilter = status;
     }
+
+	public int getNbPlaceReserved() {
+		return _nNb_place_reserved;
+	}
+
+	public void setNbPlaceReserved(int _nNb_place_reserved) {
+		this._nNb_place_reserved = _nNb_place_reserved;
+	}
 }

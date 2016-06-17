@@ -30,12 +30,14 @@
 						${appointment.email}
 					</div>
 				</div>
+				<#if form.maximumNumberOfBookedSeats &gt; 1>
 				<div class="form-group">
 					<label for="email" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment}</label>
 					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						${appointment.numberOfBookedSeats}
+						${appointment.numberPlacesReserved}
 					</div>
 				</div>
+				</#if>
                 <#list listResponseRecapDTO as response>
                     <#if response.recapValue?has_content>
                         <div class="form-group">

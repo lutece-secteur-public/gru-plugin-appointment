@@ -151,10 +151,10 @@
 				</#if>	
 				<#if form.maximumNumberOfBookedSeats &gt; 1>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="numberOfBookedSeats">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment}*</label>
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="numberPlacesReserved">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment}*</label>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="text"  maxlength="255" id="numberOfBookedSeats" name="numberOfBookedSeats" class="form-control" >
-							<span class="help-block">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment!}: ${appointment.numberOfBookedSeats}</span>
+						<input type="text"  maxlength="3" id="numberPlacesReserved" name="numberPlacesReserved" class="form-control" >
+							<span class="help-block">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment!}: <#if ${nbplaces} > ${appointment.numberPlacesReserved} > ${appointment.numberPlacesReserved!} <#else> ${nbplaces} </#if></span>
 					</div>
 				</div>
 
