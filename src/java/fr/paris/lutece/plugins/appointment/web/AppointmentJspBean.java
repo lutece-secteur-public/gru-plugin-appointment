@@ -1911,7 +1911,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			appointment.setAppointmentForm(form);
 			String nbSeat = StringUtils.isBlank(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS)) ? String.valueOf(StringUtils.EMPTY) : request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS) ;
 			if(form.getMaximumNumberOfBookedSeats() == 1) {
-				nbSeat = "1";	
+				nbSeat = "1";
+				appointment.setNumberPlacesReserved(1);
 			} else if(StringUtils.isNumeric(nbSeat.trim())==false) {
 				GenericAttributeError genAttError = new GenericAttributeError();
 				genAttError.setErrorMessage(I18nService.getLocalizedString(
