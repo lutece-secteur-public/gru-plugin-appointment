@@ -57,7 +57,7 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
     private int _nEndingHour;
     private int _nEndingMinute;
     private boolean _bIsEnabled;
-
+    private int _NbRDV;
     /**
      * Get the id of the slot
      * @return The id of the slot
@@ -354,4 +354,12 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
         ", _nStartingHour=" + _nStartingHour + ", _nStartingMinute=" + _nStartingMinute + ", _nEndingHour=" +
         _nEndingHour + ", _nEndingMinute=" + _nEndingMinute + ", _bIsEnabled=" + _bIsEnabled + "]";
     }
+
+	public int getNbRDV() {
+		return _NbRDV;
+	}
+
+	public void setNbRDV(int nbRDV) {
+		this._NbRDV = nbRDV;
+	}
 }
