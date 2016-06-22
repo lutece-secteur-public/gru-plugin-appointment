@@ -1930,7 +1930,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 						ERROR_MESSAGE_POSITIF_NB_BOOKED_SEAT, request.getLocale()));
 				listFormErrors.add(genAttError);
 				
-			}  else if(StringUtils.isNotBlank(nbSeat)){
+			}  else if(strIdSlot != null && StringUtils.isNotBlank(nbSeat)){
 				int nbBookedSeats = Integer.parseInt(nbSeat);
 				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strIdSlot));
 				
