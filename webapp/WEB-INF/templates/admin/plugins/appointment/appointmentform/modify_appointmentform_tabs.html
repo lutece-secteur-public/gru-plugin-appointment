@@ -214,11 +214,6 @@
                             var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
                             var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
 
-                            if (!Proj4js.defs["EPSG:27561"]){
-                                Proj4js.defs["EPSG:27561"]="+title=NTF (Paris) / Lambert Nord France +proj=lcc +lat_1=49.50000000000001 +lat_0=49.50000000000001 +lon_0=0 +k_0=0.999877341 +x_0=600000 +y_0=200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs ";
-                            }
-                            var sourceSRID = new Proj4js.Proj('EPSG:27561');
-                            var destSRID = new Proj4js.Proj('EPSG:4326');
                             var jAdresse = $('#address_address');
                             jAdresse.suggestPOI();
                             jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
@@ -226,14 +221,9 @@
                                 var poi = event.poi;
                                 if (poi) {
                                     var address = poi.libelleTypo;
-                                    var lambert_x = poi.x;
-                                    var lambert_y = poi.y;
-
-                                    p = new Proj4js.Point(lambert_x, lambert_y);
-                                    Proj4js.transform(sourceSRID, destSRID, p);
 
                                     markers_layer.clearLayers();
-                                    var marker = L.marker([p.y, p.x]).addTo(markers_layer);
+                                    var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
                                     map.fitBounds(markers_layer.getBounds());
 
                                     var obj= {
@@ -243,14 +233,14 @@
                                         },
                                         "geometry": {
                                             "type": "Point",
-                                            "coordinates": [p.x, p.y]
+                                            "coordinates": [poi.x, poi.y]
                                         }
                                     };
                                     $('#address').val(JSON.stringify(obj));
                                     $('#hidden_address').val(JSON.stringify(obj));
                                     $('#geoloc_address').val(address);
-                                    $('#geoloc_latitude').val(p.y);
-                                    $('#geoloc_longitude').val(p.x);
+                                    $('#geoloc_latitude').val(poi.y);
+                                    $('#geoloc_longitude').val(poi.x);
                                 }
                             });
 
