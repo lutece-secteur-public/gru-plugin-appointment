@@ -374,6 +374,7 @@ public class AppointmentApp extends MVCApplication
 
             if ( notExist )
             {
+            	listAppointmentSlotDisponiblity.clear();
                 listAppointmentSlotDisponiblity.add( appointmentSlotDisponiblity );
             }
             }
@@ -658,12 +659,6 @@ public class AppointmentApp extends MVCApplication
         Map<String, Object> model = new HashMap<String, Object>(  );
         model = getModel(  );
 
-        if ( !listAppointmentSlotDisponiblity.isEmpty(  ) )
-        {
-            AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity(  );
-            model.put( PARAMETER_ID_SLOT_ACTIVE, appointmentSlotDisponiblity );
-            model.put( PARAMETER_SLOT_LIST_DISPONIBILITY, listAppointmentSlotDisponiblity );
-        }
 
         if ( ( strIdForm != null ) && StringUtils.isNumeric( strIdForm ) )
         {
@@ -676,7 +671,17 @@ public class AppointmentApp extends MVCApplication
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-
+            
+            if ( !listAppointmentSlotDisponiblity.isEmpty(  ) )
+            {
+            	
+                AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity();
+                model.put( PARAMETER_ID_SLOT_ACTIVE, appointmentSlotDisponiblity );
+                model.put( PARAMETER_SLOT_LIST_DISPONIBILITY, listAppointmentSlotDisponiblity );
+            }
+            
+            
+            
             if ( !form.getIsActive(  ) )
             {
                 return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
@@ -925,6 +930,7 @@ public class AppointmentApp extends MVCApplication
                                                                 .replaceAll( MARK_TIME_BEGIN, strTimeBegin )
                                                                 .replaceAll( MARK_TIME_END, strTimeEnd ) );
 
+           
             Map<String, Object> model = new HashMap<String, Object>(  );
             model.put( MARK_FORM, form );
             model.put( MARK_FORM_MESSAGES, formMessages );
