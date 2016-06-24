@@ -440,7 +440,8 @@ public class AppointmentApp extends MVCApplication
             filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
             filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
             filter.setIdIsComment( EntryFilter.FILTER_FALSE );
-
+            filter.setIsOnlyDisplayInBack( EntryFilter.FILTER_FALSE);
+            
             List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
             AppointmentDTO appointmentFromSession = _appointmentFormService.getAppointmentFromSession( request.getSession(  ) );
