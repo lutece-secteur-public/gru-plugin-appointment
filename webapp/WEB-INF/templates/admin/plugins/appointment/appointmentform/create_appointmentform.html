@@ -133,18 +133,18 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="address">#i18n{appointment.create_appointmentform.labelAddress} &nbsp;:</label>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <input type="text" class="form-control input-sm" id="address"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_address" id="geoloc_address"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_longitude" id="geoloc_longitude"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_latitude" id="geoloc_latitude"/>
                         <p class="help-block" id="help_address">#i18n{appointment.create_appointmentform.helpAddress}</p>
                         <!-- used to keep state if the user presses back button -->
                         <input type="hidden" id="hidden_address"/>
                         <p class="help-block">#i18n{appointment.create_appointmentform.descriptionAddress}</p>
                     </div>
                     <script type='text/javascript'>
-                        $('#address').clone().attr('type','hidden').insertAfter('#address').prev().remove();
-                        $('#address').clone().attr('id','geoloc_address').attr('name', 'geoloc_address').insertAfter('#address');
-                        $('#address').clone().attr('id','geoloc_longitude').attr('name', 'geoloc_longitude').insertAfter('#address');
-                        $('#address').clone().attr('id','geoloc_latitude').attr('name', 'geoloc_latitude').insertAfter('#address');
-                        $('#help_address').html("#i18n{appointment.create_appointmentform.helpAddress}");
+                        $('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
+                        $('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
+                        $('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
 
                         $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.create_appointmentform.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#address');
 
@@ -204,7 +204,6 @@
                                             "coordinates": [poi.x, poi.y]
                                         }
                                     };
-                                    $('#address').val(JSON.stringify(obj));
                                     $('#hidden_address').val(JSON.stringify(obj));
                                     $('#geoloc_address').val(address);
                                     $('#geoloc_latitude').val(poi.y);
@@ -215,7 +214,6 @@
                             $("#button_delete_address").on('click', function () {
                                     $('#address_address').val("");
                                     $('#hidden_address').val("");
-                                    $('#address').val("");
                                     $('#geoloc_address').val("");
                                     $('#geoloc_latitude').val("");
                                     $('#geoloc_longitude').val("");
@@ -228,7 +226,6 @@
                             if (prev_data) {
                                 prev_value=JSON.parse(prev_data);
                                 if (prev_value) {
-                                    $('#address').val(JSON.stringify(prev_value));
                                     $('#address_address').val(prev_value.properties.address);
                                     $('#geoloc_address').val(prev_value.properties.address);
                                     $('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
