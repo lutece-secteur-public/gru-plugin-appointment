@@ -157,23 +157,20 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="address">#i18n{appointment.modify_appointmentform.labelAddress} &nbsp;:</label>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <#if appointmentform.address?? && appointmentform.longitude?? && appointmentform.latitude??>
-                        <#assign appointmentform_address_json = "{\"type\":\"Feature\",\"properties\":{\"address\":\"${appointmentform.address}\"},\"geometry\":{\"type\":\"Point\",\"coordinates\":[${appointmentform.longitude?c},${appointmentform.latitude?c}]}}">
-                        </#if>
-                        <input type="text" class="form-control input-sm" id="address" name="address" value="${(appointmentform_address_json?html)!}"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_address" id="geoloc_address" value="${(appointmentform.address?html)!}"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_longitude" id="geoloc_longitude" value="${(appointmentform.longitude?c)!}"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_latitude" id="geoloc_latitude" value="${(appointmentform.latitude?c)!}"/>
                         <p class="help-block" id="help_address">#i18n{appointment.modify_appointmentform.helpAddress}</p>
                         <!-- used to keep state if the user presses back button -->
                         <input type="hidden" id="hidden_address"/>
                         <p class="help-block">#i18n{appointment.modify_appointmentform.descriptionAddress}</p>
                     </div>
                     <script type='text/javascript'>
-                        $('#address').clone().attr('type','hidden').insertAfter('#address').prev().remove();
-                        $('#address').clone().attr('id','geoloc_address').attr('name', 'geoloc_address').insertAfter('#address');
-                        $('#address').clone().attr('id','geoloc_longitude').attr('name', 'geoloc_longitude').insertAfter('#address');
-                        $('#address').clone().attr('id','geoloc_latitude').attr('name', 'geoloc_latitude').insertAfter('#address');
-                        $('#help_address').html("#i18n{appointment.modify_appointmentform.helpAddress}");
+                        $('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
+                        $('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
+                        $('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
 
-                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.modify_appointmentform.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#address');
+                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.modify_appointmentform.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
 
                         $('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
 
@@ -183,11 +180,6 @@
                             loadresource.setAttribute("rel", "stylesheet");
                             loadresource.setAttribute("type", "text/css");
                             loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
-                            document.getElementsByTagName("head")[0].appendChild(loadresource);
-
-                            loadresource = document.createElement('script');
-                            loadresource.setAttribute("type", "text/javascript");
-                            loadresource.setAttribute("src", "js/proj4js-combined.js");
                             document.getElementsByTagName("head")[0].appendChild(loadresource);
 
                             loadresource = document.createElement('script');
@@ -214,11 +206,6 @@
                             var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
                             var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
 
-                            if (!Proj4js.defs["EPSG:27561"]){
-                                Proj4js.defs["EPSG:27561"]="+title=NTF (Paris) / Lambert Nord France +proj=lcc +lat_1=49.50000000000001 +lat_0=49.50000000000001 +lon_0=0 +k_0=0.999877341 +x_0=600000 +y_0=200000 +a=6378249.2 +b=6356515 +towgs84=-168,-60,320,0,0,0,0 +pm=paris +units=m +no_defs ";
-                            }
-                            var sourceSRID = new Proj4js.Proj('EPSG:27561');
-                            var destSRID = new Proj4js.Proj('EPSG:4326');
                             var jAdresse = $('#address_address');
                             jAdresse.suggestPOI();
                             jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
@@ -226,14 +213,9 @@
                                 var poi = event.poi;
                                 if (poi) {
                                     var address = poi.libelleTypo;
-                                    var lambert_x = poi.x;
-                                    var lambert_y = poi.y;
-
-                                    p = new Proj4js.Point(lambert_x, lambert_y);
-                                    Proj4js.transform(sourceSRID, destSRID, p);
 
                                     markers_layer.clearLayers();
-                                    var marker = L.marker([p.y, p.x]).addTo(markers_layer);
+                                    var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
                                     map.fitBounds(markers_layer.getBounds());
 
                                     var obj= {
@@ -243,14 +225,13 @@
                                         },
                                         "geometry": {
                                             "type": "Point",
-                                            "coordinates": [p.x, p.y]
+                                            "coordinates": [poi.x, poi.y]
                                         }
                                     };
-                                    $('#address').val(JSON.stringify(obj));
                                     $('#hidden_address').val(JSON.stringify(obj));
                                     $('#geoloc_address').val(address);
-                                    $('#geoloc_latitude').val(p.y);
-                                    $('#geoloc_longitude').val(p.x);
+                                    $('#geoloc_latitude').val(poi.y);
+                                    $('#geoloc_longitude').val(poi.x);
                                 }
                             });
 
@@ -259,7 +240,6 @@
                                     //Don't put the empty string to disambiguate with the user
                                     //clearing the field, and then pressing the browser back button
                                     $('#hidden_address').val("false");
-                                    $('#address').val("");
                                     $('#geoloc_address').val("");
                                     $('#geoloc_latitude').val("");
                                     $('#geoloc_longitude').val("");
@@ -273,15 +253,24 @@
                             var user_cleared = false;
                             if (prev_data) {
                                 prev_value=JSON.parse(prev_data);
-                                if (prev_value) {
-                                    $('#address').val(JSON.stringify(prev_value));
-                                } else {
+                                if (!prev_value) {
                                     user_cleared = true;
                                 }
                             } else {
-                                var server_value = $('#address').val();
-                                if (server_value) {
-                                    prev_value=JSON.parse(server_value);
+                                var server_address = $('#geoloc_address').val();
+                                var server_longitude = $('#geoloc_longitude').val();
+                                var server_latitude = $('#geoloc_latitude').val();
+                                if (server_address && server_longitude && server_latitude) {
+                                    prev_value = {
+                                        "type":"Feature",
+                                        "properties": {
+                                            "address": server_address
+                                         },
+                                         "geometry": {
+                                            "type":"Point",
+                                            "coordinates":[server_longitude,server_latitude]
+                                         }
+                                     };
                                 } else {
                                     user_cleared = true;
                                 }
