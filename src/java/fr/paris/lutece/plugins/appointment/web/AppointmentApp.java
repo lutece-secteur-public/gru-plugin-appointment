@@ -110,6 +110,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -275,7 +276,7 @@ public class AppointmentApp extends MVCApplication
 
     //    private transient DateConverter _dateConverter;
     private static int idSlot;
-    private static List<AppointmentSlotDisponiblity> listAppointmentSlotDisponiblity = new ArrayList<AppointmentSlotDisponiblity>(  );
+    private static List<AppointmentSlotDisponiblity> listAppointmentSlotDisponiblity = new Vector<AppointmentSlotDisponiblity>(  );
 
     // Local variables
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
@@ -283,7 +284,7 @@ public class AppointmentApp extends MVCApplication
     private transient CaptchaSecurityService _captchaSecurityService;
     private transient DateConverter _dateConverter;
 
-    public static List<AppointmentSlotDisponiblity> getListAppointmentSlotDisponiblity(  )
+    public static  List<AppointmentSlotDisponiblity> getListAppointmentSlotDisponiblity(  )
     {
         return listAppointmentSlotDisponiblity;
     }
@@ -292,7 +293,8 @@ public class AppointmentApp extends MVCApplication
     {
         listAppointmentSlotDisponiblity = list;
     }
-
+     
+    
     /**
      * Get the list of appointment form list
      * @param request The request
@@ -880,8 +882,17 @@ public class AppointmentApp extends MVCApplication
                 return redirect( request, getCalendarStepName( appointmentSlot.getIdForm(  ) ), PARAMETER_ID_FORM,
                     appointmentSlot.getIdForm(  ) );
             }
-
+            
+            for(AppointmentSlotDisponiblity app  :listAppointmentSlotDisponiblity){
+            	if(app.getIdSlot() == appointment.getIdSlot()){
+            		listAppointmentSlotDisponiblity.remove(app);
+            		break;
+            	}
+            	
+            }
             _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
+           
+           
 
             AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( request.getSession(  ).getId(  ) );
 

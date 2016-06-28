@@ -2585,8 +2585,20 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					PARAMETER_ID_FORM, appointmentSlot.getIdForm());
 		}
 
+		
+		for(AppointmentSlotDisponiblity app  :AppointmentApp.getListAppointmentSlotDisponiblity()){
+        	if(app.getIdSlot() == appointment.getIdSlot()){
+        		AppointmentApp.getListAppointmentSlotDisponiblity().remove(app);
+        		break;
+        	}
+        	
+        }
+		
 		_appointmentFormService.removeValidatedAppointmentFromSession(request
 				.getSession());
+		
+		
+		
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(
 				request.getSession().getId());
 
