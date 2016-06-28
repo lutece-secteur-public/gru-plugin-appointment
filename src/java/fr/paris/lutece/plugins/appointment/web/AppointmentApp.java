@@ -374,7 +374,7 @@ public class AppointmentApp extends MVCApplication
 
             if ( notExist )
             {
-            	listAppointmentSlotDisponiblity.clear();
+            	
                 listAppointmentSlotDisponiblity.add( appointmentSlotDisponiblity );
             }
             }
@@ -539,11 +539,11 @@ public class AppointmentApp extends MVCApplication
 			}else if ((nbBookedSeat != null) && StringUtils.isNotBlank(nbBookedSeat)) {
 			int nbBookedSeats = Integer.parseInt(nbBookedSeat);
 
-			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strIdSlot));
+			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strIdSlot));
 			
+	        int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats ; 		
 			
-			
-			if((nbBookedSeats > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats()))
+			if((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats()))
 			{
 				GenericAttributeError genAttError = new GenericAttributeError();
 				genAttError.setErrorMessage(I18nService.getLocalizedString(
@@ -780,7 +780,7 @@ public class AppointmentApp extends MVCApplication
         //        {
         Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession(  ) );
 
-        if ( appointment == null )
+        if ( appointment == null || appointment.getIdSlot() == 0 )
         {
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
@@ -859,9 +859,7 @@ public class AppointmentApp extends MVCApplication
                 return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM,
                     appointmentSlot.getIdForm(  ) );
             }
-            int nbPlaces = appointmentSlot.getNbPlaces()-appointment.getNumberPlacesReserved();
-            appointmentSlot.setNbPlaces(nbPlaces);
-    		AppointmentSlotHome.update(appointmentSlot);
+
             
 
             if ( form.getEnableCaptcha(  ) && getCaptchaService(  ).isAvailable(  ) )

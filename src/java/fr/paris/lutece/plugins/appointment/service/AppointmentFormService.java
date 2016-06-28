@@ -383,8 +383,8 @@ public class AppointmentFormService implements Serializable
         }
         if(getAppointmentFromSession(request.getSession()) != null)
         {
-        	AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(getAppointmentFromSession(request.getSession()).getIdSlot());
-            model.put(MARK_PLACES,Math.min(slot.getNbPlaces(),form.getMaximumNumberOfBookedSeats()));
+        	AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(getAppointmentFromSession(request.getSession()).getIdSlot());
+            model.put(MARK_PLACES,Math.min(slot.getNbFreePlaces(),form.getMaximumNumberOfBookedSeats()));
         } else {
         	 model.put(MARK_PLACES,0);
         }

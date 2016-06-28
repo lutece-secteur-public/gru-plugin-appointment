@@ -1,49 +1,44 @@
 <link href="css/datepicker.css" rel="stylesheet">
 <link href="css/plugins/appointment/appointment.css" rel="stylesheet" >
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">${form.title} - #i18n{appointment.manage_appointment_calendar.pageTitle}</h3>
-				<@headerButtons>
-					<#if nb_week != 0>
-					<div class="pull-right">
-						<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=0&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}">
-							<i class="glyphicon glyphicon-calendar"></i>&nbsp;#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}
-						</a>
-					</div>
-					</#if>
-				</@headerButtons>
-			</div>
+		<legend>
+			${form.title} - #i18n{appointment.manage_appointment_calendar.pageTitle}
+			<#if nb_week != 0>
+				<div class="pull-right">
+					<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=0&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}">
+						<i class="glyphicon glyphicon-calendar"></i>&nbsp;#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}
+					</a>
+				</div>
+			</#if>
+		</legend>
+		<@tabs tab="calendar" form=form />
+		<@messages infos=infos />
+		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+		<#if nb_week &gt; -max_week >
+			<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.appointmentApp.previousWeek}">
+				<i class="glyphicon glyphicon-arrow-left"></i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
+			</a>
+		</#if>
 		</div>
-		
-		<@tabs tab="calendar" form=form>
-			<@messages infos=infos />
-			<div class="row">
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-			<#if nb_week &gt; -max_week >
-				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week - 1}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.appointmentApp.previousWeek}">
-					<i class="fa fa-arrow-left" aria-hidden="true"></i> #i18n{appointment.appointmentApp.previousWeek}
-				</a>
-			</#if>
-			</div>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" style="text-align:center;">
-				<button class="btn btn-primary btn-sm"  id="validityDate"  name="validityDate" >
-					<i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}
-				</button>
-			</div>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" style="text-align:right;">
-			<#if nb_week < max_week>
-				<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week+1}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.appointmentApp.nextWeek}">
-					#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="fa fa-arrow-right" aria-hidden="true"></i>
-				</a>
-			</#if>
-			</div>
-			</div>
-			
-			<div class="hidden-xs">
+		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+			<button class="btn btn-primary btn-sm"  id="validityDate"  name="validityDate" >
+				<i class="glyphicon glyphicon-calendar" ></i>&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}
+			</button>
+		</div>
+		<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+		<#if nb_week < max_week>
+			<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&nb_week=${nb_week+1}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.appointmentApp.nextWeek}">
+				#i18n{appointment.appointmentApp.nextWeek}&nbsp;<i class="glyphicon glyphicon-arrow-right"></i>
+			</a>
+		</#if>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="hidden-phone">
 			<table class="table appointment-table-container">
 				<tr>
 					<td>
@@ -132,7 +127,7 @@
 													<#if slot.idSlot == idSlotActive.idSlot  >
 														<td class="appointment-slot-full appointment-row${slotSpan}"  >
 														<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
-														${slot.nbRDV} / ${day.peoplePerAppointment}
+														${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces} 
 														</a>
 														</td>			
 														<#assign bool ='true'>
@@ -141,7 +136,7 @@
 												
 												<#if bool =='false' >
 													<td class="appointment-slot-avaiable appointment-row${slotSpan}">
-													${slot.nbRDV} / ${day.peoplePerAppointment}&nbsp;
+													${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}&nbsp;
 													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
 													<i class="glyphicon icon-plus-sign"></i>
 													</a>
@@ -150,11 +145,24 @@
 											</#if>
 
 											<#if listDeSlot =='false'>
+																								
+												<#if slot.nbPlaces != slot.nbFreePlaces >
 												<td class="appointment-slot-avaiable appointment-row${slotSpan}">
-												${slot.nbRDV} / ${day.peoplePerAppointment}&nbsp;
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">${slot.nbPlaces - slot.nbFreePlaces}</i>
+												</a>
+													/${slot.nbPlaces}&nbsp;
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
+
+												<i class="glyphicon icon-plus-sign"></i> 
+												</a>
+												<#else>
+												<td class="appointment-slot-avaiable appointment-row${slotSpan}">
+
+												${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}&nbsp;
 												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
 												<i class="glyphicon icon-plus-sign"></i>
 												</a>
+												</#if>
 												</td>
 											</#if>
 
@@ -162,7 +170,7 @@
 										<td class="appointment-slot-full appointment-row${slotSpan}">
 											<#if (slot.nbPlaces - slot.nbFreePlaces) gt 0 >
 													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
-															${slot.nbRDV} / ${day.peoplePerAppointment}
+															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces} 
 														</a>
 											</#if>
 										</td>
@@ -172,7 +180,7 @@
 										<td class="appointment-slot-closed">
 											<#if (slot.nbPlaces - slot.nbFreePlaces) gt 0 >
 													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
-															${slot.nbRDV} / ${day.peoplePerAppointment}
+															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}
 														</a>
 											</#if>
 										</td>
@@ -194,7 +202,7 @@
 				</tr>
 			</table>
 		</div>
-		<div class="visible-xs">
+		<div class="visible-phone">
 			<#list listDays as day>
 				<#if day.isOpen>
 					<div class="span1">
@@ -225,7 +233,7 @@
 													<#if slot.idSlot == idSlotActive.idSlot  >
 														<td class="appointment-slot-full appointment-row${slotSpan}"  >
 														<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
-														${slot.nbRDV} / ${day.peoplePerAppointment}
+														${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces} 
 														</a>
 														</td>			
 														<#assign bool ='true'>
@@ -234,7 +242,7 @@
 												
 												<#if bool =='false' >
 													<td class="appointment-slot-avaiable appointment-row${slotSpan}">
-													${slot.nbRDV} / ${day.peoplePerAppointment}&nbsp;
+													${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}&nbsp;
 													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
 													<i class="glyphicon icon-plus-sign"></i>
 													</a>
@@ -243,18 +251,31 @@
 											</#if>
 
 											<#if listDeSlot =='false'>
+												<#if slot.nbPlaces != slot.nbFreePlaces >
 												<td class="appointment-slot-avaiable appointment-row${slotSpan}">
-												${slot.nbRDV} / ${day.peoplePerAppointment}&nbsp;
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">${slot.nbPlaces - slot.nbFreePlaces}</i>
+												</a>
+													/${slot.nbPlaces}&nbsp;
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
+
+												<i class="glyphicon icon-plus-sign"></i> 
+												</a>
+												<#else>
+												<td class="appointment-slot-avaiable appointment-row${slotSpan}">
+
+												${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces}&nbsp;
 												<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}"  title="#i18n{appointment.manage_appointments.buttonAdd}">
 												<i class="glyphicon icon-plus-sign"></i>
 												</a>
+												</#if>
 												</td>
+											
 											</#if>
 										<#else>
 										<td class="appointment-slot-full appointment-row${slotSpan}">
 											<#if (slot.nbPlaces - slot.nbFreePlaces) gt 0 >
 													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
-															${slot.nbRDV} / ${day.peoplePerAppointment}
+															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces} 
 														</a>
 											</#if>
 										</td>
@@ -264,7 +285,7 @@
 										<td class="appointment-slot-closed">
 											<#if (slot.nbPlaces - slot.nbFreePlaces) gt 0 >
 													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&idSlot=${slot.idSlot}&fn=${fn!}&ln=${ln!}&ph=${ph!}&em=${em!}&cid=${cid!}&guid=${guid!}" title="#i18n{appointment.manage_appointment_calendar.labelViewAppointmentSlot}">
-															${slot.nbRDV} / ${day.peoplePerAppointment}
+															${slot.nbPlaces - slot.nbFreePlaces} / ${slot.nbPlaces} 
 														</a>
 											</#if>
 										</td>
@@ -281,7 +302,6 @@
 				#i18n{portal.util.labelBack}
 			</a>
 		</div>
-		</@tabs>
 	</div>
 </div>
 <@getDatePickerBootstrap idField="validityDate" language=language />

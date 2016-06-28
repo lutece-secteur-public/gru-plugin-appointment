@@ -1932,11 +1932,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				
 			}  else if(strIdSlot != null && StringUtils.isNotBlank(nbSeat)){
 				int nbBookedSeats = Integer.parseInt(nbSeat);
-				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strIdSlot));
+				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strIdSlot));
 				
+				int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats ; 
 				
-				
-				if((nbBookedSeats > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats())){
+				if((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats())){
 					GenericAttributeError genAttError = new GenericAttributeError();
 					genAttError.setErrorMessage(I18nService.getLocalizedString(
 							ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, request.getLocale()));
@@ -2535,9 +2535,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			return redirect(request, VIEW_CREATE_APPOINTMENT,
 					PARAMETER_ID_FORM, appointmentSlot.getIdForm());
 		}
-		 int nbPlace = appointmentSlot.getNbPlaces()-appointment.getNumberPlacesReserved();
+		/* int nbPlace = appointmentSlot.getNbPlaces()-appointment.getNumberPlacesReserved();
 		 appointmentSlot.setNbPlaces(nbPlace);
-		 AppointmentSlotHome.update(appointmentSlot);
+		 AppointmentSlotHome.update(appointmentSlot);*/
  		 
  		
 		boolean bCreation = appointment.getIdAppointment() == 0;
