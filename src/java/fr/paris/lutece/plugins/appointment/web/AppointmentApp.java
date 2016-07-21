@@ -987,18 +987,35 @@ public class AppointmentApp extends MVCApplication
      * Get the page to cancel an appointment
      * @param request The request
      * @return The XPage to display
+     * @throws SiteMessageException 
      */
     @View( VIEW_GET_VIEW_CANCEL_APPOINTMENT )
-    public XPage getViewCancelAppointment( HttpServletRequest request )
+    public XPage getViewCancelAppointment( HttpServletRequest request ) throws SiteMessageException
     {
         String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
-        String dateAppointment = request.getParameter( PARAMETER_DATE_APPOINTMENT );
-
+        String strIdAppointment = refAppointment.substring( 0,
+        		refAppointment.length(  ) - AppointmentService.getService(  ).getRefSizeRandomPart(  ) );
+        Appointment appointment =null;
+        
+        if ( StringUtils.isNotEmpty( strIdAppointment ) && StringUtils.isNumeric( strIdAppointment ) )
+        {
+            int nIdAppointment = Integer.parseInt( strIdAppointment );
+            appointment = AppointmentHome.findByPrimaryKey( nIdAppointment );
+        
+        }
         Map<String, Object> model = new HashMap<String, Object>(  );
 
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
-        model.put( MARK_DATE_APPOINTMENT, dateAppointment );
-
+        
+        if (appointment!=null)
+        {
+        	model.put( MARK_DATE_APPOINTMENT, appointment.getDateAppointment(  ) );
+        }
+        else
+        {
+        	SiteMessageService.setMessage( request, ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT,
+                    SiteMessage.TYPE_STOP );
+        }
         Locale locale = getLocale( request );
         XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
         xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
@@ -1634,7 +1651,6 @@ public class AppointmentApp extends MVCApplication
         UrlItem urlItem = new UrlItem( AppPathService.getProdUrl( request ) + AppPathService.getPortalUrl(  ) );
         urlItem.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT );
-        urlItem.addParameter( PARAMETER_DATE_APPOINTMENT, getDateFormat(  ).format( appointment.getDateAppointment(  ) ) );
         urlItem.addParameter( PARAMETER_REF_APPOINTMENT,
             AppointmentService.getService(  ).computeRefAppointment( appointment ) );
 
@@ -1652,7 +1668,6 @@ public class AppointmentApp extends MVCApplication
         UrlItem urlItem = new UrlItem( AppPathService.getProdUrl(  ) + AppPathService.getPortalUrl(  ) );
         urlItem.addParameter( MVCUtils.PARAMETER_PAGE, XPAGE_NAME );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT );
-        urlItem.addParameter( PARAMETER_DATE_APPOINTMENT, getDateFormat(  ).format( appointment.getDateAppointment(  ) ) );
         urlItem.addParameter( PARAMETER_REF_APPOINTMENT,
             AppointmentService.getService(  ).computeRefAppointment( appointment ) );
 
