@@ -1,50 +1,61 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>
-			<h1 class="text-center">${formMessages.calendarTitle}</h3>
+		<div class="jumbotron">
+			<div class="jumbotron-wrapper">
+				<div class="jumbotron-content">
+					<h1 class="">${formMessages.calendarTitle}</h1>
+				</div>
+			</div>
+		</div>
 		</#if>
+		<div class="layout-wrapper">
 		<#if infos?? && errors??>
 			<@messages infos=infos errors=errors />
 		</#if>
-		<hr>
+		</div>
 	</div>
 </div>
-<div class="row">
-		<#if listDays??>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-				<#if nb_week &gt; 0>
-					<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true" title="#i18n{appointment.appointmentApp.previousWeek}">
-						<i class="glyphicon glyphicon-arrow-left"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentApp.previousWeek}</span>
-					</a>
-				</#if>
-			</div>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
-				<button class="btn btn-primary btn-sm" id="buttonCalendarAvailableDays" type="button">
-					<i class="glyphicon glyphicon-calendar"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}</span>
-				</button>
-			</div>
-			<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-				<#if nb_week &lt; max_week - 1>
-					<a class="btn btn-primary btn-sm pull-right" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
-						<i class="glyphicon glyphicon-arrow-right"></i>
-						<span class="hidden-xs">#i18n{appointment.appointmentApp.nextWeek}&nbsp;</span>
-					</a>
-				</#if>
-			</div>
-	</#if>
-</div>
-<br>
- 
-<div class="row">
+<div class="row calendar-row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="layout-wrapper">
+			<div class="row">
+			<#if listDays??>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<#if nb_week &gt; 0>
+						<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true" title="#i18n{appointment.appointmentApp.previousWeek}">
+							<i class="glyphicon glyphicon-arrow-left"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentApp.previousWeek}</span>
+						</a>
+					</#if>
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+					<button class="btn btn-primary btn-sm" id="buttonCalendarAvailableDays" type="button">
+						<i class="glyphicon glyphicon-calendar"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}</span>
+					</button>
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<#if nb_week &lt; max_week - 1>
+						<a class="btn btn-primary btn-sm pull-right" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}&dir=true" title="#i18n{appointment.appointmentApp.nextWeek}">
+							<i class="glyphicon glyphicon-arrow-right"></i>
+							<span class="hidden-xs">#i18n{appointment.appointmentApp.nextWeek}&nbsp;</span>
+						</a>
+					</#if>
+				</div>
+			</#if>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="layout-wrapper">
 		<#if listDays??>
-			<div class="visible-desktop">
+			<div class="hidden-xs hidden-sm">
 				<table class="table desktop-table appointment-table-container">
 					<tr>
 						<td>
 							<table class="table appointment-inner-table">
 								<tr>
-									<td style="height:40px;">
+									<td style="height:44px;">
 										<#if nb_week &gt; 0>
 											<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true">
 												<i class="glyphicon glyphicon-arrow-left">&nbsp;</i>
@@ -109,77 +120,47 @@
 												<#else>
 													<#assign slotSpan=rowspan >
 												</#if>
-
-												<#if slot.isEnabled >
-													<#assign listDeSlot ='false' >
-
+												<#if slot.isEnabled>
+												<#assign bool ='true' >
+													<#if slotListDisponibility??>
+													
+													
+												<#list slotListDisponibility as idSlotActive>
+													<#if slot.idSlot == idSlotActive.idSlot  >
+														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
+															${formMessages.calendarFullLabel}
+															<@getCellTooltip appointmentSlot=slot />
+														</td>			
+														<#assign bool ='false'>
+													</#if>
+												</#list>
+												</#if>	
+													<#if bool == 'true' >
 													<#if slot.nbFreePlaces &gt; 0>
-														 
-															<#if slotListDisponibility??>
-																<#assign listDeSlot ='true'>
-																<#assign bool ='false' >
-													           	<#list slotListDisponibility as idSlotActive>
-																 
-																	<#if (slot.idSlot) == (idSlotActive.idSlot)  >
-
-																		<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">  
-																			${formMessages.calendarFullLabel}
-																			<@getCellTooltip appointmentSlot=slot />
-																		</td>
-																		<#assign bool ='true'>																
-																	</#if>
-
-																</#list>	
-																<#if bool =='false' >
-
-																<td class="appointment-slot-available appointment-row${slotSpan} appointment-tooltip">
-																	<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">  
-																		${formMessages.calendarReserveLabel} 
-																	</a>
-
-																	<@getCellTooltip appointmentSlot=slot />
-																</td>	
-																								   
-																</#if>
-															</#if>
-
-															<#if listDeSlot =='false'>
-																<td class="appointment-slot-avaiable appointment-row${slotSpan} appointment-tooltip">
-																<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
-																	${formMessages.calendarReserveLabel}
-																</a>
-																<@getCellTooltip appointmentSlot=slot />
-																</td>
-																
-															 
-															</#if>
+														<td class="appointment-slot-available appointment-row${slotSpan} appointment-tooltip">
+															<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
+																${formMessages.calendarReserveLabel}
+															</a>
+															<@getCellTooltip appointmentSlot=slot />
+														</td>
 													<#else>
-													<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">  
-																			${formMessages.calendarFullLabel}
-																			<@getCellTooltip appointmentSlot=slot />
-																		</td>
-												</#if>
-												
-											 
-
-															
-															
- 													
-															
-														
-														
+														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
+															${formMessages.calendarFullLabel}
+															<@getCellTooltip appointmentSlot=slot />
+														</td>
+													</#if>
+													<#else>
+													<#assign bool ='true' >
+													</#if>
 												<#else>
-													<td class="appointment-slot-closed appointment-tooltip">  
-																			${formMessages.calendarFullLabel}
-																			<@getCellTooltip appointmentSlot=slot />
-																		</td>
+													<td class="appointment-slot-closed appointment-row${slotSpan} appointment-tooltip">
+														&nbsp;
+														<@getCellTooltip appointmentSlot=slot />
+													</td>
 												</#if>
-												
 												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
-
 											</tr>
 										</#list>
-
 										<#if nbSlotsFilled &lt; list_time_begin?size - 1>
 											<#list nbSlotsFilled..(list_time_begin?size - 1) as slotToFill>
 												<tr>
@@ -213,34 +194,109 @@
 										<center>
 											#i18n{${list_days_of_week[day_index]}}
 											${day.date}
+
 										</center>
 									</th>
 								</tr>
-								<#list day.listSlots as slot>
-									<tr>
-										<td class="appointment-row1">
-											<#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
-										</td>
-										<#if slot.isEnabled>
-											<#if slot.nbFreePlaces &gt; 0>
-												<td class="appointment-slot-available">
-													<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
-														${formMessages.calendarReserveLabel}
-													</a>
-												</td>
-											<#else>
-												<td class="appointment-slot-full">
-													${formMessages.calendarFullLabel}
-												</td>
-											</#if>
+
+
+
+								<#if day.isOpen>
+										<#assign rowspan=day.appointmentDuration/min_duration_appointments>
+										<#assign first_slot = day.listSlots?first>
+										<#assign nbSlotsFilled = 0>
+										<#if first_slot.startingHour &lt; 10>
+											<#assign first_time = '0' + first_slot.startingHour + 'h'>
 										<#else>
-											<td class="appointment-slot-closed">
-												&nbsp;
-											</td>
+											<#assign first_time = first_slot.startingHour + 'h'>
 										</#if>
-									</tr>
-								</#list>
-							</table>
+										<#if first_slot.startingMinute &lt; 10>
+											<#assign first_time = first_time + '0' + first_slot.startingMinute>
+										<#else>
+											<#assign first_time = first_time + first_slot.startingMinute>
+										</#if>
+										<#list list_time_begin as time_begin>
+											<#if time_begin != first_time>
+												<tr>
+													<td class="appointment-slot-closed appointment-row1">
+														&nbsp;
+													</td>
+												</tr>
+												<#assign nbSlotsFilled = nbSlotsFilled + 1>
+											<#else>
+												<#break>
+											</#if>
+										</#list>
+
+
+<#list day.listSlots as slot>
+											<tr>
+												<#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - ( slot.startingHour * 60 + slot.startingMinute ) >
+												<#if slotDuration != day.appointmentDuration>
+													<#assign slotSpan= (slotDuration / min_duration_appointments)?round >
+												<#else>
+													<#assign slotSpan=rowspan >
+												</#if>
+												<#if slot.isEnabled>
+												<#assign bool ='true' >
+													<#if slotListDisponibility??>
+													
+													
+												<#list slotListDisponibility as idSlotActive>
+													<#if slot.idSlot == idSlotActive.idSlot  >
+														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
+															${formMessages.calendarFullLabel}
+															<@getCellTooltip appointmentSlot=slot />
+														</td>			
+														<#assign bool ='false'>
+													</#if>
+												</#list>
+												</#if>	
+													<#if bool == 'true' >
+													<#if slot.nbFreePlaces &gt; 0>
+														<td class="appointment-slot-available appointment-row${slotSpan} appointment-tooltip">
+															<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
+																${formMessages.calendarReserveLabel}
+															</a>
+															<@getCellTooltip appointmentSlot=slot />
+														</td>
+													<#else>
+														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
+															${formMessages.calendarFullLabel}
+															<@getCellTooltip appointmentSlot=slot />
+														</td>
+													</#if>
+													<#else>
+													<#assign bool ='true' >
+													</#if>
+												<#else>
+													<td class="appointment-slot-closed appointment-row${slotSpan} appointment-tooltip">
+														&nbsp;
+														<@getCellTooltip appointmentSlot=slot />
+													</td>
+												</#if>
+												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
+											</tr>
+										</#list>
+										<#if nbSlotsFilled &lt; list_time_begin?size - 1>
+											<#list nbSlotsFilled..(list_time_begin?size - 1) as slotToFill>
+												<tr>
+													<td class="appointment-slot-closed appointment-row1">
+														&nbsp;
+													</td>
+												</tr>
+											</#list>
+										</#if>
+									<#else>
+										<#list list_time_begin as time_begin>
+											<tr>
+												<td class="appointment-slot-closed appointment-row1">
+													&nbsp;
+												</td>
+											</tr>
+										</#list>
+									</#if>
+								</table>
 					</#if>
 				</#list>
 			</div>
@@ -288,14 +344,8 @@
 		<#assign hasDays = false >
 		var validDays = [<#list listAvailableDays as day><#if day.isOpen && day.freePlaces &gt; 0><#if hasDays >, </#if>'${day.date}'<#assign hasDays=true></#if></#list>];
 		var hrefs = [<#list 0..form.nbWeeksToDisplay as nbWeek><#if nbWeek_index &gt; 0>, </#if>'jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nbWeek}'</#list>];
-		var dateLimit = ${form.dateLimit};
-		console.log(dateLimit)
 		var nowTemp = new Date();
 		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-		<#if form.dateLimit != null>
-		if(now.valueOf() > dateLimit.valueOf() )
-			 
-		<#if>
 		$("#buttonCalendarAvailableDays").datepicker({
 		    weekStart: 1,
 		    format: 'dd/mm/yyyy',

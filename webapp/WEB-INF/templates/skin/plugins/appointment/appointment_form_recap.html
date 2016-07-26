@@ -1,5 +1,21 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="jumbotron">
+			<div class="jumbotron-wrapper">
+				<div class="jumbotron-content">
+					<h1>
+						${form.description!}
+					</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row calendar-row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<div class="layout-wrapper">
+	<div class="appointment-form">
 		<form class="form-horizontal" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
 			<input name="page" value="appointment" type="hidden">
 			<input name="action" value="doMakeAppointment" type="hidden">
@@ -14,54 +30,53 @@
 				</legend>
 				<@messages errors=errors />
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="lastname">${formMessages.fieldLastNameTitle!}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="lastname">${formMessages.fieldLastNameTitle!}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.lastName}">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="firstname">${formMessages.fieldFirstNameTitle!}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="firstname">${formMessages.fieldFirstNameTitle!}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.firstName}">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="email">${formMessages.fieldEmailTitle!}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="email">${formMessages.fieldEmailTitle!}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.email}">
 					</div>
 				</div>
+				<#if form.maximumNumberOfBookedSeats &gt; 1>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="nbSeat">#i18n{appointment.create_appointmentform.labelMaximumNumberOfBookedseatsPerAppointment}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.numberOfBookedSeats}">
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="nbSeat">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.numberPlacesReserved}">
 					</div>
 				</div>
-                <#list listResponseRecapDTO as response>
-                    <#if  response.recapValue?? && response.recapValue?has_content>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <#if response.file?? >
-                                    <a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}">${response.recapValue}</a>
-                                <#else>
-                                    <input type="text" class="form-control" disabled readonly="readonly" value="${response.recapValue}">         
-                                </#if>
-                            </div>
-                        </div>
-                    </#if>
-                </#list>
-                <div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+				</#if>
+				<#list listResponseRecapDTO as response>
+					<#if response.recapValue?? && response.recapValue?has_content>
+				<div class="form-group">
+					<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry><label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">${response.entry.title}<#assign entrySave=response.entry></label></#if>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<input type="text" class="form-control" disabled readonly="readonly" value="${response.recapValue}">
+					</div>
+				</div>
+					</#if>
+				</#list>
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointmentFrom} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute} #i18n{appointment.appointmentApp.labelTimeAppointmentTo} <#if slot.endingHour &lt; 10 >0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}">
 					</div>
 				</div>
 				<#if captcha??>
 					${captcha!}
 				</#if>
+				<br>
 				<div class="form-group">
-					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<button name="validate" class="btn btn-primary btn-sm" value="validate">
 							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
 						</button>
@@ -72,5 +87,7 @@
 				</div>
 			</fieldset>
 		</form>
+	</div>
+	</div>
 	</div>
 </div>
