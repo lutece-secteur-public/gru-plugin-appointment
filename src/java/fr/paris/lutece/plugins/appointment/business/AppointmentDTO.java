@@ -79,6 +79,7 @@ public class AppointmentDTO extends Appointment
         setIdSlot( appointment.getIdSlot(  ) );
         setIdUser( appointment.getIdUser(  ) );
         setStatus( appointment.getStatus(  ) );
+        setNumberPlacesReserved( appointment.getNumberPlacesReserved(  ) );
     }
 
     /**

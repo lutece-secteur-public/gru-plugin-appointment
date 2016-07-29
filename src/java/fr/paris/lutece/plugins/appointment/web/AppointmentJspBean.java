@@ -1930,13 +1930,28 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 						ERROR_MESSAGE_POSITIF_NB_BOOKED_SEAT, request.getLocale()));
 				listFormErrors.add(genAttError);
 				
-			}  else if(strIdSlot != null && StringUtils.isNotBlank(nbSeat)){
+			}  else if(StringUtils.isNotBlank(nbSeat)){
+				
+				int nbrReserved=0;
+				String idSlotAppointment= strIdSlot;
+				if (appointment != null) {
+					
+					nbrReserved= appointment.getNumberPlacesReserved();
+					
+					if(strIdSlot == null  && appointment.getIdSlot( ) != 0){
+						
+						idSlotAppointment= String.valueOf(appointment.getIdSlot( ));
+					}
+
+				}
+				
 				int nbBookedSeats = Integer.parseInt(nbSeat);
-				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strIdSlot));
+				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(idSlotAppointment));
 				
-				int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats ; 
+				int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats - nbrReserved; 
 				
-				if((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats())){
+				if(((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats( ))) )
+				{
 					GenericAttributeError genAttError = new GenericAttributeError();
 					genAttError.setErrorMessage(I18nService.getLocalizedString(
 							ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, request.getLocale()));
