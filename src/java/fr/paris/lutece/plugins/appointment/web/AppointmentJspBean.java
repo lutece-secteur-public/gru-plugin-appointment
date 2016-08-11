@@ -710,6 +710,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	}
 
 	 public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
+		 if(form.getNbWeeksToDisplay()!=0)
+			 return form.getNbWeeksToDisplay();
 			if (form.getDateLimit() != null) {
 				Date dateMin = null;
 				List<AppointmentDay> listDays = AppointmentDayHome
