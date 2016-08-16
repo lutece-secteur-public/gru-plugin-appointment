@@ -205,6 +205,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
     private static final String MESSAGE_ERROR_DATE_LIMIT_NB_WEEK_EMPTY = "appointment.message.error.datelimit.nbWeek";
     private static final String PROPERTY_COPY_OF_FORM = "appointment.manage_appointmentforms.Copy";
+    private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
@@ -495,6 +496,17 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
+       
+        try {
+			if ( !checkConstraints( appointmentForm ) )
+			{
+			    return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+			}
+		} catch (ParseException e) {
+			
+			addError( ERROR_MESSAGE_APPOINTMENT_PARSING_DATE );
+			return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+		}
 
         if ( appointmentForm.getTimeStart(  ).compareTo( appointmentForm.getTimeEnd(  ) ) >= 0 )
         {
@@ -1046,6 +1058,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                     }
                 }
             }
+        }
+        if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() )
+        {
+            bReturn = false;
+            addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale(  ) );
         }
 
         return bReturn;
