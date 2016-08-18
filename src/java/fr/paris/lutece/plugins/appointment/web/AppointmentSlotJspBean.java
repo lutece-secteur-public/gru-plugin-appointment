@@ -1280,6 +1280,10 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
             AppointmentSlotHome.update( slot );
 
+            //even though only this slot has been modified
+            //Notify for the whole form for simplicity
+            AppointmentService.getService(  ).notifyAppointmentFormModified( slot.getIdForm(  ) );
+
             if ( slot.getIdDay(  ) > 0 )
             {
                 return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(),PARAMETER_NB_WEEK, nNb_week);
@@ -1464,6 +1468,11 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                 {
                     AppointmentSlotService.getInstance(  ).updateSlotsOfDayAfterSlotModification( slot );
                 }
+
+                //even though only this slot has been modified
+                //or other slots from this days have been modified
+                //Notify for the whole form for simplicity
+                AppointmentService.getService(  ).notifyAppointmentFormModified( slot.getIdForm(  ) );
 
                 addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale(  ) );
                 
