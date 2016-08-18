@@ -394,6 +394,10 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             AppointmentDayHome.create( day );
             AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForDay( day, form );
 
+            //even though only this day has been modified
+            //Notify for the whole form for simplicity
+            AppointmentService.getService(  ).notifyAppointmentFormModified( form.getIdForm() );
+
             if ( day.getIsOpen(  ) )
             {
                 return redirect( request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, day.getIdDay(  ) ) );
@@ -628,6 +632,10 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             addInfo( INFO_MODIFY_APPOINTMENTDAY_SLOTS_UPDATED, getLocale(  ) );
         }
 
+        //even though only this day has been modified
+        //Notify for the whole form for simplicity
+        AppointmentService.getService(  ).notifyAppointmentFormModified( form.getIdForm() );
+
         if ( day.getIsOpen(  ) )
         {
             return redirect( request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, day.getIdDay(  ) ) );
@@ -724,6 +732,10 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }
 
             AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ), dateMin );
+
+            //even though only this day has been modified
+            //Notify for the whole form for simplicity
+            AppointmentService.getService(  ).notifyAppointmentFormModified( nIdForm );
 
             return redirect( request, getURLAppointmentSlotJspBean( request, nIdForm ) );
         }
