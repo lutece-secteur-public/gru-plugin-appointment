@@ -105,6 +105,17 @@ public final class AppointmentHome
     }
 
     /**
+     * Notify listeners, for example indexers
+     * @param nSlotId The slot id
+     */
+    private static void NotifyAppointmentModified(int nSlotId) {
+        Collection<IAppointmentCreationListener> listeners = SpringContextService.getBeansOfType( IAppointmentCreationListener.class );
+        for (IAppointmentCreationListener listener: listeners) {
+            listener.onAppointmentCreated( nSlotId );
+        }
+    }
+
+    /**
      * Update of the appointment which is specified in parameter
      * @param appointment The instance of the Appointment which contains the
      *            data to store
@@ -118,19 +129,21 @@ public final class AppointmentHome
         // If the status changed, we check if we need to update the number of free places of the associated day
         if ( appointment.getStatus(  ) != appointmentFromDb.getStatus(  ) )
         {
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
             if ( ( appointmentFromDb.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) &&
                     ( appointment.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) )
             {
-                AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
                 AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );
             }
             else if ( ( appointmentFromDb.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) &&
                     ( appointment.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) )
             {
-                AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
                 AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay(  ) );
             }
+            //2016-06-06, for now used for solr indexing
+            NotifyAppointmentModified(slot.getIdSlot());
         }
+
     }
 
     /**
@@ -156,6 +169,8 @@ public final class AppointmentHome
         {
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
             AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );
+            //2016-06-06, for now used for solr indexing
+            NotifyAppointmentModified(slot.getIdSlot());
         }
     }
 
