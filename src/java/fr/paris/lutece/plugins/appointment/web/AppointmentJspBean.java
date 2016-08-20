@@ -2143,7 +2143,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 			List<AppointmentDay> listDays = AppointmentService.getService()
 					.getDayListForCalendar(form, new MutableInt(nNbWeek),
-							false, false);
+							false, false, request);
 
 			if (!listDays.isEmpty()) {
 				List<String> listTimeBegin = new ArrayList<String>();
