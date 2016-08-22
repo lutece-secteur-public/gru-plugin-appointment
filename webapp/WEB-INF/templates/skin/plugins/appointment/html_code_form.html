@@ -196,31 +196,6 @@
 					</#if>
 					</#if>
 
-
-                   <#if form_errors??>
-					<#assign hasDisplayableError = false>
-					<#list form_errors as form_error>
-						<#if form_error.isDisplayableError>
-							<#assign hasDisplayableError = true>
-							<#break >
-						</#if>
-					</#list>
-					<#if hasDisplayableError>
-						
-							<#list form_errors as form_error>	
-																	
-							
-									<div class="alert alert-error alert-danger">
-										<p>
-										  	${form_error.errorMessage}
-										</p>
-									</div>
-									
-							</#list>
-						
-					</#if>
-					</#if>	
-
 				${str_entry}
 				 <div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
