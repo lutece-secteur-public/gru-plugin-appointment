@@ -35,7 +35,7 @@
 				</div>
 				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 					<#if nb_week &lt; max_week - 1>
-						<a class="btn btn-primary btn-sm pull-right" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}&dir=true" title="#i18n{appointment.appointmentApp.nextWeek}">
+						<a class="btn btn-primary btn-sm pull-right" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
 							<i class="glyphicon glyphicon-arrow-right"></i>
 							<span class="hidden-xs">#i18n{appointment.appointmentApp.nextWeek}&nbsp;</span>
 						</a>
