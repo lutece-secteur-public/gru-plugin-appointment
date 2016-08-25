@@ -60,7 +60,7 @@ public class DayCreationDaemon extends Daemon
     {
         for ( AppointmentForm form : AppointmentFormHome.getAppointmentFormsList(  ) )
         {
-            AppointmentService.getService(  ).checkFormDays( form );
+            AppointmentService.getService(  ).checkFormDays( form, false );
 
             Calendar calendar = new GregorianCalendar(  );
             Date dateLastMonday = AppointmentService.getService(  ).getDateLastMonday(  );

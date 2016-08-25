@@ -9,7 +9,7 @@
 				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 					<#if nb_week &gt; 2>
 						<div class="pull-left">
-							<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}" title="#i18n{appointment.appointmentApp.previousWeek}">
+							<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true" title="#i18n{appointment.appointmentApp.previousWeek}">
 								<i class="glyphicon glyphicon-arrow-left">&nbsp;</i>&nbsp;#i18n{appointment.appointmentApp.previousWeek}
 							</a>
 						</div>

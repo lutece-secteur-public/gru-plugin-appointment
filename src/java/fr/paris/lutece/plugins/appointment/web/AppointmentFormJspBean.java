@@ -864,7 +864,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
 
         // Check constraints
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) )
+        /*if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
             if ( strForm.equals( PARAMETER_FIRST_FORM ) )
             {
@@ -875,7 +875,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             {
                 return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
             }
-        }
+        }*/
 
         //Check Constraint better
         try
@@ -918,7 +918,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         
         if(!strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  )){
         	
-        	AppointmentService.getService().checkFormDays(appointmentForm);
+        	AppointmentService.getService().checkFormDays(appointmentForm, false);
         }
 
         if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  ) )
@@ -956,7 +956,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             }
 
             AppointmentService.getService(  )
-                              .resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin );
+                              .resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin, false );
         }
 
         AppointmentService.getService(  ).notifyAppointmentFormModified( nIdAppointmentForm );
@@ -1146,7 +1146,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             // If we enable the form, we check that its days has already been created
             if ( !form.getIsActive(  ) )
             {
-                AppointmentService.getService(  ).checkFormDays( form );
+                AppointmentService.getService(  ).checkFormDays( form, false );
 
                 // If we enable the form, and it has a passed date of end of validity, we remove it to prevent to form from being disabled by the publication daemon
                 if ( ( form.getDateEndValidity(  ) != null ) &&
