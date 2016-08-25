@@ -249,6 +249,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_COLON = ":";
     private static final String MARK_ICONS = "icons";
     private static final String MARK_ICON_NULL = "NULL";
+    private static final String MARK_NOT_DISPLAY_BOOKEDSEAT_HELP = "NotDisplayBookedSeatHelp";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -538,19 +539,24 @@ public class AppointmentApp extends MVCApplication
 						ERROR_MESSAGE_POSITIF_NB_BOOKED_SEAT, request.getLocale()));
 				listFormErrors.add(genAttError);
 				
-			}else if ((nbBookedSeat != null) && StringUtils.isNotBlank(nbBookedSeat)) {
-			int nbBookedSeats = Integer.parseInt(nbBookedSeat);
-
-			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strIdSlot));
+			}else if ((nbBookedSeat != null) && StringUtils.isNotBlank(nbBookedSeat) ) {
 			
-	        int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats ; 		
-			
-			if((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats()))
-			{
-				GenericAttributeError genAttError = new GenericAttributeError();
-				genAttError.setErrorMessage(I18nService.getLocalizedString(
-						ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, request.getLocale()));
-				listFormErrors.add(genAttError);
+				int nbBookedSeats = Integer.parseInt(nbBookedSeat);
+		
+				if(strIdSlot != null){
+					AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strIdSlot));
+					
+			        int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats ; 		
+					
+					if((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats()))
+					{
+						GenericAttributeError genAttError = new GenericAttributeError();
+						genAttError.setErrorMessage(I18nService.getLocalizedString(
+								ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, request.getLocale()));
+						listFormErrors.add(genAttError);
+					}else{
+						appointment.setNumberPlacesReserved(Integer.parseInt(nbBookedSeat));
+					}
 			} else {
 				appointment.setNumberPlacesReserved(Integer.parseInt(nbBookedSeat));
 			}
@@ -740,6 +746,14 @@ public class AppointmentApp extends MVCApplication
             if ( appointment != null )
             {
                 appointment.setIdSlot( nIdSlot );
+                AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strIdSlot));
+				
+		        int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + appointment.getNumberPlacesReserved( ) ; 		
+				
+				if((bookedEstimate > slot.getNbPlaces()) || ( appointment.getNumberPlacesReserved( ) > form.getMaximumNumberOfBookedSeats()))
+				{
+					 return getForm(request, form);
+				}
             }
 
             // If the calendar is the first step, then we must create the appointment object and save it into the session
@@ -1200,7 +1214,6 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_FORM_SECOND_STEP )
     public XPage getAppointmentFormSecondStep( HttpServletRequest request )
     {
-        _appointmentFormService.removeValidatedAppointmentFromSession( request.getSession(  ) );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
@@ -1723,7 +1736,30 @@ public class AppointmentApp extends MVCApplication
 
         return Integer.valueOf( String.valueOf( timeDiff ) );
     }
-    
+    /**
+     * 
+     * @param request
+     * @param form
+     * @return
+     */
+    private XPage getForm(HttpServletRequest request, AppointmentForm form){
+    	
+    	 List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>(  );
+    	 GenericAttributeError error = new GenericAttributeError(  );
+         error.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT,
+                     request.getLocale(  ) ));
+         listFormErrors.add( error );
+         
+         request.getSession(  ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
+    	 String strHtmlContent = getAppointmentFormHtml( request, form, _appointmentFormService, getModel(  ),
+                 getLocale( request ) );
+
+         XPage page = new XPage(  );
+         page.setContent( strHtmlContent );
+         page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
+
+         return page;
+    }
     public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
 		if (form.getDateLimit() != null) {
 			Date dateMin = null;

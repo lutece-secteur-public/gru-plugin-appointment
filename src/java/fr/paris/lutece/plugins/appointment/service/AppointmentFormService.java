@@ -390,7 +390,9 @@ public class AppointmentFormService implements Serializable
         }
         
         model.put( MARK_APPOINTMENT, appointment );
-        model.put(MARK_APPOINTMENTSLOT,getAppointmentFromSession(request.getSession()).getIdSlot()); 
+        if(!isFormFirstStep( form.getIdForm(  ) )){
+        	model.put(MARK_APPOINTMENTSLOT,getAppointmentFromSession(request.getSession()).getIdSlot()); 
+        }
         if ( bDisplayFront )
         {
             model.put( MARK_IS_FORM_FIRST_STEP, isFormFirstStep( form.getIdForm(  ) ) );
