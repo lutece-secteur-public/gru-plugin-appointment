@@ -572,8 +572,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				strWriter[9] = (tmpApp.getState() == null) ? StringUtils.EMPTY
 						: tmpApp.getState().getName();
                 
+				if(tmpForm.getMaximumNumberOfBookedSeats() > 1){
+					
                 strWriter[10] = ""+tmpApp.getNumberPlacesReserved();
 				
+				}
 				List<Integer> listIdResponse = AppointmentHome
 						.findListIdResponse(tmpApp.getIdAppointment());
 				List<Response> listResponses = new ArrayList<Response>();
