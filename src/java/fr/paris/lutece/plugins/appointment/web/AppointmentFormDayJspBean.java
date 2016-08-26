@@ -427,7 +427,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             int nIdDay = Integer.parseInt( strIdDay );
 
             AppointmentDay day = fillAppoinmentDay( nIdDay, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
-            Map<String, Object> model = fillFreeMarker( day );
+            Map<String, Object> model = getModel();
+            model = fillFreeMarker( day, model );
             fillCommons( model );
 
             return getPage( PROPERTY_VIEW_DAY_TITLE, TEMPLATE_VIEWS_DAY, model );
@@ -441,12 +442,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
      * @param day
      * @return
      */
-    private Map<String, Object> fillFreeMarker( AppointmentDay day )
+    private Map<String, Object> fillFreeMarker( AppointmentDay day, Map<String, Object> model )
     {
-        Map<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_LOCALE, getLocale(  ) );
         model.put( MARK_DAY, day );
-        fillCommons( model );
+        //fillCommons( model );
 
         return model;
     }
@@ -530,7 +530,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                     getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm(  ) ) ) );
             }
 
-            model = fillFreeMarker( day );
+            model = fillFreeMarker( day, model );
 
             return getPage( PROPERTY_MODIFY_DAY_TITLE, TEMPLATE_MODIFY_DAY, model );
         }
