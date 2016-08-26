@@ -333,7 +333,10 @@ public class AppointmentService
     private static List<AppointmentDay> unvalidAppointmentsbeforeNow( int iDaysBeforeAppointment,
         List<AppointmentDay> listDays, Calendar calStart, Calendar calEnd, Calendar objNow, HttpServletRequest request )
     {
-    	Boolean bInListDayOpened = request.getSession(  ).getAttribute( CONSTANT_IN_LISTDAYOPENED ) == null ? false : (Boolean)request.getSession(  ).getAttribute( CONSTANT_IN_LISTDAYOPENED );
+    	Calendar objNowTmp = GregorianCalendar.getInstance( Locale.FRANCE );
+    	int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue(  );
+		objNowTmp.add( Calendar.MILLISECOND, nbMilli );
+    	/*Boolean bInListDayOpened = request.getSession(  ).getAttribute( CONSTANT_IN_LISTDAYOPENED ) == null ? false : (Boolean)request.getSession(  ).getAttribute( CONSTANT_IN_LISTDAYOPENED );
     	Boolean bInListDay = request.getSession(  ).getAttribute(CONSTANT_IN_LISTDAY) == null ? false : (Boolean)request.getSession(  ).getAttribute(CONSTANT_IN_LISTDAY);
     	
     	if( !bInListDayOpened && !bInListDay)
@@ -403,7 +406,7 @@ public class AppointmentService
         	}
         	if(nbMilli < nbMilliWeek)
         		objNowTmp.add( Calendar.MILLISECOND, nbMilli );
-		}
+		}*/
         
         for ( int i = 0; i < listDays.size(  ); i++ )
         {
@@ -867,7 +870,7 @@ public class AppointmentService
      * Check that a form has every days created for its coming weeks
      * @param form The form to check
      */
-    public void checkFormDays( AppointmentForm form )
+    public void checkFormDays( AppointmentForm form, Boolean bForSlot )
     {
         AppLogService.info( "checkFormDays IN " );
 
@@ -995,8 +998,16 @@ public class AppointmentService
                                 {
                                     if ( day.getPeoplePerAppointment(  ) != 0 )
                                     {
-                                    	slot.setNbPlaces( slot.getNbPlaces() /*day.getPeoplePerAppointment(  )*/);
-                                        //slot.setNbPlaces( day.getPeoplePerAppointment(  ) /*day.getPeoplePerAppointment(  )*/);
+                                    	if( bForSlot )
+                                    	{
+                                    		slot.setNbPlaces( slot.getNbPlaces( ) /*day.getPeoplePerAppointment(  )*/);
+                                            //slot.setNbPlaces( day.getPeoplePerAppointment(  ) /*day.getPeoplePerAppointment(  )*/);
+                                    	}
+                                    	else
+                                    	{
+                                    		//slot.setNbPlaces( slot.getNbPlaces() /*day.getPeoplePerAppointment(  )*/);
+                                            slot.setNbPlaces( day.getPeoplePerAppointment(  ) /*day.getPeoplePerAppointment(  )*/);
+                                    	}
                                     }
 
                                     nNbFreePlaces += slot.getNbPlaces(  );
@@ -1107,7 +1118,7 @@ public class AppointmentService
             AppointmentDayHome.remove( day.getIdDay(  ) );
         }
 
-        checkFormDays( form );
+        checkFormDays( form, false );
     }
 
     /**
@@ -1239,7 +1250,7 @@ public class AppointmentService
      * form that are associated with a future date are removed and re-created
      * @param form The form to rest days of
      */
-    public void resetFormDays( AppointmentForm form, Date dateMin )
+    public void resetFormDays( AppointmentForm form, Date dateMin, Boolean bCheckForSlot )
     {
         Calendar calendar = GregorianCalendar.getInstance( Locale.FRANCE );
         calendar.setTime( dateMin );
@@ -1257,7 +1268,7 @@ public class AppointmentService
             AppointmentDayHome.remove( day.getIdDay(  ) );
         }
 
-        checkFormDays( form );
+        checkFormDays( form, bCheckForSlot );
     }
 
     /**

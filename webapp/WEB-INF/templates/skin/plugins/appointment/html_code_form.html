@@ -186,7 +186,7 @@
 						
 							<#list form_errors as form_error>	
 																	
-								<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage = listAllErrors[7]) >
+								<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage == listAllErrors[7]) >
 									<div class="alert alert-error alert-danger">
 										<p>
 										  	${form_error.errorMessage}

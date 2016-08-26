@@ -166,7 +166,7 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     private static final String PROPERTY_UNVAILABLE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     private static final String PROPERTY_EMPTY_NB_SEATS ="appointment.validation.appointment.NbBookedSeat.notEmpty";
-	private static final String PROPERTY_UNVAILABLE_NB_SEATS = "validation.appointment.NbBookedSeat.error";
+	private static final String PROPERTY_UNVAILABLE_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.error";
     
     private transient volatile Boolean _bIsFormFirstStep;
 

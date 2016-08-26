@@ -731,7 +731,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                         getURLManageAppointmentFormDays( request, strIdForm ), AdminMessage.TYPE_STOP ) );
             }
 
-            AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ), dateMin );
+            AppointmentService.getService(  ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdForm ), dateMin, true );
 
             //even though only this day has been modified
             //Notify for the whole form for simplicity
