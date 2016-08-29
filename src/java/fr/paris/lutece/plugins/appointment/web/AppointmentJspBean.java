@@ -479,6 +479,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		int nTaille = 10 + (listGenatt.size() + 1);
 
 		if (tmpForm != null) {
+			int nIndex = 0;
 			Object[] strWriter = new String[1];
 			strWriter[0] = tmpForm.getTitle();
 			tmpObj.add(strWriter);
@@ -514,13 +515,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					"appointment.manage_appointments.columnLogin", getLocale());
 			strInfos[9] = I18nService.getLocalizedString(
 					"appointment.manage_appointments.columnState", getLocale());
-			
+			if(tmpForm.getMaximumNumberOfBookedSeats() > 1){
 			strInfos[10] = I18nService.getLocalizedString(
-					"appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment", getLocale());
-
+					"appointment.manage_appointments.columnNumberOfBookedseatsPerAppointment", getLocale());
+			nIndex = 1;
+			}
 			if (listGenatt.size() > 0) {
-				int nIndex = 0;
-
+				
+				
 				for (Integer key : listGenatt.keySet()) {
 					strInfos[10 + nIndex] = listGenatt.get(key);
 					nIndex++;
@@ -531,6 +533,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		}
 
 		if (listIdAppointments.size() > 0) {
+			int nIndex = 0;
 			List<Appointment> listAppointments = AppointmentHome
 					.getAppointmentListById(listIdAppointments,
 							filter.getOrderBy(), filter.getOrderAsc());
@@ -573,14 +576,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 						: tmpApp.getState().getName();
                 
 				if(tmpForm.getMaximumNumberOfBookedSeats() > 1){
-					
-                strWriter[10] = ""+tmpApp.getNumberPlacesReserved();
+					nIndex=1;
+	                strWriter[10] = ""+tmpApp.getNumberPlacesReserved();
 				
 				}
 				List<Integer> listIdResponse = AppointmentHome
 						.findListIdResponse(tmpApp.getIdAppointment());
 				List<Response> listResponses = new ArrayList<Response>();
-				int nIndex = 0;
+				
 
 				for (int nIdResponse : listIdResponse) {
 					Response resp = ResponseHome.findByPrimaryKey(nIdResponse);
