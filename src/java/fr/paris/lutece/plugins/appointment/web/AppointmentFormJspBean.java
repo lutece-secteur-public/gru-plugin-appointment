@@ -938,6 +938,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             }
 
             int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdAppointmentForm, dateMin );
+            
+            if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() )
+            {
+                addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale(  ) );
+                
+                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM,
+                        appointmentForm.getIdForm(  ) );
+            }
 
             if ( strDateMin.isEmpty(  ) )
             {
@@ -1059,11 +1067,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                 }
             }
         }
-        if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() )
+        /*if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() )
         {
             bReturn = false;
             addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale(  ) );
-        }
+        }*/
 
         return bReturn;
     }
