@@ -508,7 +508,7 @@ public class AppointmentApp extends MVCApplication
                 }
             }
 
-            if ( form.getEnableConfirmEmail(  ) )
+            if ( form.getEnableConfirmEmail(  ) && form.getEnableMandatoryEmail( ) )
             {
                 if ( StringUtils.isEmpty( strConfirmEmail ) )
                 {

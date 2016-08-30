@@ -1892,7 +1892,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				listFormErrors.add(genAttError);
 			}
 
-			if (form.getEnableConfirmEmail()) {
+			if ( form.getEnableConfirmEmail( ) && form.getEnableMandatoryEmail( ) ) {
 				if (StringUtils.isEmpty(emailConfirmation)) {
 					GenericAttributeError genAttError = new GenericAttributeError();
 					genAttError.setErrorMessage(I18nService.getLocalizedString(
