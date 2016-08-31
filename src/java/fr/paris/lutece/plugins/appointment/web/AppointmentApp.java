@@ -1433,7 +1433,7 @@ public class AppointmentApp extends MVCApplication
         MutableInt nMutableNbWeek = new MutableInt( nNbWeek );
 
         List<AppointmentDay> listDays = AppointmentService.getService(  )
-                                                          .getDayListForCalendar( form, nMutableNbWeek, true, bBack, request );
+                                                          .getDayListForCalendar( form, nMutableNbWeek, true, bBack );
 
         nNbWeek = nMutableNbWeek.intValue(  );
 

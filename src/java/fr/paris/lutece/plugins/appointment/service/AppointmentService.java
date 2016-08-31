@@ -108,9 +108,7 @@ public class AppointmentService
     private static final long CONSTANT_MILISECONDS_IN_DAY = 86400000L;
     private static final String CONSTANT_SHA256 = "SHA-256";
     private static final int CONSTANT_MILL_WEEK = 24*7;
-    private static final String CONSTANT_IN_LISTDAYOPENED = "bInListDayOpened";
-    private static final String CONSTANT_IN_LISTDAY = "bInListDay";
-
+    
     /**
      * Instance of the service
      */
@@ -331,83 +329,28 @@ public class AppointmentService
      * @return a unvalid Appointments before Now
      */
     private static List<AppointmentDay> unvalidAppointmentsbeforeNow( int iDaysBeforeAppointment,
-        List<AppointmentDay> listDays, Calendar calStart, Calendar calEnd, Calendar objNow, HttpServletRequest request )
+        List<AppointmentDay> listDays, Calendar calStart, Calendar calEnd, Calendar objNow )
     {
     	Calendar objNowTmp = GregorianCalendar.getInstance( Locale.FRANCE );
     	int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue(  );
-		objNowTmp.add( Calendar.MILLISECOND, nbMilli );
-    	/*Boolean bInListDayOpened = request.getSession(  ).getAttribute( CONSTANT_IN_LISTDAYOPENED ) == null ? false : (Boolean)request.getSession(  ).getAttribute( CONSTANT_IN_LISTDAYOPENED );
-    	Boolean bInListDay = request.getSession(  ).getAttribute(CONSTANT_IN_LISTDAY) == null ? false : (Boolean)request.getSession(  ).getAttribute(CONSTANT_IN_LISTDAY);
-    	
-    	if( !bInListDayOpened && !bInListDay)
+		
+		int nIsEnbledDay = getIsEnbledDay(listDays);
+		if(nIsEnbledDay == 0)
     	{
-    		for ( int i = 0; i < listDays.size(  ); i++ )
-            {
-                if ( listDays.get( i ).getDate().getYear() == objNow.getTime().getYear() && 
-                		listDays.get( i ).getDate().getMonth() == objNow.getTime().getMonth() &&
-                		listDays.get( i ).getDate().getDate() == objNow.getTime().getDate() )
-                {
-                	if(listDays.get( i ).getIsOpen())
-                	{
-                		bInListDayOpened = true;
-                        request.getSession(  ).setAttribute( CONSTANT_IN_LISTDAYOPENED, bInListDayOpened );
-                	}
-                	else
-                	{
-                		bInListDay = true;
-                        request.getSession(  ).setAttribute( CONSTANT_IN_LISTDAY, bInListDay );
-                	}
-                }
-            }
+    		objNowTmp.add( Calendar.MILLISECOND, nbMilli );
     	}
-    	
-    	if(bInListDayOpened)
+		if(nIsEnbledDay == 1)
     	{
-    		for ( int i = 0; i < listDays.size(  ); i++ )
-            {
-                if ( listDays.get( i ).getDate().getYear() == objNow.getTime().getYear() && 
-                		listDays.get( i ).getDate().getMonth() == objNow.getTime().getMonth() &&
-                		listDays.get( i ).getDate().getDate() == objNow.getTime().getDate()  &&
-                		listDays.get( i ).getIsOpen())
-                {
-                	bInListDayOpened = true;
-                }
-            }
-    	}
-    	
-    	if(bInListDay)
-    	{
-    		for ( int i = 0; i < listDays.size(  ); i++ )
-            {
-                if ( listDays.get( i ).getDate().getYear() == objNow.getTime().getYear() && 
-                		listDays.get( i ).getDate().getMonth() == objNow.getTime().getMonth() &&
-                		listDays.get( i ).getDate().getDate() == objNow.getTime().getDate()  &&
-                		!listDays.get( i ).getIsOpen())
-                {
-                	bInListDay = true;
-                }
-            }
-    	}
-    	
-    	Calendar objNowTmp = GregorianCalendar.getInstance( Locale.FRANCE );
-    	if( bInListDayOpened )
-    	{
-			int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue(  );
-			objNowTmp.add( Calendar.MILLISECOND, nbMilli );
-    	}
-    	if( bInListDay || (!bInListDayOpened && !bInListDay) )
-		{
-	        int nbMilliWeek = Long.valueOf( TimeUnit.HOURS.toMillis( CONSTANT_MILL_WEEK ) ).intValue(  );
-    		int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( iDaysBeforeAppointment ) ).intValue(  );
-        	Calendar tmpCal = getFirstSlotEnbled(listDays, objNowTmp);
+    		int nbMilliWeek = Long.valueOf( TimeUnit.HOURS.toMillis( CONSTANT_MILL_WEEK ) ).intValue(  );
+    		Calendar tmpCal = getFirstSlotEnbled(listDays, objNowTmp);
         	if(tmpCal!=null)
         	{
         		nbMilli += (int) (tmpCal.getTimeInMillis() - objNowTmp.getTimeInMillis());
         	}
         	if(nbMilli < nbMilliWeek)
         		objNowTmp.add( Calendar.MILLISECOND, nbMilli );
-		}*/
-        
+    	}
+    	
         for ( int i = 0; i < listDays.size(  ); i++ )
         {
             if ( listDays.get( i ).getIsOpen(  ) )
@@ -451,6 +394,7 @@ public class AppointmentService
     /**
     *
     * @param listDays list of days
+    * @param objNow today
     */
     private static Calendar getFirstSlotEnbled(List<AppointmentDay> listDays, Calendar objNow)
     {
@@ -479,7 +423,8 @@ public class AppointmentService
                                 listDays.get( i ).getListSlots(  ).get( index ).getStartingMinute(  ) );
                         return calReturn;
                     }
-                    /*if ( listDays.get( i ).getListSlots(  ).get( index ).getIsEnabled() ) //Already an appointments
+                    /*
+                	if ( listDays.get( i ).getListSlots(  ).get( index ).getIsEnabled() ) //Already an appointments
                     {
                     	Calendar calReturn = getCalendarTime( listDays.get( i ).getDate(  ),
                                 listDays.get( i ).getListSlots(  ).get( index ).getStartingHour(  ),
@@ -488,10 +433,40 @@ public class AppointmentService
                     }*/
                 }
             }
-            
         }
     	
     	return null;
+    }
+    
+    /**
+    *
+    * @param listDays list of days
+    */
+    private static int getIsEnbledDay(List<AppointmentDay> listDays)
+    {
+    	Calendar objNow = GregorianCalendar.getInstance( Locale.FRANCE );
+    	int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( 24*7 ) ).intValue(  );
+		//objNowTmp.add( Calendar.MILLISECOND, nbMilli );
+    	int nIsEnbledDay = -1;
+    	while(nIsEnbledDay == -1 )
+    	{
+    		for ( int i = 0; i < listDays.size(  ); i++ )
+            {
+        		if ( listDays.get( i ).getDate().getYear() == objNow.getTime().getYear() && 
+                		listDays.get( i ).getDate().getMonth() == objNow.getTime().getMonth() &&
+                		listDays.get( i ).getDate().getDate() == objNow.getTime().getDate() )
+        		{
+        			if(listDays.get( i ).getIsOpen(  ) )
+        				return 0;
+        			else
+        				return 1;
+        		} 
+            }
+    		objNow.add( Calendar.MILLISECOND, nbMilli );
+    		nIsEnbledDay = -1; 
+    	}
+    	
+    	return -1;
     }
     
 
@@ -581,7 +556,7 @@ public class AppointmentService
      * @param nOffsetWeeks nOffsetWeeks
      * @return list Days
      */
-    private List<AppointmentDay> getListDays( AppointmentForm form, MutableInt nOffsetWeeks, Calendar objNow, HttpServletRequest request )
+    private List<AppointmentDay> getListDays( AppointmentForm form, MutableInt nOffsetWeeks, Calendar objNow )
     {
         Calendar[] calendar = getMondayWeek( nOffsetWeeks.intValue(  ) );
 
@@ -601,7 +576,7 @@ public class AppointmentService
                 form.getOpeningMinutes(  ) );
 
         listDays = unvalidAppointmentsbeforeNow( form.getMinDaysBeforeAppointment(  ), listDays, calendarStart,
-                calendarEnd, objNow, request );
+                calendarEnd, objNow );
 
         return listDays;
     }
@@ -626,10 +601,10 @@ public class AppointmentService
      * @return The list of days found
      */
     public List<AppointmentDay> getDayListForCalendar( AppointmentForm form, MutableInt nOffsetWeeks,
-        boolean bIsForFront, boolean bGetFirstEmptyWeek, HttpServletRequest request )
+        boolean bIsForFront, boolean bGetFirstEmptyWeek )
     {
         Calendar objNow = GregorianCalendar.getInstance( Locale.FRANCE );
-        List<AppointmentDay> listDays = getListDays( form, nOffsetWeeks, objNow, request );
+        List<AppointmentDay> listDays = getListDays( form, nOffsetWeeks, objNow );
         objNow = calculateNextSlotOpen( listDays, form, nOffsetWeeks );
 
         if ( bIsForFront )
@@ -641,12 +616,12 @@ public class AppointmentService
                 while ( !isWeekEnabled( listDays ) && ( nOffsetWeeks.intValue(  ) < form.getNbWeeksToDisplay(  ) ) )
                 {
                     nOffsetWeeks.increment(  );
-                    listDays = getListDays( form, nOffsetWeeks, objNow, request );
+                    listDays = getListDays( form, nOffsetWeeks, objNow );
                 }
 
                 if ( !isWeekEnabled( listDays ) )
                 {
-                    listDays = getListDays( form, new MutableInt( nSave ), objNow, request );
+                    listDays = getListDays( form, new MutableInt( nSave ), objNow );
                 }
             }
             else
@@ -656,12 +631,12 @@ public class AppointmentService
                 while ( !isWeekEnabled( listDays ) && ( nOffsetWeeks.intValue(  ) > 0 ) )
                 {
                     nOffsetWeeks.decrement(  );
-                    listDays = getListDays( form, nOffsetWeeks, GregorianCalendar.getInstance( Locale.FRANCE ), request );
+                    listDays = getListDays( form, nOffsetWeeks, GregorianCalendar.getInstance( Locale.FRANCE ) );
                 }
 
                 if ( !isWeekEnabled( listDays ) )
                 {
-                    listDays = getListDays( form, new MutableInt( 0 ), GregorianCalendar.getInstance( Locale.FRANCE ), request );
+                    listDays = getListDays( form, new MutableInt( 0 ), GregorianCalendar.getInstance( Locale.FRANCE ) );
                 }
             }
         }
