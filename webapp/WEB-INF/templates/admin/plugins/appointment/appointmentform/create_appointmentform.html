@@ -131,7 +131,7 @@
 				</div>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="address">#i18n{appointment.create_appointmentform.labelAddress} &nbsp;:</label>
+                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="geoloc_address">#i18n{appointment.create_appointmentform.labelAddress} &nbsp;:</label>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <input type="text" class="form-control input-sm" name="geoloc_address" id="geoloc_address"/>
                         <input type="text" class="form-control input-sm" name="geoloc_longitude" id="geoloc_longitude"/>
@@ -146,7 +146,7 @@
                         $('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
                         $('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
 
-                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.create_appointmentform.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#address');
+                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.create_appointmentform.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
 
                         $('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
 
