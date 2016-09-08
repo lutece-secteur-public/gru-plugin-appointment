@@ -280,7 +280,7 @@ public class AppointmentApp extends MVCApplication
     private static List<AppointmentSlotDisponiblity> listAppointmentSlotDisponiblity = new Vector<AppointmentSlotDisponiblity>(  );
 
     // Local variables
-    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
+    protected final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private final fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService _stateServiceWorkFlow = SpringContextService.getBean( fr.paris.lutece.plugins.workflowcore.service.workflow.WorkflowService.BEAN_SERVICE );
     private transient CaptchaSecurityService _captchaSecurityService;
     private transient DateConverter _dateConverter;
