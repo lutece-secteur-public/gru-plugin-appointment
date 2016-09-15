@@ -448,7 +448,7 @@ public class AppointmentService
     	int nbMilli = Long.valueOf( TimeUnit.HOURS.toMillis( 24*7 ) ).intValue(  );
 		//objNowTmp.add( Calendar.MILLISECOND, nbMilli );
     	int nIsEnbledDay = -1;
-    	while(nIsEnbledDay == -1 )
+    	while(nIsEnbledDay == -1 && listDays.size(  ) > 0)
     	{
     		for ( int i = 0; i < listDays.size(  ); i++ )
             {

@@ -1765,9 +1765,10 @@ public class AppointmentApp extends MVCApplication
 			Date dateMin = null;
 			List<AppointmentDay> listDays = AppointmentDayHome
 					.findByIdForm(form.getIdForm());
-			if (!listDays.isEmpty()) {
+		/*	if (!listDays.isEmpty()) {
 				dateMin = listDays.get(0).getDate();
 			}
+		*/
 			if(dateMin == null){
 				Calendar c =  Calendar.getInstance();
 				dateMin = new Date(c.getTimeInMillis());
