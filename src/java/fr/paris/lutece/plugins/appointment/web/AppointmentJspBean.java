@@ -533,12 +533,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		}
 
 		if (listIdAppointments.size() > 0) {
-			int nIndex = 0;
 			List<Appointment> listAppointments = AppointmentHome
 					.getAppointmentListById(listIdAppointments,
 							filter.getOrderBy(), filter.getOrderAsc());
 
 			for (Appointment tmpApp : listAppointments) {
+				int nIndex = 0;
 				State stateAppointment = _stateService.findByResource(
 						tmpApp.getIdAppointment(),
 						Appointment.APPOINTMENT_RESOURCE_TYPE,
@@ -1599,6 +1599,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			appointmentDTO.setLastName(appointment.getLastName());
 			appointmentDTO.setNumberPlacesReserved(appointment.getNumberPlacesReserved());
 			appointmentDTO.setIdAppointment(appointment.getIdAppointment());
+			appointmentDTO.setIdSlot(appointment.getIdSlot( ));
 
 			Map<Integer, List<Response>> mapResponsesByIdEntry = appointmentDTO
 					.getMapResponsesByIdEntry();
