@@ -207,7 +207,7 @@ public class AppointmentFormService implements Serializable
             model.put( MARK_STR_ENTRY, strBuffer.toString(  ) );
             model.put( MARK_LOCALE, locale );
             model.put( MARK_WEEK, nWeek );
-            model.put( MARK_PLACES, AppointmentSlotHome.findByPrimaryKey(Integer.parseInt(strSlot)).getNbPlaces());
+            model.put( MARK_PLACES, AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strSlot)).getNbFreePlaces( ));
             
             model.put(MARK_CUSTOMER_ID,"" );
             model.put( MARK_USER_ID_OPAM,"");
@@ -283,9 +283,8 @@ public class AppointmentFormService implements Serializable
         model.put( MARK_WEEK, nWeek );
         if (StringUtils.isNotBlank(strSlot)) {
 			int nIdSlot = Integer.parseInt(strSlot);
-			AppointmentSlot slot = AppointmentSlotHome
-					.findByPrimaryKey(nIdSlot);
-			model.put(MARK_PLACES, slot.getNbPlaces());
+			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(nIdSlot);
+			model.put(MARK_PLACES, Math.min(slot.getNbFreePlaces(),form.getMaximumNumberOfBookedSeats()));
 		}
 	AppLogService.info("Appintment To GRU : strCustomerId "+strCustomerId);
        AppLogService.info("Appintment To GRU : strUserIdOpam "+strUserIdOpam);
