@@ -247,7 +247,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	// JSPhttp://localhost:8080/lutece/jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&dateAppointment=16/04/15&refAppointment=2572c82f
 	private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
 	private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
-
+	
 	// Messages
 	private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENT = "appointment.message.confirmRemoveAppointment";
 	private static final String MESSAGE_CONFIRM_REMOVE_MASSAPPOINTMENT = "appointment.message.confirmRemoveMassAppointment";
@@ -1481,7 +1481,6 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		String strFirstName = request.getParameter(PARAMETER_FIRSTNAME);
 		String strLastName = request.getParameter(PARAMETER_LASTNAME);
-		String strNemberPhone = request.getParameter(PARAMETER_PHONE);
 		String strEmail = request.getParameter(PARAMETER_EMAILM);
 
 		AppointmentSlot appointmentSlot = AppointmentSlotHome
@@ -1959,7 +1958,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				
 				int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats - nbrReserved; 
 				
-				if(((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats( ))) )
+				if(((bookedEstimate > slot.getNbPlaces()) || (nbBookedSeats > form.getMaximumNumberOfBookedSeats( ))) && Integer.parseInt(idSlotAppointment) != 0)
 				{
 					GenericAttributeError genAttError = new GenericAttributeError();
 					genAttError.setErrorMessage(I18nService.getLocalizedString(
@@ -1993,7 +1992,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					listFormErrors.add(genAttError);
 				}
 			} else {
-				if (!StringUtils.isEmpty(appointment.getEmail())) {
+				if (!StringUtils.isEmpty(appointment.getEmail()) && strIdSlot != null && !strIdSlot.equals("0")) {
 					if (StringUtils.isNumeric(strIdSlot)) {
 						AppointmentSlot slot = AppointmentSlotHome
 								.findByPrimaryKey(Integer.valueOf(strIdSlot));
@@ -2083,13 +2082,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				if (StringUtils.isNotEmpty(request
 						.getParameter(PARAMETER_SAVE_AND_BACK))) {
 					addInfo(INFO_APPOINTMENT_UPDATED, getLocale());
-
+					
 					return redirect(request,
 							getUrlManageAppointment(request, nIdForm));
 				}
 			}
 
-			if (comeFromCalendarAppointment(strIdSlot)) {
+			if (comeFromCalendarAppointment(strIdSlot) && request.getParameter("save") != null && request.getParameter("save").equals( PARAMETER_SAVE_AND_BACK)) {
 				return redirect(request, VIEW_DISPLAY_RECAP_APPOINTMENT,
 						PARAMETER_ID_SLOT, Integer.parseInt(strIdSlot));
 			} else {
@@ -2157,13 +2156,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				int nMinAppointmentDuration = AppointmentService.getService()
 						.getListTimeBegin(listDays, form, listTimeBegin);
 
-				Calendar calendarEnd = getCalendarTime(
+			/*	Calendar calendarEnd = getCalendarTime(
 						form.getDateEndValidity(), form.getClosingHour(),
 						form.getClosingMinutes());
 				Calendar calendarStart = getCalendarTime(
 						form.getDateStartValidity(), form.getOpeningHour(),
 						form.getOpeningMinutes());
-
+			*/
 				listDays = computeUnavailableDays(form.getIdForm(), listDays,
 						false);
 
@@ -2550,7 +2549,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		Appointment appointment = _appointmentFormService
 				.getValidatedAppointmentFromSession(request.getSession());
 		AppointmentSlot appointmentSlot = AppointmentSlotHome
-				.findByPrimaryKey(appointment.getIdSlot());
+				.findByPrimaryKeyWithFreePlace(appointment.getIdSlot());
 		AppointmentForm form = AppointmentFormHome
 				.findByPrimaryKey(appointmentSlot.getIdForm());
        
@@ -2559,13 +2558,30 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			return redirect(request, VIEW_CREATE_APPOINTMENT,
 					PARAMETER_ID_FORM, appointmentSlot.getIdForm());
 		}
-		/* int nbPlace = appointmentSlot.getNbPlaces()-appointment.getNumberPlacesReserved();
-		 appointmentSlot.setNbPlaces(nbPlace);
-		 AppointmentSlotHome.update(appointmentSlot);*/
- 		 
- 		
-		boolean bCreation = appointment.getIdAppointment() == 0;
 
+		boolean bCreation = appointment.getIdAppointment() == 0;
+		
+
+		if(!bCreation){
+			Appointment appt= AppointmentHome.findByPrimaryKey(appointment.getIdAppointment( ));
+
+			if(appt.getIdSlot( ) != appointment.getIdSlot( ) && 
+					
+				appointment.getNumberPlacesReserved( ) >  appointmentSlot.getNbFreePlaces( )){
+				 
+				addError(ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, getLocale());
+				return redirect(request, VIEW_GET_APPOINTMENT_CALENDAR,
+						PARAMETER_ID_FORM, appointmentSlot.getIdForm());
+				
+			}
+		
+			
+		}else if(appointment.getNumberPlacesReserved( ) > appointmentSlot.getNbFreePlaces( ) ){
+			
+			    addError(ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, getLocale());
+				return redirect(request, VIEW_GET_APPOINTMENT_CALENDAR,
+						PARAMETER_ID_FORM, appointmentSlot.getIdForm());
+		}
 		if (!RBACService
 				.isAuthorized(
 						AppointmentForm.RESOURCE_TYPE,
