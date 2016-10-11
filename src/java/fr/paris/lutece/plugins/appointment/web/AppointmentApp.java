@@ -621,8 +621,7 @@ public class AppointmentApp extends MVCApplication
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
                 {
                     GenericAttributeError genAttError = new GenericAttributeError(  );
-                    genAttError.setErrorMessage( I18nService.getLocalizedString( 
-                            constraintViolation.getMessageTemplate(  ), request.getLocale(  ) ) );
+                    genAttError.setErrorMessage( constraintViolation.getMessage( ) );
                     listFormErrors.add( genAttError );
                 }
             }
@@ -888,6 +887,13 @@ public class AppointmentApp extends MVCApplication
                         appointmentSlot.getIdSlot(  ) );
                 }
             }
+            
+            if(appointment.getNumberPlacesReserved( ) > appointmentSlot.getNbFreePlaces( ) ){
+    			
+                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM,
+                        appointmentSlot.getIdForm(  ) );
+	     	}
 
             if ( !_appointmentFormService.doMakeAppointment( appointment, form, false ) )
             {
