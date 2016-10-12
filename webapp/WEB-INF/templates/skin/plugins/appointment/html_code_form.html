@@ -120,7 +120,7 @@
 						
 							<#list form_errors as form_error>	
 																	
-								<#if form.enableMandatoryEmail && form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
+								<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
 								<div class="alert alert-error alert-danger">
 									<p>
 									  	${form_error.errorMessage}
