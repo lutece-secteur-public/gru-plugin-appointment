@@ -1987,8 +1987,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			if (!listErrors.isEmpty()) {
 				for (ConstraintViolation<AppointmentDTO> constraintViolation : listErrors) {
 					GenericAttributeError genAttError = new GenericAttributeError();
-					genAttError.setErrorMessage(constraintViolation
-							.getMessage());
+					genAttError.setErrorMessage(I18nService.getLocalizedString(constraintViolation.getMessageTemplate(), request.getLocale( )));
 					listFormErrors.add(genAttError);
 				}
 			} else {

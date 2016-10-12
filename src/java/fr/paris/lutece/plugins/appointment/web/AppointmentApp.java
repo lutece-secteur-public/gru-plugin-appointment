@@ -621,7 +621,7 @@ public class AppointmentApp extends MVCApplication
                 for ( ConstraintViolation<AppointmentDTO> constraintViolation : listErrors )
                 {
                     GenericAttributeError genAttError = new GenericAttributeError(  );
-                    genAttError.setErrorMessage( constraintViolation.getMessage( ) );
+                    genAttError.setErrorMessage( I18nService.getLocalizedString(constraintViolation.getMessageTemplate( ), request.getLocale( ) ));
                     listFormErrors.add( genAttError );
                 }
             }

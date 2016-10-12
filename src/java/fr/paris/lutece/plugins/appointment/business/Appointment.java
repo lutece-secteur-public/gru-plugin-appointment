@@ -84,18 +84,18 @@ public class Appointment implements Serializable
      */
     private static final long serialVersionUID = -2311528095383408879L;
     private int _nIdAppointment;
-    @NotBlank( message = "#i18n{appointment.validation.appointment.FirstName.notEmpty}" )
-    @Size( max = 255, message = "#i18n{appointment.validation.appointment.FirstName.size}" )
+    @NotBlank( message = "appointment.validation.appointment.FirstName.notEmpty" )
+    @Size( max = 255, message = "appointment.validation.appointment.FirstName.size" )
     private String _strFirstName;
-    @NotBlank( message = "#i18n{appointment.validation.appointment.LastName.notEmpty}" )
-    @Size( max = 255, message = "#i18n{appointment.validation.appointment.LastName.size}" )
+    @NotBlank( message = "appointment.validation.appointment.LastName.notEmpty" )
+    @Size( max = 255, message = "appointment.validation.appointment.LastName.size" )
     private String _strLastName;
-    @Size( max = 255, message = "#i18n{appointment.validation.appointment.Email.size}" )
-    @Email( message = "#i18n{appointment.validation.appointment.Email.email}" )
+    @Size( max = 255, message = "appointment.validation.appointment.Email.size" )
+    @Email( message = "appointment.validation.appointment.Email.email" )
     private String _strEmail;
 
     // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
-    @Size( max = 255, message = "#i18n{portal.validation.message.sizeMax}" )
+    @Size( max = 255, message = "portal.validation.message.sizeMax" )
     private String _strIdUser;
     private String _strAuthenticationService;
     private String _strLocation;

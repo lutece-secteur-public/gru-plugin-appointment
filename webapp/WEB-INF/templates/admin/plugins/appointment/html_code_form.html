@@ -46,9 +46,9 @@
 								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
 									<div class="alert alert-error alert-danger">
 										<p>
-										  	${form_error.errorMessage}
+										  	${form_error.errorMessage} 
 										</p>
-									</div>
+									</div><#break >
 								</#if>	
 							</#list>
 					</#if>
@@ -75,9 +75,9 @@
 								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
 									<div class="alert alert-error alert-danger">
 										<p>
-										  	${form_error.errorMessage}
+										  	${form_error.errorMessage} 
 										</p>
-									</div>
+									</div><#break >
 								</#if>	
 							</#list>
 					</#if>
@@ -104,9 +104,9 @@
 								<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
 								<div class="alert alert-error alert-danger">
 									<p>
-									  	${form_error.errorMessage}
+									  	${form_error.errorMessage} 
 									</p>
-								</div>
+								</div><#break >
 								</#if>	
 							</#list>
 					</#if>
@@ -136,7 +136,7 @@
 										<p>
 										  	${form_error.errorMessage} 
 										</p>
-									</div>
+									</div><#break >
 								</#if>	
 							</#list>
 					</#if>
@@ -171,7 +171,7 @@
 										<p>
 										  	${form_error.errorMessage}
 										</p>
-									</div>
+									</div> <#break >
 								 </#if>	 
 							</#list>
 						
