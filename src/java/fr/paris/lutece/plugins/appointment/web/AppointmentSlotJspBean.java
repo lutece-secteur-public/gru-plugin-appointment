@@ -534,10 +534,10 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             model.put( MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration );
             model.put( MARK_LIST_DAYS_OF_WEEK, MESSAGE_LIST_DAYS_OF_WEEK );
             model.put( MARK_LANGUAGE, getLocale( ) );
-
+            
+            AppointmentFormJspBean.addElementsToModelForLeftColumn( request, form, getUser( ), getLocale( ), model );
             return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
         }
-
         // return redirect( request,
         // AppointmentSlotJspBean.getUrlManageSlotsByIdDay( request, strIdDay ) );
         return getPage( MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model );
