@@ -166,6 +166,9 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_UNVAILABLE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     private static final String PROPERTY_EMPTY_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     private static final String PROPERTY_UNVAILABLE_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.error";
+    private static final String PROPERTY_MAX_APPOINTMENT_PERIODE = "appointment.message.error.MaxAppointmentPeriode";
+    private static final String PROPERTY_MAX_APPOINTMENT_PERIODE_BACK = "appointment.info.appointment.emailerror";
+
 
     private transient volatile Boolean _bIsFormFirstStep;
 
@@ -442,6 +445,10 @@ public class AppointmentFormService implements Serializable
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_CONFIRM_EMAIL, request.getLocale( ) ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_NB_SEATS, request.getLocale( ) ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_NB_SEATS, request.getLocale( ) ) );
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MAX_APPOINTMENT_PERIODE, request.getLocale( ) ) );
+        listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MAX_APPOINTMENT_PERIODE_BACK, request.getLocale( ) ) );
+
+        
         return listAllErrors;
     }
 

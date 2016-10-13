@@ -33,7 +33,31 @@
 						#i18n{appointment.appointmentApp.defaultTitle}
 					</#if>
 				</legend>
+				
 				<br>
+				<#if form_errors??>
+					<#assign hasDisplayableError = false>
+					<#list form_errors as form_error>
+						<#if form_error.isDisplayableError>
+							<#assign hasDisplayableError = true>
+							<#break >
+						</#if>
+					</#list>
+					<#if hasDisplayableError>
+						
+							<#list form_errors as form_error>	
+																	
+								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[8] >
+									<div class="alert alert-error alert-danger">
+										<p>
+										  	${form_error.errorMessage}
+										</p>
+									</div>
+								</#if>	
+							</#list>
+						
+					</#if>
+				</#if>
 				<br>				
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="lastname">${form_messages.fieldLastNameTitle!} *</label>
