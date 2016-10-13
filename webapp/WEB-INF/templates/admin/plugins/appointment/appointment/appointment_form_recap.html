@@ -2,6 +2,7 @@
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<form class="form-horizontal" id="form-validate" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
 			<input name="action" value="doMakeAppointment" type="hidden" />
+                        <input name="previousForm" value="${previousForm!}" type="hidden" />
 			<fieldset>
 				<legend>
 					#i18n{appointment.appointmentApp.recap.title} - 

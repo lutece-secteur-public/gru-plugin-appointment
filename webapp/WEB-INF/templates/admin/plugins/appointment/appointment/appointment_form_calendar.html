@@ -100,7 +100,7 @@
 												<#if slot.isEnabled>
 													<#if slot.nbFreePlaces &gt; 0>
 														<td class="appointment-slot-avaiable appointment-row${slotSpan} appointment-tooltip">
-															<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}">
+															<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}&previousForm=calendar">
 																${formMessages.calendarReserveLabel}
 															</a>
 															<@getCellTooltip appointmentSlot=slot />
@@ -167,7 +167,7 @@
 										<#if slot.isEnabled>
 											<#if slot.nbFreePlaces &gt; 0>
 												<td class="appointment-slot-avaiable">
-													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}">
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=displayRecapAppointment&idSlot=${slot.idSlot}&previousForm=calendar">
 														${formMessages.calendarReserveLabel}
 													</a>
 												</td>
