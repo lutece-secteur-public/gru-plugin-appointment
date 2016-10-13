@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.util.List;
 
-
 /**
  * Interface of DAO of appointment form messages
  */
@@ -45,34 +44,45 @@ public interface IAppointmentFormMessagesDAO
 {
     /**
      * Create a form message
-     * @param formMessage The instance of the form message to create
-     * @param plugin The plugin
+     * 
+     * @param formMessage
+     *            The instance of the form message to create
+     * @param plugin
+     *            The plugin
      */
     void insert( AppointmentFormMessages formMessage, Plugin plugin );
 
     /**
      * Update a form message
-     * @param formMessage The form message to update
-     * @param plugin The plugin
+     * 
+     * @param formMessage
+     *            The form message to update
+     * @param plugin
+     *            The plugin
      */
     void store( AppointmentFormMessages formMessage, Plugin plugin );
 
     /**
      * Remove a form message from its primary key
-     * @param nAppointmentFormId The id of the form
-     * @param plugin The plugin
+     * 
+     * @param nAppointmentFormId
+     *            The id of the form
+     * @param plugin
+     *            The plugin
      */
     void delete( int nAppointmentFormId, Plugin plugin );
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
      * Get a form message from its primary key
-     * @param nAppointmentFormId The id of the form message
-     * @param plugin The plugin
-     * @return The form message, or null if no form message has the given
-     *         primary key
+     * 
+     * @param nAppointmentFormId
+     *            The id of the form message
+     * @param plugin
+     *            The plugin
+     * @return The form message, or null if no form message has the given primary key
      */
     AppointmentFormMessages load( int nAppointmentFormId, Plugin plugin );
 }

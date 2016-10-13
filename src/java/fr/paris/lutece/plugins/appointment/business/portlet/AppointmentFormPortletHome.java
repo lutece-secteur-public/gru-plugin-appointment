@@ -38,16 +38,13 @@ import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-
 /**
- * This class provides instances management methods for AppointmentPortlet
- * objects
+ * This class provides instances management methods for AppointmentPortlet objects
  */
 public class AppointmentFormPortletHome extends PortletHome
 {
     // Static variable pointed at the DAO instance
-    private static IAppointmentFormPortletDAO _dao = SpringContextService.getBean( 
-            "appointment.appointmentFormPortletDAO" );
+    private static IAppointmentFormPortletDAO _dao = SpringContextService.getBean( "appointment.appointmentFormPortletDAO" );
 
     /* This class implements the Singleton design pattern. */
     private static volatile AppointmentFormPortletHome _singleton;
@@ -55,7 +52,7 @@ public class AppointmentFormPortletHome extends PortletHome
     /**
      * Constructor
      */
-    public AppointmentFormPortletHome(  )
+    public AppointmentFormPortletHome( )
     {
         if ( _singleton == null )
         {
@@ -67,9 +64,9 @@ public class AppointmentFormPortletHome extends PortletHome
      * {@inheritDoc}
      */
     @Override
-    public String getPortletTypeId(  )
+    public String getPortletTypeId( )
     {
-        String strCurrentClassName = this.getClass(  ).getName(  );
+        String strCurrentClassName = this.getClass( ).getName( );
         String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
         return strPortletTypeId;
@@ -80,11 +77,11 @@ public class AppointmentFormPortletHome extends PortletHome
      *
      * @return the AppointmentPortlet Portlet instance
      */
-    public static PortletHome getInstance(  )
+    public static PortletHome getInstance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new AppointmentFormPortletHome(  );
+            _singleton = new AppointmentFormPortletHome( );
         }
 
         return _singleton;
@@ -94,7 +91,7 @@ public class AppointmentFormPortletHome extends PortletHome
      * {@inheritDoc}
      */
     @Override
-    public IPortletInterfaceDAO getDAO(  )
+    public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
     }

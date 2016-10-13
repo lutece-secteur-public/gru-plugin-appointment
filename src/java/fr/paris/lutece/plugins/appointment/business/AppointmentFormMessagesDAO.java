@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
-
 /**
  * DAO for appointment form messages objects
  */
@@ -55,27 +54,27 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_FORM_MESSAGE, plugin );
         int nIndex = 1;
-        daoUtil.setInt( nIndex++, formMessage.getIdForm(  ) );
-        daoUtil.setString( nIndex++, formMessage.getCalendarTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldLastNameTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldLastNameHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldEmailTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldEmailHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmail(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmailHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCreated(  ) );
-        daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation(  ) );
-        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCanceled(  ) );
-        daoUtil.setString( nIndex++, formMessage.getLabelButtonRedirection(  ) );
-        daoUtil.setString( nIndex++, formMessage.getNoAvailableSlot(  ) );
-        daoUtil.setString( nIndex++, formMessage.getCalendarDescription(  ) );
-        daoUtil.setString( nIndex++, formMessage.getCalendarReserveLabel(  ) );
-        daoUtil.setString( nIndex, formMessage.getCalendarFullLabel(  ) );
+        daoUtil.setInt( nIndex++, formMessage.getIdForm( ) );
+        daoUtil.setString( nIndex++, formMessage.getCalendarTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldLastNameTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldLastNameHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldEmailTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldEmailHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmail( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmailHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCreated( ) );
+        daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation( ) );
+        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCanceled( ) );
+        daoUtil.setString( nIndex++, formMessage.getLabelButtonRedirection( ) );
+        daoUtil.setString( nIndex++, formMessage.getNoAvailableSlot( ) );
+        daoUtil.setString( nIndex++, formMessage.getCalendarDescription( ) );
+        daoUtil.setString( nIndex++, formMessage.getCalendarReserveLabel( ) );
+        daoUtil.setString( nIndex, formMessage.getCalendarFullLabel( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -86,27 +85,27 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_FORM_MESSAGE, plugin );
         int nIndex = 1;
-        daoUtil.setString( nIndex++, formMessage.getCalendarTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldLastNameTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldLastNameHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldEmailTitle(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldEmailHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmail(  ) );
-        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmailHelp(  ) );
-        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCreated(  ) );
-        daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation(  ) );
-        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCanceled(  ) );
-        daoUtil.setString( nIndex++, formMessage.getLabelButtonRedirection(  ) );
-        daoUtil.setString( nIndex++, formMessage.getNoAvailableSlot(  ) );
-        daoUtil.setString( nIndex++, formMessage.getCalendarDescription(  ) );
-        daoUtil.setString( nIndex++, formMessage.getCalendarReserveLabel(  ) );
-        daoUtil.setString( nIndex++, formMessage.getCalendarFullLabel(  ) );
-        daoUtil.setInt( nIndex, formMessage.getIdForm(  ) );
+        daoUtil.setString( nIndex++, formMessage.getCalendarTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldFirstNameHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldLastNameTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldLastNameHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldEmailTitle( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldEmailHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmail( ) );
+        daoUtil.setString( nIndex++, formMessage.getFieldConfirmationEmailHelp( ) );
+        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCreated( ) );
+        daoUtil.setString( nIndex++, formMessage.getUrlRedirectAfterCreation( ) );
+        daoUtil.setString( nIndex++, formMessage.getTextAppointmentCanceled( ) );
+        daoUtil.setString( nIndex++, formMessage.getLabelButtonRedirection( ) );
+        daoUtil.setString( nIndex++, formMessage.getNoAvailableSlot( ) );
+        daoUtil.setString( nIndex++, formMessage.getCalendarDescription( ) );
+        daoUtil.setString( nIndex++, formMessage.getCalendarReserveLabel( ) );
+        daoUtil.setString( nIndex++, formMessage.getCalendarFullLabel( ) );
+        daoUtil.setInt( nIndex, formMessage.getIdForm( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -117,8 +116,8 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_FORM_MESSAGE, plugin );
         daoUtil.setInt( 1, nAppointmentFormId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -129,13 +128,13 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, nAppointmentFormId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         AppointmentFormMessages formMessage;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
-            formMessage = new AppointmentFormMessages(  );
+            formMessage = new AppointmentFormMessages( );
 
             int nIndex = 1;
             formMessage.setIdForm( daoUtil.getInt( nIndex++ ) );
@@ -162,7 +161,7 @@ public class AppointmentFormMessagesDAO implements IAppointmentFormMessagesDAO
             formMessage = null;
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return formMessage;
     }

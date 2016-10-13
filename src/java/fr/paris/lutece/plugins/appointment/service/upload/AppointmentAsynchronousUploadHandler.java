@@ -36,9 +36,9 @@ package fr.paris.lutece.plugins.appointment.service.upload;
 import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractGenAttUploadHandler;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-
 /**
  * AppointmentAsynchronousUploadHandler.
+ * 
  * @see #getFileItems(String, String)
  * @see #removeFileItem(String, String, int)
  */
@@ -52,9 +52,10 @@ public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHa
 
     /**
      * Get the handler
+     * 
      * @return the handler
      */
-    public static AppointmentAsynchronousUploadHandler getHandler(  )
+    public static AppointmentAsynchronousUploadHandler getHandler( )
     {
         return SpringContextService.getBean( BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER );
     }
@@ -63,7 +64,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHa
      * {@inheritDoc}
      */
     @Override
-    public String getUploadSubmitPrefix(  )
+    public String getUploadSubmitPrefix( )
     {
         return UPLOAD_SUBMIT_PREFIX;
     }
@@ -72,7 +73,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHa
      * {@inheritDoc}
      */
     @Override
-    public String getUploadDeletePrefix(  )
+    public String getUploadDeletePrefix( )
     {
         return UPLOAD_DELETE_PREFIX;
     }
@@ -81,7 +82,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHa
      * {@inheritDoc}
      */
     @Override
-    public String getUploadCheckboxPrefix(  )
+    public String getUploadCheckboxPrefix( )
     {
         return UPLOAD_CHECKBOX_PREFIX;
     }
@@ -90,7 +91,7 @@ public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHa
      * {@inheritDoc}
      */
     @Override
-    public String getHandlerName(  )
+    public String getHandlerName( )
     {
         return HANDLER_NAME;
     }

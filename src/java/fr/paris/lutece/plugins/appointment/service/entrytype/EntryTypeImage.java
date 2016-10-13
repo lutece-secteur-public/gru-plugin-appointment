@@ -47,7 +47,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  *
  * class EntryTypeImage
@@ -78,7 +77,7 @@ public class EntryTypeImage extends EntryTypeFile
      * {@inheritDoc}
      */
     @Override
-    protected boolean checkForImages(  )
+    protected boolean checkForImages( )
     {
         return true;
     }
@@ -98,21 +97,20 @@ public class EntryTypeImage extends EntryTypeFile
     @Override
     public String getResponseValueForRecap( Entry entry, HttpServletRequest request, Response response, Locale locale )
     {
-        if ( ( response.getFile(  ) != null ) && StringUtils.isNotBlank( response.getFile(  ).getTitle(  ) ) )
+        if ( ( response.getFile( ) != null ) && StringUtils.isNotBlank( response.getFile( ).getTitle( ) ) )
         {
-            if ( response.getIdResponse(  ) > 0 )
+            if ( response.getIdResponse( ) > 0 )
             {
-                Map<String, Object> model = new HashMap<String, Object>(  );
-                model.put( MARK_FILE_NAME, response.getFile(  ).getTitle(  ) );
-                model.put( MARK_IMG_URL,
-                    getUrlDownloadFile( response.getIdResponse(  ), AppPathService.getBaseUrl( request ) ) );
+                Map<String, Object> model = new HashMap<String, Object>( );
+                model.put( MARK_FILE_NAME, response.getFile( ).getTitle( ) );
+                model.put( MARK_IMG_URL, getUrlDownloadFile( response.getIdResponse( ), AppPathService.getBaseUrl( request ) ) );
 
                 HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FILE_IMAGE, locale, model );
 
-                return template.getHtml(  );
+                return template.getHtml( );
             }
 
-            return response.getFile(  ).getTitle(  );
+            return response.getFile( ).getTitle( );
         }
 
         return StringUtils.EMPTY;

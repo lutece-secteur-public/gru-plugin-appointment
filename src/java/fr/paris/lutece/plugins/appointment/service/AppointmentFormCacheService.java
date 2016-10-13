@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
 
-
 /**
  * Get the instance of the cache service
  */
@@ -49,28 +48,31 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
     private static final String CACHE_KEY_APPOINTMENT_DAY = "appointment.appointmentDay.";
     private static final String CACHE_KEY_APPOINTMENT_SLOT = "appointment.appointmentSlot.";
     private static final String CACHE_KEY_CALENDAR_TEMPLATE = "appointment.calendarTemplate.";
-    private static AppointmentFormCacheService _instance = new AppointmentFormCacheService(  );
+    private static AppointmentFormCacheService _instance = new AppointmentFormCacheService( );
 
     /**
      * Private constructor
      */
-    private AppointmentFormCacheService(  )
+    private AppointmentFormCacheService( )
     {
-        initCache(  );
+        initCache( );
     }
 
     /**
      * Get the instance of the cache service
+     * 
      * @return The instance of the service
      */
-    public static AppointmentFormCacheService getInstance(  )
+    public static AppointmentFormCacheService getInstance( )
     {
         return _instance;
     }
 
     /**
      * Get the cache key for a given form
-     * @param nIdForm The id of the form
+     * 
+     * @param nIdForm
+     *            The id of the form
      * @return The cache key for the form
      */
     public static String getFormCacheKey( int nIdForm )
@@ -80,7 +82,9 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
 
     /**
      * Get the cache key for a given form message
-     * @param nIdForm The id of the form
+     * 
+     * @param nIdForm
+     *            The id of the form
      * @return The cache key for the form message
      */
     public static String getFormMessageCacheKey( int nIdForm )
@@ -90,7 +94,9 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
 
     /**
      * Get the cache key form appointment responses
-     * @param nIdAppointment The id of the appointment
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
      * @return The cache key for the given appointment
      */
     public String getAppointmentResponseCacheKey( int nIdAppointment )
@@ -100,15 +106,20 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
 
     /**
      * Get the cache key to lists of appointment times
-     * @param nAppointmentDuration The appointment duration
-     * @param nOpeningHour The opening hour
-     * @param nOpeningMinutes The opening minute
-     * @param nClosingHour The closing hour
-     * @param nClosingMinutes The closing minute
+     * 
+     * @param nAppointmentDuration
+     *            The appointment duration
+     * @param nOpeningHour
+     *            The opening hour
+     * @param nOpeningMinutes
+     *            The opening minute
+     * @param nClosingHour
+     *            The closing hour
+     * @param nClosingMinutes
+     *            The closing minute
      * @return The cache key
      */
-    public static String getListAppointmentTimesCacheKey( int nAppointmentDuration, int nOpeningHour,
-        int nOpeningMinutes, int nClosingHour, int nClosingMinutes )
+    public static String getListAppointmentTimesCacheKey( int nAppointmentDuration, int nOpeningHour, int nOpeningMinutes, int nClosingHour, int nClosingMinutes )
     {
         StringBuilder sbCacheKey = new StringBuilder( CACHE_KEY_LIST_APPOINTMENT_TIMES );
         sbCacheKey.append( nAppointmentDuration );
@@ -117,12 +128,14 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
         sbCacheKey.append( nClosingHour );
         sbCacheKey.append( nClosingMinutes );
 
-        return sbCacheKey.toString(  );
+        return sbCacheKey.toString( );
     }
 
     /**
      * Get the cache key for a given appointment day
-     * @param nIdDay The id of the day
+     * 
+     * @param nIdDay
+     *            The id of the day
      * @return The cache key for the given day
      */
     public static String getAppointmentDayKey( int nIdDay )
@@ -132,7 +145,9 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
 
     /**
      * Get the cache key for a given appointment day
-     * @param nIdSlot The id of the slot
+     * 
+     * @param nIdSlot
+     *            The id of the slot
      * @return The cache key for the given slot
      */
     public static String getAppointmentSlotKey( int nIdSlot )
@@ -144,14 +159,16 @@ public final class AppointmentFormCacheService extends AbstractCacheableService
      * {@inheritDoc}
      */
     @Override
-    public String getName(  )
+    public String getName( )
     {
         return SERVICE_NAME;
     }
 
     /**
      * Get the cache key for a calendar template
-     * @param nId The id of the calendar template
+     * 
+     * @param nId
+     *            The id of the calendar template
      * @return The cache key of the calendar template
      */
     public static String getCalendarTemplateCacheKey( int nId )

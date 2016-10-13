@@ -48,7 +48,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-
 /**
  * This is the business class for the object AppointmentForm
  */
@@ -70,7 +69,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     public static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$";
     private static final long serialVersionUID = 307685220867535209L;
 
-    // Variables declarations 
+    // Variables declarations
     private int _nIdForm;
     @NotBlank( message = "#i18n{appointment.validation.appointmentform.Title.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
@@ -132,17 +131,18 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private String _strAddress;
 
     private String _strCategory;
-    
 
-    public int getMaximumNumberOfBookedSeats() {
-		return _nMaximumNumberOfBookedSeats;
-	}
+    public int getMaximumNumberOfBookedSeats( )
+    {
+        return _nMaximumNumberOfBookedSeats;
+    }
 
-	public void setMaximumNumberOfBookedSeats(int _nMaximumNumberOfBookedSeats) {
-		this._nMaximumNumberOfBookedSeats = _nMaximumNumberOfBookedSeats;
-	}
+    public void setMaximumNumberOfBookedSeats( int _nMaximumNumberOfBookedSeats )
+    {
+        this._nMaximumNumberOfBookedSeats = _nMaximumNumberOfBookedSeats;
+    }
 
-	public int getSeizureDuration(  )
+    public int getSeizureDuration( )
     {
         return _nseizureDuration;
     }
@@ -154,16 +154,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IdForm
+     * 
      * @return The IdForm
      */
-    public int getIdForm(  )
+    public int getIdForm( )
     {
         return _nIdForm;
     }
 
     /**
      * Sets the IdForm
-     * @param nIdForm The IdForm
+     * 
+     * @param nIdForm
+     *            The IdForm
      */
     public void setIdForm( int nIdForm )
     {
@@ -172,16 +175,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the Title
+     * 
      * @return The Title
      */
-    public String getTitle(  )
+    public String getTitle( )
     {
         return _strTitle;
     }
 
     /**
      * Sets the Title
-     * @param strTitle The Title
+     * 
+     * @param strTitle
+     *            The Title
      */
     public void setTitle( String strTitle )
     {
@@ -190,16 +196,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the description of the appointment form
+     * 
      * @return The description of the appointment form
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return _strDescription;
     }
 
     /**
      * Set the description of the appointment form
-     * @param strDescription The description of the appointment form
+     * 
+     * @param strDescription
+     *            The description of the appointment form
      */
     public void setDescription( String strDescription )
     {
@@ -208,16 +217,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the _strReference
+     * 
      * @return The strRef
      */
-    public String getReference(  )
+    public String getReference( )
     {
         return _strReference;
     }
 
     /**
      * Sets the Reference
-     * @param strRef The strRef
+     * 
+     * @param strRef
+     *            The strRef
      */
     public void setReference( String strRef )
     {
@@ -226,16 +238,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the _strReference
+     * 
      * @return The strRef
      */
-    public boolean getIsFormStep(  )
+    public boolean getIsFormStep( )
     {
         return _bIsFormStep;
     }
 
     /**
      * Sets the Reference
-     * @param strRef The strRef
+     * 
+     * @param strRef
+     *            The strRef
      */
     public void setIsFormStep( boolean nStep )
     {
@@ -243,17 +258,20 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     }
 
     /**
-    * Returns the TimeStart
-    * @return The TimeStart
-    */
-    public String getTimeStart(  )
+     * Returns the TimeStart
+     * 
+     * @return The TimeStart
+     */
+    public String getTimeStart( )
     {
         return _strTimeStart;
     }
 
     /**
      * Sets the TimeStart
-     * @param nTimeStart The TimeStart
+     * 
+     * @param nTimeStart
+     *            The TimeStart
      */
     public void setTimeStart( String nTimeStart )
     {
@@ -264,16 +282,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the TimeEnd
+     * 
      * @return The TimeEnd
      */
-    public String getTimeEnd(  )
+    public String getTimeEnd( )
     {
         return _strTimeEnd;
     }
 
     /**
      * Sets the TimeEnd
-     * @param nTimeEnd The TimeEnd
+     * 
+     * @param nTimeEnd
+     *            The TimeEnd
      */
     public void setTimeEnd( String nTimeEnd )
     {
@@ -284,16 +305,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the DurationAppointments
+     * 
      * @return The DurationAppointments
      */
-    public int getDurationAppointments(  )
+    public int getDurationAppointments( )
     {
         return _nDurationAppointments;
     }
 
     /**
      * Sets the DurationAppointments
-     * @param nDurationAppointments The DurationAppointments
+     * 
+     * @param nDurationAppointments
+     *            The DurationAppointments
      */
     public void setDurationAppointments( int nDurationAppointments )
     {
@@ -302,16 +326,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsOpenMonday
+     * 
      * @return The IsOpenMonday
      */
-    public boolean getIsOpenMonday(  )
+    public boolean getIsOpenMonday( )
     {
         return _bIsOpenMonday;
     }
 
     /**
      * Sets the IsOpenMonday
-     * @param bIsOpenMonday The IsOpenMonday
+     * 
+     * @param bIsOpenMonday
+     *            The IsOpenMonday
      */
     public void setIsOpenMonday( boolean bIsOpenMonday )
     {
@@ -320,16 +347,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsOpenTuesday
+     * 
      * @return The IsOpenTuesday
      */
-    public boolean getIsOpenTuesday(  )
+    public boolean getIsOpenTuesday( )
     {
         return _bIsOpenTuesday;
     }
 
     /**
      * Sets the IsOpenTuesday
-     * @param bIsOpenTuesday The IsOpenTuesday
+     * 
+     * @param bIsOpenTuesday
+     *            The IsOpenTuesday
      */
     public void setIsOpenTuesday( boolean bIsOpenTuesday )
     {
@@ -338,16 +368,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsOpenWednesday
+     * 
      * @return The IsOpenWednesday
      */
-    public boolean getIsOpenWednesday(  )
+    public boolean getIsOpenWednesday( )
     {
         return _bIsOpenWednesday;
     }
 
     /**
      * Sets the IsOpenWednesday
-     * @param bIsOpenWednesday The IsOpenWednesday
+     * 
+     * @param bIsOpenWednesday
+     *            The IsOpenWednesday
      */
     public void setIsOpenWednesday( boolean bIsOpenWednesday )
     {
@@ -356,16 +389,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsOpenThursday
+     * 
      * @return The IsOpenThursday
      */
-    public boolean getIsOpenThursday(  )
+    public boolean getIsOpenThursday( )
     {
         return _bIsOpenThursday;
     }
 
     /**
      * Sets the IsOpenThursday
-     * @param bIsOpenThursday The IsOpenThursday
+     * 
+     * @param bIsOpenThursday
+     *            The IsOpenThursday
      */
     public void setIsOpenThursday( boolean bIsOpenThursday )
     {
@@ -374,16 +410,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsOpenFriday
+     * 
      * @return The IsOpenFriday
      */
-    public boolean getIsOpenFriday(  )
+    public boolean getIsOpenFriday( )
     {
         return _bIsOpenFriday;
     }
 
     /**
      * Sets the IsOpenFriday
-     * @param bIsOpenFriday The IsOpenFriday
+     * 
+     * @param bIsOpenFriday
+     *            The IsOpenFriday
      */
     public void setIsOpenFriday( boolean bIsOpenFriday )
     {
@@ -392,16 +431,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsOpenSaturday
+     * 
      * @return The IsOpenSaturday
      */
-    public boolean getIsOpenSaturday(  )
+    public boolean getIsOpenSaturday( )
     {
         return _bIsOpenSaturday;
     }
 
     /**
      * Sets the IsOpenSaturday
-     * @param bIsOpenSaturday The IsOpenSaturday
+     * 
+     * @param bIsOpenSaturday
+     *            The IsOpenSaturday
      */
     public void setIsOpenSaturday( boolean bIsOpenSaturday )
     {
@@ -410,16 +452,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsOpenSunday
+     * 
      * @return The IsOpenSunday
      */
-    public boolean getIsOpenSunday(  )
+    public boolean getIsOpenSunday( )
     {
         return _bIsOpenSunday;
     }
 
     /**
      * Sets the IsOpenSunday
-     * @param bIsOpenSunday The IsOpenSunday
+     * 
+     * @param bIsOpenSunday
+     *            The IsOpenSunday
      */
     public void setIsOpenSunday( boolean bIsOpenSunday )
     {
@@ -428,16 +473,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the DateStartValidity
+     * 
      * @return The DateStartValidity
      */
-    public Date getDateStartValidity(  )
+    public Date getDateStartValidity( )
     {
         return _dateDateStartValidity;
     }
 
     /**
      * Sets the DateStartValidity
-     * @param dateDateStartValidity The DateStartValidity
+     * 
+     * @param dateDateStartValidity
+     *            The DateStartValidity
      */
     public void setDateStartValidity( Date dateDateStartValidity )
     {
@@ -446,16 +494,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the DateEndValidity
+     * 
      * @return The DateEndValidity
      */
-    public Date getDateEndValidity(  )
+    public Date getDateEndValidity( )
     {
         return _dateDateEndValidity;
     }
 
     /**
      * Sets the DateEndValidity
-     * @param dateDateEndValidity The DateEndValidity
+     * 
+     * @param dateDateEndValidity
+     *            The DateEndValidity
      */
     public void setDateEndValidity( Date dateDateEndValidity )
     {
@@ -464,16 +515,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the IsActive
+     * 
      * @return The IsActive
      */
-    public boolean getIsActive(  )
+    public boolean getIsActive( )
     {
         return _bIsActive;
     }
 
     /**
      * Sets the IsActive
-     * @param bIsActive The IsActive
+     * 
+     * @param bIsActive
+     *            The IsActive
      */
     public void setIsActive( boolean bIsActive )
     {
@@ -482,16 +536,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the DisplayTitleFo
+     * 
      * @return The DisplayTitleFo
      */
-    public boolean getDisplayTitleFo(  )
+    public boolean getDisplayTitleFo( )
     {
         return _bDisplayTitleFo;
     }
 
     /**
      * Sets the DispolayTitleFo
-     * @param bDisplayTitleFo The DisplayTitleFo
+     * 
+     * @param bDisplayTitleFo
+     *            The DisplayTitleFo
      */
     public void setDisplayTitleFo( boolean bDisplayTitleFo )
     {
@@ -500,16 +557,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the NbWeeksToDisplay
+     * 
      * @return The NbWeeksToDisplay
      */
-    public int getNbWeeksToDisplay(  )
+    public int getNbWeeksToDisplay( )
     {
         return _nNbWeeksToDisplay;
     }
 
     /**
      * Sets the NbWeeksToDisplay
-     * @param nNbWeeksToDisplay The NbWeeksToDisplay
+     * 
+     * @param nNbWeeksToDisplay
+     *            The NbWeeksToDisplay
      */
     public void setNbWeeksToDisplay( int nNbWeeksToDisplay )
     {
@@ -518,16 +578,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Returns the number of person per appointment
+     * 
      * @return The number of person per appointment
      */
-    public int getPeoplePerAppointment(  )
+    public int getPeoplePerAppointment( )
     {
         return _nPeoplePerAppointment;
     }
 
     /**
      * Sets the number of person per appointment
-     * @param nPeoplePerAppointment The number of person per appointment
+     * 
+     * @param nPeoplePerAppointment
+     *            The number of person per appointment
      */
     public void setPeoplePerAppointment( int nPeoplePerAppointment )
     {
@@ -536,16 +599,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the id of the workflow associated with this appointment form
+     * 
      * @return The id of the workflow
      */
-    public int getIdWorkflow(  )
+    public int getIdWorkflow( )
     {
         return _nIdWorkflow;
     }
 
     /**
      * Set the id of the workflow associated with this appointment form
-     * @param nIdWorkflow The id of the workflow
+     * 
+     * @param nIdWorkflow
+     *            The id of the workflow
      */
     public void setIdWorkflow( int nIdWorkflow )
     {
@@ -554,13 +620,14 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the opening hour
+     * 
      * @return the opening hour
      */
-    public int getOpeningHour(  )
+    public int getOpeningHour( )
     {
         if ( !_bOpeningHourInitialized )
         {
-            _nOpeningHour = Integer.parseInt( _strTimeStart.split( CONSTANT_H )[0] );
+            _nOpeningHour = Integer.parseInt( _strTimeStart.split( CONSTANT_H ) [0] );
             _bOpeningHourInitialized = true;
         }
 
@@ -569,7 +636,9 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Set the opening hour
-     * @param nOpeningHour The opening hour
+     * 
+     * @param nOpeningHour
+     *            The opening hour
      */
     public void setOpeningHour( int nOpeningHour )
     {
@@ -579,13 +648,14 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the opening minutes
+     * 
      * @return The opening minutes
      */
-    public int getOpeningMinutes(  )
+    public int getOpeningMinutes( )
     {
         if ( !_bOpeningMinutesInitialized )
         {
-            _nOpeningMinutes = Integer.parseInt( _strTimeStart.split( CONSTANT_H )[1] );
+            _nOpeningMinutes = Integer.parseInt( _strTimeStart.split( CONSTANT_H ) [1] );
             _bOpeningMinutesInitialized = true;
         }
 
@@ -594,7 +664,9 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Set the opening minutes
-     * @param nOpeningMinutes The opening minutes
+     * 
+     * @param nOpeningMinutes
+     *            The opening minutes
      */
     public void setOpeningMinutes( int nOpeningMinutes )
     {
@@ -604,13 +676,14 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the closing hour
+     * 
      * @return the closing hour
      */
-    public int getClosingHour(  )
+    public int getClosingHour( )
     {
         if ( !_bClosingHourInitialized )
         {
-            _nClosingHour = Integer.parseInt( _strTimeEnd.split( CONSTANT_H )[0] );
+            _nClosingHour = Integer.parseInt( _strTimeEnd.split( CONSTANT_H ) [0] );
             _bClosingHourInitialized = true;
         }
 
@@ -619,7 +692,9 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Set the closing hour
-     * @param nClosingHour The closing hour
+     * 
+     * @param nClosingHour
+     *            The closing hour
      */
     public void setClosingHour( int nClosingHour )
     {
@@ -629,13 +704,14 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the closing minutes
+     * 
      * @return the closing minutes
      */
-    public int getClosingMinutes(  )
+    public int getClosingMinutes( )
     {
         if ( !_bClosingMinutesInitialized )
         {
-            _nClosingMinutes = Integer.parseInt( _strTimeEnd.split( CONSTANT_H )[1] );
+            _nClosingMinutes = Integer.parseInt( _strTimeEnd.split( CONSTANT_H ) [1] );
             _bClosingMinutesInitialized = true;
         }
 
@@ -644,7 +720,9 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Set the closing minutes
-     * @param nClosingMinutes the closing minutes
+     * 
+     * @param nClosingMinutes
+     *            the closing minutes
      */
     public void setClosingMinutes( int nClosingMinutes )
     {
@@ -653,21 +731,20 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     }
 
     /**
-     * Get the minimum number of days between the current date and the date of
-     * appointment make by users
-     * @return The minimum number of days between the current date and the date
-     *         of appointment make by users
+     * Get the minimum number of days between the current date and the date of appointment make by users
+     * 
+     * @return The minimum number of days between the current date and the date of appointment make by users
      */
-    public int getMinDaysBeforeAppointment(  )
+    public int getMinDaysBeforeAppointment( )
     {
         return _nMinDaysBeforeAppointment;
     }
 
     /**
-     * Set the minimum number of days between the current date and the date of
-     * appointment make by users
-     * @param nMinDayBeforeAppointment The minimum number of days between the
-     *            current date and the date of appointment make by users
+     * Set the minimum number of days between the current date and the date of appointment make by users
+     * 
+     * @param nMinDayBeforeAppointment
+     *            The minimum number of days between the current date and the date of appointment make by users
      */
     public void setMinDaysBeforeAppointment( int nMinDayBeforeAppointment )
     {
@@ -676,16 +753,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Check if the captcha is enabled for this appointment form
+     * 
      * @return True if the captcha is enabled, false otherwise
      */
-    public boolean getEnableCaptcha(  )
+    public boolean getEnableCaptcha( )
     {
         return _bEnableCaptcha;
     }
 
     /**
      * Enable or disable the captcha for this appointment form
-     * @param bEnableCaptcha True to enable the captcha, false to disable it
+     * 
+     * @param bEnableCaptcha
+     *            True to enable the captcha, false to disable it
      */
     public void setEnableCaptcha( boolean bEnableCaptcha )
     {
@@ -694,18 +774,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Check if a FO user can cancel appointments of this form
-     * @return True if a FO user can cancel appointments of this form, false
-     *         otherwise
+     * 
+     * @return True if a FO user can cancel appointments of this form, false otherwise
      */
-    public boolean getAllowUsersToCancelAppointments(  )
+    public boolean getAllowUsersToCancelAppointments( )
     {
         return _bAllowUsersToCancelAppointments;
     }
 
     /**
      * Set whether FO user can cancel appointments of this form
-     * @param bAllowUsersToCancelAppointments True if a FO user can cancel
-     *            appointments of this form, false otherwise
+     * 
+     * @param bAllowUsersToCancelAppointments
+     *            True if a FO user can cancel appointments of this form, false otherwise
      */
     public void setAllowUsersToCancelAppointments( boolean bAllowUsersToCancelAppointments )
     {
@@ -714,17 +795,19 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the id of the calendar template of this appointment form
+     * 
      * @return The id of the calendar template of this appointment form
      */
-    public int getCalendarTemplateId(  )
+    public int getCalendarTemplateId( )
     {
         return _nCalendarTemplateId;
     }
 
     /**
      * Set the id of the calendar template of this appointment form
-     * @param nCalendarTemplateId The id of the calendar template of this
-     *            appointment form
+     * 
+     * @param nCalendarTemplateId
+     *            The id of the calendar template of this appointment form
      */
     public void setCalendarTemplateId( int nCalendarTemplateId )
     {
@@ -733,18 +816,20 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the max for weeks of this appointment form to validate
-     * @param nMaxAppointment The nb of the max appointpents for weeks
-     *       of this  appointment form
+     * 
+     * @param nMaxAppointment
+     *            The nb of the max appointpents for weeks of this appointment form
      */
-    public int getMaxAppointments(  )
+    public int getMaxAppointments( )
     {
         return _nMaxAppointmentMail;
     }
 
     /**
      * Set the max for weeks of this appointment form to validate
-     *  @param nMaxAppointment The nb of the max appointpents for weeks
-     *       of this  appointment form
+     * 
+     * @param nMaxAppointment
+     *            The nb of the max appointpents for weeks of this appointment form
      */
     public void setMaxAppointmentMail( int nMaxAppointment )
     {
@@ -753,18 +838,20 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get the limits for weeks of this appointment form to validate
-     * @param _nNbWeeksLimits The nb of the max appointpents for weeks
-     *       of this  appointment form
+     * 
+     * @param _nNbWeeksLimits
+     *            The nb of the max appointpents for weeks of this appointment form
      */
-    public int getWeeksLimits(  )
+    public int getWeeksLimits( )
     {
         return _nNbWeeksLimits;
     }
 
     /**
      * Set the limits for weeks of this appointment form to validate
-     *  @param _nNbWeeksLimits The nb of the max appointpents for weeks
-     *       of this  appointment form
+     * 
+     * @param _nNbWeeksLimits
+     *            The nb of the max appointpents for weeks of this appointment form
      */
     public void setNbWeeksLimits( int nWeekLimits )
     {
@@ -773,34 +860,35 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Check if a day of the week is opened or not
-     * @param nDayOfWeek The number of the day of the week : 1 for Monday, 2 for
-     *            Tuesday, ...
+     * 
+     * @param nDayOfWeek
+     *            The number of the day of the week : 1 for Monday, 2 for Tuesday, ...
      * @return True if the requested day of the week is open, false otherwise
      */
     public boolean isDayOfWeekOpened( int nDayOfWeek )
     {
-        boolean[] bArrayDaysOpened = 
-            {
-                _bIsOpenMonday, _bIsOpenTuesday, _bIsOpenWednesday, _bIsOpenThursday, _bIsOpenFriday, _bIsOpenSaturday,
-                _bIsOpenSunday,
-            };
+        boolean [ ] bArrayDaysOpened = {
+                _bIsOpenMonday, _bIsOpenTuesday, _bIsOpenWednesday, _bIsOpenThursday, _bIsOpenFriday, _bIsOpenSaturday, _bIsOpenSunday,
+        };
 
-        return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened[nDayOfWeek - 1]
-                                                                                  : false;
+        return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened [nDayOfWeek - 1] : false;
     }
 
     /**
      * Get enable confirm email
-     * @return boolean  enable confirm email
+     * 
+     * @return boolean enable confirm email
      */
-    public boolean getEnableConfirmEmail(  )
+    public boolean getEnableConfirmEmail( )
     {
         return _bEnableConfirmEmail;
     }
 
     /**
      * Set enable confirm email
-     * @param bEnableConfirmEmail confirm email
+     * 
+     * @param bEnableConfirmEmail
+     *            confirm email
      */
     public void setEnableConfirmEmail( boolean bEnableConfirmEmail )
     {
@@ -809,23 +897,26 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get enable mandatory email
+     * 
      * @return enable mandatory email
      */
-    public boolean getEnableMandatoryEmail(  )
+    public boolean getEnableMandatoryEmail( )
     {
         return _bEnableMandatoryEmail;
     }
 
     /**
      * Set enable mandatory email
-     * @param bEnableMandatoryEmail mandatory email
+     * 
+     * @param bEnableMandatoryEmail
+     *            mandatory email
      */
     public void setEnableMandatoryEmail( boolean bEnableMandatoryEmail )
     {
         this._bEnableMandatoryEmail = bEnableMandatoryEmail;
     }
 
-    public ImageResource getIcon(  )
+    public ImageResource getIcon( )
     {
         return _imageResource;
     }
@@ -836,10 +927,10 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritDoc}
+     */
     @Override
-    public String getResourceTypeCode(  )
+    public String getResourceTypeCode( )
     {
         return RESOURCE_TYPE;
     }
@@ -848,12 +939,12 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
      * {@inheritDoc}
      */
     @Override
-    public String getResourceId(  )
+    public String getResourceId( )
     {
-        return Integer.toString( getIdForm(  ) );
+        return Integer.toString( getIdForm( ) );
     }
 
-    public Date getDateLimit(  )
+    public Date getDateLimit( )
     {
         return _dateDateLimit;
     }
@@ -864,18 +955,18 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritDoc}
+     */
     @Override
-    public Object clone(  )
+    public Object clone( )
     {
         try
         {
-            return super.clone(  );
+            return super.clone( );
         }
-        catch ( CloneNotSupportedException e )
+        catch( CloneNotSupportedException e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
 
             return null;
         }
@@ -883,63 +974,81 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
 
     /**
      * Get latitude
+     * 
      * @return latitude
      */
-    public Double getLatitude() {
+    public Double getLatitude( )
+    {
         return _dLatitude;
     }
 
     /**
      * Set latitude
-     * @param dLatitude latitude
+     * 
+     * @param dLatitude
+     *            latitude
      */
-    public void setLatitude(Double dLatitude) {
+    public void setLatitude( Double dLatitude )
+    {
         this._dLatitude = dLatitude;
     }
 
     /**
      * Get longitude
+     * 
      * @return longitude
      */
-    public Double getLongitude() {
+    public Double getLongitude( )
+    {
         return _dLongitude;
     }
 
     /**
      * Set longitude
-     * @param dLongitude longitude
+     * 
+     * @param dLongitude
+     *            longitude
      */
-    public void setLongitude(Double dLongitude) {
+    public void setLongitude( Double dLongitude )
+    {
         this._dLongitude = dLongitude;
     }
 
     /**
      * Get address
+     * 
      * @return address
      */
-    public String getAddress() {
+    public String getAddress( )
+    {
         return _strAddress;
     }
 
     /**
      * Set address
-     * @param strAddress address
+     * 
+     * @param strAddress
+     *            address
      */
-    public void setAddress(String strAddress) {
+    public void setAddress( String strAddress )
+    {
         this._strAddress = strAddress;
     }
 
     /**
      * @return the category
      */
-    public String getCategory() {
+    public String getCategory( )
+    {
         return _strCategory;
     }
 
     /**
-     * @param category the category to set
+     * @param category
+     *            the category to set
      */
-    public void setCategory(String strCategory) {
+    public void setCategory( String strCategory )
+    {
         _strCategory = strCategory;
     }
 

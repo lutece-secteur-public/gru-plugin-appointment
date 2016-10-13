@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * DTO for appointments
  */
@@ -53,51 +52,52 @@ public class AppointmentDTO extends Appointment
      * Serial version UID
      */
     private static final long serialVersionUID = 147509700468338769L;
-    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>(  );
+    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>( );
     private AppointmentSlot _appointmentSlot;
     private AppointmentForm _appointmentForm;
 
     /**
      * Default constructor
      */
-    public AppointmentDTO(  )
+    public AppointmentDTO( )
     {
         // Do nothing
     }
 
     /**
      * Creates a new appointment DTO from an appointment
-     * @param appointment The appointment to read data from
+     * 
+     * @param appointment
+     *            The appointment to read data from
      */
     public AppointmentDTO( Appointment appointment )
     {
-        setIdAppointment( appointment.getIdAppointment(  ) );
-        setDateAppointment( (Date) appointment.getDateAppointment(  ).clone(  ) );
-        setEmail( appointment.getEmail(  ) );
-        setFirstName( appointment.getFirstName(  ) );
-        setLastName( appointment.getLastName(  ) );
-        setIdSlot( appointment.getIdSlot(  ) );
-        setIdUser( appointment.getIdUser(  ) );
-        setStatus( appointment.getStatus(  ) );
-        setNumberPlacesReserved( appointment.getNumberPlacesReserved(  ) );
+        setIdAppointment( appointment.getIdAppointment( ) );
+        setDateAppointment( (Date) appointment.getDateAppointment( ).clone( ) );
+        setEmail( appointment.getEmail( ) );
+        setFirstName( appointment.getFirstName( ) );
+        setLastName( appointment.getLastName( ) );
+        setIdSlot( appointment.getIdSlot( ) );
+        setIdUser( appointment.getIdUser( ) );
+        setStatus( appointment.getStatus( ) );
+        setNumberPlacesReserved( appointment.getNumberPlacesReserved( ) );
     }
 
     /**
-     * Get the map containing an association between entries of the form and the
-     * id of the associated entry
-     * @return The map containing an association between entries of the form and
-     *         the
-     *         id of the associated entry
+     * Get the map containing an association between entries of the form and the id of the associated entry
+     * 
+     * @return The map containing an association between entries of the form and the id of the associated entry
      */
-    public Map<Integer, List<Response>> getMapResponsesByIdEntry(  )
+    public Map<Integer, List<Response>> getMapResponsesByIdEntry( )
     {
         return _mapResponsesByIdEntry;
     }
 
     /**
-     * Set the map containing an association between entries of the form and the
-     * id of the associated entry
-     * @param mapResponsesByIdEntry The map
+     * Set the map containing an association between entries of the form and the id of the associated entry
+     * 
+     * @param mapResponsesByIdEntry
+     *            The map
      */
     public void setMapResponsesByIdEntry( Map<Integer, List<Response>> mapResponsesByIdEntry )
     {
@@ -106,17 +106,19 @@ public class AppointmentDTO extends Appointment
 
     /**
      * Get the appointment slot associated with the appointment
+     * 
      * @return The appointment slot associated with the appointment
      */
-    public AppointmentSlot getAppointmentSlot(  )
+    public AppointmentSlot getAppointmentSlot( )
     {
         return _appointmentSlot;
     }
 
     /**
      * Set the appointment slot associated with the appointment
-     * @param appointmentSlot The appointment slot associated with the
-     *            appointment
+     * 
+     * @param appointmentSlot
+     *            The appointment slot associated with the appointment
      */
     public void setAppointmentSlot( AppointmentSlot appointmentSlot )
     {
@@ -125,16 +127,19 @@ public class AppointmentDTO extends Appointment
 
     /**
      * Get the appointment form associated with this appointment
+     * 
      * @return The appointment form associated with this appointment
      */
-    public AppointmentForm getAppointmentForm(  )
+    public AppointmentForm getAppointmentForm( )
     {
         return _appointmentForm;
     }
 
     /**
      * Set this appointment form associated with this appointment
-     * @param appointmentForm form associated with this appointment
+     * 
+     * @param appointmentForm
+     *            form associated with this appointment
      */
     public void setAppointmentForm( AppointmentForm appointmentForm )
     {
@@ -143,10 +148,11 @@ public class AppointmentDTO extends Appointment
 
     /**
      * Get the reference of the appointment
+     * 
      * @return The reference of the appointment
      */
-    public String getRefAppointment(  )
+    public String getRefAppointment( )
     {
-        return AppointmentService.getService(  ).computeRefAppointment( this );
+        return AppointmentService.getService( ).computeRefAppointment( this );
     }
 }

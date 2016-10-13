@@ -38,10 +38,8 @@ import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-
 /**
- * This class provides instances management methods for AppointmentPortlet
- * objects
+ * This class provides instances management methods for AppointmentPortlet objects
  */
 public class AppointmentPortletHome extends PortletHome
 {
@@ -54,7 +52,7 @@ public class AppointmentPortletHome extends PortletHome
     /**
      * Constructor
      */
-    public AppointmentPortletHome(  )
+    public AppointmentPortletHome( )
     {
         if ( _singleton == null )
         {
@@ -66,9 +64,9 @@ public class AppointmentPortletHome extends PortletHome
      * {@inheritDoc}
      */
     @Override
-    public String getPortletTypeId(  )
+    public String getPortletTypeId( )
     {
-        String strCurrentClassName = this.getClass(  ).getName(  );
+        String strCurrentClassName = this.getClass( ).getName( );
         String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
         return strPortletTypeId;
@@ -79,11 +77,11 @@ public class AppointmentPortletHome extends PortletHome
      *
      * @return the AppointmentPortlet Portlet instance
      */
-    public static PortletHome getInstance(  )
+    public static PortletHome getInstance( )
     {
         if ( _singleton == null )
         {
-            _singleton = new AppointmentPortletHome(  );
+            _singleton = new AppointmentPortletHome( );
         }
 
         return _singleton;
@@ -93,7 +91,7 @@ public class AppointmentPortletHome extends PortletHome
      * {@inheritDoc}
      */
     @Override
-    public IPortletInterfaceDAO getDAO(  )
+    public IPortletInterfaceDAO getDAO( )
     {
         return _dao;
     }

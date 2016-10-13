@@ -43,10 +43,8 @@ import java.sql.Date;
 
 import java.util.List;
 
-
 /**
- * This class provides instances management methods (create, find, ...) for
- * AppointmentDay objects
+ * This class provides instances management methods (create, find, ...) for AppointmentDay objects
  */
 public final class AppointmentDayHome
 {
@@ -57,54 +55,58 @@ public final class AppointmentDayHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentDayHome(  )
+    private AppointmentDayHome( )
     {
     }
 
     /**
      * Creates a new day in the database
-     * @param day The day to create
+     * 
+     * @param day
+     *            The day to create
      */
     public static void create( AppointmentDay day )
     {
         _dao.create( day, _plugin );
 
-        AppointmentDay dayClone = day.clone(  );
+        AppointmentDay dayClone = day.clone( );
         dayClone.setListSlots( null );
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
-            dayClone );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay( ) ), dayClone );
     }
 
     /**
      * Update a day
-     * @param day The day to create
+     * 
+     * @param day
+     *            The day to create
      */
     public static synchronized void update( AppointmentDay day )
     {
         _dao.update( day, _plugin );
 
-        AppointmentDay dayClone = day.clone(  );
+        AppointmentDay dayClone = day.clone( );
         dayClone.setListSlots( null );
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
-            dayClone );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay( ) ), dayClone );
     }
 
     /**
      * Remove a day from the database
-     * @param nIdDay The id of the day to remove
+     * 
+     * @param nIdDay
+     *            The id of the day to remove
      */
     public static void remove( int nIdDay )
     {
         AppointmentSlotHome.deleteByIdDay( nIdDay );
         _dao.remove( nIdDay, _plugin );
-        AppointmentFormCacheService.getInstance(  ).removeKey( AppointmentFormCacheService.getAppointmentDayKey( nIdDay ) );
+        AppointmentFormCacheService.getInstance( ).removeKey( AppointmentFormCacheService.getAppointmentDayKey( nIdDay ) );
     }
 
     /**
      * Remove days from the database that are associated with a given form
-     * @param nIdForm The id of the form
+     * 
+     * @param nIdForm
+     *            The id of the form
      */
     public static void removeByIdForm( int nIdForm )
     {
@@ -112,50 +114,55 @@ public final class AppointmentDayHome
     }
 
     /**
-     * Delete days which date is before a given date and that are not associated
-     * with any slot
-     * @param dateMonday The date of days
+     * Delete days which date is before a given date and that are not associated with any slot
+     * 
+     * @param dateMonday
+     *            The date of days
      */
     public static void removeLonelyDays( Date dateMonday )
     {
         _dao.removeLonelyDays( dateMonday, _plugin );
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
-     * Returns an instance of a day whose identifier is specified in
-     * parameter
-     * @param nIdDay The appointmentDay primary key
+     * Returns an instance of a day whose identifier is specified in parameter
+     * 
+     * @param nIdDay
+     *            The appointmentDay primary key
      * @return an instance of AppointmentDay
      */
     public static AppointmentDay findByPrimaryKey( int nIdDay )
     {
         String strKey = AppointmentFormCacheService.getAppointmentDayKey( nIdDay );
-        AppointmentDay day = (AppointmentDay) AppointmentFormCacheService.getInstance(  ).getFromCache( strKey );
+        AppointmentDay day = (AppointmentDay) AppointmentFormCacheService.getInstance( ).getFromCache( strKey );
 
         if ( day != null )
         {
-            return day.clone(  );
+            return day.clone( );
         }
 
         day = _dao.findByPrimaryKey( nIdDay, _plugin );
 
         if ( day != null )
         {
-            AppointmentFormCacheService.getInstance(  ).putInCache( strKey, day.clone(  ) );
+            AppointmentFormCacheService.getInstance( ).putInCache( strKey, day.clone( ) );
         }
 
         return day;
     }
 
     /**
-     * Get the list of days associated with a form and which date are between 2
-     * given dates.
-     * @param nIdForm The id of the form
-     * @param dateMin The minimum date
-     * @param dateMax The maximum date
+     * Get the list of days associated with a form and which date are between 2 given dates.
+     * 
+     * @param nIdForm
+     *            The id of the form
+     * @param dateMin
+     *            The minimum date
+     * @param dateMax
+     *            The maximum date
      * @return The list of days
      */
     public static List<AppointmentDay> getDaysBetween( int nIdForm, Date dateMin, Date dateMax )
@@ -165,33 +172,35 @@ public final class AppointmentDayHome
 
     /**
      * Increment by 1 the number of free places of an appointment
-     * @param nIdDay The id of the day to update
+     * 
+     * @param nIdDay
+     *            The id of the day to update
      */
     public static synchronized void incrementDayFreePlaces( int nIdDay )
     {
         AppointmentDay day = findByPrimaryKey( nIdDay );
         _dao.updateDayFreePlaces( day, true, _plugin );
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
-            day.clone(  ) );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay( ) ), day.clone( ) );
     }
 
     /**
      * Decrement by 1 the number of free places of an appointment
-     * @param nIdDay The id of the day to update
+     * 
+     * @param nIdDay
+     *            The id of the day to update
      */
     public static synchronized void decrementDayFreePlaces( int nIdDay )
     {
         AppointmentDay day = findByPrimaryKey( nIdDay );
         _dao.updateDayFreePlaces( day, false, _plugin );
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay(  ) ),
-            day.clone(  ) );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getAppointmentDayKey( day.getIdDay( ) ), day.clone( ) );
     }
 
     /**
      * Reset the number of free places of a day
-     * @param nIdDay The id of the day
+     * 
+     * @param nIdDay
+     *            The id of the day
      */
     public static synchronized void resetDayFreePlaces( int nIdDay )
     {
@@ -201,9 +210,9 @@ public final class AppointmentDayHome
 
         for ( AppointmentSlot slot : listAppointmentSlot )
         {
-            if ( slot.getIsEnabled(  ) )
+            if ( slot.getIsEnabled( ) )
             {
-                nFreePlaces += slot.getNbFreePlaces(  );
+                nFreePlaces += slot.getNbFreePlaces( );
             }
         }
 
@@ -214,11 +223,11 @@ public final class AppointmentDayHome
     public static synchronized void resetDayPlaces( AppointmentDay day, int nIdForm, int nDayOfWeek )
     {
         List<AppointmentSlot> listAppointmentSlot = AppointmentSlotHome.findByIdFormAndDayOfWeek( nIdForm, nDayOfWeek );
-        int nPlaces = day.getPeoplePerAppointment(  );
+        int nPlaces = day.getPeoplePerAppointment( );
 
         for ( AppointmentSlot slot : listAppointmentSlot )
         {
-            if ( slot.getIsEnabled(  ) & ( slot.getIdDay(  ) == 0 ) )
+            if ( slot.getIsEnabled( ) & ( slot.getIdDay( ) == 0 ) )
             {
                 slot.setNbPlaces( nPlaces );
                 AppointmentSlotHome.update( slot );
@@ -228,7 +237,9 @@ public final class AppointmentDayHome
 
     /**
      * Find every day associated with a given form.
-     * @param nIdForm the id of the form
+     * 
+     * @param nIdForm
+     *            the id of the form
      * @return The list of slots
      */
     public static List<AppointmentDay> findByIdForm( int nIdForm )

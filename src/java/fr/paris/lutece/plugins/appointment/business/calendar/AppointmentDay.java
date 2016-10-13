@@ -37,7 +37,6 @@ import java.sql.Date;
 
 import java.util.List;
 
-
 /**
  * Describes a day form an appointment calendar
  */
@@ -58,16 +57,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the id of the day
+     * 
      * @return The id of the day
      */
-    public int getIdDay(  )
+    public int getIdDay( )
     {
         return _nIdDay;
     }
 
     /**
      * Set the id of the day
-     * @param nIdDay The id of the day
+     * 
+     * @param nIdDay
+     *            The id of the day
      */
     public void setIdDay( int nIdDay )
     {
@@ -76,16 +78,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the id of the appointment form associated with this day
+     * 
      * @return The id of the appointment form associated with this day
      */
-    public int getIdForm(  )
+    public int getIdForm( )
     {
         return _nIdForm;
     }
 
     /**
      * Set the id of the appointment form associated with this day
-     * @param nIdForm The id of the appointment form associated with this day
+     * 
+     * @param nIdForm
+     *            The id of the appointment form associated with this day
      */
     public void setIdForm( int nIdForm )
     {
@@ -94,16 +99,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Check if the day is an opened day or a closed day
+     * 
      * @return True if the day is open, false otherwise
      */
-    public boolean getIsOpen(  )
+    public boolean getIsOpen( )
     {
         return _bIsOpen;
     }
 
     /**
      * Set this day as opened or closed
-     * @param bIsOpen True if the day is opened, false otherwise
+     * 
+     * @param bIsOpen
+     *            True if the day is opened, false otherwise
      */
     public void setIsOpen( boolean bIsOpen )
     {
@@ -112,88 +120,94 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the date of the day
+     * 
      * @return The date of the day
      */
-    public Date getDate(  )
+    public Date getDate( )
     {
         return _date;
     }
 
     /**
      * Set the date of the day
-     * @param date The date of the day
+     * 
+     * @param date
+     *            The date of the day
      */
     public void setDate( Date date )
     {
         this._date = date;
     }
 
-    //    /**
-    //     * Get the year of the day
-    //     * @return the year of the day
-    //     */
-    //    public int getYear( )
-    //    {
-    //        return _nYear;
-    //    }
+    // /**
+    // * Get the year of the day
+    // * @return the year of the day
+    // */
+    // public int getYear( )
+    // {
+    // return _nYear;
+    // }
     //
-    //    /**
-    //     * Set the year of the day
-    //     * @param nYear the year of the day
-    //     */
-    //    public void setYear( int nYear )
-    //    {
-    //        this._nYear = nYear;
-    //    }
+    // /**
+    // * Set the year of the day
+    // * @param nYear the year of the day
+    // */
+    // public void setYear( int nYear )
+    // {
+    // this._nYear = nYear;
+    // }
     //
-    //    /**
-    //     * Get the month of the day
-    //     * @return The month of the day
-    //     */
-    //    public int getMonth( )
-    //    {
-    //        return _nMonth;
-    //    }
+    // /**
+    // * Get the month of the day
+    // * @return The month of the day
+    // */
+    // public int getMonth( )
+    // {
+    // return _nMonth;
+    // }
     //
-    //    /**
-    //     * Set the month of the day
-    //     * @param nMonth The month of the day
-    //     */
-    //    public void setMonth( int nMonth )
-    //    {
-    //        this._nMonth = nMonth;
-    //    }
+    // /**
+    // * Set the month of the day
+    // * @param nMonth The month of the day
+    // */
+    // public void setMonth( int nMonth )
+    // {
+    // this._nMonth = nMonth;
+    // }
     //
-    //    /**
-    //     * Get the number of the day in the month
-    //     * @return The number of the day in the month
-    //     */
-    //    public int getDay( )
-    //    {
-    //        return _nDay;
-    //    }
+    // /**
+    // * Get the number of the day in the month
+    // * @return The number of the day in the month
+    // */
+    // public int getDay( )
+    // {
+    // return _nDay;
+    // }
     //
-    //    /**
-    //     * Set the number of the day in the month
-    //     * @param nDay The number of the day in the month
-    //     */
-    //    public void setDay( int nDay )
-    //    {
-    //        this._nDay = nDay;
-    //    }
+    // /**
+    // * Set the number of the day in the month
+    // * @param nDay The number of the day in the month
+    // */
+    // public void setDay( int nDay )
+    // {
+    // this._nDay = nDay;
+    // }
 
     /**
      * Get the opening hour of the day
+     * 
      * @return The opening hour of the day
      */
-    public int getOpeningHour(  )
+    public int getOpeningHour( )
     {
         return _nOpeningHour;
     }
 
     /**
      * Set the opening hour of the day
-     * @param nOpeningHour The opening hour of the day
+     * 
+     * @param nOpeningHour
+     *            The opening hour of the day
      */
     public void setOpeningHour( int nOpeningHour )
     {
@@ -202,16 +216,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the opening minute of the day
+     * 
      * @return The opening minute of the day
      */
-    public int getOpeningMinutes(  )
+    public int getOpeningMinutes( )
     {
         return _nOpeningMinutes;
     }
 
     /**
      * Set the opening minute of the day
-     * @param nOpeningMinutes The opening minute of the day
+     * 
+     * @param nOpeningMinutes
+     *            The opening minute of the day
      */
     public void setOpeningMinutes( int nOpeningMinutes )
     {
@@ -220,16 +237,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the closing hour of the day
+     * 
      * @return The closing hour of the day
      */
-    public int getClosingHour(  )
+    public int getClosingHour( )
     {
         return _nClosingHour;
     }
 
     /**
      * Set the closing hour of the day
-     * @param nClosingHour The closing hour of the day
+     * 
+     * @param nClosingHour
+     *            The closing hour of the day
      */
     public void setClosingHour( int nClosingHour )
     {
@@ -238,16 +258,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the closing minute of the day
+     * 
      * @return The closing minute of the day
      */
-    public int getClosingMinutes(  )
+    public int getClosingMinutes( )
     {
         return _nClosingMinutes;
     }
 
     /**
      * Set the closing minute of the day
-     * @param nClosingMinutes The closing minute of the day
+     * 
+     * @param nClosingMinutes
+     *            The closing minute of the day
      */
     public void setClosingMinutes( int nClosingMinutes )
     {
@@ -256,16 +279,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the duration of appointments in minutes
+     * 
      * @return The duration of appointments in minutes
      */
-    public int getAppointmentDuration(  )
+    public int getAppointmentDuration( )
     {
         return _nAppointmentDuration;
     }
 
     /**
      * Set the duration of appointments in minutes
-     * @param nAppointmentDuration The duration of appointments in minutes
+     * 
+     * @param nAppointmentDuration
+     *            The duration of appointments in minutes
      */
     public void setAppointmentDuration( int nAppointmentDuration )
     {
@@ -274,16 +300,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Returns the number of person per appointment
+     * 
      * @return The number of person per appointment
      */
-    public int getPeoplePerAppointment(  )
+    public int getPeoplePerAppointment( )
     {
         return _nPeoplePerAppointment;
     }
 
     /**
      * Sets the number of person per appointment
-     * @param nPeoplePerAppointment The number of person per appointment
+     * 
+     * @param nPeoplePerAppointment
+     *            The number of person per appointment
      */
     public void setPeoplePerAppointment( int nPeoplePerAppointment )
     {
@@ -292,16 +321,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the list of slots of this day, if any
+     * 
      * @return The list of slots of this day, if any
      */
-    public List<AppointmentSlot> getListSlots(  )
+    public List<AppointmentSlot> getListSlots( )
     {
         return _listSlots;
     }
 
     /**
      * Set the list of slots of this day, if any
-     * @param listSlots The list of slots of this day, if any
+     * 
+     * @param listSlots
+     *            The list of slots of this day, if any
      */
     public void setListSlots( List<AppointmentSlot> listSlots )
     {
@@ -310,16 +342,19 @@ public class AppointmentDay implements Cloneable
 
     /**
      * Get the number of free places of this day
+     * 
      * @return The number of free places of this day
      */
-    public int getFreePlaces(  )
+    public int getFreePlaces( )
     {
         return _nDayFreePlaces;
     }
 
     /**
      * Set the number of free places of this day
-     * @param nDayFreePlaces The number of free places of this day
+     * 
+     * @param nDayFreePlaces
+     *            The number of free places of this day
      */
     public void setFreePlaces( int nDayFreePlaces )
     {
@@ -330,13 +365,13 @@ public class AppointmentDay implements Cloneable
      * {@inheritDoc}
      */
     @Override
-    public AppointmentDay clone(  )
+    public AppointmentDay clone( )
     {
         try
         {
-            return (AppointmentDay) super.clone(  );
+            return (AppointmentDay) super.clone( );
         }
-        catch ( CloneNotSupportedException e )
+        catch( CloneNotSupportedException e )
         {
             // Do nothing
         }
@@ -344,17 +379,19 @@ public class AppointmentDay implements Cloneable
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode(  )
+    public int hashCode( )
     {
         final int prime = 31;
         int result = 1;
         result = ( prime * result ) + ( _bIsOpen ? 1231 : 1237 );
-        result = ( prime * result ) + ( ( _date == null ) ? 0 : _date.hashCode(  ) );
-        result = ( prime * result ) + ( ( _listSlots == null ) ? 0 : _listSlots.hashCode(  ) );
+        result = ( prime * result ) + ( ( _date == null ) ? 0 : _date.hashCode( ) );
+        result = ( prime * result ) + ( ( _listSlots == null ) ? 0 : _listSlots.hashCode( ) );
         result = ( prime * result ) + _nAppointmentDuration;
         result = ( prime * result ) + _nClosingHour;
         result = ( prime * result ) + _nClosingMinutes;
@@ -368,7 +405,9 @@ public class AppointmentDay implements Cloneable
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -384,7 +423,7 @@ public class AppointmentDay implements Cloneable
             return false;
         }
 
-        if ( getClass(  ) != obj.getClass(  ) )
+        if ( getClass( ) != obj.getClass( ) )
         {
             return false;
         }
@@ -403,10 +442,11 @@ public class AppointmentDay implements Cloneable
                 return false;
             }
         }
-        else if ( !_date.equals( other._date ) )
-        {
-            return false;
-        }
+        else
+            if ( !_date.equals( other._date ) )
+            {
+                return false;
+            }
 
         if ( _listSlots == null )
         {
@@ -415,10 +455,11 @@ public class AppointmentDay implements Cloneable
                 return false;
             }
         }
-        else if ( !_listSlots.equals( other._listSlots ) )
-        {
-            return false;
-        }
+        else
+            if ( !_listSlots.equals( other._listSlots ) )
+            {
+                return false;
+            }
 
         if ( _nAppointmentDuration != other._nAppointmentDuration )
         {

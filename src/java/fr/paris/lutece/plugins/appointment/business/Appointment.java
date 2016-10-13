@@ -49,7 +49,6 @@ import java.util.List;
 
 import javax.validation.constraints.Size;
 
-
 /**
  * This is the business class for the object Appointment
  */
@@ -63,21 +62,21 @@ public class Appointment implements Serializable
     // If status values change, the template appointment/manage_appointments.html must be updated !
     /**
      * Status of appointments that have been rejected
-
-    public static final int STATUS_REJECTED = -10;
-    */
+     * 
+     * public static final int STATUS_REJECTED = -10;
+     */
 
     /**
      * Status of appointments that have not been validated yet
-
-    public static final int STATUS_NOT_VALIDATED = 0;
-    */
+     * 
+     * public static final int STATUS_NOT_VALIDATED = 0;
+     */
 
     /**
      * Status of appointments that have been validated
-
-    public static final int STATUS_VALIDATED = 10;
-    */
+     * 
+     * public static final int STATUS_VALIDATED = 10;
+     */
 
     /**
      * Serial version UID
@@ -94,7 +93,7 @@ public class Appointment implements Serializable
     @Email( message = "appointment.validation.appointment.Email.email" )
     private String _strEmail;
 
-    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" ) 
+    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" )
     @Size( max = 255, message = "portal.validation.message.sizeMax" )
     private String _strIdUser;
     private String _strAuthenticationService;
@@ -113,28 +112,31 @@ public class Appointment implements Serializable
     private int _nNumberPlacesReserved;
     private int _nNumberOfBookedSeats;
 
-    
-    
-    public int getNumberOfBookedSeats() {
-		return _nNumberOfBookedSeats;
-	}
+    public int getNumberOfBookedSeats( )
+    {
+        return _nNumberOfBookedSeats;
+    }
 
-	public void setNumberOfBookedSeats(int nNumberOfBookedSeats) {
-		 _nNumberOfBookedSeats = nNumberOfBookedSeats;
-	}
+    public void setNumberOfBookedSeats( int nNumberOfBookedSeats )
+    {
+        _nNumberOfBookedSeats = nNumberOfBookedSeats;
+    }
 
-	/**
-    * Returns the IdAppointment
-    * @return The IdAppointment
-    */
-    public int getIdAppointment(  )
+    /**
+     * Returns the IdAppointment
+     * 
+     * @return The IdAppointment
+     */
+    public int getIdAppointment( )
     {
         return _nIdAppointment;
     }
 
     /**
      * Sets the IdAppointment
-     * @param nIdAppointment The IdAppointment
+     * 
+     * @param nIdAppointment
+     *            The IdAppointment
      */
     public void setIdAppointment( int nIdAppointment )
     {
@@ -143,16 +145,19 @@ public class Appointment implements Serializable
 
     /**
      * Returns the FirstName
+     * 
      * @return The FirstName
      */
-    public String getFirstName(  )
+    public String getFirstName( )
     {
         return _strFirstName;
     }
 
     /**
      * Sets the FirstName
-     * @param strFirstName The FirstName
+     * 
+     * @param strFirstName
+     *            The FirstName
      */
     public void setFirstName( String strFirstName )
     {
@@ -161,16 +166,19 @@ public class Appointment implements Serializable
 
     /**
      * Returns the LastName
+     * 
      * @return The LastName
      */
-    public String getLastName(  )
+    public String getLastName( )
     {
         return _strLastName;
     }
 
     /**
      * Sets the LastName
-     * @param strLastName The LastName
+     * 
+     * @param strLastName
+     *            The LastName
      */
     public void setLastName( String strLastName )
     {
@@ -179,16 +187,19 @@ public class Appointment implements Serializable
 
     /**
      * Returns the Email
+     * 
      * @return The Email
      */
-    public String getEmail(  )
+    public String getEmail( )
     {
         return _strEmail;
     }
 
     /**
      * Sets the Email
-     * @param strEmail The Email
+     * 
+     * @param strEmail
+     *            The Email
      */
     public void setEmail( String strEmail )
     {
@@ -197,16 +208,19 @@ public class Appointment implements Serializable
 
     /**
      * Returns the id of the lutece user that made this appointment
+     * 
      * @return The id of the lutece user that made this appointment
      */
-    public String getIdUser(  )
+    public String getIdUser( )
     {
         return _strIdUser;
     }
 
     /**
      * Sets the id of the lutece user that made this appointment
-     * @param strIdUser The id of the lutece user that made this appointment
+     * 
+     * @param strIdUser
+     *            The id of the lutece user that made this appointment
      */
     public void setIdUser( String strIdUser )
     {
@@ -214,23 +228,21 @@ public class Appointment implements Serializable
     }
 
     /**
-     * Returns the authentication service used by the lutece user that made this
-     * appointment, if any
-     * @return The authentication service used by the lutece user that made this
-     *         appointment, or null if this appointment is not associated with a
-     *         lutece user
+     * Returns the authentication service used by the lutece user that made this appointment, if any
+     * 
+     * @return The authentication service used by the lutece user that made this appointment, or null if this appointment is not associated with a lutece user
      */
-    public String getAuthenticationService(  )
+    public String getAuthenticationService( )
     {
         return _strAuthenticationService;
     }
 
     /**
-     * Sets the authentication service used by the lutece user that made this
-     * appointment, if any
-     * @param strAuthenticationService The authentication service used by the
-     *            lutece user that made this appointment, or null if this
-     *            appointment is not associated with a lutece user
+     * Sets the authentication service used by the lutece user that made this appointment, if any
+     * 
+     * @param strAuthenticationService
+     *            The authentication service used by the lutece user that made this appointment, or null if this appointment is not associated with a lutece
+     *            user
      */
     public void setAuthenticationService( String strAuthenticationService )
     {
@@ -239,16 +251,19 @@ public class Appointment implements Serializable
 
     /**
      * Get the localization of the appointment
+     * 
      * @return the localization of the appointment
      */
-    public String getLocation(  )
+    public String getLocation( )
     {
         return _strLocation;
     }
 
     /**
      * Set the localization of the appointment
-     * @param strLocation The localization of the appointment
+     * 
+     * @param strLocation
+     *            The localization of the appointment
      */
     public void setLocation( String strLocation )
     {
@@ -257,16 +272,19 @@ public class Appointment implements Serializable
 
     /**
      * Get the date of the appointment
+     * 
      * @return The date of the appointment
      */
-    public Date getDateAppointment(  )
+    public Date getDateAppointment( )
     {
         return _dateAppointment;
     }
 
     /**
      * Set the date of the appointment
-     * @param dateAppointment The date of the appointment
+     * 
+     * @param dateAppointment
+     *            The date of the appointment
      */
     public void setDateAppointment( Date dateAppointment )
     {
@@ -275,16 +293,19 @@ public class Appointment implements Serializable
 
     /**
      * Get the id of the slot
+     * 
      * @return The id of the slot
      */
-    public int getIdSlot(  )
+    public int getIdSlot( )
     {
         return _nIdSlot;
     }
 
     /**
      * Set the id of the slot
-     * @param nIdSlot The id of the slot
+     * 
+     * @param nIdSlot
+     *            The id of the slot
      */
     public void setIdSlot( int nIdSlot )
     {
@@ -293,16 +314,19 @@ public class Appointment implements Serializable
 
     /**
      * Get the status of the appointment
+     * 
      * @return The status of the appointment
      */
-    public int getStatus(  )
+    public int getStatus( )
     {
         return _nStatus;
     }
 
     /**
      * Set the status of the appointment
-     * @param nStatus The status of the appointment
+     * 
+     * @param nStatus
+     *            The status of the appointment
      */
     public void setStatus( int nStatus )
     {
@@ -311,16 +335,19 @@ public class Appointment implements Serializable
 
     /**
      * Get the list of response of this appointment
+     * 
      * @return the list of response of this appointment
      */
-    public List<Response> getListResponse(  )
+    public List<Response> getListResponse( )
     {
         return _listResponse;
     }
 
     /**
      * Set the list of responses of this appointment
-     * @param listResponse The list of responses
+     * 
+     * @param listResponse
+     *            The list of responses
      */
     public void setListResponse( List<Response> listResponse )
     {
@@ -329,9 +356,9 @@ public class Appointment implements Serializable
 
     /**
      * Set the list of workflow actions available for this appointment.
-     * @param listWorkflowActions The list of workflow actions available for
-     *            this
-     *            appointment.
+     * 
+     * @param listWorkflowActions
+     *            The list of workflow actions available for this appointment.
      */
     public void setListWorkflowActions( Collection<Action> listWorkflowActions )
     {
@@ -339,30 +366,31 @@ public class Appointment implements Serializable
     }
 
     /**
-     * Get the list of workflow actions available for this appointment. Workflow
-     * actions are NOT loaded by default, so check that they have been set
-     * before calling this method.
+     * Get the list of workflow actions available for this appointment. Workflow actions are NOT loaded by default, so check that they have been set before
+     * calling this method.
+     * 
      * @return The list of workflow actions available for this appointment.
      */
-    public Collection<Action> getListWorkflowActions(  )
+    public Collection<Action> getListWorkflowActions( )
     {
         return _listWorkflowActions;
     }
 
     /**
      * Get the id of the workflow action to execute to cancel the appointment
-     * @return The id of the workflow action to execute to cancel the
-     *         appointment
+     * 
+     * @return The id of the workflow action to execute to cancel the appointment
      */
-    public int getIdActionCancel(  )
+    public int getIdActionCancel( )
     {
         return _nIdActionCancel;
     }
 
     /**
      * Set the id of the workflow action to execute to cancel the appointment
-     * @param nIdActionCancel The id of the workflow action to execute to cancel
-     *            the appointment
+     * 
+     * @param nIdActionCancel
+     *            The id of the workflow action to execute to cancel the appointment
      */
     public void setIdActionCancel( int nIdActionCancel )
     {
@@ -371,24 +399,26 @@ public class Appointment implements Serializable
 
     /**
      * Get the id of the admin user associated with this appointment
+     * 
      * @return The id of the admin user associated with this appointment
      */
-    public int getIdAdminUser(  )
+    public int getIdAdminUser( )
     {
         return _idAdminUser;
     }
 
     /**
      * Set the id of the admin user associated with this appointment
-     * @param nIdAdminUser The id of the admin user associated with this
-     *            appointment
+     * 
+     * @param nIdAdminUser
+     *            The id of the admin user associated with this appointment
      */
     public void setIdAdminUser( int nIdAdminUser )
     {
         this._idAdminUser = nIdAdminUser;
     }
 
-    public java.util.Date getStartAppointment(  )
+    public java.util.Date getStartAppointment( )
     {
         return _dateStartAppointment;
     }
@@ -398,7 +428,7 @@ public class Appointment implements Serializable
         this._dateStartAppointment = date;
     }
 
-    public java.util.Date getEndAppointment(  )
+    public java.util.Date getEndAppointment( )
     {
         return _dateEndAppointment;
     }
@@ -409,9 +439,11 @@ public class Appointment implements Serializable
     }
 
     /**
-    * Sets the State actual
-    * @param  The state
-    */
+     * Sets the State actual
+     * 
+     * @param The
+     *            state
+     */
     public void setState( State state )
     {
         _state = state;
@@ -419,25 +451,29 @@ public class Appointment implements Serializable
 
     /**
      * Returns the State
+     * 
      * @return The State
      */
-    public State getState(  )
+    public State getState( )
     {
         return _state;
     }
 
     /**
      * Returns notify status
+     * 
      * @return notify status
      */
-    public int getHasNotify(  )
+    public int getHasNotify( )
     {
         return _nHasNotify;
     }
 
     /**
      * Sets notify
-     * @param nHasNotify notify status
+     * 
+     * @param nHasNotify
+     *            notify status
      */
     public void setHasNotify( int nHasNotify )
     {
@@ -449,10 +485,9 @@ public class Appointment implements Serializable
      */
     public enum Status
     {
-    	 STATUS_RESERVED( 10, "appointment.message.labelStatusReserved" ),
-         STATUS_UNRESERVED( -10, "appointment.message.labelStatusUnreserved" );
-    	 
-    	 //STATUS_NOT_VALIDATED (0, "appointment.message.labelStatusNotValidated");
+        STATUS_RESERVED( 10, "appointment.message.labelStatusReserved" ), STATUS_UNRESERVED( -10, "appointment.message.labelStatusUnreserved" );
+
+        // STATUS_NOT_VALIDATED (0, "appointment.message.labelStatusNotValidated");
         private final int nValue;
         private final String strLibelle;
 
@@ -462,23 +497,25 @@ public class Appointment implements Serializable
             this.strLibelle = strMessage;
         }
 
-        public int getValeur(  )
+        public int getValeur( )
         {
             return this.nValue;
         }
 
-        public String getLibelle(  )
+        public String getLibelle( )
         {
             return this.strLibelle;
         }
-       
+
     }
 
-	public int getNumberPlacesReserved() {
-		return _nNumberPlacesReserved;
-	}
+    public int getNumberPlacesReserved( )
+    {
+        return _nNumberPlacesReserved;
+    }
 
-	public void setNumberPlacesReserved(int numberPlacesReserved) {
-		this._nNumberPlacesReserved = numberPlacesReserved;
-	}
+    public void setNumberPlacesReserved( int numberPlacesReserved )
+    {
+        this._nNumberPlacesReserved = numberPlacesReserved;
+    }
 }

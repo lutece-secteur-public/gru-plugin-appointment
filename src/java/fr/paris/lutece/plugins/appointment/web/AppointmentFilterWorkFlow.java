@@ -37,7 +37,6 @@ import fr.paris.lutece.plugins.appointment.business.Appointment;
 
 import java.util.Comparator;
 
-
 public class AppointmentFilterWorkFlow implements Comparator<Appointment>
 {
     private boolean _bOrder;
@@ -52,15 +51,15 @@ public class AppointmentFilterWorkFlow implements Comparator<Appointment>
     {
         int nState = 0;
 
-        if ( ( o1 != null ) && ( o2 != null ) && ( o1.getState(  ) != null ) && ( o2.getState(  ) != null ) )
+        if ( ( o1 != null ) && ( o2 != null ) && ( o1.getState( ) != null ) && ( o2.getState( ) != null ) )
         {
             if ( _bOrder )
             {
-                nState = o1.getState(  ).getName(  ).compareTo( o2.getState(  ).getName(  ) );
+                nState = o1.getState( ).getName( ).compareTo( o2.getState( ).getName( ) );
             }
             else
             {
-                nState = o2.getState(  ).getName(  ).compareTo( o1.getState(  ).getName(  ) );
+                nState = o2.getState( ).getName( ).compareTo( o1.getState( ).getName( ) );
             }
         }
 

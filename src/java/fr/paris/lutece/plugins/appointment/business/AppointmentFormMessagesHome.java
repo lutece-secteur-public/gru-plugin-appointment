@@ -41,51 +41,52 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.List;
 
-
 /**
- * This class provides instances management methods (create, find, ...) for
- * AppointmentForm objects
+ * This class provides instances management methods (create, find, ...) for AppointmentForm objects
  */
 public final class AppointmentFormMessagesHome
 {
     // Static variable pointed at the DAO instance
-    private static IAppointmentFormMessagesDAO _dao = SpringContextService.getBean( 
-            "appointment.appointmentFormMessagesDAO" );
+    private static IAppointmentFormMessagesDAO _dao = SpringContextService.getBean( "appointment.appointmentFormMessagesDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance(  );
+    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance( );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentFormMessagesHome(  )
+    private AppointmentFormMessagesHome( )
     {
     }
 
     /**
      * Create a form message
-     * @param formMessage The instance of the form message to create
+     * 
+     * @param formMessage
+     *            The instance of the form message to create
      */
     public static void create( AppointmentFormMessages formMessage )
     {
         _dao.insert( formMessage, _plugin );
-        _cacheService.putInCache( AppointmentFormCacheService.getFormMessageCacheKey( formMessage.getIdForm(  ) ),
-            formMessage.clone(  ) );
+        _cacheService.putInCache( AppointmentFormCacheService.getFormMessageCacheKey( formMessage.getIdForm( ) ), formMessage.clone( ) );
     }
 
     /**
      * Update a form message
-     * @param formMessage The form message to update
+     * 
+     * @param formMessage
+     *            The form message to update
      */
     public static void update( AppointmentFormMessages formMessage )
     {
         _dao.store( formMessage, _plugin );
-        _cacheService.putInCache( AppointmentFormCacheService.getFormMessageCacheKey( formMessage.getIdForm(  ) ),
-            formMessage.clone(  ) );
+        _cacheService.putInCache( AppointmentFormCacheService.getFormMessageCacheKey( formMessage.getIdForm( ) ), formMessage.clone( ) );
     }
 
     /**
      * Remove a form message from its primary key
-     * @param nAppointmentFormId The id of the form
+     * 
+     * @param nAppointmentFormId
+     *            The id of the form
      */
     public static void remove( int nAppointmentFormId )
     {
@@ -93,14 +94,15 @@ public final class AppointmentFormMessagesHome
         _cacheService.removeKey( AppointmentFormCacheService.getFormMessageCacheKey( nAppointmentFormId ) );
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
      * Get a form message from its primary key
-     * @param nAppointmentFormId The id of the form message
-     * @return The form message, or null if no form message has the given
-     *         primary key
+     * 
+     * @param nAppointmentFormId
+     *            The id of the form message
+     * @return The form message, or null if no form message has the given primary key
      */
     public static AppointmentFormMessages findByPrimaryKey( int nAppointmentFormId )
     {
@@ -110,11 +112,11 @@ public final class AppointmentFormMessagesHome
         if ( formMessage == null )
         {
             formMessage = _dao.load( nAppointmentFormId, _plugin );
-            _cacheService.putInCache( strCacheKey, formMessage.clone(  ) );
+            _cacheService.putInCache( strCacheKey, formMessage.clone( ) );
         }
         else
         {
-            formMessage = (AppointmentFormMessages) formMessage.clone(  );
+            formMessage = (AppointmentFormMessages) formMessage.clone( );
         }
 
         return formMessage;

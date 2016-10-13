@@ -43,7 +43,6 @@ import java.text.DateFormat;
 
 import java.util.Locale;
 
-
 /**
  * Appointment plugin
  */
@@ -58,16 +57,17 @@ public class AppointmentPlugin extends Plugin
      * {@inheritDoc}
      */
     @Override
-    public void init(  )
+    public void init( )
     {
-        BeanUtilsBean.getInstance(  ).getConvertUtils(  )
-                     .register( new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT,
-                    getPluginLocale( Locale.FRANCE ) ) ), java.sql.Date.class );
+        BeanUtilsBean.getInstance( ).getConvertUtils( )
+                .register( new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, getPluginLocale( Locale.FRANCE ) ) ), java.sql.Date.class );
     }
 
     /**
      * Get the locale used by this plugin
-     * @param locale The locale preferred by the user
+     * 
+     * @param locale
+     *            The locale preferred by the user
      * @return The locale used by this plugin
      */
     public static Locale getPluginLocale( Locale locale )

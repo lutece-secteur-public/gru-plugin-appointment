@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.service.entrytype;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeGroup;
 
-
 /**
  *
  * class EntryTypeGroup
@@ -44,7 +43,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  */
 public class EntryTypeGroup extends AbstractEntryTypeGroup
 {
-    //	templates
+    // templates
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_group.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_group.html";
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_group.html";

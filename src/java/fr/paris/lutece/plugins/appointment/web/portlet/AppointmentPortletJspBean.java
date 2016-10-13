@@ -41,7 +41,6 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * This class provides the user interface to manage AppointmentPortlet features
  */
@@ -62,7 +61,7 @@ public class AppointmentPortletJspBean extends PortletJspBean
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -76,7 +75,7 @@ public class AppointmentPortletJspBean extends PortletJspBean
         AppointmentPortlet portlet = (AppointmentPortlet) PortletHome.findByPrimaryKey( nPortletId );
         HtmlTemplate template = getModifyTemplate( portlet );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -85,7 +84,7 @@ public class AppointmentPortletJspBean extends PortletJspBean
     @Override
     public String doCreate( HttpServletRequest request )
     {
-        AppointmentPortlet portlet = new AppointmentPortlet(  );
+        AppointmentPortlet portlet = new AppointmentPortlet( );
 
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
@@ -102,9 +101,9 @@ public class AppointmentPortletJspBean extends PortletJspBean
         portlet.setPageId( nPageId );
 
         // Creates the portlet
-        AppointmentPortletHome.getInstance(  ).create( portlet );
+        AppointmentPortletHome.getInstance( ).create( portlet );
 
-        //Displays the page with the new Portlet
+        // Displays the page with the new Portlet
         return getPageUrl( nPageId );
     }
 
@@ -128,9 +127,9 @@ public class AppointmentPortletJspBean extends PortletJspBean
         }
 
         // updates the portlet
-        portlet.update(  );
+        portlet.update( );
 
         // displays the page with the updated portlet
-        return getPageUrl( portlet.getPageId(  ) );
+        return getPageUrl( portlet.getPageId( ) );
     }
 }

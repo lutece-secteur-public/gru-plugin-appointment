@@ -41,7 +41,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * DAO form appointment days
  */
@@ -56,29 +55,30 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     private static final String SQL_QUERY_REMOVE_LONELY_DAYS = " DELETE FROM appointment_day WHERE date_day < ? AND id_day NOT IN (SELECT DISTINCT(id_day) FROM appointment_slot) ";
     private static final String SQL_QUERY_SELECT_DAY = "SELECT id_day, id_form, is_open, date_day, opening_hour, opening_minute, closing_hour, closing_minute, appointment_duration, people_per_appointment, free_places FROM appointment_day ";
     private static final String SQL_QUERY_SELECT_DAY_BY_PRIMARY_KEY = SQL_QUERY_SELECT_DAY + " WHERE id_day = ?";
-    private static final String SQL_QUERY_SELECT_DAY_BETWEEN = SQL_QUERY_SELECT_DAY +
-        " WHERE id_form = ? AND date_day >= ? AND date_day <= ? ORDER BY date_day ASC ";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_DAY +
-        " WHERE id_form = ? ORDER BY date_day ASC";
+    private static final String SQL_QUERY_SELECT_DAY_BETWEEN = SQL_QUERY_SELECT_DAY
+            + " WHERE id_form = ? AND date_day >= ? AND date_day <= ? ORDER BY date_day ASC ";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_DAY + " WHERE id_form = ? ORDER BY date_day ASC";
 
     /**
      * Get a new primary key for a day
-     * @param plugin The plugin
+     * 
+     * @param plugin
+     *            The plugin
      * @return The new value of the primary key
      */
     private int newPrimaryKey( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( NEW_PRIMARY_KEY, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nKey = 1;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nKey = daoUtil.getInt( 1 ) + 1;
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nKey;
     }
@@ -93,20 +93,20 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
 
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_CREATE_DAY, plugin );
         int nIndex = 1;
-        daoUtil.setInt( nIndex++, day.getIdDay(  ) );
-        daoUtil.setInt( nIndex++, day.getIdForm(  ) );
-        daoUtil.setBoolean( nIndex++, day.getIsOpen(  ) );
-        daoUtil.setDate( nIndex++, day.getDate(  ) );
-        daoUtil.setInt( nIndex++, day.getOpeningHour(  ) );
-        daoUtil.setInt( nIndex++, day.getOpeningMinutes(  ) );
-        daoUtil.setInt( nIndex++, day.getClosingHour(  ) );
-        daoUtil.setInt( nIndex++, day.getClosingMinutes(  ) );
-        daoUtil.setInt( nIndex++, day.getAppointmentDuration(  ) );
-        daoUtil.setInt( nIndex++, day.getPeoplePerAppointment(  ) );
-        daoUtil.setInt( nIndex, day.getFreePlaces(  ) );
+        daoUtil.setInt( nIndex++, day.getIdDay( ) );
+        daoUtil.setInt( nIndex++, day.getIdForm( ) );
+        daoUtil.setBoolean( nIndex++, day.getIsOpen( ) );
+        daoUtil.setDate( nIndex++, day.getDate( ) );
+        daoUtil.setInt( nIndex++, day.getOpeningHour( ) );
+        daoUtil.setInt( nIndex++, day.getOpeningMinutes( ) );
+        daoUtil.setInt( nIndex++, day.getClosingHour( ) );
+        daoUtil.setInt( nIndex++, day.getClosingMinutes( ) );
+        daoUtil.setInt( nIndex++, day.getAppointmentDuration( ) );
+        daoUtil.setInt( nIndex++, day.getPeoplePerAppointment( ) );
+        daoUtil.setInt( nIndex, day.getFreePlaces( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -117,19 +117,19 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_DAY, plugin );
         int nIndex = 1;
-        daoUtil.setBoolean( nIndex++, day.getIsOpen(  ) );
-        daoUtil.setDate( nIndex++, day.getDate(  ) );
-        daoUtil.setInt( nIndex++, day.getOpeningHour(  ) );
-        daoUtil.setInt( nIndex++, day.getOpeningMinutes(  ) );
-        daoUtil.setInt( nIndex++, day.getClosingHour(  ) );
-        daoUtil.setInt( nIndex++, day.getClosingMinutes(  ) );
-        daoUtil.setInt( nIndex++, day.getAppointmentDuration(  ) );
-        daoUtil.setInt( nIndex++, day.getPeoplePerAppointment(  ) );
-        daoUtil.setInt( nIndex++, day.getFreePlaces(  ) );
-        daoUtil.setInt( nIndex, day.getIdDay(  ) );
+        daoUtil.setBoolean( nIndex++, day.getIsOpen( ) );
+        daoUtil.setDate( nIndex++, day.getDate( ) );
+        daoUtil.setInt( nIndex++, day.getOpeningHour( ) );
+        daoUtil.setInt( nIndex++, day.getOpeningMinutes( ) );
+        daoUtil.setInt( nIndex++, day.getClosingHour( ) );
+        daoUtil.setInt( nIndex++, day.getClosingMinutes( ) );
+        daoUtil.setInt( nIndex++, day.getAppointmentDuration( ) );
+        daoUtil.setInt( nIndex++, day.getPeoplePerAppointment( ) );
+        daoUtil.setInt( nIndex++, day.getFreePlaces( ) );
+        daoUtil.setInt( nIndex, day.getIdDay( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -140,8 +140,8 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_DAY_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, nIdDay );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -152,8 +152,8 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_DAY_BY_ID_DAY, plugin );
         daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -164,8 +164,8 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_LONELY_DAYS, plugin );
         daoUtil.setDate( 1, dateMonday );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -176,16 +176,16 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DAY_BY_PRIMARY_KEY, plugin );
         daoUtil.setInt( 1, nKey );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         AppointmentDay day = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             day = getDayFromDAO( daoUtil );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return day;
     }
@@ -200,30 +200,30 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
         daoUtil.setInt( 1, nIdForm );
         daoUtil.setDate( 2, dateMin );
         daoUtil.setDate( 3, dateMax );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        List<AppointmentDay> listDays = new ArrayList<AppointmentDay>(  );
+        List<AppointmentDay> listDays = new ArrayList<AppointmentDay>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             listDays.add( getDayFromDAO( daoUtil ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDays;
     }
 
     /**
-     * Get data of a day from a DAO. The DAO will NOT be freed by this method,
-     * and the method {@link DAOUtil#next()} must have been called before this
-     * method.
-     * @param daoUtil The DAOUtil to read data from
+     * Get data of a day from a DAO. The DAO will NOT be freed by this method, and the method {@link DAOUtil#next()} must have been called before this method.
+     * 
+     * @param daoUtil
+     *            The DAOUtil to read data from
      * @return The appointment day found.
      */
     private AppointmentDay getDayFromDAO( DAOUtil daoUtil )
     {
-        AppointmentDay day = new AppointmentDay(  );
+        AppointmentDay day = new AppointmentDay( );
         int nIndex = 1;
         day.setIdDay( daoUtil.getInt( nIndex++ ) );
         day.setIdForm( daoUtil.getInt( nIndex++ ) );
@@ -250,20 +250,20 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
 
         if ( bIncrement )
         {
-            day.setFreePlaces( day.getFreePlaces(  ) + 1 );
+            day.setFreePlaces( day.getFreePlaces( ) + 1 );
         }
         else
         {
-            if ( day.getFreePlaces(  ) > 0 )
+            if ( day.getFreePlaces( ) > 0 )
             {
-                day.setFreePlaces( day.getFreePlaces(  ) - 1 );
+                day.setFreePlaces( day.getFreePlaces( ) - 1 );
             }
         }
 
-        daoUtil.setInt( 1, day.getFreePlaces(  ) );
-        daoUtil.setInt( 2, day.getIdDay(  ) );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.setInt( 1, day.getFreePlaces( ) );
+        daoUtil.setInt( 2, day.getIdDay( ) );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -274,16 +274,16 @@ public class AppointmentDayDAO implements IAppointmentDayDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
         daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        List<AppointmentDay> listDay = new ArrayList<AppointmentDay>(  );
+        List<AppointmentDay> listDay = new ArrayList<AppointmentDay>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             listDay.add( getDayFromDAO( daoUtil ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDay;
     }

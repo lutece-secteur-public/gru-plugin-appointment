@@ -46,7 +46,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-
 /**
  * Daemon that creates slots and weeks of appointment forms
  */
@@ -56,23 +55,22 @@ public class DayCreationDaemon extends Daemon
      * {@inheritDoc}
      */
     @Override
-    public void run(  )
+    public void run( )
     {
-        for ( AppointmentForm form : AppointmentFormHome.getAppointmentFormsList(  ) )
+        for ( AppointmentForm form : AppointmentFormHome.getAppointmentFormsList( ) )
         {
-            AppointmentService.getService(  ).checkFormDays( form, false );
+            AppointmentService.getService( ).checkFormDays( form, false );
 
-            Calendar calendar = new GregorianCalendar(  );
-            Date dateLastMonday = AppointmentService.getService(  ).getDateLastMonday(  );
+            Calendar calendar = new GregorianCalendar( );
+            Date dateLastMonday = AppointmentService.getService( ).getDateLastMonday( );
             calendar.setTime( dateLastMonday );
-            calendar.add( Calendar.DAY_OF_MONTH, form.getNbWeeksToDisplay(  ) * 7 );
+            calendar.add( Calendar.DAY_OF_MONTH, form.getNbWeeksToDisplay( ) * 7 );
 
-            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm(  ), dateLastMonday,
-                    new Date( calendar.getTimeInMillis(  ) ) );
+            List<AppointmentDay> listDays = AppointmentDayHome.getDaysBetween( form.getIdForm( ), dateLastMonday, new Date( calendar.getTimeInMillis( ) ) );
 
             for ( AppointmentDay day : listDays )
             {
-                AppointmentDayHome.resetDayFreePlaces( day.getIdDay(  ) );
+                AppointmentDayHome.resetDayFreePlaces( day.getIdDay( ) );
             }
         }
     }

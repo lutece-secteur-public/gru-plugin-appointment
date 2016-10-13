@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.util.List;
 
-
 /**
  * Interface of DAO to manage calendar templates
  */
@@ -50,38 +49,51 @@ public interface ICalendarTemplateDAO
 
     /**
      * Create a new calendar template
-     * @param template The template to create
-     * @param plugin The plugin
+     * 
+     * @param template
+     *            The template to create
+     * @param plugin
+     *            The plugin
      */
     void create( CalendarTemplate template, Plugin plugin );
 
     /**
      * Update an existing template
-     * @param template The template
-     * @param plugin The plugin
+     * 
+     * @param template
+     *            The template
+     * @param plugin
+     *            The plugin
      */
     void update( CalendarTemplate template, Plugin plugin );
 
     /**
      * Find a template by its primary key
-     * @param nId The id of the template
-     * @param plugin The plugin
-     * @return The calendar template found, or null if no calendar template has
-     *         the given primary key
+     * 
+     * @param nId
+     *            The id of the template
+     * @param plugin
+     *            The plugin
+     * @return The calendar template found, or null if no calendar template has the given primary key
      */
     CalendarTemplate findByPrimaryKey( int nId, Plugin plugin );
 
     /**
      * Get the list of calendar templates
-     * @param plugin The plugin
+     * 
+     * @param plugin
+     *            The plugin
      * @return The list of calendar templates
      */
     List<CalendarTemplate> findAll( Plugin plugin );
 
     /**
      * Remove a template from its primary key
-     * @param nId The id of the template to remove
-     * @param plugin The plugin
+     * 
+     * @param nId
+     *            The id of the template to remove
+     * @param plugin
+     *            The plugin
      */
     void delete( int nId, Plugin plugin );
 }

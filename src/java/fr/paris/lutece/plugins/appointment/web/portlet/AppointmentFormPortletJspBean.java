@@ -52,7 +52,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * This class provides the user interface to manage AppointmentPortlet features
  */
@@ -81,21 +80,21 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList(  );
+        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
 
-        ReferenceList refListAppointmentForm = new ReferenceList(  );
+        ReferenceList refListAppointmentForm = new ReferenceList( );
 
         for ( AppointmentForm form : listAppointmentForm )
         {
-            refListAppointmentForm.addItem( form.getIdForm(  ), form.getTitle(  ) );
+            refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
 
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -108,21 +107,21 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         int nPortletId = Integer.parseInt( strPortletId );
         AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey( nPortletId );
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList(  );
+        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
 
-        ReferenceList refListAppointmentForm = new ReferenceList(  );
+        ReferenceList refListAppointmentForm = new ReferenceList( );
 
         for ( AppointmentForm form : listAppointmentForm )
         {
-            refListAppointmentForm.addItem( form.getIdForm(  ), form.getTitle(  ) );
+            refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
 
         HtmlTemplate template = getModifyTemplate( portlet, model );
 
-        return template.getHtml(  );
+        return template.getHtml( );
     }
 
     /**
@@ -131,7 +130,7 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
     @Override
     public String doCreate( HttpServletRequest request )
     {
-        AppointmentFormPortlet portlet = new AppointmentFormPortlet(  );
+        AppointmentFormPortlet portlet = new AppointmentFormPortlet( );
 
         // recovers portlet specific attributes
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
@@ -146,8 +145,7 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         }
         else
         {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED,
-                AdminMessage.TYPE_STOP );
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED, AdminMessage.TYPE_STOP );
         }
 
         // get portlet common attributes
@@ -161,9 +159,9 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         portlet.setPageId( nPageId );
 
         // Creates the portlet
-        AppointmentFormPortletHome.getInstance(  ).create( portlet );
+        AppointmentFormPortletHome.getInstance( ).create( portlet );
 
-        //Displays the page with the new Portlet
+        // Displays the page with the new Portlet
         return getPageUrl( nPageId );
     }
 
@@ -187,8 +185,7 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         }
         else
         {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED,
-                AdminMessage.TYPE_STOP );
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED, AdminMessage.TYPE_STOP );
         }
 
         // retrieve portlet common attributes
@@ -200,9 +197,9 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         }
 
         // updates the portlet
-        portlet.update(  );
+        portlet.update( );
 
         // displays the page with the updated portlet
-        return getPageUrl( portlet.getPageId(  ) );
+        return getPageUrl( portlet.getPageId( ) );
     }
 }

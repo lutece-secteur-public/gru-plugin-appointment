@@ -37,7 +37,6 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 
 import java.util.List;
 
-
 /**
  * Class to describe messages of appointment form displayed in FO
  */
@@ -64,16 +63,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Return the id of the associated form
+     * 
      * @return The id of the associated form
      */
-    public int getIdForm(  )
+    public int getIdForm( )
     {
         return _nIdForm;
     }
 
     /**
      * Set the id of the associated form
-     * @param nIdForm The id of the associated form
+     * 
+     * @param nIdForm
+     *            The id of the associated form
      */
     public void setIdForm( int nIdForm )
     {
@@ -82,16 +84,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the title of the page of the calendar in FO
+     * 
      * @return the title of the page of the calendar in FO
      */
-    public String getCalendarTitle(  )
+    public String getCalendarTitle( )
     {
         return _strCalendarTitle;
     }
 
     /**
      * Set the title of the page of the calendar in FO
-     * @param strCalendarTitle The title of the page of the calendar in FO
+     * 
+     * @param strCalendarTitle
+     *            The title of the page of the calendar in FO
      */
     public void setCalendarTitle( String strCalendarTitle )
     {
@@ -100,17 +105,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the title of the first name field in the form page in FO
+     * 
      * @return The title of the first name field in the form page in FO
      */
-    public String getFieldFirstNameTitle(  )
+    public String getFieldFirstNameTitle( )
     {
         return _strFieldFirstNameTitle;
     }
 
     /**
      * Set the title of the first name field in the form page in FO
-     * @param strFieldFirstNameTitle The title of the first name field in the
-     *            form page in FO
+     * 
+     * @param strFieldFirstNameTitle
+     *            The title of the first name field in the form page in FO
      */
     public void setFieldFirstNameTitle( String strFieldFirstNameTitle )
     {
@@ -119,17 +126,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the help message of the first name field in the form page in FO
+     * 
      * @return The help message of the first name field in the form page in FO
      */
-    public String getFieldFirstNameHelp(  )
+    public String getFieldFirstNameHelp( )
     {
         return _strFieldFirstNameHelp;
     }
 
     /**
      * Set the help message of the first name field in the form page in FO
-     * @param strFieldFirstNameHelp The help message of the first name field in
-     *            the form page in FO
+     * 
+     * @param strFieldFirstNameHelp
+     *            The help message of the first name field in the form page in FO
      */
     public void setFieldFirstNameHelp( String strFieldFirstNameHelp )
     {
@@ -138,17 +147,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the title of the last name field in the form page in FO
+     * 
      * @return The title of the last name field in the form page in FO
      */
-    public String getFieldLastNameTitle(  )
+    public String getFieldLastNameTitle( )
     {
         return _strFieldLastNameTitle;
     }
 
     /**
      * Set the title of the last name field in the form page in FO
-     * @param strFieldLastNameTitle The title of the last name field in the form
-     *            page in FO
+     * 
+     * @param strFieldLastNameTitle
+     *            The title of the last name field in the form page in FO
      */
     public void setFieldLastNameTitle( String strFieldLastNameTitle )
     {
@@ -157,17 +168,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the help message of the last name field in the form page in FO
+     * 
      * @return The help message of the last name field in the form page in FO
      */
-    public String getFieldLastNameHelp(  )
+    public String getFieldLastNameHelp( )
     {
         return _strFieldLastNameHelp;
     }
 
     /**
      * Get the help message of the last name field in the form page in FO
-     * @param strFieldLastNameHelp The help message of the last name field in
-     *            the form page in FO
+     * 
+     * @param strFieldLastNameHelp
+     *            The help message of the last name field in the form page in FO
      */
     public void setFieldLastNameHelp( String strFieldLastNameHelp )
     {
@@ -176,17 +189,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the title of the email field in the form page in FO
+     * 
      * @return The title of the email field in the form page in FO
      */
-    public String getFieldEmailTitle(  )
+    public String getFieldEmailTitle( )
     {
         return _strFieldEmailTitle;
     }
 
     /**
      * Set the title of the email field in the form page in FO
-     * @param strFieldEmailTitle The title of the email field in the form page
-     *            in FO
+     * 
+     * @param strFieldEmailTitle
+     *            The title of the email field in the form page in FO
      */
     public void setFieldEmailTitle( String strFieldEmailTitle )
     {
@@ -195,17 +210,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the help message of the email field in the form page in FO
+     * 
      * @return The help message of the email field in the form page in FO
      */
-    public String getFieldEmailHelp(  )
+    public String getFieldEmailHelp( )
     {
         return _strFieldEmailHelp;
     }
 
     /**
      * Set the help message of the email field in the form page in FO
-     * @param strFieldEmailHelp The help message of the email field in the form
-     *            page in FO
+     * 
+     * @param strFieldEmailHelp
+     *            The help message of the email field in the form page in FO
      */
     public void setFieldEmailHelp( String strFieldEmailHelp )
     {
@@ -214,15 +231,17 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get Field confirmation email
+     * 
      * @return The field of confirmation email
      */
-    public String getFieldConfirmationEmail(  )
+    public String getFieldConfirmationEmail( )
     {
         return _strFieldConfirmationEmail;
     }
 
     /**
      * Set field confirmation email
+     * 
      * @param strFieldConfirmationEmail
      */
     public void setFieldConfirmationEmail( String strFieldConfirmationEmail )
@@ -232,15 +251,17 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get field confirmation email help
+     * 
      * @return The confirmation email help
      */
-    public String getFieldConfirmationEmailHelp(  )
+    public String getFieldConfirmationEmailHelp( )
     {
         return _strFieldConfirmationEmailHelp;
     }
 
     /**
      * Set the field email confirmation help
+     * 
      * @param fieldConfirmationEmailHelp
      */
     public void setFieldConfirmationEmailHelp( String fieldConfirmationEmailHelp )
@@ -249,19 +270,20 @@ public class AppointmentFormMessages implements Cloneable
     }
 
     /**
-    * Get the URL to redirect the user to after creation of an appointment
-    * @return The URL to redirect the user to after creation of an
-    *         appointment
-    */
-    public String getUrlRedirectAfterCreation(  )
+     * Get the URL to redirect the user to after creation of an appointment
+     * 
+     * @return The URL to redirect the user to after creation of an appointment
+     */
+    public String getUrlRedirectAfterCreation( )
     {
         return _strUrlRedirectAfterCreation;
     }
 
     /**
      * Set the URL to redirect the user to after creation of an appointment
-     * @param strUrlRedirectAfterCreation The URL to redirect the user to
-     *            after creation of an appointment
+     * 
+     * @param strUrlRedirectAfterCreation
+     *            The URL to redirect the user to after creation of an appointment
      */
     public void setUrlRedirectAfterCreation( String strUrlRedirectAfterCreation )
     {
@@ -269,21 +291,20 @@ public class AppointmentFormMessages implements Cloneable
     }
 
     /**
-     * Get the text to display to the user after the creation of an
-     * appointment and before he is redirected to a given URL
-     * @return The text to display to the user after the creation of an
-     *         appointment
+     * Get the text to display to the user after the creation of an appointment and before he is redirected to a given URL
+     * 
+     * @return The text to display to the user after the creation of an appointment
      */
-    public String getTextAppointmentCreated(  )
+    public String getTextAppointmentCreated( )
     {
         return _strTextAppointmentCreated;
     }
 
     /**
-     * Set the text to display to the user after the creation of an
-     * appointment
-     * @param strTextAppointmentCreated The text to display to the user after
-     *            the creation of an appointment
+     * Set the text to display to the user after the creation of an appointment
+     * 
+     * @param strTextAppointmentCreated
+     *            The text to display to the user after the creation of an appointment
      */
     public void setTextAppointmentCreated( String strTextAppointmentCreated )
     {
@@ -291,21 +312,20 @@ public class AppointmentFormMessages implements Cloneable
     }
 
     /**
-     * Get the text to display to the user after the canceling of an
-     * appointment
-     * @return The text to display to the user after the canceling of an
-     *         appointment
+     * Get the text to display to the user after the canceling of an appointment
+     * 
+     * @return The text to display to the user after the canceling of an appointment
      */
-    public String getTextAppointmentCanceled(  )
+    public String getTextAppointmentCanceled( )
     {
         return _strTextAppointmentCanceled;
     }
 
     /**
-     * Set the text to display to the user after the canceling of an
-     * appointment
-     * @param strTextAppointmentCanceled The text to display to the user after
-     *            the canceling of an appointment
+     * Set the text to display to the user after the canceling of an appointment
+     * 
+     * @param strTextAppointmentCanceled
+     *            The text to display to the user after the canceling of an appointment
      */
     public void setTextAppointmentCanceled( String strTextAppointmentCanceled )
     {
@@ -314,17 +334,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the label of the button after the creation of an appointment
+     * 
      * @return The label of the button after the creation of an appointment
      */
-    public String getLabelButtonRedirection(  )
+    public String getLabelButtonRedirection( )
     {
         return _strLabelButtonRedirection;
     }
 
     /**
      * Set the label of the button after the creation of an appointment
-     * @param strLabelButtonRedirection The label of the button after the
-     *            creation of an appointment
+     * 
+     * @param strLabelButtonRedirection
+     *            The label of the button after the creation of an appointment
      */
     public void setLabelButtonRedirection( String strLabelButtonRedirection )
     {
@@ -332,20 +354,20 @@ public class AppointmentFormMessages implements Cloneable
     }
 
     /**
-     * Get the message to display when there is no available slot for the
-     * associated form
+     * Get the message to display when there is no available slot for the associated form
+     * 
      * @return the message to display when there is no available slot
      */
-    public String getNoAvailableSlot(  )
+    public String getNoAvailableSlot( )
     {
         return _strNoAvailableSlot;
     }
 
     /**
-     * Set the message to display when there is no available slot for the
-     * associated form
-     * @param strNoAvailableSlot The message to display when there is no
-     *            available slot
+     * Set the message to display when there is no available slot for the associated form
+     * 
+     * @param strNoAvailableSlot
+     *            The message to display when there is no available slot
      */
     public void setNoAvailableSlot( String strNoAvailableSlot )
     {
@@ -354,16 +376,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the calendar description
+     * 
      * @return The calendar description
      */
-    public String getCalendarDescription(  )
+    public String getCalendarDescription( )
     {
         return _strCalendarDescription;
     }
 
     /**
      * Set the calendar description
-     * @param strCalendarDescription The calendar description
+     * 
+     * @param strCalendarDescription
+     *            The calendar description
      */
     public void setCalendarDescription( String strCalendarDescription )
     {
@@ -372,17 +397,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the label that indicates that a slot is open for reservation
+     * 
      * @return The label that indicates that a slot is open for reservation
      */
-    public String getCalendarReserveLabel(  )
+    public String getCalendarReserveLabel( )
     {
         return _strCalendarReserveLabel;
     }
 
     /**
      * Set the label that indicates that a slot is open for reservation
-     * @param strCalendarReserveLabel The label that indicates that a slot is
-     *            open for reservation
+     * 
+     * @param strCalendarReserveLabel
+     *            The label that indicates that a slot is open for reservation
      */
     public void setCalendarReserveLabel( String strCalendarReserveLabel )
     {
@@ -391,16 +418,19 @@ public class AppointmentFormMessages implements Cloneable
 
     /**
      * Get the label that indicates that a slot is full
+     * 
      * @return The label that indicates that a slot is full
      */
-    public String getCalendarFullLabel(  )
+    public String getCalendarFullLabel( )
     {
         return _strCalendarFullLabel;
     }
 
     /**
      * Set the label that indicates that a slot is full
-     * @param strCalendarFullLabel The label that indicates that a slot is full
+     * 
+     * @param strCalendarFullLabel
+     *            The label that indicates that a slot is full
      */
     public void setCalendarFullLabel( String strCalendarFullLabel )
     {
@@ -408,18 +438,18 @@ public class AppointmentFormMessages implements Cloneable
     }
 
     /**
-    * {@inheritDoc}
-    */
+     * {@inheritDoc}
+     */
     @Override
-    public Object clone(  )
+    public Object clone( )
     {
         try
         {
-            return super.clone(  );
+            return super.clone( );
         }
-        catch ( CloneNotSupportedException e )
+        catch( CloneNotSupportedException e )
         {
-            AppLogService.error( e.getMessage(  ), e );
+            AppLogService.error( e.getMessage( ), e );
 
             return null;
         }

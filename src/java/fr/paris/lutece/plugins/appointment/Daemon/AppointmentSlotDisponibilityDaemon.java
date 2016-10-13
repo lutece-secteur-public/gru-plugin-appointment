@@ -42,20 +42,19 @@ import java.sql.Timestamp;
 
 import java.util.List;
 
-
 public class AppointmentSlotDisponibilityDaemon extends Daemon
 {
-    public void run(  )
+    public void run( )
     {
-        List<AppointmentSlotDisponiblity> listAppointmentSlotDisponiblity = AppointmentApp.getListAppointmentSlotDisponiblity(  );
+        List<AppointmentSlotDisponiblity> listAppointmentSlotDisponiblity = AppointmentApp.getListAppointmentSlotDisponiblity( );
 
-        for ( int i = 0; i < listAppointmentSlotDisponiblity.size(  ); i++ )
+        for ( int i = 0; i < listAppointmentSlotDisponiblity.size( ); i++ )
         {
-            Timestamp liberateTime = listAppointmentSlotDisponiblity.get( i ).getFreeDate(  );
+            Timestamp liberateTime = listAppointmentSlotDisponiblity.get( i ).getFreeDate( );
 
-            if ( liberateTime.before( new Timestamp( new java.util.Date(  ).getTime(  ) ) ) )
+            if ( liberateTime.before( new Timestamp( new java.util.Date( ).getTime( ) ) ) )
             {
-                AppLogService.info( "release of slot " + listAppointmentSlotDisponiblity.get( i ).getIdSlot(  ) );
+                AppLogService.info( "release of slot " + listAppointmentSlotDisponiblity.get( i ).getIdSlot( ) );
                 listAppointmentSlotDisponiblity.remove( listAppointmentSlotDisponiblity.get( i ) );
                 AppointmentApp.setListAppointmentSlotDisponiblity( listAppointmentSlotDisponiblity );
             }

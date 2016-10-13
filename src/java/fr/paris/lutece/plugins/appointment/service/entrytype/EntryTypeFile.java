@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeFile;
 import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractGenAttUploadHandler;
 
-
 /**
  *
  * class EntryTypeImage
@@ -86,7 +85,7 @@ public class EntryTypeFile extends AbstractEntryTypeFile
      * {@inheritDoc}
      */
     @Override
-    protected boolean checkForImages(  )
+    protected boolean checkForImages( )
     {
         return false;
     }
@@ -95,9 +94,9 @@ public class EntryTypeFile extends AbstractEntryTypeFile
      * {@inheritDoc}
      */
     @Override
-    public AbstractGenAttUploadHandler getAsynchronousUploadHandler(  )
+    public AbstractGenAttUploadHandler getAsynchronousUploadHandler( )
     {
-        return AppointmentAsynchronousUploadHandler.getHandler(  );
+        return AppointmentAsynchronousUploadHandler.getHandler( );
     }
 
     /**

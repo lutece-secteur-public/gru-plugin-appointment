@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-
 /**
  * This class provides Data Access methods for Appointment objects
  */
@@ -96,22 +95,24 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     /**
      * Generates a new primary key
-     * @param plugin The Plugin
+     * 
+     * @param plugin
+     *            The Plugin
      * @return The new primary key
      */
     public int newPrimaryKey( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nKey = 1;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nKey = daoUtil.getInt( 1 ) + 1;
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nKey;
     }
@@ -127,22 +128,22 @@ public final class AppointmentDAO implements IAppointmentDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
 
         int nIndex = 1;
-        daoUtil.setInt( nIndex++, appointment.getIdAppointment(  ) );
-        daoUtil.setString( nIndex++, appointment.getFirstName(  ) );
-        daoUtil.setString( nIndex++, appointment.getLastName(  ) );
-        daoUtil.setString( nIndex++, appointment.getEmail(  ) );
-        daoUtil.setString( nIndex++, appointment.getIdUser(  ) );
-        daoUtil.setString( nIndex++, appointment.getAuthenticationService(  ) );
-        daoUtil.setString( nIndex++, appointment.getLocation(  ) );
-        daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
-        daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
-        daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
-        daoUtil.setInt( nIndex++, appointment.getIdActionCancel(  ) );
-        daoUtil.setInt( nIndex++, appointment.getIdAdminUser(  ) );
-        daoUtil.setInt( nIndex++, appointment.getHasNotify(  ) );
-        daoUtil.setInt(nIndex, appointment.getNumberPlacesReserved());
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.setInt( nIndex++, appointment.getIdAppointment( ) );
+        daoUtil.setString( nIndex++, appointment.getFirstName( ) );
+        daoUtil.setString( nIndex++, appointment.getLastName( ) );
+        daoUtil.setString( nIndex++, appointment.getEmail( ) );
+        daoUtil.setString( nIndex++, appointment.getIdUser( ) );
+        daoUtil.setString( nIndex++, appointment.getAuthenticationService( ) );
+        daoUtil.setString( nIndex++, appointment.getLocation( ) );
+        daoUtil.setDate( nIndex++, appointment.getDateAppointment( ) );
+        daoUtil.setInt( nIndex++, appointment.getIdSlot( ) );
+        daoUtil.setInt( nIndex++, appointment.getStatus( ) );
+        daoUtil.setInt( nIndex++, appointment.getIdActionCancel( ) );
+        daoUtil.setInt( nIndex++, appointment.getIdAdminUser( ) );
+        daoUtil.setInt( nIndex++, appointment.getHasNotify( ) );
+        daoUtil.setInt( nIndex, appointment.getNumberPlacesReserved( ) );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -153,16 +154,16 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
         daoUtil.setInt( 1, nKey );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         Appointment appointment = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             appointment = getAppointmentFormValues( daoUtil );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointment;
     }
@@ -175,8 +176,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
         daoUtil.setInt( 1, nAppointmentId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -187,23 +188,23 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
         int nIndex = 1;
-        daoUtil.setString( nIndex++, appointment.getFirstName(  ) );
-        daoUtil.setString( nIndex++, appointment.getLastName(  ) );
-        daoUtil.setString( nIndex++, appointment.getEmail(  ) );
-        daoUtil.setString( nIndex++, appointment.getIdUser(  ) );
-        daoUtil.setString( nIndex++, appointment.getAuthenticationService(  ) );
-        daoUtil.setString( nIndex++, appointment.getLocation(  ) );
-        daoUtil.setDate( nIndex++, appointment.getDateAppointment(  ) );
-        daoUtil.setInt( nIndex++, appointment.getIdSlot(  ) );
-        daoUtil.setInt( nIndex++, appointment.getStatus(  ) );
-        daoUtil.setInt( nIndex++, appointment.getIdActionCancel(  ) );
-        daoUtil.setInt( nIndex++, appointment.getIdAdminUser(  ) );
-        daoUtil.setInt( nIndex++, appointment.getHasNotify(  ) );
-        daoUtil.setInt( nIndex++, appointment.getNumberPlacesReserved());
-        daoUtil.setInt( nIndex, appointment.getIdAppointment(  ) );
-       
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.setString( nIndex++, appointment.getFirstName( ) );
+        daoUtil.setString( nIndex++, appointment.getLastName( ) );
+        daoUtil.setString( nIndex++, appointment.getEmail( ) );
+        daoUtil.setString( nIndex++, appointment.getIdUser( ) );
+        daoUtil.setString( nIndex++, appointment.getAuthenticationService( ) );
+        daoUtil.setString( nIndex++, appointment.getLocation( ) );
+        daoUtil.setDate( nIndex++, appointment.getDateAppointment( ) );
+        daoUtil.setInt( nIndex++, appointment.getIdSlot( ) );
+        daoUtil.setInt( nIndex++, appointment.getStatus( ) );
+        daoUtil.setInt( nIndex++, appointment.getIdActionCancel( ) );
+        daoUtil.setInt( nIndex++, appointment.getIdAdminUser( ) );
+        daoUtil.setInt( nIndex++, appointment.getHasNotify( ) );
+        daoUtil.setInt( nIndex++, appointment.getNumberPlacesReserved( ) );
+        daoUtil.setInt( nIndex, appointment.getIdAppointment( ) );
+
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -212,16 +213,16 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public List<Appointment> selectAppointmentsList( Plugin plugin )
     {
-        List<Appointment> appointmentList = new ArrayList<Appointment>(  );
+        List<Appointment> appointmentList = new ArrayList<Appointment>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             appointmentList.add( getAppointmentFormValues( daoUtil ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointmentList;
     }
@@ -232,17 +233,17 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public List<Appointment> selectAppointmentsListByIdForm( int nIdForm, Plugin plugin )
     {
-        List<Appointment> appointmentList = new ArrayList<Appointment>(  );
+        List<Appointment> appointmentList = new ArrayList<Appointment>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL + SQL_QUERY_SELECT_BY_ID_FORM, plugin );
         daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             appointmentList.add( getAppointmentFormValues( daoUtil ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointmentList;
     }
@@ -253,20 +254,20 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public List<Appointment> selectAppointmentListByFilter( AppointmentFilter appointmentFilter, Plugin plugin )
     {
-        List<Appointment> appointmentList = new ArrayList<Appointment>(  );
+        List<Appointment> appointmentList = new ArrayList<Appointment>( );
 
         DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter, true ), plugin );
 
         addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
 
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             appointmentList.add( getAppointmentFormValues( daoUtil ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointmentList;
     }
@@ -277,20 +278,20 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public List<Integer> selectAppointmentIdByFilter( AppointmentFilter appointmentFilter, Plugin plugin )
     {
-        List<Integer> appointmentIdList = new ArrayList<Integer>(  );
+        List<Integer> appointmentIdList = new ArrayList<Integer>( );
 
         DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter, true ), plugin );
 
         addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
 
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             appointmentIdList.add( daoUtil.getInt( 1 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointmentIdList;
     }
@@ -299,17 +300,16 @@ public final class AppointmentDAO implements IAppointmentDAO
      * {@inheritDoc}
      */
     @Override
-    public List<Appointment> selectAppointmentListById( List<Integer> listIdAppointments, String strOrderBy,
-        boolean bSortAsc, Plugin plugin )
+    public List<Appointment> selectAppointmentListById( List<Integer> listIdAppointments, String strOrderBy, boolean bSortAsc, Plugin plugin )
     {
-        List<Appointment> appointmentList = new ArrayList<Appointment>(  );
+        List<Appointment> appointmentList = new ArrayList<Appointment>( );
 
-        if ( ( listIdAppointments != null ) && ( listIdAppointments.size(  ) > 0 ) )
+        if ( ( listIdAppointments != null ) && ( listIdAppointments.size( ) > 0 ) )
         {
             StringBuilder sbSql = new StringBuilder( SQL_QUERY_SELECT_BY_LIST_ID );
             sbSql.append( CONSTANT_QUESTION_MARK );
 
-            for ( int i = 1; i < listIdAppointments.size(  ); i++ )
+            for ( int i = 1; i < listIdAppointments.size( ); i++ )
             {
                 sbSql.append( CONSTANT_COMMA );
                 sbSql.append( CONSTANT_QUESTION_MARK );
@@ -325,7 +325,7 @@ public final class AppointmentDAO implements IAppointmentDAO
                 sbSql.append( strOrderType );
             }
 
-            DAOUtil daoUtil = new DAOUtil( sbSql.toString(  ), plugin );
+            DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin );
 
             int nIndex = 1;
 
@@ -334,14 +334,14 @@ public final class AppointmentDAO implements IAppointmentDAO
                 daoUtil.setInt( nIndex++, nIdAppointment );
             }
 
-            daoUtil.executeQuery(  );
+            daoUtil.executeQuery( );
 
-            while ( daoUtil.next(  ) )
+            while ( daoUtil.next( ) )
             {
                 appointmentList.add( getAppointmentFormValues( daoUtil ) );
             }
 
-            daoUtil.free(  );
+            daoUtil.free( );
         }
 
         return appointmentList;
@@ -356,16 +356,16 @@ public final class AppointmentDAO implements IAppointmentDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM, plugin );
         daoUtil.setDate( 1, dateAppointment );
         daoUtil.setInt( 2, nIdForm );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nRes = 0;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nRes = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nRes;
     }
@@ -383,8 +383,8 @@ public final class AppointmentDAO implements IAppointmentDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_APPOINTMENT_RESPONSE, plugin );
         daoUtil.setInt( 1, nIdAppointment );
         daoUtil.setInt( 2, nIdResponse );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -395,16 +395,16 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST, plugin );
         daoUtil.setInt( 1, nIdAppointment );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        List<Integer> listIdResponse = new ArrayList<Integer>(  );
+        List<Integer> listIdResponse = new ArrayList<Integer>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             listIdResponse.add( daoUtil.getInt( 1 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listIdResponse;
     }
@@ -417,8 +417,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_APPOINTMENT_RESPONSE, plugin );
         daoUtil.setInt( 1, nIdAppointment );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -429,8 +429,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_FROM_ID_RESPONSE, plugin );
         daoUtil.setInt( 1, nIdResponse );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -442,89 +442,90 @@ public final class AppointmentDAO implements IAppointmentDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM, plugin );
         daoUtil.setInt( 1, nIdForm );
         daoUtil.setDate( 2, date );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nRes = 0;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nRes = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nRes;
     }
 
     /**
-     * Get the SQL string to execute to find appointments matching a given
-     * filter
-     * @param appointmentFilter The filter appointments must match
-     * @param bLoadFields True to load every fields of appointments, false to
-     *            only load their ids
+     * Get the SQL string to execute to find appointments matching a given filter
+     * 
+     * @param appointmentFilter
+     *            The filter appointments must match
+     * @param bLoadFields
+     *            True to load every fields of appointments, false to only load their ids
      * @return The SQL String to execute
      */
     private String getSqlQueryFromFilter( AppointmentFilter appointmentFilter, boolean bLoadFields )
     {
         StringBuilder sbSql = new StringBuilder( bLoadFields ? SQL_QUERY_SELECTALL : SQL_QUERY_SELECT_ID );
 
-        if ( appointmentFilter.getIdForm(  ) > 0 )
+        if ( appointmentFilter.getIdForm( ) > 0 )
         {
             sbSql.append( SQL_QUERY_SELECT_BY_ID_FORM );
         }
 
         boolean bHasFilter = false;
 
-        if ( appointmentFilter.getIdSlot(  ) > 0 )
+        if ( appointmentFilter.getIdSlot( ) > 0 )
         {
             sbSql.append( CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_ID_SLOT );
             bHasFilter = true;
         }
 
-        if ( appointmentFilter.getFirstName(  ) != null )
+        if ( appointmentFilter.getFirstName( ) != null )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_FIRST_NAME );
             bHasFilter = true;
         }
 
-        if ( appointmentFilter.getLastName(  ) != null )
+        if ( appointmentFilter.getLastName( ) != null )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_LAST_NAME );
             bHasFilter = true;
         }
 
-        if ( appointmentFilter.getEmail(  ) != null )
+        if ( appointmentFilter.getEmail( ) != null )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_EMAIL );
             bHasFilter = true;
         }
 
-        if ( appointmentFilter.getIdUser(  ) != null )
+        if ( appointmentFilter.getIdUser( ) != null )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_ID_USER );
             bHasFilter = true;
         }
 
-        if ( appointmentFilter.getAuthenticationService(  ) != null )
+        if ( appointmentFilter.getAuthenticationService( ) != null )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_AUTHENTICATION_SERVICE );
             bHasFilter = true;
         }
 
-        if ( appointmentFilter.getIdAdminUser(  ) >= 0 )
+        if ( appointmentFilter.getIdAdminUser( ) >= 0 )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_ADMIN_USER );
             bHasFilter = true;
         }
 
-        if ( appointmentFilter.getDateAppointment(  ) != null )
+        if ( appointmentFilter.getDateAppointment( ) != null )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_DATE_APPOINTMENT );
@@ -532,14 +533,14 @@ public final class AppointmentDAO implements IAppointmentDAO
         }
         else
         {
-            if ( appointmentFilter.getDateAppointmentMin(  ) != null )
+            if ( appointmentFilter.getDateAppointmentMin( ) != null )
             {
                 sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
                 sbSql.append( SQL_FILTER_DATE_APPOINTMENT_MIN );
                 bHasFilter = true;
             }
 
-            if ( appointmentFilter.getDateAppointmentMax(  ) != null )
+            if ( appointmentFilter.getDateAppointmentMax( ) != null )
             {
                 sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
                 sbSql.append( SQL_FILTER_DATE_APPOINTMENT_MAX );
@@ -547,105 +548,110 @@ public final class AppointmentDAO implements IAppointmentDAO
             }
         }
 
-        if ( appointmentFilter.getStatus(  ) != AppointmentFilter.NO_STATUS_FILTER )
+        if ( appointmentFilter.getStatus( ) != AppointmentFilter.NO_STATUS_FILTER )
         {
             sbSql.append( bHasFilter ? CONSTANT_AND : CONSTANT_WHERE );
             sbSql.append( SQL_FILTER_STATUS );
             bHasFilter = true;
         }
 
-        if ( StringUtils.isNotBlank( appointmentFilter.getOrderBy(  ) ) )
+        if ( StringUtils.isNotBlank( appointmentFilter.getOrderBy( ) ) )
         {
-            String strOrderType = appointmentFilter.getOrderAsc(  ) ? CONSTANT_ASC : CONSTANT_DESC;
+            String strOrderType = appointmentFilter.getOrderAsc( ) ? CONSTANT_ASC : CONSTANT_DESC;
             sbSql.append( CONSTANT_ORDER_BY );
-            sbSql.append( appointmentFilter.getOrderBy(  ).replaceAll( ",", strOrderType + "," ) );
+            sbSql.append( appointmentFilter.getOrderBy( ).replaceAll( ",", strOrderType + "," ) );
             sbSql.append( strOrderType );
         }
 
-        return sbSql.toString(  );
+        return sbSql.toString( );
     }
 
     /**
      * Add filter parameters to a DAOUtil
-     * @param appointmentFilter The filter to add parameters from
-     * @param daoUtil The DAOUtil to add parameters
+     * 
+     * @param appointmentFilter
+     *            The filter to add parameters from
+     * @param daoUtil
+     *            The DAOUtil to add parameters
      */
     private void addFilterParametersToDAOUtil( AppointmentFilter appointmentFilter, DAOUtil daoUtil )
     {
         int nIndex = 1;
 
-        if ( appointmentFilter.getIdForm(  ) > 0 )
+        if ( appointmentFilter.getIdForm( ) > 0 )
         {
-            daoUtil.setInt( nIndex++, appointmentFilter.getIdForm(  ) );
+            daoUtil.setInt( nIndex++, appointmentFilter.getIdForm( ) );
         }
 
-        if ( appointmentFilter.getIdSlot(  ) > 0 )
+        if ( appointmentFilter.getIdSlot( ) > 0 )
         {
-            daoUtil.setInt( nIndex++, appointmentFilter.getIdSlot(  ) );
+            daoUtil.setInt( nIndex++, appointmentFilter.getIdSlot( ) );
         }
 
-        if ( appointmentFilter.getFirstName(  ) != null )
+        if ( appointmentFilter.getFirstName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName(  ) + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName( ) + CONSTANT_PERCENT );
         }
 
-        if ( appointmentFilter.getLastName(  ) != null )
+        if ( appointmentFilter.getLastName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getLastName(  ) + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getLastName( ) + CONSTANT_PERCENT );
         }
 
-        if ( appointmentFilter.getEmail(  ) != null )
+        if ( appointmentFilter.getEmail( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail(  ) + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ) + CONSTANT_PERCENT );
         }
 
-        if ( appointmentFilter.getIdUser(  ) != null )
+        if ( appointmentFilter.getIdUser( ) != null )
         {
-            daoUtil.setString( nIndex++, appointmentFilter.getIdUser(  ) );
+            daoUtil.setString( nIndex++, appointmentFilter.getIdUser( ) );
         }
 
-        if ( appointmentFilter.getAuthenticationService(  ) != null )
+        if ( appointmentFilter.getAuthenticationService( ) != null )
         {
-            daoUtil.setString( nIndex++, appointmentFilter.getAuthenticationService(  ) );
+            daoUtil.setString( nIndex++, appointmentFilter.getAuthenticationService( ) );
         }
 
-        if ( appointmentFilter.getIdAdminUser(  ) >= 0 )
+        if ( appointmentFilter.getIdAdminUser( ) >= 0 )
         {
-            daoUtil.setInt( nIndex++, appointmentFilter.getIdAdminUser(  ) );
+            daoUtil.setInt( nIndex++, appointmentFilter.getIdAdminUser( ) );
         }
 
-        if ( appointmentFilter.getDateAppointment(  ) != null )
+        if ( appointmentFilter.getDateAppointment( ) != null )
         {
-            daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointment(  ) );
+            daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointment( ) );
         }
         else
         {
-            if ( appointmentFilter.getDateAppointmentMin(  ) != null )
+            if ( appointmentFilter.getDateAppointmentMin( ) != null )
             {
-                daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointmentMin(  ) );
+                daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointmentMin( ) );
             }
 
-            if ( appointmentFilter.getDateAppointmentMax(  ) != null )
+            if ( appointmentFilter.getDateAppointmentMax( ) != null )
             {
-                daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointmentMax(  ) );
+                daoUtil.setDate( nIndex++, appointmentFilter.getDateAppointmentMax( ) );
             }
         }
 
-        if ( appointmentFilter.getStatus(  ) != AppointmentFilter.NO_STATUS_FILTER )
+        if ( appointmentFilter.getStatus( ) != AppointmentFilter.NO_STATUS_FILTER )
         {
-            daoUtil.setInt( nIndex++, appointmentFilter.getStatus(  ) );
+            daoUtil.setInt( nIndex++, appointmentFilter.getStatus( ) );
         }
     }
 
     /**
      * Get data of an appointment from a daoUtil
-     * @param daoUtil The daoUtil to get data from
+     * 
+     * @param daoUtil
+     *            The daoUtil to get data from
      * @return The appointment with data of the current row of the daoUtil
      */
     private Appointment getAppointmentFormValues( DAOUtil daoUtil )
     {
-        Appointment appointment = new Appointment(  );
-        Calendar dateAppointment = Calendar.getInstance(  );
+        Appointment appointment = new Appointment( );
+        Calendar dateAppointment = Calendar.getInstance( );
         int nIndex = 1;
         appointment.setIdAppointment( daoUtil.getInt( nIndex++ ) );
         appointment.setFirstName( daoUtil.getString( nIndex++ ) );
@@ -655,7 +661,7 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setAuthenticationService( daoUtil.getString( nIndex++ ) );
         appointment.setLocation( daoUtil.getString( nIndex++ ) );
         dateAppointment.setTime( daoUtil.getDate( nIndex++ ) );
-        appointment.setDateAppointment( new Date( dateAppointment.getTimeInMillis(  ) ) );
+        appointment.setDateAppointment( new Date( dateAppointment.getTimeInMillis( ) ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
         appointment.setStatus( daoUtil.getInt( nIndex++ ) );
         appointment.setIdActionCancel( daoUtil.getInt( nIndex++ ) );
@@ -663,12 +669,12 @@ public final class AppointmentDAO implements IAppointmentDAO
         appointment.setHasNotify( daoUtil.getInt( nIndex++ ) );
         dateAppointment.set( Calendar.HOUR_OF_DAY, daoUtil.getInt( nIndex++ ) );
         dateAppointment.set( Calendar.MINUTE, daoUtil.getInt( nIndex++ ) );
-        appointment.setStartAppointment( dateAppointment.getTime(  ) );
+        appointment.setStartAppointment( dateAppointment.getTime( ) );
         dateAppointment.set( Calendar.HOUR_OF_DAY, daoUtil.getInt( nIndex++ ) );
         dateAppointment.set( Calendar.MINUTE, daoUtil.getInt( nIndex++ ) );
-        appointment.setEndAppointment( dateAppointment.getTime(  ) );
-    
-        appointment.setNumberPlacesReserved(daoUtil.getInt(nIndex++));  
+        appointment.setEndAppointment( dateAppointment.getTime( ) );
+
+        appointment.setNumberPlacesReserved( daoUtil.getInt( nIndex++ ) );
         return appointment;
     }
 
@@ -680,16 +686,16 @@ public final class AppointmentDAO implements IAppointmentDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ID_APPOINTMENT_FROM_ID_RESPONSE, plugin );
         daoUtil.setInt( 1, nIdResponse );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nIdAppointment = 0;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nIdAppointment = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nIdAppointment;
     }

@@ -45,7 +45,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Service to manage entries
  */
@@ -59,57 +58,59 @@ public class EntryService extends RemovalListenerService implements Serializable
 
     /**
      * Get an instance of the service
+     * 
      * @return An instance of the service
      */
-    public static EntryService getService(  )
+    public static EntryService getService( )
     {
         return SpringContextService.getBean( BEAN_NAME );
     }
 
     /**
      * Change the attribute's order to a greater one (move down in the list)
-     * @param nOrderToSet the new order for the attribute
-     * @param entryToChangeOrder the attribute which will change
+     * 
+     * @param nOrderToSet
+     *            the new order for the attribute
+     * @param entryToChangeOrder
+     *            the attribute which will change
      */
     public void moveDownEntryOrder( int nOrderToSet, Entry entryToChangeOrder )
     {
-        if ( entryToChangeOrder.getParent(  ) == null )
+        if ( entryToChangeOrder.getParent( ) == null )
         {
             int nNbChild = 0;
             int nNewOrder = 0;
 
-            EntryFilter filter = new EntryFilter(  );
-            filter.setIdResource( entryToChangeOrder.getIdResource(  ) );
+            EntryFilter filter = new EntryFilter( );
+            filter.setIdResource( entryToChangeOrder.getIdResource( ) );
             filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
             filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
             filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
-            List<Entry> listEntryFirstLevel = EntryHome.findEntriesWithoutParent( entryToChangeOrder.getIdResource(  ),
-                    entryToChangeOrder.getResourceType(  ) );
+            List<Entry> listEntryFirstLevel = EntryHome.findEntriesWithoutParent( entryToChangeOrder.getIdResource( ), entryToChangeOrder.getResourceType( ) );
 
-            List<Integer> orderFirstLevel = new ArrayList<Integer>(  );
+            List<Integer> orderFirstLevel = new ArrayList<Integer>( );
             initOrderFirstLevel( listEntryFirstLevel, orderFirstLevel );
 
             Integer nbChildEntryToChangeOrder = 0;
 
-            if ( entryToChangeOrder.getChildren(  ) != null )
+            if ( entryToChangeOrder.getChildren( ) != null )
             {
-                nbChildEntryToChangeOrder = entryToChangeOrder.getChildren(  ).size(  );
+                nbChildEntryToChangeOrder = entryToChangeOrder.getChildren( ).size( );
             }
 
             for ( Entry entry : listEntryFirstLevel )
             {
-                for ( int i = 0; i < orderFirstLevel.size(  ); i++ )
+                for ( int i = 0; i < orderFirstLevel.size( ); i++ )
                 {
-                    if ( ( orderFirstLevel.get( i ) == entry.getPosition(  ) ) &&
-                            ( entry.getPosition(  ) > entryToChangeOrder.getPosition(  ) ) &&
-                            ( entry.getPosition(  ) <= nOrderToSet ) )
+                    if ( ( orderFirstLevel.get( i ) == entry.getPosition( ) ) && ( entry.getPosition( ) > entryToChangeOrder.getPosition( ) )
+                            && ( entry.getPosition( ) <= nOrderToSet ) )
                     {
                         if ( nNbChild == 0 )
                         {
                             nNewOrder = orderFirstLevel.get( i - 1 );
 
-                            if ( orderFirstLevel.get( i - 1 ) != entryToChangeOrder.getPosition(  ) )
+                            if ( orderFirstLevel.get( i - 1 ) != entryToChangeOrder.getPosition( ) )
                             {
                                 nNewOrder -= nbChildEntryToChangeOrder;
                             }
@@ -123,9 +124,9 @@ public class EntryService extends RemovalListenerService implements Serializable
                         EntryHome.update( entry );
                         nNbChild = 0;
 
-                        if ( entry.getChildren(  ) != null )
+                        if ( entry.getChildren( ) != null )
                         {
-                            for ( Entry child : entry.getChildren(  ) )
+                            for ( Entry child : entry.getChildren( ) )
                             {
                                 nNbChild++;
                                 child.setPosition( nNewOrder + nNbChild );
@@ -140,17 +141,17 @@ public class EntryService extends RemovalListenerService implements Serializable
             EntryHome.update( entryToChangeOrder );
             nNbChild = 0;
 
-            for ( Entry child : entryToChangeOrder.getChildren(  ) )
+            for ( Entry child : entryToChangeOrder.getChildren( ) )
             {
                 nNbChild++;
-                child.setPosition( entryToChangeOrder.getPosition(  ) + nNbChild );
+                child.setPosition( entryToChangeOrder.getPosition( ) + nNbChild );
                 EntryHome.update( child );
             }
         }
         else
         {
-            EntryFilter filter = new EntryFilter(  );
-            filter.setIdResource( entryToChangeOrder.getIdResource(  ) );
+            EntryFilter filter = new EntryFilter( );
+            filter.setIdResource( entryToChangeOrder.getIdResource( ) );
             filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
             filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
@@ -158,10 +159,9 @@ public class EntryService extends RemovalListenerService implements Serializable
 
             for ( Entry entry : listAllEntry )
             {
-                if ( ( entry.getPosition(  ) > entryToChangeOrder.getPosition(  ) ) &&
-                        ( entry.getPosition(  ) <= nOrderToSet ) )
+                if ( ( entry.getPosition( ) > entryToChangeOrder.getPosition( ) ) && ( entry.getPosition( ) <= nOrderToSet ) )
                 {
-                    entry.setPosition( entry.getPosition(  ) - 1 );
+                    entry.setPosition( entry.getPosition( ) - 1 );
                     EntryHome.update( entry );
                 }
             }
@@ -173,49 +173,51 @@ public class EntryService extends RemovalListenerService implements Serializable
 
     /**
      * Change the attribute's order to a lower one (move up in the list)
-     * @param nOrderToSet the new order for the attribute
-     * @param entryToChangeOrder the attribute which will change
+     * 
+     * @param nOrderToSet
+     *            the new order for the attribute
+     * @param entryToChangeOrder
+     *            the attribute which will change
      */
     public void moveUpEntryOrder( int nOrderToSet, Entry entryToChangeOrder )
     {
-        EntryFilter filter = new EntryFilter(  );
-        filter.setIdResource( entryToChangeOrder.getIdResource(  ) );
+        EntryFilter filter = new EntryFilter( );
+        filter.setIdResource( entryToChangeOrder.getIdResource( ) );
         filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
-        if ( entryToChangeOrder.getParent(  ) == null )
+        if ( entryToChangeOrder.getParent( ) == null )
         {
             filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
 
-            List<Integer> orderFirstLevel = new ArrayList<Integer>(  );
+            List<Integer> orderFirstLevel = new ArrayList<Integer>( );
 
             int nNbChild = 0;
             int nNewOrder = nOrderToSet;
-            int nEntryToMoveOrder = entryToChangeOrder.getPosition(  );
+            int nEntryToMoveOrder = entryToChangeOrder.getPosition( );
 
-            List<Entry> listEntryFirstLevel = EntryHome.findEntriesWithoutParent( entryToChangeOrder.getIdResource(  ),
-                    entryToChangeOrder.getResourceType(  ) );
-            //the list of all the orders in the first level
+            List<Entry> listEntryFirstLevel = EntryHome.findEntriesWithoutParent( entryToChangeOrder.getIdResource( ), entryToChangeOrder.getResourceType( ) );
+            // the list of all the orders in the first level
             initOrderFirstLevel( listEntryFirstLevel, orderFirstLevel );
 
             for ( Entry entry : listEntryFirstLevel )
             {
-                Integer entryInitialPosition = entry.getPosition(  );
+                Integer entryInitialPosition = entry.getPosition( );
 
-                for ( int i = 0; i < orderFirstLevel.size(  ); i++ )
+                for ( int i = 0; i < orderFirstLevel.size( ); i++ )
                 {
-                    if ( ( orderFirstLevel.get( i ) == entryInitialPosition ) &&
-                            ( entryInitialPosition < nEntryToMoveOrder ) && ( entryInitialPosition >= nOrderToSet ) )
+                    if ( ( orderFirstLevel.get( i ) == entryInitialPosition ) && ( entryInitialPosition < nEntryToMoveOrder )
+                            && ( entryInitialPosition >= nOrderToSet ) )
                     {
-                        if ( entryToChangeOrder.getPosition(  ) == nEntryToMoveOrder )
+                        if ( entryToChangeOrder.getPosition( ) == nEntryToMoveOrder )
                         {
                             entryToChangeOrder.setPosition( nNewOrder );
                             EntryHome.update( entryToChangeOrder );
 
-                            for ( Entry child : entryToChangeOrder.getChildren(  ) )
+                            for ( Entry child : entryToChangeOrder.getChildren( ) )
                             {
                                 nNbChild++;
-                                child.setPosition( entryToChangeOrder.getPosition(  ) + nNbChild );
+                                child.setPosition( entryToChangeOrder.getPosition( ) + nNbChild );
                                 EntryHome.update( child );
                             }
                         }
@@ -225,7 +227,7 @@ public class EntryService extends RemovalListenerService implements Serializable
                         EntryHome.update( entry );
                         nNbChild = 0;
 
-                        for ( Entry child : entry.getChildren(  ) )
+                        for ( Entry child : entry.getChildren( ) )
                         {
                             nNbChild++;
                             child.setPosition( nNewOrder + nNbChild );
@@ -241,10 +243,9 @@ public class EntryService extends RemovalListenerService implements Serializable
 
             for ( Entry entry : listAllEntry )
             {
-                if ( ( entry.getPosition(  ) < entryToChangeOrder.getPosition(  ) ) &&
-                        ( entry.getPosition(  ) >= nOrderToSet ) )
+                if ( ( entry.getPosition( ) < entryToChangeOrder.getPosition( ) ) && ( entry.getPosition( ) >= nOrderToSet ) )
                 {
-                    entry.setPosition( entry.getPosition(  ) + 1 );
+                    entry.setPosition( entry.getPosition( ) + 1 );
                     EntryHome.update( entry );
                 }
             }
@@ -256,29 +257,32 @@ public class EntryService extends RemovalListenerService implements Serializable
 
     /**
      * Move EntryToMove into entryGroup
-     * @param entryToMove the entry which will be moved
-     * @param entryGroup the entry group
+     * 
+     * @param entryToMove
+     *            the entry which will be moved
+     * @param entryGroup
+     *            the entry group
      */
     public void moveEntryIntoGroup( Entry entryToMove, Entry entryGroup )
     {
         if ( ( entryToMove != null ) && ( entryGroup != null ) )
         {
             // If the entry already has a parent, we must remove it before adding it to a new one
-            if ( entryToMove.getParent(  ) != null )
+            if ( entryToMove.getParent( ) != null )
             {
                 moveOutEntryFromGroup( entryToMove );
             }
 
             int nPosition;
 
-            if ( entryToMove.getPosition(  ) < entryGroup.getPosition(  ) )
+            if ( entryToMove.getPosition( ) < entryGroup.getPosition( ) )
             {
-                nPosition = entryGroup.getPosition(  );
+                nPosition = entryGroup.getPosition( );
                 moveDownEntryOrder( nPosition, entryToMove );
             }
             else
             {
-                nPosition = entryGroup.getPosition(  ) + entryGroup.getChildren(  ).size(  ) + 1;
+                nPosition = entryGroup.getPosition( ) + entryGroup.getChildren( ).size( ) + 1;
                 moveUpEntryOrder( nPosition, entryToMove );
             }
 
@@ -289,39 +293,45 @@ public class EntryService extends RemovalListenerService implements Serializable
 
     /**
      * Remove an entry from a group
-     * @param entryToMove the entry to remove from a group
+     * 
+     * @param entryToMove
+     *            the entry to remove from a group
      */
     public void moveOutEntryFromGroup( Entry entryToMove )
     {
-        Entry parent = EntryHome.findByPrimaryKey( entryToMove.getParent(  ).getIdEntry(  ) );
+        Entry parent = EntryHome.findByPrimaryKey( entryToMove.getParent( ).getIdEntry( ) );
 
         // The new position of the entry is the position of the group plus the number of entries in the group (including this entry)
-        moveDownEntryOrder( parent.getPosition(  ) + parent.getChildren(  ).size(  ), entryToMove );
+        moveDownEntryOrder( parent.getPosition( ) + parent.getChildren( ).size( ), entryToMove );
         entryToMove.setParent( null );
         EntryHome.update( entryToMove );
     }
 
     /**
      * Init the list of the attribute's orders (first level only)
-     * @param listEntryFirstLevel the list of all the attributes of the first
-     *            level
-     * @param orderFirstLevel the list to set
+     * 
+     * @param listEntryFirstLevel
+     *            the list of all the attributes of the first level
+     * @param orderFirstLevel
+     *            the list to set
      */
     private void initOrderFirstLevel( List<Entry> listEntryFirstLevel, List<Integer> orderFirstLevel )
     {
         for ( Entry entry : listEntryFirstLevel )
         {
-            orderFirstLevel.add( entry.getPosition(  ) );
+            orderFirstLevel.add( entry.getPosition( ) );
         }
     }
 
     /**
      * Remove every entries associated with a given appointment form
-     * @param nIdForm The id of the appointment to remove entries of
+     * 
+     * @param nIdForm
+     *            The id of the appointment to remove entries of
      */
     public void removeEntriesByIdAppointmentForm( int nIdForm )
     {
-        EntryFilter entryFilter = new EntryFilter(  );
+        EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( nIdForm );
         entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
@@ -331,7 +341,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 
         for ( Entry entry : listEntry )
         {
-            EntryHome.remove( entry.getIdEntry(  ) );
+            EntryHome.remove( entry.getIdEntry( ) );
         }
     }
 }

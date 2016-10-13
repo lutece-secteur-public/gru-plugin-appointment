@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.portal.business.file.File;
 
-
 /**
  * DTO that represent a response to display a recap
  */
@@ -53,7 +52,9 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
 
     /**
      * Creates a new response DTO for recap from a response
-     * @param response The response
+     * 
+     * @param response
+     *            The response
      */
     public ResponseRecapDTO( Response response )
     {
@@ -62,8 +63,11 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
 
     /**
      * Creates a new response DTO for recap from a response
-     * @param response The response
-     * @param strRecapValue The recap value
+     * 
+     * @param response
+     *            The response
+     * @param strRecapValue
+     *            The recap value
      */
     public ResponseRecapDTO( Response response, String strRecapValue )
     {
@@ -73,16 +77,19 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
 
     /**
      * Get the recap value of this response
+     * 
      * @return The recap value of this response
      */
-    public String getRecapValue(  )
+    public String getRecapValue( )
     {
         return this._strRecapValue;
     }
 
     /**
      * Set the recap value of this response
-     * @param strRecapValue The recap value of this response
+     * 
+     * @param strRecapValue
+     *            The recap value of this response
      */
     public void setRecapValue( String strRecapValue )
     {
@@ -93,72 +100,73 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
      * {@inheritDoc}
      */
     @Override
-    public Entry getEntry(  )
+    public Entry getEntry( )
     {
-        return _response.getEntry(  );
+        return _response.getEntry( );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getIdResponse(  )
+    public int getIdResponse( )
     {
-        return _response.getIdResponse(  );
+        return _response.getIdResponse( );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Field getField(  )
+    public Field getField( )
     {
-        return _response.getField(  );
+        return _response.getField( );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getToStringValueResponse(  )
+    public String getToStringValueResponse( )
     {
-        return _response.getToStringValueResponse(  );
+        return _response.getToStringValueResponse( );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getResponseValue(  )
+    public String getResponseValue( )
     {
-        return _response.getResponseValue(  );
+        return _response.getResponseValue( );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getStatus(  )
+    public int getStatus( )
     {
-        return _response.getStatus(  );
+        return _response.getStatus( );
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public File getFile(  )
+    public File getFile( )
     {
-        return _response.getFile(  );
+        return _response.getFile( );
     }
 
     @Override
-    public int compareTo(ResponseRecapDTO o) {
-	
-	if( this._response .getEntry() !=null && o._response .getEntry()!=null)
-	{
-	   return ( this._response .getEntry().getPosition() - o._response .getEntry().getPosition() );
-	}
-	return 0;
+    public int compareTo( ResponseRecapDTO o )
+    {
+
+        if ( this._response.getEntry( ) != null && o._response.getEntry( ) != null )
+        {
+            return ( this._response.getEntry( ).getPosition( ) - o._response.getEntry( ).getPosition( ) );
+        }
+        return 0;
     }
 }

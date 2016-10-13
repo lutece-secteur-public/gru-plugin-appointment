@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-
 /**
  * Class containing constants for the download of files in Appointment plugin
  *
@@ -46,7 +45,7 @@ public final class DownloadConstants
     /**
      * Private default constructor because this class is an utility class
      */
-    private DownloadConstants(  )
+    private DownloadConstants( )
     {
     }
 }

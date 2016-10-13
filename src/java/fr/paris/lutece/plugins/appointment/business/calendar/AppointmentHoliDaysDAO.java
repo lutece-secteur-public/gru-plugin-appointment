@@ -41,7 +41,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * DAO form appointment days
  */
@@ -59,8 +58,8 @@ public class AppointmentHoliDaysDAO implements IAppointmentHoliDaysDAO
 
         daoUtil.setInt( nIndex++, nIdForm );
         daoUtil.setDate( nIndex, date );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -71,16 +70,16 @@ public class AppointmentHoliDaysDAO implements IAppointmentHoliDaysDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_HOLIDAYS, plugin );
         daoUtil.setInt( 1, nIdForm );
         daoUtil.setDate( 2, date );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     public void remove( int nIdForm, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_REMOVE_DAYS_HOLIDAYS, plugin );
         daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -91,16 +90,16 @@ public class AppointmentHoliDaysDAO implements IAppointmentHoliDaysDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_DAY, plugin );
         daoUtil.setInt( 1, nIdForm );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        List<Date> listDays = new ArrayList<Date>(  );
+        List<Date> listDays = new ArrayList<Date>( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             listDays.add( daoUtil.getDate( 1 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return listDays;
     }

@@ -37,38 +37,38 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Locale;
 
-
 /**
  * Manager service for add-ons of appointments<br />
- * Add-ons are additional content of appointments provided by appointment
- * modules. Add-ons should only be displayed to admin users.
+ * Add-ons are additional content of appointments provided by appointment modules. Add-ons should only be displayed to admin users.
  */
 public final class AppointmentAddOnManager
 {
     /**
      * Private constructor
      */
-    private AppointmentAddOnManager(  )
+    private AppointmentAddOnManager( )
     {
         // Default constructor
     }
 
     /**
      * Get the HTML code of add-ons of a given appointment.
-     * @param nIdAppointment The id of the appointment
-     * @param locale The locale to use
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     * @param locale
+     *            The locale to use
      * @return The HTML content of the add-on
      */
     public static String getAppointmentAddOn( int nIdAppointment, Locale locale )
     {
-        StringBuilder sbAddOn = new StringBuilder(  );
+        StringBuilder sbAddOn = new StringBuilder( );
 
-        for ( IAppointmentAddonService addonService : SpringContextService.getBeansOfType( 
-                IAppointmentAddonService.class ) )
+        for ( IAppointmentAddonService addonService : SpringContextService.getBeansOfType( IAppointmentAddonService.class ) )
         {
             sbAddOn.append( addonService.getAppointmentAddOn( nIdAppointment, locale ) );
         }
 
-        return sbAddOn.toString(  );
+        return sbAddOn.toString( );
     }
 }

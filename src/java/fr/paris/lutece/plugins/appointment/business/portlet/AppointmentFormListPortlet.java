@@ -42,7 +42,6 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * This class represents business objects AppointmentPortlet
  */
@@ -53,9 +52,9 @@ public class AppointmentFormListPortlet extends PortletHtmlContent
     /**
      * Sets the identifier of the portlet type to value specified
      */
-    public AppointmentFormListPortlet(  )
+    public AppointmentFormListPortlet( )
     {
-        setPortletTypeId( AppointmentFormListPortletHome.getInstance(  ).getPortletTypeId(  ) );
+        setPortletTypeId( AppointmentFormListPortletHome.getInstance( ).getPortletTypeId( ) );
     }
 
     /**
@@ -66,8 +65,8 @@ public class AppointmentFormListPortlet extends PortletHtmlContent
     {
         if ( request != null )
         {
-            return AppointmentApp.getFormListHtml( request, _appointmentFormService,
-                ( getDisplayPortletTitle(  ) == 0 ) ? getName(  ) : null, request.getLocale(  ) );
+            return AppointmentApp.getFormListHtml( request, _appointmentFormService, ( getDisplayPortletTitle( ) == 0 ) ? getName( ) : null,
+                    request.getLocale( ) );
         }
 
         return StringUtils.EMPTY;
@@ -76,17 +75,17 @@ public class AppointmentFormListPortlet extends PortletHtmlContent
     /**
      * Updates the current instance of the AppointmentFormListPortlet object
      */
-    public void update(  )
+    public void update( )
     {
-        AppointmentFormListPortletHome.getInstance(  ).update( this );
+        AppointmentFormListPortletHome.getInstance( ).update( this );
     }
 
     /**
      * Removes the current instance of the AppointmentFormListPortlet object
      */
     @Override
-    public void remove(  )
+    public void remove( )
     {
-        AppointmentFormListPortletHome.getInstance(  ).remove( this );
+        AppointmentFormListPortletHome.getInstance( ).remove( this );
     }
 }

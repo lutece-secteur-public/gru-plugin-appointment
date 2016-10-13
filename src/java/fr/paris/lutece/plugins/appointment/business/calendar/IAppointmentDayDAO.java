@@ -39,7 +39,6 @@ import java.sql.Date;
 
 import java.util.List;
 
-
 /**
  * Interface of DAO for days
  */
@@ -47,74 +46,99 @@ public interface IAppointmentDayDAO
 {
     /**
      * Creates a new day in the database
-     * @param day The day to create
-     * @param plugin The plugin
+     * 
+     * @param day
+     *            The day to create
+     * @param plugin
+     *            The plugin
      */
     void create( AppointmentDay day, Plugin plugin );
 
     /**
      * Update a day
-     * @param day The day to create
-     * @param plugin The plugin
+     * 
+     * @param day
+     *            The day to create
+     * @param plugin
+     *            The plugin
      */
     void update( AppointmentDay day, Plugin plugin );
 
     /**
      * Remove a day from the database
-     * @param nIdDay The id of the day to remove
-     * @param plugin The plugin
+     * 
+     * @param nIdDay
+     *            The id of the day to remove
+     * @param plugin
+     *            The plugin
      */
     void remove( int nIdDay, Plugin plugin );
 
     /**
      * Remove days from the database that are associated with a given form
-     * @param nIdForm The id of the form
-     * @param plugin The plugin
+     * 
+     * @param nIdForm
+     *            The id of the form
+     * @param plugin
+     *            The plugin
      */
     void removeByIdForm( int nIdForm, Plugin plugin );
 
     /**
-     * Delete days which date is before a given date and that are not associated
-     * with any slot
-     * @param dateMonday The date of days
-     * @param plugin The plugin
+     * Delete days which date is before a given date and that are not associated with any slot
+     * 
+     * @param dateMonday
+     *            The date of days
+     * @param plugin
+     *            The plugin
      */
     void removeLonelyDays( Date dateMonday, Plugin plugin );
 
     /**
-     * Returns an instance of a day whose identifier is specified in
-     * parameter
-     * @param nKey The appointmentDay primary key
-     * @param plugin The plugin
+     * Returns an instance of a day whose identifier is specified in parameter
+     * 
+     * @param nKey
+     *            The appointmentDay primary key
+     * @param plugin
+     *            The plugin
      * @return an instance of AppointmentDay
      */
     AppointmentDay findByPrimaryKey( int nKey, Plugin plugin );
 
     /**
-     * Get the list of days associated with a form and which date are between 2
-     * given dates.
-     * @param nIdForm The id of the form
-     * @param dateMin The minimum date
-     * @param dateMax The maximum date
-     * @param plugin The plugin
+     * Get the list of days associated with a form and which date are between 2 given dates.
+     * 
+     * @param nIdForm
+     *            The id of the form
+     * @param dateMin
+     *            The minimum date
+     * @param dateMax
+     *            The maximum date
+     * @param plugin
+     *            The plugin
      * @return The list of days
      */
     List<AppointmentDay> getDaysBetween( int nIdForm, Date dateMin, Date dateMax, Plugin plugin );
 
     /**
      * Decrement or increment by 1 the number of free places of an appointment
-     * @param day The day to update
-     * @param bIncrement True to increment the number of free places by 1, false
-     *            to decrement it
-     * @param plugin The plugin
+     * 
+     * @param day
+     *            The day to update
+     * @param bIncrement
+     *            True to increment the number of free places by 1, false to decrement it
+     * @param plugin
+     *            The plugin
      */
     void updateDayFreePlaces( AppointmentDay day, boolean bIncrement, Plugin plugin );
 
     /**
-     * Find every day associated with a given form and not associated with any
-     * day
-     * @param nIdForm the id of the form
-     * @param plugin The plugin
+     * Find every day associated with a given form and not associated with any day
+     * 
+     * @param nIdForm
+     *            the id of the form
+     * @param plugin
+     *            The plugin
      * @return The list of days
      */
     List<AppointmentDay> findByIdForm( int nIdForm, Plugin plugin );

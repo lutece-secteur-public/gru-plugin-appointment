@@ -42,7 +42,6 @@ import fr.paris.lutece.util.ReferenceList;
 
 import java.util.List;
 
-
 /**
  * Home for calendar template home
  */
@@ -54,50 +53,51 @@ public final class CalendarTemplateHome
     /**
      * Default constructor
      */
-    private CalendarTemplateHome(  )
+    private CalendarTemplateHome( )
     {
         // Private constructor
     }
 
     /**
      * Create a new calendar template
-     * @param template The template to create
+     * 
+     * @param template
+     *            The template to create
      */
     public static void create( CalendarTemplate template )
     {
         _dao.create( template, _plugin );
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( 
-                template.getId(  ) ), template );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( template.getId( ) ), template );
     }
 
     /**
      * Update an existing template
-     * @param template The template
+     * 
+     * @param template
+     *            The template
      */
     public static void update( CalendarTemplate template )
     {
         _dao.update( template, _plugin );
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( 
-                template.getId(  ) ), template );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( template.getId( ) ), template );
     }
 
     /**
      * Find a template by its primary key
-     * @param nId The id of the template
-     * @return The calendar template found, or null if no calendar template has
-     *         the given primary key
+     * 
+     * @param nId
+     *            The id of the template
+     * @return The calendar template found, or null if no calendar template has the given primary key
      */
     public static CalendarTemplate findByPrimaryKey( int nId )
     {
         String strKey = AppointmentFormCacheService.getCalendarTemplateCacheKey( nId );
-        CalendarTemplate template = (CalendarTemplate) AppointmentFormCacheService.getInstance(  ).getFromCache( strKey );
+        CalendarTemplate template = (CalendarTemplate) AppointmentFormCacheService.getInstance( ).getFromCache( strKey );
 
         if ( template == null )
         {
             template = _dao.findByPrimaryKey( nId, _plugin );
-            AppointmentFormCacheService.getInstance(  ).putInCache( strKey, template );
+            AppointmentFormCacheService.getInstance( ).putInCache( strKey, template );
         }
 
         return template;
@@ -105,25 +105,27 @@ public final class CalendarTemplateHome
 
     /**
      * Get the list of calendar templates
+     * 
      * @return The list of calendar templates
      */
-    public static List<CalendarTemplate> findAll(  )
+    public static List<CalendarTemplate> findAll( )
     {
         return _dao.findAll( _plugin );
     }
 
     /**
      * Get the list of calendar templates in a reference list
+     * 
      * @return The list of calendar templates in a reference list
      */
-    public static ReferenceList findAllInReferenceList(  )
+    public static ReferenceList findAllInReferenceList( )
     {
-        List<CalendarTemplate> listCalendarTemplates = findAll(  );
-        ReferenceList refListTemplates = new ReferenceList( listCalendarTemplates.size(  ) );
+        List<CalendarTemplate> listCalendarTemplates = findAll( );
+        ReferenceList refListTemplates = new ReferenceList( listCalendarTemplates.size( ) );
 
         for ( CalendarTemplate template : listCalendarTemplates )
         {
-            refListTemplates.addItem( template.getId(  ), template.getTitle(  ) );
+            refListTemplates.addItem( template.getId( ), template.getTitle( ) );
         }
 
         return refListTemplates;
@@ -131,12 +133,13 @@ public final class CalendarTemplateHome
 
     /**
      * Remove a template from its primary key
-     * @param nId The id of the template to remove
+     * 
+     * @param nId
+     *            The id of the template to remove
      */
     public static void delete( int nId )
     {
         _dao.delete( nId, _plugin );
-        AppointmentFormCacheService.getInstance(  )
-                                   .removeKey( AppointmentFormCacheService.getCalendarTemplateCacheKey( nId ) );
+        AppointmentFormCacheService.getInstance( ).removeKey( AppointmentFormCacheService.getCalendarTemplateCacheKey( nId ) );
     }
 }

@@ -39,7 +39,6 @@ import java.io.Serializable;
 
 import javax.validation.constraints.Size;
 
-
 /**
  * Class that describes calendar templates
  */
@@ -62,16 +61,19 @@ public class CalendarTemplate implements Serializable
 
     /**
      * Get the id of the template
+     * 
      * @return The id of the template
      */
-    public int getId(  )
+    public int getId( )
     {
         return _nId;
     }
 
     /**
      * Set the id of the template
-     * @param nId The id of the template
+     * 
+     * @param nId
+     *            The id of the template
      */
     public void setId( int nId )
     {
@@ -80,16 +82,19 @@ public class CalendarTemplate implements Serializable
 
     /**
      * Get the title of the template
+     * 
      * @return The title of the template
      */
-    public String getTitle(  )
+    public String getTitle( )
     {
         return _strTitle;
     }
 
     /**
      * Set the title of the template
-     * @param strTitle The title of the template
+     * 
+     * @param strTitle
+     *            The title of the template
      */
     public void setTitle( String strTitle )
     {
@@ -98,16 +103,19 @@ public class CalendarTemplate implements Serializable
 
     /**
      * Get the description of the template
+     * 
      * @return The description of the template
      */
-    public String getDescription(  )
+    public String getDescription( )
     {
         return _strDescription;
     }
 
     /**
      * Set the description of the template
-     * @param strDescription The description of the template
+     * 
+     * @param strDescription
+     *            The description of the template
      */
     public void setDescription( String strDescription )
     {
@@ -116,16 +124,19 @@ public class CalendarTemplate implements Serializable
 
     /**
      * Get the path of the file of the template
+     * 
      * @return The path of the file of the template
      */
-    public String getTemplatePath(  )
+    public String getTemplatePath( )
     {
         return _strTemplatePath;
     }
 
     /**
      * Set the path of the file of the template
-     * @param strTemplatePath The path of the file of the template
+     * 
+     * @param strTemplatePath
+     *            The path of the file of the template
      */
     public void setTemplatePath( String strTemplatePath )
     {

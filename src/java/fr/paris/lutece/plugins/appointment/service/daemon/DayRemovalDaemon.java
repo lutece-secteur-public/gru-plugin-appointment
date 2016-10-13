@@ -40,7 +40,6 @@ import fr.paris.lutece.portal.service.daemon.Daemon;
 
 import java.sql.Date;
 
-
 /**
  * Daemon that removes unused slots and days
  */
@@ -50,10 +49,10 @@ public class DayRemovalDaemon extends Daemon
      * {@inheritDoc}
      */
     @Override
-    public void run(  )
+    public void run( )
     {
-        // We get the 
-        Date dateMonday = AppointmentService.getService(  ).getDateLastMonday(  );
+        // We get the
+        Date dateMonday = AppointmentService.getService( ).getDateLastMonday( );
 
         AppointmentSlotHome.deleteOldSlots( dateMonday );
         AppointmentDayHome.removeLonelyDays( dateMonday );

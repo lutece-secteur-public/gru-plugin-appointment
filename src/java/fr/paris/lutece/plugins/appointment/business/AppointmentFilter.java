@@ -39,7 +39,6 @@ import java.io.Serializable;
 
 import java.sql.Date;
 
-
 /**
  * Class to filter appointments
  */
@@ -59,11 +58,10 @@ public class AppointmentFilter implements Serializable
      * Serial version UID
      */
     private static final long serialVersionUID = 7458206872870171709L;
-    private static final String[] LIST_ORDER_BY = 
-        {
-            CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name", "id_user", "authentication_service",
-            "date_appointment", "status", "email","nb_place_reserved"
-        };
+    private static final String [ ] LIST_ORDER_BY = {
+            CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name", "id_user", "authentication_service", "date_appointment", "status", "email",
+            "nb_place_reserved"
+    };
     private int _nIdSlot;
     private int _nIdForm;
     private String _strFirstName;
@@ -79,20 +77,23 @@ public class AppointmentFilter implements Serializable
     private String _strOrderBy = CONSTANT_DEFAULT_ORDER_BY;
     private boolean _bOrderAsc;
     private String _statusFilter;
-    private int 	_nNb_place_reserved ;
+    private int _nNb_place_reserved;
 
     /**
      * Get the id of the form
+     * 
      * @return The id of the form
      */
-    public int getIdForm(  )
+    public int getIdForm( )
     {
         return _nIdForm;
     }
 
     /**
      * Set the id of the form
-     * @param nIdForm The id of the form
+     * 
+     * @param nIdForm
+     *            The id of the form
      */
     public void setIdForm( int nIdForm )
     {
@@ -101,16 +102,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Get the id of the slot
+     * 
      * @return The id of the slot
      */
-    public int getIdSlot(  )
+    public int getIdSlot( )
     {
         return _nIdSlot;
     }
 
     /**
      * Set the id of the slot
-     * @param nIdSlot The id of the slot
+     * 
+     * @param nIdSlot
+     *            The id of the slot
      */
     public void setIdSlot( int nIdSlot )
     {
@@ -119,16 +123,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Returns the FirstName
+     * 
      * @return The FirstName
      */
-    public String getFirstName(  )
+    public String getFirstName( )
     {
         return _strFirstName;
     }
 
     /**
      * Sets the FirstName
-     * @param strFirstName The FirstName
+     * 
+     * @param strFirstName
+     *            The FirstName
      */
     public void setFirstName( String strFirstName )
     {
@@ -137,16 +144,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Returns the LastName
+     * 
      * @return The LastName
      */
-    public String getLastName(  )
+    public String getLastName( )
     {
         return _strLastName;
     }
 
     /**
      * Sets the LastName
-     * @param strLastName The LastName
+     * 
+     * @param strLastName
+     *            The LastName
      */
     public void setLastName( String strLastName )
     {
@@ -155,16 +165,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Returns the Email
+     * 
      * @return The Email
      */
-    public String getEmail(  )
+    public String getEmail( )
     {
         return _strEmail;
     }
 
     /**
      * Sets the Email
-     * @param strEmail The Email
+     * 
+     * @param strEmail
+     *            The Email
      */
     public void setEmail( String strEmail )
     {
@@ -173,16 +186,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Returns the IdUser
+     * 
      * @return The IdUser
      */
-    public String getIdUser(  )
+    public String getIdUser( )
     {
         return _strIdUser;
     }
 
     /**
      * Sets the id of the LuteceUser
-     * @param strIdUser The IdUser
+     * 
+     * @param strIdUser
+     *            The IdUser
      */
     public void setIdUser( String strIdUser )
     {
@@ -190,23 +206,21 @@ public class AppointmentFilter implements Serializable
     }
 
     /**
-     * Returns the authentication service used by the lutece user that made this
-     * appointment, if any
-     * @return The authentication service used by the lutece user that made this
-     *         appointment, or null if this appointment is not associated with a
-     *         lutece user
+     * Returns the authentication service used by the lutece user that made this appointment, if any
+     * 
+     * @return The authentication service used by the lutece user that made this appointment, or null if this appointment is not associated with a lutece user
      */
-    public String getAuthenticationService(  )
+    public String getAuthenticationService( )
     {
         return _strAuthenticationService;
     }
 
     /**
-     * Sets the authentication service used by the lutece user that made this
-     * appointment, if any
-     * @param strAuthenticationService The authentication service used by the
-     *            lutece user that made this appointment, or null if this
-     *            appointment is not associated with a lutece user
+     * Sets the authentication service used by the lutece user that made this appointment, if any
+     * 
+     * @param strAuthenticationService
+     *            The authentication service used by the lutece user that made this appointment, or null if this appointment is not associated with a lutece
+     *            user
      */
     public void setAuthenticationService( String strAuthenticationService )
     {
@@ -215,7 +229,9 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Sets the id of the admin user
-     * @param nIdAdminUser The id of the admin user
+     * 
+     * @param nIdAdminUser
+     *            The id of the admin user
      */
     public void setIdAdminUser( int nIdAdminUser )
     {
@@ -224,25 +240,29 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Returns the id of the admin user
+     * 
      * @return The id of the admin user
      */
-    public int getIdAdminUser(  )
+    public int getIdAdminUser( )
     {
         return _nIdAdminUser;
     }
 
     /**
      * Get the date of the appointment
+     * 
      * @return The date of the appointment
      */
-    public Date getDateAppointment(  )
+    public Date getDateAppointment( )
     {
         return _dateAppointment;
     }
 
     /**
      * Set the date of the appointment
-     * @param dateAppointment The date of the appointment
+     * 
+     * @param dateAppointment
+     *            The date of the appointment
      */
     public void setDateAppointment( Date dateAppointment )
     {
@@ -251,17 +271,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Get the minimum value of the date of the appointment
+     * 
      * @return The minimum value of the date of the appointment
      */
-    public Date getDateAppointmentMin(  )
+    public Date getDateAppointmentMin( )
     {
         return _dateAppointmentMin;
     }
 
     /**
      * Set the minimum value of the date of the appointment
-     * @param dateAppointmentMin The minimum value of the date of the
-     *            appointment
+     * 
+     * @param dateAppointmentMin
+     *            The minimum value of the date of the appointment
      */
     public void setDateAppointmentMin( Date dateAppointmentMin )
     {
@@ -270,17 +292,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Get the minimum value of the date of the appointment
+     * 
      * @return The minimum value of the date of the appointment
      */
-    public Date getDateAppointmentMax(  )
+    public Date getDateAppointmentMax( )
     {
         return _dateAppointmentMax;
     }
 
     /**
      * Set the value value of the date of the appointment
-     * @param dateAppointmentMax The maximum value of the date of the
-     *            appointment
+     * 
+     * @param dateAppointmentMax
+     *            The maximum value of the date of the appointment
      */
     public void setDateAppointmentMax( Date dateAppointmentMax )
     {
@@ -289,16 +313,19 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Get the status of the appointment
+     * 
      * @return The status of the appointment
      */
-    public int getStatus(  )
+    public int getStatus( )
     {
         return _nStatus;
     }
 
     /**
      * Set the status of the appointment
-     * @param nStatus The status of the appointment
+     * 
+     * @param nStatus
+     *            The status of the appointment
      */
     public void setStatus( int nStatus )
     {
@@ -307,18 +334,20 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Get the order by attribute of this filter
+     * 
      * @return The order by attribute of this filter
      */
-    public String getOrderBy(  )
+    public String getOrderBy( )
     {
         return _strOrderBy;
     }
 
     /**
      * Set the order by attribute of this filter.
-     * @param strOrderBy The order by attribute of this filter. If the specified
-     *            order does not match with column names of the appointment
-     *            table of the database, then the order by is reinitialized.
+     * 
+     * @param strOrderBy
+     *            The order by attribute of this filter. If the specified order does not match with column names of the appointment table of the database, then
+     *            the order by is reinitialized.
      */
     public void setOrderBy( String strOrderBy )
     {
@@ -347,22 +376,25 @@ public class AppointmentFilter implements Serializable
         }
         else
         {
-            _strOrderBy = LIST_ORDER_BY[0];
+            _strOrderBy = LIST_ORDER_BY [0];
         }
     }
 
     /**
      * Get the order of the sort of this filter
+     * 
      * @return The _bOrderAsc
      */
-    public boolean getOrderAsc(  )
+    public boolean getOrderAsc( )
     {
         return _bOrderAsc;
     }
 
     /**
      * Set the order of the sort of this filter
-     * @param bOrderAsc True to sort ascending, false to sort descending,
+     * 
+     * @param bOrderAsc
+     *            True to sort ascending, false to sort descending,
      */
     public void setOrderAsc( boolean bOrderAsc )
     {
@@ -371,27 +403,32 @@ public class AppointmentFilter implements Serializable
 
     /**
      * Get the order of the sort of this filter
+     * 
      * @return The _bOrderAsc
      */
-    public String getStatusFilter(  )
+    public String getStatusFilter( )
     {
         return _statusFilter;
     }
 
     /**
      * Set the order of the sort of this filter
-     * @param bOrderAsc True to sort ascending, false to sort descending,
+     * 
+     * @param bOrderAsc
+     *            True to sort ascending, false to sort descending,
      */
     public void setStatusFilter( String status )
     {
         this._statusFilter = status;
     }
 
-	public int getNbPlaceReserved() {
-		return _nNb_place_reserved;
-	}
+    public int getNbPlaceReserved( )
+    {
+        return _nNb_place_reserved;
+    }
 
-	public void setNbPlaceReserved(int _nNb_place_reserved) {
-		this._nNb_place_reserved = _nNb_place_reserved;
-	}
+    public void setNbPlaceReserved( int _nNb_place_reserved )
+    {
+        this._nNb_place_reserved = _nNb_place_reserved;
+    }
 }

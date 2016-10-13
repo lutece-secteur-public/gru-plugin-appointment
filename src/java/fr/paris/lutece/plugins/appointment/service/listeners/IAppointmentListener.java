@@ -35,24 +35,28 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 
 import java.util.Locale;
 
-
 /**
- * Interface for listeners that should be notified when appointments are
- * removed or when the date changed. <b>The listener must be a Spring bean.</b>
+ * Interface for listeners that should be notified when appointments are removed or when the date changed. <b>The listener must be a Spring bean.</b>
  */
 public interface IAppointmentListener
 {
     /**
      * Notify the listener that an appointment has been removed
-     * @param nIdAppointment The id of the appointment
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
      */
     void notifyAppointmentRemoval( int nIdAppointment );
 
     /**
      * Notify the listener that the date of an appointment has changed.
-     * @param nIdAppointment the id of the appointment
-     * @param nIdSlot The new slot of the appointment
-     * @param locale The locale to display error messages with
+     * 
+     * @param nIdAppointment
+     *            the id of the appointment
+     * @param nIdSlot
+     *            The new slot of the appointment
+     * @param locale
+     *            The locale to display error messages with
      * @return The message to display to the user, if any.
      */
     String appointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale );

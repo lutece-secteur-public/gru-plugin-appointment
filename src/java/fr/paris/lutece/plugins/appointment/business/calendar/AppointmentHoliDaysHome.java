@@ -43,10 +43,8 @@ import java.sql.Date;
 
 import java.util.List;
 
-
 /**
- * This class provides instances management methods (create, find, ...) for
- * AppointmentDay objects
+ * This class provides instances management methods (create, find, ...) for AppointmentDay objects
  */
 public final class AppointmentHoliDaysHome
 {
@@ -57,14 +55,17 @@ public final class AppointmentHoliDaysHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentHoliDaysHome(  )
+    private AppointmentHoliDaysHome( )
     {
     }
 
     /**
      * Creates a list holidays in the database
-     * @param listHolidays list holidays
-     * @param nIdForm id form
+     * 
+     * @param listHolidays
+     *            list holidays
+     * @param nIdForm
+     *            id form
      */
     public static void create( Date holiday, int nIdForm )
     {
@@ -73,7 +74,9 @@ public final class AppointmentHoliDaysHome
 
     /**
      * Remove a holidays from the database
-     * @param nIdForm The id form
+     * 
+     * @param nIdForm
+     *            The id form
      */
     public static void remove( Date date, int nIdForm )
     {

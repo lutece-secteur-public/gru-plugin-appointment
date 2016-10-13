@@ -39,7 +39,6 @@ import java.sql.Date;
 
 import java.util.List;
 
-
 /**
  * IAppointmentFormDAO Interface
  */
@@ -47,64 +46,78 @@ public interface IAppointmentFormDAO
 {
     /**
      * Insert a new record in the table.
-     * @param appointmentForm instance of the AppointmentForm object to insert
-     * @param plugin the Plugin
+     * 
+     * @param appointmentForm
+     *            instance of the AppointmentForm object to insert
+     * @param plugin
+     *            the Plugin
      */
     void insert( AppointmentForm appointmentForm, Plugin plugin );
 
     /**
      * Update the record in the table
-     * @param appointmentForm the reference of the AppointmentForm
-     * @param plugin the Plugin
+     * 
+     * @param appointmentForm
+     *            the reference of the AppointmentForm
+     * @param plugin
+     *            the Plugin
      */
     void store( AppointmentForm appointmentForm, Plugin plugin );
 
     /**
      * Delete a record from the table
-     * @param nIdAppointmentForm int identifier of the AppointmentForm to delete
-     * @param plugin the Plugin
+     * 
+     * @param nIdAppointmentForm
+     *            int identifier of the AppointmentForm to delete
+     * @param plugin
+     *            the Plugin
      */
     void delete( int nIdAppointmentForm, Plugin plugin );
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
      * Load the data from the table
-     * @param nKey The identifier of the appointmentForm
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the appointmentForm
+     * @param plugin
+     *            the Plugin
      * @return The instance of the appointmentForm
      */
     AppointmentForm load( int nKey, Plugin plugin );
 
     /**
-     * Load the data of all the appointmentForm objects and returns them as a
-     * collection
-     * @param plugin the Plugin
-     * @return The collection which contains the data of all the appointmentForm
-     *         objects
+     * Load the data of all the appointmentForm objects and returns them as a collection
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return The collection which contains the data of all the appointmentForm objects
      */
     List<AppointmentForm> selectAppointmentFormsList( Plugin plugin );
 
     /**
-     * Load the data of all active appointmentForm objects and returns them as a
-     * collection
-     * @param plugin the Plugin
-     * @return The collection which contains the data of all the appointmentForm
-     *         objects
+     * Load the data of all active appointmentForm objects and returns them as a collection
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return The collection which contains the data of all the appointmentForm objects
      */
     List<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin );
 
     /**
-     * Get the unavailabled Date of appointments associated with a given form and with a
-     * date after a given date
+     * Get the unavailabled Date of appointments associated with a given form and with a date after a given date
+     * 
      * @param startDate
      * @param limitedDate
-     * @param nForm the form
-     * @param strEmail email
-     * @param plugin the plugin
+     * @param nForm
+     *            the form
+     * @param strEmail
+     *            email
+     * @param plugin
+     *            the plugin
      * @return unvailable dates
      */
-    List<Date> getUnavailableDatesLimitedByMail( Date startDate, Date[] limitedDate, int nForm, String strEmail,
-        Plugin plugin );
+    List<Date> getUnavailableDatesLimitedByMail( Date startDate, Date [ ] limitedDate, int nForm, String strEmail, Plugin plugin );
 }

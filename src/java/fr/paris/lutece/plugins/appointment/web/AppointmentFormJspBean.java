@@ -101,10 +101,8 @@ import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
-
 /**
- * This class provides the user interface to manage AppointmentForm features (
- * manage, create, modify, remove )
+ * This class provides the user interface to manage AppointmentForm features ( manage, create, modify, remove )
  */
 @Controller( controllerJsp = "ManageAppointmentForms.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class AppointmentFormJspBean extends MVCAdminJspBean
@@ -142,9 +140,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_FIRST_FORM = "first_form";
     private static final String PARAMETER_SECOND_FORM = "second_form";
     private static final String PARAMETER_FORM_RDV = "form_rdv";
-    private static final String PARAMETER_GEOLOC_ADDRESS  = "geoloc_address";
-    private static final String PARAMETER_GEOLOC_LATITUDE  = "geoloc_latitude";
-    private static final String PARAMETER_GEOLOC_LONGITUDE  = "geoloc_longitude";
+    private static final String PARAMETER_GEOLOC_ADDRESS = "geoloc_address";
+    private static final String PARAMETER_GEOLOC_LATITUDE = "geoloc_latitude";
+    private static final String PARAMETER_GEOLOC_LONGITUDE = "geoloc_longitude";
 
     private static final String PARAMETER_FIRSTNAME = "fn";
     private static final String PARAMETER_LASTNAME = "ln";
@@ -152,7 +150,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String PARAMETER_EMAILM = "em";
     private static final String PARAMETER_CUSTOMER_ID = "cid";
     private static final String PARAMETER_USER_ID_OPAM = "guid";
-    
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -236,157 +233,160 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String DEFAULT_CURRENT_PAGE = "1";
 
     // Local variables
-    private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService(  );
-    private final EntryService _entryService = EntryService.getService(  );
+    private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService( );
+    private final EntryService _entryService = EntryService.getService( );
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private int _nDefaultItemsPerPage;
 
     /**
      * Default constructor
      */
-    public AppointmentFormJspBean(  )
+    public AppointmentFormJspBean( )
     {
         _nDefaultItemsPerPage = AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE, 50 );
     }
 
     /**
      * Get the page to manage appointment forms
-     * @param request the request
+     * 
+     * @param request
+     *            the request
      * @return The HTML content to display
      */
     @View( value = VIEW_MANAGE_APPOINTMENTFORMS, defaultView = true )
     public String getManageAppointmentForms( HttpServletRequest request )
     {
         String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
-                (String) request.getSession(  ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
+                (String) request.getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
 
         if ( strCurrentPageIndex == null )
         {
             strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
         }
 
-        request.getSession(  ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
+        request.getSession( ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
 
         int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
-                getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
-        request.getSession(  ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
+                getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
+        request.getSession( ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
 
-        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
-        String strUrl = url.getUrl(  );
-        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList(  );
+        String strUrl = url.getUrl( );
+        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
 
         // PAGINATOR
-        LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms,
-                nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
+        LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms, nItemsPerPage, strUrl,
+                PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
 
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
 
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
 
-        model.put( MARK_APPOINTMENTFORM_LIST,
-            RBACService.getAuthorizedCollection( paginator.getPageItems(  ),
-                AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
+        model.put(
+                MARK_APPOINTMENTFORM_LIST,
+                RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
+                        AdminUserService.getAdminUser( request ) ) );
 
-        model.put( VIEW_PERMISSIONS_FORM,
-            getPermissions( paginator.getPageItems(  ), AdminUserService.getAdminUser( request ) ) );
+        model.put( VIEW_PERMISSIONS_FORM, getPermissions( paginator.getPageItems( ), AdminUserService.getAdminUser( request ) ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
     /**
      * Get the page to manage appointment forms
-     * @param request the request
+     * 
+     * @param request
+     *            the request
      * @return The HTML content to display
      */
     @View( value = VIEW_MANAGE_APPOINTMENTFIRSTFORMS )
     public String getManageAppointmentFirstForms( HttpServletRequest request )
     {
         String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
-                (String) request.getSession(  ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
+                (String) request.getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
-        model = getModel(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
+        model = getModel( );
 
         String strFirstName = request.getParameter( PARAMETER_FIRSTNAME );
         String strLastName = request.getParameter( PARAMETER_LASTNAME );
         String strNemberPhone = request.getParameter( PARAMETER_PHONE );
         String strEmail = request.getParameter( PARAMETER_EMAILM );
-        
+
         String strCustomerId = request.getParameter( PARAMETER_CUSTOMER_ID );
         String strUserIdOpam = request.getParameter( PARAMETER_USER_ID_OPAM );
-        
-        model.put(PARAMETER_CUSTOMER_ID,strCustomerId );
-        model.put( PARAMETER_USER_ID_OPAM,strUserIdOpam);
-        
-        model.put(PARAMETER_FIRSTNAME,strFirstName);
-        model.put(PARAMETER_LASTNAME,strLastName);
-        model.put(PARAMETER_PHONE,strNemberPhone);
-        model.put( PARAMETER_EMAILM,strEmail);
+
+        model.put( PARAMETER_CUSTOMER_ID, strCustomerId );
+        model.put( PARAMETER_USER_ID_OPAM, strUserIdOpam );
+
+        model.put( PARAMETER_FIRSTNAME, strFirstName );
+        model.put( PARAMETER_LASTNAME, strLastName );
+        model.put( PARAMETER_PHONE, strNemberPhone );
+        model.put( PARAMETER_EMAILM, strEmail );
 
         if ( strCurrentPageIndex == null )
         {
             strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
         }
 
-        request.getSession(  ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
+        request.getSession( ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
 
         int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
-                getIntSessionAttribute( request.getSession(  ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
-        request.getSession(  ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
+                getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
+        request.getSession( ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
 
-        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
-        String strUrl = url.getUrl(  );
-        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList(  );
+        String strUrl = url.getUrl( );
+        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
 
         // PAGINATOR
-        LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms,
-                nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale(  ) );
+        LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms, nItemsPerPage, strUrl,
+                PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
 
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
 
-        model.put( MARK_APPOINTMENTFORM_LIST,
-            RBACService.getAuthorizedCollection( paginator.getPageItems(  ),
-                AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser( request ) ) );
+        model.put(
+                MARK_APPOINTMENTFORM_LIST,
+                RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
+                        AdminUserService.getAdminUser( request ) ) );
 
-        model.put( VIEW_PERMISSIONS_FORM,
-            getPermissions( paginator.getPageItems(  ), AdminUserService.getAdminUser( request ) ) );
+        model.put( VIEW_PERMISSIONS_FORM, getPermissions( paginator.getPageItems( ), AdminUserService.getAdminUser( request ) ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMSFIRSTSTEP, model );
     }
 
     /**
      * Get Form Permissions
-     * @param listForms the list form
-     * @param user the user
+     * 
+     * @param listForms
+     *            the list form
+     * @param user
+     *            the user
      * @return Form Permissions
      */
-    private static String[][] getPermissions( List<AppointmentForm> listForms, AdminUser user )
+    private static String [ ][ ] getPermissions( List<AppointmentForm> listForms, AdminUser user )
     {
-        String[][] retour = new String[listForms.size(  )][4];
+        String [ ][ ] retour = new String [ listForms.size( )] [ 4];
         int nI = 0;
 
         for ( AppointmentForm tmpForm : listForms )
         {
-            String[] strRetour = new String[4];
-            strRetour[0] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                        String.valueOf( tmpForm.getIdForm(  ) ), AppointmentResourceIdService.PERMISSION_CREATE_FORM,
-                        user ) );
-            strRetour[1] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                        String.valueOf( tmpForm.getIdForm(  ) ), AppointmentResourceIdService.PERMISSION_CHANGE_STATE,
-                        user ) );
-            strRetour[2] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                        String.valueOf( tmpForm.getIdForm(  ) ), AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                        user ) );
-            strRetour[3] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                        String.valueOf( tmpForm.getIdForm(  ) ), AppointmentResourceIdService.PERMISSION_DELETE_FORM,
-                        user ) );
-            retour[nI++] = strRetour;
+            String [ ] strRetour = new String [ 4];
+            strRetour [0] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) );
+            strRetour [1] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
+            strRetour [2] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
+            strRetour [3] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
+            retour [nI++] = strRetour;
         }
 
         return retour;
@@ -395,76 +395,75 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     /**
      * Returns the form to create an appointment form
      *
-     * @param request The HTTP request
+     * @param request
+     *            The HTTP request
      * @return the HTML code of the appointment form
-     * @throws AccessDeniedException If the user is not authorized to create
-     *             appointment forms
+     * @throws AccessDeniedException
+     *             If the user is not authorized to create appointment forms
      */
     @View( VIEW_CREATE_APPOINTMENTFORM )
-    public String getCreateAppointmentForm( HttpServletRequest request )
-        throws AccessDeniedException
+    public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
-                                                                   .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                    AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
+                AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
 
-        if ( ( appointmentForm == null ) || ( appointmentForm.getIdForm(  ) > 0 ) )
+        if ( ( appointmentForm == null ) || ( appointmentForm.getIdForm( ) > 0 ) )
         {
-            appointmentForm = new AppointmentForm(  );
+            appointmentForm = new AppointmentForm( );
             appointmentForm.setAllowUsersToCancelAppointments( true );
-            request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
         }
 
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList(  ) );
-        model.put( MARK_LOCALE, getLocale(  ) );
-        model.put( MARK_LOCALE_TINY, getLocale(  ) );
-        addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
+        Map<String, Object> model = getModel( );
+        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
+        model.put( MARK_LOCALE, getLocale( ) );
+        model.put( MARK_LOCALE_TINY, getLocale( ) );
+        addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
 
-        //        model.put( MARK_LOCALE, AppointmentPlugin.getPluginLocale( getLocale( ) ) );
+        // model.put( MARK_LOCALE, AppointmentPlugin.getPluginLocale( getLocale( ) ) );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model );
     }
 
     /**
      * Process the data capture form of a new appointment form
-     * @param request The HTTP Request
+     * 
+     * @param request
+     *            The HTTP Request
      * @return The JSP URL of the process result
-     * @throws AccessDeniedException If the user is not authorized to create
-     *             appointment forms
+     * @throws AccessDeniedException
+     *             If the user is not authorized to create appointment forms
      * @throws FileNotFoundException
      */
     @Action( ACTION_CREATE_APPOINTMENTFORM )
-    public String doCreateAppointmentForm( HttpServletRequest request )
-        throws AccessDeniedException, FileNotFoundException
+    public String doCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException, FileNotFoundException
     {
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
-                                                                   .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0",
-                    AppointmentResourceIdService.PERMISSION_CREATE_FORM, AdminUserService.getAdminUser( request ) ) )
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
+                AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
 
         if ( appointmentForm == null )
         {
-            appointmentForm = new AppointmentForm(  );
+            appointmentForm = new AppointmentForm( );
         }
 
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
 
         FileItem item = mRequest.getFile( PARAMETER_ICON_RESSOURCE );
-        ImageResource img = new ImageResource(  );
+        ImageResource img = new ImageResource( );
 
-        if ( ( item != null ) && ( item.getName(  ) != null ) && !EMPTY_STRING.equals( item.getName(  ) ) )
+        if ( ( item != null ) && ( item.getName( ) != null ) && !EMPTY_STRING.equals( item.getName( ) ) )
         {
-            byte[] bytes = item.get(  );
-            String strMimeType = item.getContentType(  );
+            byte [ ] bytes = item.get( );
+            String strMimeType = item.getContentType( );
 
             img.setImage( bytes );
             img.setMimeType( strMimeType );
@@ -473,13 +472,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
         else
         {
-            img.setImage( new byte[] {  } );
+            img.setImage( new byte [ ] { } );
             img.setMimeType( MARK_NULL );
             appointmentForm.setIcon( img );
         }
 
-        if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) &&
-                checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
+        if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) && checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
         {
             populate( appointmentForm, request );
             populateAddress( appointmentForm, request );
@@ -494,88 +492,88 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
-       
-        try {
-			if ( !checkConstraints( appointmentForm ) )
-			{
-			    return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
-			}
-		} catch (ParseException e) {
-			
-			addError( ERROR_MESSAGE_APPOINTMENT_PARSING_DATE );
-			return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
-		}
 
-        if ( appointmentForm.getTimeStart(  ).compareTo( appointmentForm.getTimeEnd(  ) ) >= 0 )
+        try
         {
-            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale(  ) );
+            if ( !checkConstraints( appointmentForm ) )
+            {
+                return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
+            }
+        }
+        catch( ParseException e )
+        {
+
+            addError( ERROR_MESSAGE_APPOINTMENT_PARSING_DATE );
+            return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
+        }
+
+        if ( appointmentForm.getTimeStart( ).compareTo( appointmentForm.getTimeEnd( ) ) >= 0 )
+        {
+            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale( ) );
 
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
 
-        if ( ( appointmentForm.getDateLimit(  ) == null ) && ( appointmentForm.getNbWeeksToDisplay(  ) == 0 ) )
+        if ( ( appointmentForm.getDateLimit( ) == null ) && ( appointmentForm.getNbWeeksToDisplay( ) == 0 ) )
         {
-            addError( MESSAGE_ERROR_DATE_LIMIT_NB_WEEK_EMPTY  , getLocale());
+            addError( MESSAGE_ERROR_DATE_LIMIT_NB_WEEK_EMPTY, getLocale( ) );
 
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
 
-        AppointmentFormHome.create( appointmentForm, _appointmentFormService.getDefaultAppointmentFormMessage(  ) );
+        AppointmentFormHome.create( appointmentForm, _appointmentFormService.getDefaultAppointmentFormMessage( ) );
 
-        AppointmentSlotService.getInstance(  ).computeAndCreateSlotsForForm( appointmentForm );
-        AppointmentService.getService(  ).notifyAppointmentFormModified( appointmentForm.getIdForm() );
+        AppointmentSlotService.getInstance( ).computeAndCreateSlotsForForm( appointmentForm );
+        AppointmentService.getService( ).notifyAppointmentFormModified( appointmentForm.getIdForm( ) );
 
-        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale(  ) );
+        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
 
-    private void populateAddress(AppointmentForm appointmentForm,
-            HttpServletRequest request)
+    private void populateAddress( AppointmentForm appointmentForm, HttpServletRequest request )
     {
-            String strGeolocAddress = request.getParameter ( PARAMETER_GEOLOC_ADDRESS );
-            String strGeolocLatitude = request.getParameter ( PARAMETER_GEOLOC_LATITUDE );
-            String strGeolocLongitude = request.getParameter ( PARAMETER_GEOLOC_LONGITUDE );
+        String strGeolocAddress = request.getParameter( PARAMETER_GEOLOC_ADDRESS );
+        String strGeolocLatitude = request.getParameter( PARAMETER_GEOLOC_LATITUDE );
+        String strGeolocLongitude = request.getParameter( PARAMETER_GEOLOC_LONGITUDE );
 
-            //If missing from the form, don't do anything (like populate does)
-            if ( strGeolocAddress == null || strGeolocAddress == null || strGeolocLongitude == null )
-            {
-                return;
-            }
+        // If missing from the form, don't do anything (like populate does)
+        if ( strGeolocAddress == null || strGeolocAddress == null || strGeolocLongitude == null )
+        {
+            return;
+        }
 
-            if ( StringUtils.isNotBlank( strGeolocAddress ) &&
-                 StringUtils.isNotBlank( strGeolocLatitude ) &&
-                 StringUtils.isNotBlank( strGeolocLongitude ))
-            {
-                appointmentForm.setAddress( strGeolocAddress );
-                appointmentForm.setLatitude( Double.valueOf ( strGeolocLatitude ) );
-                appointmentForm.setLongitude( Double.valueOf( strGeolocLongitude ) );
-            }
-            else
-            {
-                appointmentForm.setAddress( null );
-                appointmentForm.setLatitude( null );
-                appointmentForm.setLongitude( null );
-            }
+        if ( StringUtils.isNotBlank( strGeolocAddress ) && StringUtils.isNotBlank( strGeolocLatitude ) && StringUtils.isNotBlank( strGeolocLongitude ) )
+        {
+            appointmentForm.setAddress( strGeolocAddress );
+            appointmentForm.setLatitude( Double.valueOf( strGeolocLatitude ) );
+            appointmentForm.setLongitude( Double.valueOf( strGeolocLongitude ) );
+        }
+        else
+        {
+            appointmentForm.setAddress( null );
+            appointmentForm.setLatitude( null );
+            appointmentForm.setLongitude( null );
+        }
     }
 
     /**
-     * Manages the removal form of a appointment form whose identifier is in the
-     * HTTP request
-     * @param request The HTTP request
+     * Manages the removal form of a appointment form whose identifier is in the HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return the HTML code to confirm
-     * @throws AccessDeniedException If the user is not authorized to delete
-     *             this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to delete this appointment form
      */
     @Action( ACTION_CONFIRM_REMOVE_APPOINTMENTFORM )
-    public String getConfirmRemoveAppointmentForm( HttpServletRequest request )
-        throws AccessDeniedException
+    public String getConfirmRemoveAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
 
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, request.getParameter( PARAMETER_ID_FORM ),
-                    AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
+                AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_FORM );
         }
@@ -583,27 +581,28 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_APPOINTMENTFORM ) );
         url.addParameter( PARAMETER_ID_FORM, nId );
 
-        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_APPOINTMENTFORM,
-                url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_APPOINTMENTFORM, url.getUrl( ),
+                AdminMessage.TYPE_CONFIRMATION );
 
         return redirect( request, strMessageUrl );
     }
 
     /**
      * Handles the removal form of an appointment form
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return the JSP URL to display the form to manage appointment forms
-     * @throws AccessDeniedException If the user is not authorized to delete
-     *             this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to delete this appointment form
      */
     @Action( ACTION_REMOVE_APPOINTMENTFORM )
-    public String doRemoveAppointmentForm( HttpServletRequest request )
-        throws AccessDeniedException
+    public String doRemoveAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
 
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, request.getParameter( PARAMETER_ID_FORM ),
-                    AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
+                AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_FORM );
         }
@@ -611,86 +610,85 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         _entryService.removeEntriesByIdAppointmentForm( nId );
 
         AppointmentFormHome.remove( nId );
-        AppointmentService.getService(  ).notifyAppointmentFormModified( nId );
-        addInfo( INFO_APPOINTMENTFORM_REMOVED, getLocale(  ) );
+        AppointmentService.getService( ).notifyAppointmentFormModified( nId );
+        addInfo( INFO_APPOINTMENTFORM_REMOVED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
 
     /**
      * Returns the form to update info about a appointment form
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The HTML form to update info
-     * @throws AccessDeniedException If the user is not authorized to modify
-     *             this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to modify this appointment form
      */
     @View( VIEW_MODIFY_APPOINTMENTFORM )
-    public String getModifyAppointmentForm( HttpServletRequest request )
-        throws AccessDeniedException
+    public String getModifyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
-                                                                   .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         String strPage = request.getParameter( MARK_PAGE );
 
-        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm(  ) ) ||
-                Boolean.parseBoolean( request.getParameter( PARAMETER_FORCE_RELOAD ) ) )
+        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) )
+                || Boolean.parseBoolean( request.getParameter( PARAMETER_FORCE_RELOAD ) ) )
         {
             appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
         }
 
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                    Integer.toString( appointmentForm.getIdForm(  ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( appointmentForm.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
 
-        EntryFilter entryFilter = new EntryFilter(  );
-        entryFilter.setIdResource( appointmentForm.getIdForm(  ) );
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( appointmentForm.getIdForm( ) );
         entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( entryFilter );
-        List<Entry> listEntry = new ArrayList<Entry>( listEntryFirstLevel.size(  ) );
+        List<Entry> listEntry = new ArrayList<Entry>( listEntryFirstLevel.size( ) );
 
-        //        Map<Integer, Integer> mapGroupItemsNumber = new HashMap<Integer, Integer>( );
-        List<Integer> listOrderFirstLevel = new ArrayList<Integer>( listEntryFirstLevel.size(  ) );
+        // Map<Integer, Integer> mapGroupItemsNumber = new HashMap<Integer, Integer>( );
+        List<Integer> listOrderFirstLevel = new ArrayList<Integer>( listEntryFirstLevel.size( ) );
 
         for ( Entry entry : listEntryFirstLevel )
         {
             listEntry.add( entry );
             // If the entry is a group, we add entries associated with this group
-            listOrderFirstLevel.add( listEntry.size(  ) );
+            listOrderFirstLevel.add( listEntry.size( ) );
 
-            if ( entry.getEntryType(  ).getGroup(  ) )
+            if ( entry.getEntryType( ).getGroup( ) )
             {
-                entryFilter = new EntryFilter(  );
-                entryFilter.setIdResource( appointmentForm.getIdForm(  ) );
+                entryFilter = new EntryFilter( );
+                entryFilter.setIdResource( appointmentForm.getIdForm( ) );
                 entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
                 entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
-                entryFilter.setIdEntryParent( entry.getIdEntry(  ) );
+                entryFilter.setIdEntryParent( entry.getIdEntry( ) );
 
                 List<Entry> listEntryGroup = EntryHome.getEntryList( entryFilter );
                 entry.setChildren( listEntryGroup );
-                //                mapGroupItemsNumber.put( entry.getIdEntry( ), listEntryGroup.size( ) );
+                // mapGroupItemsNumber.put( entry.getIdEntry( ), listEntryGroup.size( ) );
                 listEntry.addAll( listEntryGroup );
             }
         }
 
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( appointmentForm.getIdForm(  ) ) );
-        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance(  ).getEntryTypeReferenceList(  ) );
+        Map<String, Object> model = getModel( );
+        model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( appointmentForm.getIdForm( ) ) );
+        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
-        model.put( MARK_LOCALE, getLocale(  ) );
-        model.put( MARK_LOCALE_TINY, getLocale(  ) );
+        model.put( MARK_LOCALE, getLocale( ) );
+        model.put( MARK_LOCALE_TINY, getLocale( ) );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
-        addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
+        addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
 
-        //        model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
+        // model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
         if ( ( strPage != null ) && strPage.equals( PARAMETER_FORM_RDV ) )
         {
             return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENT_FORM, TEMPLATE_MODIFY_APPOINTMENT_FORM, model );
@@ -703,300 +701,289 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     /**
      * Returns the form to update info about a appointment form
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The HTML form to update info
-     * @throws AccessDeniedException If the user is not authorized to modify
-     *             this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to modify this appointment form
      */
     @View( VIEW_ADVANCED_MODIFY_APPOINTMENTFORM )
-    public String getModifyAppointmentFormAdvanced( HttpServletRequest request )
-        throws AccessDeniedException
+    public String getModifyAppointmentFormAdvanced( HttpServletRequest request ) throws AccessDeniedException
     {
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
-                                                                   .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
 
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
 
-        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm(  ) ) ||
-                Boolean.parseBoolean( request.getParameter( PARAMETER_FORCE_RELOAD ) ) )
+        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) )
+                || Boolean.parseBoolean( request.getParameter( PARAMETER_FORCE_RELOAD ) ) )
         {
             appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
         }
 
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                    Integer.toString( appointmentForm.getIdForm(  ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                    AdminUserService.getAdminUser( request ) ) )
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( appointmentForm.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
 
-        EntryFilter entryFilter = new EntryFilter(  );
-        entryFilter.setIdResource( appointmentForm.getIdForm(  ) );
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( appointmentForm.getIdForm( ) );
         entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
 
         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( entryFilter );
-        List<Entry> listEntry = new ArrayList<Entry>( listEntryFirstLevel.size(  ) );
+        List<Entry> listEntry = new ArrayList<Entry>( listEntryFirstLevel.size( ) );
 
-        //        Map<Integer, Integer> mapGroupItemsNumber = new HashMap<Integer, Integer>( );
-        List<Integer> listOrderFirstLevel = new ArrayList<Integer>( listEntryFirstLevel.size(  ) );
+        // Map<Integer, Integer> mapGroupItemsNumber = new HashMap<Integer, Integer>( );
+        List<Integer> listOrderFirstLevel = new ArrayList<Integer>( listEntryFirstLevel.size( ) );
 
         for ( Entry entry : listEntryFirstLevel )
         {
             listEntry.add( entry );
             // If the entry is a group, we add entries associated with this group
-            listOrderFirstLevel.add( listEntry.size(  ) );
+            listOrderFirstLevel.add( listEntry.size( ) );
 
-            if ( entry.getEntryType(  ).getGroup(  ) )
+            if ( entry.getEntryType( ).getGroup( ) )
             {
-                entryFilter = new EntryFilter(  );
-                entryFilter.setIdResource( appointmentForm.getIdForm(  ) );
+                entryFilter = new EntryFilter( );
+                entryFilter.setIdResource( appointmentForm.getIdForm( ) );
                 entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
                 entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
-                entryFilter.setIdEntryParent( entry.getIdEntry(  ) );
+                entryFilter.setIdEntryParent( entry.getIdEntry( ) );
 
                 List<Entry> listEntryGroup = EntryHome.getEntryList( entryFilter );
                 entry.setChildren( listEntryGroup );
-                //                mapGroupItemsNumber.put( entry.getIdEntry( ), listEntryGroup.size( ) );
+                // mapGroupItemsNumber.put( entry.getIdEntry( ), listEntryGroup.size( ) );
                 listEntry.addAll( listEntryGroup );
             }
         }
 
-        Map<String, Object> model = getModel(  );
-        model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( appointmentForm.getIdForm(  ) ) );
-        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance(  ).getEntryTypeReferenceList(  ) );
+        Map<String, Object> model = getModel( );
+        model.put( MARK_GROUP_ENTRY_LIST, getRefListGroups( appointmentForm.getIdForm( ) ) );
+        model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
         model.put( MARK_ENTRY_LIST, listEntry );
-        model.put( MARK_LOCALE, getLocale(  ) );
-        model.put( MARK_LOCALE_TINY, getLocale(  ) );
+        model.put( MARK_LOCALE, getLocale( ) );
+        model.put( MARK_LOCALE_TINY, getLocale( ) );
         model.put( MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel );
-        addElementsToModelForLeftColumn( request, appointmentForm, getUser(  ), getLocale(  ), model );
+        addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
 
-        //        model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
+        // model.put( MARK_MAP_CHILD, mapGroupItemsNumber );
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM, TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM, model );
     }
 
     /**
      * Process the change form of a appointment form
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The JSP URL of the process result
-     * @throws AccessDeniedException If the user is not authorized to modify
-     *             this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to modify this appointment form
      */
     @SuppressWarnings( "deprecation" )
     @Action( ACTION_MODIFY_APPOINTMENTFORM )
-    public String doModifyAppointmentForm( HttpServletRequest request )
-        throws AccessDeniedException
+    public String doModifyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession(  )
-                                                                   .getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdAppointmentForm = Integer.parseInt( strIdForm );
 
         java.sql.Date dateMin = null;
 
-        if ( ( appointmentForm == null ) || ( nIdAppointmentForm != appointmentForm.getIdForm(  ) ) )
+        if ( ( appointmentForm == null ) || ( nIdAppointmentForm != appointmentForm.getIdForm( ) ) )
         {
             appointmentForm = AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm );
         }
 
         String strForm = request.getParameter( PARAMETER_NAME_FORM );
-        String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE
-                                                                                         : request.getParameter( PARAMETER_DELETE_ICON );
+        String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE : request.getParameter( PARAMETER_DELETE_ICON );
 
-        AppointmentForm appointmentFormTmp = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
+        AppointmentForm appointmentFormTmp = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm( ) );
 
-        if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty(  ) )
+        if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty( ) )
         {
             MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
             FileItem item = mRequest.getFile( PARAMETER_ICON_RESSOURCE );
 
-            if ( ( item != null ) && ( item.getName(  ) != null ) && !EMPTY_STRING.equals( item.getName(  ) ) )
+            if ( ( item != null ) && ( item.getName( ) != null ) && !EMPTY_STRING.equals( item.getName( ) ) )
             {
-                byte[] bytes = item.get(  );
-                String strMimeType = item.getContentType(  );
-                ImageResource img = new ImageResource(  );
+                byte [ ] bytes = item.get( );
+                String strMimeType = item.getContentType( );
+                ImageResource img = new ImageResource( );
 
                 img.setImage( bytes );
                 img.setMimeType( strMimeType );
                 appointmentForm.setIcon( img );
             }
 
-            if ( Boolean.parseBoolean( strDeleteIcon ) && ( appointmentForm.getIcon(  ).getImage(  ) != null ) )
+            if ( Boolean.parseBoolean( strDeleteIcon ) && ( appointmentForm.getIcon( ).getImage( ) != null ) )
             {
-                ImageResource img = new ImageResource(  );
+                ImageResource img = new ImageResource( );
                 img.setImage( null );
                 img.setMimeType( null );
                 appointmentForm.setIcon( img );
             }
         }
 
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE,
-                    Integer.toString( appointmentForm.getIdForm(  ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( appointmentForm.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
 
-        if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) &&
-                checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
+        if ( checkValidDate( request.getParameter( PARAMETER_ID_START ) ) && checkValidDate( request.getParameter( PARAMETER_ID_END ) ) )
         {
             populate( appointmentForm, request );
             populateAddress( appointmentForm, request );
 
-            if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty(  ) )
+            if ( strForm.equals( PARAMETER_SECOND_FORM ) && !strForm.isEmpty( ) )
             {
                 setParametersDays( appointmentForm, appointmentFormTmp );
             }
 
-            if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  ) )
+            if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty( ) )
             {
                 setAlterablesParameters( appointmentForm, appointmentFormTmp );
             }
         }
         else
         {
-            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
         }
 
         // Check constraints
-        /*if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) )
-        {
-            if ( strForm.equals( PARAMETER_FIRST_FORM ) )
-            {
-                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM,
-                    appointmentForm.getIdForm(  ) );
-            }
-            else
-            {
-                return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
-            }
-        }*/
+        /*
+         * if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) ) { if ( strForm.equals( PARAMETER_FIRST_FORM ) ) { return redirect( request,
+         * VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); } else { return redirect( request,
+         * VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); } }
+         */
 
-        //Check Constraint better
+        // Check Constraint better
         try
         {
             if ( !checkConstraints( appointmentForm ) )
             {
-                return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+                return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
             }
         }
-        catch ( ParseException e )
+        catch( ParseException e )
         {
             addError( ERROR_MESSAGE_APPOINTMENT_PARSING_DATE );
 
-            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
         }
 
-        if ( ( appointmentForm.getDateLimit(  ) == null ) && ( appointmentForm.getNbWeeksToDisplay(  ) == 0 ) )
+        if ( ( appointmentForm.getDateLimit( ) == null ) && ( appointmentForm.getNbWeeksToDisplay( ) == 0 ) )
         {
-            addError( MESSAGE_ERROR_DATE_LIMIT_NB_WEEK_EMPTY , getLocale());
+            addError( MESSAGE_ERROR_DATE_LIMIT_NB_WEEK_EMPTY, getLocale( ) );
 
-            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm(  ) );
+            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
         }
 
-        AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm(  ) );
+        AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey( appointmentForm.getIdForm( ) );
 
-        if(formFromDb.getDateLimit() != null && appointmentForm.getNbWeeksToDisplay() > 0){
-        	    appointmentForm.setDateLimit(null);
+        if ( formFromDb.getDateLimit( ) != null && appointmentForm.getNbWeeksToDisplay( ) > 0 )
+        {
+            appointmentForm.setDateLimit( null );
         }
-        if(formFromDb.getNbWeeksToDisplay() > 0 && appointmentForm.getDateLimit() != null){
-        	appointmentForm.setNbWeeksToDisplay(0);
+        if ( formFromDb.getNbWeeksToDisplay( ) > 0 && appointmentForm.getDateLimit( ) != null )
+        {
+            appointmentForm.setNbWeeksToDisplay( 0 );
         }
         // The populate set the active flag to false, so we have to restore it
-        appointmentForm.setIsActive( formFromDb.getIsActive(  ) );
+        appointmentForm.setIsActive( formFromDb.getIsActive( ) );
         AppointmentFormHome.update( appointmentForm );
 
-        if ( AppointmentSlotService.getInstance(  ).checkForFormModification( appointmentForm, formFromDb ) )
+        if ( AppointmentSlotService.getInstance( ).checkForFormModification( appointmentForm, formFromDb ) )
         {
-            addInfo( INFO_MODIFY_APPOINTMENTFORM_SLOTS_UPDATED, getLocale(  ) );
-        }
-        
-        if(!strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  )){
-        	
-        	AppointmentService.getService().checkFormDays(appointmentForm, false);
+            addInfo( INFO_MODIFY_APPOINTMENTFORM_SLOTS_UPDATED, getLocale( ) );
         }
 
-        if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty(  ) )
+        if ( !strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty( ) )
         {
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                        AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, getUser(  ) ) )
+
+            AppointmentService.getService( ).checkFormDays( appointmentForm, false );
+        }
+
+        if ( strForm.equals( PARAMETER_FIRST_FORM ) && !strForm.isEmpty( ) )
+        {
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                    getUser( ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
             }
 
-            String strDateMin = ( request.getParameter( PARAMETER_DATE_MIN ) == null ) ? StringUtils.EMPTY
-                                                                                       : request.getParameter( PARAMETER_DATE_MIN );
+            String strDateMin = ( request.getParameter( PARAMETER_DATE_MIN ) == null ) ? StringUtils.EMPTY : request.getParameter( PARAMETER_DATE_MIN );
 
-            if ( !strDateMin.isEmpty(  ) )
+            if ( !strDateMin.isEmpty( ) )
             {
-                dateMin = new java.sql.Date( DateUtil.getDate( strDateMin ).getTime(  ) );
+                dateMin = new java.sql.Date( DateUtil.getDate( strDateMin ).getTime( ) );
             }
 
             int nNbAppointments = AppointmentHome.countAppointmentsByIdForm( nIdAppointmentForm, dateMin );
-            
-            if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() )
+
+            if ( appointmentForm.getMaximumNumberOfBookedSeats( ) > appointmentForm.getPeoplePerAppointment( ) )
             {
-                addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale(  ) );
-                
-                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM,
-                        appointmentForm.getIdForm(  ) );
+                addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) );
+
+                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
             }
 
-            if ( strDateMin.isEmpty(  ) )
+            if ( strDateMin.isEmpty( ) )
             {
-                addError( MESSAGE_ERROR_START_DATE_EMPTY, getLocale(  ) );
+                addError( MESSAGE_ERROR_START_DATE_EMPTY, getLocale( ) );
 
-                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM,
-                    appointmentForm.getIdForm(  ) );
+                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
             }
 
             if ( nNbAppointments > 0 )
             {
-                addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS, getLocale(  ) );
+                addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS, getLocale( ) );
 
-                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM,
-                    appointmentForm.getIdForm(  ) );
+                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
             }
 
-            AppointmentService.getService(  )
-                              .resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin, false );
+            AppointmentService.getService( ).resetFormDays( AppointmentFormHome.findByPrimaryKey( nIdAppointmentForm ), dateMin, false );
         }
 
-        AppointmentService.getService(  ).notifyAppointmentFormModified( nIdAppointmentForm );
-        request.getSession(  ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale(  ) );
+        AppointmentService.getService( ).notifyAppointmentFormModified( nIdAppointmentForm );
+        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
 
     private void setParametersDays( AppointmentForm appointmentForm, AppointmentForm appointmentFormTmp )
     {
-        appointmentForm.setIsOpenMonday( appointmentFormTmp.getIsOpenMonday(  ) );
-        appointmentForm.setIsOpenTuesday( appointmentFormTmp.getIsOpenTuesday(  ) );
-        appointmentForm.setIsOpenWednesday( appointmentFormTmp.getIsOpenWednesday(  ) );
-        appointmentForm.setIsOpenThursday( appointmentFormTmp.getIsOpenThursday(  ) );
-        appointmentForm.setIsOpenFriday( appointmentFormTmp.getIsOpenFriday(  ) );
-        appointmentForm.setIsOpenSaturday( appointmentFormTmp.getIsOpenSaturday(  ) );
-        appointmentForm.setIsOpenSunday( appointmentFormTmp.getIsOpenSunday(  ) );
+        appointmentForm.setIsOpenMonday( appointmentFormTmp.getIsOpenMonday( ) );
+        appointmentForm.setIsOpenTuesday( appointmentFormTmp.getIsOpenTuesday( ) );
+        appointmentForm.setIsOpenWednesday( appointmentFormTmp.getIsOpenWednesday( ) );
+        appointmentForm.setIsOpenThursday( appointmentFormTmp.getIsOpenThursday( ) );
+        appointmentForm.setIsOpenFriday( appointmentFormTmp.getIsOpenFriday( ) );
+        appointmentForm.setIsOpenSaturday( appointmentFormTmp.getIsOpenSaturday( ) );
+        appointmentForm.setIsOpenSunday( appointmentFormTmp.getIsOpenSunday( ) );
     }
 
     private void setAlterablesParameters( AppointmentForm appointmentForm, AppointmentForm appointmentFormTmp )
     {
-        appointmentForm.setAllowUsersToCancelAppointments( appointmentFormTmp.getAllowUsersToCancelAppointments(  ) );
-        appointmentForm.setDisplayTitleFo( appointmentFormTmp.getDisplayTitleFo(  ) );
-        appointmentForm.setIsFormStep( appointmentFormTmp.getIsFormStep(  ) );
-        appointmentForm.setEnableCaptcha( appointmentFormTmp.getEnableCaptcha(  ) );
-        appointmentForm.setEnableConfirmEmail( appointmentFormTmp.getEnableConfirmEmail(  ) );
-        appointmentForm.setEnableMandatoryEmail( appointmentFormTmp.getEnableMandatoryEmail(  ) );
+        appointmentForm.setAllowUsersToCancelAppointments( appointmentFormTmp.getAllowUsersToCancelAppointments( ) );
+        appointmentForm.setDisplayTitleFo( appointmentFormTmp.getDisplayTitleFo( ) );
+        appointmentForm.setIsFormStep( appointmentFormTmp.getIsFormStep( ) );
+        appointmentForm.setEnableCaptcha( appointmentFormTmp.getEnableCaptcha( ) );
+        appointmentForm.setEnableConfirmEmail( appointmentFormTmp.getEnableConfirmEmail( ) );
+        appointmentForm.setEnableMandatoryEmail( appointmentFormTmp.getEnableMandatoryEmail( ) );
     }
 
     /**
      * Get the URL to manage appointment forms
-     * @param request The request
-     * @param strIdForm The id of the form to manage days of
+     * 
+     * @param request
+     *            The request
+     * @param strIdForm
+     *            The id of the form to manage days of
      * @return The URL to manage appointment forms
      */
     private static String getURLManageAppointmentFormDays( HttpServletRequest request, String strIdForm )
@@ -1005,71 +992,70 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_APPOINTMENTFORM );
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
-        return urlItem.getUrl(  );
+        return urlItem.getUrl( );
     }
 
     /**
      * Check Constraints
+     * 
      * @param appointmentForm
      * @return
      * @throws ParseException
      */
-    private boolean checkConstraints( AppointmentForm appointmentForm )
-        throws ParseException
+    private boolean checkConstraints( AppointmentForm appointmentForm ) throws ParseException
     {
         boolean bReturn = true;
         SimpleDateFormat formatterHHMM = new SimpleDateFormat( "HH:mm", Locale.FRENCH );
-        Date dtDate1 = (Date) formatterHHMM.parse( appointmentForm.getTimeStart(  ).replace( 'h', ':' ) );
-        Date dtDate2 = (Date) formatterHHMM.parse( appointmentForm.getTimeEnd(  ).replace( 'h', ':' ) );
+        Date dtDate1 = (Date) formatterHHMM.parse( appointmentForm.getTimeStart( ).replace( 'h', ':' ) );
+        Date dtDate2 = (Date) formatterHHMM.parse( appointmentForm.getTimeEnd( ).replace( 'h', ':' ) );
 
         if ( dtDate1.after( dtDate2 ) )
         {
             bReturn = false;
-            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale(  ) );
+            addError( ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale( ) );
         }
 
-        if ( appointmentForm.getMinDaysBeforeAppointment(  ) < 0 )
+        if ( appointmentForm.getMinDaysBeforeAppointment( ) < 0 )
         {
             bReturn = false;
-            addError( ERROR_MESSAGE_APPOINTMENT_FAILED, getLocale(  ) );
+            addError( ERROR_MESSAGE_APPOINTMENT_FAILED, getLocale( ) );
         }
 
-        if ( ( appointmentForm.getDateStartValidity(  ) != null ) && ( appointmentForm.getDateEndValidity(  ) != null ) )
+        if ( ( appointmentForm.getDateStartValidity( ) != null ) && ( appointmentForm.getDateEndValidity( ) != null ) )
         {
-            if ( appointmentForm.getDateStartValidity(  ).after( appointmentForm.getDateEndValidity(  ) ) )
+            if ( appointmentForm.getDateStartValidity( ).after( appointmentForm.getDateEndValidity( ) ) )
             {
                 bReturn = false;
-                addError( ERROR_MESSAGE_TIME_START_AFTER_DATE_END, getLocale(  ) );
+                addError( ERROR_MESSAGE_TIME_START_AFTER_DATE_END, getLocale( ) );
             }
             else
             {
                 long lMinutes = getDateDiff( dtDate1, dtDate2, TimeUnit.MINUTES );
 
-                if ( appointmentForm.getMinDaysBeforeAppointment(  ) > lMinutes )
+                if ( appointmentForm.getMinDaysBeforeAppointment( ) > lMinutes )
                 {
                     bReturn = false;
-                    addError( ERROR_MESSAGE_APPOINTMENT_SUPERIOR, getLocale(  ) );
+                    addError( ERROR_MESSAGE_APPOINTMENT_SUPERIOR, getLocale( ) );
                 }
 
-                if ( appointmentForm.getDurationAppointments(  ) > lMinutes )
+                if ( appointmentForm.getDurationAppointments( ) > lMinutes )
                 {
                     bReturn = false;
-                    addError( ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE, getLocale(  ) );
+                    addError( ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE, getLocale( ) );
                 }
                 else
                 {
-                    if ( ( lMinutes % appointmentForm.getDurationAppointments(  ) ) != 0 ) //Duration Time must be a modulo
+                    if ( ( lMinutes % appointmentForm.getDurationAppointments( ) ) != 0 ) // Duration Time must be a modulo
                     {
-                        addError( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM, getLocale(  ) );
+                        addError( MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM, getLocale( ) );
                     }
                 }
             }
         }
-        /*if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() )
-        {
-            bReturn = false;
-            addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale(  ) );
-        }*/
+        /*
+         * if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() ) { bReturn = false; addError(
+         * MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) ); }
+         */
 
         return bReturn;
     }
@@ -1089,21 +1075,21 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             {
                 Matcher m = pattern.matcher( strDate );
 
-                if ( !m.matches(  ) )
+                if ( !m.matches( ) )
                 {
                     throw new ParseException( strDate, -1 );
                 }
 
-                java.util.Date strMyDate = DateUtil.formatDate( strDate, getLocale(  ) );
+                java.util.Date strMyDate = DateUtil.formatDate( strDate, getLocale( ) );
 
                 if ( strMyDate == null )
                 {
                     throw new ParseException( strDate, -1 );
                 }
             }
-            catch ( ParseException e )
+            catch( ParseException e )
             {
-                addError( ERROR_MESSAGE_APPOINTMENT_DATES, getLocale(  ) );
+                addError( ERROR_MESSAGE_APPOINTMENT_DATES, getLocale( ) );
                 bReturn = false;
             }
         }
@@ -1112,36 +1098,41 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     }
 
     /**
-         * Get a diff between two dates
-         * @param date1 the oldest date
-         * @param date2 the newest date
-         * @param timeUnit the unit in which you want the diff
-         * @return the diff value, in the provided unit
-         */
+     * Get a diff between two dates
+     * 
+     * @param date1
+     *            the oldest date
+     * @param date2
+     *            the newest date
+     * @param timeUnit
+     *            the unit in which you want the diff
+     * @return the diff value, in the provided unit
+     */
     public static long getDateDiff( Date date1, Date date2, TimeUnit timeUnit )
     {
-        long diffInMillies = date2.getTime(  ) - date1.getTime(  );
+        long diffInMillies = date2.getTime( ) - date1.getTime( );
 
         return timeUnit.convert( diffInMillies, TimeUnit.MILLISECONDS );
     }
 
     /**
      * Change the enabling of an appointment form
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
-     * @throws AccessDeniedException If the user is not authorized to change the
-     *             activation of this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to change the activation of this appointment form
      */
     @Action( ACTION_DO_CHANGE_FORM_ACTIVATION )
-    public String doChangeFormActivation( HttpServletRequest request )
-        throws AccessDeniedException
+    public String doChangeFormActivation( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                        AppointmentResourceIdService.PERMISSION_CHANGE_STATE, AdminUserService.getAdminUser( request ) ) )
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_STATE,
+                    AdminUserService.getAdminUser( request ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_STATE );
             }
@@ -1150,35 +1141,35 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
 
             // If we enable the form, we check that its days has already been created
-            if ( !form.getIsActive(  ) )
+            if ( !form.getIsActive( ) )
             {
-                AppointmentService.getService(  ).checkFormDays( form, false );
+                AppointmentService.getService( ).checkFormDays( form, false );
 
-                // If we enable the form, and it has a passed date of end of validity, we remove it to prevent to form from being disabled by the publication daemon
-                if ( ( form.getDateEndValidity(  ) != null ) &&
-                        ( form.getDateEndValidity(  ).getTime(  ) < System.currentTimeMillis(  ) ) )
+                // If we enable the form, and it has a passed date of end of validity, we remove it to prevent to form from being disabled by the publication
+                // daemon
+                if ( ( form.getDateEndValidity( ) != null ) && ( form.getDateEndValidity( ).getTime( ) < System.currentTimeMillis( ) ) )
                 {
                     form.setDateEndValidity( null );
                 }
             }
             else
             {
-                // If we disable the form, and it has a passed date of start of validity, we remove it to prevent to form from being enabled by the publication daemon
-                if ( ( form.getDateStartValidity(  ) != null ) &&
-                        ( form.getDateStartValidity(  ).getTime(  ) < System.currentTimeMillis(  ) ) )
+                // If we disable the form, and it has a passed date of start of validity, we remove it to prevent to form from being enabled by the publication
+                // daemon
+                if ( ( form.getDateStartValidity( ) != null ) && ( form.getDateStartValidity( ).getTime( ) < System.currentTimeMillis( ) ) )
                 {
                     form.setDateStartValidity( null );
                 }
             }
 
-            form.setIsActive( !form.getIsActive(  ) );
+            form.setIsActive( !form.getIsActive( ) );
             AppointmentFormHome.update( form );
-            AppointmentService.getService(  ).notifyAppointmentFormModified( form.getIdForm() );
+            AppointmentService.getService( ).notifyAppointmentFormModified( form.getIdForm( ) );
         }
 
         if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )
         {
-            return redirect( request, AppPathService.getBaseUrl( request ) + AppPathService.getAdminMenuUrl(  ) );
+            return redirect( request, AppPathService.getBaseUrl( request ) + AppPathService.getAdminMenuUrl( ) );
         }
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
@@ -1186,35 +1177,35 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     /**
      * Get the page to modify an appointment form
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display
-     * @throws AccessDeniedException If the user is not authorized to modify
-     *             this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to modify this appointment form
      */
     @View( VIEW_MODIFY_FORM_MESSAGES )
-    public String getModifyAppointmentFormMessages( HttpServletRequest request )
-        throws AccessDeniedException
+    public String getModifyAppointmentFormMessages( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
+                    AdminUserService.getAdminUser( request ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
 
             int nIdForm = Integer.parseInt( strIdForm );
             AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
-            Map<String, Object> model = new HashMap<String, Object>(  );
+            Map<String, Object> model = new HashMap<String, Object>( );
             model.put( MARK_FORM_MESSAGE, formMessages );
             model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-            model.put( MARK_LOCALE, getLocale(  ) );
-            model.put( MARK_LOCALE_TINY, getLocale(  ) );
+            model.put( MARK_LOCALE, getLocale( ) );
+            model.put( MARK_LOCALE_TINY, getLocale( ) );
 
-            return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES,
-                TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES, model );
+            return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES, TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES, model );
         }
 
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
@@ -1222,22 +1213,22 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     /**
      * Do modify an appointment form messages
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
-     * @throws AccessDeniedException If the user is not authorized to modify
-     *             this appointment form
+     * @throws AccessDeniedException
+     *             If the user is not authorized to modify this appointment form
      */
     @Action( ACTION_DO_MODIFY_FORM_MESSAGES )
-    public String doModifyAppointmentFormMessages( HttpServletRequest request )
-        throws AccessDeniedException
+    public String doModifyAppointmentFormMessages( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
-        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) &&
-                ( request.getParameter( PARAMETER_BACK ) == null ) )
+        if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) && ( request.getParameter( PARAMETER_BACK ) == null ) )
         {
-            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm,
-                        AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser( request ) ) )
+            if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
+                    AdminUserService.getAdminUser( request ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
@@ -1260,8 +1251,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     /**
      * Get url manage appointment form
-     * @param request the request
-     * @param strIdForm the id form
+     * 
+     * @param request
+     *            the request
+     * @param strIdForm
+     *            the id form
      * @return url manage appointment form
      */
     public static String getURLManageAppointmentForm( HttpServletRequest request, String strIdForm )
@@ -1270,15 +1264,17 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_FORM_MESSAGES );
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
-        return urlItem.getUrl(  );
+        return urlItem.getUrl( );
     }
 
     /**
      * Get an integer attribute from the session
-     * @param session The session
-     * @param strSessionKey The session key of the item
-     * @return The value of the attribute, or 0 if the key is not associated
-     *         with any value
+     * 
+     * @param session
+     *            The session
+     * @param strSessionKey
+     *            The session key of the item
+     * @return The value of the attribute, or 0 if the key is not associated with any value
      */
     private int getIntSessionAttribute( HttpSession session, String strSessionKey )
     {
@@ -1294,23 +1290,25 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     /**
      * Get the reference list of groups
-     * @param nIdForm the id of the appointment form
+     * 
+     * @param nIdForm
+     *            the id of the appointment form
      * @return The reference list of groups of the given form
      */
     private static ReferenceList getRefListGroups( int nIdForm )
     {
-        EntryFilter entryFilter = new EntryFilter(  );
+        EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( nIdForm );
         entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
         entryFilter.setIdIsGroup( 1 );
 
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
 
-        ReferenceList refListGroups = new ReferenceList(  );
+        ReferenceList refListGroups = new ReferenceList( );
 
         for ( Entry entry : listEntry )
         {
-            refListGroups.addItem( entry.getIdEntry(  ), entry.getTitle(  ) );
+            refListGroups.addItem( entry.getIdEntry( ), entry.getTitle( ) );
         }
 
         return refListGroups;
@@ -1318,8 +1316,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     /**
      * Get the URL to modify an appointment form
-     * @param request The request
-     * @param nIdForm The id of the form to modify
+     * 
+     * @param request
+     *            The request
+     * @param nIdForm
+     *            The id of the form to modify
      * @return The URL to modify the given Appointment form
      */
     public static String getURLModifyAppointmentForm( HttpServletRequest request, int nIdForm )
@@ -1329,8 +1330,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     /**
      * Get the URL to modify an appointment form
-     * @param request The request
-     * @param strIdForm The id of the form to modify
+     * 
+     * @param request
+     *            The request
+     * @param strIdForm
+     *            The id of the form to modify
      * @return The URL to modify the given Appointment form
      */
     public static String getURLModifyAppointmentForm( HttpServletRequest request, String strIdForm )
@@ -1339,12 +1343,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_APPOINTMENTFORM );
         urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
 
-        return urlItem.getUrl(  );
+        return urlItem.getUrl( );
     }
 
     /**
      * Get the URL to manage appointment forms
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The URL to manage appointment forms
      */
     public static String getURLManageAppointmentForms( HttpServletRequest request )
@@ -1352,31 +1358,34 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTFORMS );
 
-        return urlItem.getUrl(  );
+        return urlItem.getUrl( );
     }
 
     /**
-     * Add elements to the model to display the left column to modify an
-     * appointment form
-     * @param request The request to store the appointment form in session
-     * @param appointmentForm The appointment form
-     * @param user The user
-     * @param locale The locale
-     * @param model the model to add elements in
+     * Add elements to the model to display the left column to modify an appointment form
+     * 
+     * @param request
+     *            The request to store the appointment form in session
+     * @param appointmentForm
+     *            The appointment form
+     * @param user
+     *            The user
+     * @param locale
+     *            The locale
+     * @param model
+     *            the model to add elements in
      */
-    public static void addElementsToModelForLeftColumn( HttpServletRequest request, AppointmentForm appointmentForm,
-        AdminUser user, Locale locale, Map<String, Object> model )
+    public static void addElementsToModelForLeftColumn( HttpServletRequest request, AppointmentForm appointmentForm, AdminUser user, Locale locale,
+            Map<String, Object> model )
     {
         model.put( MARK_APPOINTMENTFORM, appointmentForm );
-        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance(  ).getWorkflowsEnabled( user, locale ) );
-        model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable(  ) );
-        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList(  ) );
+        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( user, locale ) );
+        model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
+        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
 
-        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( 
-                    PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
-        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED,
-            ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled(  ) );
-        request.getSession(  ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
+        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
+        request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
     }
 
     @Action( ACTION_DO_COPY_FORM )
@@ -1388,24 +1397,24 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
         if ( formCopy != null )
         {
-            String newNameForCopy = I18nService.getLocalizedString( PROPERTY_COPY_OF_FORM, request.getLocale(  ) ) +
-                formCopy.getTitle(  );
+            String newNameForCopy = I18nService.getLocalizedString( PROPERTY_COPY_OF_FORM, request.getLocale( ) ) + formCopy.getTitle( );
             formCopy.setTitle( newNameForCopy );
-            formCopy.setIsActive(false);
+            formCopy.setIsActive( false );
             AppointmentFormMessages appointmentFormMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
             AppointmentFormHome.create( formCopy, appointmentFormMessages );
 
             List<AppointmentDay> listDays = AppointmentDayHome.findByIdForm( nIdForm );
-            Map<Integer,Integer> mapping = new HashMap<>();
+            Map<Integer, Integer> mapping = new HashMap<>( );
             if ( listDays != null )
             {
                 for ( AppointmentDay day : listDays )
                 {
-                    day.setIdForm( formCopy.getIdForm(  ) );
-                    int oldValue = day.getIdDay() ;
+                    day.setIdForm( formCopy.getIdForm( ) );
+                    int oldValue = day.getIdDay( );
                     AppointmentDayHome.create( day );
-                    if(!mapping.containsKey(oldValue)){
-                    	mapping.put(oldValue, day.getIdDay());
+                    if ( !mapping.containsKey( oldValue ) )
+                    {
+                        mapping.put( oldValue, day.getIdDay( ) );
                     }
                 }
             }
@@ -1416,7 +1425,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             {
                 for ( java.sql.Date holidays : listHolidays )
                 {
-                    AppointmentHoliDaysHome.create( holidays, formCopy.getIdForm(  ) );
+                    AppointmentHoliDaysHome.create( holidays, formCopy.getIdForm( ) );
                 }
             }
 
@@ -1426,31 +1435,34 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             {
                 for ( AppointmentSlot slot : listSlot )
                 {
-                    slot.setIdForm( formCopy.getIdForm(  ) );
-                    slot.setIdDay((mapping.get(slot.getIdDay()) == null) ? 0 : mapping.get(slot.getIdDay()));
+                    slot.setIdForm( formCopy.getIdForm( ) );
+                    slot.setIdDay( ( mapping.get( slot.getIdDay( ) ) == null ) ? 0 : mapping.get( slot.getIdDay( ) ) );
                     AppointmentSlotHome.create( slot );
                 }
             }
         }
-        EntryFilter filter = new EntryFilter();
-        filter.setIdResource(nIdForm);
-        List<Entry> listEntry = EntryHome.getEntryList(filter);
-        List<Field> listField = null ;
-        if(listEntry != null){
-        	for (Entry entry : listEntry){
-        		 entry.setIdResource(formCopy.getIdForm(  ) );
-        		 int oldEntry = entry.getIdEntry() ;
-        		 EntryHome.create(entry);
-        		 listField = FieldHome.getFieldListByIdEntry( oldEntry );
-        		 if (listField != null) {
-					for (Field field : listField) {
-						field.setParentEntry(entry);
-						FieldHome.create(field);
-					}
-				}
-        	}
-        	
-        	
+        EntryFilter filter = new EntryFilter( );
+        filter.setIdResource( nIdForm );
+        List<Entry> listEntry = EntryHome.getEntryList( filter );
+        List<Field> listField = null;
+        if ( listEntry != null )
+        {
+            for ( Entry entry : listEntry )
+            {
+                entry.setIdResource( formCopy.getIdForm( ) );
+                int oldEntry = entry.getIdEntry( );
+                EntryHome.create( entry );
+                listField = FieldHome.getFieldListByIdEntry( oldEntry );
+                if ( listField != null )
+                {
+                    for ( Field field : listField )
+                    {
+                        field.setParentEntry( entry );
+                        FieldHome.create( field );
+                    }
+                }
+            }
+
         }
 
         return getManageAppointmentForms( request );

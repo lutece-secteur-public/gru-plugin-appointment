@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronou
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-
 /**
  * Will remove fileItems uploaded
  */
@@ -59,7 +58,7 @@ public class AppointmentSessionListener implements HttpSessionListener
     @Override
     public void sessionDestroyed( HttpSessionEvent se )
     {
-        String strSessionId = se.getSession(  ).getId(  );
-        AppointmentAsynchronousUploadHandler.getHandler(  ).removeSessionFiles( strSessionId );
+        String strSessionId = se.getSession( ).getId( );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( strSessionId );
     }
 }

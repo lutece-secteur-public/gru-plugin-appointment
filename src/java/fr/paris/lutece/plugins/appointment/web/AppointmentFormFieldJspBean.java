@@ -58,7 +58,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * JspBean to manage appointment form fields
  */
@@ -118,26 +117,29 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Gets the field creation page
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return the field creation page
      */
     @View( VIEW_GET_CREATE_FIELD )
     public String getCreateField( HttpServletRequest request )
     {
         Entry entry = EntryHome.findByPrimaryKey( Integer.parseInt( request.getParameter( PARAMETER_ID_ENTRY ) ) );
-        Field field = new Field(  );
+        Field field = new Field( );
         field.setParentEntry( entry );
 
-        Map<String, Object> model = new HashMap<String, Object>(  );
+        Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_FIELD, field );
 
         return getPage( PROPERTY_CREATE_FIELD_TITLE, TEMPLATE_CREATE_FIELD, model );
     }
 
     /**
-     * Get the page to modify a field without displaying its conditional
-     * questions
-     * @param request The request
+     * Get the page to modify a field without displaying its conditional questions
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display, or the next URL to redirect to
      */
     @View( VIEW_GET_MODIFY_FIELD )
@@ -148,7 +150,9 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Get the page to modify a field with its conditional questions
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The HTML content to display, or the next URL to redirect to
      */
     @View( VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS )
@@ -159,34 +163,35 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Gets the field modification page
-     * @param request The HTTP request
-     * @param bWithConditionalQuestion true if the field is associate to
-     *            conditionals questions
+     * 
+     * @param request
+     *            The HTTP request
+     * @param bWithConditionalQuestion
+     *            true if the field is associate to conditionals questions
      * @return the field modification page
      */
     private String getModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
-        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_FIELD ) ) ||
-                !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_FIELD ) ) )
+        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_FIELD ) ) || !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_FIELD ) ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
 
         int nIdField = Integer.parseInt( request.getParameter( PARAMETER_ID_FIELD ) );
         Field field = FieldHome.findByPrimaryKey( nIdField );
-        Entry entry = EntryHome.findByPrimaryKey( field.getParentEntry(  ).getIdEntry(  ) );
+        Entry entry = EntryHome.findByPrimaryKey( field.getParentEntry( ).getIdEntry( ) );
 
         field.setParentEntry( entry );
 
-        HashMap<String, Object> model = new HashMap<String, Object>(  );
+        HashMap<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_FIELD, field );
 
         String strTemplateName;
 
         if ( bWithConditionalQuestion )
         {
-            model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance(  ).getEntryTypeReferenceList(  ) );
-            model.put( MARK_ENTRY_LIST, field.getConditionalQuestions(  ) );
+            model.put( MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance( ).getEntryTypeReferenceList( ) );
+            model.put( MARK_ENTRY_LIST, field.getConditionalQuestions( ) );
             strTemplateName = TEMPLATE_MODIFY_FIELD_WITH_CONDITIONAL_QUESTION;
         }
         else
@@ -199,14 +204,15 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Perform creation field
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The URL to go after performing the action
      */
     @Action( ACTION_DO_CREATE_FIELD )
     public String doCreateField( HttpServletRequest request )
     {
-        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_ENTRY ) ) ||
-                !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_ENTRY ) ) )
+        if ( StringUtils.isEmpty( request.getParameter( PARAMETER_ID_ENTRY ) ) || !StringUtils.isNumeric( request.getParameter( PARAMETER_ID_ENTRY ) ) )
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
@@ -215,10 +221,10 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         if ( request.getParameter( PARAMETER_CANCEL ) == null )
         {
-            Entry entry = new Entry(  );
+            Entry entry = new Entry( );
             entry.setIdEntry( nIdEntry );
 
-            Field field = new Field(  );
+            Field field = new Field( );
             field.setParentEntry( entry );
 
             String strError = getFieldData( request, field );
@@ -236,7 +242,9 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Perform modification field
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The URL to go after performing the action
      */
     @Action( ACTION_DO_MODIFY_FIELD )
@@ -247,7 +255,9 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Perform modification field
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The URL to go after performing the action
      */
     @Action( ACTION_DO_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS )
@@ -258,13 +268,15 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Perform modification field
-     * @param request The HTTP request
-     * @param bWithConditionalQuestion True if the field to modify accepts
-     *            conditional questions
+     * 
+     * @param request
+     *            The HTTP request
+     * @param bWithConditionalQuestion
+     *            True if the field to modify accepts conditional questions
      * @return The URL to go after performing the action
      */
 
-    //@Action( ACTION_DO_MODIFY_FIELD )
+    // @Action( ACTION_DO_MODIFY_FIELD )
     private String doModifyField( HttpServletRequest request, boolean bWithConditionalQuestion )
     {
         String strIdField = request.getParameter( PARAMETER_ID_FIELD );
@@ -293,18 +305,18 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         if ( request.getParameter( PARAMETER_APPLY ) == null )
         {
-            return redirect( request,
-                AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
+            return redirect( request, AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry( ).getIdEntry( ) ) );
         }
 
-        return redirect( request,
-            bWithConditionalQuestion ? VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS : VIEW_GET_MODIFY_FIELD,
-            PARAMETER_ID_FIELD, nIdField );
+        return redirect( request, bWithConditionalQuestion ? VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS : VIEW_GET_MODIFY_FIELD, PARAMETER_ID_FIELD,
+                nIdField );
     }
 
     /**
      * Gets the confirmation page before deleting a field
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return the confirmation page before deleting a field
      */
     @View( VIEW_GET_CONFIRM_REMOVE_FIELD )
@@ -321,14 +333,14 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         url.addParameter( MVCUtils.PARAMETER_ACTION, ACTION_DO_REMOVE_FIELD );
         url.addParameter( PARAMETER_ID_FIELD, strIdField );
 
-        return redirect( request,
-            AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_FIELD, url.getUrl(  ),
-                AdminMessage.TYPE_CONFIRMATION ) );
+        return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_FIELD, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
     }
 
     /**
      * Perform the suppression of a field
-     * @param request The HTTP request
+     * 
+     * @param request
+     *            The HTTP request
      * @return The URL to go after performing the action
      */
     @Action( ACTION_DO_REMOVE_FIELD )
@@ -351,8 +363,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
             {
                 FieldHome.remove( nIdField );
 
-                return redirect( request,
-                    AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
+                return redirect( request, AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry( ).getIdEntry( ) ) );
             }
         }
 
@@ -361,7 +372,9 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Move a field up
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     @Action( ACTION_DO_MOVE_FIELD_UP )
@@ -372,7 +385,9 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Move a field up
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     @Action( ACTION_DO_MOVE_FIELD_DOWN )
@@ -383,8 +398,11 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
     /**
      * Move a field up or down
-     * @param request The request
-     * @param bMoveUp True to move the field up, false to move it down
+     * 
+     * @param request
+     *            The request
+     * @param bMoveUp
+     *            True to move the field up, false to move it down
      * @return The next URL to redirect to
      */
     public String doMoveField( HttpServletRequest request, boolean bMoveUp )
@@ -401,29 +419,30 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         List<Field> listField;
         Field field = FieldHome.findByPrimaryKey( nIdField );
 
-        listField = FieldHome.getFieldListByIdEntry( field.getParentEntry(  ).getIdEntry(  ) );
+        listField = FieldHome.getFieldListByIdEntry( field.getParentEntry( ).getIdEntry( ) );
 
         int nIndexField = getIndexFieldInFieldList( nIdField, listField );
 
         int nNewPosition;
         Field fieldToInversePosition;
         fieldToInversePosition = listField.get( bMoveUp ? ( nIndexField - 1 ) : ( nIndexField + 1 ) );
-        nNewPosition = fieldToInversePosition.getPosition(  );
-        fieldToInversePosition.setPosition( field.getPosition(  ) );
+        nNewPosition = fieldToInversePosition.getPosition( );
+        fieldToInversePosition.setPosition( field.getPosition( ) );
         field.setPosition( nNewPosition );
         FieldHome.update( field );
         FieldHome.update( fieldToInversePosition );
 
-        return redirect( request,
-            AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry(  ).getIdEntry(  ) ) );
+        return redirect( request, AppointmentFormEntryJspBean.getURLModifyEntry( request, field.getParentEntry( ).getIdEntry( ) ) );
     }
 
     /**
-     * Get the request data and if there is no error insert the data in the
-     * field specified in parameter. return null if there is no error or else
-     * return the error page URL
-     * @param request the request
-     * @param field field
+     * Get the request data and if there is no error insert the data in the field specified in parameter. return null if there is no error or else return the
+     * error page URL
+     * 
+     * @param request
+     *            the request
+     * @param field
+     *            field
      * @return null if there is no error or else return the error page URL
      */
     private String getFieldData( HttpServletRequest request, Field field )
@@ -440,21 +459,24 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         {
             strFieldError = FIELD_TITLE_FIELD;
         }
-        else if ( StringUtils.isEmpty( strValue ) )
-        {
-            strFieldError = FIELD_VALUE_FIELD;
-        }
-        else if ( !StringUtil.checkCodeKey( strValue ) )
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_FIELD_VALUE_FIELD, AdminMessage.TYPE_STOP );
-        }
+        else
+            if ( StringUtils.isEmpty( strValue ) )
+            {
+                strFieldError = FIELD_VALUE_FIELD;
+            }
+            else
+                if ( !StringUtil.checkCodeKey( strValue ) )
+                {
+                    return AdminMessageService.getMessageUrl( request, MESSAGE_FIELD_VALUE_FIELD, AdminMessage.TYPE_STOP );
+                }
 
         if ( strFieldError != null )
         {
-            Object[] tabRequiredFields = { I18nService.getLocalizedString( strFieldError, getLocale(  ) ) };
+            Object [ ] tabRequiredFields = {
+                I18nService.getLocalizedString( strFieldError, getLocale( ) )
+            };
 
-            return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields,
-                AdminMessage.TYPE_STOP );
+            return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields, AdminMessage.TYPE_STOP );
         }
 
         field.setTitle( strTitle );
@@ -468,12 +490,13 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     }
 
     /**
-     * Return the index in the list of the field whose key is specified in
-     * parameter
-     * @param nIdField the key of the field
-     * @param listField the list of field
-     * @return the index in the list of the field whose key is specified in
-     *         parameter
+     * Return the index in the list of the field whose key is specified in parameter
+     * 
+     * @param nIdField
+     *            the key of the field
+     * @param listField
+     *            the list of field
+     * @return the index in the list of the field whose key is specified in parameter
      */
     private static int getIndexFieldInFieldList( int nIdField, List<Field> listField )
     {
@@ -481,7 +504,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         for ( Field field : listField )
         {
-            if ( field.getIdField(  ) == nIdField )
+            if ( field.getIdField( ) == nIdField )
             {
                 return nIndex;
             }
@@ -493,10 +516,12 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     }
 
     /**
-     * Get the URL to modify a field. The field is assumed to allow conditional
-     * questions.
-     * @param request The request
-     * @param nIdField The id of the field
+     * Get the URL to modify a field. The field is assumed to allow conditional questions.
+     * 
+     * @param request
+     *            The request
+     * @param nIdField
+     *            The id of the field
      * @return The URL of the page to modify the field
      */
     public static String getUrlModifyField( HttpServletRequest request, int nIdField )
@@ -505,6 +530,6 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_MODIFY_FIELD_WITH_CONDITIONAL_QUESTIONS );
         urlItem.addParameter( PARAMETER_ID_FIELD, nIdField );
 
-        return urlItem.getUrl(  );
+        return urlItem.getUrl( );
     }
 }

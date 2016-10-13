@@ -43,7 +43,6 @@ import java.sql.Date;
 
 import java.util.List;
 
-
 /**
  * Home for appointment slots
  */
@@ -55,51 +54,50 @@ public final class AppointmentSlotHome
     /**
      * Default constructor
      */
-    private AppointmentSlotHome(  )
+    private AppointmentSlotHome( )
     {
         // Private constructor
     }
 
     /**
      * Create a new appointment slot
-     * @param slot The appointment slot to create
+     * 
+     * @param slot
+     *            The appointment slot to create
      */
     public static void create( AppointmentSlot slot )
     {
         _dao.create( slot, _plugin );
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getAppointmentSlotKey( slot.getIdSlot(  ) ),
-            slot.clone(  ) );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getAppointmentSlotKey( slot.getIdSlot( ) ), slot.clone( ) );
     }
 
     /**
      * Update an appointment slot
-     * @param slot The appointment slot to update
+     * 
+     * @param slot
+     *            The appointment slot to update
      */
     public static void update( AppointmentSlot slot )
     {
-        AppointmentSlot slotFromDb = findByPrimaryKey( slot.getIdSlot(  ) );
+        AppointmentSlot slotFromDb = findByPrimaryKey( slot.getIdSlot( ) );
 
         _dao.update( slot, _plugin );
 
-        AppointmentFormCacheService.getInstance(  )
-                                   .putInCache( AppointmentFormCacheService.getAppointmentSlotKey( slot.getIdSlot(  ) ),
-            slot.clone(  ) );
+        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getAppointmentSlotKey( slot.getIdSlot( ) ), slot.clone( ) );
 
-        if ( slot.getIdDay(  ) > 0 )
+        if ( slot.getIdDay( ) > 0 )
         {
-            if ( slotFromDb.getIsEnabled(  ) ^ slot.getIsEnabled(  ) )
+            if ( slotFromDb.getIsEnabled( ) ^ slot.getIsEnabled( ) )
             {
-                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
-                day.setFreePlaces( slot.getIsEnabled(  ) ? ( day.getFreePlaces(  ) + slot.getNbPlaces(  ) )
-                                                         : ( day.getFreePlaces(  ) - slot.getNbPlaces(  ) ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
+                day.setFreePlaces( slot.getIsEnabled( ) ? ( day.getFreePlaces( ) + slot.getNbPlaces( ) ) : ( day.getFreePlaces( ) - slot.getNbPlaces( ) ) );
                 AppointmentDayHome.update( day );
             }
 
-            if ( slotFromDb.getNbPlaces(  ) != slot.getNbPlaces(  ) )
+            if ( slotFromDb.getNbPlaces( ) != slot.getNbPlaces( ) )
             {
-                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay(  ) );
-                day.setFreePlaces( ( day.getFreePlaces(  ) + slot.getNbPlaces(  ) ) - slotFromDb.getNbPlaces(  ) );
+                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
+                day.setFreePlaces( ( day.getFreePlaces( ) + slot.getNbPlaces( ) ) - slotFromDb.getNbPlaces( ) );
                 AppointmentDayHome.update( day );
             }
         }
@@ -107,18 +105,21 @@ public final class AppointmentSlotHome
 
     /**
      * Remove an appointment slot from its id
-     * @param nIdSlot The id of the slot to remove
+     * 
+     * @param nIdSlot
+     *            The id of the slot to remove
      */
     public static void delete( int nIdSlot )
     {
         _dao.delete( nIdSlot, _plugin );
-        AppointmentFormCacheService.getInstance(  )
-                                   .removeKey( AppointmentFormCacheService.getAppointmentSlotKey( nIdSlot ) );
+        AppointmentFormCacheService.getInstance( ).removeKey( AppointmentFormCacheService.getAppointmentSlotKey( nIdSlot ) );
     }
 
     /**
      * Remove an appointment slot associated with a given day
-     * @param nIdDay The id of the day to remove slots from
+     * 
+     * @param nIdDay
+     *            The id of the day to remove slots from
      */
     public static void deleteByIdDay( int nIdDay )
     {
@@ -126,9 +127,10 @@ public final class AppointmentSlotHome
     }
 
     /**
-     * Remove appointment slots associated with a given form. <b>Slots that are
-     * associated with a day are also removed</b>
-     * @param nIdForm The id of the form to remove slots from
+     * Remove appointment slots associated with a given form. <b>Slots that are associated with a day are also removed</b>
+     * 
+     * @param nIdForm
+     *            The id of the form to remove slots from
      */
     public static void deleteAllByIdForm( int nIdForm )
     {
@@ -136,9 +138,10 @@ public final class AppointmentSlotHome
     }
 
     /**
-     * Remove appointment slots associated with a given form. <b>Slots that are
-     * associated with a day are NOT removed</b>
-     * @param nIdForm The id of the form to remove slots from
+     * Remove appointment slots associated with a given form. <b>Slots that are associated with a day are NOT removed</b>
+     * 
+     * @param nIdForm
+     *            The id of the form to remove slots from
      */
     public static void deleteByIdForm( int nIdForm )
     {
@@ -147,8 +150,11 @@ public final class AppointmentSlotHome
 
     /**
      * Delete every slots associated with a given form and a given day of week
-     * @param nIdForm The id of the form
-     * @param nDayOfWeek The day of the week
+     * 
+     * @param nIdForm
+     *            The id of the form
+     * @param nDayOfWeek
+     *            The day of the week
      */
     public static void deleteByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek )
     {
@@ -157,7 +163,9 @@ public final class AppointmentSlotHome
 
     /**
      * Delete every slots that are associated with a day before a given day.
-     * @param dateMonday The date of the day to remove slots
+     * 
+     * @param dateMonday
+     *            The date of the day to remove slots
      */
     public static void deleteOldSlots( Date dateMonday )
     {
@@ -166,25 +174,27 @@ public final class AppointmentSlotHome
 
     /**
      * Find a slot from its primary key
-     * @param nIdSlot the id of the slot to remove
+     * 
+     * @param nIdSlot
+     *            the id of the slot to remove
      * @return The appointment slot
      */
     public static AppointmentSlot findByPrimaryKey( int nIdSlot )
     {
         String strKey = AppointmentFormCacheService.getAppointmentSlotKey( nIdSlot );
 
-        AppointmentSlot slot = (AppointmentSlot) AppointmentFormCacheService.getInstance(  ).getFromCache( strKey );
+        AppointmentSlot slot = (AppointmentSlot) AppointmentFormCacheService.getInstance( ).getFromCache( strKey );
 
         if ( slot != null )
         {
-            return slot.clone(  );
+            return slot.clone( );
         }
 
         slot = _dao.findByPrimaryKey( nIdSlot, _plugin );
 
         if ( slot != null )
         {
-            AppointmentFormCacheService.getInstance(  ).putInCache( strKey, slot.clone(  ) );
+            AppointmentFormCacheService.getInstance( ).putInCache( strKey, slot.clone( ) );
         }
 
         return slot;
@@ -192,7 +202,9 @@ public final class AppointmentSlotHome
 
     /**
      * Find a slot from its primary key
-     * @param nIdSlot the id of the slot to remove
+     * 
+     * @param nIdSlot
+     *            the id of the slot to remove
      * @return The appointment slot
      */
     public static AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot )
@@ -204,8 +216,11 @@ public final class AppointmentSlotHome
 
     /**
      * Find a slot from its primary key
-     * @param nIdSlot the id of the slot to remove
-     * @param date The date of the day of the slot
+     * 
+     * @param nIdSlot
+     *            the id of the slot to remove
+     * @param date
+     *            The date of the day of the slot
      * @return The appointment slot
      */
     public static AppointmentSlot findByPrimaryKeyWithFreePlaces( int nIdSlot, Date date )
@@ -214,9 +229,10 @@ public final class AppointmentSlotHome
     }
 
     /**
-     * Find every slots associated with a given form and not associated with any
-     * day
-     * @param nIdForm the id of the form
+     * Find every slots associated with a given form and not associated with any day
+     * 
+     * @param nIdForm
+     *            the id of the form
      * @return The list of slots
      */
     public static List<AppointmentSlot> findByIdForm( int nIdForm )
@@ -226,7 +242,9 @@ public final class AppointmentSlotHome
 
     /**
      * Find every slots associated with a given day
-     * @param nIdDay the id of the day
+     * 
+     * @param nIdDay
+     *            the id of the day
      * @return The list of slots
      */
     public static List<AppointmentSlot> findByIdDay( int nIdDay )
@@ -235,10 +253,12 @@ public final class AppointmentSlotHome
     }
 
     /**
-     * Get the list of slots associated with a given form for a given day of
-     * week.
-     * @param nIdForm the if of the form
-     * @param nDayOfWeek The day of the week (1 for Monday, 2 for Tuesday, ...)
+     * Get the list of slots associated with a given form for a given day of week.
+     * 
+     * @param nIdForm
+     *            the if of the form
+     * @param nDayOfWeek
+     *            The day of the week (1 for Monday, 2 for Tuesday, ...)
      * @return the list of slots
      */
     public static List<AppointmentSlot> findByIdFormAndDayOfWeek( int nIdForm, int nDayOfWeek )
@@ -247,9 +267,10 @@ public final class AppointmentSlotHome
     }
 
     /**
-     * Get the list of slots associated with a given day, and compute for each
-     * slot the number of free places
-     * @param nIdDay The id of the day
+     * Get the list of slots associated with a given day, and compute for each slot the number of free places
+     * 
+     * @param nIdDay
+     *            The id of the day
      * @return The list of slots
      */
     public static List<AppointmentSlot> findByIdDayWithFreePlaces( int nIdDay )
@@ -260,7 +281,9 @@ public final class AppointmentSlotHome
 
     /**
      * Get appointments slot associated unavailable with a given day
-     * @param nIdDay The id of the day to remove slots from
+     * 
+     * @param nIdDay
+     *            The id of the day to remove slots from
      */
     public static List<AppointmentSlot> getSlotsUnavailable( int nIdDay, int nIdForm )
     {

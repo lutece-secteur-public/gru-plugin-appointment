@@ -47,7 +47,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-
 /**
  * This class provides Data Access methods for AppointmentForm objects
  */
@@ -62,34 +61,35 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration, date_limit, maximum_number_of_booked_seats, address, longitude, latitude, category ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ?, max_appointment_mail = ?, nb_appointment_week = ?, reference = ?, is_form_step = ?, is_confirmEmail_enabled = ?, is_mandatoryEmail_enabled = ?, icon_form_content = ?, icon_form_mime_type = ?, seizure_duration = ? , date_limit = ?, maximum_number_of_booked_seats = ?, address = ?, longitude = ?, latitude = ?, category = ? WHERE id_form = ?";
-    private static final String SQL_QUERY_GET_MAX_APPOINTMENT = "select distinct count(*) nbre,form.max_appointment_mail,apmt.date_appointment," +
-        " ADDDATE(apmt.date_appointment, INTERVAL (form.nb_appointment_week-1) DAY) date_max," +
-        " ADDDATE(apmt.date_appointment, INTERVAL -(form.nb_appointment_week-1) DAY) date_min" +
-        " from appointment_appointment apmt, appointment_day myday, appointment_form form where" + " apmt.status <>" +
-        Appointment.Status.STATUS_UNRESERVED.getValeur(  ) + "  and myday.date_day=apmt.date_appointment" +
-        " and myday.date_day BETWEEN ADDDATE(?,INTERVAL -(form.nb_appointment_week-1) DAY)" +
-        " and ADDDATE(?,INTERVAL (form.nb_appointment_week-1) DAY)" +
-        " and TRIM(UCASE(apmt.email)) = TRIM(UCASE(?)) and myday.id_form = ?" + " and form.id_form=myday.id_form" +
-        " group by apmt.email, apmt.date_appointment order by apmt.date_appointment";
+    private static final String SQL_QUERY_GET_MAX_APPOINTMENT = "select distinct count(*) nbre,form.max_appointment_mail,apmt.date_appointment,"
+            + " ADDDATE(apmt.date_appointment, INTERVAL (form.nb_appointment_week-1) DAY) date_max,"
+            + " ADDDATE(apmt.date_appointment, INTERVAL -(form.nb_appointment_week-1) DAY) date_min"
+            + " from appointment_appointment apmt, appointment_day myday, appointment_form form where" + " apmt.status <>"
+            + Appointment.Status.STATUS_UNRESERVED.getValeur( ) + "  and myday.date_day=apmt.date_appointment"
+            + " and myday.date_day BETWEEN ADDDATE(?,INTERVAL -(form.nb_appointment_week-1) DAY)" + " and ADDDATE(?,INTERVAL (form.nb_appointment_week-1) DAY)"
+            + " and TRIM(UCASE(apmt.email)) = TRIM(UCASE(?)) and myday.id_form = ?" + " and form.id_form=myday.id_form"
+            + " group by apmt.email, apmt.date_appointment order by apmt.date_appointment";
 
     /**
      * Generates a new primary key
-     * @param plugin The Plugin
+     * 
+     * @param plugin
+     *            The Plugin
      * @return The new primary key
      */
     public int newPrimaryKey( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nKey = 1;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nKey = daoUtil.getInt( 1 ) + 1;
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nKey;
     }
@@ -105,59 +105,64 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
 
         int nIndex = 1;
-        daoUtil.setInt( nIndex++, appointmentForm.getIdForm(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getTitle(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getDescription(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getTimeStart(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getTimeEnd(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getDurationAppointments(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenMonday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenTuesday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenWednesday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenThursday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenFriday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSaturday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSunday(  ) );
-        daoUtil.setDate( nIndex++, appointmentForm.getDateStartValidity(  ) );
-        daoUtil.setDate( nIndex++, appointmentForm.getDateEndValidity(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsActive(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getDisplayTitleFo(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getNbWeeksToDisplay(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getPeoplePerAppointment(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getWeeksLimits(  ) );
-        daoUtil.setString( nIndex++,
-            StringUtils.isEmpty( appointmentForm.getReference(  ) ) ? null : appointmentForm.getReference(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsFormStep(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableConfirmEmail(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableMandatoryEmail(  ) );
-        daoUtil.setBytes( nIndex++, appointmentForm.getIcon(  ).getImage(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getIcon(  ).getMimeType(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getSeizureDuration(  ) );
-        daoUtil.setDate( nIndex++, appointmentForm.getDateLimit(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats() );
+        daoUtil.setInt( nIndex++, appointmentForm.getIdForm( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getTitle( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getDescription( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getTimeStart( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getTimeEnd( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getDurationAppointments( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenMonday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenTuesday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenWednesday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenThursday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenFriday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSaturday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSunday( ) );
+        daoUtil.setDate( nIndex++, appointmentForm.getDateStartValidity( ) );
+        daoUtil.setDate( nIndex++, appointmentForm.getDateEndValidity( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsActive( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getDisplayTitleFo( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getNbWeeksToDisplay( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getPeoplePerAppointment( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getWeeksLimits( ) );
+        daoUtil.setString( nIndex++, StringUtils.isEmpty( appointmentForm.getReference( ) ) ? null : appointmentForm.getReference( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsFormStep( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableConfirmEmail( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableMandatoryEmail( ) );
+        daoUtil.setBytes( nIndex++, appointmentForm.getIcon( ).getImage( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getIcon( ).getMimeType( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getSeizureDuration( ) );
+        daoUtil.setDate( nIndex++, appointmentForm.getDateLimit( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats( ) );
 
-        daoUtil.setString( nIndex++, appointmentForm.getAddress(  ) );
-        if ( appointmentForm.getLongitude(  ) != null ) {
-            daoUtil.setDouble( nIndex++, appointmentForm.getLongitude(  ) );
-        } else {
+        daoUtil.setString( nIndex++, appointmentForm.getAddress( ) );
+        if ( appointmentForm.getLongitude( ) != null )
+        {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLongitude( ) );
+        }
+        else
+        {
             daoUtil.setDoubleNull( nIndex++ );
         }
-        if ( appointmentForm.getLatitude(  ) != null ) {
-            daoUtil.setDouble( nIndex++, appointmentForm.getLatitude(  ) );
-        } else {
+        if ( appointmentForm.getLatitude( ) != null )
+        {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLatitude( ) );
+        }
+        else
+        {
             daoUtil.setDoubleNull( nIndex++ );
         }
 
-        daoUtil.setString( nIndex++, appointmentForm.getCategory(  ) );
+        daoUtil.setString( nIndex++, appointmentForm.getCategory( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -168,16 +173,16 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
         daoUtil.setInt( 1, nKey );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         AppointmentForm appointmentForm = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             appointmentForm = getAppointmentFormData( daoUtil );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointmentForm;
     }
@@ -190,8 +195,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
         daoUtil.setInt( 1, nAppointmentFormId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -204,59 +209,64 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 
         int nIndex = 1;
 
-        daoUtil.setString( nIndex++, appointmentForm.getTitle(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getDescription(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getTimeStart(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getTimeEnd(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getDurationAppointments(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenMonday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenTuesday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenWednesday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenThursday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenFriday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSaturday(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSunday(  ) );
-        daoUtil.setDate( nIndex++, appointmentForm.getDateStartValidity(  ) );
-        daoUtil.setDate( nIndex++, appointmentForm.getDateEndValidity(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsActive(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getDisplayTitleFo(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getNbWeeksToDisplay(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getPeoplePerAppointment(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getWeeksLimits(  ) );
-        daoUtil.setString( nIndex++,
-            StringUtils.isEmpty( appointmentForm.getReference(  ) ) ? null : appointmentForm.getReference(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getIsFormStep(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableConfirmEmail(  ) );
-        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableMandatoryEmail(  ) );
-        daoUtil.setBytes( nIndex++, appointmentForm.getIcon(  ).getImage(  ) );
-        daoUtil.setString( nIndex++, appointmentForm.getIcon(  ).getMimeType(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getSeizureDuration(  ) );
-        daoUtil.setDate( nIndex++, appointmentForm.getDateLimit(  ) );
-        daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats() );
+        daoUtil.setString( nIndex++, appointmentForm.getTitle( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getDescription( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getTimeStart( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getTimeEnd( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getDurationAppointments( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenMonday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenTuesday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenWednesday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenThursday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenFriday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSaturday( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsOpenSunday( ) );
+        daoUtil.setDate( nIndex++, appointmentForm.getDateStartValidity( ) );
+        daoUtil.setDate( nIndex++, appointmentForm.getDateEndValidity( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsActive( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getDisplayTitleFo( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getNbWeeksToDisplay( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getPeoplePerAppointment( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getIdWorkflow( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableCaptcha( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getAllowUsersToCancelAppointments( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMinDaysBeforeAppointment( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getCalendarTemplateId( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaxAppointments( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getWeeksLimits( ) );
+        daoUtil.setString( nIndex++, StringUtils.isEmpty( appointmentForm.getReference( ) ) ? null : appointmentForm.getReference( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getIsFormStep( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableConfirmEmail( ) );
+        daoUtil.setBoolean( nIndex++, appointmentForm.getEnableMandatoryEmail( ) );
+        daoUtil.setBytes( nIndex++, appointmentForm.getIcon( ).getImage( ) );
+        daoUtil.setString( nIndex++, appointmentForm.getIcon( ).getMimeType( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getSeizureDuration( ) );
+        daoUtil.setDate( nIndex++, appointmentForm.getDateLimit( ) );
+        daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats( ) );
 
-        daoUtil.setString( nIndex++, appointmentForm.getAddress(  ) );
-        if ( appointmentForm.getLongitude(  ) != null ) {
-            daoUtil.setDouble( nIndex++, appointmentForm.getLongitude(  ) );
-        } else {
+        daoUtil.setString( nIndex++, appointmentForm.getAddress( ) );
+        if ( appointmentForm.getLongitude( ) != null )
+        {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLongitude( ) );
+        }
+        else
+        {
             daoUtil.setDoubleNull( nIndex++ );
         }
-        if ( appointmentForm.getLatitude(  ) != null ) {
-            daoUtil.setDouble( nIndex++, appointmentForm.getLatitude(  ) );
-        } else {
+        if ( appointmentForm.getLatitude( ) != null )
+        {
+            daoUtil.setDouble( nIndex++, appointmentForm.getLatitude( ) );
+        }
+        else
+        {
             daoUtil.setDoubleNull( nIndex++ );
         }
-        daoUtil.setString( nIndex++, appointmentForm.getCategory(  ) );
+        daoUtil.setString( nIndex++, appointmentForm.getCategory( ) );
 
-        daoUtil.setInt( nIndex, appointmentForm.getIdForm(  ) );
+        daoUtil.setInt( nIndex, appointmentForm.getIdForm( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
@@ -265,16 +275,16 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     @Override
     public List<AppointmentForm> selectAppointmentFormsList( Plugin plugin )
     {
-        List<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>(  );
+        List<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             appointmentFormList.add( getAppointmentFormData( daoUtil ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointmentFormList;
     }
@@ -285,29 +295,31 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
     @Override
     public List<AppointmentForm> selectActiveAppointmentFormsList( Plugin plugin )
     {
-        List<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>(  );
+        List<AppointmentForm> appointmentFormList = new ArrayList<AppointmentForm>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ENABLED, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
             appointmentFormList.add( getAppointmentFormData( daoUtil ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return appointmentFormList;
     }
 
     /**
      * Get data of an appointment form from a daoUtil
-     * @param daoUtil The daoUtil to get data from
+     * 
+     * @param daoUtil
+     *            The daoUtil to get data from
      * @return The appointment form with data of the current row of the daoUtil
      */
     private AppointmentForm getAppointmentFormData( DAOUtil daoUtil )
     {
-        AppointmentForm appointmentForm = new AppointmentForm(  );
-        ImageResource img = new ImageResource(  );
+        AppointmentForm appointmentForm = new AppointmentForm( );
+        ImageResource img = new ImageResource( );
 
         int nIndex = 1;
         appointmentForm.setIdForm( daoUtil.getInt( nIndex++ ) );
@@ -347,38 +359,42 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         appointmentForm.setDateLimit( daoUtil.getDate( nIndex++ ) );
         appointmentForm.setMaximumNumberOfBookedSeats( daoUtil.getInt( nIndex++ ) );
 
-        appointmentForm.setAddress(daoUtil.getString( nIndex++ ));
-        Float fLongitude = ((Float) daoUtil.getObject( nIndex++ ));
-        if (fLongitude != null) {
-            appointmentForm.setLongitude(fLongitude.doubleValue());
+        appointmentForm.setAddress( daoUtil.getString( nIndex++ ) );
+        Float fLongitude = ( (Float) daoUtil.getObject( nIndex++ ) );
+        if ( fLongitude != null )
+        {
+            appointmentForm.setLongitude( fLongitude.doubleValue( ) );
         }
-        Float fLatitude = ((Float) daoUtil.getObject( nIndex++ ));
-        if (fLatitude != null) {
-            appointmentForm.setLatitude(fLatitude.doubleValue());
+        Float fLatitude = ( (Float) daoUtil.getObject( nIndex++ ) );
+        if ( fLatitude != null )
+        {
+            appointmentForm.setLatitude( fLatitude.doubleValue( ) );
         }
-        appointmentForm.setCategory(daoUtil.getString( nIndex++ ));
+        appointmentForm.setCategory( daoUtil.getString( nIndex++ ) );
         return appointmentForm;
     }
 
     /**
      * Get count of an appointment form from a user
-     * @param String Email from user
+     * 
+     * @param String
+     *            Email from user
      * @param int The Day concerned
-     * @param plugin The Plugin
+     * @param plugin
+     *            The Plugin
      * @return The sum of appointment by the user from date limited
      */
     @Override
-    public List<Date> getUnavailableDatesLimitedByMail( Date startDate, Date[] endDate, int nForm, String strEmail,
-        Plugin plugin )
+    public List<Date> getUnavailableDatesLimitedByMail( Date startDate, Date [ ] endDate, int nForm, String strEmail, Plugin plugin )
     {
-        List<Date> nReturn = new ArrayList<Date>(  );
-        List<String[]> tabInfos = new ArrayList<String[]>(  );
+        List<Date> nReturn = new ArrayList<Date>( );
+        List<String [ ]> tabInfos = new ArrayList<String [ ]>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_MAX_APPOINTMENT, plugin );
 
         if ( endDate != null )
         {
-            daoUtil.setDate( 1, endDate[0] );
-            daoUtil.setDate( 2, endDate[1] );
+            daoUtil.setDate( 1, endDate [0] );
+            daoUtil.setDate( 2, endDate [1] );
         }
         else
         {
@@ -389,24 +405,24 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setString( 3, strEmail );
         daoUtil.setInt( 4, nForm );
 
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            String[] strInfos = new String[5];
-            strInfos[0] = daoUtil.getString( 1 ); //Get the number of appointments from this user from this date
-            strInfos[1] = daoUtil.getString( 2 ); //Get the max Limits email recessed
-            strInfos[2] = Long.valueOf( daoUtil.getDate( 5 ).getTime(  ) ).toString(  ); //Date Limited start Off
-            strInfos[3] = Long.valueOf( daoUtil.getDate( 4 ).getTime(  ) ).toString(  ); //Date Limited End Off
-            strInfos[4] = Long.valueOf( daoUtil.getDate( 3 ).getTime(  ) ).toString(  ); //Valid Date Appointment
+            String [ ] strInfos = new String [ 5];
+            strInfos [0] = daoUtil.getString( 1 ); // Get the number of appointments from this user from this date
+            strInfos [1] = daoUtil.getString( 2 ); // Get the max Limits email recessed
+            strInfos [2] = Long.valueOf( daoUtil.getDate( 5 ).getTime( ) ).toString( ); // Date Limited start Off
+            strInfos [3] = Long.valueOf( daoUtil.getDate( 4 ).getTime( ) ).toString( ); // Date Limited End Off
+            strInfos [4] = Long.valueOf( daoUtil.getDate( 3 ).getTime( ) ).toString( ); // Valid Date Appointment
             tabInfos.add( strInfos );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
-        if ( tabInfos.size(  ) > 0 )
+        if ( tabInfos.size( ) > 0 )
         {
-            for ( String[] tmpCount : tabInfos )
+            for ( String [ ] tmpCount : tabInfos )
             {
                 nReturn = computeDays( nReturn, tmpCount );
             }
@@ -420,22 +436,20 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
      * @param tmpCount
      * @throws NumberFormatException
      */
-    private static List<Date> computeDays( List<Date> nReturn, String[] tmpCount )
+    private static List<Date> computeDays( List<Date> nReturn, String [ ] tmpCount )
     {
-        for ( int i = 0;
-                i <= getNumbersDay( new Date( Long.valueOf( tmpCount[2] ) ), new Date( Long.valueOf( tmpCount[3] ) ) );
-                i++ )
+        for ( int i = 0; i <= getNumbersDay( new Date( Long.valueOf( tmpCount [2] ) ), new Date( Long.valueOf( tmpCount [3] ) ) ); i++ )
         {
-            GregorianCalendar startCount = new GregorianCalendar(  );
-            GregorianCalendar validDate = new GregorianCalendar(  );
-            validDate.setTimeInMillis( Long.valueOf( tmpCount[4] ) );
-            startCount.setTimeInMillis( Long.valueOf( tmpCount[2] ) );
+            GregorianCalendar startCount = new GregorianCalendar( );
+            GregorianCalendar validDate = new GregorianCalendar( );
+            validDate.setTimeInMillis( Long.valueOf( tmpCount [4] ) );
+            startCount.setTimeInMillis( Long.valueOf( tmpCount [2] ) );
             startCount.add( GregorianCalendar.DATE, i );
 
-            if ( ( Integer.valueOf( tmpCount[0] ) > 0 ) && ( Integer.valueOf( tmpCount[1] ) > 0 ) &&
-                    ( Integer.valueOf( tmpCount[0] ) >= Integer.valueOf( tmpCount[1] ) ) )
+            if ( ( Integer.valueOf( tmpCount [0] ) > 0 ) && ( Integer.valueOf( tmpCount [1] ) > 0 )
+                    && ( Integer.valueOf( tmpCount [0] ) >= Integer.valueOf( tmpCount [1] ) ) )
             {
-                nReturn.add( new Date( startCount.getTimeInMillis(  ) ) );
+                nReturn.add( new Date( startCount.getTimeInMillis( ) ) );
             }
         }
 
@@ -444,13 +458,14 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
 
     /**
      * Compute Days beetween date
+     * 
      * @param nStart
      * @param nEnd
      * @return
      */
     private static int getNumbersDay( Date nStart, Date nEnd )
     {
-        long timeDiff = nEnd.getTime(  ) - nStart.getTime(  );
+        long timeDiff = nEnd.getTime( ) - nStart.getTime( );
         timeDiff = timeDiff / 1000 / ( 24 * 60 * 60 );
 
         return Integer.valueOf( String.valueOf( timeDiff ) );

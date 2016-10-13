@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.sql.Timestamp;
 
-
 public class AppointmentSlotDisponiblity
 {
     private int _nIdSlot;
@@ -43,7 +42,7 @@ public class AppointmentSlotDisponiblity
     private Timestamp _freeDate;
     private String _nIdSession;
 
-    public int getIdSlot(  )
+    public int getIdSlot( )
     {
         return _nIdSlot;
     }
@@ -53,7 +52,7 @@ public class AppointmentSlotDisponiblity
         this._nIdSlot = _nIdSlot;
     }
 
-    public AppointmentSlot getAppointmentSlot(  )
+    public AppointmentSlot getAppointmentSlot( )
     {
         return _appointmentSlot;
     }
@@ -63,7 +62,7 @@ public class AppointmentSlotDisponiblity
         this._appointmentSlot = _appointmentSlot;
     }
 
-    public Timestamp getFreeDate(  )
+    public Timestamp getFreeDate( )
     {
         return _freeDate;
     }
@@ -73,7 +72,7 @@ public class AppointmentSlotDisponiblity
         this._freeDate = _blockDate;
     }
 
-    public String getIdSession(  )
+    public String getIdSession( )
     {
         return _nIdSession;
     }

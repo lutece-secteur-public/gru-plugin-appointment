@@ -39,7 +39,6 @@ import java.sql.Date;
 
 import java.util.List;
 
-
 /**
  * IAppointmentDAO Interface
  */
@@ -47,87 +46,114 @@ public interface IAppointmentDAO
 {
     /**
      * Insert a new record in the table.
-     * @param appointment instance of the Appointment object to insert
-     * @param plugin the Plugin
+     * 
+     * @param appointment
+     *            instance of the Appointment object to insert
+     * @param plugin
+     *            the Plugin
      */
     void insert( Appointment appointment, Plugin plugin );
 
     /**
      * Update the record in the table
-     * @param appointment the reference of the Appointment
-     * @param plugin the Plugin
+     * 
+     * @param appointment
+     *            the reference of the Appointment
+     * @param plugin
+     *            the Plugin
      */
     void store( Appointment appointment, Plugin plugin );
 
     /**
      * Delete a record from the table
-     * @param nIdAppointment int identifier of the Appointment to delete
-     * @param plugin the Plugin
+     * 
+     * @param nIdAppointment
+     *            int identifier of the Appointment to delete
+     * @param plugin
+     *            the Plugin
      */
     void delete( int nIdAppointment, Plugin plugin );
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
      * Load the data from the table
-     * @param nKey The identifier of the appointment
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the appointment
+     * @param plugin
+     *            the Plugin
      * @return The instance of the appointment
      */
     Appointment load( int nKey, Plugin plugin );
 
     /**
-     * Load the data of all the appointment objects and returns them as a
-     * collection
-     * @param plugin the Plugin
-     * @return The collection which contains the data of all the appointment
-     *         objects
+     * Load the data of all the appointment objects and returns them as a collection
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return The collection which contains the data of all the appointment objects
      */
     List<Appointment> selectAppointmentsList( Plugin plugin );
 
     /**
-     * Load the data of appointment objects associated with a given form and
-     * returns them in a collection
-     * @param nIdForm the id of the form
-     * @param plugin the Plugin
+     * Load the data of appointment objects associated with a given form and returns them in a collection
+     * 
+     * @param nIdForm
+     *            the id of the form
+     * @param plugin
+     *            the Plugin
      * @return the collection which contains the data of appointment objects
      */
     List<Appointment> selectAppointmentsListByIdForm( int nIdForm, Plugin plugin );
 
     /**
      * Get the list of appointments matching a given filter
-     * @param appointmentFilter The filter appointments must match
-     * @param plugin The plugin
+     * 
+     * @param appointmentFilter
+     *            The filter appointments must match
+     * @param plugin
+     *            The plugin
      * @return The list of appointments that match the given filter
      */
     List<Appointment> selectAppointmentListByFilter( AppointmentFilter appointmentFilter, Plugin plugin );
 
     /**
      * Get the list of ids of appointments matching a given filter
-     * @param appointmentFilter The filter appointments must match
-     * @param plugin The plugin
+     * 
+     * @param appointmentFilter
+     *            The filter appointments must match
+     * @param plugin
+     *            The plugin
      * @return The list of ids of appointments that match the given filter
      */
     List<Integer> selectAppointmentIdByFilter( AppointmentFilter appointmentFilter, Plugin plugin );
 
     /**
      * Get a list of appointments from their ids
-     * @param listIdAppointments The list of ids of appointments to get
-     * @param strOrderBy The name of the column to sort rows
-     * @param bSortAsc True to sort ascending, false otherwise
-     * @param plugin The plugin
+     * 
+     * @param listIdAppointments
+     *            The list of ids of appointments to get
+     * @param strOrderBy
+     *            The name of the column to sort rows
+     * @param bSortAsc
+     *            True to sort ascending, false otherwise
+     * @param plugin
+     *            The plugin
      * @return The list of appointments which ids are given in parameters
      */
-    List<Appointment> selectAppointmentListById( List<Integer> listIdAppointments, String strOrderBy, boolean bSortAsc,
-        Plugin plugin );
+    List<Appointment> selectAppointmentListById( List<Integer> listIdAppointments, String strOrderBy, boolean bSortAsc, Plugin plugin );
 
     /**
-     * Get the number of appointment of a given date and associated with a given
-     * form
-     * @param dateAppointment The date of appointments to count
-     * @param nIdForm The id of the appointment form
-     * @param plugin The plugin
+     * Get the number of appointment of a given date and associated with a given form
+     * 
+     * @param dateAppointment
+     *            The date of appointments to count
+     * @param nIdForm
+     *            The id of the appointment form
+     * @param plugin
+     *            The plugin
      * @return the number of appointments, or 0 if no appointment was found
      */
     int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm, Plugin plugin );
@@ -138,50 +164,68 @@ public interface IAppointmentDAO
 
     /**
      * Associates a response to an appointment
-     * @param nIdAppointment The id of the appointment
-     * @param nIdResponse The id of the response
-     * @param plugin The plugin
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     * @param nIdResponse
+     *            The id of the response
+     * @param plugin
+     *            The plugin
      */
     void insertAppointmentResponse( int nIdAppointment, int nIdResponse, Plugin plugin );
 
     /**
      * Get the list of id of responses associated with an appointment
-     * @param nIdAppointment the id of the appointment
-     * @param plugin the plugin
+     * 
+     * @param nIdAppointment
+     *            the id of the appointment
+     * @param plugin
+     *            the plugin
      * @return the list of responses, or an empty list if no response was found
      */
     List<Integer> findListIdResponse( int nIdAppointment, Plugin plugin );
 
     /**
      * Remove the association between an appointment and responses
-     * @param nIdAppointment The id of the appointment
-     * @param plugin The plugin
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     * @param plugin
+     *            The plugin
      */
     void deleteAppointmentResponse( int nIdAppointment, Plugin plugin );
 
     /**
-     * Get the number of appointments associated with a given form and with a
-     * date after a given date
-     * @param nIdForm The id of the form
-     * @param date The minimum date of appointments to consider
+     * Get the number of appointments associated with a given form and with a date after a given date
+     * 
+     * @param nIdForm
+     *            The id of the form
+     * @param date
+     *            The minimum date of appointments to consider
      * @return The number of appointments associated with the form
-     * @param plugin The plugin
+     * @param plugin
+     *            The plugin
      */
     int countAppointmentsByIdForm( int nIdForm, Date date, Plugin plugin );
 
     /**
      * Remove an appointment responses from the id of a response.
-     * @param nIdResponse The id of the response
-     * @param plugin The plugin
+     * 
+     * @param nIdResponse
+     *            The id of the response
+     * @param plugin
+     *            The plugin
      */
     void removeAppointmentResponsesByIdResponse( int nIdResponse, Plugin plugin );
 
     /**
      * Find the id of the appointment associated with a given response
-     * @param nIdResponse The id of the response
-     * @param plugin The plugin
-     * @return The id of the appointment, or 0 if no appointment is associated
-     *         with he given response.
+     * 
+     * @param nIdResponse
+     *            The id of the response
+     * @param plugin
+     *            The plugin
+     * @return The id of the appointment, or 0 if no appointment is associated with he given response.
      */
     int findIdAppointmentByIdResponse( int nIdResponse, Plugin plugin );
 }

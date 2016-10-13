@@ -53,103 +53,112 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
- * This class provides instances management methods (create, find, ...) for
- * Appointment objects
+ * This class provides instances management methods (create, find, ...) for Appointment objects
  */
 public final class AppointmentHome
 {
     // Static variable pointed at the DAO instance
     private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance(  );
+    private static AppointmentFormCacheService _cacheService = AppointmentFormCacheService.getInstance( );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private AppointmentHome(  )
+    private AppointmentHome( )
     {
     }
 
     /**
      * Create an instance of the appointment class
-     * @param appointment The instance of the Appointment which contains the
-     *            informations to store
-     * @return The instance of appointment which has been created with its
-     *         primary key.
+     * 
+     * @param appointment
+     *            The instance of the Appointment which contains the informations to store
+     * @return The instance of appointment which has been created with its primary key.
      */
     public static Appointment create( Appointment appointment )
     {
         _dao.insert( appointment, _plugin );
 
         // We update the number of free places of the day
-        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
-        AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay(  ) );
+        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+        AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay( ) );
 
-        //2016-06-06, for now used for solr indexing
-        NotifyAppointmentCreated(slot.getIdSlot());
+        // 2016-06-06, for now used for solr indexing
+        NotifyAppointmentCreated( slot.getIdSlot( ) );
 
         return appointment;
     }
 
     /**
      * Notify listeners, for example indexers
-     * @param nSlotId The slot id
+     * 
+     * @param nSlotId
+     *            The slot id
      */
-    private static void NotifyAppointmentCreated(int nSlotId) {
+    private static void NotifyAppointmentCreated( int nSlotId )
+    {
         Collection<IAppointmentCreationListener> listeners = SpringContextService.getBeansOfType( IAppointmentCreationListener.class );
-        for (IAppointmentCreationListener listener: listeners) {
+        for ( IAppointmentCreationListener listener : listeners )
+        {
             listener.onAppointmentCreated( nSlotId );
         }
     }
 
     /**
      * Notify listeners, for example indexers
-     * @param nSlotId The slot id
+     * 
+     * @param nSlotId
+     *            The slot id
      */
-    private static void NotifyAppointmentModified(int nSlotId) {
+    private static void NotifyAppointmentModified( int nSlotId )
+    {
         Collection<IAppointmentCreationListener> listeners = SpringContextService.getBeansOfType( IAppointmentCreationListener.class );
-        for (IAppointmentCreationListener listener: listeners) {
+        for ( IAppointmentCreationListener listener : listeners )
+        {
             listener.onAppointmentCreated( nSlotId );
         }
     }
 
     /**
      * Update of the appointment which is specified in parameter
-     * @param appointment The instance of the Appointment which contains the
-     *            data to store
+     * 
+     * @param appointment
+     *            The instance of the Appointment which contains the data to store
      */
     public static void update( Appointment appointment )
     {
-        Appointment appointmentFromDb = findByPrimaryKey( appointment.getIdAppointment(  ) );
+        Appointment appointmentFromDb = findByPrimaryKey( appointment.getIdAppointment( ) );
 
         _dao.store( appointment, _plugin );
 
         // If the status changed, we check if we need to update the number of free places of the associated day
-        if ( appointment.getStatus(  ) != appointmentFromDb.getStatus(  ) )
+        if ( appointment.getStatus( ) != appointmentFromDb.getStatus( ) )
         {
-            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
-            if ( ( appointmentFromDb.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) &&
-                    ( appointment.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) )
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+            if ( ( appointmentFromDb.getStatus( ) != Appointment.Status.STATUS_UNRESERVED.getValeur( ) )
+                    && ( appointment.getStatus( ) == Appointment.Status.STATUS_UNRESERVED.getValeur( ) ) )
             {
-                AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );
+                AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay( ) );
             }
-            else if ( ( appointmentFromDb.getStatus(  ) == Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) &&
-                    ( appointment.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) ) )
-            {
-                AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay(  ) );
-            }
-            //2016-06-06, for now used for solr indexing
-            NotifyAppointmentModified(slot.getIdSlot());
+            else
+                if ( ( appointmentFromDb.getStatus( ) == Appointment.Status.STATUS_UNRESERVED.getValeur( ) )
+                        && ( appointment.getStatus( ) != Appointment.Status.STATUS_UNRESERVED.getValeur( ) ) )
+                {
+                    AppointmentDayHome.decrementDayFreePlaces( slot.getIdDay( ) );
+                }
+            // 2016-06-06, for now used for solr indexing
+            NotifyAppointmentModified( slot.getIdSlot( ) );
         }
 
     }
 
     /**
-     * Remove the appointment whose identifier is specified in parameter, and
-     * removed any associated response
-     * @param nAppointmentId The appointment Id
+     * Remove the appointment whose identifier is specified in parameter, and removed any associated response
+     * 
+     * @param nAppointmentId
+     *            The appointment Id
      */
     public static void remove( int nAppointmentId )
     {
@@ -165,22 +174,23 @@ public final class AppointmentHome
         _dao.deleteAppointmentResponse( nAppointmentId, _plugin );
         _dao.delete( nAppointmentId, _plugin );
 
-        if ( appointment.getStatus(  ) != Appointment.Status.STATUS_UNRESERVED.getValeur(  ) )
+        if ( appointment.getStatus( ) != Appointment.Status.STATUS_UNRESERVED.getValeur( ) )
         {
-            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot(  ) );
-            AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay(  ) );
-            //2016-06-06, for now used for solr indexing
-            NotifyAppointmentModified(slot.getIdSlot());
+            AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
+            AppointmentDayHome.incrementDayFreePlaces( slot.getIdDay( ) );
+            // 2016-06-06, for now used for solr indexing
+            NotifyAppointmentModified( slot.getIdSlot( ) );
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
-     * Returns an instance of a appointment whose identifier is specified in
-     * parameter
-     * @param nKey The appointment primary key
+     * Returns an instance of a appointment whose identifier is specified in parameter
+     * 
+     * @param nKey
+     *            The appointment primary key
      * @return an instance of Appointment
      */
     public static Appointment findByPrimaryKey( int nKey )
@@ -189,21 +199,22 @@ public final class AppointmentHome
     }
 
     /**
-     * Load the data of all the appointment objects and returns them in form of
-     * a collection
-     * @return the collection which contains the data of all the appointment
-     *         objects
+     * Load the data of all the appointment objects and returns them in form of a collection
+     * 
+     * @return the collection which contains the data of all the appointment objects
      */
-    public static List<Appointment> getAppointmentsList(  )
+    public static List<Appointment> getAppointmentsList( )
     {
         return _dao.selectAppointmentsList( _plugin );
     }
 
     /**
-     * Get the number of appointments associated with a given form and with a
-     * date after a given date
-     * @param nIdForm The id of the form
-     * @param date The minimum date of appointments to consider
+     * Get the number of appointments associated with a given form and with a date after a given date
+     * 
+     * @param nIdForm
+     *            The id of the form
+     * @param date
+     *            The minimum date of appointments to consider
      * @return The number of appointments associated with the form
      */
     public static int countAppointmentsByIdForm( int nIdForm, Date date )
@@ -212,9 +223,10 @@ public final class AppointmentHome
     }
 
     /**
-     * Load the data of appointment objects associated with a given form and
-     * returns them in a collection
-     * @param nIdForm the id of the form
+     * Load the data of appointment objects associated with a given form and returns them in a collection
+     * 
+     * @param nIdForm
+     *            the id of the form
      * @return the collection which contains the data of appointment objects
      */
     public static List<Appointment> getAppointmentsListByIdForm( int nIdForm )
@@ -224,7 +236,9 @@ public final class AppointmentHome
 
     /**
      * Get the list of appointments matching a given filter
-     * @param appointmentFilter The filter appointments must match
+     * 
+     * @param appointmentFilter
+     *            The filter appointments must match
      * @return The list of appointments that match the given filter
      */
     public static List<Appointment> getAppointmentListByFilter( AppointmentFilter appointmentFilter )
@@ -234,7 +248,9 @@ public final class AppointmentHome
 
     /**
      * Get the list of ids of appointments matching a given filter
-     * @param appointmentFilter The filter appointments must match
+     * 
+     * @param appointmentFilter
+     *            The filter appointments must match
      * @return The list of ids of appointments that match the given filter
      */
     public static List<Integer> getAppointmentIdByFilter( AppointmentFilter appointmentFilter )
@@ -244,33 +260,39 @@ public final class AppointmentHome
 
     /**
      * Get a list of appointments from their ids
-     * @param listIdAppointments The list of ids of appointments to get
+     * 
+     * @param listIdAppointments
+     *            The list of ids of appointments to get
      * @return The list of appointments which ids are given in parameters
      */
     public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments )
     {
-        return _dao.selectAppointmentListById( listIdAppointments, AppointmentFilter.CONSTANT_DEFAULT_ORDER_BY, true,
-            _plugin );
+        return _dao.selectAppointmentListById( listIdAppointments, AppointmentFilter.CONSTANT_DEFAULT_ORDER_BY, true, _plugin );
     }
 
     /**
      * Get a list of appointments from their ids
-     * @param listIdAppointments The list of ids of appointments to get
-     * @param strOrderBy The name of the column to sort rows
-     * @param bSortAsc True to sort ascending, false otherwise
+     * 
+     * @param listIdAppointments
+     *            The list of ids of appointments to get
+     * @param strOrderBy
+     *            The name of the column to sort rows
+     * @param bSortAsc
+     *            True to sort ascending, false otherwise
      * @return The list of appointments which ids are given in parameters
      */
-    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments, String strOrderBy,
-        boolean bSortAsc )
+    public static List<Appointment> getAppointmentListById( List<Integer> listIdAppointments, String strOrderBy, boolean bSortAsc )
     {
         return _dao.selectAppointmentListById( listIdAppointments, strOrderBy, bSortAsc, _plugin );
     }
 
     /**
-     * Get the number of appointment of a given date and associated with a given
-     * form
-     * @param dateAppointment The date of appointments to count
-     * @param nIdForm The id of the appointment form
+     * Get the number of appointment of a given date and associated with a given form
+     * 
+     * @param dateAppointment
+     *            The date of appointments to count
+     * @param nIdForm
+     *            The id of the appointment form
      * @return the number of appointments, or 0 if no appointment was found
      */
     public static int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm )
@@ -284,8 +306,11 @@ public final class AppointmentHome
 
     /**
      * Associates a response to an appointment
-     * @param nIdAppointment The id of the appointment
-     * @param nIdResponse The id of the response
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     * @param nIdResponse
+     *            The id of the response
      */
     public static void insertAppointmentResponse( int nIdAppointment, int nIdResponse )
     {
@@ -295,7 +320,9 @@ public final class AppointmentHome
 
     /**
      * Get the list of id of responses associated with an appointment
-     * @param nIdAppointment the id of the appointment
+     * 
+     * @param nIdAppointment
+     *            the id of the appointment
      * @return the list of responses, or an empty list if no response was found
      */
     public static List<Integer> findListIdResponse( int nIdAppointment )
@@ -318,13 +345,15 @@ public final class AppointmentHome
 
     /**
      * Get the list of responses associated with an appointment
-     * @param nIdAppointment the id of the appointment
+     * 
+     * @param nIdAppointment
+     *            the id of the appointment
      * @return the list of responses, or an empty list if no response was found
      */
     public static List<Response> findListResponse( int nIdAppointment )
     {
         List<Integer> listIdResponse = findListIdResponse( nIdAppointment );
-        List<Response> listResponse = new ArrayList<Response>( listIdResponse.size(  ) );
+        List<Response> listResponse = new ArrayList<Response>( listIdResponse.size( ) );
 
         for ( Integer nIdResponse : listIdResponse )
         {
@@ -336,9 +365,10 @@ public final class AppointmentHome
 
     /**
      * Find the id of the appointment associated with a given response
-     * @param nIdResponse The id of the response
-     * @return The id of the appointment, or 0 if no appointment is associated
-     *         with he given response.
+     * 
+     * @param nIdResponse
+     *            The id of the response
+     * @return The id of the appointment, or 0 if no appointment is associated with he given response.
      */
     public static int findIdAppointmentByIdResponse( int nIdResponse )
     {
@@ -347,7 +377,9 @@ public final class AppointmentHome
 
     /**
      * Remove the association between an appointment and responses
-     * @param nIdAppointment The id of the appointment
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
      */
     public static void removeAppointmentResponse( int nIdAppointment )
     {
@@ -357,21 +389,23 @@ public final class AppointmentHome
 
     /**
      * Remove every appointment responses associated with a given entry.
-     * @param nIdEntry The id of the entry
+     * 
+     * @param nIdEntry
+     *            The id of the entry
      */
     public static void removeResponsesByIdEntry( int nIdEntry )
     {
-        ResponseFilter filter = new ResponseFilter(  );
+        ResponseFilter filter = new ResponseFilter( );
         filter.setIdEntry( nIdEntry );
 
         List<Response> listResponses = ResponseHome.getResponseList( filter );
 
         for ( Response response : listResponses )
         {
-            _dao.removeAppointmentResponsesByIdResponse( response.getIdResponse(  ), _plugin );
-            ResponseHome.remove( response.getIdResponse(  ) );
+            _dao.removeAppointmentResponsesByIdResponse( response.getIdResponse( ), _plugin );
+            ResponseHome.remove( response.getIdResponse( ) );
         }
 
-        _cacheService.resetCache(  );
+        _cacheService.resetCache( );
     }
 }

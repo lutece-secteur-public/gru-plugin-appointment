@@ -61,7 +61,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import javax.validation.ConstraintViolation;
 
-
 /**
  * This class provides the user interface to manage calendar templates
  */
@@ -146,7 +145,9 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
     /**
      * Get the page to manage calendar templates.
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The HTML code to display
      */
     @View( value = VIEW_MANAGE_CALENDAR_TEMPLATES, defaultView = true )
@@ -156,29 +157,31 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
         if ( _dataTableManager == null )
         {
-            _dataTableManager = new DataTableManager<CalendarTemplate>( getViewFullUrl( VIEW_MANAGE_CALENDAR_TEMPLATES ),
-                    null, AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 ), true );
+            _dataTableManager = new DataTableManager<CalendarTemplate>( getViewFullUrl( VIEW_MANAGE_CALENDAR_TEMPLATES ), null,
+                    AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 ), true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_TITLE, PROPERTY_TITLE, true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_DESCRIPTION, PROPERTY_DESCRIPTION, true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_TEMPLATE_PATH, PROPERTY_TEMPLATE_PATH, true );
             _dataTableManager.addActionColumn( MESSAGE_COLUMN_TITLE_ACTIONS );
         }
 
-        _dataTableManager.filterSortAndPaginate( request, CalendarTemplateHome.findAll(  ) );
+        _dataTableManager.filterSortAndPaginate( request, CalendarTemplateHome.findAll( ) );
 
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
         model.put( MARK_DATA_TABLE_MANAGER, _dataTableManager );
 
         String strContent = getPage( MESSAGE_DEFAULT_PAGE_TITLE, TEMPLATE_MANAGE_CALENDAR_TEMPLATES, model );
 
-        _dataTableManager.clearItems(  );
+        _dataTableManager.clearItems( );
 
         return strContent;
     }
 
     /**
      * Get the page to create or modify an existing template
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The page to create or modify an existing template
      */
     @View( VIEW_CREATE_MODIFY_TEMPLATE )
@@ -197,79 +200,77 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
             if ( _template == null )
             {
                 // Otherwise, we create a new template
-                _template = new CalendarTemplate(  );
+                _template = new CalendarTemplate( );
             }
         }
 
-        Map<String, Object> model = getModel(  );
+        Map<String, Object> model = getModel( );
         model.put( MARK_TEMPLATE, _template );
 
-        String strCalendarTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_FOLDER_CALENDAR_TEMPLATES,
-                StringUtils.EMPTY );
+        String strCalendarTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_FOLDER_CALENDAR_TEMPLATES, StringUtils.EMPTY );
 
-        File calendarTemplatesFolder = new File( AppPathService.getWebAppPath(  ) + CONSTANT_TEMPLATE_FOLDER +
-                strCalendarTemplatesFolder );
+        File calendarTemplatesFolder = new File( AppPathService.getWebAppPath( ) + CONSTANT_TEMPLATE_FOLDER + strCalendarTemplatesFolder );
 
-        ReferenceList refListTemplates = new ReferenceList(  );
+        ReferenceList refListTemplates = new ReferenceList( );
         refListTemplates.addItem( StringUtils.EMPTY, StringUtils.EMPTY );
 
-        if ( calendarTemplatesFolder.exists(  ) )
+        if ( calendarTemplatesFolder.exists( ) )
         {
-            if ( calendarTemplatesFolder.isDirectory(  ) )
+            if ( calendarTemplatesFolder.isDirectory( ) )
             {
-                for ( File file : calendarTemplatesFolder.listFiles(  ) )
+                for ( File file : calendarTemplatesFolder.listFiles( ) )
                 {
-                    refListTemplates.addItem( strCalendarTemplatesFolder + file.getName(  ), file.getName(  ) );
+                    refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
                 }
             }
             else
             {
                 // If the specified folder is a file, we add that file to the reference list
-                refListTemplates.addItem( strCalendarTemplatesFolder + calendarTemplatesFolder.getName(  ),
-                    calendarTemplatesFolder.getName(  ) );
+                refListTemplates.addItem( strCalendarTemplatesFolder + calendarTemplatesFolder.getName( ), calendarTemplatesFolder.getName( ) );
             }
         }
 
         model.put( MARK_REF_LIST_TEMPLATES, refListTemplates );
 
-        return getPage( ( _template.getId(  ) > 0 ) ? MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE
-                                                    : MESSAGE_CREATE_TEMPLATE_PAGE_TITLE,
-            TEMPLATE_CREATE_MODIFY_CALENDAR_TEMPLATE, model );
+        return getPage( ( _template.getId( ) > 0 ) ? MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE : MESSAGE_CREATE_TEMPLATE_PAGE_TITLE,
+                TEMPLATE_CREATE_MODIFY_CALENDAR_TEMPLATE, model );
     }
 
     /**
      * Do the creation or the modification of a calendar template
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     @Action( ACTION_CREATE_MODIFY_TEMPLATE )
     public String doCreateModifyTemplate( HttpServletRequest request )
     {
         // We reset the session template to prevent collisions with any other tab or page
-        _template = new CalendarTemplate(  );
+        _template = new CalendarTemplate( );
         populate( _template, request );
 
         Set<ConstraintViolation<CalendarTemplate>> listErrors = validate( _template );
 
-        if ( ( listErrors != null ) && ( listErrors.size(  ) > 0 ) )
+        if ( ( listErrors != null ) && ( listErrors.size( ) > 0 ) )
         {
             for ( ConstraintViolation<CalendarTemplate> error : listErrors )
             {
-                addError( error.getMessage(  ) );
+                addError( error.getMessage( ) );
             }
 
             return redirectView( request, VIEW_CREATE_MODIFY_TEMPLATE );
         }
 
-        if ( _template.getId(  ) > 0 )
+        if ( _template.getId( ) > 0 )
         {
             CalendarTemplateHome.update( _template );
-            addInfo( MESSAGE_INFO_TEMPLATE_UPDATED, getLocale(  ) );
+            addInfo( MESSAGE_INFO_TEMPLATE_UPDATED, getLocale( ) );
         }
         else
         {
             CalendarTemplateHome.create( _template );
-            addInfo( MESSAGE_INFO_TEMPLATE_CREATED, getLocale(  ) );
+            addInfo( MESSAGE_INFO_TEMPLATE_CREATED, getLocale( ) );
         }
 
         return redirectView( request, VIEW_MANAGE_CALENDAR_TEMPLATES );
@@ -277,7 +278,9 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
     /**
      * Get the confirmation page before removing a template
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     @View( VIEW_CONFIRM_REMOVE_TEMPLATE )
@@ -294,13 +297,14 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
         urlItem.addParameter( PARAMETER_ID_TEMPLATE, strIdTemplate );
 
         return redirect( request,
-            AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_TEMPLATE, urlItem.getUrl(  ),
-                AdminMessage.TYPE_CONFIRMATION ) );
+                AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_TEMPLATE, urlItem.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
     }
 
     /**
      * Do remove a template
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     @Action( ACTION_REMOVE_TEMPLATE )
@@ -315,14 +319,16 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
         CalendarTemplateHome.delete( Integer.parseInt( strIdTemplate ) );
 
-        addInfo( MESSAGE_INFO_TEMPLATE_REMOVED, getLocale(  ) );
+        addInfo( MESSAGE_INFO_TEMPLATE_REMOVED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_CALENDAR_TEMPLATES );
     }
 
     /**
      * Do download a template
-     * @param request The request
+     * 
+     * @param request
+     *            The request
      * @return The next URL to redirect to
      */
     @Action( ACTION_DOWNLOAD_TEMPLATE )
@@ -330,27 +336,25 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
     {
         String strTemplate = request.getParameter( PARAMETER_TEMPLACE_PATH );
 
-        String strCalendarTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_FOLDER_CALENDAR_TEMPLATES,
-                StringUtils.EMPTY );
+        String strCalendarTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_FOLDER_CALENDAR_TEMPLATES, StringUtils.EMPTY );
 
-        if ( StringUtils.isNotEmpty( strTemplate ) && strTemplate.startsWith( strCalendarTemplatesFolder ) &&
-                !strTemplate.contains( CONSTANT_FOLDER_UP ) )
+        if ( StringUtils.isNotEmpty( strTemplate ) && strTemplate.startsWith( strCalendarTemplatesFolder ) && !strTemplate.contains( CONSTANT_FOLDER_UP ) )
         {
-            File file = new File( AppPathService.getWebAppPath(  ) + CONSTANT_TEMPLATE_FOLDER + strTemplate );
-            byte[] fileContent;
+            File file = new File( AppPathService.getWebAppPath( ) + CONSTANT_TEMPLATE_FOLDER + strTemplate );
+            byte [ ] fileContent;
 
             try
             {
                 fileContent = FileUtils.readFileToByteArray( file );
             }
-            catch ( IOException e )
+            catch( IOException e )
             {
-                AppLogService.error( e.getMessage(  ), e );
+                AppLogService.error( e.getMessage( ), e );
 
                 return redirectView( request, VIEW_MANAGE_CALENDAR_TEMPLATES );
             }
 
-            download( fileContent, file.getName(  ), "text/plain" );
+            download( fileContent, file.getName( ), "text/plain" );
 
             return null;
         }

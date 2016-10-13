@@ -35,10 +35,8 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.io.Serializable;
 
-
 /**
- * Slot for an appointment in a day. The slot may have 3 states : free,
- * partially free or occupied.
+ * Slot for an appointment in a day. The slot may have 3 states : free, partially free or occupied.
  */
 public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializable, Cloneable
 {
@@ -58,18 +56,22 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
     private int _nEndingMinute;
     private boolean _bIsEnabled;
     private int _NbRDV;
+
     /**
      * Get the id of the slot
+     * 
      * @return The id of the slot
      */
-    public int getIdSlot(  )
+    public int getIdSlot( )
     {
         return _nIdSlot;
     }
 
     /**
      * Set the id of the slot
-     * @param nIdSlot The id of the slot
+     * 
+     * @param nIdSlot
+     *            The id of the slot
      */
     public void setIdSlot( int nIdSlot )
     {
@@ -78,16 +80,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the id of the form
+     * 
      * @return The id of the form
      */
-    public int getIdForm(  )
+    public int getIdForm( )
     {
         return _nIdForm;
     }
 
     /**
      * Set the id of the form
-     * @param nIdForm The id of the form
+     * 
+     * @param nIdForm
+     *            The id of the form
      */
     public void setIdForm( int nIdForm )
     {
@@ -95,19 +100,20 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
     }
 
     /**
-     * Get the id of the day, or 0 if this slot is not associated with a day but
-     * only with a form
+     * Get the id of the day, or 0 if this slot is not associated with a day but only with a form
+     * 
      * @return The of the day
      */
-    public int getIdDay(  )
+    public int getIdDay( )
     {
         return _nIdDay;
     }
 
     /**
      * Set the id of the day
-     * @param nIdDay The of the day, or 0 if this slot is not associated with a
-     *            day but only with a form
+     * 
+     * @param nIdDay
+     *            The of the day, or 0 if this slot is not associated with a day but only with a form
      */
     public void setIdDay( int nIdDay )
     {
@@ -116,18 +122,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the number of the day in the week.
-     * @return The number of the day in the week. Returns 1 for Monday, 2 for
-     *         Tuesday, ..., 7 for Sunday.
+     * 
+     * @return The number of the day in the week. Returns 1 for Monday, 2 for Tuesday, ..., 7 for Sunday.
      */
-    public int getDayOfWeek(  )
+    public int getDayOfWeek( )
     {
         return _nDayOfWeek;
     }
 
     /**
      * Set the day of the week
-     * @param nDayOfWeek The number of the day in the week : 1 for Monday, 2 for
-     *            Tuesday, ..., 7 for Sunday.
+     * 
+     * @param nDayOfWeek
+     *            The number of the day in the week : 1 for Monday, 2 for Tuesday, ..., 7 for Sunday.
      */
     public void setDayOfWeek( int nDayOfWeek )
     {
@@ -136,16 +143,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the number of places for this slot
+     * 
      * @return The number of places for this slot
      */
-    public int getNbPlaces(  )
+    public int getNbPlaces( )
     {
         return _nNbPlaces;
     }
 
     /**
      * Set the number of places for this slot
-     * @param nNbPlaces The number of places for this slot
+     * 
+     * @param nNbPlaces
+     *            The number of places for this slot
      */
     public void setNbPlaces( int nNbPlaces )
     {
@@ -154,16 +164,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the number of free places for this slot
+     * 
      * @return The number of free places for this slot
      */
-    public int getNbFreePlaces(  )
+    public int getNbFreePlaces( )
     {
         return _nNbFreePlaces;
     }
 
     /**
      * Set the number of free places for this slot
-     * @param nNbFreePlaces The number of free places for this slot
+     * 
+     * @param nNbFreePlaces
+     *            The number of free places for this slot
      */
     public void setNbFreePlaces( int nNbFreePlaces )
     {
@@ -172,16 +185,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the starting hour of this slot
+     * 
      * @return The starting hour of this slot
      */
-    public int getStartingHour(  )
+    public int getStartingHour( )
     {
         return _nStartingHour;
     }
 
     /**
      * Set the starting hour of this slot
-     * @param nStartingHour The starting hour of this slot
+     * 
+     * @param nStartingHour
+     *            The starting hour of this slot
      */
     public void setStartingHour( int nStartingHour )
     {
@@ -190,16 +206,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the starting minute of this slot
+     * 
      * @return The starting minute of this slot
      */
-    public int getStartingMinute(  )
+    public int getStartingMinute( )
     {
         return _nStartingMinute;
     }
 
     /**
      * Set the starting minute of this slot
-     * @param nStartingMinute The starting minute of this slot
+     * 
+     * @param nStartingMinute
+     *            The starting minute of this slot
      */
     public void setStartingMinute( int nStartingMinute )
     {
@@ -208,16 +227,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the ending hour of this slot
+     * 
      * @return The ending hour of this slot
      */
-    public int getEndingHour(  )
+    public int getEndingHour( )
     {
         return _nEndingHour;
     }
 
     /**
      * Set the ending hour of this slot
-     * @param nEndingHour The ending hour of this slot
+     * 
+     * @param nEndingHour
+     *            The ending hour of this slot
      */
     public void setEndingHour( int nEndingHour )
     {
@@ -226,16 +248,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Get the ending minute of this slot
+     * 
      * @return The ending minute of this slot
      */
-    public int getEndingMinute(  )
+    public int getEndingMinute( )
     {
         return _nEndingMinute;
     }
 
     /**
      * Set the ending minute of this slot
-     * @param nEndingMinute The ending minute of this slot
+     * 
+     * @param nEndingMinute
+     *            The ending minute of this slot
      */
     public void setEndingMinute( int nEndingMinute )
     {
@@ -244,17 +269,19 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 
     /**
      * Check if this slot is enabled for appointments or not
+     * 
      * @return True if this slot is enabled, false otherwise
      */
-    public boolean getIsEnabled(  )
+    public boolean getIsEnabled( )
     {
         return _bIsEnabled;
     }
 
     /**
      * Enable or disable this slot for appointments
-     * @param bIsEnabled True to enable this slot for appointments, false
-     *            otherwise
+     * 
+     * @param bIsEnabled
+     *            True to enable this slot for appointments, false otherwise
      */
     public void setIsEnabled( boolean bIsEnabled )
     {
@@ -281,45 +308,44 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
      * {@inheritDoc}
      */
     @Override
-    public int hashCode(  )
+    public int hashCode( )
     {
-        return ( ( ( ( ( ( getStartingHour(  ) * 60 ) + getStartingMinute(  ) ) * 10 ) + getDayOfWeek(  ) ) * 1000 ) +
-        ( getEndingHour(  ) * 60 ) + getEndingMinute(  ) );
+        return ( ( ( ( ( ( getStartingHour( ) * 60 ) + getStartingMinute( ) ) * 10 ) + getDayOfWeek( ) ) * 1000 ) + ( getEndingHour( ) * 60 ) + getEndingMinute( ) );
     }
 
     /**
-     * Compare a slot to another one. Slots are compared by theire staring hour,
-     * starting minute, ending hour, ending minute and day of week.
-     * @param o Slot to compare this slot to
-     * @return 1 of the given slot is greater that the current one, -1 if the
-     *         other slot is lower than the current one, 0 if they are equals
+     * Compare a slot to another one. Slots are compared by theire staring hour, starting minute, ending hour, ending minute and day of week.
+     * 
+     * @param o
+     *            Slot to compare this slot to
+     * @return 1 of the given slot is greater that the current one, -1 if the other slot is lower than the current one, 0 if they are equals
      */
     @Override
     public int compareTo( AppointmentSlot o )
     {
-        if ( getStartingHour(  ) != o.getStartingHour(  ) )
+        if ( getStartingHour( ) != o.getStartingHour( ) )
         {
-            return ( getStartingHour(  ) > o.getStartingHour(  ) ) ? 1 : ( -1 );
+            return ( getStartingHour( ) > o.getStartingHour( ) ) ? 1 : ( -1 );
         }
 
-        if ( getStartingMinute(  ) != o.getStartingMinute(  ) )
+        if ( getStartingMinute( ) != o.getStartingMinute( ) )
         {
-            return ( getStartingMinute(  ) > o.getStartingMinute(  ) ) ? 1 : ( -1 );
+            return ( getStartingMinute( ) > o.getStartingMinute( ) ) ? 1 : ( -1 );
         }
 
-        if ( getDayOfWeek(  ) != o.getDayOfWeek(  ) )
+        if ( getDayOfWeek( ) != o.getDayOfWeek( ) )
         {
-            return ( getDayOfWeek(  ) > o.getDayOfWeek(  ) ) ? 1 : ( -1 );
+            return ( getDayOfWeek( ) > o.getDayOfWeek( ) ) ? 1 : ( -1 );
         }
 
-        if ( getEndingHour(  ) != o.getEndingHour(  ) )
+        if ( getEndingHour( ) != o.getEndingHour( ) )
         {
-            return ( getEndingHour(  ) > o.getEndingHour(  ) ) ? 1 : ( -1 );
+            return ( getEndingHour( ) > o.getEndingHour( ) ) ? 1 : ( -1 );
         }
 
-        if ( getEndingMinute(  ) != o.getEndingMinute(  ) )
+        if ( getEndingMinute( ) != o.getEndingMinute( ) )
         {
-            return ( getEndingMinute(  ) > o.getEndingMinute(  ) ) ? 1 : ( -1 );
+            return ( getEndingMinute( ) > o.getEndingMinute( ) ) ? 1 : ( -1 );
         }
 
         return 0;
@@ -329,13 +355,13 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
      * {@inheritDoc}
      */
     @Override
-    public AppointmentSlot clone(  )
+    public AppointmentSlot clone( )
     {
         try
         {
-            return (AppointmentSlot) super.clone(  );
+            return (AppointmentSlot) super.clone( );
         }
-        catch ( CloneNotSupportedException e )
+        catch( CloneNotSupportedException e )
         {
             // Do nothing
         }
@@ -343,23 +369,26 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString(  )
+    public String toString( )
     {
-        return "AppointmentSlot [_nIdSlot=" + _nIdSlot + ", _nIdForm=" + _nIdForm + ", _nIdDay=" + _nIdDay +
-        ", _nDayOfWeek=" + _nDayOfWeek + ", _nNbPlaces=" + _nNbPlaces + ", _nNbFreePlaces=" + _nNbFreePlaces +
-        ", _nStartingHour=" + _nStartingHour + ", _nStartingMinute=" + _nStartingMinute + ", _nEndingHour=" +
-        _nEndingHour + ", _nEndingMinute=" + _nEndingMinute + ", _bIsEnabled=" + _bIsEnabled + "]";
+        return "AppointmentSlot [_nIdSlot=" + _nIdSlot + ", _nIdForm=" + _nIdForm + ", _nIdDay=" + _nIdDay + ", _nDayOfWeek=" + _nDayOfWeek + ", _nNbPlaces="
+                + _nNbPlaces + ", _nNbFreePlaces=" + _nNbFreePlaces + ", _nStartingHour=" + _nStartingHour + ", _nStartingMinute=" + _nStartingMinute
+                + ", _nEndingHour=" + _nEndingHour + ", _nEndingMinute=" + _nEndingMinute + ", _bIsEnabled=" + _bIsEnabled + "]";
     }
 
-	public int getNbRDV() {
-		return _NbRDV;
-	}
+    public int getNbRDV( )
+    {
+        return _NbRDV;
+    }
 
-	public void setNbRDV(int nbRDV) {
-		this._NbRDV = nbRDV;
-	}
+    public void setNbRDV( int nbRDV )
+    {
+        this._NbRDV = nbRDV;
+    }
 }
