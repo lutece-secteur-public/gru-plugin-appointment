@@ -615,10 +615,12 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
         }
 
+        // An update of the day with the new values is sufficient. Why updating the day with the id day 0 ?
+        /**
         if ( day.getPeoplePerAppointment( ) != dayFromDb.getPeoplePerAppointment( ) )
         {
             AppointmentDayHome.resetDayPlaces( day, day.getIdForm( ), getDayOfWeek( day.getDate( ) ) );
-        }
+        }*/
 
         AppointmentDayHome.update( day );
 
