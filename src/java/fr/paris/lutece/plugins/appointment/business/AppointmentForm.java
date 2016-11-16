@@ -95,6 +95,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private Date _dateDateStartValidity;
     private Date _dateDateEndValidity;
     private boolean _bIsActive;
+    private boolean _bIsActiveAuthentification;
     private boolean _bDisplayTitleFo;
     private int _nNbWeeksToDisplay;
     private Date _dateDateLimit;
@@ -532,6 +533,27 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     public void setIsActive( boolean bIsActive )
     {
         _bIsActive = bIsActive;
+    }
+    
+    /**
+     * Returns the IsActiveAuthentification
+     * 
+     * @return The IsActiveAuthentification
+     */
+    public boolean getIsActiveAuthentification( )
+    {
+        return _bIsActiveAuthentification;
+    }
+
+    /**
+     * Sets the IsActiveAuthentification
+     * 
+     * @param bIsActiveAuthentification
+     *            The IsActiveAuthentification
+     */
+    public void setIsActiveAuthentification( boolean bIsActiveAuthentification )
+    {
+    	_bIsActiveAuthentification = bIsActiveAuthentification;
     }
 
     /**
