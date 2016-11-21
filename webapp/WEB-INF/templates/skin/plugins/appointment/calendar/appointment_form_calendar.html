@@ -61,7 +61,7 @@
 												<i class="glyphicon glyphicon-arrow-left">&nbsp;</i>
 											</a>
 										</#if>
-										<#if nb_week &lt; max_week>
+										<#if nb_week &lt; max_week - 1>
 											<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}">
 												<i class="glyphicon glyphicon-arrow-right">&nbsp;</i>
 											</a>
