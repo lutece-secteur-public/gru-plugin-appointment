@@ -321,10 +321,11 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The XPage to display
+     * @throws UserNotSignedException 
      */
 
     // @View( VIEW_GET_FORM )
-    public XPage getViewForm( HttpServletRequest request )
+    public XPage getViewForm( HttpServletRequest request ) throws UserNotSignedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -340,6 +341,7 @@ public class AppointmentApp extends MVCApplication
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            checkMyLuteceAuthentification(form,request);
 
             AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity( );
 
@@ -405,9 +407,10 @@ public class AppointmentApp extends MVCApplication
      *            The request
      * @return The next URL to redirect to
      * @throws SiteMessageException
+     * @throws UserNotSignedException 
      */
     @Action( ACTION_DO_VALIDATE_FORM )
-    public XPage doValidateForm( HttpServletRequest request ) throws SiteMessageException
+    public XPage doValidateForm( HttpServletRequest request ) throws SiteMessageException, UserNotSignedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
@@ -425,6 +428,7 @@ public class AppointmentApp extends MVCApplication
 
             List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            checkMyLuteceAuthentification(form,request);
             AppointmentDTO appointmentFromSession = _appointmentFormService.getAppointmentFromSession( request.getSession( ) );
             _appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
 
@@ -627,8 +631,9 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The XPage to display
+     * @throws UserNotSignedException 
      */
-    public XPage getAppointmentCalendar( HttpServletRequest request )
+    public XPage getAppointmentCalendar( HttpServletRequest request ) throws UserNotSignedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -646,7 +651,8 @@ public class AppointmentApp extends MVCApplication
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-
+            checkMyLuteceAuthentification( form, request );
+            
             if ( !listAppointmentSlotDisponiblity.isEmpty( ) )
             {
 
@@ -753,9 +759,10 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The HTML content to display or the next URL to redirect to
+     * @throws UserNotSignedException 
      */
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
-    public XPage displayRecapAppointment( HttpServletRequest request )
+    public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
         // String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
 
@@ -782,7 +789,8 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_SLOT, appointmentSlot );
 
         AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm( ) );
-
+        checkMyLuteceAuthentification( form, request );
+        
         if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
         {
             model.put( MARK_CAPTCHA, getCaptchaService( ).getHtmlCode( ) );
@@ -818,9 +826,10 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The XPage to display
+     * @throws UserNotSignedException 
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public XPage doMakeAppointment( HttpServletRequest request )
+    public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
         Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession( ) );
 
@@ -828,7 +837,8 @@ public class AppointmentApp extends MVCApplication
         {
             AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot( ), appointment.getDateAppointment( ) );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm( ) );
-
+            checkMyLuteceAuthentification( form, request );
+            
             if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
             {
                 return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
@@ -1131,9 +1141,10 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The first step of the form
+     * @throws UserNotSignedException 
      */
     @View( VIEW_APPOINTMENT_FORM_FIRST_STEP )
-    public XPage getAppointmentFormFirstStep( HttpServletRequest request )
+    public XPage getAppointmentFormFirstStep( HttpServletRequest request ) throws UserNotSignedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -1156,9 +1167,10 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The second step of the form
+     * @throws UserNotSignedException 
      */
     @View( VIEW_APPOINTMENT_FORM_SECOND_STEP )
-    public XPage getAppointmentFormSecondStep( HttpServletRequest request )
+    public XPage getAppointmentFormSecondStep( HttpServletRequest request ) throws UserNotSignedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
@@ -1750,6 +1762,48 @@ public class AppointmentApp extends MVCApplication
         {
             return nbWeekToCreate;
 
+        }
+    }
+    
+    /**
+     * check if authentification
+     * 
+     * @param form
+     *            Form
+     * @param request
+     *            HttpServletRequest
+     * @throws UserNotSignedException
+     *             exception if the form requires an authentification and the user is not logged
+     */
+    private void checkMyLuteceAuthentification( AppointmentForm form, HttpServletRequest request ) throws UserNotSignedException
+    {
+        // Try to register the user in case of external authentication
+        if ( SecurityService.isAuthenticationEnable( ) )
+        {
+            if ( SecurityService.getInstance( ).isExternalAuthentication( ) )
+            {
+                // The authentication is external
+                // Should register the user if it's not already done
+                if ( SecurityService.getInstance( ).getRegisteredUser( request ) == null )
+                {
+                    if ( ( SecurityService.getInstance( ).getRemoteUser( request ) == null ) && ( form.getIsActiveAuthentification( ) ) )
+                    {
+                        // Authentication is required to access to the portal
+                        throw new UserNotSignedException( );
+                    }
+                }
+            }
+            else
+            {
+                // If portal authentication is enabled and user is null and the requested URL
+                // is not the login URL, user cannot access to Portal
+                if ( ( form.getIsActiveAuthentification( ) ) && ( SecurityService.getInstance( ).getRegisteredUser( request ) == null )
+                        && !SecurityService.getInstance( ).isLoginUrl( request ) )
+                {
+                    // Authentication is required to access to the portal
+                    throw new UserNotSignedException( );
+                }
+            }
         }
     }
 

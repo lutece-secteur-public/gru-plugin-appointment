@@ -49,6 +49,8 @@ CREATE TABLE appointment_form (
 	longitude float NULL,
 	latitude float NULL,
 	category varchar(255) NOT NULL default '',
+	active_mylutece_authentification smallint default NULL,
+
 	PRIMARY KEY (id_form)
 );
 
