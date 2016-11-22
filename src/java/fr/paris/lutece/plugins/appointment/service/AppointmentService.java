@@ -33,6 +33,19 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang.time.DateUtils;
+
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
@@ -46,26 +59,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
-
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.commons.lang.time.DateUtils;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Service to manage calendars
@@ -1184,7 +1177,7 @@ public class AppointmentService
      * @return The unique reference of an appointment
      */
     public String computeRefAppointment( Appointment appointment )
-    {
+    {    	
         return appointment.getIdAppointment( )
                 + CryptoService.encrypt( appointment.getIdAppointment( ) + appointment.getEmail( ),
                         AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) ).substring( 0, getRefSizeRandomPart( ) );

@@ -928,7 +928,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                     else
                     {
                         AppointmentHoliDaysHome.create( date, nIdForm );
-                        addInfo( MESSAGE_INFO_ADD_DATE, getLocale( ) );
+                        addInfo(MESSAGE_INFO_ADD_DATE, getLocale( ) );
                     }
                 }
             }

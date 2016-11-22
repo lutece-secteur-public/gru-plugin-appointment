@@ -158,6 +158,17 @@ public interface IAppointmentDAO
      */
     int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm, Plugin plugin );
 
+    /*
+     * Get the form reference from an appointment
+     * 
+     * @param nIdAppointment 
+     * 			The id of the appointment
+     * @param plugin
+     * 			The plugin
+     * @return the reference
+     */
+    String getReference(int nIdAppointment, Plugin plugin );
+    
     // ----------------------------------------
     // Appointment response management
     // ----------------------------------------
