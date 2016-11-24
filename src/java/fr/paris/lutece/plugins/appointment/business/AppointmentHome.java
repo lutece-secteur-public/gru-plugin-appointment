@@ -374,17 +374,6 @@ public final class AppointmentHome
     {
         return _dao.findIdAppointmentByIdResponse( nIdResponse, _plugin );
     }
-    
-    /**
-     * Return the reference of the form of the appointment
-     * @param nIdAppointment
-     * 				The id of the appointment
-     * @return The reference
-     */
-    public static String getReference( int nIdAppointment )
-    {
-    	return _dao.getReference(nIdAppointment, _plugin);
-    }
 
     /**
      * Remove the association between an appointment and responses

@@ -157,17 +157,6 @@ public interface IAppointmentDAO
      * @return the number of appointments, or 0 if no appointment was found
      */
     int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm, Plugin plugin );
-
-    /*
-     * Get the form reference from an appointment
-     * 
-     * @param nIdAppointment 
-     * 			The id of the appointment
-     * @param plugin
-     * 			The plugin
-     * @return the reference
-     */
-    String getReference(int nIdAppointment, Plugin plugin );
     
     // ----------------------------------------
     // Appointment response management
