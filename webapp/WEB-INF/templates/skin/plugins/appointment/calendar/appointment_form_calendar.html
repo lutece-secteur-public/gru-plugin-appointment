@@ -343,7 +343,7 @@
 		
 		<#assign hasDays = false >
 		var validDays = [<#list listAvailableDays as day><#if day.isOpen && day.freePlaces &gt; 0><#if hasDays >, </#if>'${day.date}'<#assign hasDays=true></#if></#list>];
-		var hrefs = [<#list 0..form.nbWeeksToDisplay as nbWeek><#if nbWeek_index &gt; 0>, </#if>'jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nbWeek}'</#list>];
+		var hrefs = [<#list 0..max_week as nbWeek><#if nbWeek_index &gt; 0>, </#if>'jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nbWeek}'</#list>];
 		var nowTemp = new Date();
 		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
 		$("#buttonCalendarAvailableDays").datepicker({
