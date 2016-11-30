@@ -855,11 +855,19 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
 
         // Check constraints
-        /*
-         * if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) ) { if ( strForm.equals( PARAMETER_FIRST_FORM ) ) { return redirect( request,
-         * VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); } else { return redirect( request,
-         * VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); } }
-         */
+        
+         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) ) 
+         { 
+        	 if ( strForm.equals( PARAMETER_FIRST_FORM ) ) 
+        	 { 
+        		 return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); 
+        	 } 
+        	 else 
+        	 { 
+        		 return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); 
+        	 } 
+         }
+         
 
         // Check Constraint better
         try
