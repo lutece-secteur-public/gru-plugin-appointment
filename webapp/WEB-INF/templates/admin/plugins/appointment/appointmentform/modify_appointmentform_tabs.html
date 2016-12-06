@@ -3,6 +3,7 @@
 
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<@messages infos=infos errors=errors />
 		<div class="box box-primary">
 			<div class="box-header with-border">
 				<h3 class="box-title">#i18n{appointment.create_appointmentform.pageTitle}</h3>
@@ -120,11 +121,11 @@
 						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysToDisplay.help}</span>
 					</div>
 				</div>
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=true value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />				
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxByEmail' inputName='max_appointment_mail' mandatory=true value=appointmentform.maxAppointments!'0'  maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelMaxAppointments.help' />
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxWeek'    inputName='nb_weeks_limits'  mandatory=true  value=appointmentform.weeksLimits!'0'     maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelWeeksLimits.help' />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />				
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxByEmail' inputName='max_appointment_mail' mandatory=false value=appointmentform.maxAppointments!'0'  maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelMaxAppointments.help' />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxWeek'    inputName='nb_weeks_limits'  mandatory=false  value=appointmentform.weeksLimits!'0'     maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelWeeksLimits.help' />
 				
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.fromTimeSeizure' inputName='seizureDuration' mandatory=true value=appointmentform.seizureDuration!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDurationAppointments.help'  maxlength=2 />
+				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.fromTimeSeizure' inputName='seizureDuration' mandatory=false value=appointmentform.seizureDuration!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDurationAppointments.help'  maxlength=2 />
 			
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsFormStep' inputName='is_form_step' value='true' checked=appointmentform.isFormStep!false />
 				
