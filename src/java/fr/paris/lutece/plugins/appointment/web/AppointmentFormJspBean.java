@@ -520,6 +520,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
             return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
+        if ( appointmentForm.getMaximumNumberOfBookedSeats( ) > appointmentForm.getPeoplePerAppointment( ) )
+        {
+            addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) );
+
+            return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
+        }
 
         AppointmentFormHome.create( appointmentForm, _appointmentFormService.getDefaultAppointmentFormMessage( ) );
 
@@ -1059,11 +1065,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                     }
                 }
             }
-        }
-        /*
-         * if ( appointmentForm.getMaximumNumberOfBookedSeats() > appointmentForm.getPeoplePerAppointment() ) { bReturn = false; addError(
-         * MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) ); }
-         */
+        }     
 
         return bReturn;
     }
