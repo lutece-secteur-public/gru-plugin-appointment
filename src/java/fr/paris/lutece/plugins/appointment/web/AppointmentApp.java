@@ -101,6 +101,7 @@ import org.dozer.converters.DateConverter;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -208,6 +209,7 @@ public class AppointmentApp extends MVCApplication
     // Marks
     private static final String MARK_REF_APPOINTMENT = "refAppointment";
     private static final String MARK_DATE_APPOINTMENT = "dateAppointment";
+    private static final String MARK_TIME_APPOINTMENT = "timeAppointment";
     private static final String MARK_FORM_LIST = "form_list";
     private static final String MARK_FORM_HTML = "form_html";
     private static final String MARK_FORM_ERRORS = "form_errors";
@@ -977,7 +979,10 @@ public class AppointmentApp extends MVCApplication
 
         if ( appointment != null )
         {
-            model.put( MARK_DATE_APPOINTMENT, appointment.getDateAppointment( ) );
+            model.put( MARK_DATE_APPOINTMENT, appointment.getDateAppointment( ) );            
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm"); 
+            String currentTime = simpleDateFormat.format(appointment.getStartAppointment());            
+            model.put( MARK_TIME_APPOINTMENT, currentTime );
         }
         else
         {
