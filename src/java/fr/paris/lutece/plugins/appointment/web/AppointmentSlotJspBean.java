@@ -33,6 +33,37 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
@@ -64,42 +95,6 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import java.sql.Date;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * JspBean to manage calendar slots
  */
@@ -121,6 +116,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String MESSAGE_MODIFY_SLOT_PAGE_TITLE = "appointment.modifyCalendarSlots.pageTitle";
     private static final String MESSAGE_WARNING_CHANGES_APPLY_TO_ALL = "appointment.modifyCalendarSlots.warningModifiyingEndingTime";
     private static final String MESSAGE_ERROR_DAY_HAS_APPOINTMENT = "appointment.modifyCalendarSlots.errorDayHasAppointment";
+    private static final String MESSAGE_ERROR_FORM_NOT_ACTIVE = "appointment.message.error.formNotActive";
     private static final String MESSAGE_ERROR_TIME_END_BEFORE_TIME_START = "appointment.modifyCalendarSlots.errorTimeEndBeforeTimeStart";
     private static final String MESSAGE_ERROR_DURATION_MUST_BE_MULTIPLE_OF_REF_DURATION = "appointment.message.error.durationAppointmentSlotNotMultipleRef";
     private static final String MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM = "appointment.message.error.slotCanNotEndAfterDayOrForm";
@@ -928,7 +924,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
                     else
                     {
                         AppointmentHoliDaysHome.create( date, nIdForm );
-                        addInfo(MESSAGE_INFO_ADD_DATE, getLocale( ) );
+                        addInfo( MESSAGE_INFO_ADD_DATE, getLocale( ) );
                     }
                 }
             }
@@ -1224,40 +1220,54 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
             int nIdSlot = Integer.parseInt( strIdSlot );
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( nIdSlot );
-
-            if ( slot.getIdDay( ) > 0 )
+            
+            if ( slot != null )
             {
-                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
-
-                if ( day.getIsOpen( ) )
-                {
-                    // we can only change enabling of opened days
-                    slot.setIsEnabled( !slot.getIsEnabled( ) );
-                }
-            }
-            else
+	            if ( slot.getIdDay( ) > 0 )
+	            {
+	                AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
+	
+	                if ( day.getIsOpen( ) )
+	                {
+	                    // we can only change enabling of opened days
+	                    slot.setIsEnabled( !slot.getIsEnabled( ) );
+	                }
+	            }
+	            else
+	            {
+	                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm( ) );
+	
+	                if ( form.isDayOfWeekOpened( slot.getDayOfWeek( ) ) )
+	                {
+	                    // we can only change enabling of opened days
+	                    slot.setIsEnabled( !slot.getIsEnabled( ) );
+	                }
+	            }
+	
+	            AppointmentSlotHome.update( slot );
+	
+	            // even though only this slot has been modified
+	            // Notify for the whole form for simplicity
+	            AppointmentService.getService( ).notifyAppointmentFormModified( slot.getIdForm( ) );
+	
+	            if ( slot.getIdDay( ) > 0 )
+	            {
+	                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm( ), PARAMETER_NB_WEEK, nNb_week );
+	            }
+	
+	            return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS_, PARAMETER_ID_FORM, slot.getIdForm( ) );
+            } 
+            else 
             {
-                AppointmentForm form = AppointmentFormHome.findByPrimaryKey( slot.getIdForm( ) );
-
-                if ( form.isDayOfWeekOpened( slot.getDayOfWeek( ) ) )
-                {
-                    // we can only change enabling of opened days
-                    slot.setIsEnabled( !slot.getIsEnabled( ) );
-                }
+            	// form null
+            	// vérifier si le formulaire est activé
+            	AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+            	if ( ! form.getIsActive( ) )
+            	{            		
+                    addInfo( MESSAGE_ERROR_FORM_NOT_ACTIVE, getLocale( ) );                   
+                    return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );            		 
+            	}
             }
-
-            AppointmentSlotHome.update( slot );
-
-            // even though only this slot has been modified
-            // Notify for the whole form for simplicity
-            AppointmentService.getService( ).notifyAppointmentFormModified( slot.getIdForm( ) );
-
-            if ( slot.getIdDay( ) > 0 )
-            {
-                return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm( ), PARAMETER_NB_WEEK, nNb_week );
-            }
-
-            return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS_, PARAMETER_ID_FORM, slot.getIdForm( ) );
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
