@@ -1264,8 +1264,8 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             	AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
             	if ( ! form.getIsActive( ) )
             	{            		
-                    addInfo( MESSAGE_ERROR_FORM_NOT_ACTIVE, getLocale( ) );                   
-                    return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );            		 
+                    addError( MESSAGE_ERROR_FORM_NOT_ACTIVE, getLocale( ) );      
+                    return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, form.getIdForm( ), PARAMETER_NB_WEEK, nNb_week );                            		 
             	}
             }
         }
@@ -1289,11 +1289,16 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         AppointmentSlot slot;
 
         Map<String, Object> model = getModel( );
-
+        int nIdForm = 0;
+        int nNb_week = 0;
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) )
         {
-            int nIdForm = Integer.parseInt( strIdForm );
+        	nIdForm = Integer.parseInt( strIdForm );
             model.put( PARAMETER_APPOINTMENT_FORM, nIdForm );
+        }
+        if ( StringUtils.isNotEmpty( nb_week ) && StringUtils.isNumeric( nb_week ) )
+        {
+            nNb_week = Integer.parseInt( nb_week );
         }
 
         if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
@@ -1319,6 +1324,13 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
             return getPage( MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, model );
         }
+        // vérifier si le formulaire est activé
+    	AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
+    	if ( form != null && ! form.getIsActive( ) )
+    	{            		
+            addError( MESSAGE_ERROR_FORM_NOT_ACTIVE, getLocale( ) );      
+            return redirect( request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, form.getIdForm( ), PARAMETER_NB_WEEK, nNb_week );                            		 
+    	}
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
