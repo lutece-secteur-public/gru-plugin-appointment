@@ -569,11 +569,20 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             return redirect( request, getURLManageAppointmentFormDays( request, Integer.toString( day.getIdForm( ) ) ) );
         }
 
-        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm( ) );
-        List<String> listErrors = populateDay( day, form, request );
-
         AppointmentDay dayFromDb = AppointmentDayHome.findByPrimaryKey( day.getIdDay( ) );
 
+        // check closing days
+        List<Date> listClosingDays = AppointmentHoliDaysHome.findByIdForm( day.getIdForm( ) );
+        for ( Date closeDay : listClosingDays )
+        {
+            if ( DateUtils.isSameDay( closeDay, day.getDate( ) ) )
+            {
+                addError( MESSAGE_ERROR_HOLI_DAY, getLocale( ) );
+
+                return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
+            }
+        }
+        
         // If there were modification on the day, then we check that the day is not associated with any appointment
         // The only attributes that can freely be changed are the opening attribute and the people per appointment attribute
         if ( ( day.getOpeningHour( ) != dayFromDb.getOpeningHour( ) ) || ( day.getOpeningMinutes( ) != dayFromDb.getOpeningMinutes( ) )
@@ -587,22 +596,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 addError( MESSAGE_ERROR_DAY_HAS_APPOINTMENT, getLocale( ) );
 
                 return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
-            }
-
-            List<Date> listClosingDays = AppointmentHoliDaysHome.findByIdForm( day.getIdForm( ) );
-
-            // check closing days
-            for ( Date closeDay : listClosingDays )
-            {
-                if ( DateUtils.isSameDay( closeDay, day.getDate( ) ) )
-                {
-                    addError( MESSAGE_ERROR_HOLI_DAY, getLocale( ) );
-
-                    return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
-                }
-            }
+            }                      
         }
 
+        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm( ) );
+        List<String> listErrors = populateDay( day, form, request );
         if ( ( listErrors != null ) && ( listErrors.size( ) > 0 ) )
         {
             for ( String strError : listErrors )
