@@ -19,7 +19,7 @@
             <feature-id>APPOINTMENT_FORM_MANAGEMENT</feature-id>
             <feature-title>appointment.adminFeature.ManageAppointmentForm.name</feature-title>
             <feature-description>appointment.adminFeature.ManageAppointmentForm.description</feature-description>
-            <feature-level>1</feature-level>
+            <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentForms.jsp</feature-url>
             <feature-icon-url/>
 		</admin-feature>
