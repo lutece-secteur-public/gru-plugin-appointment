@@ -576,7 +576,6 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
             slot.setNbRDV( daoUtil.getInt( nIndex ) );
             slot.setNbFreePlaces( slot.getNbPlaces( ) - daoUtil.getInt( nIndex ) );
 
-            return slot;
         }
 
         daoUtil.free( );
