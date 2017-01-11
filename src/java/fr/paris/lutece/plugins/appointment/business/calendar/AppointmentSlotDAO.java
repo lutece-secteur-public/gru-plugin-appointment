@@ -87,7 +87,8 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
             + " TIME_FORMAT(?,'%H:%i:%s')  and"
             + " TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') <"
             + " TIME_FORMAT(?,'%H:%i:%s')" + " order by id_slot";
-    private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACE = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT SUM(nb_place_reserved) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot  AND status != ? ) FROM appointment_slot slot WHERE id_slot=?";
+    private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACE = "SELECT s.id_slot, s.id_form, s.id_day, s.day_of_week, s.nb_places, s.starting_hour, s.starting_minute, s.ending_hour, s.ending_minute, s.is_enabled, COALESCE(sum(app.nb_place_reserved),0) from appointment_slot s Inner Join appointment_appointment app on app.id_slot = s.id_slot where  app.status != ? and app.id_slot=?";
+
     private int _nDefaultSlotListSize;
 
     /**
