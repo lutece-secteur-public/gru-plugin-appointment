@@ -927,7 +927,7 @@ public class AppointmentFormService implements Serializable
     {
         AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot( ), appointment.getDateAppointment( ) );
 
-        if ( ( slot == null ) || ( slot.getNbPlaces( ) < 0 ) )
+        if ( ( slot == null ) || ( slot.getNbFreePlaces() <= 0 ) )
         {
             return false;
         }
