@@ -35,11 +35,11 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
 import java.sql.Time;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -553,33 +553,37 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     @Override
     public AppointmentSlot findByPrimaryKeyWithFreePlace( int nIdSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACE, plugin );
-        daoUtil.setInt( 2, nIdSlot );
-        daoUtil.setInt( 1, Appointment.Status.STATUS_UNRESERVED.getValeur( ) );
-        daoUtil.executeQuery( );
-
-        AppointmentSlot slot = new AppointmentSlot( );
-
-        if ( daoUtil.next( ) )
-        {
-            int nIndex = 1;
-            slot.setIdSlot( daoUtil.getInt( nIndex++ ) );
-            slot.setIdForm( daoUtil.getInt( nIndex++ ) );
-            slot.setIdDay( daoUtil.getInt( nIndex++ ) );
-            slot.setDayOfWeek( daoUtil.getInt( nIndex++ ) );
-            slot.setNbPlaces( daoUtil.getInt( nIndex++ ) );
-            slot.setStartingHour( daoUtil.getInt( nIndex++ ) );
-            slot.setStartingMinute( daoUtil.getInt( nIndex++ ) );
-            slot.setEndingHour( daoUtil.getInt( nIndex++ ) );
-            slot.setEndingMinute( daoUtil.getInt( nIndex++ ) );
-            slot.setIsEnabled( daoUtil.getBoolean( nIndex++ ) );
-            slot.setNbRDV( daoUtil.getInt( nIndex ) );
-            slot.setNbFreePlaces( slot.getNbPlaces( ) - daoUtil.getInt( nIndex ) );
-
-        }
-
-        daoUtil.free( );
-
+    	
+	     DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACE, plugin );
+	     AppointmentSlot slot = new AppointmentSlot( );
+	     try{
+	        daoUtil.setInt( 2, nIdSlot );
+	        daoUtil.setInt( 1, Appointment.Status.STATUS_UNRESERVED.getValeur( ) );
+	        daoUtil.executeQuery( );
+		
+	        if ( daoUtil.next( ) )
+	        {
+	            int nIndex = 1;
+	            slot.setIdSlot( daoUtil.getInt( nIndex++ ) );
+	            slot.setIdForm( daoUtil.getInt( nIndex++ ) );
+	            slot.setIdDay( daoUtil.getInt( nIndex++ ) );
+	            slot.setDayOfWeek( daoUtil.getInt( nIndex++ ) );
+	            slot.setNbPlaces( daoUtil.getInt( nIndex++ ) );
+	            slot.setStartingHour( daoUtil.getInt( nIndex++ ) );
+	            slot.setStartingMinute( daoUtil.getInt( nIndex++ ) );
+	            slot.setEndingHour( daoUtil.getInt( nIndex++ ) );
+	            slot.setEndingMinute( daoUtil.getInt( nIndex++ ) );
+	            slot.setIsEnabled( daoUtil.getBoolean( nIndex++ ) );
+	            slot.setNbRDV( daoUtil.getInt( nIndex ) );
+	            slot.setNbFreePlaces( slot.getNbPlaces( ) - daoUtil.getInt( nIndex ) );
+	
+	        }
+	
+	        daoUtil.free( );
+    	}catch(Exception e){
+    		AppLogService.error( e.getMessage()+e,e );
+    		daoUtil.free( );
+    	}
         return slot;
     }
 }
