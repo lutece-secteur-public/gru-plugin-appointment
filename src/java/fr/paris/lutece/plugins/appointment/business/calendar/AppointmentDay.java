@@ -139,59 +139,6 @@ public class AppointmentDay implements Cloneable
         this._date = date;
     }
 
-    // /**
-    // * Get the year of the day
-    // * @return the year of the day
-    // */
-    // public int getYear( )
-    // {
-    // return _nYear;
-    // }
-    //
-    // /**
-    // * Set the year of the day
-    // * @param nYear the year of the day
-    // */
-    // public void setYear( int nYear )
-    // {
-    // this._nYear = nYear;
-    // }
-    //
-    // /**
-    // * Get the month of the day
-    // * @return The month of the day
-    // */
-    // public int getMonth( )
-    // {
-    // return _nMonth;
-    // }
-    //
-    // /**
-    // * Set the month of the day
-    // * @param nMonth The month of the day
-    // */
-    // public void setMonth( int nMonth )
-    // {
-    // this._nMonth = nMonth;
-    // }
-    //
-    // /**
-    // * Get the number of the day in the month
-    // * @return The number of the day in the month
-    // */
-    // public int getDay( )
-    // {
-    // return _nDay;
-    // }
-    //
-    // /**
-    // * Set the number of the day in the month
-    // * @param nDay The number of the day in the month
-    // */
-    // public void setDay( int nDay )
-    // {
-    // this._nDay = nDay;
-    // }
 
     /**
      * Get the opening hour of the day

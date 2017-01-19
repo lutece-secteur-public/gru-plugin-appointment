@@ -154,7 +154,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM = "appointment.modify_appointmentForm.titleAlterablesParameters";
-    private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_TIME_OUT = "appointment.modify_appointmentForm.timeOutDuration";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENT_FORM = "appointment.modify_appointmentform.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.create_appointmentform.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentform_messages.pageTitle";
@@ -989,24 +988,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         appointmentForm.setEnableCaptcha( appointmentFormTmp.getEnableCaptcha( ) );
         appointmentForm.setEnableConfirmEmail( appointmentFormTmp.getEnableConfirmEmail( ) );
         appointmentForm.setEnableMandatoryEmail( appointmentFormTmp.getEnableMandatoryEmail( ) );
-    }
-
-    /**
-     * Get the URL to manage appointment forms
-     * 
-     * @param request
-     *            The request
-     * @param strIdForm
-     *            The id of the form to manage days of
-     * @return The URL to manage appointment forms
-     */
-    private static String getURLManageAppointmentFormDays( HttpServletRequest request, String strIdForm )
-    {
-        UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS );
-        urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MODIFY_APPOINTMENTFORM );
-        urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
-
-        return urlItem.getUrl( );
     }
 
     /**

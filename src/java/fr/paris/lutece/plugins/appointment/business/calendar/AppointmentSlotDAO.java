@@ -57,9 +57,9 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     private static final String SQL_QUERY_DELETE_BY_ID_DAY = "DELETE FROM appointment_slot WHERE id_day = ?";
     private static final String SQL_QUERY_DELETE_BY_ID_FORM_AND_DAY_OF_WEEK = SQL_QUERY_DELETE_BY_ID_FORM + " AND day_of_week = ?";
     private static final String SQL_QUERY_DELETE_OLD_SLOTS = "DELETE FROM appointment_slot WHERE id_day IN ( SELECT id_day FROM appointment_day WHERE date_day < ? ) AND id_slot NOT IN ( SELECT DISTINCT id_slot FROM appointment_appointment ) ";
-    private static final String SQL_QUERY_SELECT = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled FROM appointment_slot";
+    private static final String SQL_QUERY_SELECT = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, date_test, time_test, timestamp_test FROM appointment_slot";
     private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY = SQL_QUERY_SELECT + " WHERE id_slot = ?";
-    private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND app.date_appointment = ? AND status != ? ) FROM appointment_slot slot WHERE id_slot = ?";
+    private static final String SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, date_test, time_test, timestamp_test, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND app.date_appointment = ? AND status != ? ) FROM appointment_slot slot WHERE id_slot = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT
             + " WHERE id_form = ? AND id_day = 0 ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_ALL = SQL_QUERY_SELECT
@@ -70,7 +70,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
     // private static final String SQL_QUERY_SELECT_BY_ID_FORM_WITH_FREE_PLACES =
     // "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT COUNT(id_appointment) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND app.date_appointment = ? AND status != ? ) FROM appointment_slot slot WHERE id_form = ? AND id_day = 0 AND day_of_week = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_SELECT_BY_ID_DAY = SQL_QUERY_SELECT + " WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
-    private static final String SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT SUM(nb_place_reserved) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND status != ? ) FROM appointment_slot slot WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
+    private static final String SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, date_test, time_test, timestamp_test, (SELECT SUM(nb_place_reserved) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND status != ? ) FROM appointment_slot slot WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
     private static final String SQL_QUERY_FIND_LIMITS_MOMENT = "select count(*) nbre, TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') startHour, "
             + " TIME_FORMAT( CONCAT_WS(':',slot.ending_hour,slot.ending_minute),'%H:%i:%s') maxRdv,"
             + "  slot.nb_places from appointment_appointment apmt, appointment_slot slot, appointment_form form"
@@ -133,7 +133,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         daoUtil.setInt( nIndex++, slot.getStartingMinute( ) );
         daoUtil.setInt( nIndex++, slot.getEndingHour( ) );
         daoUtil.setInt( nIndex++, slot.getEndingMinute( ) );
-        daoUtil.setBoolean( nIndex, slot.getIsEnabled( ) );
+        daoUtil.setBoolean( nIndex, slot.getIsEnabled( ) );        
         daoUtil.executeUpdate( );
         daoUtil.free( );
     }
@@ -452,6 +452,9 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO
         slot.setEndingHour( daoUtil.getInt( nIndex++ ) );
         slot.setEndingMinute( daoUtil.getInt( nIndex++ ) );
         slot.setIsEnabled( daoUtil.getBoolean( nIndex++ ) );
+        slot.setDateTest(daoUtil.getDate(nIndex++));
+        slot.setTimeTest(daoUtil.getTime(nIndex++));
+        slot.setTimestampTest(daoUtil.getTimestamp(nIndex++));        
         slot.setNbFreePlaces( slot.getNbPlaces( ) );
 
         return slot;

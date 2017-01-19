@@ -34,6 +34,15 @@
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import net.sf.ehcache.constructs.nonstop.store.LocalReadsOnTimeoutStore;
 
 /**
  * Slot for an appointment in a day. The slot may have 3 states : free, partially free or occupied.
@@ -56,8 +65,86 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
     private int _nEndingMinute;
     private boolean _bIsEnabled;
     private int _NbRDV;
+    private LocalDate _dateTest;
+    private LocalTime _timeTest;
+    private LocalDateTime _timestampTest;
+    private AppointmentForm form;
+        
+    
+    public AppointmentForm getForm() {
+		return form;
+	}
+	public void setForm(AppointmentForm form) {
+		this.form = form;
+	}
+	
+	public Date getSqlDateTest() {
+    	Date sqlDate = null;
+    	if (_dateTest != null ) {
+    		sqlDate = Date.valueOf(_dateTest);
+    	}
+    	return sqlDate;
+    }
+    public LocalDate getDateTest() {
+		return _dateTest;
+	}
 
-    /**
+	public void setDateTest(LocalDate dateTest) {
+		this._dateTest = dateTest;
+		this._dateTest.atStartOfDay();
+	}
+
+	public void setDateTest(Date date) {
+		if (date != null) {
+			this._dateTest = date.toLocalDate();
+		}
+	}
+	
+	public LocalTime getTimeTest() {
+		return _timeTest;
+	}
+	
+	public Time getSqlTimeTest() {
+		Time sqlTime = null;
+		if (_timeTest != null) {
+			sqlTime = Time.valueOf(_timeTest);
+		}
+		return sqlTime;
+	}
+
+	public void setTimeTest(LocalTime timeTest) {
+		this._timeTest = timeTest;		
+	}
+	
+	public void setTimeTest(Time time) {
+		if (time != null) {
+			this._timeTest = time.toLocalTime();
+		}		
+	}
+
+	public LocalDateTime getTimestampTest() {
+		return _timestampTest;
+	}
+
+	public Timestamp getSqlTimeStampTest() {
+		Timestamp sqlTimestamp = null;
+		if (_timestampTest != null){
+			sqlTimestamp = Timestamp.valueOf(_timestampTest);
+		}
+		return sqlTimestamp;
+	}
+	
+	public void setTimestampTest(LocalDateTime timestampTest) {		
+		this._timestampTest = timestampTest;
+	}
+	
+	public void setTimestampTest(Timestamp timestampTest) {
+		if (timestampTest != null){
+			this._timestampTest = timestampTest.toLocalDateTime();
+		}
+	}
+
+	/**
      * Get the id of the slot
      * 
      * @return The id of the slot

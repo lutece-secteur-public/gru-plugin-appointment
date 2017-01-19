@@ -57,31 +57,12 @@ public class Appointment implements Serializable
     /**
      * Appointment resource type
      */
-    public static final String APPOINTMENT_RESOURCE_TYPE = "appointment";
-
-    // If status values change, the template appointment/manage_appointments.html must be updated !
-    /**
-     * Status of appointments that have been rejected
-     * 
-     * public static final int STATUS_REJECTED = -10;
-     */
-
-    /**
-     * Status of appointments that have not been validated yet
-     * 
-     * public static final int STATUS_NOT_VALIDATED = 0;
-     */
-
-    /**
-     * Status of appointments that have been validated
-     * 
-     * public static final int STATUS_VALIDATED = 10;
-     */
+    public static final String APPOINTMENT_RESOURCE_TYPE = "appointment";    
 
     /**
      * Serial version UID
      */
-    private static final long serialVersionUID = -2311528095383408879L;
+    private static final long serialVersionUID = -2311528095383408879L;  
     private int _nIdAppointment;
     @NotBlank( message = "appointment.validation.appointment.FirstName.notEmpty" )
     @Size( max = 255, message = "appointment.validation.appointment.FirstName.size" )
@@ -92,8 +73,7 @@ public class Appointment implements Serializable
     @Size( max = 255, message = "appointment.validation.appointment.Email.size" )
     @Email( message = "appointment.validation.appointment.Email.email" )
     private String _strEmail;
-
-    // @Size( max = 255 , message = "#i18n{appointment.validation.appointment.IdUser.size}" )
+    
     @Size( max = 255, message = "portal.validation.message.sizeMax" )
     private String _strIdUser;
     private String _strAuthenticationService;

@@ -101,9 +101,6 @@ public class AppointmentFormService implements Serializable
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PREFIX_ATTRIBUTE = "attribute";
 
-    private static final String PARAMETER_CUSTOMER_ID = "cuid";
-    private static final String PARAMETER_USER_ID_OPAM = "guid";
-
     // marks
     private static final String MARK_LOCALE = "locale";
     private static final String MARK_ENTRY = "entry";
