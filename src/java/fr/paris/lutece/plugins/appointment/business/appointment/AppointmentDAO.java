@@ -1,31 +1,119 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.util.sql.DAOUtil;
 
+/**
+ * This class provides Data Access methods for Appointment objects
+ * 
+ * @author Laurent Payen
+ *
+ */
 public final class AppointmentDAO implements IAppointmentDAO {
 
-	@Override
-	public void insert(Appointment appointment, Plugin plugin) {
-		// TODO Auto-generated method stub
+	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_appointment) FROM appointment_appointment";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (id_appointment, id_user, id_slot) VALUES (?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_user = ?, id_slot = ? WHERE id_appointment = ?";
+	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
+	private static final String SQL_QUERY_SELECT = "SELECT id_appointment, id_user, id_slot FROM appointment_appointment WHERE id_appointment = ?";
 
+	@Override
+	public int getNewPrimaryKey(Plugin plugin) {
+		DAOUtil daoUtil = null;
+		int nKey = 1;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_NEW_PK, plugin);
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				nKey = daoUtil.getInt(1) + 1;
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return nKey;
 	}
-	
+
+	@Override
+	public synchronized void insert(Appointment appointment, Plugin plugin) {
+		appointment.setIdAppointment(getNewPrimaryKey(plugin));
+		DAOUtil daoUtil = buildDaoUtilFromAppointment(SQL_QUERY_INSERT, appointment, plugin);
+		executeUpdate(daoUtil);
+	}
+
 	@Override
 	public void update(Appointment appointment, Plugin plugin) {
-		// TODO Auto-generated method stub
-
+		DAOUtil daoUtil = buildDaoUtilFromAppointment(SQL_QUERY_UPDATE, appointment, plugin);
+		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void delete(int nIdAppointment, Plugin plugin) {
-		// TODO Auto-generated method stub
-
+		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_DELETE, plugin);
+		daoUtil.setInt(1, nIdAppointment);
+		executeUpdate(daoUtil);			
 	}
 
 	@Override
 	public Appointment select(int nIdAppointment, Plugin plugin) {
-		// TODO Auto-generated method stub
-		return null;
+		DAOUtil daoUtil = null;
+		Appointment appointment = null;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT, plugin);
+			daoUtil.setInt(1, nIdAppointment);
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				appointment = buildAppointmentFromDaoUtil(daoUtil);
+			}
+		} finally {
+			daoUtil.free();
+		}
+		return appointment;
 	}
 
+	/**
+	 * Build an Appointment business object from the resultset 
+	 * @param daoUtil the prepare statement util object
+	 * @return a new Appointment business object with all its attributes assigned
+	 */
+	private Appointment buildAppointmentFromDaoUtil(DAOUtil daoUtil) {
+		int nIndex = 1;
+		Appointment appointment = new Appointment();
+		appointment.setIdAppointment(daoUtil.getInt(nIndex++));
+		appointment.setIdUser(daoUtil.getInt(nIndex++));
+		appointment.setIdSlot(daoUtil.getInt(nIndex));
+		return appointment;
+	}
+
+	/**
+	 * Build a daoUtil object with the query and all the attributes of the Appointment
+	 * @param query the query 
+	 * @param appointment the Appointment
+	 * @param plugin the plugin
+	 * @return a new daoUtil with all its values assigned
+	 */
+	private DAOUtil buildDaoUtilFromAppointment(String query, Appointment appointment, Plugin plugin) {
+		int nIndex = 1;
+		DAOUtil daoUtil = new DAOUtil(query, plugin);		
+		daoUtil.setInt(nIndex++, appointment.getIdAppointment());
+		daoUtil.setInt(nIndex++, appointment.getIdUser());
+		daoUtil.setInt(nIndex++, appointment.getIdSlot());
+		return daoUtil;
+	}
+
+	/**
+	 * Execute a safe update 
+	 * (Free the connection in case of error when execute the query) 
+	 * @param daoUtil the daoUtil
+	 */
+	private void executeUpdate(DAOUtil daoUtil) {
+		try {
+			daoUtil.executeUpdate();
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+	}
 }

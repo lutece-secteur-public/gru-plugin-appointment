@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
 
 /**
@@ -32,7 +33,7 @@ public class ClosingDay implements Serializable {
 	private int _nIdForm;
 
 	/**
-	 * Gets the id of the closing day
+	 * Get the id of the closing day
 	 * 
 	 * @return the id of the closing day
 	 */
@@ -41,9 +42,9 @@ public class ClosingDay implements Serializable {
 	}
 
 	/**
-	 * Sets the id of the closing day
+	 * Set the id of the closing day
 	 * 
-	 * @param _nIdClosingDay
+	 * @param nIdClosingDay
 	 *            the id to set
 	 */
 	public void setIdClosingDay(int nIdClosingDay) {
@@ -51,18 +52,31 @@ public class ClosingDay implements Serializable {
 	}
 
 	/**
-	 * Gets the date of the closing day
+	 * Get the date of the closing day
 	 * 
 	 * @return the date of the closing day
 	 */
 	public LocalDate getDateOfClosingDay() {
 		return _dateOfClosingDay;
 	}
+	
+	/**
+	 * Get the date of the closing day (in sql date format)
+	 * 
+	 * @return the date of the closing day
+	 */
+	public Date getSqlDateOfClosingDay() {
+		Date date = null;
+		if (_dateOfClosingDay != null){
+			date = Date.valueOf(_dateOfClosingDay);
+		}
+		return date;
+	}
 
 	/**
-	 * Sets the date of the closing day
+	 * Set the date of the closing day
 	 * 
-	 * @param _dateOfClosingDay
+	 * @param dateOfClosingDay
 	 *            the date to set
 	 */
 	public void setDateOfClosingDay(LocalDate dateOfClosingDay) {
@@ -70,7 +84,19 @@ public class ClosingDay implements Serializable {
 	}
 
 	/**
-	 * Gets the id of the form the closing day belongs to
+	 * Set the date of the closing day
+	 * 
+	 * @param dateOfClosingDay
+	 *            the date to set (in sql date format)
+	 */
+	public void setDateOfClosingDay(Date dateOfClosingDay) {
+		if (dateOfClosingDay != null) {
+			this._dateOfClosingDay = dateOfClosingDay.toLocalDate();
+		}
+	}
+
+	/**
+	 * Get the id of the form the closing day belongs to
 	 * 
 	 * @return the id of the form the closing day belongs to
 	 */
@@ -79,9 +105,9 @@ public class ClosingDay implements Serializable {
 	}
 
 	/**
-	 * Sets the form the closing day belongs to
+	 * Set the form the closing day belongs to
 	 * 
-	 * @param _nIdForm
+	 * @param nIdForm
 	 *            the if form to set
 	 */
 	public void setIdForm(int nIdForm) {

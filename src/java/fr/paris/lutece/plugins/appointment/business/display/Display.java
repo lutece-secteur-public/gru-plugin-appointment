@@ -5,7 +5,7 @@ import java.io.Serializable;
 import fr.paris.lutece.portal.service.image.ImageResource;
 
 /**
- * Business class of the display of the form
+ * Business class of the Form Display
  * 
  * @author Laurent Payen
  *
@@ -18,17 +18,17 @@ public class Display implements Serializable {
 	private static final long serialVersionUID = -4827729906365306894L;
 
 	/**
-	 * Id of the display
+	 * Display Id
 	 */
 	private int _nIdDisplay;
 
 	/**
-	 * Indicates whether the title is displayed in the front office or not
+	 * Indicate whether the title is displayed in the front office or not
 	 */
 	private boolean _bIsDisplayTitleFo;
 
 	/**
-	 * Icon of the form
+	 * Form Icon
 	 */
 	private ImageResource _icon;
 
@@ -38,31 +38,35 @@ public class Display implements Serializable {
 	private int _nbWeeksToDisplay;
 
 	/**
-	 * Calendar template id of the form to display
+	 * Calendar Template Id of the Display Form (foreign key)
 	 */
 	private int _nIdCalendarTemplate;
 
 	/**
-	 * Gets the id of the display of the form
-	 * 
-	 * @return the id of the display
+	 * Form id (foreign key)
 	 */
-	public int getNIdDisplay() {
+	private int _nIdForm;
+	/**
+	 * Get the Display Id
+	 * 
+	 * @return the Display Id
+	 */
+	public int getIdDisplay() {
 		return _nIdDisplay;
 	}
 
 	/**
-	 * Sets the id of the display of the form
+	 * Set the Display Id
 	 * 
 	 * @param _nIdDisplay
-	 *            the id to set
+	 *            the Id to set
 	 */
-	public void setNIdDisplay(int nIdDisplay) {
+	public void setIdDisplay(int nIdDisplay) {
 		this._nIdDisplay = nIdDisplay;
 	}
 
 	/**
-	 * Gets the display title value for the front office form
+	 * Get the display title value for the front office form
 	 * 
 	 * @return true if the title has to be displayed
 	 */
@@ -71,7 +75,7 @@ public class Display implements Serializable {
 	}
 
 	/**
-	 * Sets the display title boolean value
+	 * Set the display title boolean value
 	 * 
 	 * @param displayTitleFo
 	 *            the boolean display title value to set
@@ -81,16 +85,16 @@ public class Display implements Serializable {
 	}
 
 	/**
-	 * Gets the icon of the form
+	 * Get the form icon
 	 * 
-	 * @return the icon of the form
+	 * @return the form icon
 	 */
 	public ImageResource getIcon() {
 		return _icon;
 	}
 
 	/**
-	 * Sets the icon of the form
+	 * Set the form icon
 	 * 
 	 * @param _icon
 	 *            the icon to set
@@ -100,7 +104,7 @@ public class Display implements Serializable {
 	}
 
 	/**
-	 * Gets the number of weeks during which the form is displayed to the user
+	 * Get the number of weeks during which the form is displayed to the user
 	 * 
 	 * @return the number of weeks
 	 */
@@ -109,7 +113,7 @@ public class Display implements Serializable {
 	}
 
 	/**
-	 * Sets the number of weeks during which the form is displayed to the user
+	 * Set the number of weeks during which the form is displayed to the user
 	 * 
 	 * @param nbWeeksToDisplay
 	 *            the number of weeks to set
@@ -119,22 +123,38 @@ public class Display implements Serializable {
 	}
 
 	/**
-	 * Gets the calendar template id of the form
+	 * Get the Calendar Template Id
 	 * 
-	 * @return the calendar template id of the form
+	 * @return the Calendar Template Id
 	 */
 	public int getIdCalendarTemplate() {
 		return _nIdCalendarTemplate;
 	}
 
 	/**
-	 * Sets the calendar template id of the form
+	 * Set the Calendar Template Id
 	 * 
 	 * @param nIdCalendarTemplate
-	 *            the calendar template id to set
+	 *            the Calendar Template Id to set
 	 */
 	public void setIdCalendarTemplate(int nIdCalendarTemplate) {
 		this._nIdCalendarTemplate = nIdCalendarTemplate;
+	}
+
+	/**
+	 * Get the Form Id
+	 * @return the Form Id
+	 */
+	public int getIdForm() {
+		return _nIdForm;
+	}
+
+	/**
+	 * Set the FOrm Id
+	 * @param nIdForm the Form Id to set
+	 */
+	public void setIdForm(int nIdForm) {
+		this._nIdForm = nIdForm;
 	}
 
 }

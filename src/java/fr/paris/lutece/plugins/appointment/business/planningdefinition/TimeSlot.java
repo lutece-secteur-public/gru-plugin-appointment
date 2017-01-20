@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.time.LocalTime;
 
 /**
@@ -32,17 +33,17 @@ public class TimeSlot implements Serializable {
 	private LocalTime _endingHour;
 
 	/**
-	 * Indicates whether the time slot is open or not
+	 * Indicate whether the time slot is open or not
 	 */
 	private boolean _bIsOpen;
 
 	/**
-	 * The working day id the time slot belongs to
+	 * Working day id the time slot belongs to
 	 */
 	private int _nIdWorkingDay;
 
 	/**
-	 * Gets the id of the time slot
+	 * Get the id of the time slot
 	 * 
 	 * @return
 	 */
@@ -51,7 +52,7 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Sets the id of the time slot
+	 * Set the id of the time slot
 	 * 
 	 * @param nIdTimeSlot
 	 *            the id to set
@@ -61,7 +62,7 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Gets the starting hour of the time slot
+	 * Get the starting hour of the time slot
 	 * 
 	 * @return the starting hour of the time slot
 	 */
@@ -70,9 +71,22 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Sets the starting hour of the time slot
+	 * Get the starting hour of the time slot (in sql time)
 	 * 
-	 * @param _startingHour
+	 * @return the starting hour
+	 */
+	public Time getStartingHourSqlTime() {
+		Time time = null;
+		if (_startingHour != null) {
+			time = Time.valueOf(_startingHour);
+		}
+		return time;
+	}
+
+	/**
+	 * Set the starting hour of the time slot
+	 * 
+	 * @param startingHour
 	 *            the starting hour to set
 	 */
 	public void setStartingHour(LocalTime startingHour) {
@@ -80,7 +94,19 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Gets the ending hour of the time slot
+	 * Set the starting hour of the time slot
+	 * 
+	 * @param startingHour
+	 *            the starting hour (in sql time)
+	 */
+	public void setStartingHour(Time startingHour) {
+		if (startingHour != null) {
+			this._startingHour = startingHour.toLocalTime();
+		}
+	}
+
+	/**
+	 * Get the ending hour of the time slot
 	 * 
 	 * @return the ending hour of the time slot
 	 */
@@ -89,9 +115,22 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Sets the ending hour of the time slot
+	 * Get the ending hour in sql time
 	 * 
-	 * @param _endingHour
+	 * @return the ending hour in sql time
+	 */
+	public Time getEndingHourSqlTime() {
+		Time time = null;
+		if (this._endingHour != null) {
+			time = Time.valueOf(_endingHour);
+		}
+		return time;
+	}
+
+	/**
+	 * Set the ending hour of the time slot
+	 * 
+	 * @param endingHour
 	 *            the ending hour to set
 	 */
 	public void setEndingHour(LocalTime endingHour) {
@@ -99,7 +138,19 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Indicates whether the time slot is open or not
+	 * Set the ending hour of the time slot
+	 * 
+	 * @param endingHour
+	 *            the ending hour (in sql time format)
+	 */
+	public void setEndingHour(Time endingHour) {
+		if (endingHour != null) {
+			this._endingHour = endingHour.toLocalTime();
+		}
+	}
+
+	/**
+	 * Indicate whether the time slot is open or not
 	 * 
 	 * @return true if the time slot is open
 	 */
@@ -108,9 +159,9 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Sets the opening boolean value of the time slot
+	 * Set the opening boolean value of the time slot
 	 * 
-	 * @param _bIsOpen
+	 * @param bIsOpen
 	 *            the opening boolean value
 	 */
 	public void setIsOpen(boolean bIsOpen) {
@@ -118,7 +169,7 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Gets the working day id the time slot belongs to
+	 * Get the working day id the time slot belongs to
 	 * 
 	 * @return the working day id the time slot belongs to
 	 */
@@ -127,7 +178,7 @@ public class TimeSlot implements Serializable {
 	}
 
 	/**
-	 * Sets the working day id the time slot belongs to
+	 * Set the working day id the time slot belongs to
 	 * 
 	 * @param nIdWorkingDay
 	 *            the working day id to set

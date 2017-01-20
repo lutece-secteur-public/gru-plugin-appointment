@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.rule;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
 
 /**
@@ -37,7 +38,12 @@ public class ReservationRule implements Serializable {
 	private int _nMaxPeoplePerAppointment;
 
 	/**
-	 * Gets the id of the rule of the reservation
+	 * The Form Id the Reservation Rule belongs to (foreign key)
+	 */
+	private int _nIdForm;
+
+	/**
+	 * Get the id of the rule of the reservation
 	 * 
 	 * @return the id of the rule of the reservation
 	 */
@@ -46,7 +52,7 @@ public class ReservationRule implements Serializable {
 	}
 
 	/**
-	 * Sets the id of the rule of the reservation
+	 * Set the id of the rule of the reservation
 	 * 
 	 * @param nIdReservationRule
 	 *            the id to set
@@ -56,7 +62,7 @@ public class ReservationRule implements Serializable {
 	}
 
 	/**
-	 * Gets the date from which the rule has to be applied
+	 * Get the date from which the rule has to be applied
 	 * 
 	 * @return the date from which the rule has to be applied
 	 */
@@ -65,7 +71,20 @@ public class ReservationRule implements Serializable {
 	}
 
 	/**
-	 * Sets the date from which the rule has to be applied
+	 * Get the date from which the rule has to be applied
+	 * 
+	 * @return the date in Sql format
+	 */
+	public Date getSqlDateOfApply() {
+		Date date = null;
+		if (this._dateOfApply != null) {
+			date = Date.valueOf(_dateOfApply);
+		}
+		return date;
+	}
+
+	/**
+	 * Set the date from which the rule has to be applied
 	 * 
 	 * @param dateOfApply
 	 *            the date to set
@@ -75,7 +94,19 @@ public class ReservationRule implements Serializable {
 	}
 
 	/**
-	 * Gets the maximum capacity for a slot
+	 * Set the date from which the rule has to be applied
+	 * 
+	 * @param dateOfApply
+	 *            the date to set (in Sql Date format)
+	 */
+	public void setDateOfApply(Date dateOfApply) {
+		if (dateOfApply != null) {
+			this._dateOfApply = dateOfApply.toLocalDate();
+		}
+	}
+
+	/**
+	 * Get the maximum capacity for a slot
 	 * 
 	 * @return the maximum capacity for a slot
 	 */
@@ -84,7 +115,7 @@ public class ReservationRule implements Serializable {
 	}
 
 	/**
-	 * Sets the maximum capacity for a slot
+	 * Set the maximum capacity for a slot
 	 * 
 	 * @param nMaxCapacityPerSlot
 	 *            the maximum capacity for a slot
@@ -94,7 +125,7 @@ public class ReservationRule implements Serializable {
 	}
 
 	/**
-	 * Gets the maximum number of people authorized for an appointment
+	 * Get the maximum number of people authorized for an appointment
 	 * 
 	 * @return the maximum number of people authorized for an appointment
 	 */
@@ -103,13 +134,32 @@ public class ReservationRule implements Serializable {
 	}
 
 	/**
-	 * Sets the maximum number of people authorized for an appointment
+	 * Set the maximum number of people authorized for an appointment
 	 * 
 	 * @param nMaxPeoplePerAppointment
 	 *            the maximum of people to set
 	 */
 	public void setMaxPeoplePerAppointment(int nMaxPeoplePerAppointment) {
 		this._nMaxPeoplePerAppointment = nMaxPeoplePerAppointment;
+	}
+
+	/**
+	 * Get the Form Id the Reservation Rule belongs to
+	 * 
+	 * @return the Form Id
+	 */
+	public int getIdForm() {
+		return _nIdForm;
+	}
+
+	/**
+	 * Set the Form Id the Reservation Rule belongs to
+	 * 
+	 * @param nIdForm
+	 *            the Form Id tp set
+	 */
+	public void setIdForm(int nIdForm) {
+		this._nIdForm = nIdForm;
 	}
 
 }

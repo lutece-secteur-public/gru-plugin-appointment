@@ -22,17 +22,17 @@ public class WorkingDay implements Serializable {
 	private int _nIdWorkingDay;
 
 	/**
-	 * The day of the week
+	 * Day of the week
 	 */
 	private int _nDayOfWeek;
 
 	/**
-	 * The week id the working day belongs to
+	 * Week id the working day belongs to
 	 */
 	private int _nIdWeekDefinition;
 
 	/**
-	 * The list of the time slots of the working day
+	 * List of the time slots of the working day
 	 */
 	private List<TimeSlot> _listTimeSlots;
 

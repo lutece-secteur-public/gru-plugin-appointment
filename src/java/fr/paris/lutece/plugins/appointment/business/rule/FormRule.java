@@ -21,17 +21,22 @@ public class FormRule implements Serializable {
 	private int _nIdFormRule;
 
 	/**
-	 * Indicates whether the captcha is enabled or not
+	 * Indicate whether the captcha is enabled or not
 	 */
 	private boolean _bIsCaptchaEnabled;
 
 	/**
-	 * Indicates whether the email is mandatory or not
+	 * Indicate whether the email is mandatory or not
 	 */
 	private boolean _bIsMandatoryEmailEnabled;
 
 	/**
-	 * Gets the id of the form rule
+	 * Form id (foreign key)
+	 */
+	private int _nIdForm;
+
+	/**
+	 * Get the id of the form rule
 	 * 
 	 * @return the id of the form rule
 	 */
@@ -40,7 +45,7 @@ public class FormRule implements Serializable {
 	}
 
 	/**
-	 * Sets the id of the form rule
+	 * Set the id of the form rule
 	 * 
 	 * @param nIdFormRule
 	 *            the id to set
@@ -50,7 +55,7 @@ public class FormRule implements Serializable {
 	}
 
 	/**
-	 * Indicates if the captcha is enabled or not
+	 * Indicate if the captcha is enabled or not
 	 * 
 	 * @return true if the captcha is enabled
 	 */
@@ -59,7 +64,7 @@ public class FormRule implements Serializable {
 	}
 
 	/**
-	 * Sets the boolean captcha value
+	 * Set the boolean captcha value
 	 * 
 	 * @param bIsCaptchaEnabled
 	 *            the boolean captcha value to set
@@ -69,7 +74,7 @@ public class FormRule implements Serializable {
 	}
 
 	/**
-	 * Indicates wether the email is mandatory or not
+	 * Indicate whether the email is mandatory or not
 	 * 
 	 * @return true if the email is mandatory
 	 */
@@ -78,13 +83,32 @@ public class FormRule implements Serializable {
 	}
 
 	/**
-	 * Sets the boolean value for the mandatory email
+	 * Set the boolean value for the mandatory email
 	 * 
 	 * @param bIsMandatoryEmailEnabled
 	 *            the boolean value for the mandatory email
 	 */
 	public void setIsMandatoryEmailEnabled(boolean bIsMandatoryEmailEnabled) {
 		this._bIsMandatoryEmailEnabled = bIsMandatoryEmailEnabled;
+	}
+
+	/**
+	 * Get the form id the formRule belongs to
+	 * 
+	 * @return the form id
+	 */
+	public int getIdForm() {
+		return _nIdForm;
+	}
+
+	/**
+	 * Set the form id the formRule belongs to
+	 * 
+	 * @param nIdForm
+	 *            the form id to set
+	 */
+	public void setIdForm(int nIdForm) {
+		this._nIdForm = nIdForm;
 	}
 
 }

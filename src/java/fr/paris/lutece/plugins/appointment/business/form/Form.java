@@ -1,10 +1,11 @@
 package fr.paris.lutece.plugins.appointment.business.form;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
 
 /**
- * Business class of the form
+ * Business class of the Form
  * 
  * @author Laurent Payen
  *
@@ -17,7 +18,7 @@ public class Form implements Serializable {
 	private static final long serialVersionUID = 4742702767509625292L;
 
 	/**
-	 * Id of the form
+	 * Form Id
 	 */
 	private int _nIdForm;
 
@@ -37,6 +38,11 @@ public class Form implements Serializable {
 	private String _strReference;
 
 	/**
+	 * Category of the form
+	 */
+	private String _strCategory;
+
+	/**
 	 * Starting validity date of the form
 	 */
 	private LocalDate _startingValidityDate;
@@ -47,50 +53,50 @@ public class Form implements Serializable {
 	private LocalDate _endingValidityDate;
 
 	/**
-	 * Indicates whether the form is active or not
+	 * Indicate whether the form is active or not
 	 */
 	private boolean _bIsActive;
 
 	/**
-	 * Gets the id of the form
+	 * Get the form Id
 	 * 
-	 * @return the id of the form
+	 * @return the form Id
 	 */
 	public int getIdForm() {
 		return _nIdForm;
 	}
 
 	/**
-	 * Sets the id of the form
+	 * Set the form Id
 	 * 
 	 * @param nIdForm
-	 *            the id to set
+	 *            the Id to set
 	 */
 	public void setIdForm(int nIdForm) {
 		this._nIdForm = nIdForm;
 	}
 
 	/**
-	 * Gets the title of the form
+	 * Get the title of the form
 	 * 
-	 * @return the title of the form
+	 * @return the form title
 	 */
 	public String getTitle() {
 		return _strTitle;
 	}
 
 	/**
-	 * Sets the title of the form
+	 * Set the form title
 	 * 
 	 * @param title
-	 *            the title to set
+	 *            the Title to set
 	 */
 	public void setTitle(String strTitle) {
 		this._strTitle = strTitle;
 	}
 
 	/**
-	 * Gets the description of the form
+	 * Get the description of the form
 	 * 
 	 * @return the description of the form
 	 */
@@ -99,7 +105,7 @@ public class Form implements Serializable {
 	}
 
 	/**
-	 * Sets the description of the form
+	 * Set the description of the form
 	 * 
 	 * @param description
 	 *            the description to set
@@ -109,7 +115,7 @@ public class Form implements Serializable {
 	}
 
 	/**
-	 * Gets the reference of the form
+	 * Get the reference of the form
 	 * 
 	 * @return the reference of the form
 	 */
@@ -118,7 +124,7 @@ public class Form implements Serializable {
 	}
 
 	/**
-	 * Sets the reference of the form
+	 * Set the reference of the form
 	 * 
 	 * @param reference
 	 *            the reference to set
@@ -128,26 +134,70 @@ public class Form implements Serializable {
 	}
 
 	/**
-	 * Gets the start date of the validity of the form
+	 * Get the category of the form
 	 * 
-	 * @return the start validity date of the form
+	 * @return the category of the form
+	 */
+	public String getCategory() {
+		return _strCategory;
+	}
+
+	/**
+	 * Set the category of the form
+	 * 
+	 * @param strCategory
+	 *            the category to set
+	 */
+	public void setCategory(String strCategory) {
+		this._strCategory = strCategory;
+	}
+
+	/**
+	 * Get the starting validity date of the form (in LocalDate format)
+	 * 
+	 * @return the starting validity date of the form
 	 */
 	public LocalDate getStartingValidityDate() {
 		return _startingValidityDate;
 	}
 
 	/**
-	 * Sets the start date of the validity of the form
+	 * Get the starting validity date of the form (in sql date format)
+	 * 
+	 * @return the starting validity date
+	 */
+	public Date getStartingValiditySqlDate() {
+		Date date = null;
+		if (_startingValidityDate != null) {
+			date = Date.valueOf(_startingValidityDate);
+		}
+		return date;
+	}
+
+	/**
+	 * Set the starting date of the validity of the form
 	 * 
 	 * @param startValidity
-	 *            the start validity date to set
+	 *            the starting validity date to set
 	 */
 	public void setStartingValidityDate(LocalDate startingValidityDate) {
 		this._startingValidityDate = startingValidityDate;
 	}
 
 	/**
-	 * Gets the end date of the validity of the form
+	 * Set the starting validity date of the form
+	 * 
+	 * @param startingValidityDate
+	 *            the starting validity date to set (in sql Date format)
+	 */
+	public void setStartingValidityDate(Date startingValidityDate) {
+		if (startingValidityDate != null) {
+			this._startingValidityDate = startingValidityDate.toLocalDate();
+		}
+	}
+
+	/**
+	 * Get the end date of the validity of the form
 	 * 
 	 * @return the end validity date of the form
 	 */
@@ -156,17 +206,42 @@ public class Form implements Serializable {
 	}
 
 	/**
-	 * Sets the end date of the validity of the form
+	 * Get the ending validity date of the form (in sql date format)
+	 * 
+	 * @return the ending validity date
+	 */
+	public Date getEndingValiditySqlDate() {
+		Date date = null;
+		if (_endingValidityDate != null) {
+			date = Date.valueOf(_endingValidityDate);
+		}
+		return date;
+	}
+
+	/**
+	 * Set the end date of the validity of the form
 	 * 
 	 * @param endValidity
 	 *            the end validity date to set
 	 */
-	public void setEndValidity(LocalDate endingValidityDate) {
+	public void setEndingValidityDate(LocalDate endingValidityDate) {
 		this._endingValidityDate = endingValidityDate;
 	}
 
 	/**
-	 * Indicates if the form is active or not
+	 * Set the ending validity date of the form
+	 * 
+	 * @param endingValidityDate
+	 *            the ending validity date to set (in sql Date format)
+	 */
+	public void setEndingValidityDate(Date endingValidityDate) {
+		if (endingValidityDate != null) {
+			this._endingValidityDate = endingValidityDate.toLocalDate();
+		}
+	}
+
+	/**
+	 * Indicate if the form is active or not
 	 * 
 	 * @return true if the form is open
 	 */
@@ -175,7 +250,7 @@ public class Form implements Serializable {
 	}
 
 	/**
-	 * Sets the active boolean value of the form
+	 * Set the active boolean value of the form
 	 * 
 	 * @param isActive
 	 *            the boolean active value to set

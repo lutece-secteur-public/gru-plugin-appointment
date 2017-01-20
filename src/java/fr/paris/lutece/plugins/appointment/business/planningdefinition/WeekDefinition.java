@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class WeekDefinition implements Serializable {
 	private LocalDate _dateOfApply;
 
 	/**
-	 * The id of the form
+	 * Id of the form the week definition belongs to
 	 */
 	private int _nIdForm;
 
@@ -38,7 +39,7 @@ public class WeekDefinition implements Serializable {
 	private List<WorkingDay> _listWorkingDays;
 
 	/**
-	 * Gets the id of the week definition
+	 * Get the id of the week definition
 	 * 
 	 * @return the id of the week definition
 	 */
@@ -47,7 +48,7 @@ public class WeekDefinition implements Serializable {
 	}
 
 	/**
-	 * Sets the id of the week definition
+	 * Set the id of the week definition
 	 * 
 	 * @param _nIdWeekDefinition
 	 *            the id to set
@@ -57,7 +58,7 @@ public class WeekDefinition implements Serializable {
 	}
 
 	/**
-	 * Gets the date from which the week definition has to be applied
+	 * Get the date from which the week definition has to be applied
 	 * 
 	 * @return the date from which the week definition has to be applied
 	 */
@@ -66,9 +67,22 @@ public class WeekDefinition implements Serializable {
 	}
 
 	/**
-	 * Sets the date from which the week definition has to be applied
+	 * Get the date from which the week definition has to be applied
 	 * 
-	 * @param _dateOfApply
+	 * @return the date in Sql Date format
+	 */
+	public Date getSqlDateOfApply() {
+		Date date = null;
+		if (this._dateOfApply != null) {
+			date = Date.valueOf(_dateOfApply);
+		}
+		return date;
+	}
+
+	/**
+	 * Set the date from which the week definition has to be applied
+	 * 
+	 * @param dateOfApply
 	 *            the date to set
 	 */
 	public void setDateOfApply(LocalDate dateOfApply) {
@@ -76,7 +90,19 @@ public class WeekDefinition implements Serializable {
 	}
 
 	/**
-	 * Gets the form id the week definition belongs to
+	 * Set the date from which the week definition has to be applied
+	 * 
+	 * @param dateOfApply
+	 *            the date to set (in Sql Date format)
+	 */
+	public void setDateOfApply(Date dateOfApply) {
+		if (dateOfApply != null) {
+			this._dateOfApply = dateOfApply.toLocalDate();
+		}
+	}
+
+	/**
+	 * Get the form id the week definition belongs to
 	 * 
 	 * @return the form id
 	 */
@@ -85,7 +111,7 @@ public class WeekDefinition implements Serializable {
 	}
 
 	/**
-	 * Sets the form id the week definition belongs to
+	 * Set the form id the week definition belongs to
 	 * 
 	 * @param nIdForm
 	 *            the form id to set
@@ -95,7 +121,7 @@ public class WeekDefinition implements Serializable {
 	}
 
 	/**
-	 * Gets the list of the working days of the week
+	 * Get the list of the working days of the week
 	 * 
 	 * @return the list of the working days for the week
 	 */

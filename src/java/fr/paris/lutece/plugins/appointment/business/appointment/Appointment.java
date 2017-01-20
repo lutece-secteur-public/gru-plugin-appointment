@@ -3,7 +3,7 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 import java.io.Serializable;
 
 /**
- * Business class of the appointment
+ * Business class of the Appointment
  * 
  * @author Laurent Payen
  *
@@ -64,7 +64,7 @@ public class Appointment implements Serializable {
 	 * @param nIdUser
 	 *            the User Id of the Appointment
 	 */
-	public void setUser(int nIdUser) {
+	public void setIdUser(int nIdUser) {
 		this._nIdUser = nIdUser;
 	}
 
@@ -78,10 +78,10 @@ public class Appointment implements Serializable {
 	}
 
 	/**
-	 * Set the slot id of the appointment
+	 * Set the Slot Id of the Appointment
 	 * 
 	 * @param nIdSlot
-	 *            the slot id of the appointment
+	 *            the Slot Id of the Appointment
 	 */
 	public void setIdSlot(int nIdSlot) {
 		this._nIdSlot = nIdSlot;

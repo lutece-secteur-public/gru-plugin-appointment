@@ -3,13 +3,22 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
- * Interface of the appointment DAO
+ * Appointment DAO Interface 
+ * @author Laurent Payen
+ *
  */
-
 public interface IAppointmentDAO {
 
 	/**
-	 * 
+     * Generate a new primary key
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return the new primary key
+     */
+    int getNewPrimaryKey(Plugin plugin);
+	
+	/**
 	 * Insert a new record in the table
 	 * 
 	 * @param appointment

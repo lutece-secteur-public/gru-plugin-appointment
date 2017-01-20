@@ -2,10 +2,23 @@ package fr.paris.lutece.plugins.appointment.business.user;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
+/**
+ * User DAO Interface
+ * @author Laurent Payen
+ *
+ */
 public interface IUserDAO {
 
 	/**
-	 * 
+     * Generate a new primary key
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return the new primary key
+     */
+    int getNewPrimaryKey(Plugin plugin);
+    
+	/**	 
 	 * Insert a new record in the table.
 	 * 
 	 * @param user

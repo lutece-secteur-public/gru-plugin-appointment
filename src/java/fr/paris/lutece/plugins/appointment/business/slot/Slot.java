@@ -43,6 +43,11 @@ public class Slot implements Serializable {
 	private int _nMaxCapacityPerSlot;
 
 	/**
+	 * Form Id the slot belongs to (foreign key)
+	 */
+	private int _nIdForm;
+
+	/**
 	 * Get the id of the slot
 	 * 
 	 * @return the id of the slot
@@ -68,6 +73,19 @@ public class Slot implements Serializable {
 	 */
 	public LocalDateTime getStartingDate() {
 		return _startingDate;
+	}
+
+	/**
+	 * Get the starting date of the slot
+	 * 
+	 * @return the starting date of the slot (in Sql Timestamp format)
+	 */
+	public Timestamp getStartingTimestampDate() {
+		Timestamp timestamp = null;
+		if (this._startingDate != null) {
+			timestamp = Timestamp.valueOf(this._startingDate);
+		}
+		return timestamp;
 	}
 
 	/**
@@ -99,6 +117,19 @@ public class Slot implements Serializable {
 	 */
 	public LocalDateTime getEndingDate() {
 		return _endingDate;
+	}
+
+	/**
+	 * Get the ending date of the slot
+	 * 
+	 * @return the ending date of the slot (in Sql Timestamp format)
+	 */
+	public Timestamp getEndingTimestampDate() {
+		Timestamp timestamp = null;
+		if (this._endingDate != null) {
+			timestamp = Timestamp.valueOf(_endingDate);
+		}
+		return timestamp;
 	}
 
 	/**
@@ -159,6 +190,25 @@ public class Slot implements Serializable {
 	 */
 	public void setMaxCapacityPerSlot(int nMaxCapacityPerSlot) {
 		this._nMaxCapacityPerSlot = nMaxCapacityPerSlot;
+	}
+
+	/**
+	 * Get the Form Id the slot belongs to
+	 * 
+	 * @return the FOrm Id
+	 */
+	public int getIdForm() {
+		return _nIdForm;
+	}
+
+	/**
+	 * Set the Form Id the Slot belongs to
+	 * 
+	 * @param nIdForm
+	 *            the Form Id to set
+	 */
+	public void setIdForm(int nIdForm) {
+		this._nIdForm = nIdForm;
 	}
 
 }
