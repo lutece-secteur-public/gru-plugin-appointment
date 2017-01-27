@@ -15,7 +15,7 @@ public class FormRuleDAO implements IFormRuleDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule (id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form) VALUES (?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, id_form = ? WHERE id_form_rule = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_rule WHERE id_form_rule = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form FROM appointment_form_rule WHERE id_form_rulet = ?";
+	private static final String SQL_QUERY_SELECT = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form FROM appointment_form_rule WHERE id_form_rule = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -38,13 +38,13 @@ public class FormRuleDAO implements IFormRuleDAO {
 	@Override
 	public synchronized void insert(FormRule formRule, Plugin plugin) {
 		formRule.setIdFormRule(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromFormRule(SQL_QUERY_INSERT, formRule, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, formRule, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(FormRule formRule, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromFormRule(SQL_QUERY_UPDATE, formRule, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, formRule, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -64,7 +64,7 @@ public class FormRuleDAO implements IFormRuleDAO {
 			daoUtil.setInt(1, nIdFormRule);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				formRule = buildFormRuleFromDaoUtil(daoUtil);
+				formRule = buildFormRule(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -79,7 +79,7 @@ public class FormRuleDAO implements IFormRuleDAO {
 	 *            the prepare statement util object
 	 * @return a new formRule with all its attributes assigned
 	 */
-	private FormRule buildFormRuleFromDaoUtil(DAOUtil daoUtil) {
+	private FormRule buildFormRule(DAOUtil daoUtil) {
 		int nIndex = 1;
 		FormRule formRule = new FormRule();
 		formRule.setIdFormRule(daoUtil.getInt(nIndex++));
@@ -98,15 +98,24 @@ public class FormRuleDAO implements IFormRuleDAO {
 	 *            the FormRule
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromFormRule(String query, FormRule formRule, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, FormRule formRule, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, formRule.getIdFormRule());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, formRule.getIdFormRule());
+		}
 		daoUtil.setBoolean(nIndex++, formRule.isCaptchaEnabled());
 		daoUtil.setBoolean(nIndex++, formRule.isMandatoryEmailEnabled());
-		daoUtil.setInt(nIndex, formRule.getIdForm());
+		daoUtil.setInt(nIndex++, formRule.getIdForm());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, formRule.getIdFormRule());
+		}
 		return daoUtil;
 	}
 

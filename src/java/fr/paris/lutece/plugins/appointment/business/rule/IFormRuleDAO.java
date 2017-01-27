@@ -10,6 +10,11 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 public interface IFormRuleDAO {
 	
 	/**
+     * The name of the bean of the DAO
+     */
+    static String BEAN_NAME = "appointment.formRuleDAO";
+    
+	/**
      * Generate a new primary key
      * 
      * @param plugin

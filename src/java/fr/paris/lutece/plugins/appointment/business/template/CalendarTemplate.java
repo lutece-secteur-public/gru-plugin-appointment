@@ -33,113 +33,104 @@
  */
 package fr.paris.lutece.plugins.appointment.business.template;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 import java.io.Serializable;
 
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 /**
  * Class that describes calendar templates
  */
-public class CalendarTemplate implements Serializable
-{
-    /**
-     * Serial version UID
-     */
-    private static final long serialVersionUID = 8029294463873867355L;
-    private int _nId;
-    @NotBlank( message = "#i18n{appointment.calendarTemplate.labelTitleBlank}" )
-    @Size( max = 255, message = "#i18n{appointment.calendarTemplate.labelTitleSize}" )
-    private String _strTitle;
-    @NotBlank( message = "#i18n{appointment.calendarTemplate.labelDescriptionBlank}" )
-    @Size( max = 255, message = "#i18n{appointment.calendarTemplate.labelDescriptionSize}" )
-    private String _strDescription;
-    @NotBlank( message = "#i18n{appointment.calendarTemplate.labelTemplatePathBlank}" )
-    @Size( max = 255, message = "#i18n{appointment.calendarTemplate.labelTemplatePathSize}" )
-    private String _strTemplatePath;
+public class CalendarTemplate implements Serializable {
+	/**
+	 * Serial version UID
+	 */
+	private static final long serialVersionUID = 8029294463873867355L;
+	private int _nIdCalendarTemplate;
+	@NotBlank(message = "#i18n{appointment.calendarTemplate.labelTitleBlank}")
+	@Size(max = 255, message = "#i18n{appointment.calendarTemplate.labelTitleSize}")
+	private String _strTitle;
+	@NotBlank(message = "#i18n{appointment.calendarTemplate.labelDescriptionBlank}")
+	@Size(max = 255, message = "#i18n{appointment.calendarTemplate.labelDescriptionSize}")
+	private String _strDescription;
+	@NotBlank(message = "#i18n{appointment.calendarTemplate.labelTemplatePathBlank}")
+	@Size(max = 255, message = "#i18n{appointment.calendarTemplate.labelTemplatePathSize}")
+	private String _strTemplatePath;
 
-    /**
-     * Get the id of the template
-     * 
-     * @return The id of the template
-     */
-    public int getId( )
-    {
-        return _nId;
-    }
+	/**
+	 * Get the id of the template
+	 * 
+	 * @return The id of the template
+	 */
+	public int getIdCalendarTemplate() {
+		return _nIdCalendarTemplate;
+	}
 
-    /**
-     * Set the id of the template
-     * 
-     * @param nId
-     *            The id of the template
-     */
-    public void setId( int nId )
-    {
-        this._nId = nId;
-    }
+	/**
+	 * Set the id of the template
+	 * 
+	 * @param nId
+	 *            The id of the template
+	 */
+	public void setIdCalendarTemplate(int nIdCalendarTemplate) {
+		this._nIdCalendarTemplate = nIdCalendarTemplate;
+	}
 
-    /**
-     * Get the title of the template
-     * 
-     * @return The title of the template
-     */
-    public String getTitle( )
-    {
-        return _strTitle;
-    }
+	/**
+	 * Get the title of the template
+	 * 
+	 * @return The title of the template
+	 */
+	public String getTitle() {
+		return _strTitle;
+	}
 
-    /**
-     * Set the title of the template
-     * 
-     * @param strTitle
-     *            The title of the template
-     */
-    public void setTitle( String strTitle )
-    {
-        this._strTitle = strTitle;
-    }
+	/**
+	 * Set the title of the template
+	 * 
+	 * @param strTitle
+	 *            The title of the template
+	 */
+	public void setTitle(String strTitle) {
+		this._strTitle = strTitle;
+	}
 
-    /**
-     * Get the description of the template
-     * 
-     * @return The description of the template
-     */
-    public String getDescription( )
-    {
-        return _strDescription;
-    }
+	/**
+	 * Get the description of the template
+	 * 
+	 * @return The description of the template
+	 */
+	public String getDescription() {
+		return _strDescription;
+	}
 
-    /**
-     * Set the description of the template
-     * 
-     * @param strDescription
-     *            The description of the template
-     */
-    public void setDescription( String strDescription )
-    {
-        this._strDescription = strDescription;
-    }
+	/**
+	 * Set the description of the template
+	 * 
+	 * @param strDescription
+	 *            The description of the template
+	 */
+	public void setDescription(String strDescription) {
+		this._strDescription = strDescription;
+	}
 
-    /**
-     * Get the path of the file of the template
-     * 
-     * @return The path of the file of the template
-     */
-    public String getTemplatePath( )
-    {
-        return _strTemplatePath;
-    }
+	/**
+	 * Get the path of the file of the template
+	 * 
+	 * @return The path of the file of the template
+	 */
+	public String getTemplatePath() {
+		return _strTemplatePath;
+	}
 
-    /**
-     * Set the path of the file of the template
-     * 
-     * @param strTemplatePath
-     *            The path of the file of the template
-     */
-    public void setTemplatePath( String strTemplatePath )
-    {
-        this._strTemplatePath = strTemplatePath;
-    }
+	/**
+	 * Set the path of the file of the template
+	 * 
+	 * @param strTemplatePath
+	 *            The path of the file of the template
+	 */
+	public void setTemplatePath(String strTemplatePath) {
+		this._strTemplatePath = strTemplatePath;
+	}
 }

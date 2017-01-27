@@ -36,6 +36,8 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
@@ -72,12 +74,12 @@ public final class AppointmentFormHome
      * @param formMessage
      *            The appointment form message associated with the form to create
      */
-    public static void create( AppointmentForm appointmentForm, AppointmentFormMessages formMessage )
+    public static void create( AppointmentForm appointmentForm, FormMessage formMessage )
     {
         _dao.insert( appointmentForm, _plugin );
         _cacheService.putInCache( AppointmentFormCacheService.getFormCacheKey( appointmentForm.getIdForm( ) ), appointmentForm.clone( ) );
         formMessage.setIdForm( appointmentForm.getIdForm( ) );
-        AppointmentFormMessagesHome.create( formMessage );
+        FormMessageHome.create( formMessage );
     }
 
     /**
@@ -104,7 +106,7 @@ public final class AppointmentFormHome
         AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nAppointmentFormId );
         AppointmentDayHome.removeByIdForm( nAppointmentFormId );
         AppointmentSlotHome.deleteAllByIdForm( nAppointmentFormId );
-        AppointmentFormMessagesHome.remove( nAppointmentFormId );
+        FormMessageHome.delete( nAppointmentFormId );
         AppointmentHoliDaysHome.remove( nAppointmentFormId );
         _dao.delete( nAppointmentFormId, _plugin );
         _cacheService.removeKey( AppointmentFormCacheService.getFormCacheKey( nAppointmentFormId ) );

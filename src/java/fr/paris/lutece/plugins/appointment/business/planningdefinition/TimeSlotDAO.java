@@ -38,13 +38,13 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 	@Override
 	public synchronized void insert(TimeSlot timeSlot, Plugin plugin) {
 		timeSlot.setIdTimeSlot(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromTimeSlot(SQL_QUERY_INSERT, timeSlot, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, timeSlot, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(TimeSlot timeSlot, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromTimeSlot(SQL_QUERY_UPDATE, timeSlot, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, timeSlot, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -64,7 +64,7 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 			daoUtil.setInt(1, nIdTimeSlot);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				timeSlot = buildTimeSlotFromDaoUtil(daoUtil);
+				timeSlot = buildTimeSlot(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -79,7 +79,7 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 	 *            the prepare statement util object
 	 * @return a new time slot with all its attributes assigned
 	 */
-	private TimeSlot buildTimeSlotFromDaoUtil(DAOUtil daoUtil) {
+	private TimeSlot buildTimeSlot(DAOUtil daoUtil) {
 		int nIndex = 1;
 		TimeSlot timeSlot = new TimeSlot();
 		timeSlot.setIdTimeSlot(daoUtil.getInt(nIndex++));
@@ -99,15 +99,25 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 	 *            the time slot
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromTimeSlot(String query, TimeSlot timeSlot, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, TimeSlot timeSlot, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, timeSlot.getIdTimeSlot());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, timeSlot.getIdTimeSlot());
+		}
 		daoUtil.setTime(nIndex++, timeSlot.getStartingHourSqlTime());
 		daoUtil.setTime(nIndex++, timeSlot.getEndingHourSqlTime());
 		daoUtil.setBoolean(nIndex++, timeSlot.isOpen());
+		daoUtil.setInt(nIndex++, timeSlot.getIdWorkingDay());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, timeSlot.getIdTimeSlot());
+		}
 		return daoUtil;
 	}
 

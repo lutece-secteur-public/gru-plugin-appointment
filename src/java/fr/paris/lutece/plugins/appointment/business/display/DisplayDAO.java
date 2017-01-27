@@ -39,13 +39,13 @@ public class DisplayDAO implements IDisplayDAO {
 	@Override
 	public synchronized void insert(Display display, Plugin plugin) {
 		display.setIdDisplay(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromDisplay(SQL_QUERY_INSERT, display, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, display, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(Display display, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromDisplay(SQL_QUERY_UPDATE, display, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, display, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -65,7 +65,7 @@ public class DisplayDAO implements IDisplayDAO {
 			daoUtil.setInt(1, nIdDisplay);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				display = buildDisplayFromDaoUtil(daoUtil);
+				display = buildDisplay(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -80,7 +80,7 @@ public class DisplayDAO implements IDisplayDAO {
 	 *            the prepare statement util object
 	 * @return a new display business object with all its attributes assigned
 	 */
-	private Display buildDisplayFromDaoUtil(DAOUtil daoUtil) {
+	private Display buildDisplay(DAOUtil daoUtil) {
 		int nIndex = 1;
 		Display display = new Display();
 		display.setIdDisplay(daoUtil.getInt(nIndex++));
@@ -93,7 +93,7 @@ public class DisplayDAO implements IDisplayDAO {
 	}
 
 	/**
-	 * Build a daoUtil object with the display business object
+	 * Build a daoUtil object with the display business object for insert query
 	 * 
 	 * @param query
 	 *            the query
@@ -101,20 +101,30 @@ public class DisplayDAO implements IDisplayDAO {
 	 *            the display
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromDisplay(String query, Display display, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, Display display, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, display.getIdDisplay());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, display.getIdDisplay());
+		}
 		daoUtil.setBoolean(nIndex++, display.isDisplayTitleFo());
 		daoUtil.setBytes(nIndex++, display.getIcon().getImage());
 		daoUtil.setString(nIndex++, display.getIcon().getMimeType());
+		daoUtil.setInt(nIndex++, display.getNbWeeksToDisplay());
 		daoUtil.setInt(nIndex++, display.getIdCalendarTemplate());
-		daoUtil.setInt(nIndex, display.getIdForm());
+		daoUtil.setInt(nIndex++, display.getIdForm());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, display.getIdDisplay());
+		}
 		return daoUtil;
 	}
-
+	
 	/**
 	 * Execute a safe update (Free the connection in case of error when execute
 	 * the query)

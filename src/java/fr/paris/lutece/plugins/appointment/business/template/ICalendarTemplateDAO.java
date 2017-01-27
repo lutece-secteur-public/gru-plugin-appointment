@@ -48,52 +48,63 @@ public interface ICalendarTemplateDAO
     String BEAN_NAME = "appointment.calendarTemplateDAO";
 
     /**
-     * Create a new calendar template
+     * Generate a new primary key
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return the new primary key
+     */
+    int getNewPrimaryKey(Plugin plugin);
+    
+    /**
+     * Insert a new record int the table
      * 
      * @param template
-     *            The template to create
+     *            instance of the template object to insert
      * @param plugin
      *            The plugin
      */
-    void create( CalendarTemplate template, Plugin plugin );
+    void insert( CalendarTemplate template, Plugin plugin );
 
     /**
-     * Update an existing template
+     * Update the record in the table
      * 
      * @param template
-     *            The template
+     *            the reference of the template
      * @param plugin
      *            The plugin
      */
     void update( CalendarTemplate template, Plugin plugin );
 
     /**
-     * Find a template by its primary key
+     * Delete a record from the table
+     * 
+     * @param nId
+     *            int identifier of the template to delete
+     * @param plugin
+     *            The plugin
+     */
+    void delete( int nId, Plugin plugin );
+    
+    /**
+     * Load the data from the table
      * 
      * @param nId
      *            The id of the template
      * @param plugin
      *            The plugin
-     * @return The calendar template found, or null if no calendar template has the given primary key
+     * @return The instance of the template
      */
-    CalendarTemplate findByPrimaryKey( int nId, Plugin plugin );
+    CalendarTemplate select( int nId, Plugin plugin );
 
     /**
-     * Get the list of calendar templates
+     * Get all the calendar templates
      * 
      * @param plugin
      *            The plugin
      * @return The list of calendar templates
      */
-    List<CalendarTemplate> findAll( Plugin plugin );
+    List<CalendarTemplate> selectAll( Plugin plugin );
 
-    /**
-     * Remove a template from its primary key
-     * 
-     * @param nId
-     *            The id of the template to remove
-     * @param plugin
-     *            The plugin
-     */
-    void delete( int nId, Plugin plugin );
+
 }

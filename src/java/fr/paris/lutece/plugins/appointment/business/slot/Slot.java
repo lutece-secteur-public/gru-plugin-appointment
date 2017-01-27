@@ -38,9 +38,9 @@ public class Slot implements Serializable {
 	private boolean _bIsOpen;
 
 	/**
-	 * Maximum capacity of the slot
+	 * Nb Remaining Places of the slot
 	 */
-	private int _nMaxCapacityPerSlot;
+	private int _nNb_Remaining_Places;
 
 	/**
 	 * Form Id the slot belongs to (foreign key)
@@ -174,22 +174,22 @@ public class Slot implements Serializable {
 	}
 
 	/**
-	 * Get the maximum capacity of the slot
+	 * Get number of remaining places of the slot
 	 * 
-	 * @return the maximum capacity of the slot
+	 * @return the number of remaining places of the slot
 	 */
-	public int getMaxCapacityPerSlot() {
-		return _nMaxCapacityPerSlot;
+	public int getNbRemainingPlaces() {
+		return _nNb_Remaining_Places;
 	}
 
 	/**
-	 * Set the maximum capacity of the slot
+	 * Set the number of remaining places of the slot
 	 * 
-	 * @param maxCapacityPerSlot
-	 *            the maximum capacity to set
+	 * @param nNbRemainingPlaces
+	 *            the number of remaining places
 	 */
-	public void setMaxCapacityPerSlot(int nMaxCapacityPerSlot) {
-		this._nMaxCapacityPerSlot = nMaxCapacityPerSlot;
+	public void setNbRemainingPlaces(int nNbRemainingPlaces) {
+		this._nNb_Remaining_Places = nNbRemainingPlaces;
 	}
 
 	/**

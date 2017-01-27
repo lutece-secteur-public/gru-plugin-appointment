@@ -10,6 +10,11 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 public interface IWorkingDayDAO {
 	
 	/**
+     * The name of the bean of the DAO
+     */
+    static String BEAN_NAME = "appointment.workingDayDAO";
+    
+	/**
      * Generate a new primary key
      * 
      * @param plugin

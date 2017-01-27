@@ -4,11 +4,17 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * Display DAO Interface
+ * 
  * @author Laurent Payen
  *
  */
 public interface IDisplayDAO {
 	
+	/**
+     * The name of the bean of the DAO
+     */
+    static String BEAN_NAME = "appointment.displayDAO";
+    
 	/**
      * Generate a new primary key
      * 

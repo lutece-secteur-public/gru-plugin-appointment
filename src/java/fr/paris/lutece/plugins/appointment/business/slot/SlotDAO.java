@@ -12,10 +12,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class SlotDAO implements ISlotDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_slot) FROM appointment_slot";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date, ending_date, is_open, max_capacity, id_form) VALUES (?, ?, ?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date = ?, ending_date = ?, is_open = ?, max_capacity = ?, id_form = ? WHERE id_slot = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date, ending_date, is_open, nb_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date = ?, ending_date = ?, is_open = ?, nb_remaining_places = ?, id_form = ? WHERE id_slot = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_slot, starting_date, ending_date, is_open, max_capacity, id_form FROM appointment_slot WHERE id_slot = ?";
+	private static final String SQL_QUERY_SELECT = "SELECT id_slot, starting_date, ending_date, is_open, nb_remaining_places, id_form FROM appointment_slot WHERE id_slot = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -38,13 +38,13 @@ public class SlotDAO implements ISlotDAO {
 	@Override
 	public synchronized void insert(Slot slot, Plugin plugin) {
 		slot.setIdSlot(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromSlot(SQL_QUERY_INSERT, slot, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, slot, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(Slot slot, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromSlot(SQL_QUERY_UPDATE, slot, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, slot, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -64,7 +64,7 @@ public class SlotDAO implements ISlotDAO {
 			daoUtil.setInt(1, nIdSlot);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				slot = buildSlotFromDaoUtil(daoUtil);
+				slot = buildSlot(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -79,14 +79,14 @@ public class SlotDAO implements ISlotDAO {
 	 *            the prepare statement util object
 	 * @return a new Slot with all its attributes assigned
 	 */
-	private Slot buildSlotFromDaoUtil(DAOUtil daoUtil) {
+	private Slot buildSlot(DAOUtil daoUtil) {
 		int nIndex = 1;
 		Slot slot = new Slot();
 		slot.setIdSlot(daoUtil.getInt(nIndex++));
 		slot.setStartingDate(daoUtil.getTimestamp(nIndex++));
 		slot.setEndingDate(daoUtil.getTimestamp(nIndex++));
 		slot.setIsOpen(daoUtil.getBoolean(nIndex++));
-		slot.setMaxCapacityPerSlot(daoUtil.getInt(nIndex++));
+		slot.setNbRemainingPlaces(daoUtil.getInt(nIndex++));
 		slot.setIdForm(daoUtil.getInt(nIndex));
 		return slot;
 	}
@@ -100,17 +100,26 @@ public class SlotDAO implements ISlotDAO {
 	 *            the SLot
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromSlot(String query, Slot slot, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, Slot slot, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, slot.getIdSlot());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, slot.getIdSlot());
+		}
 		daoUtil.setTimestamp(nIndex++, slot.getStartingTimestampDate());
 		daoUtil.setTimestamp(nIndex++, slot.getEndingTimestampDate());
 		daoUtil.setBoolean(nIndex++, slot.isOpen());
-		daoUtil.setInt(nIndex++, slot.getMaxCapacityPerSlot());
-		daoUtil.setInt(nIndex, slot.getIdForm());
+		daoUtil.setInt(nIndex++, slot.getNbRemainingPlaces());
+		daoUtil.setInt(nIndex++, slot.getIdForm());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, slot.getIdSlot());
+		}
 		return daoUtil;
 	}
 

@@ -37,10 +37,10 @@ import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -190,7 +190,7 @@ public class AppointmentFormService implements Serializable
      *            the request
      * @return the html form
      */
-    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form, AppointmentFormMessages formMessages, Locale locale,
+    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form, FormMessage formMessages, Locale locale,
             boolean bDisplayFront, HttpServletRequest request )
     {
         Map<String, Object> model = new HashMap<String, Object>( );
@@ -270,7 +270,7 @@ public class AppointmentFormService implements Serializable
      *            the str user id opam
      * @return the html form
      */
-    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form, AppointmentFormMessages formMessages, Locale locale,
+    public String getHtmlForm( int nWeek, String strDay, String strSlot, AppointmentForm form, FormMessage formMessages, Locale locale,
             boolean bDisplayFront, HttpServletRequest request, String strCustomerId, String strUserIdOpam )
     {
         Map<String, Object> model = new HashMap<String, Object>( );
@@ -370,7 +370,7 @@ public class AppointmentFormService implements Serializable
      *            HttpServletRequest
      * @return the HTML code of the form
      */
-    public String getHtmlForm( AppointmentForm form, AppointmentFormMessages formMessages, Locale locale, boolean bDisplayFront, HttpServletRequest request )
+    public String getHtmlForm( AppointmentForm form, FormMessage formMessages, Locale locale, boolean bDisplayFront, HttpServletRequest request )
     {
         Map<String, Object> model = new HashMap<String, Object>( );
         StringBuffer strBuffer = new StringBuffer( );
@@ -820,9 +820,9 @@ public class AppointmentFormService implements Serializable
      * 
      * @return The default form message. The form message is not associated with any appointment form
      */
-    public AppointmentFormMessages getDefaultAppointmentFormMessage( )
+    public FormMessage getDefaultAppointmentFormMessage( )
     {
-        AppointmentFormMessages formMessages = new AppointmentFormMessages( );
+        FormMessage formMessages = new FormMessage( );
         formMessages.setCalendarTitle( AppPropertiesService.getProperty( PROPERTY_DEFAULT_CALENDAR_TITLE, StringUtils.EMPTY ) );
         formMessages.setFieldFirstNameTitle( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_FIRST_NAME_TITLE, StringUtils.EMPTY ) );
         formMessages.setFieldFirstNameHelp( AppPropertiesService.getProperty( PROPERTY_DEFAULT_FIELD_FIRST_NAME_HELP, StringUtils.EMPTY ) );

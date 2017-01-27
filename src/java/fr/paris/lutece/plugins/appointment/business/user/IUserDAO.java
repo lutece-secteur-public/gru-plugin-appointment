@@ -10,6 +10,11 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 public interface IUserDAO {
 
 	/**
+     * The name of the bean of the DAO
+     */
+    String BEAN_NAME = "appointment.userDAO";
+    
+	/**
      * Generate a new primary key
      * 
      * @param plugin
@@ -55,7 +60,7 @@ public interface IUserDAO {
 	 *            The identifier of the user
 	 * @param plugin
 	 *            the Plugin
-	 * @return The instance of the appoinusertment
+	 * @return The instance of the user
 	 */
 	User select(int nIdUser, Plugin plugin);
 

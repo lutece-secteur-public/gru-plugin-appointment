@@ -11,9 +11,9 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class UserDAO implements IUserDAO {
 
-	private static final String SQL_QUERY_NEW_PK = "SELECT max (id_user) FROM appointment_user";
+	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_user) FROM appointment_user";
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user (id_user, id_lutece_user, first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_user SET id_lutece_user = ?, first_name = ?, last_name = ?, email = ?, phone_numer = ? WHERE id_user = ?";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_user SET id_lutece_user = ?, first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE id_user = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_user WHERE id_user = ?";
 	private static final String SQL_QUERY_SELECT = "SELECT id_user, id_lutece_user, first_name, last_name, email, phone_number FROM appointment_user WHERE id_user = ?";
 
@@ -38,13 +38,13 @@ public class UserDAO implements IUserDAO {
 	@Override
 	public synchronized void insert(User user, Plugin plugin) {
 		user.setIdUser(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromUser(SQL_QUERY_INSERT, user, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, user, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(User user, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromUser(SQL_QUERY_UPDATE, user, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, user, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -64,7 +64,7 @@ public class UserDAO implements IUserDAO {
 			daoUtil.setInt(1, nIdUser);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				user = buildUserFromDaoUtil(daoUtil);
+				user = buildUser(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -79,7 +79,7 @@ public class UserDAO implements IUserDAO {
 	 *            the prepare statement util object
 	 * @return a new User with all its attributes assigned
 	 */
-	private User buildUserFromDaoUtil(DAOUtil daoUtil) {
+	private User buildUser(DAOUtil daoUtil) {
 		int nIndex = 1;
 		User user = new User();
 		user.setIdUser(daoUtil.getInt(nIndex++));
@@ -100,17 +100,26 @@ public class UserDAO implements IUserDAO {
 	 *            the User
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromUser(String query, User user, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, User user, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, user.getIdUser());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, user.getIdUser());
+		}
 		daoUtil.setInt(nIndex++, user.getIdLuteceUser());
 		daoUtil.setString(nIndex++, user.getFirstName());
 		daoUtil.setString(nIndex++, user.getLastName());
 		daoUtil.setString(nIndex++, user.getEmail());
-		daoUtil.setString(nIndex, user.getPhoneNumber());
+		daoUtil.setString(nIndex++, user.getPhoneNumber());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, user.getIdUser());
+		}
 		return daoUtil;
 	}
 

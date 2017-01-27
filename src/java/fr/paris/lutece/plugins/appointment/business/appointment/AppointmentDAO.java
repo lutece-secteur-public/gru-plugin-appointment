@@ -38,13 +38,13 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	@Override
 	public synchronized void insert(Appointment appointment, Plugin plugin) {
 		appointment.setIdAppointment(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromAppointment(SQL_QUERY_INSERT, appointment, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, appointment, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(Appointment appointment, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromAppointment(SQL_QUERY_UPDATE, appointment, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, appointment, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -52,7 +52,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	public void delete(int nIdAppointment, Plugin plugin) {
 		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_DELETE, plugin);
 		daoUtil.setInt(1, nIdAppointment);
-		executeUpdate(daoUtil);			
+		executeUpdate(daoUtil);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 			daoUtil.setInt(1, nIdAppointment);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				appointment = buildAppointmentFromDaoUtil(daoUtil);
+				appointment = buildAppointment(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -73,11 +73,14 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	}
 
 	/**
-	 * Build an Appointment business object from the resultset 
-	 * @param daoUtil the prepare statement util object
-	 * @return a new Appointment business object with all its attributes assigned
+	 * Build an Appointment business object from the resultset
+	 * 
+	 * @param daoUtil
+	 *            the prepare statement util object
+	 * @return a new Appointment business object with all its attributes
+	 *         assigned
 	 */
-	private Appointment buildAppointmentFromDaoUtil(DAOUtil daoUtil) {
+	private Appointment buildAppointment(DAOUtil daoUtil) {
 		int nIndex = 1;
 		Appointment appointment = new Appointment();
 		appointment.setIdAppointment(daoUtil.getInt(nIndex++));
@@ -87,25 +90,41 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	}
 
 	/**
-	 * Build a daoUtil object with the query and all the attributes of the Appointment
-	 * @param query the query 
-	 * @param appointment the Appointment
-	 * @param plugin the plugin
+	 * Build a daoUtil object with the query and all the attributes of the
+	 * Appointment
+	 * 
+	 * @param suery
+	 *            the query
+	 * @param appointment
+	 *            the Appointment
+	 * @param plugin
+	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromAppointment(String query, Appointment appointment, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, Appointment appointment, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
-		DAOUtil daoUtil = new DAOUtil(query, plugin);		
-		daoUtil.setInt(nIndex++, appointment.getIdAppointment());
+		DAOUtil daoUtil = new DAOUtil(query, plugin);
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, appointment.getIdAppointment());
+		}
 		daoUtil.setInt(nIndex++, appointment.getIdUser());
 		daoUtil.setInt(nIndex++, appointment.getIdSlot());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, appointment.getIdAppointment());
+		}
 		return daoUtil;
 	}
 
 	/**
-	 * Execute a safe update 
-	 * (Free the connection in case of error when execute the query) 
-	 * @param daoUtil the daoUtil
+	 * Execute a safe update (Free the connection in case of error when execute
+	 * the query)
+	 * 
+	 * @param daoUtil
+	 *            the daoUtil
 	 */
 	private void executeUpdate(DAOUtil daoUtil) {
 		try {

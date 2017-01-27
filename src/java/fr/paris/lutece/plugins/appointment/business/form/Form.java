@@ -3,6 +3,9 @@ package fr.paris.lutece.plugins.appointment.business.form;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
+
+import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinition;
 
 /**
  * Business class of the Form
@@ -56,6 +59,11 @@ public class Form implements Serializable {
 	 * Indicate whether the form is active or not
 	 */
 	private boolean _bIsActive;
+
+	/**
+	 * List of the week definitions of the form
+	 */
+	private List<WeekDefinition> _listWeekDefinitions;
 
 	/**
 	 * Get the form Id
@@ -257,6 +265,25 @@ public class Form implements Serializable {
 	 */
 	public void setIsActive(boolean bIsActive) {
 		this._bIsActive = bIsActive;
+	}
+
+	/**
+	 * Get all the week definition of the form
+	 * 
+	 * @return a list of the week definitions
+	 */
+	public List<WeekDefinition> getWeekDefinitions() {
+		return _listWeekDefinitions;
+	}
+
+	/**
+	 * Set all the week definitions of the form
+	 * 
+	 * @param listWeekDefinitions
+	 *            the list to set
+	 */
+	public void setWeekDefinitions(List<WeekDefinition> listWeekDefinitions) {
+		this._listWeekDefinitions = listWeekDefinitions;
 	}
 
 }

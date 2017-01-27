@@ -4,11 +4,17 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * Appointment DAO Interface 
+ * 
  * @author Laurent Payen
  *
  */
 public interface IAppointmentDAO {
 
+	/**
+     * The name of the bean of the DAO
+     */
+    static String BEAN_NAME = "appointment.appointmentDAO";
+    
 	/**
      * Generate a new primary key
      * 

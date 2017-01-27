@@ -70,8 +70,6 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
@@ -79,6 +77,8 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDisponiblity;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
@@ -1126,7 +1126,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 			/* WORKFLOW FUTURE model.put( MARK_STATUS, lsSta); */
 			model.put(MARK_FORM, form);
-			model.put(MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey(nIdForm));
+			model.put(MARK_FORM_MESSAGES, FormMessageHome.findByPrimaryKey(nIdForm));
 			model.put(MARK_NB_ITEMS_PER_PAGE, Integer.toString(nItemsPerPage));
 			model.put(MARK_PAGINATOR, delegatePaginator);
 			model.put(MARK_STATUS_RESERVED, Appointment.Status.STATUS_RESERVED.getValeur());
@@ -1395,7 +1395,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		}
 
-		AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey(nIdForm);
+		FormMessage formMessages = FormMessageHome.findByPrimaryKey(nIdForm);
 
 		String strCustomerId = request.getParameter(PARAMETER_CUSTOMER_ID);
 		String strUserIdOpam = request.getParameter(PARAMETER_USER_ID_OPAM);
@@ -1797,7 +1797,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			}
 
 			AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
-			AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey(nIdForm);
+			FormMessage formMessages = FormMessageHome.findByPrimaryKey(nIdForm);
 
 			if (StringUtils.isNotBlank(formMessages.getCalendarDescription())) {
 				addInfo(formMessages.getCalendarDescription());
@@ -2072,7 +2072,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				model.put(MARK_DAY, day);
 				model.put(MARK_FORM, form);
 				model.put(MARK_FORM_MESSAGES,
-						AppointmentFormMessagesHome.findByPrimaryKey(appointmentSlot.getIdForm()));
+						FormMessageHome.findByPrimaryKey(appointmentSlot.getIdForm()));
 				fillCommons(model);
 
 				Locale locale = getLocale();
@@ -2244,7 +2244,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		model.put(MARK_SLOT, slot);
 		model.put(MARK_FORM, form);
-		model.put(MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey(slot.getIdForm()));
+		model.put(MARK_FORM_MESSAGES, FormMessageHome.findByPrimaryKey(slot.getIdForm()));
 		model.put(MARK_FORM, form);
 		model.put(MARK_NB_ITEMS_PER_PAGE, Integer.toString(nItemsPerPage));
 

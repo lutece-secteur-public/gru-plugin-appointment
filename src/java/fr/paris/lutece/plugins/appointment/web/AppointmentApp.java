@@ -63,8 +63,6 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
@@ -72,6 +70,8 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDisponiblity;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
@@ -742,7 +742,7 @@ public class AppointmentApp extends MVCApplication {
 
 		AppointmentDay day = AppointmentDayHome.findByPrimaryKey(appointmentSlot.getIdDay());
 		appointment.setDateAppointment((Date) day.getDate().clone());
-		model.put(MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey(form.getIdForm()));
+		model.put(MARK_FORM_MESSAGES, FormMessageHome.findByPrimaryKey(form.getIdForm()));
 		model.put(MARK_DAY, day);
 		model.put(MARK_FORM, form);
 		fillCommons(model);
@@ -846,7 +846,7 @@ public class AppointmentApp extends MVCApplication {
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
 			Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
 			AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
-			AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey(nIdForm);
+			FormMessage formMessages = FormMessageHome.findByPrimaryKey(nIdForm);
 			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 
 			String strTimeBegin = _appointmentFormService.convertTimeIntoString(slot.getStartingHour(),
@@ -1025,7 +1025,7 @@ public class AppointmentApp extends MVCApplication {
 			int nIdForm = Integer.parseInt(strIdForm);
 
 			Map<String, Object> model = new HashMap<String, Object>();
-			model.put(MARK_FORM_MESSAGES, AppointmentFormMessagesHome.findByPrimaryKey(nIdForm));
+			model.put(MARK_FORM_MESSAGES, FormMessageHome.findByPrimaryKey(nIdForm));
 
 			if (Boolean.parseBoolean(request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS))) {
 				String strFromUrl = request.getParameter(MARK_FROM_URL);
@@ -1220,7 +1220,7 @@ public class AppointmentApp extends MVCApplication {
 			return StringUtils.EMPTY;
 		}
 
-		AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey(form.getIdForm());
+		FormMessage formMessages = FormMessageHome.findByPrimaryKey(form.getIdForm());
 
 		if (user != null) {
 			Map<String, String> map = user.getUserInfos();
@@ -1278,7 +1278,7 @@ public class AppointmentApp extends MVCApplication {
 	 */
 	private static String getAppointmentCalendarHtml(HttpServletRequest request, AppointmentForm form,
 			AppointmentFormService appointmentFormService, Map<String, Object> model, Locale locale) {
-		AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey(form.getIdForm());
+		FormMessage formMessages = FormMessageHome.findByPrimaryKey(form.getIdForm());
 
 		String strNbWeek = request.getParameter(PARAMETER_NB_WEEK);
 		boolean bBack = StringUtils.isBlank(request.getParameter(PARAMETER_DIRECTION)) ? false

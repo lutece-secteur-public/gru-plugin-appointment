@@ -33,63 +33,56 @@
  */
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
+import java.sql.Date;
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
-import java.sql.Date;
-
-import java.util.List;
-
 /**
- * This class provides instances management methods (create, find, ...) for AppointmentDay objects
+ * This class provides instances management methods (create, find, ...) for
+ * AppointmentDay objects
  */
-public final class AppointmentHoliDaysHome
-{
-    // Static variable pointed at the DAO instance
-    private static IAppointmentHoliDaysDAO _dao = SpringContextService.getBean( "appointment.appointmentHoliDaysDAO" );
-    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+public final class AppointmentHoliDaysHome {
+	// Static variable pointed at the DAO instance
+	private static IAppointmentHoliDaysDAO _dao = SpringContextService.getBean("appointment.appointmentHoliDaysDAO");
+	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 
-    /**
-     * Private constructor - this class need not be instantiated
-     */
-    private AppointmentHoliDaysHome( )
-    {
-    }
+	/**
+	 * Private constructor - this class need not be instantiated
+	 */
+	private AppointmentHoliDaysHome() {
+	}
 
-    /**
-     * Creates a list holidays in the database
-     * 
-     * @param listHolidays
-     *            list holidays
-     * @param nIdForm
-     *            id form
-     */
-    public static void create( Date holiday, int nIdForm )
-    {
-        _dao.insert( holiday, nIdForm, _plugin );
-    }
+	/**
+	 * Creates a list holidays in the database
+	 * 
+	 * @param listHolidays
+	 *            list holidays
+	 * @param nIdForm
+	 *            id form
+	 */
+	public static void create(Date holiday, int nIdForm) {
+		_dao.insert(holiday, nIdForm, _plugin);
+	}
 
-    /**
-     * Remove a holidays from the database
-     * 
-     * @param nIdForm
-     *            The id form
-     */
-    public static void remove( Date date, int nIdForm )
-    {
-        _dao.remove( date, nIdForm, _plugin );
-    }
+	/**
+	 * Remove a holidays from the database
+	 * 
+	 * @param nIdForm
+	 *            The id form
+	 */
+	public static void remove(Date date, int nIdForm) {
+		_dao.remove(date, nIdForm, _plugin);
+	}
 
-    public static void remove( int nIdForm )
-    {
-        _dao.remove( nIdForm, _plugin );
-    }
+	public static void remove(int nIdForm) {
+		_dao.remove(nIdForm, _plugin);
+	}
 
-    public static List<Date> findByIdForm( int nIdForm )
-    {
-        return _dao.findByIdForm( nIdForm, _plugin );
-    }
+	public static List<Date> findByIdForm(int nIdForm) {
+		return _dao.findByIdForm(nIdForm, _plugin);
+	}
 }

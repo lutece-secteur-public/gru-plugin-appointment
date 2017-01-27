@@ -42,7 +42,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import net.sf.ehcache.constructs.nonstop.store.LocalReadsOnTimeoutStore;
 
 /**
  * Slot for an appointment in a day. The slot may have 3 states : free, partially free or occupied.
@@ -145,10 +144,10 @@ public class AppointmentSlot implements Comparable<AppointmentSlot>, Serializabl
 	}
 
 	/**
-     * Get the id of the slot
-     * 
-     * @return The id of the slot
-     */
+	 * Get the id of the slot
+	 * 
+	 * @return The id of the slot
+	 */
     public int getIdSlot( )
     {
         return _nIdSlot;

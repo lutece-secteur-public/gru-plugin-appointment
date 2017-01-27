@@ -38,13 +38,13 @@ public class WorkingDayDAO implements IWorkingDayDAO {
 	@Override
 	public synchronized void insert(WorkingDay workingDay, Plugin plugin) {
 		workingDay.setIdWorkingDay(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromWorkingDay(SQL_QUERY_INSERT, workingDay, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, workingDay, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(WorkingDay workingDay, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromWorkingDay(SQL_QUERY_UPDATE, workingDay, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, workingDay, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -64,7 +64,7 @@ public class WorkingDayDAO implements IWorkingDayDAO {
 			daoUtil.setInt(1, nIdWorkingDay);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				workingDay = buildWorkingDayFromDaoUtil(daoUtil);
+				workingDay = buildWorkingDay(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -79,7 +79,7 @@ public class WorkingDayDAO implements IWorkingDayDAO {
 	 *            the prepare statement util object
 	 * @return a new WorkingDay with all its attributes assigned
 	 */
-	private WorkingDay buildWorkingDayFromDaoUtil(DAOUtil daoUtil) {
+	private WorkingDay buildWorkingDay(DAOUtil daoUtil) {
 		int nIndex = 1;
 		WorkingDay workingDay = new WorkingDay();
 		workingDay.setIdWorkingDay(daoUtil.getInt(nIndex++));
@@ -97,14 +97,23 @@ public class WorkingDayDAO implements IWorkingDayDAO {
 	 *            the WorkingDay
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromWorkingDay(String query, WorkingDay workingDay, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, WorkingDay workingDay, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, workingDay.getIdWorkingDay());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, workingDay.getIdWorkingDay());
+		}
 		daoUtil.setInt(nIndex++, workingDay.getDayOfWeek());
 		daoUtil.setInt(nIndex++, workingDay.getIdWeekDefinition());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, workingDay.getIdWorkingDay());
+		}
 		return daoUtil;
 	}
 

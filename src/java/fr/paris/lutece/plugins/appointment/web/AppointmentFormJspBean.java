@@ -54,14 +54,14 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessagesHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
@@ -1189,7 +1189,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             }
 
             int nIdForm = Integer.parseInt( strIdForm );
-            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
+            FormMessage formMessages = FormMessageHome.findByPrimaryKey( nIdForm );
             Map<String, Object> model = new HashMap<String, Object>( );
             model.put( MARK_FORM_MESSAGE, formMessages );
             model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
@@ -1228,11 +1228,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             UrlItem url = new UrlItem( getViewFullUrl( VIEW_MODIFY_FORM_MESSAGES ) );
             url.addParameter( PARAMETER_ID_FORM, nIdForm );
 
-            AppointmentFormMessages formMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
+            FormMessage formMessages = FormMessageHome.findByPrimaryKey( nIdForm );
 
             populate( formMessages, request );
 
-            AppointmentFormMessagesHome.update( formMessages );
+            FormMessageHome.update( formMessages );
 
             return redirect( request, VIEW_MODIFY_FORM_MESSAGES, PARAMETER_ID_FORM, nIdForm );
         }
@@ -1391,7 +1391,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             String newNameForCopy = I18nService.getLocalizedString( PROPERTY_COPY_OF_FORM, request.getLocale( ) ) + formCopy.getTitle( );
             formCopy.setTitle( newNameForCopy );
             formCopy.setIsActive( false );
-            AppointmentFormMessages appointmentFormMessages = AppointmentFormMessagesHome.findByPrimaryKey( nIdForm );
+            FormMessage appointmentFormMessages = FormMessageHome.findByPrimaryKey( nIdForm );
             AppointmentFormHome.create( formCopy, appointmentFormMessages );
 
             List<AppointmentDay> listDays = AppointmentDayHome.findByIdForm( nIdForm );

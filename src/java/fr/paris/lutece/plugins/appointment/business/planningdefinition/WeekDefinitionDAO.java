@@ -38,13 +38,13 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 	@Override
 	public synchronized void insert(WeekDefinition weekDefinition, Plugin plugin) {
 		weekDefinition.setIdWeekDefinition(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromWeekDefinition(SQL_QUERY_INSERT, weekDefinition, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, weekDefinition, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(WeekDefinition weekDefinition, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromWeekDefinition(SQL_QUERY_UPDATE, weekDefinition, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, weekDefinition, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -64,7 +64,7 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 			daoUtil.setInt(1, nIdWeekDefinition);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				weekDefinition = buildWeekDefinitionFromDaoUtil(daoUtil);
+				weekDefinition = buildWeekDefinition(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -79,7 +79,7 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 	 *            the prepare statement util object
 	 * @return a new WeekDefinition with all its attributes assigned
 	 */
-	private WeekDefinition buildWeekDefinitionFromDaoUtil(DAOUtil daoUtil) {
+	private WeekDefinition buildWeekDefinition(DAOUtil daoUtil) {
 		int nIndex = 1;
 		WeekDefinition weekDefinition = new WeekDefinition();
 		weekDefinition.setIdWeekDefinition(daoUtil.getInt(nIndex++));
@@ -97,14 +97,23 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 	 *            the Week Definition
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromWeekDefinition(String query, WeekDefinition weekDefinition, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, WeekDefinition weekDefinition, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, weekDefinition.getIdWeekDefinition());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, weekDefinition.getIdWeekDefinition());
+		}
 		daoUtil.setDate(nIndex++, weekDefinition.getSqlDateOfApply());
 		daoUtil.setInt(nIndex++, weekDefinition.getIdForm());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, weekDefinition.getIdWeekDefinition());
+		}
 		return daoUtil;
 	}
 

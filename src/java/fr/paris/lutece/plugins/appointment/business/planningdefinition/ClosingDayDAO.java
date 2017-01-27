@@ -1,11 +1,11 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
-import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  * This class provides Data Access methods for Closing Day objects
+ * 
  * @author Laurent Payen
  *
  */
@@ -38,13 +38,13 @@ public class ClosingDayDAO implements IClosingDayDAO {
 	@Override
 	public synchronized void insert(ClosingDay closingDay, Plugin plugin) {
 		closingDay.setIdClosingDay(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromClosingDay(SQL_QUERY_INSERT, closingDay, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, closingDay, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(ClosingDay closingDay, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromClosingDay(SQL_QUERY_UPDATE, closingDay, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, closingDay, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -52,7 +52,7 @@ public class ClosingDayDAO implements IClosingDayDAO {
 	public void delete(int nIdClosingDay, Plugin plugin) {
 		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_DELETE, plugin);
 		daoUtil.setInt(1, nIdClosingDay);
-		executeUpdate(daoUtil);			
+		executeUpdate(daoUtil);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class ClosingDayDAO implements IClosingDayDAO {
 			daoUtil.setInt(1, nIdClosingDay);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				closingDay = buildClosingDayFromDaoUtil(daoUtil);
+				closingDay = buildClosingDay(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -73,11 +73,13 @@ public class ClosingDayDAO implements IClosingDayDAO {
 	}
 
 	/**
-	 * Build a Closing Day business object from the resultset 
-	 * @param daoUtil the prepare statement util object
+	 * Build a Closing Day business object from the resultset
+	 * 
+	 * @param daoUtil
+	 *            the prepare statement util object
 	 * @return a new Closing Day with all its attributes assigned
 	 */
-	private ClosingDay buildClosingDayFromDaoUtil(DAOUtil daoUtil) {
+	private ClosingDay buildClosingDay(DAOUtil daoUtil) {
 		int nIndex = 1;
 		ClosingDay closingDay = new ClosingDay();
 		closingDay.setIdClosingDay(daoUtil.getInt(nIndex++));
@@ -88,24 +90,39 @@ public class ClosingDayDAO implements IClosingDayDAO {
 
 	/**
 	 * Build a daoUtil object with the CLosingDay business object
-	 * @param query the query 
-	 * @param closingDay the closingDay
-	 * @param plugin the plugin
+	 * 
+	 * @param query
+	 *            the query
+	 * @param closingDay
+	 *            the closingDay
+	 * @param plugin
+	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromClosingDay(String query, ClosingDay closingDay, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, ClosingDay closingDay, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
-		DAOUtil daoUtil = new DAOUtil(query, plugin);		
-		daoUtil.setInt(nIndex++, closingDay.getIdClosingDay());
+		DAOUtil daoUtil = new DAOUtil(query, plugin);
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, closingDay.getIdClosingDay());
+		}
 		daoUtil.setDate(nIndex++, closingDay.getSqlDateOfClosingDay());
 		daoUtil.setInt(nIndex++, closingDay.getIdForm());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, closingDay.getIdClosingDay());
+		}
 		return daoUtil;
 	}
 
 	/**
-	 * Execute a safe update 
-	 * (Free the connection in case of error when execute the query) 
-	 * @param daoUtil the daoUtil
+	 * Execute a safe update (Free the connection in case of error when execute
+	 * the query)
+	 * 
+	 * @param daoUtil
+	 *            the daoUtil
 	 */
 	private void executeUpdate(DAOUtil daoUtil) {
 		try {

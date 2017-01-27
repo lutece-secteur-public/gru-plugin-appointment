@@ -31,58 +31,71 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.business;
+package fr.paris.lutece.plugins.appointment.business.message;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
-import java.util.List;
-
 /**
- * Interface of DAO of appointment form messages
+ * Form Messages DAO Interface
+ * 
+ * @author Laurent Payen
  */
-public interface IAppointmentFormMessagesDAO
-{
-    /**
-     * Create a form message
-     * 
-     * @param formMessage
-     *            The instance of the form message to create
-     * @param plugin
-     *            The plugin
-     */
-    void insert( AppointmentFormMessages formMessage, Plugin plugin );
+public interface IFormMessageDAO {
 
-    /**
-     * Update a form message
-     * 
-     * @param formMessage
-     *            The form message to update
-     * @param plugin
-     *            The plugin
+	/**
+     * The name of the bean of the DAO
      */
-    void store( AppointmentFormMessages formMessage, Plugin plugin );
-
-    /**
-     * Remove a form message from its primary key
+    static String BEAN_NAME = "appointment.formMessageDAO";
+    
+	/**
+     * Generate a new primary key
      * 
-     * @param nAppointmentFormId
-     *            The id of the form
      * @param plugin
-     *            The plugin
+     *            the Plugin
+     * @return the new primary key
      */
-    void delete( int nAppointmentFormId, Plugin plugin );
+    int getNewPrimaryKey(Plugin plugin);
+    
+	/**
+	 * Create a form message
+	 * 
+	 * @param formMessage
+	 *            The instance of the form message to create
+	 * @param plugin
+	 *            The plugin
+	 */
+	void insert(FormMessage formMessage, Plugin plugin);
 
-    // /////////////////////////////////////////////////////////////////////////
-    // Finders
+	/**
+	 * Update a form message
+	 * 
+	 * @param formMessage
+	 *            The form message to update
+	 * @param plugin
+	 *            The plugin
+	 */
+	void update(FormMessage formMessage, Plugin plugin);
 
-    /**
-     * Get a form message from its primary key
-     * 
-     * @param nAppointmentFormId
-     *            The id of the form message
-     * @param plugin
-     *            The plugin
-     * @return The form message, or null if no form message has the given primary key
-     */
-    AppointmentFormMessages load( int nAppointmentFormId, Plugin plugin );
+	/**
+	 * Remove a form message from its primary key
+	 * 
+	 * @param nAppointmentFormId
+	 *            The id of the form
+	 * @param plugin
+	 *            The plugin
+	 */
+	void delete(int nAppointmentFormId, Plugin plugin);
+
+	/**
+	 * Get a form message from its primary key
+	 * 
+	 * @param nAppointmentFormId
+	 *            The id of the form message
+	 * @param plugin
+	 *            The plugin
+	 * @return The form message, or null if no form message has the given
+	 *         primary key
+	 */
+	FormMessage select(int nAppointmentFormId, Plugin plugin);
+
 }

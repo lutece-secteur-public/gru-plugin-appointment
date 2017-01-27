@@ -232,7 +232,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
         model.put( MARK_REF_LIST_TEMPLATES, refListTemplates );
 
-        return getPage( ( _template.getId( ) > 0 ) ? MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE : MESSAGE_CREATE_TEMPLATE_PAGE_TITLE,
+        return getPage( ( _template.getIdCalendarTemplate() > 0 ) ? MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE : MESSAGE_CREATE_TEMPLATE_PAGE_TITLE,
                 TEMPLATE_CREATE_MODIFY_CALENDAR_TEMPLATE, model );
     }
 
@@ -262,7 +262,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
             return redirectView( request, VIEW_CREATE_MODIFY_TEMPLATE );
         }
 
-        if ( _template.getId( ) > 0 )
+        if ( _template.getIdCalendarTemplate() > 0 )
         {
             CalendarTemplateHome.update( _template );
             addInfo( MESSAGE_INFO_TEMPLATE_UPDATED, getLocale( ) );

@@ -4,11 +4,17 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * Form DAO Interface
+ * 
  * @author Laurent Payen
  *
  */
 public interface IFormDAO {
 
+	/**
+     * The name of the bean of the DAO
+     */
+    static String BEAN_NAME = "appointment.formDAO";
+    
 	/**
      * Generate a new primary key
      * 

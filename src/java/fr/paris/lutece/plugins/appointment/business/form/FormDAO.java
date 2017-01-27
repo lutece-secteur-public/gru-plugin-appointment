@@ -1,13 +1,11 @@
 package fr.paris.lutece.plugins.appointment.business.form;
 
-import java.sql.Date;
-
-import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  * This class provides Data Access methods for Form objects
+ * 
  * @author Laurent Payen
  *
  */
@@ -40,13 +38,13 @@ public class FormDAO implements IFormDAO {
 	@Override
 	public synchronized void insert(Form form, Plugin plugin) {
 		form.setIdForm(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromForm(SQL_QUERY_INSERT, form, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, form, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(Form form, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromForm(SQL_QUERY_UPDATE, form, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, form, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -54,7 +52,7 @@ public class FormDAO implements IFormDAO {
 	public void delete(int nIdForm, Plugin plugin) {
 		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_DELETE, plugin);
 		daoUtil.setInt(1, nIdForm);
-		executeUpdate(daoUtil);			
+		executeUpdate(daoUtil);
 	}
 
 	@Override
@@ -66,7 +64,7 @@ public class FormDAO implements IFormDAO {
 			daoUtil.setInt(1, nIdForm);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				form = buildFormFromDaoUtil(daoUtil);
+				form = buildForm(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -75,11 +73,13 @@ public class FormDAO implements IFormDAO {
 	}
 
 	/**
-	 * Build a Form business object from the resultset 
-	 * @param daoUtil the prepare statement util object
+	 * Build a Form business object from the resultset
+	 * 
+	 * @param daoUtil
+	 *            the prepare statement util object
 	 * @return a new Form with all its attributes assigned
 	 */
-	private Form buildFormFromDaoUtil(DAOUtil daoUtil) {
+	private Form buildForm(DAOUtil daoUtil) {
 		int nIndex = 1;
 		Form form = new Form();
 		form.setIdForm(daoUtil.getInt(nIndex++));
@@ -89,35 +89,50 @@ public class FormDAO implements IFormDAO {
 		form.setCategory(daoUtil.getString(nIndex++));
 		form.setStartingValidityDate(daoUtil.getDate(nIndex++));
 		form.setEndingValidityDate(daoUtil.getDate(nIndex++));
-		form.setIsActive(daoUtil.getBoolean(nIndex++));		
+		form.setIsActive(daoUtil.getBoolean(nIndex));
 		return form;
 	}
 
 	/**
 	 * Build a daoUtil object with the form
-	 * @param query the query 
-	 * @param form the form
-	 * @param plugin the plugin
+	 * 
+	 * @param query
+	 *            the query
+	 * @param form
+	 *            the form
+	 * @param plugin
+	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromForm(String query, Form form, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, Form form, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
-		DAOUtil daoUtil = new DAOUtil(query, plugin);		
-		daoUtil.setInt(nIndex++, form.getIdForm());
+		DAOUtil daoUtil = new DAOUtil(query, plugin);
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, form.getIdForm());
+		}
 		daoUtil.setString(nIndex++, form.getTitle());
 		daoUtil.setString(nIndex++, form.getDescription());
 		daoUtil.setString(nIndex++, form.getReference());
 		daoUtil.setString(nIndex++, form.getCategory());
 		daoUtil.setDate(nIndex++, form.getStartingValiditySqlDate());
-		daoUtil.setDate(nIndex++, form.getEndingValiditySqlDate());		
+		daoUtil.setDate(nIndex++, form.getEndingValiditySqlDate());
 		daoUtil.setBoolean(nIndex++, form.isActive());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, form.getIdForm());
+		}
 		return daoUtil;
 	}
 
 	/**
-	 * Execute a safe update 
-	 * (Free the connection in case of error when execute the query) 
-	 * @param daoUtil the daoUtil
+	 * Execute a safe update (Free the connection in case of error when execute
+	 * the query)
+	 * 
+	 * @param daoUtil
+	 *            the daoUtil
 	 */
 	private void executeUpdate(DAOUtil daoUtil) {
 		try {

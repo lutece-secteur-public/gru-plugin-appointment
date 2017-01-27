@@ -33,113 +33,93 @@
  */
 package fr.paris.lutece.plugins.appointment.business.template;
 
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
-import java.util.List;
-
 /**
  * Home for calendar template home
  */
-public final class CalendarTemplateHome
-{
-    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-    private static ICalendarTemplateDAO _dao = SpringContextService.getBean( ICalendarTemplateDAO.BEAN_NAME );
+public final class CalendarTemplateHome {
+	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
+	private static ICalendarTemplateDAO _dao = SpringContextService.getBean(ICalendarTemplateDAO.BEAN_NAME);
 
-    /**
-     * Default constructor
-     */
-    private CalendarTemplateHome( )
-    {
-        // Private constructor
-    }
+	/**
+	 * Default constructor
+	 */
+	private CalendarTemplateHome() {
+		// Private constructor
+	}
 
-    /**
-     * Create a new calendar template
-     * 
-     * @param template
-     *            The template to create
-     */
-    public static void create( CalendarTemplate template )
-    {
-        _dao.create( template, _plugin );
-        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( template.getId( ) ), template );
-    }
+	/**
+	 * Create a new calendar template
+	 * 
+	 * @param template
+	 *            The template to create
+	 */
+	public static void create(CalendarTemplate template) {
+		_dao.insert(template, _plugin);
+	}
 
-    /**
-     * Update an existing template
-     * 
-     * @param template
-     *            The template
-     */
-    public static void update( CalendarTemplate template )
-    {
-        _dao.update( template, _plugin );
-        AppointmentFormCacheService.getInstance( ).putInCache( AppointmentFormCacheService.getCalendarTemplateCacheKey( template.getId( ) ), template );
-    }
+	/**
+	 * Update an existing template
+	 * 
+	 * @param template
+	 *            The template
+	 */
+	public static void update(CalendarTemplate template) {
+		_dao.update(template, _plugin);
+	}
 
-    /**
-     * Find a template by its primary key
-     * 
-     * @param nId
-     *            The id of the template
-     * @return The calendar template found, or null if no calendar template has the given primary key
-     */
-    public static CalendarTemplate findByPrimaryKey( int nId )
-    {
-        String strKey = AppointmentFormCacheService.getCalendarTemplateCacheKey( nId );
-        CalendarTemplate template = (CalendarTemplate) AppointmentFormCacheService.getInstance( ).getFromCache( strKey );
+	/**
+	 * Delete a template from its primary key
+	 * 
+	 * @param nId
+	 *            The id of the template to remove
+	 */
+	public static void delete(int nId) {
+		_dao.delete(nId, _plugin);
+	}
 
-        if ( template == null )
-        {
-            template = _dao.findByPrimaryKey( nId, _plugin );
-            AppointmentFormCacheService.getInstance( ).putInCache( strKey, template );
-        }
+	/**
+	 * Find a template by its primary key
+	 * 
+	 * @param nId
+	 *            The id of the template
+	 * @return The calendar template found, or null if no calendar template has
+	 *         the given primary key
+	 */
+	public static CalendarTemplate findByPrimaryKey(int nId) {
+		return _dao.select(nId, _plugin);
+	}
 
-        return template;
-    }
+	/**
+	 * Get the list of calendar templates
+	 * 
+	 * @return The list of calendar templates
+	 */
+	public static List<CalendarTemplate> findAll() {
+		return _dao.selectAll(_plugin);
+	}
 
-    /**
-     * Get the list of calendar templates
-     * 
-     * @return The list of calendar templates
-     */
-    public static List<CalendarTemplate> findAll( )
-    {
-        return _dao.findAll( _plugin );
-    }
+	/**
+	 * Get the list of calendar templates in a reference list
+	 * 
+	 * @return The list of calendar templates in a reference list
+	 */
+	public static ReferenceList findAllInReferenceList() {
+		List<CalendarTemplate> listCalendarTemplates = findAll();
+		ReferenceList refListTemplates = new ReferenceList(listCalendarTemplates.size());
 
-    /**
-     * Get the list of calendar templates in a reference list
-     * 
-     * @return The list of calendar templates in a reference list
-     */
-    public static ReferenceList findAllInReferenceList( )
-    {
-        List<CalendarTemplate> listCalendarTemplates = findAll( );
-        ReferenceList refListTemplates = new ReferenceList( listCalendarTemplates.size( ) );
+		for (CalendarTemplate template : listCalendarTemplates) {
+			refListTemplates.addItem(template.getIdCalendarTemplate(), template.getTitle());
+		}
 
-        for ( CalendarTemplate template : listCalendarTemplates )
-        {
-            refListTemplates.addItem( template.getId( ), template.getTitle( ) );
-        }
+		return refListTemplates;
+	}
 
-        return refListTemplates;
-    }
-
-    /**
-     * Remove a template from its primary key
-     * 
-     * @param nId
-     *            The id of the template to remove
-     */
-    public static void delete( int nId )
-    {
-        _dao.delete( nId, _plugin );
-        AppointmentFormCacheService.getInstance( ).removeKey( AppointmentFormCacheService.getCalendarTemplateCacheKey( nId ) );
-    }
 }

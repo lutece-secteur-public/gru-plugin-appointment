@@ -38,13 +38,13 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 	@Override
 	public synchronized void insert(ReservationRule reservationRule, Plugin plugin) {
 		reservationRule.setIdReservationRule(getNewPrimaryKey(plugin));
-		DAOUtil daoUtil = buildDaoUtilFromReservationRule(SQL_QUERY_INSERT, reservationRule, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_INSERT, reservationRule, plugin, true);
 		executeUpdate(daoUtil);
 	}
 
 	@Override
 	public void update(ReservationRule reservationRule, Plugin plugin) {
-		DAOUtil daoUtil = buildDaoUtilFromReservationRule(SQL_QUERY_UPDATE, reservationRule, plugin);
+		DAOUtil daoUtil = buildDaoUtil(SQL_QUERY_UPDATE, reservationRule, plugin, false);
 		executeUpdate(daoUtil);
 	}
 
@@ -64,7 +64,7 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 			daoUtil.setInt(1, nIdReservationRule);
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
-				reservationRule = buildReservationRuleFromDaoUtil(daoUtil);
+				reservationRule = buildReservationRule(daoUtil);
 			}
 		} finally {
 			daoUtil.free();
@@ -79,7 +79,7 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 	 *            the prepare statement util object
 	 * @return a new ReservationRule with all its attributes assigned
 	 */
-	private ReservationRule buildReservationRuleFromDaoUtil(DAOUtil daoUtil) {
+	private ReservationRule buildReservationRule(DAOUtil daoUtil) {
 		int nIndex = 1;
 		ReservationRule reservationRule = new ReservationRule();
 		reservationRule.setIdReservationRule(daoUtil.getInt(nIndex++));
@@ -99,15 +99,25 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 	 *            the ReservationRule
 	 * @param plugin
 	 *            the plugin
+	 * @param isInsert
+	 *            true if it is an insert query (in this case, need to set the
+	 *            id). If false, it is an update, in this case, there is a where
+	 *            parameter id to set
 	 * @return a new daoUtil with all its values assigned
 	 */
-	private DAOUtil buildDaoUtilFromReservationRule(String query, ReservationRule reservationRule, Plugin plugin) {
+	private DAOUtil buildDaoUtil(String query, ReservationRule reservationRule, Plugin plugin, boolean isInsert) {
 		int nIndex = 1;
 		DAOUtil daoUtil = new DAOUtil(query, plugin);
-		daoUtil.setInt(nIndex++, reservationRule.getIdReservationRule());
+		if (isInsert) {
+			daoUtil.setInt(nIndex++, reservationRule.getIdReservationRule());
+		}
 		daoUtil.setDate(nIndex++, reservationRule.getSqlDateOfApply());
 		daoUtil.setInt(nIndex++, reservationRule.getMaxCapacityPerSlot());
-		daoUtil.setInt(nIndex, reservationRule.getMaxPeoplePerAppointment());
+		daoUtil.setInt(nIndex++, reservationRule.getMaxPeoplePerAppointment());
+		daoUtil.setInt(nIndex++, reservationRule.getIdForm());
+		if (!isInsert) {
+			daoUtil.setInt(nIndex, reservationRule.getIdReservationRule());
+		}
 		return daoUtil;
 	}
 
