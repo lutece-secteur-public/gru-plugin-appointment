@@ -2,21 +2,25 @@
 	<div id="app-form-list" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<fieldset>
 			<legend><#if title??>${title}<#else>#i18n{appointment.xpage.formList.labelFormList}</#if></legend>
-			<ul>
-											
-				<#assign compteur=form_list?size - 1>
+			<#assign compteur=form_list?size - 1> 
+			<#if compteur &gt; -1 >
+				<ul>
 				<#list 0..compteur as item>
-					<li>
-						<#if icons[item]!='NULL'>
-							<img src="${icons[item]}" class="icon" title="icon_form"/>
-						</#if>
-						
-						<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form_list[item].idForm}">
-							${form_list[item].title}
-						</a>
-					</li>
-				</#list>
-			</ul>
+						<li>
+							<#if icons[item]!='data:NULL;base64,'>
+								<img src="${icons[item]}" class="icon" title="icon_form"/>
+							</#if>
+							<a href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form_list[item].idForm}">
+								${form_list[item].title}
+							</a>
+						</li>
+					</#list>
+				</ul>
+			<#else>
+				<div class="alert alert-warning">
+					<h4>Pas de rendez-vous disponibles !</h4>
+				</div>
+			</#if>
 		</fieldset>
 	</div>
 </div>
