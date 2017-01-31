@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,7 +18,9 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot (id_time_slot, starting_hour, ending_hour, is_open, id_working_day) VALUES (?, ?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_time_slot SET starting_hour = ?, ending_hour = ?, is_open = ?, id_working_day = ? WHERE id_time_slot = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_time_slot WHERE id_time_slot = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_time_slot, starting_hour, ending_hour, is_open, id_working_day FROM appointment_time_slot WHERE id_time_slot = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_time_slot, starting_hour, ending_hour, is_open, id_working_day FROM appointment_time_slot";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_time_slot = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -67,11 +72,33 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 				timeSlot = buildTimeSlot(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return timeSlot;
 	}
 
+
+	@Override
+	public List<TimeSlot> findByIdWorkingDay(int nIdWorkingDay, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<TimeSlot> listTimeSLots = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_WORKING_DAY, plugin);
+			daoUtil.setInt(1, nIdWorkingDay);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listTimeSLots.add(buildTimeSlot(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listTimeSLots;
+	}
+	
 	/**
 	 * Build a time slot business object from the resultset
 	 * 

@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -63,4 +65,12 @@ public interface IWeekDefinitionDAO {
 	 * @return the instance of the weekDefinition
 	 */
 	WeekDefinition select(int nIdWeekDefinition, Plugin plugin);
+	
+	/**
+	 * Get all the week definitions of a form
+	 * @param nIdForm the form id
+	 * @param plugin the plugin
+	 * @return a list of all the weekdefinitions of the form given 
+	 */
+	List<WeekDefinition> findByIdForm(int nIdForm, Plugin plugin);
 }

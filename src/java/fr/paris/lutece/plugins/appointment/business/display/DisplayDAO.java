@@ -16,7 +16,9 @@ public class DisplayDAO implements IDisplayDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display (id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, id_calendar_template, id_form) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, id_calendar_template = ?, id_form = ? WHERE id_display = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_display WHERE id_display = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, id_calendar_template, id_form FROM appointment_display WHERE id_display = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, id_calendar_template, id_form FROM appointment_display";
+	private static final String SQL_QUERY_SELECT =  SQL_QUERY_SELECT_COLUMNS + " WHERE id_display = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -68,11 +70,33 @@ public class DisplayDAO implements IDisplayDAO {
 				display = buildDisplay(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return display;
 	}
 
+
+	@Override
+	public Display findByIdForm(int nIdForm, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		Display display = null;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				display = buildDisplay(daoUtil);
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return display;
+	}
+	
 	/**
 	 * Build a Display business object from the resultset
 	 * 

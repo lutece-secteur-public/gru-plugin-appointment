@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,7 +18,10 @@ public class ClosingDayDAO implements IClosingDayDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_closing_day (id_closing_day, date_of_closing_day, id_form) VALUES ( ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_closing_day SET date_of_closing_day = ?, id_form = ? WHERE id_closing_day = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_closing_day WHERE id_closing_day = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_closing_day, date_of_closing_day, id_form FROM appointment_closing_day WHERE id_closing_day = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_closing_day, date_of_closing_day, id_form FROM appointment_closing_day";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_closing_day = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY = SQL_QUERY_SELECT_COLUMNS
+			+ " WHERE id_form = ? AND date_of_closing_day = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -67,7 +73,29 @@ public class ClosingDayDAO implements IClosingDayDAO {
 				closingDay = buildClosingDay(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return closingDay;
+	}
+
+	@Override
+	public ClosingDay findByIdFormAndDateOfClosingDay(int nIdForm, LocalDate dateOfCLosingDay, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		ClosingDay closingDay = null;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.setDate(2, Date.valueOf(dateOfCLosingDay));
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				closingDay = buildClosingDay(daoUtil);
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return closingDay;
 	}

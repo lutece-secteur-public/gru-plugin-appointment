@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.form;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -14,9 +17,11 @@ public class FormDAO implements IFormDAO {
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form) FROM appointment_form";
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form (id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ? WHERE id_form = ?";
-	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-	private static final String SQL_QUERY_SELECT = "SELECT id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active FROM appointment_form WHERE id_form = ?";
-
+	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";	
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active FROM appointment_form";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
+	private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
+	
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -67,11 +72,31 @@ public class FormDAO implements IFormDAO {
 				form = buildForm(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return form;
 	}
 
+	@Override
+	public List<Form> findActiveForms(Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Form> listForms = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_ACTIVE_FORMS, plugin);			
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listForms.add(buildForm(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listForms;
+	}	
+	
 	/**
 	 * Build a Form business object from the resultset
 	 * 
@@ -92,7 +117,7 @@ public class FormDAO implements IFormDAO {
 		form.setIsActive(daoUtil.getBoolean(nIndex));
 		return form;
 	}
-
+		
 	/**
 	 * Build a daoUtil object with the form
 	 * 

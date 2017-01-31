@@ -37,7 +37,10 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
- * DAO for Form Message objects
+ * This class provides Data Access methods for Form Message objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public class FormMessageDAO implements IFormMessageDAO {
 
@@ -45,7 +48,9 @@ public class FormMessageDAO implements IFormMessageDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_message(id_form_message, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help, field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_message SET calendar_title = ?, field_firstname_title = ?, field_firstname_help = ?, field_lastname_title = ?, field_lastname_help = ?, field_email_title = ?, field_email_help = ?, field_confirmationEmail_title = ?, field_confirmationEmail_help = ?, text_appointment_created = ?, url_redirect_after_creation = ?, text_appointment_canceled = ?, label_button_redirection = ?, no_available_slot = ?, calendar_description = ?, calendar_reserve_label = ?, calendar_full_label = ?, id_form = ? WHERE id_form_message = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_message WHERE id_form_message = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_form_message, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help,field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form FROM appointment_form_message WHERE id_form_message = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_message, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help,field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form FROM appointment_form_message";
+	private static final String SQL_QUERY_SELECT =  SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_message = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -97,11 +102,33 @@ public class FormMessageDAO implements IFormMessageDAO {
 				formMessage = buildFormMessage(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return formMessage;
 	}
 
+
+	@Override
+	public FormMessage findByIdForm(int nIdForm, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		FormMessage formMessage = null;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				formMessage = buildFormMessage(daoUtil);
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return formMessage;
+	}
+	
 	/**
 	 * Build a Form Message business object from the resultset
 	 * 

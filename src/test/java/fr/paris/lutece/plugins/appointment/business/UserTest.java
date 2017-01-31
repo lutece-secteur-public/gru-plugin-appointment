@@ -12,16 +12,16 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class UserTest extends LuteceTestCase {
 
-	private final static int ID_LUTECE_USER_1 = 1;
-	private final static int ID_LUTECE_USER_2 = 2;
-	private final static String FIRST_NAME_1 = "firstName1";
-	private final static String FIRST_NAME_2 = "firstName2";
-	private final static String LAST_NAME_1 = "lastName1";
-	private final static String LAST_NAME_2 = "lastName2";
-	private final static String EMAIL_1 = "email1";
-	private final static String EMAIL_2 = "email2";
-	private final static String PHONE_NUMBER_1 = "0605040302";
-	private final static String PHONE_NUMBER_2 = "0605040303";
+	public final static int ID_LUTECE_USER_1 = 1;
+	public final static int ID_LUTECE_USER_2 = 2;
+	public final static String FIRST_NAME_1 = "firstName1";
+	public final static String FIRST_NAME_2 = "firstName2";
+	public final static String LAST_NAME_1 = "lastName1";
+	public final static String LAST_NAME_2 = "lastName2";
+	public final static String EMAIL_1 = "email1";
+	public final static String EMAIL_2 = "email2";
+	public final static String PHONE_NUMBER_1 = "0605040302";
+	public final static String PHONE_NUMBER_2 = "0605040303";
 
 	/**
 	 * Test method for the User (CRUD)
@@ -68,6 +68,21 @@ public class UserTest extends LuteceTestCase {
 		user.setLastName(LAST_NAME_1);
 		user.setEmail(EMAIL_1);
 		user.setPhoneNumber(PHONE_NUMBER_1);
+		return user;
+	}
+	
+	/**
+	 * Build a User Business Object
+	 * 
+	 * @return the User
+	 */
+	public static User buildUser2() {
+		User user = new User();
+		user.setIdLuteceUser(ID_LUTECE_USER_2);
+		user.setFirstName(FIRST_NAME_2);
+		user.setLastName(LAST_NAME_2);
+		user.setEmail(EMAIL_2);
+		user.setPhoneNumber(PHONE_NUMBER_2);
 		return user;
 	}
 

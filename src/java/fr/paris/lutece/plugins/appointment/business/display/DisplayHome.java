@@ -73,4 +73,13 @@ public class DisplayHome {
 		return _dao.select(nKey, _plugin);
 	}
 	
+	/**
+	 * Returns the form display
+	 * @param nIdForm the form id
+	 * @return the form display
+	 */
+	public static Display findByIdForm(int nIdForm) {
+		return _dao.findByIdForm(nIdForm, _plugin);
+	}
+	
 }

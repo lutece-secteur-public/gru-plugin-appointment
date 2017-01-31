@@ -42,7 +42,10 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
- * Home for calendar template home
+ * This class provides instances management methods for Calendar Teplate objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public final class CalendarTemplateHome {
 	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);

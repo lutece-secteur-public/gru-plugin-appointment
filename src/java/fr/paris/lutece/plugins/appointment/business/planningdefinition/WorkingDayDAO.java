@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,7 +18,10 @@ public class WorkingDayDAO implements IWorkingDayDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_working_day (id_working_day, day_of_week, id_week_definition) VALUES (?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_working_day SET day_of_week = ?, id_week_definition = ? WHERE id_working_day = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_working_day WHERE id_working_day = ? ";
-	private static final String SQL_QUERY_SELECT = "SELECT id_working_day, day_of_week, id_week_definition FROM appointment_working_day WHERE id_working_day = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_working_day, day_of_week, id_week_definition FROM appointment_working_day";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION = SQL_QUERY_SELECT_COLUMNS
+			+ " WHERE id_week_definition = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -67,9 +73,30 @@ public class WorkingDayDAO implements IWorkingDayDAO {
 				workingDay = buildWorkingDay(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return workingDay;
+	}
+
+	@Override
+	public List<WorkingDay> findByIdWeekDefinition(int nIdWeekDefinition, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<WorkingDay> listWorkingDays = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION, plugin);
+			daoUtil.setInt(1, nIdWeekDefinition);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listWorkingDays.add(buildWorkingDay(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listWorkingDays;
 	}
 
 	/**

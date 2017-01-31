@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,8 +18,11 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (id_appointment, id_user, id_slot) VALUES (?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_user = ?, id_slot = ? WHERE id_appointment = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_appointment, id_user, id_slot FROM appointment_appointment WHERE id_appointment = ?";
-
+	private static final String SQL_QUER_SELECT_COLUMNS = "SELECT id_appointment, id_user, id_slot FROM appointment_appointment";
+	private static final String SQL_QUERY_SELECT =  SQL_QUER_SELECT_COLUMNS + " WHERE id_appointment = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUER_SELECT_COLUMNS + " WHERE id_user = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUER_SELECT_COLUMNS + " WHERE id_slot = ?";
+	
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -67,11 +73,53 @@ public final class AppointmentDAO implements IAppointmentDAO {
 				appointment = buildAppointment(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return appointment;
-	}
+	}	
+	
 
+	@Override
+	public List<Appointment> findByIdUser(int nIdUser, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Appointment> listAppointment = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_USER, plugin);
+			daoUtil.setInt(1, nIdUser);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listAppointment.add(buildAppointment(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listAppointment;
+	}
+	
+
+	@Override
+	public List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Appointment> listAppointment = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_SLOT, plugin);
+			daoUtil.setInt(1, nIdSlot);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listAppointment.add(buildAppointment(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listAppointment;
+	}
+	
 	/**
 	 * Build an Appointment business object from the resultset
 	 * 
@@ -135,4 +183,5 @@ public final class AppointmentDAO implements IAppointmentDAO {
 			}
 		}
 	}
+
 }

@@ -64,4 +64,12 @@ public interface IDisplayDAO {
 	 * @return The instance of the Display
 	 */
 	Display select(int nIdDisplay, Plugin plugin);
+	
+	/**
+	 * Returns the display of the given form
+	 * @param nIdForm the form id
+	 * @param plugin the plugin
+	 * @return the form display
+	 */
+	Display findByIdForm(int nIdForm, Plugin plugin);
 }

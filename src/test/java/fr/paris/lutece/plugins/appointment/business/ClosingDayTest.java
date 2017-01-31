@@ -16,15 +16,19 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class ClosingDayTest extends LuteceTestCase {
 
-	private static final LocalDate DATE_OF_CLOSING_DAY_1 = LocalDate.parse("2017-01-26");
-	private static final LocalDate DATE_OF_CLOSING_DAY_2 = LocalDate.parse("2017-02-27");
+	public static final LocalDate DATE_OF_CLOSING_DAY_1 = LocalDate.parse("2017-01-26");
+	public static final LocalDate DATE_OF_CLOSING_DAY_2 = LocalDate.parse("2017-02-27");
 
 	/**
 	 * Test method for the ClosingDay (CRUD)
 	 */
 	public void testClosingDay() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
 		// Initialize a ClosingDay
 		ClosingDay closingDay = buildClosingDay();
+		closingDay.setIdForm(form.getIdForm());
 		// Create the ClosingDay in database
 		ClosingDayHome.create(closingDay);
 		// Find the ClosingDay created in database
@@ -46,6 +50,54 @@ public class ClosingDayTest extends LuteceTestCase {
 		closingDayStored = ClosingDayHome.findByPrimaryKey(closingDay.getIdClosingDay());
 		// Check the ClosingDay has been removed from database
 		assertNull(closingDayStored);
+
+		// Clean
+		FormHome.delete(form.getIdForm());
+	}
+
+	/**
+	 * Test the delete cascade
+	 */
+	public void testDeleteCascade() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a ClosingDay
+		ClosingDay closingDay = buildClosingDay();
+		closingDay.setIdForm(form.getIdForm());
+		// Create the ClosingDay in database
+		ClosingDayHome.create(closingDay);
+		// Find the ClosingDay created in database
+		ClosingDay closingDayStored = ClosingDayHome.findByPrimaryKey(closingDay.getIdClosingDay());
+		assertNotNull(closingDayStored);
+		// Delete the Form and by cascade the ClosingDay
+		FormHome.delete(form.getIdForm());
+		closingDayStored = ClosingDayHome.findByPrimaryKey(closingDay.getIdClosingDay());
+		// Check the ClosingDay has been removed from database
+		assertNull(closingDayStored);
+	}
+
+	/**
+	 * Test method for findByIdFormAndDateOfCLosingDay
+	 */
+	public void testFindByIdFormAndDateOfCLosingDay() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a ClosingDay
+		ClosingDay closingDay = buildClosingDay();
+		closingDay.setIdForm(form.getIdForm());
+		// Create the ClosingDay in database
+		ClosingDayHome.create(closingDay);
+
+		// Find the ClosingDay
+		ClosingDay closingDayStored = ClosingDayHome.findByIdFormAndDateOfCLosingDay(form.getIdForm(),
+				DATE_OF_CLOSING_DAY_1);
+		assertNotNull(closingDayStored);
+		checkAsserts(closingDayStored, closingDay);
+
+		// Clean
+		FormHome.delete(form.getIdForm());
 	}
 
 	/**
@@ -56,11 +108,6 @@ public class ClosingDayTest extends LuteceTestCase {
 	public ClosingDay buildClosingDay() {
 		ClosingDay closingDay = new ClosingDay();
 		closingDay.setDateOfClosingDay(DATE_OF_CLOSING_DAY_1);
-
-		Form form = FormTest.buildForm();
-		FormHome.create(form);
-		closingDay.setIdForm(form.getIdForm());
-
 		return closingDay;
 	}
 

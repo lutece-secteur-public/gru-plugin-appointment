@@ -88,7 +88,7 @@ public class WorkingDay implements Serializable {
 	 * Get the time slots of the working day
 	 * @return the list of the time slots of the working day
 	 */
-	public List<TimeSlot> getTimeSlots() {
+	public List<TimeSlot> getListTimeSlot() {
 		return _listTimeSlots;
 	}
 
@@ -96,7 +96,7 @@ public class WorkingDay implements Serializable {
 	 * Set the time slots of the working day
 	 * @param listTimeSlots the list of time slots to set
 	 */
-	public void setTimeSlots(List<TimeSlot> listTimeSlots) {
+	public void setListTimeSlot(List<TimeSlot> listTimeSlots) {
 		this._listTimeSlots = listTimeSlots;
 	}
 

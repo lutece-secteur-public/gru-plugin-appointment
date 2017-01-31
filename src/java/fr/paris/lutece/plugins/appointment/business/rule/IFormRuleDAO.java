@@ -63,4 +63,12 @@ public interface IFormRuleDAO {
 	 * @return the instance of the FormRule
 	 */
 	FormRule select(int nIdFormRule, Plugin plugin);
+	
+	/**
+	 * Returns the form rule of a form
+	 * @param nIdForm the form id
+	 * @param plugin the plugin
+	 * @return the form rule of the form
+	 */
+	FormRule findByIdForm(int nIdForm, Plugin plugin);
 }

@@ -14,17 +14,21 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class FormRuleTest extends LuteceTestCase {
 
-	private static final boolean IS_CAPTCHA_ENABLED_1 = true;
-	private static final boolean IS_CAPTCHA_ENABLED_2 = false;
-	private static final boolean IS_MANDATORY_EMAIL_ENABLED_1 = true;
-	private static final boolean IS_MANDATORY_EMAIL_ENABLED_2 = false;
+	public static final boolean IS_CAPTCHA_ENABLED_1 = true;
+	public static final boolean IS_CAPTCHA_ENABLED_2 = false;
+	public static final boolean IS_MANDATORY_EMAIL_ENABLED_1 = true;
+	public static final boolean IS_MANDATORY_EMAIL_ENABLED_2 = false;
 
 	/**
 	 * Test method for the FormRule (CRUD)
 	 */
 	public void testFormRule() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
 		// Initialize a FormRule
 		FormRule formRule = buildFormRule();
+		formRule.setIdForm(form.getIdForm());
 		// Create the FormRule in database
 		FormRuleHome.create(formRule);
 		// Find the FormRule created in database
@@ -47,6 +51,52 @@ public class FormRuleTest extends LuteceTestCase {
 		formRuleStored = FormRuleHome.findByPrimaryKey(formRule.getIdFormRule());
 		// Check the FormRule has been removed from database
 		assertNull(formRuleStored);
+		
+		// Clean
+		FormHome.delete(form.getIdForm());
+	}
+
+	/**
+	 * Test delete cascade
+	 */
+	public void testDeleteCascade() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a FormRule
+		FormRule formRule = buildFormRule();
+		formRule.setIdForm(form.getIdForm());
+		// Create the FormRule in database
+		FormRuleHome.create(formRule);
+		// Find the FormRule created in database
+		FormRule formRuleStored = FormRuleHome.findByPrimaryKey(formRule.getIdFormRule());
+		assertNotNull(formRuleStored);
+		// Delete the Form and by cascade the Rule
+		FormHome.delete(form.getIdForm());
+		formRuleStored = FormRuleHome.findByPrimaryKey(formRule.getIdFormRule());
+		// Check the FormRule has been removed from database
+		assertNull(formRuleStored);
+	}
+
+	/**
+	 * Test findByIdFOrm method
+	 */
+	public void testFindByIdForm() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a FormRule
+		FormRule formRule = buildFormRule();
+		formRule.setIdForm(form.getIdForm());
+		// Create the FormRule in database
+		FormRuleHome.create(formRule);
+		// Find the FormRule created in database
+		FormRule formRuleStored = FormRuleHome.findByIdForm(form.getIdForm());
+		// Check Asserts
+		checkAsserts(formRuleStored, formRule);
+		
+		// Clean
+		FormHome.delete(form.getIdForm());
 	}
 
 	/**
@@ -58,11 +108,6 @@ public class FormRuleTest extends LuteceTestCase {
 		FormRule formRule = new FormRule();
 		formRule.setIsCaptchaEnabled(IS_CAPTCHA_ENABLED_1);
 		formRule.setIsMandatoryEmailEnabled(IS_MANDATORY_EMAIL_ENABLED_1);
-
-		Form form = FormTest.buildForm();
-		FormHome.create(form);
-		formRule.setIdForm(form.getIdForm());
-
 		return formRule;
 	}
 

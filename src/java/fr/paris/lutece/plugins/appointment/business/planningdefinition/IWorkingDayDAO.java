@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -63,4 +65,13 @@ public interface IWorkingDayDAO {
 	 * @return the instance of the WorkingDay
 	 */
 	WorkingDay select(int nIdWorkingDay, Plugin plugin);
+	
+	/**
+	 * Get all the working days of the weekdefinition given
+	 * @param nIdWeekDefinition the WeekDefinition id
+	 * @param plugin the Plugin
+	 * @return the list of all the working days of the weekdefinition
+	 */
+	List<WorkingDay> findByIdWeekDefinition(int nIdWeekDefinition, Plugin plugin);
+	
 }

@@ -40,7 +40,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
- * DAO for calendar templates
+ * This class provides Data Access methods for Calendar Template objects
  */
 public class CalendarTemplateDAO implements ICalendarTemplateDAO {
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_calendar_template) FROM appointment_calendar_template";
@@ -106,7 +106,9 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO {
 				calendarTemplate = buildCalendarTemplate(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return calendarTemplate;
 	}

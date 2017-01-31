@@ -14,47 +14,51 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class FormMessageTest extends LuteceTestCase {
 
-	private static final String CALENDAR_TITLE_1 = "CalendarTitle1";
-	private static final String CALENDAR_TITLE_2 = "CalendarTitle2";
-	private static final String FIELD_FIRSTNAME_TITLE_1 = "FieldFirstNameTitle1";
-	private static final String FIELD_FIRSTNAME_TITLE_2 = "FieldFirstNameTitle2";
-	private static final String FIELD_FIRSTNAME_HELP_1 = "FieldFirstNameHelp1";
-	private static final String FIELD_FIRSTNAME_HELP_2 = "FieldFirstNameHelp2";
-	private static final String FIELD_LASTNAME_TITLE_1 = "FieldLastNameTitle1";
-	private static final String FIELD_LASTNAME_TITLE_2 = "FieldLastNameTitle2";
-	private static final String FIELD_LASTNAME_HELP_1 = "FieldLastNameHelp1";
-	private static final String FIELD_LASTNAME_HELP_2 = "FieldLastNameHelp2";
-	private static final String FIELD_EMAIL_TITLE_1 = "FieldEmailTitle1";
-	private static final String FIELD_EMAIL_TITLE_2 = "FieldEmailTitle2";
-	private static final String FIELD_EMAIL_HELP_1 = "FieldEmailHelp1";
-	private static final String FIELD_EMAIL_HELP_2 = "FieldEmailHelp2";
-	private static final String FIELD_CONFIRMATION_EMAIL_TITLE_1 = "FieldConfirmationEmailTitle1";
-	private static final String FIELD_CONFIRMATION_EMAIL_TITLE_2 = "FieldCOnfirmationEmailTitle2";
-	private static final String FIELD_CONFIRMATION_EMAIL_HELP_1 = "FieldConfirmationEmailHelp1";
-	private static final String FIELD_CONFIRMATION_EMAIL_HELP_2 = "FieldCOnfirmationEmailHelp2";
-	private static final String TEXT_APPOINTMENT_CREATED_1 = "TextAppointmentCreated1";
-	private static final String TEXT_APPOINTMENT_CREATED_2 = "TextAppointmentCreated2";
-	private static final String URL_REDIRECT_AFTER_CREATION_1 = "UrlRedirectAfterCreation1";
-	private static final String URL_REDIRECT_AFTER_CREATION_2 = "UrlRedirectAfterCreation2";
-	private static final String TEXT_APPOINTMENT_CANCELED_1 = "TextAppointmentCanceled1";
-	private static final String TEXT_APPOINTMENT_CANCELED_2 = "TextAppointmentCanceled2";
-	private static final String LABEL_BUTTON_REDIRECTION_1 = "LabelButtonRedirection1";
-	private static final String LABEL_BUTTON_REDIRECTION_2 = "LabelButtonRedirection2";
-	private static final String NO_AVAILABLE_SLOT_1 = "NoAvailableSLot1";
-	private static final String NO_AVAILABLE_SLOT_2 = "NoAvailableSLot2";
-	private static final String CALENDAR_DESCRIPTION_1 = "CalendarDescription1";
-	private static final String CALENDAR_DESCRIPTION_2 = "CalendarDescription2";
-	private static final String CALENDAR_RESERVE_LABEL_1 = "CalendarReserveLabel1";
-	private static final String CALENDAR_RESERVE_LABEL_2 = "CalendarReserveLabel2";
-	private static final String CALENDAR_FULL_LABEL_1 = "CalendarFullLabel1";
-	private static final String CALENDAR_FULL_LABEL_2 = "CalendarFullLabel2";
-
+	public static final String CALENDAR_TITLE_1 = "CalendarTitle1";
+	public static final String CALENDAR_TITLE_2 = "CalendarTitle2";
+	public static final String FIELD_FIRSTNAME_TITLE_1 = "FieldFirstNameTitle1";
+	public static final String FIELD_FIRSTNAME_TITLE_2 = "FieldFirstNameTitle2";
+	public static final String FIELD_FIRSTNAME_HELP_1 = "FieldFirstNameHelp1";
+	public static final String FIELD_FIRSTNAME_HELP_2 = "FieldFirstNameHelp2";
+	public static final String FIELD_LASTNAME_TITLE_1 = "FieldLastNameTitle1";
+	public static final String FIELD_LASTNAME_TITLE_2 = "FieldLastNameTitle2";
+	public static final String FIELD_LASTNAME_HELP_1 = "FieldLastNameHelp1";
+	public static final String FIELD_LASTNAME_HELP_2 = "FieldLastNameHelp2";
+	public static final String FIELD_EMAIL_TITLE_1 = "FieldEmailTitle1";
+	public static final String FIELD_EMAIL_TITLE_2 = "FieldEmailTitle2";
+	public static final String FIELD_EMAIL_HELP_1 = "FieldEmailHelp1";
+	public static final String FIELD_EMAIL_HELP_2 = "FieldEmailHelp2";
+	public static final String FIELD_CONFIRMATION_EMAIL_TITLE_1 = "FieldConfirmationEmailTitle1";
+	public static final String FIELD_CONFIRMATION_EMAIL_TITLE_2 = "FieldCOnfirmationEmailTitle2";
+	public static final String FIELD_CONFIRMATION_EMAIL_HELP_1 = "FieldConfirmationEmailHelp1";
+	public static final String FIELD_CONFIRMATION_EMAIL_HELP_2 = "FieldCOnfirmationEmailHelp2";
+	public static final String TEXT_APPOINTMENT_CREATED_1 = "TextAppointmentCreated1";
+	public static final String TEXT_APPOINTMENT_CREATED_2 = "TextAppointmentCreated2";
+	public static final String URL_REDIRECT_AFTER_CREATION_1 = "UrlRedirectAfterCreation1";
+	public static final String URL_REDIRECT_AFTER_CREATION_2 = "UrlRedirectAfterCreation2";
+	public static final String TEXT_APPOINTMENT_CANCELED_1 = "TextAppointmentCanceled1";
+	public static final String TEXT_APPOINTMENT_CANCELED_2 = "TextAppointmentCanceled2";
+	public static final String LABEL_BUTTON_REDIRECTION_1 = "LabelButtonRedirection1";
+	public static final String LABEL_BUTTON_REDIRECTION_2 = "LabelButtonRedirection2";
+	public static final String NO_AVAILABLE_SLOT_1 = "NoAvailableSLot1";
+	public static final String NO_AVAILABLE_SLOT_2 = "NoAvailableSLot2";
+	public static final String CALENDAR_DESCRIPTION_1 = "CalendarDescription1";
+	public static final String CALENDAR_DESCRIPTION_2 = "CalendarDescription2";
+	public static final String CALENDAR_RESERVE_LABEL_1 = "CalendarReserveLabel1";
+	public static final String CALENDAR_RESERVE_LABEL_2 = "CalendarReserveLabel2";
+	public static final String CALENDAR_FULL_LABEL_1 = "CalendarFullLabel1";
+	public static final String CALENDAR_FULL_LABEL_2 = "CalendarFullLabel2";
+	
 	/**
 	 * Test method for the FormMessage (CRUD)
 	 */
 	public void testFormMessage() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
 		// Initialize a FormMessage
 		FormMessage formMessage = buildFormMessage();
+		formMessage.setIdForm(form.getIdForm());
 		// Create the FormMessage in database
 		FormMessageHome.create(formMessage);
 		// Find the FormMessage created in database
@@ -92,6 +96,53 @@ public class FormMessageTest extends LuteceTestCase {
 		formMessageStored = FormMessageHome.findByPrimaryKey(formMessage.getIdFormMessage());
 		// Check the FormMessage has been removed from database
 		assertNull(formMessageStored);
+		
+		// Clean 
+		FormHome.delete(form.getIdForm());
+	}
+
+	/**
+	 * Test delete cascade
+	 */
+	public void testDeleteCascade() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a FormMessage
+		FormMessage formMessage = buildFormMessage();
+		formMessage.setIdForm(form.getIdForm());
+		// Create the FormMessage in database
+		FormMessageHome.create(formMessage);
+		// Find the FormMessage created in database
+		FormMessage formMessageStored = FormMessageHome.findByPrimaryKey(formMessage.getIdFormMessage());
+		assertNotNull(formMessageStored);
+		// Delete the Form and by cascade the FormMessage
+		FormHome.delete(form.getIdForm());
+		formMessageStored = FormMessageHome.findByPrimaryKey(formMessage.getIdFormMessage());
+		// Check the FormMessage has been removed from database
+		assertNull(formMessageStored);
+
+	}
+
+	/**
+	 * Test findByIdForm method
+	 */
+	public void testFindByIdForm() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a FormMessage
+		FormMessage formMessage = buildFormMessage();
+		formMessage.setIdForm(form.getIdForm());
+		// Create the FormMessage in database
+		FormMessageHome.create(formMessage);
+		// Find the FormMessage created in database
+		FormMessage formMessageStored = FormMessageHome.findByIdForm(form.getIdForm());
+		// Check Asserts
+		checkAsserts(formMessageStored, formMessage);
+		
+		// Clean
+		FormHome.delete(form.getIdForm());
 	}
 
 	/**
@@ -118,11 +169,6 @@ public class FormMessageTest extends LuteceTestCase {
 		formMessage.setCalendarDescription(CALENDAR_DESCRIPTION_1);
 		formMessage.setCalendarReserveLabel(CALENDAR_RESERVE_LABEL_1);
 		formMessage.setCalendarFullLabel(CALENDAR_FULL_LABEL_1);
-
-		Form form = FormTest.buildForm();
-		FormHome.create(form);
-		formMessage.setIdForm(form.getIdForm());
-
 		return formMessage;
 	}
 
@@ -154,5 +200,5 @@ public class FormMessageTest extends LuteceTestCase {
 		assertEquals(formMessageStored.getCalendarFullLabel(), formMessage.getCalendarFullLabel());
 		assertEquals(formMessageStored.getIdForm(), formMessage.getIdForm());
 	}
-
+	
 }

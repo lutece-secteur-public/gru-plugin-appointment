@@ -272,7 +272,7 @@ public class Form implements Serializable {
 	 * 
 	 * @return a list of the week definitions
 	 */
-	public List<WeekDefinition> getWeekDefinitions() {
+	public List<WeekDefinition> getListWeekDefinition() {
 		return _listWeekDefinitions;
 	}
 
@@ -282,7 +282,7 @@ public class Form implements Serializable {
 	 * @param listWeekDefinitions
 	 *            the list to set
 	 */
-	public void setWeekDefinitions(List<WeekDefinition> listWeekDefinitions) {
+	public void setListWeekDefinition(List<WeekDefinition> listWeekDefinitions) {
 		this._listWeekDefinitions = listWeekDefinitions;
 	}
 

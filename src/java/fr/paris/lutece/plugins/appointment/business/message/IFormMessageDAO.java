@@ -36,7 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.message;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
- * Form Messages DAO Interface
+ * Form Message DAO Interface
  * 
  * @author Laurent Payen
  */
@@ -89,13 +89,21 @@ public interface IFormMessageDAO {
 	/**
 	 * Get a form message from its primary key
 	 * 
-	 * @param nAppointmentFormId
+	 * @param nIdFormMessage
 	 *            The id of the form message
 	 * @param plugin
 	 *            The plugin
 	 * @return The form message, or null if no form message has the given
 	 *         primary key
 	 */
-	FormMessage select(int nAppointmentFormId, Plugin plugin);
+	FormMessage select(int nIdFormMessage, Plugin plugin);
+	
+	/**
+	 * Returns the formMessage of the form given
+	 * @param nIdForm the form id
+	 * @param plugin the plugin
+	 * @return the formMessage of the form
+	 */
+	FormMessage findByIdForm(int nIdForm, Plugin plugin);
 
 }

@@ -7,6 +7,9 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * This class provides instances management methods for Form Message objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public final class FormMessageHome {
 
@@ -60,5 +63,14 @@ public final class FormMessageHome {
 	 */
 	public static FormMessage findByPrimaryKey(int nFormMessageId) {
 		return _dao.select(nFormMessageId, _plugin);
+	}
+	
+	/**
+	 * Returns the formMessage of the form
+	 * @param nIdForm the form id
+	 * @return the formMessage of the form
+	 */
+	public static FormMessage findByIdForm(int nIdForm) {
+		return _dao.findByIdForm(nIdForm, _plugin);
 	}
 }

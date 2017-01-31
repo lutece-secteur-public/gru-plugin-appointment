@@ -38,7 +38,9 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import java.util.List;
 
 /**
- * Interface of DAO to manage calendar templates
+ * Calendar Template DAO Interface
+ * @author Laurent Payen
+ *
  */
 public interface ICalendarTemplateDAO
 {

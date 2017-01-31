@@ -1,5 +1,10 @@
 package fr.paris.lutece.plugins.appointment.business.slot;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,7 +20,14 @@ public class SlotDAO implements ISlotDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date, ending_date, is_open, nb_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date = ?, ending_date = ?, is_open = ?, nb_remaining_places = ?, id_form = ? WHERE id_slot = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_slot, starting_date, ending_date, is_open, nb_remaining_places, id_form FROM appointment_slot WHERE id_slot = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date, ending_date, is_open, nb_remaining_places, id_form FROM appointment_slot";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS
+			+ " WHERE id_form = ? AND starting_date >= ? AND ending_date <= ?";
+	private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS
+			+ " WHERE id_form = ? AND starting_date >= ? AND ending_date <= ? AND is_open = 1";
+	private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS
+			+ " WHERE id_form = ? AND is_open = 1";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -67,9 +79,74 @@ public class SlotDAO implements ISlotDAO {
 				slot = buildSlot(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return slot;
+	}
+
+	@Override
+	public List<Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDate, LocalDateTime endingDate,
+			Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Slot> listSLot = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.setTimestamp(2, Timestamp.valueOf(startingDate));
+			daoUtil.setTimestamp(3, Timestamp.valueOf(endingDate));
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listSLot.add(buildSlot(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listSLot;
+	}
+
+	@Override
+	public List<Slot> findOpenSlotsByIdFormAndDateRange(int nIdForm, LocalDateTime startingDate,
+			LocalDateTime endingDate, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Slot> listSLot = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM_AND_DATE_RANGE, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.setTimestamp(2, Timestamp.valueOf(startingDate));
+			daoUtil.setTimestamp(3, Timestamp.valueOf(endingDate));
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listSLot.add(buildSlot(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listSLot;
+	}
+
+	@Override
+	public List<Slot> findOpenSlotsByIdForm(int nIdForm, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Slot> listSLot = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listSLot.add(buildSlot(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listSLot;
 	}
 
 	/**

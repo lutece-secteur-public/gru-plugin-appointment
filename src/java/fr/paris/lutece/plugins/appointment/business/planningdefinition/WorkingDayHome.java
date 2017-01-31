@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -72,6 +74,15 @@ public class WorkingDayHome {
 	 */
 	public static WorkingDay findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
+	}
+	
+	/**
+	 * Find the Working Day of the weekDefinition
+	 * @param nIdWeekDefinition the WeekDefinition Id
+	 * @return a list of the workingDay defined
+	 */
+	public static List<WorkingDay> findByIdWeekDefinition(int nIdWeekDefinition) {
+		return _dao.findByIdWeekDefinition(nIdWeekDefinition, _plugin);
 	}
 	
 }

@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -71,6 +73,15 @@ public class TimeSlotHome {
 	 */
 	public static TimeSlot findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
+	}
+	
+	/**
+	 * Get all the time slots of the working day given
+	 * @param nIdWorkingDay the working day id
+	 * @return the list of all the time slots of the working day
+	 */
+	public static List<TimeSlot> findByIdWorkingDay(int nIdWorkingDay) {
+		return _dao.findByIdWorkingDay(nIdWorkingDay, _plugin);
 	}
 
 }

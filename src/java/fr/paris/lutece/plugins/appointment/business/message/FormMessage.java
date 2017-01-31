@@ -37,6 +37,9 @@ import java.io.Serializable;
 
 /**
  * Business class of the Form Message
+ * 
+ * @author Laurent Payen
+ *
  */
 public class FormMessage implements Serializable {
 

@@ -1,5 +1,13 @@
 package fr.paris.lutece.plugins.appointment.business.form;
 
+import java.util.List;
+
+import fr.paris.lutece.plugins.appointment.business.planningdefinition.TimeSlot;
+import fr.paris.lutece.plugins.appointment.business.planningdefinition.TimeSlotHome;
+import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinitionHome;
+import fr.paris.lutece.plugins.appointment.business.planningdefinition.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.planningdefinition.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -71,5 +79,31 @@ public class FormHome {
 	public static Form findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
 	}
-
+	
+	/**
+	 * Returns all the active forms
+	 * @return a list of all the active forms
+	 */
+	public static List<Form> findActiveForms() {
+		return _dao.findActiveForms(_plugin);
+		
+	}
+	
+	/**
+	 * Get all the week definitions of the form
+	 * @param nIdForm the FOrm Id
+	 * @return the list of all the week definitions of the form
+	 */
+	public static List<WeekDefinition> getListWeekDefinition(int nIdForm) {
+		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdWeekDefinition(weekDefinition.getIdWeekDefinition());
+			for (WorkingDay workingDay : listWorkingDay) {
+				List<TimeSlot> listTimeSlot = TimeSlotHome.findByIdWorkingDay(workingDay.getIdWorkingDay());
+				workingDay.setListTimeSlot(listTimeSlot);
+			}
+			weekDefinition.setListWorkingDay(listWorkingDay);
+		}
+		return listWeekDefinition;
+	}
 }

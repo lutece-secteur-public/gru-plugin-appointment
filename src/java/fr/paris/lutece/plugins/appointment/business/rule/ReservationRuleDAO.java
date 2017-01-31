@@ -1,5 +1,10 @@
 package fr.paris.lutece.plugins.appointment.business.rule;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,7 +20,11 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_reservation_rule (id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form) VALUES (?, ?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_reservation_rule SET date_of_apply = ?, max_capacity_per_slot = ?, max_people_per_appointment =?, id_form = ? WHERE id_reservation_rule = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_reservation_rule WHERE id_reservation_rule = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form FROM appointment_reservation_rule WHERE id_reservation_rule = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form FROM appointment_reservation_rule";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM
+			+ " AND date_of_apply = ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -67,9 +76,50 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 				reservationRule = buildReservationRule(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return reservationRule;
+	}
+
+	@Override
+	public List<ReservationRule> findByIdForm(int nIdForm, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<ReservationRule> listReservationRule = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listReservationRule.add(buildReservationRule(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listReservationRule;
+	}
+
+	@Override
+	public List<ReservationRule> findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<ReservationRule> listReservationRule = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.setDate(2, Date.valueOf(dateOfApply));
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listReservationRule.add(buildReservationRule(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listReservationRule;
 	}
 
 	/**

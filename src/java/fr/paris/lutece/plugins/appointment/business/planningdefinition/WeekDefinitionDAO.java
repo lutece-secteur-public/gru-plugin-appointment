@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,8 +18,10 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_week_definition (id_week_definition, date_of_apply, id_form) VALUES (?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_week_definition SET date_of_apply = ?, id_form = ? WHERE id_week_definition = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_week_definition WHERE id_week_definition = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_week_definition, date_of_apply, id_form FROM appointment_week_definition WHERE id_week_definition = ?";
-
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_week_definition, date_of_apply, id_form FROM appointment_week_definition";
+	private static final String SQL_QUERY_SELECT =  SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
+	
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -67,11 +72,33 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 				weekDefinition = buildWeekDefinition(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return weekDefinition;
 	}
 
+
+	@Override
+	public List<WeekDefinition> findByIdForm(int nIdForm, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<WeekDefinition> listWeekDefinitions = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listWeekDefinitions.add(buildWeekDefinition(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listWeekDefinitions;
+	}
+	
 	/**
 	 * Build a WeekDefinition business object from the resultset
 	 * 

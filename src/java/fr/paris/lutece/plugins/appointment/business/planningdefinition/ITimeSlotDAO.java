@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -63,4 +65,12 @@ public interface ITimeSlotDAO {
 	 * @return the instance of the timeSlot
 	 */
 	TimeSlot select(int nIdTimeSlot, Plugin plugin);
+	
+	/**
+	 * Get all the time slots of the working day
+	 * @param nIdWorkingDay the working day id
+	 * @param plugin the plugin
+	 * @return the list of all the time slots of the working day
+	 */
+	List<TimeSlot> findByIdWorkingDay(int nIdWorkingDay, Plugin plugin);
 }

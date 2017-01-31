@@ -125,7 +125,7 @@ public class WeekDefinition implements Serializable {
 	 * 
 	 * @return the list of the working days for the week
 	 */
-	public List<WorkingDay> getWorkingDays() {
+	public List<WorkingDay> getListWorkingDay() {
 		return _listWorkingDays;
 	}
 
@@ -135,7 +135,7 @@ public class WeekDefinition implements Serializable {
 	 * @param _listWorkingDays
 	 *            the list o f working days to set
 	 */
-	public void setWorkingDays(List<WorkingDay> listWorkingDays) {
+	public void setListWorkingDay(List<WorkingDay> listWorkingDays) {
 		this._listWorkingDays = listWorkingDays;
 	}
 

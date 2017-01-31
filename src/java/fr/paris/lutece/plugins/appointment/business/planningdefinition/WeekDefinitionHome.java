@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -72,6 +74,15 @@ public class WeekDefinitionHome {
 	 */
 	public static WeekDefinition findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
+	}
+	
+	/**
+	 * Get all the week definitions of the form given
+	 * @param nIdForm the Form Id 
+	 * @return the list of the week definitions of the form
+	 */
+	public static List<WeekDefinition> findByIdForm(int nIdForm) {
+		return _dao.findByIdForm(nIdForm, _plugin);
 	}
 
 }

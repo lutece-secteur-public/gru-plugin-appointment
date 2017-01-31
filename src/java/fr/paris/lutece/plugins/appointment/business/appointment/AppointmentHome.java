@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -72,6 +74,27 @@ public class AppointmentHome {
 	 */
 	public static Appointment findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
+	}
+
+	/**
+	 * Return the appointments of a user
+	 * 
+	 * @param nIdUser
+	 *            the User Id
+	 * @return a list of the user appointments
+	 */
+	public static List<Appointment> findByIdUser(int nIdUser) {
+		return _dao.findByIdUser(nIdUser, _plugin);
+	}
+
+	/**
+	 * Return the appointments of a slot
+	 * 
+	 * @param nIdSlot
+	 * @return a list of the appointments of the slot
+	 */
+	public static List<Appointment> findByIdSlot(int nIdSlot) {
+		return _dao.findByIdSlot(nIdSlot, _plugin);
 	}
 
 }

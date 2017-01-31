@@ -12,12 +12,12 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class CalendarTemplateTest extends LuteceTestCase {
 
-	private static final String TITLE_1 = "Title1";
-	private static final String TITLE_2 = "Title2";
-	private static final String DESCRIPTION_1 = "Description1";
-	private static final String DESCRIPTION_2 = "Description2";
-	private static final String TEMPLATE_PATH_1 = "TemplatePath1";
-	private static final String TEMPLATE_PATH_2 = "TemplatePath2";
+	public static final String TITLE_1 = "Title1";
+	public static final String TITLE_2 = "Title2";
+	public static final String DESCRIPTION_1 = "Description1";
+	public static final String DESCRIPTION_2 = "Description2";
+	public static final String TEMPLATE_PATH_1 = "TemplatePath1";
+	public static final String TEMPLATE_PATH_2 = "TemplatePath2";
 
 	/**
 	 * Test method for the CalendarTemplate (CRUD)

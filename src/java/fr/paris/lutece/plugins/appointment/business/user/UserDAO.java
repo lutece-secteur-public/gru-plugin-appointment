@@ -67,7 +67,9 @@ public class UserDAO implements IUserDAO {
 				user = buildUser(daoUtil);
 			}
 		} finally {
-			daoUtil.free();
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
 		}
 		return user;
 	}

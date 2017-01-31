@@ -17,21 +17,29 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class DisplayTest extends LuteceTestCase {
 
-	private static final boolean DISPLAY_TITLE_FO_1 = true;
-	private static final boolean DISPLAY_TITLE_FO_2 = false;
-	private static final byte[] BYTES_1 = "BlaBlaBla".getBytes();
-	private static final byte[] BYTES_2 = "BloBloBlo".getBytes();
-	private static final String ICON_FORM_MIME_TYPE_1 = "ICON_FORM_MIME_TYPE_1";
-	private static final String ICON_FORM_MIME_TYPE_2 = "ICON_FORM_MIME_TYPE_2";
-	private static final int NB_WEEKS_TO_DISPLAY_1 = 10;
-	private static final int NB_WEEKS_TO_DISPLAY_2 = 20;
+	public static final boolean DISPLAY_TITLE_FO_1 = true;
+	public static final boolean DISPLAY_TITLE_FO_2 = false;
+	public static final byte[] BYTES_1 = "BlaBlaBla".getBytes();
+	public static final byte[] BYTES_2 = "BloBloBlo".getBytes();
+	public static final String ICON_FORM_MIME_TYPE_1 = "ICON_FORM_MIME_TYPE_1";
+	public static final String ICON_FORM_MIME_TYPE_2 = "ICON_FORM_MIME_TYPE_2";
+	public static final int NB_WEEKS_TO_DISPLAY_1 = 10;
+	public static final int NB_WEEKS_TO_DISPLAY_2 = 20;
 
 	/**
 	 * Test method for the Display (CRUD)
 	 */
 	public void testDisplay() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate();
+		CalendarTemplateHome.create(calendarTemplate);
+
 		// Initialize a Display
 		Display display = buildDisplay();
+		display.setIdForm(form.getIdForm());
+		display.setIdCalendarTemplate(calendarTemplate.getIdCalendarTemplate());
 		// Create the Display in database
 		DisplayHome.create(display);
 		// Find the Display created in database
@@ -58,6 +66,60 @@ public class DisplayTest extends LuteceTestCase {
 		displayStored = DisplayHome.findByPrimaryKey(display.getIdDisplay());
 		// Check the Display has been removed from database
 		assertNull(displayStored);
+
+		// Clean
+		FormHome.delete(form.getIdForm());
+	}
+
+	/**
+	 * Test delete cascade
+	 */
+	public void testDeleteCascade() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate();
+		CalendarTemplateHome.create(calendarTemplate);
+
+		// Initialize a Display
+		Display display = buildDisplay();
+		display.setIdForm(form.getIdForm());
+		display.setIdCalendarTemplate(calendarTemplate.getIdCalendarTemplate());
+		// Create the Display in database
+		DisplayHome.create(display);
+		// Find the Display created in database
+		Display displayStored = DisplayHome.findByPrimaryKey(display.getIdDisplay());
+		assertNotNull(displayStored);
+		// Delete the Form and by cascade the Display
+		FormHome.delete(form.getIdForm());
+		displayStored = DisplayHome.findByPrimaryKey(display.getIdDisplay());
+		// Check the Display has been removed from database
+		assertNull(displayStored);
+	}
+
+	/**
+	 * Test findByIdForm method
+	 */
+	public void testFindByIdForm() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate();
+		CalendarTemplateHome.create(calendarTemplate);
+
+		// Initialize a Display
+		Display display = buildDisplay();
+		display.setIdForm(form.getIdForm());
+		display.setIdCalendarTemplate(calendarTemplate.getIdCalendarTemplate());
+		// Create the Display in database
+		DisplayHome.create(display);
+		// Find the Display created in database
+		Display displayStored = DisplayHome.findByIdForm(form.getIdForm());
+		// Check Asserts
+		checkAsserts(displayStored, display);
+
+		// Clean
+		FormHome.delete(form.getIdForm());
 	}
 
 	/**
@@ -75,15 +137,6 @@ public class DisplayTest extends LuteceTestCase {
 		display.setIcon(img);
 
 		display.setNbWeeksToDisplay(NB_WEEKS_TO_DISPLAY_1);
-
-		Form form = FormTest.buildForm();
-		FormHome.create(form);
-		display.setIdForm(form.getIdForm());
-
-		CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate();
-		CalendarTemplateHome.create(calendarTemplate);
-		display.setIdCalendarTemplate(calendarTemplate.getIdCalendarTemplate());
-
 		return display;
 	}
 
@@ -97,7 +150,7 @@ public class DisplayTest extends LuteceTestCase {
 	 */
 	public void checkAsserts(Display displayStored, Display display) {
 		assertEquals(displayStored.isDisplayTitleFo(), display.isDisplayTitleFo());
-		assertEquals(displayStored.getIcon().getMimeType(), display.getIcon().getMimeType());		
+		assertEquals(displayStored.getIcon().getMimeType(), display.getIcon().getMimeType());
 		assertEquals(displayStored.getIdCalendarTemplate(), display.getIdCalendarTemplate());
 		assertEquals(displayStored.getIdForm(), display.getIdForm());
 	}

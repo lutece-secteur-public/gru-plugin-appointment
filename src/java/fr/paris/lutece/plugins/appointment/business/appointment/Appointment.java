@@ -28,7 +28,7 @@ public class Appointment implements Serializable {
 	/**
 	 * Slot id
 	 */
-	private int _nIdSlot;
+	private int _nIdSlot;	
 
 	/**
 	 * Get the Appointment Id

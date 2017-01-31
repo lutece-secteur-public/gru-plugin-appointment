@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.form;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -11,19 +13,19 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 public interface IFormDAO {
 
 	/**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.formDAO";
-    
+	 * The name of the bean of the DAO
+	 */
+	static String BEAN_NAME = "appointment.formDAO";
+
 	/**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey(Plugin plugin);
-    
+	 * Generate a new primary key
+	 * 
+	 * @param plugin
+	 *            the Plugin
+	 * @return the new primary key
+	 */
+	int getNewPrimaryKey(Plugin plugin);
+
 	/**
 	 * 
 	 * Insert a new record in the table
@@ -65,5 +67,14 @@ public interface IFormDAO {
 	 * @return the instance of the Form
 	 */
 	Form select(int nIdForm, Plugin plugin);
+
+	/**
+	 * Get all the forms that are active
+	 * 
+	 * @param plugin
+	 *            the plugin
+	 * @return all the active forms
+	 */
+	List<Form> findActiveForms(Plugin plugin);
 
 }

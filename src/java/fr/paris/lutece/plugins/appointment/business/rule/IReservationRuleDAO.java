@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.rule;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -63,4 +66,21 @@ public interface IReservationRuleDAO {
 	 * @return the instance of the ReservationRule
 	 */
 	ReservationRule select(int nIdReservationRule, Plugin plugin);
+	
+	/**
+	 * Returns all the Reservation Rule of the form given
+	 * @param nIdForm the Form Id 
+	 * @param plugin the plugin
+	 * @return a list of reservation rule of the form
+	 */
+	List<ReservationRule> findByIdForm(int nIdForm, Plugin plugin);
+	
+	/**
+	 * Returns a list of Reservation Rule with the given search parameters
+	 * @param nIdForm the Form Id
+	 * @param dateOfApply the date of apply 
+	 * @param plugin the plugin
+	 * @return a list of reservation rule that matches
+	 */
+	List<ReservationRule> findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin);
 }

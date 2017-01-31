@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.slot;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -71,6 +74,37 @@ public class SlotHome {
 	 */
 	public static Slot findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
+	}
+	
+	/**
+	 * Returns a list of slots for a date range
+	 * @param nIdForm the Form Id
+	 * @param startingDate the starting Date
+	 * @param endingDate the ending Date
+	 * @return a list of slots whose dates are included in the given period
+	 */
+	public static List<Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDate, LocalDateTime endingDate) {
+		return _dao.findByIdFormAndDateRange(nIdForm, startingDate, endingDate, _plugin);
+	}
+	
+	/**
+	 * Returns a list of open slots for a date range
+	 * @param nIdForm the Form Id
+	 * @param startingDate the starting Date
+	 * @param endingDate the ending Date
+	 * @return a list of open slots whose dates are included in the given period
+	 */
+	public static List<Slot> findOpenSlotsByIdFormAndDateRange(int nIdForm, LocalDateTime startingDate, LocalDateTime endingDate) {
+		return _dao.findOpenSlotsByIdFormAndDateRange(nIdForm, startingDate, endingDate, _plugin);
+	}
+	
+	/**
+	 * Returns a list of open slots
+	 * @param nIdForm the Form Id
+	 * @return a list of open slots
+	 */
+	public static List<Slot> findOpenSlotsByIdForm(int nIdForm) {
+		return _dao.findOpenSlotsByIdForm(nIdForm, _plugin);
 	}
 
 }

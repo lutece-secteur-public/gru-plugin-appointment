@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.rule;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -71,6 +74,25 @@ public class ReservationRuleHome {
 	 */
 	public static ReservationRule findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
+	}
+	
+	/**
+	 * Returns all the Reservation Rule of a form
+	 * @param nIdForm the Form Id
+	 * @return a list of ReservationRule of the form
+	 */
+	public static List<ReservationRule> findByIdForm(int nIdForm) {
+		return _dao.findByIdForm(nIdForm, _plugin);
+	}
+	
+	/**
+	 * Returns a list of Reservation Rule with the given search parameters
+	 * @param nIdForm the Form Id
+	 * @param dateOfApply the date of apply
+	 * @return a list of ReservationRule
+	 */
+	public static List<ReservationRule> findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply) {
+		return _dao.findByIdFormAndDateOfApply(nIdForm, dateOfApply, _plugin);
 	}
 	
 }

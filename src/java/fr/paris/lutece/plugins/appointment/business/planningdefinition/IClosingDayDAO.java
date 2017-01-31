@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planningdefinition;
 
+import java.time.LocalDate;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -63,5 +65,14 @@ public interface IClosingDayDAO {
 	 * @return The instance of the Closing Day
 	 */
 	ClosingDay select(int nIdClosingDay, Plugin plugin);
+	
+	/**
+	 * Return the closing day if exists
+	 * @param nIdForm the Form Id
+	 * @param dateOfCLosingDay the date of the closing day
+	 * @param plugin the plugin
+	 * @return the closing day if exists
+	 */
+	ClosingDay findByIdFormAndDateOfClosingDay(int nIdForm, LocalDate dateOfCLosingDay, Plugin plugin);
 
 }

@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
@@ -16,19 +17,23 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class ReservationRuleTest extends LuteceTestCase {
 
-	private static final LocalDate DATE_OF_APPLY_1 = LocalDate.parse("2017-01-27");
-	private static final LocalDate DATE_OF_APPLY_2 = LocalDate.parse("2017-02-25");
-	private static final int MAX_CAPACITY_PER_SLOT_1 = 1;
-	private static final int MAX_CAPACITY_PER_SLOT_2 = 2;
-	private static final int MAX_PEOPLE_PER_APPOINTMENT_1 = 1;
-	private static final int MAX_PEOPLE_PER_APPOINTMENT_2 = 2;
+	public static final LocalDate DATE_OF_APPLY_1 = LocalDate.parse("2017-01-27");
+	public static final LocalDate DATE_OF_APPLY_2 = LocalDate.parse("2017-02-25");
+	public static final int MAX_CAPACITY_PER_SLOT_1 = 1;
+	public static final int MAX_CAPACITY_PER_SLOT_2 = 2;
+	public static final int MAX_PEOPLE_PER_APPOINTMENT_1 = 1;
+	public static final int MAX_PEOPLE_PER_APPOINTMENT_2 = 2;
 
 	/**
 	 * Test method for the ReservationRule (CRUD)
 	 */
 	public void testReservationRule() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
 		// Initialize a ReservationRule
 		ReservationRule reservationRule = buildReservationRule();
+		reservationRule.setIdForm(form.getIdForm());
 		// Create the ReservationRule in database
 		ReservationRuleHome.create(reservationRule);
 		// Find the ReservationRule created in database
@@ -53,6 +58,89 @@ public class ReservationRuleTest extends LuteceTestCase {
 		reservationRuleStored = ReservationRuleHome.findByPrimaryKey(reservationRule.getIdReservationRule());
 		// Check the ReservationRule has been removed from database
 		assertNull(reservationRuleStored);
+
+		// Clean
+		FormHome.delete(form.getIdForm());
+	}
+
+	/**
+	 * Test delete cascade
+	 */
+	public void testDeleteCascade() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a ReservationRule
+		ReservationRule reservationRule = buildReservationRule();
+		reservationRule.setIdForm(form.getIdForm());
+		// Create the ReservationRule in database
+		ReservationRuleHome.create(reservationRule);
+		// Find the ReservationRule created in database
+		ReservationRule reservationRuleStored = ReservationRuleHome
+				.findByPrimaryKey(reservationRule.getIdReservationRule());
+		assertNotNull(reservationRuleStored);
+		// Delete the form and by cascade the ReservationRule
+		FormHome.delete(form.getIdForm());
+		reservationRuleStored = ReservationRuleHome.findByPrimaryKey(reservationRule.getIdReservationRule());
+		// Check the ReservationRule has been removed from database
+		assertNull(reservationRuleStored);
+	}
+
+	/**
+	 * Test of findByIdForm method
+	 */
+	public void testFindByIdForm() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a ReservationRule
+		ReservationRule reservationRule = buildReservationRule();
+		reservationRule.setIdForm(form.getIdForm());
+		// Create the ReservationRule in database
+		ReservationRuleHome.create(reservationRule);
+		// Find the ReservationRule created in database
+		List<ReservationRule> listReservationRuleStored = ReservationRuleHome.findByIdForm(form.getIdForm());
+		// Check Asserts
+		assertEquals(listReservationRuleStored.size(), 1);
+		checkAsserts(listReservationRuleStored.get(0), reservationRule);
+
+		// Clean
+		FormHome.delete(form.getIdForm());
+
+	}
+
+	/**
+	 * Test of findByIdFormAndDateOfApply method
+	 */
+	public void findByIdFormAndDateOfApply() {
+		Form form = FormTest.buildForm();
+		FormHome.create(form);
+
+		// Initialize a ReservationRule
+		ReservationRule reservationRule1 = buildReservationRule();
+		reservationRule1.setIdForm(form.getIdForm());
+		// Create the ReservationRule in database
+		ReservationRuleHome.create(reservationRule1);
+		// Find the ReservationRule created in database
+		List<ReservationRule> listReservationRuleStored = ReservationRuleHome
+				.findByIdFormAndDateOfApply(form.getIdForm(), DATE_OF_APPLY_1);
+		// Check Asserts
+		assertEquals(listReservationRuleStored.size(), 1);
+		checkAsserts(listReservationRuleStored.get(0), reservationRule1);
+
+		// Initialize a ReservationRule
+		ReservationRule reservationRule2 = buildReservationRule2();
+		reservationRule2.setIdForm(form.getIdForm());
+		// Create the ReservationRule in database
+		ReservationRuleHome.create(reservationRule2);
+
+		// Find the ReservationRule created in database
+		listReservationRuleStored = ReservationRuleHome.findByIdFormAndDateOfApply(form.getIdForm(), DATE_OF_APPLY_1);
+		// Check Asserts
+		assertEquals(listReservationRuleStored.size(), 2);
+
+		// Clean
+		FormHome.delete(form.getIdForm());
 	}
 
 	/**
@@ -65,11 +153,19 @@ public class ReservationRuleTest extends LuteceTestCase {
 		reservationRule.setDateOfApply(DATE_OF_APPLY_1);
 		reservationRule.setMaxCapacityPerSlot(MAX_CAPACITY_PER_SLOT_1);
 		reservationRule.setMaxPeoplePerAppointment(MAX_PEOPLE_PER_APPOINTMENT_1);
+		return reservationRule;
+	}
 
-		Form form = FormTest.buildForm();
-		FormHome.create(form);
-		reservationRule.setIdForm(form.getIdForm());
-
+	/**
+	 * Build a ReservationRule Business Object
+	 * 
+	 * @return the reservationRule
+	 */
+	public ReservationRule buildReservationRule2() {
+		ReservationRule reservationRule = new ReservationRule();
+		reservationRule.setDateOfApply(DATE_OF_APPLY_2);
+		reservationRule.setMaxCapacityPerSlot(MAX_CAPACITY_PER_SLOT_2);
+		reservationRule.setMaxPeoplePerAppointment(MAX_PEOPLE_PER_APPOINTMENT_2);
 		return reservationRule;
 	}
 
@@ -85,7 +181,7 @@ public class ReservationRuleTest extends LuteceTestCase {
 		assertEquals(reservationRuleStored.getDateOfApply(), reservationRule.getDateOfApply());
 		assertEquals(reservationRuleStored.getMaxCapacityPerSlot(), reservationRule.getMaxCapacityPerSlot());
 		assertEquals(reservationRuleStored.getMaxPeoplePerAppointment(), reservationRule.getMaxPeoplePerAppointment());
-		assertEquals(reservationRuleStored.getIdForm(), reservationRule.getIdForm()); 
+		assertEquals(reservationRuleStored.getIdForm(), reservationRule.getIdForm());
 	}
 
 }

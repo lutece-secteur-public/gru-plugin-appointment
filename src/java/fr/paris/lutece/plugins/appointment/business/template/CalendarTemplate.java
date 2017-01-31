@@ -40,9 +40,13 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Class that describes calendar templates
+ * The business class of the Calendar Template
+ * 
+ * @author Laurent Payen
+ *
  */
 public class CalendarTemplate implements Serializable {
+	
 	/**
 	 * Serial version UID
 	 */
