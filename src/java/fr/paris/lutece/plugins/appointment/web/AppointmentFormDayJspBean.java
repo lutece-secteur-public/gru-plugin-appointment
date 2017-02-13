@@ -89,7 +89,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_OPENING_TIME = "openingTime";
 	private static final String PARAMETER_CLOSING_TIME = "closingTime";
 	private static final String PARAMETER_APPOINTMENT_DURATION = "appointmentDuration";
-	private static final String PARAMETER_PEOPLE_PER_APPOINTMENT = "peoplePerAppointment";
+	private static final String PARAMETER_PEOPLE_PER_APPOINTMENT = "maxCapacityPerSlot";
 	private static final String PARAMETER_NB_WEEK = "nb_week";
 	private static final String PARAMETER_MAX_WEEK = "max_week";
 	private static final String PARAMETER_LIM_DATES = "bornDates";
@@ -190,12 +190,12 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean {
 			if (appointmentForm != null) {
 				nNbWeeksToCreate += appointmentForm.getNbWeeksToDisplay();
 
-				if (Math.abs(_nNbWeek) > nNbWeeksToCreate && appointmentForm.getDateLimit() == null) {
+				if (Math.abs(_nNbWeek) > nNbWeeksToCreate) {
 					redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 				}
 			}
 
-			Date dateMin = AppointmentService.getService().getDateMonday(_nNbWeek);
+			Date dateMin = AppointmentService.getInstance().getDateMonday(_nNbWeek);
 			Calendar calendar = GregorianCalendar.getInstance(getLocale());
 			calendar.setTime(dateMin);
 			calendar.add(Calendar.DAY_OF_MONTH, 6);
@@ -363,7 +363,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean {
 
 			// even though only this day has been modified
 			// Notify for the whole form for simplicity
-			AppointmentService.getService().notifyAppointmentFormModified(form.getIdForm());
+			AppointmentService.getInstance().notifyAppointmentFormModified(form.getIdForm());
 
 			if (day.getIsOpen()) {
 				return redirect(request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay(request, day.getIdDay()));
@@ -451,12 +451,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean {
 
 		if ((objRetour != null) && !objRetour.getIsOpen()) {
 			AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey(day.getIdForm());
-			objRetour.setOpeningMinutes(formFromDb.getOpeningMinutes());
-			objRetour.setOpeningHour(formFromDb.getOpeningHour());
-			objRetour.setClosingMinutes(formFromDb.getClosingMinutes());
-			objRetour.setClosingHour(formFromDb.getClosingHour());
 			objRetour.setAppointmentDuration(formFromDb.getDurationAppointments());
-			objRetour.setPeoplePerAppointment(formFromDb.getPeoplePerAppointment());
+			//objRetour.setPeoplePerAppointment(formFromDb.getPeoplePerAppointment());
 		}
 
 		return objRetour;
@@ -583,7 +579,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean {
 
 		// even though only this day has been modified
 		// Notify for the whole form for simplicity
-		AppointmentService.getService().notifyAppointmentFormModified(form.getIdForm());
+		AppointmentService.getInstance().notifyAppointmentFormModified(form.getIdForm());
 
 		if (day.getIsOpen()) {
 			return redirect(request, AppointmentSlotJspBean.getUrlManageSlotsByIdDay(request, day.getIdDay()));
@@ -672,11 +668,11 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean {
 						getURLManageAppointmentFormDays(request, strIdForm), AdminMessage.TYPE_STOP));
 			}
 
-			AppointmentService.getService().resetFormDays(AppointmentFormHome.findByPrimaryKey(nIdForm), dateMin, true);
+			AppointmentService.getInstance().resetFormDays(AppointmentFormHome.findByPrimaryKey(nIdForm), dateMin, true);
 
 			// even though only this day has been modified
 			// Notify for the whole form for simplicity
-			AppointmentService.getService().notifyAppointmentFormModified(nIdForm);
+			AppointmentService.getInstance().notifyAppointmentFormModified(nIdForm);
 
 			return redirect(request, getURLAppointmentSlotJspBean(request, nIdForm));
 		}
@@ -899,38 +895,8 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean {
 	}
 
 	public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
-		if (form.getDateLimit() != null) {
-			Date dateMin = null;
-			List<AppointmentDay> listDays = AppointmentDayHome.findByIdForm(form.getIdForm());
-			if (!listDays.isEmpty()) {
-				dateMin = listDays.get(0).getDate();
-			}
-			if (dateMin == null) {
-				Calendar c = Calendar.getInstance();
-				dateMin = new Date(c.getTimeInMillis());
-			}
-			long diff = form.getDateLimit().getTime() - dateMin.getTime();
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-			int maxWeek = (int) diffDays / 7;
-			Calendar cal = GregorianCalendar.getInstance(Locale.FRANCE);
-			int nCurrentDayOfWeek = cal.get(cal.DAY_OF_WEEK);
-			cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek);
-			Date datMax = null;
-			do {
-				cal.add(Calendar.WEEK_OF_YEAR, maxWeek);
-				datMax = new Date(cal.getTimeInMillis());
-				if (datMax.before(form.getDateLimit())) {
-					maxWeek = maxWeek + 1;
-				}
-				cal = GregorianCalendar.getInstance(Locale.FRANCE);
-				cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek);
-			} while (datMax.before(form.getDateLimit()));
-
-			return maxWeek;
-
-		} else {
+		
 			return nbWeekToCreate;
-
-		}
+		
 	}
 }

@@ -9,21 +9,21 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  *
  */
 public interface IDisplayDAO {
-	
+
 	/**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.displayDAO";
-    
+	 * The name of the bean of the DAO
+	 */
+	static String BEAN_NAME = "appointment.displayDAO";
+
 	/**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey(Plugin plugin);
-    
+	 * Generate a new primary key
+	 * 
+	 * @param plugin
+	 *            the Plugin
+	 * @return the new primary key
+	 */
+	int getNewPrimaryKey(Plugin plugin);
+
 	/**
 	 * Insert a new record in the table.
 	 * 
@@ -35,7 +35,7 @@ public interface IDisplayDAO {
 	void insert(Display display, Plugin plugin);
 
 	/**
-	 * Update the record in the table	
+	 * Update the record in the table
 	 * 
 	 * @param display
 	 *            the reference of the Display
@@ -64,11 +64,14 @@ public interface IDisplayDAO {
 	 * @return The instance of the Display
 	 */
 	Display select(int nIdDisplay, Plugin plugin);
-	
+
 	/**
 	 * Returns the display of the given form
-	 * @param nIdForm the form id
-	 * @param plugin the plugin
+	 * 
+	 * @param nIdForm
+	 *            the form id
+	 * @param plugin
+	 *            the plugin
 	 * @return the form display
 	 */
 	Display findByIdForm(int nIdForm, Plugin plugin);

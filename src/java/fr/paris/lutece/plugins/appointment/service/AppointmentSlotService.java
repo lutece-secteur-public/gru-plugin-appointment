@@ -77,7 +77,7 @@ public class AppointmentSlotService {
 	public synchronized void computeAndCreateSlotsForDay(AppointmentDay day, AppointmentForm form) {
 		List<AppointmentSlot> listSlots;
 
-		listSlots = AppointmentService.getService().computeDaySlots(day);
+		listSlots = AppointmentService.getInstance().computeDaySlots(day);
 
 		for (AppointmentSlot slot : listSlots) {
 			slot.setIdDay(day.getIdDay());
@@ -97,7 +97,7 @@ public class AppointmentSlotService {
 	 *            in the database.
 	 */
 	public synchronized void computeAndCreateSlotsForForm(AppointmentForm appointmentForm) {
-		List<AppointmentDay> listAppointmentDay = AppointmentService.getService().computeDayList(appointmentForm);
+		List<AppointmentDay> listAppointmentDay = AppointmentService.getInstance().computeDayList(appointmentForm);
 
 		for (AppointmentDay day : listAppointmentDay) {
 			int nFreePlaces = 0;
@@ -127,64 +127,7 @@ public class AppointmentSlotService {
 		int nEndingHour;
 		int nEndingMinute;
 
-		if (modifiedSlot.getIdDay() > 0) {
-			listSlotsDay = AppointmentSlotHome.findByIdDay(modifiedSlot.getIdDay());
-
-			AppointmentDay day = AppointmentDayHome.findByPrimaryKey(modifiedSlot.getIdDay());
-			nDurationAppointments = day.getAppointmentDuration();
-			nEndingHour = day.getClosingHour();
-			nEndingMinute = day.getClosingMinutes();
-			nEndingTime = (day.getClosingHour() * 60) + day.getClosingMinutes();
-			nPlaces = day.getPeoplePerAppointment();
-		} else {
-			listSlotsDay = AppointmentSlotHome.findByIdFormAndDayOfWeek(modifiedSlot.getIdForm(),
-					modifiedSlot.getDayOfWeek());
-
-			AppointmentForm form = AppointmentFormHome.findByPrimaryKey(modifiedSlot.getIdForm());
-			nDurationAppointments = form.getDurationAppointments();
-			nEndingHour = form.getClosingHour();
-			nEndingMinute = form.getClosingMinutes();
-			nEndingTime = (form.getClosingHour() * 60) + form.getClosingMinutes();
-			nPlaces = form.getPeoplePerAppointment();
-		}
-
-		for (AppointmentSlot slot : listSlotsDay) {
-			if (((slot.getStartingHour() * 60) + slot.getStartingMinute()) > ((modifiedSlot.getStartingHour() * 60)
-					+ modifiedSlot.getStartingMinute())) {
-				AppointmentSlotHome.delete(slot.getIdSlot());
-			}
-		}
-
-		for (int nTime = (modifiedSlot.getEndingHour() * 60)
-				+ modifiedSlot.getEndingMinute(); nTime < nEndingTime; nTime = nTime + nDurationAppointments) {
-			AppointmentSlot slot = new AppointmentSlot();
-			slot.setIdForm(modifiedSlot.getIdForm());
-			slot.setIdDay(modifiedSlot.getIdDay());
-			slot.setNbPlaces(nPlaces);
-			slot.setDayOfWeek(modifiedSlot.getDayOfWeek());
-			slot.setIsEnabled(true);
-
-			int nHour = nTime / 60;
-			int nMinute = nTime % 60;
-			slot.setStartingHour(nHour);
-			slot.setStartingMinute(nMinute);
-			nHour = (nTime + nDurationAppointments) / 60;
-			nMinute = (nTime + nDurationAppointments) % 60;
-
-			if (((nHour * 60) + nMinute) > nEndingTime) {
-				slot.setEndingHour(nEndingHour);
-				slot.setEndingMinute(nEndingMinute);
-			} else {
-				slot.setEndingHour(nHour);
-				slot.setEndingMinute(nMinute);
-			}
-
-			AppointmentSlotHome.create(slot);
-		}
-
-		if (modifiedSlot.getIdDay() > 0) {
-			AppointmentDayHome.resetDayFreePlaces(modifiedSlot.getIdDay());
-		}
+		
 	}
 
 	/**
@@ -261,7 +204,7 @@ public class AppointmentSlotService {
 				|| !StringUtils.equals(formFromDb.getTimeEnd(), appointmentForm.getTimeEnd())) {
 			AppointmentSlotHome.deleteByIdForm(appointmentForm.getIdForm());
 
-			List<AppointmentDay> listAppointmentDay = AppointmentService.getService().computeDayList(appointmentForm);
+			List<AppointmentDay> listAppointmentDay = AppointmentService.getInstance().computeDayList(appointmentForm);
 
 			for (AppointmentDay day : listAppointmentDay) {
 				int nFreePlaces = 0;
@@ -290,10 +233,10 @@ public class AppointmentSlotService {
 		for (int i = 0; i < bArrayDayOpened.length; i++) {
 			if (bArrayDayOpenedfromDb[i] != bArrayDayOpened[i]) {
 				if (bArrayDayOpened[i]) {
-					AppointmentDay day = AppointmentService.getService().getAppointmentDayFromForm(appointmentForm);
+					AppointmentDay day = AppointmentService.getInstance().getAppointmentDayFromForm(appointmentForm);
 					day.setIsOpen(true);
 
-					List<AppointmentSlot> listSlots = AppointmentService.getService().computeDaySlots(day, i + 1);
+					List<AppointmentSlot> listSlots = AppointmentService.getInstance().computeDaySlots(day, i + 1);
 
 					for (AppointmentSlot slot : listSlots) {
 						AppointmentSlotHome.create(slot);

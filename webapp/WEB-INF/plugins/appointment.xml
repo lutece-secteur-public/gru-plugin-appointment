@@ -75,18 +75,6 @@
    </portlets>
 	<daemons>
 		<daemon>
-			<daemon-id>DayCreationDaemon</daemon-id>
-			<daemon-name>appointment.daemon.dayCreationDaemon.name</daemon-name>
-			<daemon-description>appointment.daemon.dayCreationDaemon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.DayCreationDaemon</daemon-class>
-		</daemon>
-		<daemon>
-			<daemon-id>DayRemovalDaemon</daemon-id>
-			<daemon-name>appointment.daemon.dayRemovalDaemon.name</daemon-name>
-			<daemon-description>appointment.daemon.dayRemovalDaemon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.DayRemovalDaemon</daemon-class>
-		</daemon>
-		<daemon>
 			<daemon-id>AppointmentPublicationDaemon</daemon-id>
 			<daemon-name>appointment.daemon.appointmentPublicationDaemon.name</daemon-name>
 			<daemon-description>appointment.daemon.appointmentPublicationDaemon.description</daemon-description>
@@ -100,16 +88,6 @@
 			<daemon-class>fr.paris.lutece.plugins.appointment.Daemon.AppointmentSlotDisponibilityDaemon</daemon-class>
 		</daemon>
    </daemons>
-   
-   
-	
-<!--    <javascript-files> -->
-<!--         <javascript-files-scope>portal</javascript-files-scope> -->
-<!--         <javascript-file>appointment/appointment.js</javascript-file> -->
-<!-- 		<javascript-file>appointment/uploadify/jquery.uploadify.v2.1.4.min.js</javascript-file> -->
-<!-- 		<javascript-file>appointment/uploadify/swfobject.js</javascript-file> -->
-<!-- 		<javascript-file>appointment/appointmentupload.js</javascript-file> -->
-<!--     </javascript-files> -->
     <css-stylesheets>
         <css-stylesheets-scope>portal</css-stylesheets-scope>
         <css-stylesheet>appointment/appointment.css</css-stylesheet>

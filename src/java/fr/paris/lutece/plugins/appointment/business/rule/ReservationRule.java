@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import javax.validation.constraints.Min;
+
 /**
  * Business class of the rules of the reservation
  * 
@@ -30,11 +32,13 @@ public class ReservationRule implements Serializable {
 	/**
 	 * Maximum capacity for a slot
 	 */
+	@Min(value = 1, message = "#i18n{portal.validation.message.notEmpty}")
 	private int _nMaxCapacityPerSlot;
 
 	/**
 	 * Maximum number of people authorized for an appointment
 	 */
+	@Min(value = 1, message = "#i18n{portal.validation.message.notEmpty}")
 	private int _nMaxPeoplePerAppointment;
 
 	/**

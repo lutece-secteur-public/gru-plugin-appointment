@@ -42,57 +42,51 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @see #getFileItems(String, String)
  * @see #removeFileItem(String, String, int)
  */
-public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
-{
-    private static final String UPLOAD_SUBMIT_PREFIX = "_appointment_upload_submit_";
-    private static final String UPLOAD_DELETE_PREFIX = "_appointment_upload_delete_";
-    private static final String UPLOAD_CHECKBOX_PREFIX = "_appointment_upload_checkbox_";
-    private static final String BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER = "appointment.appointmentAsynchronousUploadHandler";
-    private static final String HANDLER_NAME = "appointmentAsynchronousUploadHandler";
+public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler {
+	private static final String UPLOAD_SUBMIT_PREFIX = "_appointment_upload_submit_";
+	private static final String UPLOAD_DELETE_PREFIX = "_appointment_upload_delete_";
+	private static final String UPLOAD_CHECKBOX_PREFIX = "_appointment_upload_checkbox_";
+	private static final String BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER = "appointment.appointmentAsynchronousUploadHandler";
+	private static final String HANDLER_NAME = "appointmentAsynchronousUploadHandler";
 
-    /**
-     * Get the handler
-     * 
-     * @return the handler
-     */
-    public static AppointmentAsynchronousUploadHandler getHandler( )
-    {
-        return SpringContextService.getBean( BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER );
-    }
+	/**
+	 * Get the handler
+	 * 
+	 * @return the handler
+	 */
+	public static AppointmentAsynchronousUploadHandler getHandler() {
+		return SpringContextService.getBean(BEAN_APPOINTMENT_ASYNCHRONOUS_UPLOAD_HANDLER);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getUploadSubmitPrefix( )
-    {
-        return UPLOAD_SUBMIT_PREFIX;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getUploadSubmitPrefix() {
+		return UPLOAD_SUBMIT_PREFIX;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getUploadDeletePrefix( )
-    {
-        return UPLOAD_DELETE_PREFIX;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getUploadDeletePrefix() {
+		return UPLOAD_DELETE_PREFIX;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getUploadCheckboxPrefix( )
-    {
-        return UPLOAD_CHECKBOX_PREFIX;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getUploadCheckboxPrefix() {
+		return UPLOAD_CHECKBOX_PREFIX;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getHandlerName( )
-    {
-        return HANDLER_NAME;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getHandlerName() {
+		return HANDLER_NAME;
+	}
 }

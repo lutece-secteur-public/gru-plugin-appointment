@@ -77,4 +77,13 @@ public interface IFormDAO {
 	 */
 	List<Form> findActiveForms(Plugin plugin);
 
+	/**
+	 * Get all the forms
+	 * 
+	 * @param plugin
+	 *            the plugin
+	 * @return all the forms
+	 */
+	List<Form> findAllForms(Plugin plugin);
+
 }

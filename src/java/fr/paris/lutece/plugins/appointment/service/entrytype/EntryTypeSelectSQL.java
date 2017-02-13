@@ -41,39 +41,35 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  * class EntryTypeSelectSQL
  *
  */
-public class EntryTypeSelectSQL extends AbstractEntryTypeSelectSQL
-{
-    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_select_sql.html";
-    private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_select_sql.html";
-    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_select_sql.html";
-    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_select_sql.html";
+public class EntryTypeSelectSQL extends AbstractEntryTypeSelectSQL {
+	private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_select_sql.html";
+	private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_select_sql.html";
+	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_select_sql.html";
+	private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_select_sql.html";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
-    {
-        entry.setFields( getSqlQueryFields( entry ) );
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getTemplateHtmlForm(Entry entry, boolean bDisplayFront) {
+		entry.setFields(getSqlQueryFields(entry));
 
-        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
-    }
+		return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateCreate( Entry entry, boolean bDisplayFront )
-    {
-        return TEMPLATE_CREATE;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getTemplateCreate(Entry entry, boolean bDisplayFront) {
+		return TEMPLATE_CREATE;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateModify( Entry entry, boolean bDisplayFront )
-    {
-        return TEMPLATE_MODIFY;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getTemplateModify(Entry entry, boolean bDisplayFront) {
+		return TEMPLATE_MODIFY;
+	}
 }

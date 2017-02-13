@@ -33,95 +33,85 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.util.ReferenceList;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
  * EntryTypeService
  *
  */
-public final class EntryTypeService
-{
-    private static volatile EntryTypeService _instance;
-    private Map<Integer, EntryType> _mapEntryTypes;
+public final class EntryTypeService {
+	private static volatile EntryTypeService _instance;
+	private Map<Integer, EntryType> _mapEntryTypes;
 
-    /**
-     * Private constructor
-     */
-    private EntryTypeService( )
-    {
-        initMapEntryTypes( );
-    }
+	/**
+	 * Private constructor
+	 */
+	private EntryTypeService() {
+		initMapEntryTypes();
+	}
 
-    /**
-     * Get the instance of the service
-     * 
-     * @return The instance of the service
-     */
-    public static EntryTypeService getInstance( )
-    {
-        if ( _instance == null )
-        {
-            _instance = new EntryTypeService( );
-        }
+	/**
+	 * Get the instance of the service
+	 * 
+	 * @return The instance of the service
+	 */
+	public static EntryTypeService getInstance() {
+		if (_instance == null) {
+			_instance = new EntryTypeService();
+		}
 
-        return _instance;
-    }
+		return _instance;
+	}
 
-    /**
-     * Get the map of entry types
-     * 
-     * @return the map of entry types
-     */
-    public Map<Integer, EntryType> getMapEntryTypes( )
-    {
-        return new HashMap<Integer, EntryType>( _mapEntryTypes );
-    }
+	/**
+	 * Get the map of entry types
+	 * 
+	 * @return the map of entry types
+	 */
+	public Map<Integer, EntryType> getMapEntryTypes() {
+		return new HashMap<Integer, EntryType>(_mapEntryTypes);
+	}
 
-    /**
-     * Get the entry type given the class name
-     * 
-     * @param nId
-     *            the id of the entry type
-     * @return an {@link EntryType}
-     */
-    public EntryType getEntryType( int nId )
-    {
-        return _mapEntryTypes.get( nId );
-    }
+	/**
+	 * Get the entry type given the class name
+	 * 
+	 * @param nId
+	 *            the id of the entry type
+	 * @return an {@link EntryType}
+	 */
+	public EntryType getEntryType(int nId) {
+		return _mapEntryTypes.get(nId);
+	}
 
-    /**
-     * Init the map of entry types
-     */
-    private void initMapEntryTypes( )
-    {
-        _mapEntryTypes = new HashMap<Integer, EntryType>( );
+	/**
+	 * Init the map of entry types
+	 */
+	private void initMapEntryTypes() {
+		_mapEntryTypes = new HashMap<Integer, EntryType>();
 
-        for ( EntryType entryType : EntryTypeHome.getList( AppointmentPlugin.PLUGIN_NAME ) )
-        {
-            _mapEntryTypes.put( entryType.getIdType( ), entryType );
-        }
-    }
+		for (EntryType entryType : EntryTypeHome.getList(AppointmentPlugin.PLUGIN_NAME)) {
+			_mapEntryTypes.put(entryType.getIdType(), entryType);
+		}
+	}
 
-    /**
-     * Get a reference list containing entry types
-     * 
-     * @return A reference list containing entry types
-     */
-    public ReferenceList getEntryTypeReferenceList( )
-    {
-        ReferenceList refListEntryType = new ReferenceList( );
+	/**
+	 * Get a reference list containing entry types
+	 * 
+	 * @return A reference list containing entry types
+	 */
+	public ReferenceList getEntryTypeReferenceList() {
+		ReferenceList refListEntryType = new ReferenceList();
 
-        for ( EntryType entryType : _mapEntryTypes.values( ) )
-        {
-            refListEntryType.addItem( entryType.getIdType( ), entryType.getTitle( ) );
-        }
+		for (EntryType entryType : _mapEntryTypes.values()) {
+			refListEntryType.addItem(entryType.getIdType(), entryType.getTitle());
+		}
 
-        return refListEntryType;
-    }
+		return refListEntryType;
+	}
 }

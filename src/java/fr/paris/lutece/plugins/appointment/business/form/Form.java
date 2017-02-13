@@ -5,7 +5,12 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinition;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.portal.service.rbac.RBACResource;
 
 /**
  * Business class of the Form
@@ -13,12 +18,17 @@ import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefin
  * @author Laurent Payen
  *
  */
-public class Form implements Serializable {
+public class Form implements RBACResource, Cloneable, Serializable {
 
 	/**
 	 * Serial version UID
 	 */
 	private static final long serialVersionUID = 4742702767509625292L;
+
+	/**
+	 * Name of the resource type of Appointment Forms
+	 */
+	public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
 
 	/**
 	 * Form Id
@@ -28,11 +38,14 @@ public class Form implements Serializable {
 	/**
 	 * Title of the form
 	 */
+	@NotBlank(message = "#i18n{appointment.validation.appointmentform.Title.notEmpty}")
+	@Size(max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}")
 	private String _strTitle;
 
 	/**
 	 * Description of the form
 	 */
+	@NotBlank(message = "#i18n{appointment.validation.appointmentform.Description.notEmpty}")
 	private String _strDescription;
 
 	/**
@@ -61,9 +74,14 @@ public class Form implements Serializable {
 	private boolean _bIsActive;
 
 	/**
+	 * Workflow Id
+	 */
+	private int _nIdWorkflow;
+	
+	/**
 	 * List of the week definitions of the form
 	 */
-	private List<WeekDefinition> _listWeekDefinitions;
+	private List<WeekDefinition> _listWeekDefinition;	
 
 	/**
 	 * Get the form Id
@@ -198,7 +216,7 @@ public class Form implements Serializable {
 	 * @param startingValidityDate
 	 *            the starting validity date to set (in sql Date format)
 	 */
-	public void setStartingValidityDate(Date startingValidityDate) {
+	public void setStartingValiditySqlDate(Date startingValidityDate) {
 		if (startingValidityDate != null) {
 			this._startingValidityDate = startingValidityDate.toLocalDate();
 		}
@@ -242,16 +260,16 @@ public class Form implements Serializable {
 	 * @param endingValidityDate
 	 *            the ending validity date to set (in sql Date format)
 	 */
-	public void setEndingValidityDate(Date endingValidityDate) {
+	public void setEndingValiditySqlDate(Date endingValidityDate) {
 		if (endingValidityDate != null) {
 			this._endingValidityDate = endingValidityDate.toLocalDate();
 		}
 	}
 
 	/**
-	 * Indicate if the form is active or not
+	 * Returns the IsActive
 	 * 
-	 * @return true if the form is open
+	 * @return The IsActive
 	 */
 	public boolean isActive() {
 		return _bIsActive;
@@ -267,13 +285,30 @@ public class Form implements Serializable {
 		this._bIsActive = bIsActive;
 	}
 
+	
+	/**
+	 * Get the workflow id
+	 * @return the workflow id
+	 */
+	public int getIdWorkflow() {
+		return _nIdWorkflow;
+	}
+
+	/**
+	 * Set the workflow Id
+	 * @param nIdWorkflow the workflow id to set
+	 */
+	public void setIdWorkflow(int nIdWorkflow) {
+		this._nIdWorkflow = nIdWorkflow;
+	}
+
 	/**
 	 * Get all the week definition of the form
 	 * 
 	 * @return a list of the week definitions
 	 */
 	public List<WeekDefinition> getListWeekDefinition() {
-		return _listWeekDefinitions;
+		return _listWeekDefinition;
 	}
 
 	/**
@@ -282,8 +317,18 @@ public class Form implements Serializable {
 	 * @param listWeekDefinitions
 	 *            the list to set
 	 */
-	public void setListWeekDefinition(List<WeekDefinition> listWeekDefinitions) {
-		this._listWeekDefinitions = listWeekDefinitions;
+	public void setListWeekDefinition(List<WeekDefinition> listWeekDefinition) {
+		this._listWeekDefinition = listWeekDefinition;
+	}	
+
+	@Override
+	public String getResourceTypeCode() {
+		return RESOURCE_TYPE;
+	}
+
+	@Override
+	public String getResourceId() {
+		return Integer.toString(getIdForm());
 	}
 
 }

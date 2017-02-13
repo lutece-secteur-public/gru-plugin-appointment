@@ -15,13 +15,14 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class FormDAO implements IFormDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form) FROM appointment_form";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form (id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ? WHERE id_form = ?";
-	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";	
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active FROM appointment_form";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form (id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active, id_workflow) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ?, id_workflow = ? WHERE id_form = ?";
+	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active, id_workflow FROM appointment_form";
+	private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 	private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
-	
+
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -84,7 +85,7 @@ public class FormDAO implements IFormDAO {
 		DAOUtil daoUtil = null;
 		List<Form> listForms = new ArrayList<>();
 		try {
-			daoUtil = new DAOUtil(SQL_QUERY_SELECT_ACTIVE_FORMS, plugin);			
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_ACTIVE_FORMS, plugin);
 			daoUtil.executeQuery();
 			while (daoUtil.next()) {
 				listForms.add(buildForm(daoUtil));
@@ -95,8 +96,26 @@ public class FormDAO implements IFormDAO {
 			}
 		}
 		return listForms;
-	}	
-	
+	}
+
+	@Override
+	public List<Form> findAllForms(Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Form> listForms = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_ALL, plugin);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listForms.add(buildForm(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listForms;
+	}
+
 	/**
 	 * Build a Form business object from the resultset
 	 * 
@@ -112,12 +131,13 @@ public class FormDAO implements IFormDAO {
 		form.setDescription(daoUtil.getString(nIndex++));
 		form.setReference(daoUtil.getString(nIndex++));
 		form.setCategory(daoUtil.getString(nIndex++));
-		form.setStartingValidityDate(daoUtil.getDate(nIndex++));
-		form.setEndingValidityDate(daoUtil.getDate(nIndex++));
-		form.setIsActive(daoUtil.getBoolean(nIndex));
+		form.setStartingValiditySqlDate(daoUtil.getDate(nIndex++));
+		form.setEndingValiditySqlDate(daoUtil.getDate(nIndex++));
+		form.setIsActive(daoUtil.getBoolean(nIndex++));
+		form.setIdWorkflow(daoUtil.getInt(nIndex));
 		return form;
 	}
-		
+
 	/**
 	 * Build a daoUtil object with the form
 	 * 
@@ -146,6 +166,7 @@ public class FormDAO implements IFormDAO {
 		daoUtil.setDate(nIndex++, form.getStartingValiditySqlDate());
 		daoUtil.setDate(nIndex++, form.getEndingValiditySqlDate());
 		daoUtil.setBoolean(nIndex++, form.isActive());
+		daoUtil.setInt(nIndex++, form.getIdWorkflow());
 		if (!isInsert) {
 			daoUtil.setInt(nIndex, form.getIdForm());
 		}

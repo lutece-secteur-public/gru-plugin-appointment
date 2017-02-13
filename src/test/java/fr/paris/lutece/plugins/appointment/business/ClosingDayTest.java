@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.ClosingDay;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.ClosingDayHome;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**

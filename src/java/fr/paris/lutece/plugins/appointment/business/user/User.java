@@ -3,6 +3,11 @@ package fr.paris.lutece.plugins.appointment.business.user;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 
 /**
@@ -31,16 +36,22 @@ public class User implements Serializable {
 	/**
 	 * First name of the User
 	 */
+	@NotBlank(message = "appointment.validation.appointment.FirstName.notEmpty")
+	@Size(max = 255, message = "appointment.validation.appointment.FirstName.size")
 	private String _strFirstName;
 
 	/**
 	 * Last name of the User
 	 */
+	@NotBlank(message = "appointment.validation.appointment.LastName.notEmpty")
+	@Size(max = 255, message = "appointment.validation.appointment.LastName.size")
 	private String _strLastName;
 
 	/**
 	 * Email of the User
 	 */
+	@Size(max = 255, message = "appointment.validation.appointment.Email.size")
+	@Email(message = "appointment.validation.appointment.Email.email")
 	private String _strEmail;
 
 	/**

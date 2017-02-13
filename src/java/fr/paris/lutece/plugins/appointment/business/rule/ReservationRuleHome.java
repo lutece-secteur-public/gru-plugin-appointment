@@ -30,10 +30,10 @@ public class ReservationRuleHome {
 	 * Create an instance of the ReservationRule class
 	 * 
 	 * @param reservationRule
-	 *            The instance of the ReservationRule which contains the informations
-	 *            to store
-	 * @return The instance of the ReservationRule which has been created with its
-	 *         primary key.
+	 *            The instance of the ReservationRule which contains the
+	 *            informations to store
+	 * @return The instance of the ReservationRule which has been created with
+	 *         its primary key.
 	 */
 	public static ReservationRule create(ReservationRule reservationRule) {
 		_dao.insert(reservationRule, _plugin);
@@ -45,7 +45,8 @@ public class ReservationRuleHome {
 	 * Update of the ReservationRule which is specified in parameter
 	 * 
 	 * @param reservationRule
-	 *            The instance of the ReservationRule which contains the data to store
+	 *            The instance of the ReservationRule which contains the data to
+	 *            store
 	 * @return The instance of the ReservationRule which has been updated
 	 */
 	public static ReservationRule update(ReservationRule reservationRule) {
@@ -65,8 +66,8 @@ public class ReservationRuleHome {
 	}
 
 	/**
-	 * Returns an instance of the ReservationRule whose identifier is specified in
-	 * parameter
+	 * Returns an instance of the ReservationRule whose identifier is specified
+	 * in parameter
 	 * 
 	 * @param nKey
 	 *            The ReservationRule primary key
@@ -75,23 +76,28 @@ public class ReservationRuleHome {
 	public static ReservationRule findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
 	}
-	
+
 	/**
 	 * Returns all the Reservation Rule of a form
-	 * @param nIdForm the Form Id
+	 * 
+	 * @param nIdForm
+	 *            the Form Id
 	 * @return a list of ReservationRule of the form
 	 */
 	public static List<ReservationRule> findByIdForm(int nIdForm) {
 		return _dao.findByIdForm(nIdForm, _plugin);
 	}
-	
+
 	/**
-	 * Returns a list of Reservation Rule with the given search parameters
-	 * @param nIdForm the Form Id
-	 * @param dateOfApply the date of apply
-	 * @return a list of ReservationRule
+	 * Returns the Reservation Rule with the given search parameters
+	 * 
+	 * @param nIdForm
+	 *            the Form Id
+	 * @param dateOfApply
+	 *            the date of apply
+	 * @return the ReservationRule
 	 */
-	public static List<ReservationRule> findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply) {
+	public static ReservationRule findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply) {
 		return _dao.findByIdFormAndDateOfApply(nIdForm, dateOfApply, _plugin);
 	}
 	

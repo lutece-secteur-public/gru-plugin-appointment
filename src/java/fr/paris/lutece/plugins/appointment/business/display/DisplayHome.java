@@ -72,14 +72,16 @@ public class DisplayHome {
 	public static Display findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
 	}
-	
+
 	/**
 	 * Returns the form display
-	 * @param nIdForm the form id
+	 * 
+	 * @param nIdForm
+	 *            the form id
 	 * @return the form display
 	 */
 	public static Display findByIdForm(int nIdForm) {
 		return _dao.findByIdForm(nIdForm, _plugin);
 	}
-	
+
 }

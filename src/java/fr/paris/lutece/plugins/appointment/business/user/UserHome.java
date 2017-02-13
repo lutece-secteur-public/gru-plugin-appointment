@@ -82,8 +82,8 @@ public class UserHome {
 	 */
 	public List<Appointment> getListAppointments() {
 		List<Appointment> appointments = new ArrayList<>();
-		
+
 		return appointments;
 	}
-	
+
 }

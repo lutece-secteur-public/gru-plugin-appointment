@@ -33,10 +33,17 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
+import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.dashboard.DashboardComponent;
@@ -46,77 +53,61 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Calendar Dashboard Component This component displays directories
  */
-public class AppointmentFormDashboardComponent extends DashboardComponent
-{
-    // MARKS
-    private static final String MARK_URL = "url";
-    private static final String MARK_ICON = "icon";
-    private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
-    private static final String VIEW_PERMISSIONS_FORM = "permissions";
+public class AppointmentFormDashboardComponent extends DashboardComponent {
+	// MARKS
+	private static final String MARK_URL = "url";
+	private static final String MARK_ICON = "icon";
+	private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
+	private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
-    // TEMPALTES
-    private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
+	// TEMPALTES
+	private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDashboardData( AdminUser user, HttpServletRequest request )
-    {
-        List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDashboardData(AdminUser user, HttpServletRequest request) {
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();		
+		Map<String, Object> model = new HashMap<String, Object>();
+		Plugin plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
+		model.put(MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection(listAppointmentForm,
+				AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser(request)));
+		model.put(MARK_ICON, plugin.getIconUrl());
+		model.put(MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms(request));
+		model.put(VIEW_PERMISSIONS_FORM, getPermissions(listAppointmentForm, AdminUserService.getAdminUser(request)));
+		HtmlTemplate template = AppTemplateService.getTemplate(TEMPLATE_DASHBOARD, AdminUserService.getLocale(request),
+				model);
+		return template.getHtml();
+	}
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+	/**
+	 * Get Form Permissions
+	 * 
+	 * @param listForms
+	 * @param request
+	 * @return
+	 */
+	private static String[][] getPermissions(List<AppointmentForm> listForms, AdminUser user) {
+		String[][] retour = new String[listForms.size()][4];
+		int nI = 0;
 
-        Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+		for (AppointmentForm tmpForm : listForms) {
+			String[] strRetour = new String[4];
+			strRetour[0] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
+					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_CREATE_FORM, user));
+			strRetour[1] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
+					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user));
+			strRetour[2] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
+					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user));
+			strRetour[3] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
+					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_DELETE_FORM, user));
+			retour[nI++] = strRetour;
+		}
 
-        model.put(
-                MARK_APPOINTMENTFORM_LIST,
-                RBACService.getAuthorizedCollection( listAppointmentForms, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                        AdminUserService.getAdminUser( request ) ) );
-        model.put( MARK_ICON, plugin.getIconUrl( ) );
-        model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-        model.put( VIEW_PERMISSIONS_FORM, getPermissions( listAppointmentForms, AdminUserService.getAdminUser( request ) ) );
-
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, AdminUserService.getLocale( request ), model );
-
-        return template.getHtml( );
-    }
-
-    /**
-     * Get Form Permissions
-     * 
-     * @param listForms
-     * @param request
-     * @return
-     */
-    private static String [ ][ ] getPermissions( List<AppointmentForm> listForms, AdminUser user )
-    {
-        String [ ][ ] retour = new String [ listForms.size( )] [ 4];
-        int nI = 0;
-
-        for ( AppointmentForm tmpForm : listForms )
-        {
-            String [ ] strRetour = new String [ 4];
-            strRetour [0] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) );
-            strRetour [1] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
-            strRetour [2] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
-            strRetour [3] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
-            retour [nI++] = strRetour;
-        }
-
-        return retour;
-    }
+		return retour;
+	}
 }

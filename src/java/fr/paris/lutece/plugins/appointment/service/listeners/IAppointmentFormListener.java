@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 /**
  * IAppointmentFormListener Interface
  */
-public interface IAppointmentFormListener
-{
-    void onFormModifed( int nIdForm );
+public interface IAppointmentFormListener {
+	void onFormModifed(int nIdForm);
 }

@@ -23,9 +23,9 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form FROM appointment_reservation_rule";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM
-			+ " AND date_of_apply = ?";
-
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";
+	
+	
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -103,24 +103,24 @@ public class ReservationRuleDAO implements IReservationRuleDAO {
 	}
 
 	@Override
-	public List<ReservationRule> findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin) {
+	public ReservationRule findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin) {
 		DAOUtil daoUtil = null;
-		List<ReservationRule> listReservationRule = new ArrayList<>();
+		ReservationRule reservationRule = null;
 		try {
 			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY, plugin);
 			daoUtil.setInt(1, nIdForm);
 			daoUtil.setDate(2, Date.valueOf(dateOfApply));
 			daoUtil.executeQuery();
-			while (daoUtil.next()) {
-				listReservationRule.add(buildReservationRule(daoUtil));
+			if (daoUtil.next()) {
+				reservationRule = buildReservationRule(daoUtil);
 			}
 		} finally {
 			if (daoUtil != null) {
 				daoUtil.free();
 			}
 		}
-		return listReservationRule;
-	}
+		return reservationRule;
+	}	
 
 	/**
 	 * Build a ReservationRule business object from the resultset

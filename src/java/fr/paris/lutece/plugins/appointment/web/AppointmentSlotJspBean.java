@@ -128,7 +128,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	private static final String MESSAGE_INFO_IMPORTED_CLOSING_DAYS = "appointment.info.appointmentform.closingDayImport";
 	private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
 	private static final String MESSAGE_ERROR_EXISTING_DATES = "appointment.message.error.closingDayErrorDaysExists";
-
+	private static final String VIEW_MANAGE_HOLIDAYS = "viewManageHolidays";
 	// Parameters
 	private static final String PARAMETER_ID_FORM = "id_form";
 	private static final String PARAMETER_ID_DAY = "id_day";
@@ -172,13 +172,12 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	private static final String MARK_LIST_DAYS_OF_WEEK = "list_days_of_week";
 	private static final String MARK_LANGUAGE = "language";
 	private static final String MARK_NB_SLOT_DAY = "nbrSlotDay";
-	private static final String MARK_LIST_OPEN_DAY = "listOpenDay";
 
 	// Views
 	private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
 	private static final String VIEW_MANAGE_APPOINTMENT_SLOTS_ = "manageAppointmentSlotss";
 	private static final String VIEW_MODIFY_APPOINTMENT_SLOT = "viewModifySlots";
-	private static final String VIEW_MANAGE_HOLIDAYS = "viewManageHolidays";
+	
 
 	// Actions
 	private static final String ACTION_DO_CHANGE_SLOT_ENABLING = "doChangeSlotEnabling";
@@ -229,7 +228,293 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 
 		return copyDayFromDB(day);
 	}
+	@View(VIEW_MANAGE_HOLIDAYS)
+	public String getManageHolidays(HttpServletRequest request) throws AccessDeniedException {
+		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 
+		if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
+			if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
+					AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser())) {
+				throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_FORM);
+			}
+
+			int nIdForm = Integer.parseInt(strIdForm);
+
+			if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
+				nIdForm = Integer.parseInt(strIdForm);
+			}
+
+			AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
+			List<Date> listDays = AppointmentHoliDaysHome.findByIdForm(Integer.parseInt(strIdForm));
+
+			Map<String, Object> model = getModel();
+			model.put(MARK_LOCALE, getLocale());
+			model.put(PARAMETER_APPOINTMENT_FORM, form);
+			model.put(MARK_LIST_DAYS, listDays);
+			AppointmentFormJspBean.addElementsToModelForLeftColumn(request, form, getUser(), getLocale(), model);
+
+			return getPage(MESSAGE_MANAGE_HOLIDAYS_PAGE_TITLE, TEMPLATE_MANAGE_HOLIDAYS, model);
+		}
+
+		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Action(ACTION_DO_MODIFY_HOLIDAYS)
+	public String doModifyHolidays(HttpServletRequest request) throws AccessDeniedException {
+		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
+
+		if (StringUtils.isEmpty(strIdForm) || !StringUtils.isNumeric(strIdForm)) {
+			return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
+		}
+
+		int nIdForm = Integer.parseInt(strIdForm);
+		List<Date> listHolidaysDb = AppointmentHoliDaysHome.findByIdForm(nIdForm);
+
+		String strHoliday = (request.getParameter(MARK_HOLIDAY) == null) ? StringUtils.EMPTY
+				: request.getParameter(MARK_HOLIDAY);
+		String strDateDay = (request.getParameter("dateDay") == null) ? StringUtils.EMPTY
+				: request.getParameter("dateDay");
+		String strPathFile = StringUtils.EMPTY;
+
+		MultipartHttpServletRequest mRequest;
+		FileItem item = null;
+
+		if (strDateDay.isEmpty() && strHoliday.isEmpty()) {
+			mRequest = (MultipartHttpServletRequest) request;
+			item = mRequest.getFile(MARK_FILE_CLOSING_DAYS);
+
+			if (item != null) {
+				if (StringUtils.isNotEmpty(item.getName())) {
+					strPathFile = item.getName();
+				}
+			}
+		}
+
+		if (strHoliday.isEmpty() && strDateDay.isEmpty() && strPathFile.isEmpty()) {
+			addError(MESSAGE_ERROR_EMPTY_DATE, getLocale());
+
+			return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
+		} else if (StringUtils.isNotEmpty(strHoliday)) {
+			Date date = new Date(DateUtil.getDate(strHoliday).getTime());
+
+			if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
+				if (listHolidaysDb.contains(date)) {
+					addError(MESSAGE_ERROR_DATE_EXIST, getLocale());
+
+					return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
+				} else {
+					AppointmentHoliDaysHome.create(date, nIdForm);
+					addInfo(MESSAGE_INFO_ADD_DATE, getLocale());
+				}
+			}
+		}
+
+		if (StringUtils.isNotEmpty(strDateDay)) {
+			Date dateDay = new Date(DateUtil.getDate(strDateDay).getTime());
+			AppointmentHoliDaysHome.remove(dateDay, Integer.parseInt(strIdForm));
+			addInfo(MESSAGE_INFO_REMOVE_DATE, getLocale());
+		}
+
+		if (StringUtils.isNotEmpty(strPathFile)) {
+			List<Date> listImported = getImportClosingDays(item);
+
+			if (listImported.size() == 0) {
+				addError(MESSAGE_ERROR_EMPTY_FILE, getLocale());
+
+				return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
+			} else {
+				if (listHolidaysDb.equals(listImported)) {
+					addError(MESSAGE_ERROR_EXISTING_DATES, getLocale());
+
+					return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
+				} else {
+					for (Date d : listImported) {
+						if (!listHolidaysDb.contains(d)) {
+							AppointmentHoliDaysHome.create(d, nIdForm);
+						}
+					}
+
+					addInfo(MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale());
+				}
+			}
+		}
+
+		return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, Integer.parseInt(strIdForm));
+	}
+	
+	@SuppressWarnings("deprecation")
+	private List<Date> getImportClosingDays(FileItem item) throws AccessDeniedException {
+		List<Date> listDays = new ArrayList<Date>();
+		FileInputStream fis = null;
+		String strExtension = FilenameUtils.getExtension(item.getName());
+		DateFormat dateFormat = new SimpleDateFormat(MARK_FORMAT_DATE);
+
+		if (strExtension.equals(MARK_EXCEL_EXTENSION_XLSX)) {
+			try {
+				fis = (FileInputStream) item.getInputStream();
+
+				// Using XSSF for xlsx format, for xls use HSSF
+				Workbook workbook = new XSSFWorkbook(fis);
+
+				int numberOfSheets = workbook.getNumberOfSheets();
+
+				// looping over each workbook sheet
+				for (int i = 0; i < numberOfSheets; i++) {
+					Sheet sheet = workbook.getSheetAt(i);
+					Iterator<Row> rowIterator = sheet.iterator();
+
+					// iterating over each row
+					while (rowIterator.hasNext()) {
+						Row row = (Row) rowIterator.next();
+
+						if (row.getRowNum() > 1) {
+							Iterator<Cell> cellIterator = row.cellIterator();
+
+							// Iterating over each cell (column wise) in a
+							// particular row.
+							while (cellIterator.hasNext()) {
+								Cell cell = (Cell) cellIterator.next();
+
+								// The Cell Containing String will is name.
+								if (cell.getColumnIndex() == 3) {
+									String strdate = StringUtils.EMPTY;
+
+									if (cell.getCellType() == 0) {
+										java.util.Date date = cell.getDateCellValue();
+
+										strdate = dateFormat.format(date);
+									}
+
+									if (cell.getCellType() == 1) {
+										strdate = cell.getStringCellValue();
+									} else {
+										AppLogService.error(MARK_ERROR_FORMAT_DATE + MARK_COLUMN + " : "
+												+ (cell.getColumnIndex() + 1) + MARK_ROW + " : " + row.getRowNum());
+									}
+
+									if (StringUtils.isNotEmpty(strdate)) {
+										if (strdate.matches(MARK_FORMAT_DATE_REGEX)) {
+											Date date = new Date(DateUtil.getDate(strdate).getTime());
+											listDays.add(date);
+										} else {
+											AppLogService.error(MARK_ERROR_MSG);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				fis.close();
+				workbook.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return listDays;
+	}
+
+	public String getExportClosingDays(HttpServletRequest request, HttpServletResponse response)
+			throws AccessDeniedException {
+		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
+
+		if (StringUtils.isEmpty(strIdForm) || !StringUtils.isNumeric(strIdForm)) {
+			return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
+		}
+
+		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
+				AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, getUser())) {
+			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT);
+		}
+
+		int nIdForm = Integer.parseInt(strIdForm);
+		AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
+		List<Date> listHolidays = AppointmentHoliDaysHome.findByIdForm(nIdForm);
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook
+				.createSheet(I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale()));
+
+		List<Object[]> tmpObj = new ArrayList<Object[]>();
+
+		if (listHolidays != null) {
+			Object[] strWriter = new String[1];
+			strWriter[0] = form.getTitle();
+			tmpObj.add(strWriter);
+
+			Object[] strInfos = new String[4];
+			strInfos[0] = I18nService.getLocalizedString(MARK_COLUMN_DAY, getLocale());
+			strInfos[1] = I18nService.getLocalizedString(MARK_COLUMN_MONTH, getLocale());
+			strInfos[2] = I18nService.getLocalizedString(MARK_COLUMN_YEAR, getLocale());
+			strInfos[3] = I18nService.getLocalizedString(MARK_COLUMN_DATE, getLocale());
+
+			tmpObj.add(strInfos);
+		}
+
+		if (listHolidays.size() > 0) {
+			for (Date date : listHolidays) {
+				Calendar cal = GregorianCalendar.getInstance(Locale.FRENCH);
+				cal.setTime(date);
+
+				int year = cal.get(Calendar.YEAR);
+				String strmonth = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRENCH);
+				int day = cal.get(Calendar.DAY_OF_MONTH);
+
+				Object[] strWriter = new String[4];
+				strWriter[0] = String.valueOf(day);
+				strWriter[1] = strmonth;
+				strWriter[2] = String.valueOf(year);
+				strWriter[3] = DateUtil.getDateString(date, getLocale());
+				tmpObj.add(strWriter);
+			}
+		}
+
+		int nRownum = 0;
+
+		for (Object[] myObj : tmpObj) {
+			Row row = sheet.createRow(nRownum++);
+			int nCellnum = 0;
+
+			for (Object strLine : myObj) {
+				Cell cell = row.createCell(nCellnum++);
+
+				if (strLine instanceof String) {
+					cell.setCellValue((String) strLine);
+				} else if (strLine instanceof Boolean) {
+					cell.setCellValue((Boolean) strLine);
+				} else if (strLine instanceof Date) {
+					cell.setCellValue((Date) strLine);
+				} else if (strLine instanceof Double) {
+					cell.setCellValue((Double) strLine);
+				}
+			}
+		}
+
+		try {
+			String now = new SimpleDateFormat("ddMMyyyy-hhmm")
+					.format(GregorianCalendar.getInstance(getLocale()).getTime()) + "_"
+					+ I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale())
+					+ DownloadConstants.EXCEL_FILE_EXTENSION;
+			response.setContentType(DownloadConstants.EXCEL_MIME_TYPE);
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + now + "\";");
+			response.setHeader("Pragma", "public");
+			response.setHeader("Expires", "0");
+			response.setHeader("Cache-Control", "must-revalidate,post-check=0,pre-check=0");
+
+			OutputStream os = response.getOutputStream();
+			workbook.write(os);
+			os.close();
+			workbook.close();
+		} catch (IOException e) {
+			AppLogService.error(e);
+		}
+
+		return null;
+	}
 	/**
 	 * Copy fields from Days
 	 * 
@@ -240,12 +525,9 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 
 		if ((objRetour != null) && !objRetour.getIsOpen()) {
 			AppointmentForm formFromDb = AppointmentFormHome.findByPrimaryKey(day.getIdForm());
-			objRetour.setOpeningMinutes(formFromDb.getOpeningMinutes());
-			objRetour.setOpeningHour(formFromDb.getOpeningHour());
-			objRetour.setClosingMinutes(formFromDb.getClosingMinutes());
-			objRetour.setClosingHour(formFromDb.getClosingHour());
+			
 			objRetour.setAppointmentDuration(formFromDb.getDurationAppointments());
-			objRetour.setPeoplePerAppointment(formFromDb.getPeoplePerAppointment());
+			//objRetour.setPeoplePerAppointment(formFromDb.getPeoplePerAppointment());
 		}
 
 		return objRetour;
@@ -306,14 +588,14 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 			}
 
 			if (StringUtils.isNotEmpty(strNbWeek)) {
-				nNbWeek = AppointmentService.getService().parseInt(strNbWeek);
+				nNbWeek = AppointmentService.getInstance().parseInt(strNbWeek);
 
-				if (Math.abs(nNbWeek) > nNbWeeksToCreate && form.getDateLimit() == null) {
+				if (Math.abs(nNbWeek) > nNbWeeksToCreate) {
 					return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 				}
 			}
 
-			List<AppointmentDay> listDays = AppointmentService.getService().findAndComputeDayList(form, nNbWeek, false);
+			List<AppointmentDay> listDays = AppointmentService.getInstance().findAndComputeDayList(form, nNbWeek, false);
 
 			for (AppointmentDay day : listDays) {
 				if (nNbWeek < 0) {
@@ -352,38 +634,34 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 			listDays = computeUnavailableDays(form.getIdForm(), listDays, false);
 
 			List<String> listTimeBegin = new ArrayList<String>();
-			int nMinAppointmentDuration = AppointmentService.getService().getListTimeBegin(listDays, form,
+			int nMinAppointmentDuration = AppointmentService.getInstance().getListTimeBegin(listDays, form,
 					listTimeBegin);
-	
+
 			int nbSlotDay = 0;
 
 			List<AppointmentSlot> listSlots = new ArrayList<AppointmentSlot>();
-			List<Boolean> listOpenDay = new ArrayList<Boolean>();
 
 			for (AppointmentDay day : listDays) {
 				List<AppointmentSlot> listSlotsDay = AppointmentSlotHome.findByIdDayWithFreePlaces(day.getIdDay());
 
 				if (listSlotsDay.isEmpty()) {
-					listOpenDay.add(false);
 
 					for (int i = 0; i < nbSlotDay; i++) {
 						AppointmentSlot appointmentSlot = new AppointmentSlot();
 						listSlots.add(appointmentSlot);
 					}
 				} else {
-					listOpenDay.add(true);
 					listSlots.addAll(listSlotsDay);
 					nbSlotDay = listSlotsDay.size();
 				}
 			}
 
 			Collections.sort(listSlots);
-			model.put(MARK_LIST_OPEN_DAY, listOpenDay);
 			model.put(MARK_NB_SLOT_DAY, nbSlotDay);
-			model.put(MARK_MIN_STARTING_HOUR, form.getOpeningHour());
+			/*model.put(MARK_MIN_STARTING_HOUR, form.getOpeningHour());
 			model.put(MARK_MIN_STARTING_MINUTE, form.getOpeningMinutes());
 			model.put(MARK_MAX_ENDING_HOUR, form.getClosingHour());
-			model.put(MARK_MAX_ENDING_MINUTE, form.getClosingMinutes());
+			model.put(MARK_MAX_ENDING_MINUTE, form.getClosingMinutes());*/
 			model.put(MARK_LIST_SLOTS, listSlots);
 			model.put(PARAMETER_APPOINTMENT_FORM, form);
 			model.put(MARK_LIST_DAYS, listDays);
@@ -419,7 +697,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 			boolean[] bArrayListDays = { form.getIsOpenMonday(), form.getIsOpenTuesday(), form.getIsOpenWednesday(),
 					form.getIsOpenThursday(), form.getIsOpenFriday(), form.getIsOpenSaturday(),
 					form.getIsOpenSunday(), };
-			AppointmentDay day = AppointmentService.getService().getAppointmentDayFromForm(form);
+			AppointmentDay day = AppointmentService.getInstance().getAppointmentDayFromForm(form);
 			day.setIsOpen(false);
 			model.put(MARK_READ_ONLY, false);
 
@@ -427,7 +705,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 
 			for (int i = 0; i < bArrayListDays.length; i++) {
 				if (!bArrayListDays[i]) {
-					listSlots.addAll(AppointmentService.getService().computeDaySlots(day, i + 1));
+					listSlots.addAll(AppointmentService.getInstance().computeDaySlots(day, i + 1));
 					bHasClosedDay = true;
 				}
 			}
@@ -666,293 +944,13 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return nNbWeek;
 	}
 
-	@View(VIEW_MANAGE_HOLIDAYS)
-	public String getManageHolidays(HttpServletRequest request) throws AccessDeniedException {
-		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
+	
 
-		if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
-			if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
-					AppointmentResourceIdService.PERMISSION_MODIFY_FORM, getUser())) {
-				throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_FORM);
-			}
+	
 
-			int nIdForm = Integer.parseInt(strIdForm);
 
-			if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
-				nIdForm = Integer.parseInt(strIdForm);
-			}
 
-			AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
-			List<Date> listDays = AppointmentHoliDaysHome.findByIdForm(Integer.parseInt(strIdForm));
-
-			Map<String, Object> model = getModel();
-			model.put(MARK_LOCALE, getLocale());
-			model.put(PARAMETER_APPOINTMENT_FORM, form);
-			model.put(MARK_LIST_DAYS, listDays);
-			AppointmentFormJspBean.addElementsToModelForLeftColumn(request, form, getUser(), getLocale(), model);
-
-			return getPage(MESSAGE_MANAGE_HOLIDAYS_PAGE_TITLE, TEMPLATE_MANAGE_HOLIDAYS, model);
-		}
-
-		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
-	}
-
-	@SuppressWarnings("deprecation")
-	@Action(ACTION_DO_MODIFY_HOLIDAYS)
-	public String doModifyHolidays(HttpServletRequest request) throws AccessDeniedException {
-		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
-
-		if (StringUtils.isEmpty(strIdForm) || !StringUtils.isNumeric(strIdForm)) {
-			return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
-		}
-
-		int nIdForm = Integer.parseInt(strIdForm);
-		List<Date> listHolidaysDb = AppointmentHoliDaysHome.findByIdForm(nIdForm);
-
-		String strHoliday = (request.getParameter(MARK_HOLIDAY) == null) ? StringUtils.EMPTY
-				: request.getParameter(MARK_HOLIDAY);
-		String strDateDay = (request.getParameter("dateDay") == null) ? StringUtils.EMPTY
-				: request.getParameter("dateDay");
-		String strPathFile = StringUtils.EMPTY;
-
-		MultipartHttpServletRequest mRequest;
-		FileItem item = null;
-
-		if (strDateDay.isEmpty() && strHoliday.isEmpty()) {
-			mRequest = (MultipartHttpServletRequest) request;
-			item = mRequest.getFile(MARK_FILE_CLOSING_DAYS);
-
-			if (item != null) {
-				if (StringUtils.isNotEmpty(item.getName())) {
-					strPathFile = item.getName();
-				}
-			}
-		}
-
-		if (strHoliday.isEmpty() && strDateDay.isEmpty() && strPathFile.isEmpty()) {
-			addError(MESSAGE_ERROR_EMPTY_DATE, getLocale());
-
-			return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
-		} else if (StringUtils.isNotEmpty(strHoliday)) {
-			Date date = new Date(DateUtil.getDate(strHoliday).getTime());
-
-			if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
-				if (listHolidaysDb.contains(date)) {
-					addError(MESSAGE_ERROR_DATE_EXIST, getLocale());
-
-					return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
-				} else {
-					AppointmentHoliDaysHome.create(date, nIdForm);
-					addInfo(MESSAGE_INFO_ADD_DATE, getLocale());
-				}
-			}
-		}
-
-		if (StringUtils.isNotEmpty(strDateDay)) {
-			Date dateDay = new Date(DateUtil.getDate(strDateDay).getTime());
-			AppointmentHoliDaysHome.remove(dateDay, Integer.parseInt(strIdForm));
-			addInfo(MESSAGE_INFO_REMOVE_DATE, getLocale());
-		}
-
-		if (StringUtils.isNotEmpty(strPathFile)) {
-			List<Date> listImported = getImportClosingDays(item);
-
-			if (listImported.size() == 0) {
-				addError(MESSAGE_ERROR_EMPTY_FILE, getLocale());
-
-				return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
-			} else {
-				if (listHolidaysDb.equals(listImported)) {
-					addError(MESSAGE_ERROR_EXISTING_DATES, getLocale());
-
-					return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, nIdForm);
-				} else {
-					for (Date d : listImported) {
-						if (!listHolidaysDb.contains(d)) {
-							AppointmentHoliDaysHome.create(d, nIdForm);
-						}
-					}
-
-					addInfo(MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale());
-				}
-			}
-		}
-
-		return redirect(request, VIEW_MANAGE_HOLIDAYS, PARAMETER_ID_FORM, Integer.parseInt(strIdForm));
-	}
-
-	public String getExportClosingDays(HttpServletRequest request, HttpServletResponse response)
-			throws AccessDeniedException {
-		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
-
-		if (StringUtils.isEmpty(strIdForm) || !StringUtils.isNumeric(strIdForm)) {
-			return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
-		}
-
-		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
-				AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, getUser())) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT);
-		}
-
-		int nIdForm = Integer.parseInt(strIdForm);
-		AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
-		List<Date> listHolidays = AppointmentHoliDaysHome.findByIdForm(nIdForm);
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook
-				.createSheet(I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale()));
-
-		List<Object[]> tmpObj = new ArrayList<Object[]>();
-
-		if (listHolidays != null) {
-			Object[] strWriter = new String[1];
-			strWriter[0] = form.getTitle();
-			tmpObj.add(strWriter);
-
-			Object[] strInfos = new String[4];
-			strInfos[0] = I18nService.getLocalizedString(MARK_COLUMN_DAY, getLocale());
-			strInfos[1] = I18nService.getLocalizedString(MARK_COLUMN_MONTH, getLocale());
-			strInfos[2] = I18nService.getLocalizedString(MARK_COLUMN_YEAR, getLocale());
-			strInfos[3] = I18nService.getLocalizedString(MARK_COLUMN_DATE, getLocale());
-
-			tmpObj.add(strInfos);
-		}
-
-		if (listHolidays.size() > 0) {
-			for (Date date : listHolidays) {
-				Calendar cal = GregorianCalendar.getInstance(Locale.FRENCH);
-				cal.setTime(date);
-
-				int year = cal.get(Calendar.YEAR);
-				String strmonth = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRENCH);
-				int day = cal.get(Calendar.DAY_OF_MONTH);
-
-				Object[] strWriter = new String[4];
-				strWriter[0] = String.valueOf(day);
-				strWriter[1] = strmonth;
-				strWriter[2] = String.valueOf(year);
-				strWriter[3] = DateUtil.getDateString(date, getLocale());
-				tmpObj.add(strWriter);
-			}
-		}
-
-		int nRownum = 0;
-
-		for (Object[] myObj : tmpObj) {
-			Row row = sheet.createRow(nRownum++);
-			int nCellnum = 0;
-
-			for (Object strLine : myObj) {
-				Cell cell = row.createCell(nCellnum++);
-
-				if (strLine instanceof String) {
-					cell.setCellValue((String) strLine);
-				} else if (strLine instanceof Boolean) {
-					cell.setCellValue((Boolean) strLine);
-				} else if (strLine instanceof Date) {
-					cell.setCellValue((Date) strLine);
-				} else if (strLine instanceof Double) {
-					cell.setCellValue((Double) strLine);
-				}
-			}
-		}
-
-		try {
-			String now = new SimpleDateFormat("ddMMyyyy-hhmm")
-					.format(GregorianCalendar.getInstance(getLocale()).getTime()) + "_"
-					+ I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale())
-					+ DownloadConstants.EXCEL_FILE_EXTENSION;
-			response.setContentType(DownloadConstants.EXCEL_MIME_TYPE);
-			response.setHeader("Content-Disposition", "attachment; filename=\"" + now + "\";");
-			response.setHeader("Pragma", "public");
-			response.setHeader("Expires", "0");
-			response.setHeader("Cache-Control", "must-revalidate,post-check=0,pre-check=0");
-
-			OutputStream os = response.getOutputStream();
-			workbook.write(os);
-			os.close();
-			workbook.close();
-		} catch (IOException e) {
-			AppLogService.error(e);
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("deprecation")
-	private List<Date> getImportClosingDays(FileItem item) throws AccessDeniedException {
-		List<Date> listDays = new ArrayList<Date>();
-		FileInputStream fis = null;
-		String strExtension = FilenameUtils.getExtension(item.getName());
-		DateFormat dateFormat = new SimpleDateFormat(MARK_FORMAT_DATE);
-
-		if (strExtension.equals(MARK_EXCEL_EXTENSION_XLSX)) {
-			try {
-				fis = (FileInputStream) item.getInputStream();
-
-				// Using XSSF for xlsx format, for xls use HSSF
-				Workbook workbook = new XSSFWorkbook(fis);
-
-				int numberOfSheets = workbook.getNumberOfSheets();
-
-				// looping over each workbook sheet
-				for (int i = 0; i < numberOfSheets; i++) {
-					Sheet sheet = workbook.getSheetAt(i);
-					Iterator<Row> rowIterator = sheet.iterator();
-
-					// iterating over each row
-					while (rowIterator.hasNext()) {
-						Row row = (Row) rowIterator.next();
-
-						if (row.getRowNum() > 1) {
-							Iterator<Cell> cellIterator = row.cellIterator();
-
-							// Iterating over each cell (column wise) in a
-							// particular row.
-							while (cellIterator.hasNext()) {
-								Cell cell = (Cell) cellIterator.next();
-
-								// The Cell Containing String will is name.
-								if (cell.getColumnIndex() == 3) {
-									String strdate = StringUtils.EMPTY;
-
-									if (cell.getCellType() == 0) {
-										java.util.Date date = cell.getDateCellValue();
-
-										strdate = dateFormat.format(date);
-									}
-
-									if (cell.getCellType() == 1) {
-										strdate = cell.getStringCellValue();
-									} else {
-										AppLogService.error(MARK_ERROR_FORMAT_DATE + MARK_COLUMN + " : "
-												+ (cell.getColumnIndex() + 1) + MARK_ROW + " : " + row.getRowNum());
-									}
-
-									if (StringUtils.isNotEmpty(strdate)) {
-										if (strdate.matches(MARK_FORMAT_DATE_REGEX)) {
-											Date date = new Date(DateUtil.getDate(strdate).getTime());
-											listDays.add(date);
-										} else {
-											AppLogService.error(MARK_ERROR_MSG);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-				fis.close();
-				workbook.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return listDays;
-	}
+	
 
 	/**
 	 * Test if date is anterior or not for an readlony
@@ -961,7 +959,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	 * @return
 	 */
 	private static boolean isReadonly(Date objdate) {
-		Date dateMin = AppointmentService.getService().getDateMonday(0);
+		Date dateMin = AppointmentService.getInstance().getDateMonday(0);
 
 		return (objdate == null) ? false : objdate.before(dateMin);
 	}
@@ -1002,17 +1000,17 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 				} else {
 					AppointmentForm form = AppointmentFormHome.findByPrimaryKey(slot.getIdForm());
 
-					if (form.isDayOfWeekOpened(slot.getDayOfWeek())) {
+					//if (form.isDayOfWeekOpened(slot.getDayOfWeek())) {
 						// we can only change enabling of opened days
 						slot.setIsEnabled(!slot.getIsEnabled());
-					}
+					//}
 				}
 
 				AppointmentSlotHome.update(slot);
 
 				// even though only this slot has been modified
 				// Notify for the whole form for simplicity
-				AppointmentService.getService().notifyAppointmentFormModified(slot.getIdForm());
+				AppointmentService.getInstance().notifyAppointmentFormModified(slot.getIdForm());
 
 				if (slot.getIdDay() > 0) {
 					return redirect(request, VIEW_MANAGE_APPOINTMENT_SLOTS, PARAMETER_ID_FORM, slot.getIdForm(),
@@ -1098,6 +1096,10 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	 *            The request
 	 * @return The next URL to redirect to
 	 */
+	/**
+	 * @param request
+	 * @return
+	 */
 	@Action(ACTION_DO_MODIFY_SLOT)
 	public String doModifySlot(HttpServletRequest request) {
 		String strIdSlot = request.getParameter(PARAMETER_ID_SLOT);
@@ -1164,7 +1166,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 					} else {
 						AppointmentForm form = AppointmentFormHome.findByPrimaryKey(slot.getIdForm());
 						nRefDuration = form.getDurationAppointments();
-						nRefEndingTime = (form.getClosingHour() * 60) + form.getClosingMinutes();
+						//nRefEndingTime = (form.getClosingHour() * 60) + form.getClosingMinutes();
 					}
 
 					int nSlotDuration = ((nEndingHour * 60) + nEndingMinute)
@@ -1177,12 +1179,12 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 						return redirectView(request, VIEW_MODIFY_APPOINTMENT_SLOT);
 					}
 
-					if (((nEndingHour * 60) + nEndingMinute) > nRefEndingTime) {
-						addError(MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale());
-						_slotInSession = slot;
-
-						return redirectView(request, VIEW_MODIFY_APPOINTMENT_SLOT);
-					}
+//					if (((nEndingHour * 60) + nEndingMinute) > nRefEndingTime) {
+//						addError(MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale());
+//						_slotInSession = slot;
+//
+//						return redirectView(request, VIEW_MODIFY_APPOINTMENT_SLOT);
+//					}
 				}
 
 				slot.setEndingHour(nEndingHour);
@@ -1205,7 +1207,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 				// even though only this slot has been modified
 				// or other slots from this days have been modified
 				// Notify for the whole form for simplicity
-				AppointmentService.getService().notifyAppointmentFormModified(slot.getIdForm());
+				AppointmentService.getInstance().notifyAppointmentFormModified(slot.getIdForm());
 
 				addInfo(MESSAGE_INFO_SLOT_UPDATED, getLocale());
 
@@ -1222,20 +1224,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		}
 
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
-	}
-
-	/**
-	 * Get the URL to manage slots associated with a form
-	 * 
-	 * @param request
-	 *            The request
-	 * @param nIdForm
-	 *            The id of the form
-	 * @return The URL to manage slots
-	 */
-	public static String getUrlManageSlotsByIdForm(HttpServletRequest request, int nIdForm) {
-		return getUrlManageSlotsByIdForm(request, Integer.toString(nIdForm));
-	}
+	}	
 
 	/**
 	 * Get the URL to manage slots associated with a form
@@ -1304,47 +1293,11 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return retour;
 	}
 
-	public static String getUrlManageHolidays(HttpServletRequest request, String strIdForm) {
-		UrlItem urlItem = new UrlItem(AppPathService.getBaseUrl(request) + JSP_URL_MANAGE_APPOINTMENT_SLOT);
-		urlItem.addParameter(PARAMETER_ID_FORM, strIdForm);
-
-		return urlItem.getUrl();
-	}
-
 	public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
-		if (form.getDateLimit() != null) {
-			Date dateMin = null;
-			List<AppointmentDay> listDays = AppointmentDayHome.findByIdForm(form.getIdForm());
-			if (!listDays.isEmpty()) {
-				dateMin = listDays.get(0).getDate();
-			}
-			if (dateMin == null) {
-				Calendar c = Calendar.getInstance();
-				dateMin = new Date(c.getTimeInMillis());
-			}
-			long diff = form.getDateLimit().getTime() - dateMin.getTime();
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-			int maxWeek = (int) diffDays / 7;
-			Calendar cal = GregorianCalendar.getInstance(Locale.FRANCE);
-			int nCurrentDayOfWeek = cal.get(cal.DAY_OF_WEEK);
-			cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek);
-			Date datMax = null;
-			do {
-				cal.add(Calendar.WEEK_OF_YEAR, maxWeek);
-				datMax = new Date(cal.getTimeInMillis());
-				if (datMax.before(form.getDateLimit())) {
-					maxWeek = maxWeek + 1;
-				}
-				cal = GregorianCalendar.getInstance(Locale.FRANCE);
-				cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek);
-			} while (datMax.before(form.getDateLimit()));
-
-			return maxWeek;
-
-		} else {
+		
 			return nbWeekToCreate;
 
-		}
+
 	}
 
 }

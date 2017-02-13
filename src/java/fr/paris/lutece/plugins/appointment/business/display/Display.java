@@ -2,6 +2,8 @@ package fr.paris.lutece.plugins.appointment.business.display;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Min;
+
 import fr.paris.lutece.portal.service.image.ImageResource;
 
 /**
@@ -35,6 +37,7 @@ public class Display implements Serializable {
 	/**
 	 * Number of weeks during which the form is displayed to the user
 	 */
+	@Min(value = 0, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}")
 	private int _nbWeeksToDisplay;
 
 	/**
@@ -46,6 +49,7 @@ public class Display implements Serializable {
 	 * Form id (foreign key)
 	 */
 	private int _nIdForm;
+
 	/**
 	 * Get the Display Id
 	 * 
@@ -143,6 +147,7 @@ public class Display implements Serializable {
 
 	/**
 	 * Get the Form Id
+	 * 
 	 * @return the Form Id
 	 */
 	public int getIdForm() {
@@ -151,7 +156,9 @@ public class Display implements Serializable {
 
 	/**
 	 * Set the FOrm Id
-	 * @param nIdForm the Form Id to set
+	 * 
+	 * @param nIdForm
+	 *            the Form Id to set
 	 */
 	public void setIdForm(int nIdForm) {
 		this._nIdForm = nIdForm;

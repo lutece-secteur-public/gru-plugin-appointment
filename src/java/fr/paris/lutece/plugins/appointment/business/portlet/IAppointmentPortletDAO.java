@@ -39,7 +39,6 @@ import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
  *
  * Interface for DAO of Appointment portlet
  */
-public interface IAppointmentPortletDAO extends IPortletInterfaceDAO
-{
-    // No new method
+public interface IAppointmentPortletDAO extends IPortletInterfaceDAO {
+	// No new method
 }

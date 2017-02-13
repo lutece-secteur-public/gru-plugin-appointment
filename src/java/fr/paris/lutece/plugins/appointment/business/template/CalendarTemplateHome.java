@@ -117,11 +117,9 @@ public final class CalendarTemplateHome {
 	public static ReferenceList findAllInReferenceList() {
 		List<CalendarTemplate> listCalendarTemplates = findAll();
 		ReferenceList refListTemplates = new ReferenceList(listCalendarTemplates.size());
-
 		for (CalendarTemplate template : listCalendarTemplates) {
 			refListTemplates.addItem(template.getIdCalendarTemplate(), template.getTitle());
 		}
-
 		return refListTemplates;
 	}
 

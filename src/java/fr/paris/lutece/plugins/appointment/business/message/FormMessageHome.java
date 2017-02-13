@@ -64,10 +64,12 @@ public final class FormMessageHome {
 	public static FormMessage findByPrimaryKey(int nFormMessageId) {
 		return _dao.select(nFormMessageId, _plugin);
 	}
-	
+
 	/**
 	 * Returns the formMessage of the form
-	 * @param nIdForm the form id
+	 * 
+	 * @param nIdForm
+	 *            the form id
 	 * @return the formMessage of the form
 	 */
 	public static FormMessage findByIdForm(int nIdForm) {

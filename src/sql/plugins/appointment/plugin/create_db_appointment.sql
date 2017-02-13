@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   category VARCHAR(255) NULL,
   starting_validity_date DATE NULL,
   ending_validity_date DATE NULL,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  is_active BOOLEAN NOT NULL DEFAULT FALSE,
+  id_workflow INT NULL,
   PRIMARY KEY (id_form))
 ENGINE = InnoDB;
 
@@ -47,6 +48,8 @@ CREATE TABLE IF NOT EXISTS appointment_slot (
   nb_remaining_places INT NOT NULL DEFAULT 0,
   id_form INT NOT NULL,
   PRIMARY KEY (id_slot, id_form),
+  UNIQUE KEY unique_index_starting_date (id_form,starting_date),
+  UNIQUE KEY unique_index_ending_date (id_form,ending_date),
   CONSTRAINT fk_appointment_slot_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
@@ -70,6 +73,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
   id_user INT NOT NULL,
   id_slot INT NOT NULL,
   PRIMARY KEY (id_appointment, id_user, id_slot),
+  UNIQUE KEY unique_index (id_user,id_slot),
   CONSTRAINT fk_appointment_appointment_appointment_user
     FOREIGN KEY (id_user)
     REFERENCES appointment_user (id_user)
@@ -96,6 +100,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment_response (
   id_response INT NOT NULL,
   id_appointment INT NOT NULL,
   PRIMARY KEY (id_appointment_response, id_response, id_appointment),
+  UNIQUE KEY unique_index (id_appointment,id_response),
   CONSTRAINT fk_appointment_appointment_response_appointment_appointment
     FOREIGN KEY (id_appointment)
     REFERENCES appointment_appointment (id_appointment)
@@ -149,7 +154,7 @@ CREATE TABLE IF NOT EXISTS appointment_form_message (
   calendar_full_label VARCHAR(255) NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_form_message, id_form),
-  CONSTRAINT fk_appointment_form_messages_appointment_form
+  CONSTRAINT fk_appointment_form_message_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
     ON DELETE CASCADE
@@ -158,7 +163,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
-CREATE INDEX fk_appointment_form_messages_appointment_form_idx ON appointment_form_message (id_form ASC);
+CREATE INDEX fk_appointment_form_message_appointment_form_idx ON appointment_form_message (id_form ASC);
 
 
 -- -----------------------------------------------------
@@ -192,6 +197,7 @@ CREATE TABLE IF NOT EXISTS appointment_week_definition (
   date_of_apply DATE NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_week_definition, id_form),
+  UNIQUE KEY unique_index_date_of_apply (id_form,date_of_apply),
   CONSTRAINT fk_appointment_week_definition_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
@@ -214,6 +220,7 @@ CREATE TABLE IF NOT EXISTS appointment_working_day (
   day_of_week INT NOT NULL,
   id_week_definition INT NOT NULL,
   PRIMARY KEY (id_working_day, id_week_definition),
+  UNIQUE KEY unique_index (id_week_definition,day_of_week),
   CONSTRAINT fk_appointment_working_day_appointment_week_definition
     FOREIGN KEY (id_week_definition)
     REFERENCES appointment_week_definition (id_week_definition)
@@ -236,6 +243,8 @@ CREATE TABLE IF NOT EXISTS appointment_time_slot (
   is_open BOOLEAN NOT NULL DEFAULT TRUE,
   id_working_day INT NOT NULL,
   PRIMARY KEY (id_time_slot, id_working_day),
+  UNIQUE KEY unique_index_starting_hour (id_working_day,starting_hour),
+  UNIQUE KEY unique_index_ending_hour (id_working_day,ending_hour),
   CONSTRAINT fk_appointment_time_slot_appointment_working_day
     FOREIGN KEY (id_working_day)
     REFERENCES appointment_working_day (id_working_day)
@@ -279,13 +288,14 @@ DROP TABLE IF EXISTS appointment_display ;
 
 CREATE TABLE IF NOT EXISTS appointment_display (
   id_display INT NOT NULL,
-  display_title_fo BOOLEAN NULL,
-  icon_form_content TEXT NULL,
+  display_title_fo BOOLEAN NOT NULL DEFAULT FALSE,
+  icon_form_content MEDIUMBLOB NULL,
   icon_form_mime_type VARCHAR(255) NULL,
   nb_weeks_to_display INT NOT NULL DEFAULT 0,
   id_calendar_template INT(11) NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_display, id_calendar_template, id_form),
+  UNIQUE KEY unique_index (id_form),
   CONSTRAINT fk_appointment_display_appointment_calendar_template
     FOREIGN KEY (id_calendar_template)
     REFERENCES appointment_calendar_template (id_calendar_template)
@@ -310,10 +320,11 @@ DROP TABLE IF EXISTS appointment_form_rule ;
 
 CREATE TABLE IF NOT EXISTS appointment_form_rule (
   id_form_rule INT NOT NULL,
-  is_captcha_enabled BOOLEAN NULL,
-  is_mandatory_email_enabled BOOLEAN NULL,
+  is_captcha_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+  is_mandatory_email_enabled BOOLEAN NOT NULL DEFAULT FALSE,
   id_form INT NOT NULL,
   PRIMARY KEY (id_form_rule, id_form),
+  UNIQUE KEY unique_index (id_form),
   CONSTRAINT fk_appointment_form_rule_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
@@ -334,6 +345,7 @@ CREATE TABLE IF NOT EXISTS appointment_closing_day (
   date_of_closing_day DATE NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_closing_day, id_form),
+  UNIQUE KEY unique_index (id_form,date_of_closing_day),
   CONSTRAINT fk_appointment_closing_day_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
@@ -358,6 +370,7 @@ CREATE TABLE IF NOT EXISTS appointment_reservation_rule (
   max_people_per_appointment INT NOT NULL DEFAULT 0,
   id_form INT NOT NULL,
   PRIMARY KEY (id_reservation_rule, id_form),
+  UNIQUE KEY unique_index_date_of_apply (id_form,date_of_apply),
   CONSTRAINT fk_appointment_reservation_rule_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)

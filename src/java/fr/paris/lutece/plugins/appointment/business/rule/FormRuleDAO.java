@@ -15,7 +15,7 @@ public class FormRuleDAO implements IFormRuleDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule (id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form) VALUES (?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, id_form = ? WHERE id_form_rule = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_rule WHERE id_form_rule = ?";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form FROM appointment_form_rule"; 
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form FROM appointment_form_rule";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_rule = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
@@ -76,7 +76,6 @@ public class FormRuleDAO implements IFormRuleDAO {
 		return formRule;
 	}
 
-
 	@Override
 	public FormRule findByIdForm(int nIdForm, Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -95,7 +94,7 @@ public class FormRuleDAO implements IFormRuleDAO {
 		}
 		return formRule;
 	}
-	
+
 	/**
 	 * Build a Form rule business object from the resultset
 	 * 

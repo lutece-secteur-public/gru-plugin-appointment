@@ -43,19 +43,19 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 public interface IFormMessageDAO {
 
 	/**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.formMessageDAO";
-    
+	 * The name of the bean of the DAO
+	 */
+	static String BEAN_NAME = "appointment.formMessageDAO";
+
 	/**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey(Plugin plugin);
-    
+	 * Generate a new primary key
+	 * 
+	 * @param plugin
+	 *            the Plugin
+	 * @return the new primary key
+	 */
+	int getNewPrimaryKey(Plugin plugin);
+
 	/**
 	 * Create a form message
 	 * 
@@ -97,11 +97,14 @@ public interface IFormMessageDAO {
 	 *         primary key
 	 */
 	FormMessage select(int nIdFormMessage, Plugin plugin);
-	
+
 	/**
 	 * Returns the formMessage of the form given
-	 * @param nIdForm the form id
-	 * @param plugin the plugin
+	 * 
+	 * @param nIdForm
+	 *            the form id
+	 * @param plugin
+	 *            the plugin
 	 * @return the formMessage of the form
 	 */
 	FormMessage findByIdForm(int nIdForm, Plugin plugin);

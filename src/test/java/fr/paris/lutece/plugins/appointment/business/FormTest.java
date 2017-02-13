@@ -5,12 +5,12 @@ import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.TimeSlot;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.TimeSlotHome;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinition;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinitionHome;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.WorkingDay;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.WorkingDayHome;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -33,6 +33,8 @@ public class FormTest extends LuteceTestCase {
 	public final static LocalDate ENDING_VALIDITY_DATE_2 = LocalDate.parse("2017-03-01");
 	public final static boolean IS_ACTIVE1 = true;
 	public final static boolean IS_ACTIVE2 = false;
+	public final static int ID_WORKFLOW_1 = 1;
+	public final static int ID_WORKFLOW_2 = 2;
 
 	/**
 	 * Test method for the Form (CRUD)
@@ -54,6 +56,7 @@ public class FormTest extends LuteceTestCase {
 		form.setStartingValidityDate(STARTING_VALIDITY_DATE_2);
 		form.setEndingValidityDate(ENDING_VALIDITY_DATE_2);
 		form.setIsActive(IS_ACTIVE2);
+		form.setIdWorkflow(ID_WORKFLOW_2);
 		// Update the form in database
 		FormHome.update(form);
 		// Find the form updated in database
@@ -182,6 +185,7 @@ public class FormTest extends LuteceTestCase {
 		form.setStartingValidityDate(STARTING_VALIDITY_DATE_1);
 		form.setEndingValidityDate(ENDING_VALIDITY_DATE_1);
 		form.setIsActive(IS_ACTIVE1);
+		form.setIdWorkflow(ID_WORKFLOW_1);
 		return form;
 	}
 
@@ -200,6 +204,7 @@ public class FormTest extends LuteceTestCase {
 		assertEquals(formStored.getStartingValidityDate(), form.getStartingValidityDate());
 		assertEquals(formStored.getEndingValidityDate(), form.getEndingValidityDate());
 		assertEquals(formStored.isActive(), form.isActive());
+		assertEquals(formStored.getIdWorkflow(), form.getIdWorkflow());
 	}
 
 }

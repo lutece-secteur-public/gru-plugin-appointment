@@ -115,30 +115,16 @@ public class ReservationRuleTest extends LuteceTestCase {
 	public void findByIdFormAndDateOfApply() {
 		Form form = FormTest.buildForm();
 		FormHome.create(form);
-
 		// Initialize a ReservationRule
 		ReservationRule reservationRule1 = buildReservationRule();
 		reservationRule1.setIdForm(form.getIdForm());
 		// Create the ReservationRule in database
 		ReservationRuleHome.create(reservationRule1);
 		// Find the ReservationRule created in database
-		List<ReservationRule> listReservationRuleStored = ReservationRuleHome
+		ReservationRule reservationRuleStored = ReservationRuleHome
 				.findByIdFormAndDateOfApply(form.getIdForm(), DATE_OF_APPLY_1);
-		// Check Asserts
-		assertEquals(listReservationRuleStored.size(), 1);
-		checkAsserts(listReservationRuleStored.get(0), reservationRule1);
-
-		// Initialize a ReservationRule
-		ReservationRule reservationRule2 = buildReservationRule2();
-		reservationRule2.setIdForm(form.getIdForm());
-		// Create the ReservationRule in database
-		ReservationRuleHome.create(reservationRule2);
-
-		// Find the ReservationRule created in database
-		listReservationRuleStored = ReservationRuleHome.findByIdFormAndDateOfApply(form.getIdForm(), DATE_OF_APPLY_1);
-		// Check Asserts
-		assertEquals(listReservationRuleStored.size(), 2);
-
+		// Check Asserts		
+		checkAsserts(reservationRuleStored, reservationRule1);
 		// Clean
 		FormHome.delete(form.getIdForm());
 	}

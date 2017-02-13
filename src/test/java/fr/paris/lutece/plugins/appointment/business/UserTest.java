@@ -70,7 +70,7 @@ public class UserTest extends LuteceTestCase {
 		user.setPhoneNumber(PHONE_NUMBER_1);
 		return user;
 	}
-	
+
 	/**
 	 * Build a User Business Object
 	 * 

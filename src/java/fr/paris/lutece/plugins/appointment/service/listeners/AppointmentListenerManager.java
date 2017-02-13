@@ -33,80 +33,74 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.portal.service.spring.SpringContextService;
+
 /**
  * Manager form appointment removal listeners
  */
-public final class AppointmentListenerManager
-{
-    /**
-     * Private default constructor
-     */
-    private AppointmentListenerManager( )
-    {
-        // Nothing to do
-    }
+public final class AppointmentListenerManager {
+	/**
+	 * Private default constructor
+	 */
+	private AppointmentListenerManager() {
+		// Nothing to do
+	}
 
-    /**
-     * Notify listeners that an appointment is about to be removed
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment that will be removed
-     */
-    public static void notifyListenersAppointmentRemoval( int nIdAppointment )
-    {
-        for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
-        }
-    }
+	/**
+	 * Notify listeners that an appointment is about to be removed
+	 * 
+	 * @param nIdAppointment
+	 *            The id of the appointment that will be removed
+	 */
+	public static void notifyListenersAppointmentRemoval(int nIdAppointment) {
+		for (IAppointmentListener appointmentRemovalListener : SpringContextService
+				.getBeansOfType(IAppointmentListener.class)) {
+			appointmentRemovalListener.notifyAppointmentRemoval(nIdAppointment);
+		}
+	}
 
-    /**
-     * Notify listeners that the date of an appointment has been modified
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment that will be removed
-     * @param nIdSlot
-     *            The id of the slot
-     * @param locale
-     *            The locale
-     * @return The list of messages to display
-     */
-    public static List<String> notifyListenersAppointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale )
-    {
-        List<String> listMessages = new ArrayList<String>( );
+	/**
+	 * Notify listeners that the date of an appointment has been modified
+	 * 
+	 * @param nIdAppointment
+	 *            The id of the appointment that will be removed
+	 * @param nIdSlot
+	 *            The id of the slot
+	 * @param locale
+	 *            The locale
+	 * @return The list of messages to display
+	 */
+	public static List<String> notifyListenersAppointmentDateChanged(int nIdAppointment, int nIdSlot, Locale locale) {
+		List<String> listMessages = new ArrayList<String>();
 
-        for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-        {
-            String strMessage = appointmentRemovalListener.appointmentDateChanged( nIdAppointment, nIdSlot, locale );
+		for (IAppointmentListener appointmentRemovalListener : SpringContextService
+				.getBeansOfType(IAppointmentListener.class)) {
+			String strMessage = appointmentRemovalListener.appointmentDateChanged(nIdAppointment, nIdSlot, locale);
 
-            if ( StringUtils.isNotEmpty( strMessage ) )
-            {
-                listMessages.add( strMessage );
-            }
-        }
+			if (StringUtils.isNotEmpty(strMessage)) {
+				listMessages.add(strMessage);
+			}
+		}
 
-        return listMessages;
-    }
+		return listMessages;
+	}
 
-    /**
-     * Notify users that an appointment form has been removed
-     * 
-     * @param nIdAppointmentForm
-     *            the id of the removed appointment form
-     */
-    public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
-    {
-        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
-        }
-    }
+	/**
+	 * Notify users that an appointment form has been removed
+	 * 
+	 * @param nIdAppointmentForm
+	 *            the id of the removed appointment form
+	 */
+	public static void notifyListenersAppointmentFormRemoval(int nIdAppointmentForm) {
+		for (IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService
+				.getBeansOfType(IAppointmentFormRemovalListener.class)) {
+			appointmentRemovalListener.notifyAppointmentFormRemoval(nIdAppointmentForm);
+		}
+	}
 }

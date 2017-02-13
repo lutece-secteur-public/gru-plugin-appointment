@@ -201,7 +201,7 @@
 										<i class="fa fa-chevron-down" aria-hidden="true"></i>
 								</a>
 								</th>
-								<#if form.maximumNumberOfBookedSeats &gt; 1>
+								<#if form.maxPeoplePerAppointment &gt; 1>
 								<th>#i18n{appointment.create_appointmentform.labelPlaces}<a
 									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=numberPlacesReserved&orderAsc=true">
 										<i class="fa fa-chevron-up" aria-hidden="true"></i>
@@ -256,7 +256,7 @@
 									value="${appointment.idAppointment}"></td>
 								<td>${appointment.lastName}</td>
 								<td>${appointment.firstName}</td>
-								<#if form.maximumNumberOfBookedSeats &gt; 1>
+								<#if form.maxPeoplePerAppointment &gt; 1>
 								<td>${appointment.numberPlacesReserved}</td>
 								</#if>
 								<td>${appointment.email}</td>

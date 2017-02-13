@@ -33,8 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.web.portlet;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortlet;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
@@ -44,162 +52,141 @@ import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * This class provides the user interface to manage AppointmentPortlet features
  */
-public class AppointmentFormPortletJspBean extends PortletJspBean
-{
-    /**
-     * Serial version UID
-     */
-    private static final long serialVersionUID = 5342937491389478335L;
+public class AppointmentFormPortletJspBean extends PortletJspBean {
+	/**
+	 * Serial version UID
+	 */
+	private static final long serialVersionUID = 5342937491389478335L;
 
-    // Marks
-    private static final String MARK_LIST_APPOINTMENT_FORM = "refListAppointmentForm";
+	// Marks
+	private static final String MARK_LIST_APPOINTMENT_FORM = "refListAppointmentForm";
 
-    // Parameters
-    private static final String PARAMETER_FORM = "id_form";
+	// Parameters
+	private static final String PARAMETER_FORM = "id_form";
 
-    // Messages
-    private static final String MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED = "appointment.message.error.noAppointmentFormSelected";
+	// Messages
+	private static final String MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED = "appointment.message.error.noAppointmentFormSelected";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getCreate( HttpServletRequest request )
-    {
-        String strPageId = request.getParameter( PARAMETER_PAGE_ID );
-        String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getCreate(HttpServletRequest request) {
+		String strPageId = request.getParameter(PARAMETER_PAGE_ID);
+		String strPortletTypeId = request.getParameter(PARAMETER_PORTLET_TYPE_ID);
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
+		Collection<Form> listAppointmentForm = FormHome.findActiveForms();
 
-        ReferenceList refListAppointmentForm = new ReferenceList( );
+		ReferenceList refListAppointmentForm = new ReferenceList();
 
-        for ( AppointmentForm form : listAppointmentForm )
-        {
-            refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
-        }
+		for (Form form : listAppointmentForm) {
+			refListAppointmentForm.addItem(form.getIdForm(), form.getTitle());
+		}
 
-        Map<String, Object> model = new HashMap<String, Object>( );
-        model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put(MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm);
 
-        HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
+		HtmlTemplate template = getCreateTemplate(strPageId, strPortletTypeId, model);
 
-        return template.getHtml( );
-    }
+		return template.getHtml();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getModify( HttpServletRequest request )
-    {
-        String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey( nPortletId );
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getModify(HttpServletRequest request) {
+		String strPortletId = request.getParameter(PARAMETER_PORTLET_ID);
+		int nPortletId = Integer.parseInt(strPortletId);
+		AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey(nPortletId);
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
+		Collection<Form> listAppointmentForm = FormHome.findActiveForms();
 
-        ReferenceList refListAppointmentForm = new ReferenceList( );
+		ReferenceList refListAppointmentForm = new ReferenceList();
 
-        for ( AppointmentForm form : listAppointmentForm )
-        {
-            refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
-        }
+		for (Form form : listAppointmentForm) {
+			refListAppointmentForm.addItem(form.getIdForm(), form.getTitle());
+		}
 
-        Map<String, Object> model = new HashMap<String, Object>( );
-        model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put(MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm);
 
-        HtmlTemplate template = getModifyTemplate( portlet, model );
+		HtmlTemplate template = getModifyTemplate(portlet, model);
 
-        return template.getHtml( );
-    }
+		return template.getHtml();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String doCreate( HttpServletRequest request )
-    {
-        AppointmentFormPortlet portlet = new AppointmentFormPortlet( );
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String doCreate(HttpServletRequest request) {
+		AppointmentFormPortlet portlet = new AppointmentFormPortlet();
 
-        // recovers portlet specific attributes
-        String strPageId = request.getParameter( PARAMETER_PAGE_ID );
-        int nPageId = Integer.parseInt( strPageId );
+		// recovers portlet specific attributes
+		String strPageId = request.getParameter(PARAMETER_PAGE_ID);
+		int nPageId = Integer.parseInt(strPageId);
 
-        String strFormId = request.getParameter( PARAMETER_FORM );
+		String strFormId = request.getParameter(PARAMETER_FORM);
 
-        if ( StringUtils.isNotEmpty( strFormId ) && StringUtils.isNumeric( strFormId ) )
-        {
-            int nIdForm = Integer.parseInt( strFormId );
-            portlet.setIdAppointmentForm( nIdForm );
-        }
-        else
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED, AdminMessage.TYPE_STOP );
-        }
+		if (StringUtils.isNotEmpty(strFormId) && StringUtils.isNumeric(strFormId)) {
+			int nIdForm = Integer.parseInt(strFormId);
+			portlet.setIdAppointmentForm(nIdForm);
+		} else {
+			return AdminMessageService.getMessageUrl(request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED,
+					AdminMessage.TYPE_STOP);
+		}
 
-        // get portlet common attributes
-        String strErrorUrl = setPortletCommonData( request, portlet );
+		// get portlet common attributes
+		String strErrorUrl = setPortletCommonData(request, portlet);
 
-        if ( strErrorUrl != null )
-        {
-            return strErrorUrl;
-        }
+		if (strErrorUrl != null) {
+			return strErrorUrl;
+		}
 
-        portlet.setPageId( nPageId );
+		portlet.setPageId(nPageId);
 
-        // Creates the portlet
-        AppointmentFormPortletHome.getInstance( ).create( portlet );
+		// Creates the portlet
+		AppointmentFormPortletHome.getInstance().create(portlet);
 
-        // Displays the page with the new Portlet
-        return getPageUrl( nPageId );
-    }
+		// Displays the page with the new Portlet
+		return getPageUrl(nPageId);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String doModify( HttpServletRequest request )
-    {
-        // fetches portlet attributes
-        String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey( nPortletId );
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String doModify(HttpServletRequest request) {
+		// fetches portlet attributes
+		String strPortletId = request.getParameter(PARAMETER_PORTLET_ID);
+		int nPortletId = Integer.parseInt(strPortletId);
+		AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey(nPortletId);
 
-        String strFormId = request.getParameter( PARAMETER_FORM );
+		String strFormId = request.getParameter(PARAMETER_FORM);
 
-        if ( StringUtils.isNotEmpty( strFormId ) && StringUtils.isNumeric( strFormId ) )
-        {
-            int nIdForm = Integer.parseInt( strFormId );
-            portlet.setIdAppointmentForm( nIdForm );
-        }
-        else
-        {
-            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED, AdminMessage.TYPE_STOP );
-        }
+		if (StringUtils.isNotEmpty(strFormId) && StringUtils.isNumeric(strFormId)) {
+			int nIdForm = Integer.parseInt(strFormId);
+			portlet.setIdAppointmentForm(nIdForm);
+		} else {
+			return AdminMessageService.getMessageUrl(request, MESSAGE_ERROR_NO_APPOINTMENT_FORM_SELECTED,
+					AdminMessage.TYPE_STOP);
+		}
 
-        // retrieve portlet common attributes
-        String strErrorUrl = setPortletCommonData( request, portlet );
+		// retrieve portlet common attributes
+		String strErrorUrl = setPortletCommonData(request, portlet);
 
-        if ( strErrorUrl != null )
-        {
-            return strErrorUrl;
-        }
+		if (strErrorUrl != null) {
+			return strErrorUrl;
+		}
 
-        // updates the portlet
-        portlet.update( );
+		// updates the portlet
+		portlet.update();
 
-        // displays the page with the updated portlet
-        return getPageUrl( portlet.getPageId( ) );
-    }
+		// displays the page with the updated portlet
+		return getPageUrl(portlet.getPageId());
+	}
 }

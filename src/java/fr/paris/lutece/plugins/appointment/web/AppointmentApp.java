@@ -333,7 +333,7 @@ public class AppointmentApp extends MVCApplication {
 				appointmentSlotDisponiblity.setIdSession(request.getSession().getId());
 
 				Timestamp time = new Timestamp(new java.util.Date().getTime());
-				time.setMinutes(time.getMinutes() + form.getSeizureDuration());
+				//time.setMinutes(time.getMinutes() + form.getSeizureDuration());
 				appointmentSlotDisponiblity.setFreeDate(time);
 				appointmentSlotDisponiblity.setAppointmentSlot(appointmentSlot);
 
@@ -412,8 +412,8 @@ public class AppointmentApp extends MVCApplication {
 					? String.valueOf(MARK_CONSTANT_STR_NULL) : request.getParameter(PARAMETER_EMAIL_CONFIRMATION);
 
 			// Validator MaxAppointments per WeeksLimits config
-			int nMaxAppointments = form.getMaxAppointments();
-			int nWeeksLimits = getMaxWeek(form.getWeeksLimits(), form);
+			int nMaxAppointments = 0;//form.getMaxAppointments();
+			int nWeeksLimits = 0;//getMaxWeek(form.getWeeksLimits(), form);
 			AppointmentSlot appointmentSlot = null;
 			AppointmentFilter filterEmail = new AppointmentFilter();
 			filterEmail.setEmail(strEmail);
@@ -455,7 +455,7 @@ public class AppointmentApp extends MVCApplication {
 				}
 			}
 
-			if (form.getEnableConfirmEmail() && form.getEnableMandatoryEmail()) {
+			if (form.getEnableMandatoryEmail()) {
 				if (StringUtils.isEmpty(strConfirmEmail)) {
 					GenericAttributeError genAttError = new GenericAttributeError();
 					genAttError.setErrorMessage(
@@ -466,15 +466,15 @@ public class AppointmentApp extends MVCApplication {
 
 			String nbBookedSeat = StringUtils.isBlank(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS))
 					? String.valueOf(StringUtils.EMPTY) : request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS);
-			if (form.getMaximumNumberOfBookedSeats() == 1) {
+			if (form.getMaxPeoplePerAppointment() == 1) {
 				nbBookedSeat = "1";
 			}
-			if (!StringUtils.isNumeric(nbBookedSeat.trim()) && form.getMaximumNumberOfBookedSeats() > 1) {
+			if (!StringUtils.isNumeric(nbBookedSeat.trim()) && form.getMaxPeoplePerAppointment() > 1) {
 				GenericAttributeError genAttError = new GenericAttributeError();
 				genAttError.setErrorMessage(
 						I18nService.getLocalizedString(ERROR_MESSAGE_NUMERIC_NB_BOOKED_SEAT, request.getLocale()));
 				listFormErrors.add(genAttError);
-			} else if (StringUtils.isBlank(nbBookedSeat) && form.getMaximumNumberOfBookedSeats() > 1) {
+			} else if (StringUtils.isBlank(nbBookedSeat) && form.getMaxPeoplePerAppointment() > 1) {
 				GenericAttributeError genAttError = new GenericAttributeError();
 				genAttError.setErrorMessage(
 						I18nService.getLocalizedString(ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT, request.getLocale()));
@@ -496,7 +496,7 @@ public class AppointmentApp extends MVCApplication {
 					int bookedEstimate = slot.getNbPlaces() - slot.getNbFreePlaces() + nbBookedSeats;
 
 					if ((bookedEstimate > slot.getNbPlaces())
-							|| (nbBookedSeats > form.getMaximumNumberOfBookedSeats())) {
+							|| (nbBookedSeats > form.getMaxPeoplePerAppointment())) {
 						GenericAttributeError genAttError = new GenericAttributeError();
 						genAttError.setErrorMessage(I18nService.getLocalizedString(ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT,
 								request.getLocale()));
@@ -666,7 +666,7 @@ public class AppointmentApp extends MVCApplication {
 						+ appointment.getNumberPlacesReserved();
 
 				if ((bookedEstimate > slot.getNbPlaces())
-						|| (appointment.getNumberPlacesReserved() > form.getMaximumNumberOfBookedSeats())) {
+						|| (appointment.getNumberPlacesReserved() > form.getMaxPeoplePerAppointment())) {
 					return getForm(request, form);
 				}
 			}
@@ -855,7 +855,7 @@ public class AppointmentApp extends MVCApplication {
 					slot.getEndingMinute());
 			String strReference = StringUtils.isEmpty(form.getReference()) ? ""
 					: (Strings.toUpperCase(form.getReference().trim()) + " - ");
-			strReference += AppointmentService.getService().computeRefAppointment(appointment);
+			strReference += AppointmentService.getInstance().computeRefAppointment(appointment);
 			formMessages.setTextAppointmentCreated(
 					formMessages.getTextAppointmentCreated().replaceAll(MARK_REF, strReference)
 							.replaceAll(MARK_DATE_APP, getDateFormat().format(appointment.getDateAppointment()))
@@ -903,7 +903,7 @@ public class AppointmentApp extends MVCApplication {
 	public XPage getViewCancelAppointment(HttpServletRequest request) throws SiteMessageException {
 		String refAppointment = request.getParameter(PARAMETER_REF_APPOINTMENT);
 		String strIdAppointment = refAppointment.substring(0,
-				refAppointment.length() - AppointmentService.getService().getRefSizeRandomPart());
+				refAppointment.length() - AppointmentService.getInstance().getRefSizeRandomPart());
 		Appointment appointment = null;
 
 		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
@@ -944,7 +944,7 @@ public class AppointmentApp extends MVCApplication {
 		String strRef = request.getParameter(PARAMETER_REF_APPOINTMENT);
 
 		String strIdAppointment = strRef.substring(0,
-				strRef.length() - AppointmentService.getService().getRefSizeRandomPart());
+				strRef.length() - AppointmentService.getInstance().getRefSizeRandomPart());
 		String strDate = request.getParameter(PARAMETER_DATE_APPOINTMENT);
 
 		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
@@ -953,15 +953,12 @@ public class AppointmentApp extends MVCApplication {
 
 			Date date = (Date) getDateConverter().convert(Date.class, strDate);
 
-			if (StringUtils.equals(strRef, AppointmentService.getService().computeRefAppointment(appointment))
+			if (StringUtils.equals(strRef, AppointmentService.getInstance().computeRefAppointment(appointment))
 					&& DateUtils.isSameDay(date, appointment.getDateAppointment())) {
 				AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 				AppointmentForm form = AppointmentFormHome.findByPrimaryKey(appointmentSlot.getIdForm());
 
-				if (!form.getAllowUsersToCancelAppointments()) {
-					SiteMessageService.setMessage(request, ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT,
-							SiteMessage.TYPE_STOP);
-				}
+				
 
 				Plugin appointmentPlugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 
@@ -984,7 +981,7 @@ public class AppointmentApp extends MVCApplication {
 					throw new AppException(e.getMessage(), e);
 				}
 
-				if (form.getAllowUsersToCancelAppointments() && StringUtils.isNotEmpty(strRef)) {
+				if (StringUtils.isNotEmpty(strRef)) {
 					Map<String, String> mapParameters = new HashMap<String, String>();
 
 					if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS))) {
@@ -1143,17 +1140,17 @@ public class AppointmentApp extends MVCApplication {
 
 		Map<String, String> lsSta = new HashMap<String, String>();
 		for (Appointment appointment : listAppointments) {
-			AppointmentDTO appointmantDTO = new AppointmentDTO(appointment);
-			appointmantDTO.setAppointmentSlot(AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot()));
+			AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
+			appointmentDTO.setAppointmentSlot(AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot()));
 			/*
 			 * WORKFLOW FUTURE if (!nidForm.contains( Integer.valueOf(
 			 * appointmantDTO.getAppointmentSlot( ).getIdForm( ) ) )); {
 			 * nidForm.add(Integer.valueOf( appointmantDTO.getAppointmentSlot(
 			 * ).getIdForm( ) ) ); }
 			 */
-			appointmantDTO.setAppointmentForm(
-					AppointmentFormHome.findByPrimaryKey(appointmantDTO.getAppointmentSlot().getIdForm()));
-			listAppointmentDTO.add(appointmantDTO);
+			appointmentDTO.setAppointmentForm(
+					AppointmentFormHome.findByPrimaryKey(appointmentDTO.getAppointmentSlot().getIdForm()));
+			listAppointmentDTO.add(appointmentDTO);
 		}
 
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -1288,15 +1285,15 @@ public class AppointmentApp extends MVCApplication {
 		if (StringUtils.isNotEmpty(strNbWeek) && StringUtils.isNumeric(strNbWeek)) {
 			nNbWeek = Integer.parseInt(strNbWeek);
 
-			if (nNbWeek > (form.getNbWeeksToDisplay() - 1) && form.getDateLimit() == null) {
+			if (nNbWeek > (form.getNbWeeksToDisplay() - 1)) {
 				nNbWeek = form.getNbWeeksToDisplay() - 1;
 			}
 		}
 
 		MutableInt nMutableNbWeek = new MutableInt(nNbWeek);
 
-		List<AppointmentDay> listDays = AppointmentService.getService().getDayListForCalendar(form, nMutableNbWeek,
-				true, bBack);
+		List<AppointmentDay> listDays = null;
+		//AppointmentService.getInstance().getDayListForCalendar(form, nMutableNbWeek,true, bBack);
 
 		nNbWeek = nMutableNbWeek.intValue();
 
@@ -1322,15 +1319,15 @@ public class AppointmentApp extends MVCApplication {
 			}
 
 			List<String> listTimeBegin = new ArrayList<String>();
-			int nMinAppointmentDuration = AppointmentService.getService().getListTimeBegin(listDays, form,
+			int nMinAppointmentDuration = AppointmentService.getInstance().getListTimeBegin(listDays, form,
 					listTimeBegin);
-			List<AppointmentDay> listAvailableDays = AppointmentService.getService().getAllAvailableDays(form);
+			List<AppointmentDay> listAvailableDays = AppointmentService.getInstance().getAllAvailableDays(form);
 			model.put(MARK_LIST_DAYS, listDays);
 			model.put(MARK_LIST_AVAILABLE_DAYS, listAvailableDays);
 			model.put(MARK_LIST_TIME_BEGIN, listTimeBegin);
 			model.put(MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration);
 			model.put(MARK_DATE_LAST_MONDAY,
-					DateUtils.truncate(AppointmentService.getService().getDateLastMonday(), Calendar.DATE).getTime());
+					DateUtils.truncate(AppointmentService.getInstance().getDateLastMonday(), Calendar.DATE).getTime());
 		} else {
 			addInfo(model, formMessages.getNoAvailableSlot());
 		}
@@ -1475,7 +1472,7 @@ public class AppointmentApp extends MVCApplication {
 		urlItem.addParameter(MVCUtils.PARAMETER_PAGE, XPAGE_NAME);
 		urlItem.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT);
 		urlItem.addParameter(PARAMETER_REF_APPOINTMENT,
-				AppointmentService.getService().computeRefAppointment(appointment));
+				AppointmentService.getInstance().computeRefAppointment(appointment));
 
 		return urlItem.getUrl();
 	}
@@ -1494,7 +1491,7 @@ public class AppointmentApp extends MVCApplication {
 		urlItem.addParameter(MVCUtils.PARAMETER_PAGE, XPAGE_NAME);
 		urlItem.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT);
 		urlItem.addParameter(PARAMETER_REF_APPOINTMENT,
-				AppointmentService.getService().computeRefAppointment(appointment));
+				AppointmentService.getInstance().computeRefAppointment(appointment));
 
 		return urlItem.getUrl();
 	}
@@ -1574,39 +1571,10 @@ public class AppointmentApp extends MVCApplication {
 	}
 
 	public static int getMaxWeek(int nbWeekToCreate, AppointmentForm form) {
-		if (form.getDateLimit() != null) {
-			Date dateMin = null;
-			List<AppointmentDay> listDays = AppointmentDayHome.findByIdForm(form.getIdForm());
-			/*
-			 * if (!listDays.isEmpty()) { dateMin = listDays.get(0).getDate(); }
-			 */
-			if (dateMin == null) {
-				Calendar c = Calendar.getInstance();
-				dateMin = new Date(c.getTimeInMillis());
-			}
-			long diff = form.getDateLimit().getTime() - dateMin.getTime();
-			long diffDays = diff / (24 * 60 * 60 * 1000);
-			int maxWeek = (int) diffDays / 7;
-			Calendar cal = GregorianCalendar.getInstance(Locale.FRANCE);
-			int nCurrentDayOfWeek = cal.get(cal.DAY_OF_WEEK);
-			cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek);
-			Date datMax = null;
-			do {
-				cal.add(Calendar.WEEK_OF_YEAR, maxWeek);
-				datMax = new Date(cal.getTimeInMillis());
-				if (datMax.before(form.getDateLimit())) {
-					maxWeek = maxWeek + 1;
-				}
-				cal = GregorianCalendar.getInstance(Locale.FRANCE);
-				cal.add(Calendar.DAY_OF_WEEK, Calendar.MONDAY - nCurrentDayOfWeek);
-			} while (datMax.before(form.getDateLimit()));
-
-			return maxWeek;
-
-		} else {
+		
 			return nbWeekToCreate;
 
-		}
+		
 	}
 
 	/**
@@ -1628,8 +1596,8 @@ public class AppointmentApp extends MVCApplication {
 				// The authentication is external
 				// Should register the user if it's not already done
 				if (SecurityService.getInstance().getRegisteredUser(request) == null) {
-					if ((SecurityService.getInstance().getRemoteUser(request) == null)
-							&& (form.getIsActiveAuthentification())) {
+					if ((SecurityService.getInstance().getRemoteUser(request) == null)){
+							//&& (form.getIsActiveAuthentification())) {
 						// Authentication is required to access to the portal
 						throw new UserNotSignedException();
 					}
@@ -1638,8 +1606,9 @@ public class AppointmentApp extends MVCApplication {
 				// If portal authentication is enabled and user is null and the
 				// requested URL
 				// is not the login URL, user cannot access to Portal
-				if ((form.getIsActiveAuthentification())
-						&& (SecurityService.getInstance().getRegisteredUser(request) == null)
+				if (
+						//(form.getIsActiveAuthentification()) &&
+						(SecurityService.getInstance().getRegisteredUser(request) == null)
 						&& !SecurityService.getInstance().isLoginUrl(request)) {
 					// Authentication is required to access to the portal
 					throw new UserNotSignedException();

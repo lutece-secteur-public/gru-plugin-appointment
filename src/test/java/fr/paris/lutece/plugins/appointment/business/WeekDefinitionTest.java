@@ -5,8 +5,8 @@ import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinition;
-import fr.paris.lutece.plugins.appointment.business.planningdefinition.WeekDefinitionHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**

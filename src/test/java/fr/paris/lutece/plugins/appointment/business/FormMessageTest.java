@@ -48,7 +48,7 @@ public class FormMessageTest extends LuteceTestCase {
 	public static final String CALENDAR_RESERVE_LABEL_2 = "CalendarReserveLabel2";
 	public static final String CALENDAR_FULL_LABEL_1 = "CalendarFullLabel1";
 	public static final String CALENDAR_FULL_LABEL_2 = "CalendarFullLabel2";
-	
+
 	/**
 	 * Test method for the FormMessage (CRUD)
 	 */
@@ -96,8 +96,8 @@ public class FormMessageTest extends LuteceTestCase {
 		formMessageStored = FormMessageHome.findByPrimaryKey(formMessage.getIdFormMessage());
 		// Check the FormMessage has been removed from database
 		assertNull(formMessageStored);
-		
-		// Clean 
+
+		// Clean
 		FormHome.delete(form.getIdForm());
 	}
 
@@ -140,7 +140,7 @@ public class FormMessageTest extends LuteceTestCase {
 		FormMessage formMessageStored = FormMessageHome.findByIdForm(form.getIdForm());
 		// Check Asserts
 		checkAsserts(formMessageStored, formMessage);
-		
+
 		// Clean
 		FormHome.delete(form.getIdForm());
 	}
@@ -200,5 +200,5 @@ public class FormMessageTest extends LuteceTestCase {
 		assertEquals(formMessageStored.getCalendarFullLabel(), formMessage.getCalendarFullLabel());
 		assertEquals(formMessageStored.getIdForm(), formMessage.getIdForm());
 	}
-	
+
 }

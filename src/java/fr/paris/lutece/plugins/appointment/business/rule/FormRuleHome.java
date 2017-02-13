@@ -72,10 +72,12 @@ public class FormRuleHome {
 	public static FormRule findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
 	}
-	
+
 	/**
 	 * Returns the form rule of a form
-	 * @param nIdForm the form id
+	 * 
+	 * @param nIdForm
+	 *            the form id
 	 * @return the form rule
 	 */
 	public static FormRule findByIdForm(int nIdForm) {

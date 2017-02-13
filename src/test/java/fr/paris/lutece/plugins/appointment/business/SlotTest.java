@@ -153,19 +153,19 @@ public class SlotTest extends LuteceTestCase {
 		slot1.setIdForm(form.getIdForm());
 		// Create the Slot in database
 		SlotHome.create(slot1);
-		
+
 		// Initialize a 2nd Slot
 		Slot slot2 = buildSlot2();
 		slot2.setIdForm(form.getIdForm());
 		// Create the Slot in database
 		SlotHome.create(slot2);
-		
+
 		// Initialize a 3th slot closed
 		Slot slot3 = buildClosedSlot();
 		slot3.setIdForm(form.getIdForm());
 		// Create the Slot in database
 		SlotHome.create(slot3);
-		
+
 		// Find the Slot created in database
 		List<Slot> listSlotStored = SlotHome.findOpenSlotsByIdForm(form.getIdForm());
 		assertEquals(listSlotStored.size(), 2);

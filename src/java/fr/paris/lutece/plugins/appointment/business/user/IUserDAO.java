@@ -4,26 +4,27 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * User DAO Interface
+ * 
  * @author Laurent Payen
  *
  */
 public interface IUserDAO {
 
 	/**
-     * The name of the bean of the DAO
-     */
-    String BEAN_NAME = "appointment.userDAO";
-    
+	 * The name of the bean of the DAO
+	 */
+	String BEAN_NAME = "appointment.userDAO";
+
 	/**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey(Plugin plugin);
-    
-	/**	 
+	 * Generate a new primary key
+	 * 
+	 * @param plugin
+	 *            the Plugin
+	 * @return the new primary key
+	 */
+	int getNewPrimaryKey(Plugin plugin);
+
+	/**
 	 * Insert a new record in the table.
 	 * 
 	 * @param user

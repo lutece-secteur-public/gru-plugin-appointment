@@ -38,47 +38,42 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 /**
  * this class provides Data Access methods for AppointmentPortlet objects
  */
-public final class AppointmentPortletDAO implements IAppointmentPortletDAO
-{
-    // /////////////////////////////////////////////////////////////////////////////////////
-    // Access methods to data
+public final class AppointmentPortletDAO implements IAppointmentPortletDAO {
+	// /////////////////////////////////////////////////////////////////////////////////////
+	// Access methods to data
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void insert( Portlet portlet )
-    {
-        // Do nothing
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void insert(Portlet portlet) {
+		// Do nothing
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete( int nPortletId )
-    {
-        // Do nothing
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void delete(int nPortletId) {
+		// Do nothing
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void store( Portlet portlet )
-    {
-        // Do nothing
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void store(Portlet portlet) {
+		// Do nothing
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Portlet load( int nIdPortlet )
-    {
-        AppointmentPortlet portlet = new AppointmentPortlet( );
-        portlet.setId( nIdPortlet );
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Portlet load(int nIdPortlet) {
+		AppointmentPortlet portlet = new AppointmentPortlet();
+		portlet.setId(nIdPortlet);
 
-        return portlet;
-    }
+		return portlet;
+	}
 }

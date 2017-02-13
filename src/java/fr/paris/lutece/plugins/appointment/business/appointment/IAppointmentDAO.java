@@ -5,7 +5,7 @@ import java.util.List;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
- * Appointment DAO Interface 
+ * Appointment DAO Interface
  * 
  * @author Laurent Payen
  *
@@ -13,19 +13,19 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 public interface IAppointmentDAO {
 
 	/**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.appointmentDAO";
-    
+	 * The name of the bean of the DAO
+	 */
+	static String BEAN_NAME = "appointment.appointmentDAO";
+
 	/**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey(Plugin plugin);
-	
+	 * Generate a new primary key
+	 * 
+	 * @param plugin
+	 *            the Plugin
+	 * @return the new primary key
+	 */
+	int getNewPrimaryKey(Plugin plugin);
+
 	/**
 	 * Insert a new record in the table
 	 * 
@@ -66,19 +66,25 @@ public interface IAppointmentDAO {
 	 * @return the instance of the appointment
 	 */
 	Appointment select(int nIdAppointment, Plugin plugin);
-	
+
 	/**
 	 * Returns all the appointments of a user
-	 * @param nIdUser the User Id
-	 * @param plugin the Plugin
+	 * 
+	 * @param nIdUser
+	 *            the User Id
+	 * @param plugin
+	 *            the Plugin
 	 * @return a list of the appointments of the user
 	 */
 	List<Appointment> findByIdUser(int nIdUser, Plugin plugin);
-		
+
 	/**
 	 * Returns the appointments of a slot
-	 * @param nIdSlot the Slot Id
-	 * @param plugin the plugin
+	 * 
+	 * @param nIdSlot
+	 *            the Slot Id
+	 * @param plugin
+	 *            the plugin
 	 * @return a list of the appointments
 	 */
 	List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin);

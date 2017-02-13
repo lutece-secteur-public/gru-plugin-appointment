@@ -4,25 +4,26 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * FormRule DAO Interface
+ * 
  * @author Laurent Payen
  *
  */
 public interface IFormRuleDAO {
-	
+
 	/**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.formRuleDAO";
-    
+	 * The name of the bean of the DAO
+	 */
+	static String BEAN_NAME = "appointment.formRuleDAO";
+
 	/**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey(Plugin plugin);
-    
+	 * Generate a new primary key
+	 * 
+	 * @param plugin
+	 *            the Plugin
+	 * @return the new primary key
+	 */
+	int getNewPrimaryKey(Plugin plugin);
+
 	/**
 	 * Insert a new record in the table
 	 * 
@@ -63,11 +64,14 @@ public interface IFormRuleDAO {
 	 * @return the instance of the FormRule
 	 */
 	FormRule select(int nIdFormRule, Plugin plugin);
-	
+
 	/**
 	 * Returns the form rule of a form
-	 * @param nIdForm the form id
-	 * @param plugin the plugin
+	 * 
+	 * @param nIdForm
+	 *            the form id
+	 * @param plugin
+	 *            the plugin
 	 * @return the form rule of the form
 	 */
 	FormRule findByIdForm(int nIdForm, Plugin plugin);

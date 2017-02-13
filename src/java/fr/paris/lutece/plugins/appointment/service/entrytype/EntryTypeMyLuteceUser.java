@@ -39,17 +39,15 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 /**
  * class EntryTypeText
  */
-public class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser
-{
-    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
-    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
+public class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser {
+	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
+	private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
-    {
-        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getTemplateHtmlForm(Entry entry, boolean bDisplayFront) {
+		return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
+	}
 }

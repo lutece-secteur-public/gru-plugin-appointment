@@ -51,7 +51,7 @@ public class FormRuleTest extends LuteceTestCase {
 		formRuleStored = FormRuleHome.findByPrimaryKey(formRule.getIdFormRule());
 		// Check the FormRule has been removed from database
 		assertNull(formRuleStored);
-		
+
 		// Clean
 		FormHome.delete(form.getIdForm());
 	}
@@ -94,7 +94,7 @@ public class FormRuleTest extends LuteceTestCase {
 		FormRule formRuleStored = FormRuleHome.findByIdForm(form.getIdForm());
 		// Check Asserts
 		checkAsserts(formRuleStored, formRule);
-		
+
 		// Clean
 		FormHome.delete(form.getIdForm());
 	}

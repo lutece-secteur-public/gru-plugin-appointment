@@ -50,13 +50,13 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class AppointmentFormDAO implements IAppointmentFormDAO {
 	// Constants
 	private static final String SQL_QUERY_NEW_PK = "SELECT max( id_form ) FROM appointment_form";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration, date_limit, maximum_number_of_booked_seats, address, longitude, latitude, category, active_mylutece_authentification FROM appointment_form ";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, max_capacity_per_slot, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration, date_limit, max_people_per_appointment, address, longitude, latitude, category, active_mylutece_authentification FROM appointment_form ";
 	private static final String SQL_QUERY_SELECTALL = SQL_QUERY_SELECT_COLUMNS + " ORDER BY title";
 	private static final String SQL_QUERY_SELECTALL_ENABLED = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, people_per_appointment, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration, date_limit, maximum_number_of_booked_seats, address, longitude, latitude, category ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( id_form, title, description, time_start, time_end, duration_appointments, is_open_monday, is_open_tuesday, is_open_wednesday, is_open_thursday, is_open_friday, is_open_saturday, is_open_sunday, date_start_validity, date_end_validity, is_active, dispolay_title_fo, nb_weeks_to_display, max_capacity_per_slot, id_workflow, is_captcha_enabled, users_can_cancel_appointments, min_days_before_app, id_calendar_template, max_appointment_mail, nb_appointment_week, reference, is_form_step, is_confirmEmail_enabled, is_mandatoryEmail_enabled, icon_form_content, icon_form_mime_type, seizure_duration, date_limit, max_people_per_appointment, address, longitude, latitude, category ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, people_per_appointment = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ?, max_appointment_mail = ?, nb_appointment_week = ?, reference = ?, is_form_step = ?, is_confirmEmail_enabled = ?, is_mandatoryEmail_enabled = ?, icon_form_content = ?, icon_form_mime_type = ?, seizure_duration = ? , date_limit = ?, maximum_number_of_booked_seats = ?, address = ?, longitude = ?, latitude = ?, category = ?, active_mylutece_authentification = ? WHERE id_form = ?";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, time_start = ?, time_end = ?, duration_appointments = ?, is_open_monday = ?, is_open_tuesday = ?, is_open_wednesday = ?, is_open_thursday = ?, is_open_friday = ?, is_open_saturday = ?, is_open_sunday = ?, date_start_validity = ?, date_end_validity = ?, is_active = ?, dispolay_title_fo = ?, nb_weeks_to_display = ?, max_capacity_per_slot = ?, id_workflow = ?, is_captcha_enabled = ?, users_can_cancel_appointments = ?, min_days_before_app = ?, id_calendar_template = ?, max_appointment_mail = ?, nb_appointment_week = ?, reference = ?, is_form_step = ?, is_confirmEmail_enabled = ?, is_mandatoryEmail_enabled = ?, icon_form_content = ?, icon_form_mime_type = ?, seizure_duration = ? , date_limit = ?, max_people_per_appointment = ?, address = ?, longitude = ?, latitude = ?, category = ?, active_mylutece_authentification = ? WHERE id_form = ?";
 	private static final String SQL_QUERY_GET_MAX_APPOINTMENT = "select distinct count(*) nbre,form.max_appointment_mail,apmt.date_appointment,"
 			+ " ADDDATE(apmt.date_appointment, INTERVAL (form.nb_appointment_week-1) DAY) date_max,"
 			+ " ADDDATE(apmt.date_appointment, INTERVAL -(form.nb_appointment_week-1) DAY) date_min"
@@ -113,42 +113,23 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO {
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenFriday());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenSaturday());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenSunday());
-		daoUtil.setDate(nIndex++, appointmentForm.getDateStartValidity());
-		daoUtil.setDate(nIndex++, appointmentForm.getDateEndValidity());
+		//daoUtil.setDate(nIndex++, appointmentForm.getDateStartValidity());
+		//daoUtil.setDate(nIndex++, appointmentForm.getDateEndValidity());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsActive());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getDisplayTitleFo());
 		daoUtil.setInt(nIndex++, appointmentForm.getNbWeeksToDisplay());
-		daoUtil.setInt(nIndex++, appointmentForm.getPeoplePerAppointment());
+		daoUtil.setInt(nIndex++, appointmentForm.getMaxCapacityPerSlot());
 		daoUtil.setInt(nIndex++, appointmentForm.getIdWorkflow());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getEnableCaptcha());
-		daoUtil.setBoolean(nIndex++, appointmentForm.getAllowUsersToCancelAppointments());
-		daoUtil.setInt(nIndex++, appointmentForm.getMinDaysBeforeAppointment());
 		daoUtil.setInt(nIndex++, appointmentForm.getCalendarTemplateId());
-		daoUtil.setInt(nIndex++, appointmentForm.getMaxAppointments());
-		daoUtil.setInt(nIndex++, appointmentForm.getWeeksLimits());
 		daoUtil.setString(nIndex++,
 				StringUtils.isEmpty(appointmentForm.getReference()) ? null : appointmentForm.getReference());
-		daoUtil.setBoolean(nIndex++, appointmentForm.getIsFormStep());
-		daoUtil.setBoolean(nIndex++, appointmentForm.getEnableConfirmEmail());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getEnableMandatoryEmail());
 		daoUtil.setBytes(nIndex++, appointmentForm.getIcon().getImage());
 		daoUtil.setString(nIndex++, appointmentForm.getIcon().getMimeType());
-		daoUtil.setInt(nIndex++, appointmentForm.getSeizureDuration());
-		daoUtil.setDate(nIndex++, appointmentForm.getDateLimit());
-		daoUtil.setInt(nIndex++, appointmentForm.getMaximumNumberOfBookedSeats());
+		daoUtil.setInt(nIndex++, appointmentForm.getMaxPeoplePerAppointment());
 
-		daoUtil.setString(nIndex++, appointmentForm.getAddress());
-		if (appointmentForm.getLongitude() != null) {
-			daoUtil.setDouble(nIndex++, appointmentForm.getLongitude());
-		} else {
-			daoUtil.setDoubleNull(nIndex++);
-		}
-		if (appointmentForm.getLatitude() != null) {
-			daoUtil.setDouble(nIndex++, appointmentForm.getLatitude());
-		} else {
-			daoUtil.setDoubleNull(nIndex++);
-		}
-
+		
 		daoUtil.setString(nIndex++, appointmentForm.getCategory());
 
 		daoUtil.executeUpdate();
@@ -207,44 +188,24 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO {
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenFriday());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenSaturday());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenSunday());
-		daoUtil.setDate(nIndex++, appointmentForm.getDateStartValidity());
-		daoUtil.setDate(nIndex++, appointmentForm.getDateEndValidity());
+		//daoUtil.setDate(nIndex++, appointmentForm.getDateStartValidity());
+		//daoUtil.setDate(nIndex++, appointmentForm.getDateEndValidity());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsActive());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getDisplayTitleFo());
 		daoUtil.setInt(nIndex++, appointmentForm.getNbWeeksToDisplay());
-		daoUtil.setInt(nIndex++, appointmentForm.getPeoplePerAppointment());
+		daoUtil.setInt(nIndex++, appointmentForm.getMaxCapacityPerSlot());
 		daoUtil.setInt(nIndex++, appointmentForm.getIdWorkflow());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getEnableCaptcha());
-		daoUtil.setBoolean(nIndex++, appointmentForm.getAllowUsersToCancelAppointments());
-		daoUtil.setInt(nIndex++, appointmentForm.getMinDaysBeforeAppointment());
 		daoUtil.setInt(nIndex++, appointmentForm.getCalendarTemplateId());
-		daoUtil.setInt(nIndex++, appointmentForm.getMaxAppointments());
-		daoUtil.setInt(nIndex++, appointmentForm.getWeeksLimits());
 		daoUtil.setString(nIndex++,
 				StringUtils.isEmpty(appointmentForm.getReference()) ? null : appointmentForm.getReference());
-		daoUtil.setBoolean(nIndex++, appointmentForm.getIsFormStep());
-		daoUtil.setBoolean(nIndex++, appointmentForm.getEnableConfirmEmail());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getEnableMandatoryEmail());
 		daoUtil.setBytes(nIndex++, appointmentForm.getIcon().getImage());
 		daoUtil.setString(nIndex++, appointmentForm.getIcon().getMimeType());
-		daoUtil.setInt(nIndex++, appointmentForm.getSeizureDuration());
-		daoUtil.setDate(nIndex++, appointmentForm.getDateLimit());
-		daoUtil.setInt(nIndex++, appointmentForm.getMaximumNumberOfBookedSeats());
+		daoUtil.setInt(nIndex++, appointmentForm.getMaxCapacityPerSlot());
 
-		daoUtil.setString(nIndex++, appointmentForm.getAddress());
-		if (appointmentForm.getLongitude() != null) {
-			daoUtil.setDouble(nIndex++, appointmentForm.getLongitude());
-		} else {
-			daoUtil.setDoubleNull(nIndex++);
-		}
-		if (appointmentForm.getLatitude() != null) {
-			daoUtil.setDouble(nIndex++, appointmentForm.getLatitude());
-		} else {
-			daoUtil.setDoubleNull(nIndex++);
-		}
 		daoUtil.setString(nIndex++, appointmentForm.getCategory());
-		daoUtil.setBoolean(nIndex++, appointmentForm.getIsActiveAuthentification());
-
+		
 		daoUtil.setInt(nIndex, appointmentForm.getIdForm());
 
 		daoUtil.executeUpdate();
@@ -312,41 +273,21 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO {
 		appointmentForm.setIsOpenFriday(daoUtil.getBoolean(nIndex++));
 		appointmentForm.setIsOpenSaturday(daoUtil.getBoolean(nIndex++));
 		appointmentForm.setIsOpenSunday(daoUtil.getBoolean(nIndex++));
-		appointmentForm.setDateStartValidity(daoUtil.getDate(nIndex++));
-		appointmentForm.setDateEndValidity(daoUtil.getDate(nIndex++));
 		appointmentForm.setIsActive(daoUtil.getBoolean(nIndex++));
 		appointmentForm.setDisplayTitleFo(daoUtil.getBoolean(nIndex++));
 		appointmentForm.setNbWeeksToDisplay(daoUtil.getInt(nIndex++));
-		appointmentForm.setPeoplePerAppointment(daoUtil.getInt(nIndex++));
+		appointmentForm.setMaxCapacityPerSlot(daoUtil.getInt(nIndex++));
 		appointmentForm.setIdWorkflow(daoUtil.getInt(nIndex++));
 		appointmentForm.setEnableCaptcha(daoUtil.getBoolean(nIndex++));
-		appointmentForm.setAllowUsersToCancelAppointments(daoUtil.getBoolean(nIndex++));
-		appointmentForm.setMinDaysBeforeAppointment(daoUtil.getInt(nIndex++));
 		appointmentForm.setCalendarTemplateId(daoUtil.getInt(nIndex++));
-		appointmentForm.setMaxAppointmentMail(daoUtil.getInt(nIndex++));
-		appointmentForm.setNbWeeksLimits(daoUtil.getInt(nIndex++));
 		appointmentForm.setReference(daoUtil.getString(nIndex++));
-		appointmentForm.setIsFormStep(daoUtil.getBoolean(nIndex++));
-		appointmentForm.setEnableConfirmEmail(daoUtil.getBoolean(nIndex++));
 		appointmentForm.setEnableMandatoryEmail(daoUtil.getBoolean(nIndex++));
 		img.setImage(daoUtil.getBytes(nIndex++));
 		img.setMimeType(daoUtil.getString(nIndex++));
 		appointmentForm.setIcon(img);
-		appointmentForm.setSeizureDuration(daoUtil.getInt(nIndex++));
-		appointmentForm.setDateLimit(daoUtil.getDate(nIndex++));
-		appointmentForm.setMaximumNumberOfBookedSeats(daoUtil.getInt(nIndex++));
+		appointmentForm.setMaxPeoplePerAppointment(daoUtil.getInt(nIndex++));
 
-		appointmentForm.setAddress(daoUtil.getString(nIndex++));
-		Float fLongitude = ((Float) daoUtil.getObject(nIndex++));
-		if (fLongitude != null) {
-			appointmentForm.setLongitude(fLongitude.doubleValue());
-		}
-		Float fLatitude = ((Float) daoUtil.getObject(nIndex++));
-		if (fLatitude != null) {
-			appointmentForm.setLatitude(fLatitude.doubleValue());
-		}
 		appointmentForm.setCategory(daoUtil.getString(nIndex++));
-		appointmentForm.setIsActiveAuthentification(daoUtil.getBoolean(nIndex++));
 		return appointmentForm;
 	}
 

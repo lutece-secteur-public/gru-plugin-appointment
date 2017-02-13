@@ -19,10 +19,10 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_user = ?, id_slot = ? WHERE id_appointment = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
 	private static final String SQL_QUER_SELECT_COLUMNS = "SELECT id_appointment, id_user, id_slot FROM appointment_appointment";
-	private static final String SQL_QUERY_SELECT =  SQL_QUER_SELECT_COLUMNS + " WHERE id_appointment = ?";
+	private static final String SQL_QUERY_SELECT = SQL_QUER_SELECT_COLUMNS + " WHERE id_appointment = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUER_SELECT_COLUMNS + " WHERE id_user = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUER_SELECT_COLUMNS + " WHERE id_slot = ?";
-	
+
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -78,8 +78,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 			}
 		}
 		return appointment;
-	}	
-	
+	}
 
 	@Override
 	public List<Appointment> findByIdUser(int nIdUser, Plugin plugin) {
@@ -99,7 +98,6 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		}
 		return listAppointment;
 	}
-	
 
 	@Override
 	public List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin) {
@@ -119,7 +117,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		}
 		return listAppointment;
 	}
-	
+
 	/**
 	 * Build an Appointment business object from the resultset
 	 * 

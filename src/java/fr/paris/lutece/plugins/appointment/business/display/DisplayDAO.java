@@ -17,7 +17,7 @@ public class DisplayDAO implements IDisplayDAO {
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, id_calendar_template = ?, id_form = ? WHERE id_display = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_display WHERE id_display = ?";
 	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, id_calendar_template, id_form FROM appointment_display";
-	private static final String SQL_QUERY_SELECT =  SQL_QUERY_SELECT_COLUMNS + " WHERE id_display = ?";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_display = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
 	@Override
@@ -77,7 +77,6 @@ public class DisplayDAO implements IDisplayDAO {
 		return display;
 	}
 
-
 	@Override
 	public Display findByIdForm(int nIdForm, Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -96,7 +95,7 @@ public class DisplayDAO implements IDisplayDAO {
 		}
 		return display;
 	}
-	
+
 	/**
 	 * Build a Display business object from the resultset
 	 * 
@@ -148,7 +147,7 @@ public class DisplayDAO implements IDisplayDAO {
 		}
 		return daoUtil;
 	}
-	
+
 	/**
 	 * Execute a safe update (Free the connection in case of error when execute
 	 * the query)
