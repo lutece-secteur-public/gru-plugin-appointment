@@ -50,6 +50,10 @@ public class FormMessageService {
 		return _instance;
 	}
 	
+	/**
+	 * 
+	 * @param nIdForm
+	 */
 	public static void createFormMessageWithDefaultValues(int nIdForm) {
 		FormMessage formMessage = getDefaultAppointmentFormMessage();
 		formMessage.setIdForm(nIdForm);

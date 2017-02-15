@@ -16,7 +16,7 @@ public class WorkingDayService {
 	 * Name of the bean of the service
 	 */
 	public static final String BEAN_NAME = "appointment.workingDayService";
-	
+
 	/**
 	 * Instance of the service
 	 */
@@ -34,7 +34,13 @@ public class WorkingDayService {
 
 		return _instance;
 	}
-	
+
+	/**
+	 * 
+	 * @param nIdWeekDefinition
+	 * @param dayOfWeek
+	 * @return
+	 */
 	public static WorkingDay generateWorkingDay(int nIdWeekDefinition, DayOfWeek dayOfWeek) {
 		WorkingDay workingDay = new WorkingDay();
 		workingDay.setIdWeekDefinition(nIdWeekDefinition);
@@ -42,14 +48,27 @@ public class WorkingDayService {
 		WorkingDayHome.create(workingDay);
 		return workingDay;
 	}
-	
-	public static WorkingDay generateWorkingDayAndListTimeSlot(int nIdWeekDefinition, DayOfWeek dayOfWeek, LocalTime startingHour,
-			LocalTime endingHour, int nDuration) {
+
+	/**
+	 * 
+	 * @param nIdWeekDefinition
+	 * @param dayOfWeek
+	 * @param startingHour
+	 * @param endingHour
+	 * @param nDuration
+	 */
+	public static void generateWorkingDayAndListTimeSlot(int nIdWeekDefinition, DayOfWeek dayOfWeek,
+			LocalTime startingHour, LocalTime endingHour, int nDuration) {
 		WorkingDay workingDay = generateWorkingDay(nIdWeekDefinition, dayOfWeek);
-		workingDay.setListTimeSlot(TimeSlotService.generateListTimeSlot(workingDay.getIdWorkingDay(), startingHour, endingHour, nDuration));
-		return workingDay;
+		TimeSlotService.generateListTimeSlot(workingDay.getIdWorkingDay(), startingHour,
+				endingHour, nDuration);		
 	}
-	
+
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @return
+	 */
 	public static List<DayOfWeek> getOpenDays(AppointmentForm appointmentForm) {
 		List<DayOfWeek> openDays = new ArrayList<>();
 		if (appointmentForm.getIsOpenMonday()) {
@@ -75,13 +94,28 @@ public class WorkingDayService {
 		}
 		return openDays;
 	}
-	
-	public static List<WorkingDay> findListWorkingDayByWeekDefinition(int nIdWeekDefinition){
+
+	/**
+	 * 
+	 * @param nIdWeekDefinition
+	 * @return
+	 */
+	public static List<WorkingDay> findListWorkingDayByWeekDefinition(int nIdWeekDefinition) {
 		List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdWeekDefinition(nIdWeekDefinition);
-		for (WorkingDay workingDay : listWorkingDay){
+		for (WorkingDay workingDay : listWorkingDay) {
 			workingDay.setListTimeSlot(TimeSlotService.findListTimeSlotByWorkingDay(workingDay.getIdWorkingDay()));
 		}
 		return listWorkingDay;
 	}
-	
+
+	/**
+	 * l
+	 * @param listWorkingDay
+	 */
+	public static void deleteListWorkingDay(List<WorkingDay> listWorkingDay) {
+		for (WorkingDay workingDay : listWorkingDay) {
+			WorkingDayHome.delete(workingDay.getIdWorkingDay());
+		}
+	}
+
 }

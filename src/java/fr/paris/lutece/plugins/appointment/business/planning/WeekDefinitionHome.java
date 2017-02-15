@@ -100,4 +100,16 @@ public class WeekDefinitionHome {
 		return _dao.findByIdFormAndDateOfApply(nIdForm, dateOfApply, _plugin);
 	}
 
+	/**
+	 * Get week definition for the form id and closest to the date of apply given
+	 * 
+	 * @param nIdForm
+	 *            the Form Id
+	 * @param dateOfApply the date of apply           
+	 * @return the week definition
+	 */
+	public static WeekDefinition findByIdFormAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply) {
+		return _dao.findByIdFormAndClosestToDateOfApply(nIdForm, dateOfApply, _plugin);
+	}
+	
 }

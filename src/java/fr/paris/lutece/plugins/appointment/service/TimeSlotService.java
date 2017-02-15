@@ -34,6 +34,14 @@ public class TimeSlotService {
 		return _instance;
 	}
 	
+	/**
+	 * 
+	 * @param nIdWorkingDay
+	 * @param startingHour
+	 * @param endingHour
+	 * @param nDuration
+	 * @return
+	 */
 	public static List<TimeSlot> generateListTimeSlot(int nIdWorkingDay, LocalTime startingHour, LocalTime endingHour,
 			int nDuration) {
 		List<TimeSlot> listTimeSlot = new ArrayList<>();
@@ -47,6 +55,14 @@ public class TimeSlotService {
 		return listTimeSlot;
 	}
 	
+	/**
+	 * 
+	 * @param nIdWorkingDay
+	 * @param startingHour
+	 * @param endingHour
+	 * @param isOpen
+	 * @return
+	 */
 	public static TimeSlot generateTimeSlot(int nIdWorkingDay, LocalTime startingHour, LocalTime endingHour,
 			boolean isOpen) {
 		TimeSlot timeSlot = new TimeSlot();
@@ -58,6 +74,11 @@ public class TimeSlotService {
 		return timeSlot;
 	}
 	
+	/**
+	 * 
+	 * @param nIdWorkingDay
+	 * @return
+	 */
 	public static List<TimeSlot> findListTimeSlotByWorkingDay(int nIdWorkingDay) {		
 		return TimeSlotHome.findByIdWorkingDay(nIdWorkingDay);		
 	}

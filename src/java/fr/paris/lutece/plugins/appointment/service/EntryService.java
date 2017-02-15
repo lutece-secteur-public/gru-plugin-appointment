@@ -36,13 +36,16 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.RemovalListenerService;
+import fr.paris.lutece.util.ReferenceList;
 
 /**
  * Service to manage entries
@@ -54,6 +57,11 @@ public class EntryService extends RemovalListenerService implements Serializable
 	public static final String BEAN_NAME = "appointment.entryService";
 	private static final long serialVersionUID = -5378918040356139703L;
 
+	private static final String MARK_ENTRY_LIST = "entry_list";
+	private static final String MARK_ENTRY_TYPE_LIST = "entry_type_list";
+	private static final String MARK_GROUP_ENTRY_LIST = "entry_group_list";
+	private static final String MARK_LIST_ORDER_FIRST_LEVEL = "listOrderFirstLevel";
+	
 	/**
 	 * Get an instance of the service
 	 * 
@@ -306,4 +314,54 @@ public class EntryService extends RemovalListenerService implements Serializable
 			EntryHome.remove(entry.getIdEntry());
 		}
 	}
+
+	public static void addListEntryToModel(int nIdForm, Map<String, Object> model){
+		EntryFilter entryFilter = new EntryFilter();
+		entryFilter.setIdResource(nIdForm);
+		entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+		entryFilter.setEntryParentNull(EntryFilter.FILTER_TRUE);
+		entryFilter.setFieldDependNull(EntryFilter.FILTER_TRUE);
+		List<Entry> listEntryFirstLevel = EntryHome.getEntryList(entryFilter);
+		List<Entry> listEntry = new ArrayList<Entry>(listEntryFirstLevel.size());
+		List<Integer> listOrderFirstLevel = new ArrayList<Integer>(listEntryFirstLevel.size());
+		for (Entry entry : listEntryFirstLevel) {
+			listEntry.add(entry);
+			listOrderFirstLevel.add(listEntry.size());
+			if (entry.getEntryType().getGroup()) {
+				entryFilter = new EntryFilter();
+				entryFilter.setIdResource(nIdForm);
+				entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+				entryFilter.setFieldDependNull(EntryFilter.FILTER_TRUE);
+				entryFilter.setIdEntryParent(entry.getIdEntry());
+				List<Entry> listEntryGroup = EntryHome.getEntryList(entryFilter);
+				entry.setChildren(listEntryGroup);
+				listEntry.addAll(listEntryGroup);
+			}
+		}
+		model.put(MARK_GROUP_ENTRY_LIST, getRefListGroups(nIdForm));
+		model.put(MARK_ENTRY_TYPE_LIST, EntryTypeService.getInstance().getEntryTypeReferenceList());
+		model.put(MARK_ENTRY_LIST, listEntry);
+		model.put(MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel);
+	}
+	
+	/**
+	 * Get the reference list of groups
+	 * 
+	 * @param nIdForm
+	 *            the id of the appointment form
+	 * @return The reference list of groups of the given form
+	 */
+	private static ReferenceList getRefListGroups(int nIdForm) {
+		EntryFilter entryFilter = new EntryFilter();
+		entryFilter.setIdResource(nIdForm);
+		entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+		entryFilter.setIdIsGroup(1);
+		List<Entry> listEntry = EntryHome.getEntryList(entryFilter);
+		ReferenceList refListGroups = new ReferenceList();
+		for (Entry entry : listEntry) {
+			refListGroups.addItem(entry.getIdEntry(), entry.getTitle());
+		}
+		return refListGroups;
+	}
+	
 }

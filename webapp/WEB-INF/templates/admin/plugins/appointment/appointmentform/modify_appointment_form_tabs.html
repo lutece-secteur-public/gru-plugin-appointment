@@ -1,12 +1,23 @@
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <link href="css/datepicker.css" rel="stylesheet">
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
 <#macro tabs tab appointmentform > 
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
+		<div class="box box-primary">			
+			<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormsAdvanced.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}&forceReload=true">
+					<#if listDateOfModification??>					
+						<@fieldInputCombo i18nLabelKey='appointment.modify_appointmentform.listDateOfModification' inputName='idReservationRule' items=listDateOfModification value="${appointmentform.idReservationRule!}" cssClass="form-control" />
+					</#if>	
+					<div align="center">
+						<button type="submit" class="btn btn-primary">#i18n{appointment.modify_appointmentform.refresh}</button>
+					</div>
+			</form>
+			<div class="box-header with-border">										
 				<h3 class="box-title">
 					#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}
 				</h3>
@@ -17,12 +28,30 @@
 	        			<legend class="hidden">&nbsp;&nbsp;&nbsp;&nbsp;#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}</legend>
 	            		<@messages errors=errors />
 	            		<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-	            		<input type="hidden" id="formName" name="formName" value="first_form"/>	            
-						<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeStart' inputName='time_start' mandatory=true value=appointmentform.timeStart!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeStart.help' />
-						<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTimeEnd' inputName='time_end' mandatory=true value=appointmentform.timeEnd!'' maxlength=5 i18nHelpBlockKey='appointment.create_appointmentform.labelTimeEnd.help' />
+	            		<input type="hidden" id="formName" name="formName" value="first_form"/>	    						
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_start">#i18n{appointment.create_appointmentform.labelTimeStart}&nbsp;*&nbsp;:</label>
+							<div id="time_start" class="col-xs-12 col-sm-9 col-md-9 input-append">
+								<input id="time_start" name="time_start" data-format="hh:mm" type="text" value="${appointmentform.timeStart!''}"></input>
+								<span class="add-on">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+									</i>
+								</span>
+								<p class="help-block">#i18n{appointment.create_appointmentform.labelTimeStart.help}</p>
+							</div>
+						</div>					
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.create_appointmentform.labelTimeEnd}&nbsp;*&nbsp;:</label>
+							<div id="time_end" class="col-xs-12 col-sm-9 col-md-9 input-append">
+								<input id="time_end" name="time_end" data-format="hh:mm" type="text" value="${appointmentform.timeEnd!''}"></input>
+								<span id="timeend" class="add-on">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+									</i>
+								</span>
+								<p class="help-block">#i18n{appointment.create_appointmentform.labelTimeEnd.help}</p>
+							</div>
+						</div>		
 						<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelDurationAppointments' inputName='duration_appointments' mandatory=true value=appointmentform.durationAppointments!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDurationAppointments.help'   maxlength=3  />
-						<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='form-control input-sm' />
-						<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='form-control input-sm' />
 						<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelMaxCapacityPerSlot' inputName='max_capacity_per_slot' mandatory=true value=appointmentform.maxCapacityPerSlot!'' i18nHelpBlockKey='appointment.create_appointmentform.labelMaxCapacityPerSlot.help' maxlength=5 />
 						<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelMaxPeoplePerAppointment' inputName='max_people_per_appointment' mandatory=true value=appointmentform.maxPeoplePerAppointment!'' i18nHelpBlockKey='appointment.create_appointmentform.labelMaxPeoplePerAppointment.help' maxlength=3 />
 					</fieldset>
@@ -34,25 +63,11 @@
 						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenThursday' inputName='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
 						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenFriday' inputName='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
 						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSaturday' inputName='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
-						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />			
-						<#if listWorkflows??>
-							<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
-						</#if>
+						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsOpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />									
 					</fieldset>	
 					<fieldset>
 						<legend> &nbsp;&nbsp;#i18n{appointment.modify_appointmentForm.startEditForm} </legend>			
-						<div class="form-group ">
-							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="dateMin">#i18n{appointment.modify_appointmentForm.startDate}&nbsp;&nbsp; *:</label>
-							<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
-								<div class="input-group">
-									<div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
-									<input class="form-control input-sm" id="dateMin" name="dateMin" type="text" placeholder="Choisir une date" />
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-offset-3 col-sm-9 col-md-offset-3 col-md-9 col-lg-offset-3 col-lg-9">
-								<p class="help-block"> #i18n{appointment.modify_appointmentForm.helpDateMin}</p>
-							</div>
-						</div>				
+						<@fieldInputCalendar i18nLabelKey='appointment.modify_appointmentForm.startDate' inputName='date_of_modification' mandatory=true value=appointmentform.dateOfModification!'' i18nHelpBlockKey='appointment.modify_appointmentForm.helpDateMin' cssClass='form-control input-sm' />
 				 		<div class="form-group">
 							<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
 								<button name="action_modifyAppointmentForm" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
@@ -70,30 +85,22 @@
     </div>
 </div>
 <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
-<@getDatePickerBootstrap idField="date_start_validity" language=language />
-<@getDatePickerBootstrap idField="date_end_validity"   language=language />
-<script type="text/javascript">
-	$('#date_start_validity').datepicker({
-    	language:		"${language}",
-    	weekStart: 1,
-    	todayBtn: true,
-    	todayHighLight: true,
-    	autoclose: true
-	});
-	$('#date_end_validity').datepicker({
-	    language:		"${language}",
-	    weekStart: 1,
-	    todayBtn: true,
-	    todayHighLight: true,
-	    autoclose: true
-	});
-	$('#dateMin').datepicker({
+<script type="text/javascript">	
+	$('#date_of_modification').datepicker({
 	    language:		"${language}",
 	    startDate: 		new Date(),
 	    weekStart: 1,
 	    todayBtn: true,
 	    todayHighLight: true,
 	    autoclose: true
+	});
+	$('#time_start').datetimepicker({
+	      pickDate: false,
+		  pickSeconds: false
+	});
+	$('#time_end').datetimepicker({
+		pickDate: false,
+	  	pickSeconds: false
 	});
 </script>
 </#macro> 

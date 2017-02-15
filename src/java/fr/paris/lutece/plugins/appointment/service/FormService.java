@@ -13,6 +13,8 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
@@ -44,27 +46,78 @@ public class FormService {
 		return _instance;
 	}
 
-	public static void createForm(AppointmentForm appointmentForm) {
-		Form form = FormService.generateForm(appointmentForm);
+	/**
+	 * 
+	 * @param nIdForm
+	 * @param newNameForCopy
+	 */
+	public static void copyForm(int nIdForm, String newNameForCopy) {
+		AppointmentForm appointmentForm = buildAppointmentForm(nIdForm, 0);
+		appointmentForm.setTitle(newNameForCopy);
+		appointmentForm.setIsActive(Boolean.FALSE);
+		int nIdNewForm = createAppointmentForm(appointmentForm);		
+		FormMessage formMessage = FormMessageHome.findByPrimaryKey(nIdForm);
+		formMessage.setIdForm(nIdNewForm);
+		FormMessageHome.create(formMessage);
+	}
+	
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @return
+	 */
+	public static int createAppointmentForm(AppointmentForm appointmentForm) {
+		Form form = FormService.createForm(appointmentForm);
 		int nIdForm = form.getIdForm();
 		FormMessageService.createFormMessageWithDefaultValues(nIdForm);
 		LocalDate dateNow = LocalDate.now();
-		DisplayService.generateDisplay(appointmentForm, nIdForm);
-		FormRuleService.generateFormRule(appointmentForm, nIdForm);
-		ReservationRuleService.generateReservationRule(appointmentForm, nIdForm, dateNow);
-		WeekDefinition weekDefinition = WeekDefinitionService.generateWeekDefinition(nIdForm, dateNow);
+		DisplayService.createDisplay(appointmentForm, nIdForm);
+		FormRuleService.createFormRule(appointmentForm, nIdForm);
+		ReservationRuleService.createReservationRule(appointmentForm, nIdForm, dateNow);
+		WeekDefinition weekDefinition = WeekDefinitionService.createWeekDefinition(nIdForm, dateNow);
 		int nIdWeekDefinition = weekDefinition.getIdWeekDefinition();
 		LocalTime startingHour = LocalTime.parse(appointmentForm.getTimeStart());
 		LocalTime endingHour = LocalTime.parse(appointmentForm.getTimeEnd());
-		int nDuration = appointmentForm.getDurationAppointments();
-		List<WorkingDay> listWorkingDay = new ArrayList<>();
+		int nDuration = appointmentForm.getDurationAppointments();		
 		for (DayOfWeek dayOfWeek : WorkingDayService.getOpenDays(appointmentForm)) {
-			listWorkingDay.add(WorkingDayService.generateWorkingDayAndListTimeSlot(nIdWeekDefinition, dayOfWeek,
-					startingHour, endingHour, nDuration));
-		}
-		weekDefinition.setListWorkingDay(listWorkingDay);
+			WorkingDayService.generateWorkingDayAndListTimeSlot(nIdWeekDefinition, dayOfWeek,
+					startingHour, endingHour, nDuration);
+		}	
+		return nIdForm;
 	}
 
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @param dateOfModification
+	 */
+	public static void updateAppointmentForm(AppointmentForm appointmentForm, LocalDate dateOfModification) {
+		Form form = FormService.updateForm(appointmentForm);
+		int nIdForm = form.getIdForm();
+		DisplayService.updateDisplay(appointmentForm, nIdForm);
+		FormRuleService.updateFormRule(appointmentForm, nIdForm);
+		if (dateOfModification != null) {
+			ReservationRuleService.updateReservationRule(appointmentForm, nIdForm, dateOfModification);
+			WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition(nIdForm, dateOfModification);
+			int nIdWeekDefinition = weekDefinition.getIdWeekDefinition();
+			List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition(nIdWeekDefinition);
+			if (listWorkingDay != null && !listWorkingDay.isEmpty()){
+				WorkingDayService.deleteListWorkingDay(listWorkingDay);
+			}
+			LocalTime startingHour = LocalTime.parse(appointmentForm.getTimeStart());
+			LocalTime endingHour = LocalTime.parse(appointmentForm.getTimeEnd());
+			int nDuration = appointmentForm.getDurationAppointments();			
+			for (DayOfWeek dayOfWeek : WorkingDayService.getOpenDays(appointmentForm)) {
+				WorkingDayService.generateWorkingDayAndListTimeSlot(nIdWeekDefinition, dayOfWeek,
+						startingHour, endingHour, nDuration);
+			}			
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
 	public static List<AppointmentForm> buildAllAppointmentFormLight() {
 		List<AppointmentForm> listAppointmentFormLight = new ArrayList<>();
 		for (Form form : FormService.findAllForms()) {
@@ -73,6 +126,11 @@ public class FormService {
 		return listAppointmentFormLight;
 	}
 
+	/**
+	 * 
+	 * @param form
+	 * @return
+	 */
 	private static AppointmentForm buildAppointmentFormLight(Form form) {
 		AppointmentForm appointmentForm = new AppointmentForm();
 		appointmentForm.setIdForm(form.getIdForm());
@@ -81,7 +139,13 @@ public class FormService {
 		return appointmentForm;
 	}
 
-	public static AppointmentForm buildAppointmentForm(int nIdForm) {
+	/**
+	 * 
+	 * @param nIdForm
+	 * @param nIdReservationRule
+	 * @return
+	 */
+	public static AppointmentForm buildAppointmentForm(int nIdForm, int nIdReservationRule) {
 		AppointmentForm appointmentForm = new AppointmentForm();
 		Form form = FormService.findFormByPrimaryKey(nIdForm);
 		if (form != null) {
@@ -94,16 +158,21 @@ public class FormService {
 			if (formRule != null) {
 				fillAppointmentFormWithFormRulePart(appointmentForm, formRule);
 			}
-
-			LocalDate dateNow = LocalDate.now();
-			ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm,
-					dateNow);
+			ReservationRule reservationRule;
+			LocalDate dateOfApply = LocalDate.now();
+			if (nIdReservationRule > 0) {
+				reservationRule = ReservationRuleService.findReservationRuleById(nIdReservationRule);
+				dateOfApply = reservationRule.getDateOfApply();
+			} else {				
+				reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm,
+						dateOfApply);
+			}
 			if (reservationRule != null) {
 				fillAppointmentFormWithReservationRulePart(appointmentForm, reservationRule);
 			}
 
-			WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndDateOfApply(nIdForm,
-					dateNow);
+			WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm,
+					dateOfApply);
 			if (weekDefinition != null) {
 				fillAppointmentFormWithWeekDefinitionPart(appointmentForm, weekDefinition);
 			}
@@ -111,6 +180,11 @@ public class FormService {
 		return appointmentForm;
 	}
 
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @param weekDefinition
+	 */
 	private static void fillAppointmentFormWithWeekDefinitionPart(AppointmentForm appointmentForm,
 			WeekDefinition weekDefinition) {
 		for (WorkingDay workingDay : weekDefinition.getListWorkingDay()) {
@@ -170,24 +244,40 @@ public class FormService {
 						}
 					}
 				}
-			}			
+			}
 		}
 		appointmentForm.setTimeStart(minStartingTime.toString());
 		appointmentForm.setTimeEnd(maxEndingTime.toString());
-		appointmentForm.setDurationAppointments(toIntExact(lDurationAppointment));	
+		appointmentForm.setDurationAppointments(toIntExact(lDurationAppointment));
 	}
 
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @param reservationRule
+	 */
 	private static void fillAppointmentFormWithReservationRulePart(AppointmentForm appointmentForm,
 			ReservationRule reservationRule) {
+		appointmentForm.setIdReservationRule(reservationRule.getIdReservationRule());
 		appointmentForm.setMaxCapacityPerSlot(reservationRule.getMaxCapacityPerSlot());
 		appointmentForm.setMaxPeoplePerAppointment(reservationRule.getMaxPeoplePerAppointment());
 	}
 
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @param formRule
+	 */
 	private static void fillAppointmentFormWithFormRulePart(AppointmentForm appointmentForm, FormRule formRule) {
 		appointmentForm.setEnableCaptcha(formRule.isCaptchaEnabled());
 		appointmentForm.setEnableMandatoryEmail(formRule.isMandatoryEmailEnabled());
 	}
 
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @param form
+	 */
 	private static void fillAppointmentFormWithFormPart(AppointmentForm appointmentForm, Form form) {
 		appointmentForm.setIdForm(form.getIdForm());
 		appointmentForm.setTitle(form.getTitle());
@@ -196,10 +286,15 @@ public class FormService {
 		appointmentForm.setCategory(form.getCategory());
 		appointmentForm.setDateStartValidity(form.getStartingValiditySqlDate());
 		appointmentForm.setDateEndValidity(form.getEndingValiditySqlDate());
-		appointmentForm.setIdWorkflow(form.getIdWorkflow());
+		appointmentForm.setIdWorkflow(form.getIdWorkflow());		
 		appointmentForm.setIsActive(form.isActive());
 	}
 
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @param display
+	 */
 	private static void fillAppointmentFormWithDisplayPart(AppointmentForm appointmentForm, Display display) {
 		appointmentForm.setDisplayTitleFo(display.isDisplayTitleFo());
 		appointmentForm.setIcon(display.getIcon());
@@ -207,8 +302,37 @@ public class FormService {
 		appointmentForm.setCalendarTemplateId(display.getIdCalendarTemplate());
 	}
 
-	public static Form generateForm(AppointmentForm appointmentForm) {
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @return
+	 */
+	public static Form createForm(AppointmentForm appointmentForm) {
 		Form form = new Form();
+		form = fillInFormWithAppointmentForm(form, appointmentForm);
+		FormHome.create(form);
+		return form;
+	}
+
+	/**
+	 * 
+	 * @param appointmentForm
+	 * @return
+	 */
+	public static Form updateForm(AppointmentForm appointmentForm) {
+		Form form = FormService.findFormByPrimaryKey(appointmentForm.getIdForm());
+		form = fillInFormWithAppointmentForm(form, appointmentForm);
+		FormHome.update(form);
+		return form;
+	}
+
+	/**
+	 * 
+	 * @param form
+	 * @param appointmentForm
+	 * @return
+	 */
+	public static Form fillInFormWithAppointmentForm(Form form, AppointmentForm appointmentForm) {
 		form.setTitle(appointmentForm.getTitle());
 		form.setDescription(appointmentForm.getDescription());
 		form.setReference(appointmentForm.getReference());
@@ -217,18 +341,30 @@ public class FormService {
 		form.setEndingValiditySqlDate(appointmentForm.getDateEndValidity());
 		form.setIsActive(appointmentForm.getIsActive());
 		form.setIdWorkflow(appointmentForm.getIdWorkflow());
-		FormHome.create(form);
 		return form;
 	}
 
+	/**
+	 * 
+	 * @param nIdForm
+	 */
 	public static void removeForm(int nIdForm) {
 		FormHome.delete(nIdForm);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static List<Form> findAllForms() {
 		return FormHome.findAllForms();
 	}
 
+	/**
+	 * 
+	 * @param nIdForm
+	 * @return
+	 */
 	public static Form findFormByPrimaryKey(int nIdForm) {
 		return FormHome.findByPrimaryKey(nIdForm);
 	}

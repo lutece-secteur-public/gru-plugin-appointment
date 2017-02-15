@@ -122,7 +122,7 @@ public class ReservationRuleTest extends LuteceTestCase {
 		ReservationRuleHome.create(reservationRule1);
 		// Find the ReservationRule created in database
 		ReservationRule reservationRuleStored = ReservationRuleHome
-				.findByIdFormAndDateOfApply(form.getIdForm(), DATE_OF_APPLY_1);
+				.findByIdFormAndClosestToDateOfApply(form.getIdForm(), DATE_OF_APPLY_1);
 		// Check Asserts		
 		checkAsserts(reservationRuleStored, reservationRule1);
 		// Clean
