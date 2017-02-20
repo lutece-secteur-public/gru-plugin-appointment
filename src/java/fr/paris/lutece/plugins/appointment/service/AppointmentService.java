@@ -648,10 +648,21 @@ public class AppointmentService
     public List<AppointmentDay> getAllAvailableDays( AppointmentForm form )
     {
         // Date date = getDateLastMonday( );
-        Date date = new Date( System.currentTimeMillis( ) );
-        Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE );
+        // Date date = new Date( System.currentTimeMillis( ) );
+       /*  Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE );
         calendarFrom.setTime( date );
-        calendarFrom.add( Calendar.DAY_OF_MONTH, form.getMinDaysBeforeAppointment( ) );
+        calendarFrom.add( Calendar.HOUR, form.getMinDaysBeforeAppointment( ) );
+       */ 
+       /* Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE );
+        List<AppointmentDay> listDays = getListDays( form, new MutableInt( 0 ), calendarFrom );
+        calendarFrom = calculateNextSlotOpen( listDays, form, new MutableInt( 0 ) );
+        calendarFrom.add( Calendar.HOUR, form.getMinDaysBeforeAppointment( ) );*/
+         Date DateForm= new Date( System.currentTimeMillis( ) );
+         
+         List<AppointmentDay> listeDay=getDayListForCalendar( form, new MutableInt( 0 ), true, false );
+         if(listeDay != null && listeDay.size() > 0){
+        	 DateForm= listeDay.get(0).getDate();
+         }
 
         Calendar calendarTo = GregorianCalendar.getInstance( Locale.FRANCE );
         calendarTo.setTime( getDateLastMonday( ) );
@@ -659,7 +670,7 @@ public class AppointmentService
         // We remove the last monday
         calendarTo.add( Calendar.DAY_OF_MONTH, -1 );
 
-        return AppointmentDayHome.getDaysBetween( form.getIdForm( ), new Date( calendarFrom.getTimeInMillis( ) ), new Date( calendarTo.getTimeInMillis( ) ) );
+        return AppointmentDayHome.getDaysBetween( form.getIdForm( ), DateForm, new Date( calendarTo.getTimeInMillis( ) ) );
     }
 
     /**
