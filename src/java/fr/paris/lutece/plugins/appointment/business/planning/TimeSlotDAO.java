@@ -15,10 +15,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class TimeSlotDAO implements ITimeSlotDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_time_slot) FROM appointment_time_slot";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot (id_time_slot, starting_hour, ending_hour, is_open, id_working_day) VALUES (?, ?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_time_slot SET starting_hour = ?, ending_hour = ?, is_open = ?, id_working_day = ? WHERE id_time_slot = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot (id_time_slot, starting_time, ending_time, is_open, max_capacity, id_working_day) VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_time_slot SET starting_time = ?, ending_time = ?, is_open = ?, max_capacity = ?, id_working_day = ? WHERE id_time_slot = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_time_slot WHERE id_time_slot = ?";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_time_slot, starting_hour, ending_hour, is_open, id_working_day FROM appointment_time_slot";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_time_slot, starting_time, ending_time, is_open, max_capacity, id_working_day FROM appointment_time_slot";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_time_slot = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS
 			+ " WHERE id_working_day = ?";
@@ -110,9 +110,10 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 		int nIndex = 1;
 		TimeSlot timeSlot = new TimeSlot();
 		timeSlot.setIdTimeSlot(daoUtil.getInt(nIndex++));
-		timeSlot.setStartingHour(daoUtil.getTime(nIndex++));
-		timeSlot.setEndingHour(daoUtil.getTime(nIndex++));
+		timeSlot.setStartingTime(daoUtil.getTime(nIndex++));
+		timeSlot.setEndingTime(daoUtil.getTime(nIndex++));
 		timeSlot.setIsOpen(daoUtil.getBoolean(nIndex++));
+		timeSlot.setMaxCapacity(daoUtil.getInt(nIndex++));
 		timeSlot.setIdWorkingDay(daoUtil.getInt(nIndex));
 		return timeSlot;
 	}
@@ -138,9 +139,10 @@ public class TimeSlotDAO implements ITimeSlotDAO {
 		if (isInsert) {
 			daoUtil.setInt(nIndex++, timeSlot.getIdTimeSlot());
 		}
-		daoUtil.setTime(nIndex++, timeSlot.getStartingHourSqlTime());
-		daoUtil.setTime(nIndex++, timeSlot.getEndingHourSqlTime());
-		daoUtil.setBoolean(nIndex++, timeSlot.isOpen());
+		daoUtil.setTime(nIndex++, timeSlot.getStartingTimeSqlTime());
+		daoUtil.setTime(nIndex++, timeSlot.getEndingTimeSqlTime());
+		daoUtil.setBoolean(nIndex++, timeSlot.getIsOpen());
+		daoUtil.setInt(nIndex++, timeSlot.getMaxCapacity());
 		daoUtil.setInt(nIndex++, timeSlot.getIdWorkingDay());
 		if (!isInsert) {
 			daoUtil.setInt(nIndex, timeSlot.getIdTimeSlot());

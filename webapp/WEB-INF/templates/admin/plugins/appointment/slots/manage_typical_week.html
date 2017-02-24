@@ -1,0 +1,95 @@
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.css' />
+<script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/locale-all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.css" />
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    	<@tabs tab="typicalWeek" appointmentform=appointmentform />
+		<div class="tab-content">
+		<fieldset>
+			<legend>#i18n{appointment.typicalWeek.pageTitle}</legend>
+			<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&forceReload=true">
+				<#if listDateOfModification??>					
+					<@fieldInputCombo i18nLabelKey='appointment.modify_appointmentform.listDateOfModification' inputName='id_reservation_rule' items=listDateOfModification value="${id_reservation_rule!}" cssClass="form-control" />
+				</#if>	
+				<div align="center">
+					<button type="submit" class="btn btn-primary">#i18n{appointment.modify_appointmentform.refresh}</button>
+				</div>
+			</form>
+			
+			<hr color="black">
+			<div id="calendar"></div>	
+		</fieldset>				
+	</div>
+</div>
+<script type="text/javascript">	
+	var slotDuration = '${min_duration}';
+    var minTime = '${min_time}';
+    var maxTime = '${max_time}';
+    var dow = [
+		<#if dow??>								   
+			<#list dow as day>
+				'${day}',								
+			</#list>
+		</#if>				
+	];    
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_form=${id_form}&id_week_definition=${id_week_definition}&id_time_slot=';
+    var dateUrl = 'http://www.google.fr?q=';
+    var columnFormat = 'dddd';
+    var events = [
+		<#if events??>								   
+			<#list events as event>
+				{
+					title : <#if event.isOpen>'#i18n{appointment.manageCalendarSlots.labelOpened}',<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}',</#if>
+					start : '${event.startingDateTime}',
+					end : '${event.endingDateTime}',
+					id : '${event.idTimeSlot}',
+					color : <#if event.isOpen>'default'<#else>'red'</#if>,
+				},								
+			</#list>
+		</#if>
+	];
+	var defaultDate = '${date_of_apply}';
+    $(document).ready(function() {
+		$('#calendar').fullCalendar({
+			defaultDate: defaultDate,
+			defaultView: 'agendaWeek',
+			height: 'auto',
+			locale: 'fr',			
+			theme: true,                  
+			editable: false,        
+			header: false,
+			columnFormat: columnFormat,
+			slotLabelFormat: 'H:mm',
+			slotLabelInterval: slotDuration,
+			slotDuration: slotDuration,
+			allDaySlot: false,
+			minTime: minTime,
+			maxTime: maxTime,        
+			businessHours: {
+				start: minTime,
+				end: maxTime,
+				dow: dow
+			},
+			eventClick: function(calEvent, jsEvent, view) {
+				location.href = eventUrl + calEvent.id;
+			},
+			events: events,
+			eventAfterAllRender: function(view) {
+				$('.fc-day-header').click(function() {
+					location.href = dateUrl + $(this).attr('data-date');
+				});
+				$('.fc-day-header').css('cursor', 'pointer');
+				$('.fc-day-header').css('text-transform', 'uppercase');
+				$('.fc-event').css('cursor', 'pointer');
+			},
+		});        
+    });      
+</script>

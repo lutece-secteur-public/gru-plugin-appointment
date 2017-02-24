@@ -1,57 +1,78 @@
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<#if slot.idDay &gt; 0>
-     		<@tabs tab="slots" appointmentform=appointmentform />
-    	<#else>  
-    		<@tabs tab="typicalWeek" appointmentform=appointmentform />
-    	</#if>
 		<div class="tab-content">
-		<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
-			<fieldset>
-				<legend>#i18n{appointment.modifyCalendarSlots.pageTitle}</legend>
-				<@messages errors=errors infos=infos />
-				<input type="hidden" name="action" value="doModifySlot">
-				<input type="hidden" name="id_slot" value="${slot.idSlot}" >
-				<input type="hidden" name="nb_week" value="${nb_week!}" >
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMaxCapacityPerSlot}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<input type="text" name="nbPlaces" value="${slot.nbPlaces}" class="form-control">
+			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
+				<fieldset>
+					<legend>#i18n{appointment.modifyCalendarSlots.pageTitle}</legend>										
+					<input type="hidden" name="action" value="doModifySlot">
+					<input type="hidden" name="id_time_slot" value="${slot.idTimeSlot}" >	
+					<input type="hidden" name="id_form" value="${appointmentform.idForm}" >						
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="is_open" >#i18n{appointment.modify_appointmentformDays.labelOpen} * :</label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" id="is_open" name="is_open" value="true" onClick="javascript:switchVisibilityOpeningField();" <#if slot.isOpen>checked="checked"</#if> />&#160;
+								</label>
+								<span class="help-block">#i18n{appointment.modify_slot.labelOpenHelp}</span>
+							</div>
+						</div>
+					</div>					
+					<div class="form-group" id="divMaxCapacityPerSlot">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.modify_slot.labelMaxCapacityForThisSlot} * :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<input type="text" name="max_capacity" value="${slot.maxCapacity}" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="3"/>	
+						</div>
 					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.model.entity.appointmentform.attribute.timeStart}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<p class="form-control-static"><#if slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}</p>
+					<div class="form-group" id="divOpeningTime">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.model.entity.appointmentform.attribute.timeStart} :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<p class="form-control-static">${slot.startingTime}</p>
+						</div>
 					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<input type="text" name="timeEnd" value="<#if slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
-						<button class="btn btn-sm btn-primary">
-							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
-						</button>
-
-						<#if slot.idDay &gt; 0>
-     						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if><#if nb_week??>&nb_week=${nb_week!} </#if>" >
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+					<div class="form-group" id="divClosingTime">
+						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.model.entity.appointmentform.attribute.timeEnd} * : </label>
+						<div id="time_end" class="col-xs-12 col-sm-9 col-md-9 input-append">
+							<input id="ending_time" name="ending_time" data-format="hh:mm" type="text" value="${slot.endingTime!''}"></input>
+							<span id="ending_time" class="add-on">
+								<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+								</i>
+							</span>							
+						</div>
+					</div>							
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+							<button class="btn btn-sm btn-primary">
+								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelModify}
+							</button>  
+							<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
 							</a>
-    					<#else>  
-    						<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlotss&<#if slot.idDay &gt; 0>id_day=${slot.idDay}<#else>id_form=${slot.idForm}</#if><#if nb_week??>&nb_week=${nb_week!} </#if>">
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-							</a>
-    					</#if>
-						
+						</div>
 					</div>
-				</div>
-			</fieldset>
-		</form>
-	</div>
+				</fieldset>
+			</form>
+		</div>
 	</div>
 </div>
+<script type="text/javascript">	
+	function switchVisibilityOpeningField( )
+	{
+		$("#divOpeningTime").toggle();
+		$("#divClosingTime").toggle();
+		$("#divMaxCapacityPerSlot").toggle();
+	}
+	<#if !slot.isOpen>
+		$(document).ready(function() {
+			switchVisibilityOpeningField( );
+		});
+	</#if>
+	$('#time_end').datetimepicker({
+      pickDate: false,
+	  pickSeconds: false
+    });
+</script>

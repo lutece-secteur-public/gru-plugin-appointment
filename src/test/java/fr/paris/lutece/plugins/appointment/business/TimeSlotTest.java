@@ -21,12 +21,14 @@ import fr.paris.lutece.test.LuteceTestCase;
  */
 public class TimeSlotTest extends LuteceTestCase {
 
-	public final static LocalTime STARTING_HOUR_1 = LocalTime.parse("09:00");
-	public final static LocalTime STARTING_HOUR_2 = LocalTime.parse("09:30");
-	public final static LocalTime ENDING_HOUR_1 = LocalTime.parse("09:30");
-	public final static LocalTime ENDING_HOUR_2 = LocalTime.parse("10:00");
+	public final static LocalTime STARTING_TIME_1 = LocalTime.parse("09:00");
+	public final static LocalTime STARTING_TIME_2 = LocalTime.parse("09:30");
+	public final static LocalTime ENDING_TIME_1 = LocalTime.parse("09:30");
+	public final static LocalTime ENDING_TIME_2 = LocalTime.parse("10:00");
 	public final static boolean IS_OPEN_1 = true;
 	public final static boolean IS_OPEN_2 = false;
+	public final static int MAX_CAPACITY_1 = 1;
+	public final static int MAX_CAPACITY_2 = 2;
 
 	/**
 	 * Test method for the TimeSlot (CRUD)
@@ -55,9 +57,10 @@ public class TimeSlotTest extends LuteceTestCase {
 		checkAsserts(timeSlotStored, timeSlot);
 
 		// Update the timeSlot
-		timeSlot.setStartingHour(STARTING_HOUR_2);
-		timeSlot.setEndingHour(ENDING_HOUR_2);
+		timeSlot.setStartingTime(STARTING_TIME_2);
+		timeSlot.setEndingTime(ENDING_TIME_2);
 		timeSlot.setIsOpen(IS_OPEN_2);
+		timeSlot.setMaxCapacity(MAX_CAPACITY_2);
 		// Update the timeSlot in database
 		TimeSlotHome.update(timeSlot);
 		// Find the timeSlot updated in database
@@ -146,9 +149,10 @@ public class TimeSlotTest extends LuteceTestCase {
 	 */
 	public static TimeSlot buildTimeSlot() {
 		TimeSlot timeSlot = new TimeSlot();
-		timeSlot.setStartingHour(STARTING_HOUR_1);
-		timeSlot.setEndingHour(ENDING_HOUR_1);
+		timeSlot.setStartingTime(STARTING_TIME_1);
+		timeSlot.setEndingTime(ENDING_TIME_1);
 		timeSlot.setIsOpen(IS_OPEN_1);
+		timeSlot.setMaxCapacity(MAX_CAPACITY_1);
 		return timeSlot;
 	}
 
@@ -161,9 +165,10 @@ public class TimeSlotTest extends LuteceTestCase {
 	 *            the timeSlot created
 	 */
 	public void checkAsserts(TimeSlot timeSlotStored, TimeSlot timeSlot) {
-		assertEquals(timeSlotStored.getStartingHour(), timeSlot.getStartingHour());
-		assertEquals(timeSlotStored.getEndingHour(), timeSlot.getEndingHour());
-		assertEquals(timeSlotStored.isOpen(), timeSlot.isOpen());
+		assertEquals(timeSlotStored.getStartingTime(), timeSlot.getStartingTime());
+		assertEquals(timeSlotStored.getEndingTime(), timeSlot.getEndingTime());
+		assertEquals(timeSlotStored.getIsOpen(), timeSlot.getIsOpen());
+		assertEquals(timeSlotStored.getMaxCapacity(), timeSlot.getMaxCapacity());
 		assertEquals(timeSlotStored.getIdWorkingDay(), timeSlot.getIdWorkingDay());
 	}
 

@@ -238,9 +238,10 @@ DROP TABLE IF EXISTS appointment_time_slot ;
 
 CREATE TABLE IF NOT EXISTS appointment_time_slot (
   id_time_slot INT NOT NULL,
-  starting_hour TIME NOT NULL,
-  ending_hour TIME NOT NULL,
+  starting_time TIME NOT NULL,
+  ending_time TIME NOT NULL,
   is_open BOOLEAN NOT NULL DEFAULT TRUE,
+  max_capacity INT NOT NULL DEFAULT 0,
   id_working_day INT NOT NULL,
   PRIMARY KEY (id_time_slot, id_working_day),
   UNIQUE KEY unique_index_starting_hour (id_working_day,starting_hour),

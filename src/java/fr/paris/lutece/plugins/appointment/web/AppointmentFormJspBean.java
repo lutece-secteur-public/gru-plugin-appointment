@@ -117,7 +117,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 
 	// Parameters
 	private static final String PARAMETER_ID_FORM = "id_form";
-	private static final String PARAMETER_ID_RESERVATION_RULE = "idReservationRule";
+	private static final String PARAMETER_ID_RESERVATION_RULE = "id_reservation_rule";
 	private static final String PARAMETER_BACK = "back";
 	private static final String PARAMETER_PAGE_INDEX = "page_index";
 	private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
@@ -131,7 +131,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 
 	// Properties for page titles
 	private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
-	private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM = "appointment.modify_appointmentForm.titleAlterablesParameters";
+	private static final String PROPERTY_PAGE_TITLE_GENERAL_SETTINGS = "appointment.modify_appointmentForm.titleAlterablesParameters";
+	private static final String PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS = "appointment.modify_appointmentForm.titleStructuralsParameters";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENT_FORM = "appointment.modify_appointmentform.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.create_appointmentform.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentform_messages.pageTitle";
@@ -163,6 +164,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
 	private static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
 	private static final String ERROR_MESSAGE_TIME_START_AFTER_DATE_END = "appointment.message.error.dateStartAfterTimeEnd";
+	private static final String ERROR_MESSAGE_NO_WORKING_DAY_CHECKED = "appointment.message.error.noWorkingDayChecked";
 	private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
 	private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE = "appointment.message.error.formatDaysBeforeAppointmentMiddleSuperior";
 	private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
@@ -398,7 +400,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		if (PARAMETER_FORM_RDV.equals(strPage)) {
 			return getPage(PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENT_FORM, TEMPLATE_MODIFY_APPOINTMENT_FORM, model);
 		} else {
-			return getPage(PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM, TEMPLATE_MODIFY_APPOINTMENTFORM, model);
+			return getPage(PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model);
 		}
 	}
 
@@ -441,7 +443,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		model.put(MARK_LOCALE_TINY, getLocale());
 		EntryService.addListEntryToModel(nIdForm, model);
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
-		return getPage(PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM, TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM, model);
+		return getPage(PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS, TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM, model);
 	}
 
 	/**
@@ -801,8 +803,21 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	 * @throws ParseException
 	 */
 	private boolean checkConstraints(AppointmentForm appointmentForm) {
-		return checkStartingAndEndingHour(appointmentForm) && checkStartingAndEndingValidityDate(appointmentForm)
-				&& checkSlotCapacityAndPeoplePerAppointment(appointmentForm);
+		return checkStartingAndEndingTime(appointmentForm) && checkStartingAndEndingValidityDate(appointmentForm)
+				&& checkSlotCapacityAndPeoplePerAppointment(appointmentForm)
+				&& checkAtLeastOneWorkingDayOpen(appointmentForm);
+	}
+
+	private boolean checkAtLeastOneWorkingDayOpen(AppointmentForm appointmentForm) {
+		boolean bReturn = true;
+		if (! (appointmentForm.getIsOpenMonday() || appointmentForm.getIsOpenTuesday()
+				|| appointmentForm.getIsOpenWednesday() || appointmentForm.getIsOpenThursday()
+				|| appointmentForm.getIsOpenFriday() || appointmentForm.getIsOpenSaturday()
+				|| appointmentForm.getIsOpenSunday())) {
+			bReturn = false;
+			addError(ERROR_MESSAGE_NO_WORKING_DAY_CHECKED, getLocale());
+		}
+		return bReturn;
 	}
 
 	/**
@@ -810,15 +825,15 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	 * @param appointmentForm
 	 * @return
 	 */
-	private boolean checkStartingAndEndingHour(AppointmentForm appointmentForm) {
+	private boolean checkStartingAndEndingTime(AppointmentForm appointmentForm) {
 		boolean bReturn = true;
-		LocalTime startingHour = LocalTime.parse(appointmentForm.getTimeStart());
-		LocalTime endingHour = LocalTime.parse(appointmentForm.getTimeEnd());
-		if (startingHour.isAfter(endingHour)) {
+		LocalTime startingTime = LocalTime.parse(appointmentForm.getTimeStart());
+		LocalTime endingTime = LocalTime.parse(appointmentForm.getTimeEnd());
+		if (startingTime.isAfter(endingTime)) {
 			bReturn = false;
 			addError(ERROR_MESSAGE_TIME_START_AFTER_TIME_END, getLocale());
 		}
-		long lMinutes = startingHour.until(endingHour, ChronoUnit.MINUTES);
+		long lMinutes = startingTime.until(endingTime, ChronoUnit.MINUTES);
 		if (appointmentForm.getDurationAppointments() > lMinutes) {
 			bReturn = false;
 			addError(ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE, getLocale());

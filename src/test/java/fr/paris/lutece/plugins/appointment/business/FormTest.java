@@ -89,15 +89,15 @@ public class FormTest extends LuteceTestCase {
 		WorkingDayHome.create(workingDay1);
 
 		TimeSlot timeSlot1 = new TimeSlot();
-		timeSlot1.setStartingHour(TimeSlotTest.STARTING_HOUR_1);
-		timeSlot1.setEndingHour(TimeSlotTest.ENDING_HOUR_1);
+		timeSlot1.setStartingTime(TimeSlotTest.STARTING_TIME_1);
+		timeSlot1.setEndingTime(TimeSlotTest.ENDING_TIME_1);
 		timeSlot1.setIsOpen(TimeSlotTest.IS_OPEN_1);
 		timeSlot1.setIdWorkingDay(workingDay1.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot1);
 
 		TimeSlot timeSlot2 = new TimeSlot();
-		timeSlot2.setStartingHour(TimeSlotTest.STARTING_HOUR_2);
-		timeSlot2.setEndingHour(TimeSlotTest.ENDING_HOUR_2);
+		timeSlot2.setStartingTime(TimeSlotTest.STARTING_TIME_2);
+		timeSlot2.setEndingTime(TimeSlotTest.ENDING_TIME_2);
 		timeSlot2.setIsOpen(TimeSlotTest.IS_OPEN_2);
 		timeSlot2.setIdWorkingDay(workingDay1.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot2);
@@ -108,15 +108,15 @@ public class FormTest extends LuteceTestCase {
 		WorkingDayHome.create(workingDay2);
 
 		TimeSlot timeSlot3 = new TimeSlot();
-		timeSlot3.setStartingHour(TimeSlotTest.STARTING_HOUR_1);
-		timeSlot3.setEndingHour(TimeSlotTest.ENDING_HOUR_1);
+		timeSlot3.setStartingTime(TimeSlotTest.STARTING_TIME_1);
+		timeSlot3.setEndingTime(TimeSlotTest.ENDING_TIME_1);
 		timeSlot3.setIsOpen(TimeSlotTest.IS_OPEN_1);
 		timeSlot3.setIdWorkingDay(workingDay2.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot3);
 
 		TimeSlot timeSlot4 = new TimeSlot();
-		timeSlot4.setStartingHour(TimeSlotTest.STARTING_HOUR_2);
-		timeSlot4.setEndingHour(TimeSlotTest.ENDING_HOUR_2);
+		timeSlot4.setStartingTime(TimeSlotTest.STARTING_TIME_2);
+		timeSlot4.setEndingTime(TimeSlotTest.ENDING_TIME_2);
 		timeSlot4.setIsOpen(TimeSlotTest.IS_OPEN_2);
 		timeSlot4.setIdWorkingDay(workingDay2.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot4);
@@ -132,15 +132,15 @@ public class FormTest extends LuteceTestCase {
 		WorkingDayHome.create(workingDay3);
 
 		TimeSlot timeSlot5 = new TimeSlot();
-		timeSlot5.setStartingHour(TimeSlotTest.STARTING_HOUR_1);
-		timeSlot5.setEndingHour(TimeSlotTest.ENDING_HOUR_1);
+		timeSlot5.setStartingTime(TimeSlotTest.STARTING_TIME_1);
+		timeSlot5.setEndingTime(TimeSlotTest.ENDING_TIME_1);
 		timeSlot5.setIsOpen(TimeSlotTest.IS_OPEN_1);
 		timeSlot5.setIdWorkingDay(workingDay3.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot5);
 
 		TimeSlot timeSlot6 = new TimeSlot();
-		timeSlot6.setStartingHour(TimeSlotTest.STARTING_HOUR_2);
-		timeSlot6.setEndingHour(TimeSlotTest.ENDING_HOUR_2);
+		timeSlot6.setStartingTime(TimeSlotTest.STARTING_TIME_2);
+		timeSlot6.setEndingTime(TimeSlotTest.ENDING_TIME_2);
 		timeSlot6.setIsOpen(TimeSlotTest.IS_OPEN_2);
 		timeSlot6.setIdWorkingDay(workingDay3.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot6);
@@ -151,15 +151,15 @@ public class FormTest extends LuteceTestCase {
 		WorkingDayHome.create(workingDay4);
 
 		TimeSlot timeSlot7 = new TimeSlot();
-		timeSlot7.setStartingHour(TimeSlotTest.STARTING_HOUR_1);
-		timeSlot7.setEndingHour(TimeSlotTest.ENDING_HOUR_1);
+		timeSlot7.setStartingTime(TimeSlotTest.STARTING_TIME_1);
+		timeSlot7.setEndingTime(TimeSlotTest.ENDING_TIME_1);
 		timeSlot7.setIsOpen(TimeSlotTest.IS_OPEN_1);
 		timeSlot7.setIdWorkingDay(workingDay4.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot7);
 
 		TimeSlot timeSlot8 = new TimeSlot();
-		timeSlot8.setStartingHour(TimeSlotTest.STARTING_HOUR_2);
-		timeSlot8.setEndingHour(TimeSlotTest.ENDING_HOUR_2);
+		timeSlot8.setStartingTime(TimeSlotTest.STARTING_TIME_2);
+		timeSlot8.setEndingTime(TimeSlotTest.ENDING_TIME_2);
 		timeSlot8.setIsOpen(TimeSlotTest.IS_OPEN_2);
 		timeSlot8.setIdWorkingDay(workingDay4.getIdWorkingDay());
 		TimeSlotHome.create(timeSlot8);

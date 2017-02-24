@@ -5,10 +5,7 @@
 	<@messages infos=infos errors=errors />
 		<div class="box box-primary">
 			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.create_appointmentform.pageTitle}</h3>
-				<form class="form-inline pull-right spaced" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormsAdvanced.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}&forceReload=true">
-					<button type="submit" class="btn btn-primary btn-sm" /><i class="glyphicon glyphicon-cog"></i><span class="hidden-phone">&nbsp;Param&#232;tres avanc&#233;s</span></button>
-				</form>
+				<h3 class="box-title">#i18n{appointment.modify_appointmentform.title} : ${appointmentform.title}</h3>				
 			</div>
 		</div>
 	</div>
@@ -21,31 +18,26 @@
 				#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}
 			</a>
         </li>
+		<li <#if tab="advancedParams">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}&forceReload=true">
+				#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}
+			</a>
+        </li>
         <li <#if tab="entries">class="active"</#if>>
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&page=form_rdv">
 				#i18n{appointment.modify_appointmentform.pageTitle}
 			</a>
         </li>
-        <li <#if tab="days">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=0">
-				#i18n{appointment.modify_appointmentformDays.pageTitle}
-			</a>
-        </li>
-        <li <#if tab="slots">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_form=${appointmentform.idForm}">
-				#i18n{appointment.manageCalendarSlots.pageTitle}
-			</a>
-        </li>
         <li <#if tab="typicalWeek">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlotss&id_form=${appointmentform.idForm}">
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
 				#i18n{appointment.typicalWeek.pageTitle}
 			</a>
         </li>
-        <li <#if tab="holidays">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewManageHolidays&id_form=${appointmentform.idForm}">
-				#i18n{appointment.manageHolidays.pageTitle}
+		<li <#if tab="slots">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_form=${appointmentform.idForm}">
+				#i18n{appointment.manageCalendarSlots.pageTitle}
 			</a>
-        </li>              
+        </li>           
         <#if isResourceInstalled?? && isResourceInstalled>
 			<li <#if tab="resources">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
@@ -69,7 +61,13 @@
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='form-control input-sm' />
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='form-control input-sm' />						
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />				
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbWeeksToDisplay' inputName='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'0' i18nHelpBlockKey='appointment.create_appointmentform.labelNbWeeksToDisplay.help'  maxlength=2 />								
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="3"/>	
+						<p class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</p>
+					</div>
+				</div>				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />												
 				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
@@ -93,7 +91,7 @@
 							<a class="btn btn-danger btn-sm btn-flat" role="button" onclick ="$('#image_resource').val('')"><i class="glyphicon glyphicon-remove-circle"></i> Effacer</a>
 						</div>
 					</div>	
-				</div>   
+				</div>  				
 				<#if listWorkflows??>
 					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
 				</#if>				

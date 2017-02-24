@@ -110,10 +110,10 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	private boolean _bEnableMandatoryEmail;
 	private ImageResource _imageResource;
 	private String _strCategory;	
-	private int _nIdReservationRule;
+	private int _nIdReservationRule;	
+		
 	
 	
-
 	public int getIdReservationRule() {
 		return _nIdReservationRule;
 	}
@@ -236,11 +236,11 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	/**
 	 * Sets the TimeStart
 	 * 
-	 * @param nTimeStart
+	 * @param timeStart
 	 *            The TimeStart
 	 */
-	public void setTimeStart(String nTimeStart) {
-		_strTimeStart = nTimeStart;
+	public void setTimeStart(String timeStart) {
+		_strTimeStart = timeStart;
 	}
 
 	/**
@@ -258,8 +258,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 * @param nTimeEnd
 	 *            The TimeEnd
 	 */
-	public void setTimeEnd(String nTimeEnd) {
-		_strTimeEnd = nTimeEnd;
+	public void setTimeEnd(String timeEnd) {
+		_strTimeEnd = timeEnd;
 	}
 
 	/**

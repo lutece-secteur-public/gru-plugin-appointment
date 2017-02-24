@@ -84,5 +84,9 @@ public class WeekDefinitionService {
 				WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
 		return weekDefinition;
 	}
+	
+	public static WeekDefinition findWeekDefinitionById(int nIdWeekDefinition){
+		return WeekDefinitionHome.findByPrimaryKey(nIdWeekDefinition);
+	}
 
 }

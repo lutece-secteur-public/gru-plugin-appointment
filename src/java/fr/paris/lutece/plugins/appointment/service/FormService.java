@@ -55,12 +55,12 @@ public class FormService {
 		AppointmentForm appointmentForm = buildAppointmentForm(nIdForm, 0);
 		appointmentForm.setTitle(newNameForCopy);
 		appointmentForm.setIsActive(Boolean.FALSE);
-		int nIdNewForm = createAppointmentForm(appointmentForm);		
+		int nIdNewForm = createAppointmentForm(appointmentForm);
 		FormMessage formMessage = FormMessageHome.findByPrimaryKey(nIdForm);
 		formMessage.setIdForm(nIdNewForm);
 		FormMessageHome.create(formMessage);
 	}
-	
+
 	/**
 	 * 
 	 * @param appointmentForm
@@ -73,16 +73,18 @@ public class FormService {
 		LocalDate dateNow = LocalDate.now();
 		DisplayService.createDisplay(appointmentForm, nIdForm);
 		FormRuleService.createFormRule(appointmentForm, nIdForm);
-		ReservationRuleService.createReservationRule(appointmentForm, nIdForm, dateNow);
+		ReservationRule reservationRule = ReservationRuleService.createReservationRule(appointmentForm, nIdForm,
+				dateNow);
+		int nMaxCapacity = reservationRule.getMaxCapacityPerSlot();
 		WeekDefinition weekDefinition = WeekDefinitionService.createWeekDefinition(nIdForm, dateNow);
 		int nIdWeekDefinition = weekDefinition.getIdWeekDefinition();
-		LocalTime startingHour = LocalTime.parse(appointmentForm.getTimeStart());
-		LocalTime endingHour = LocalTime.parse(appointmentForm.getTimeEnd());
-		int nDuration = appointmentForm.getDurationAppointments();		
+		LocalTime startingTime = LocalTime.parse(appointmentForm.getTimeStart());
+		LocalTime endingTime = LocalTime.parse(appointmentForm.getTimeEnd());
+		int nDuration = appointmentForm.getDurationAppointments();
 		for (DayOfWeek dayOfWeek : WorkingDayService.getOpenDays(appointmentForm)) {
-			WorkingDayService.generateWorkingDayAndListTimeSlot(nIdWeekDefinition, dayOfWeek,
-					startingHour, endingHour, nDuration);
-		}	
+			WorkingDayService.generateWorkingDayAndListTimeSlot(nIdWeekDefinition, dayOfWeek, startingTime, endingTime,
+					nDuration, nMaxCapacity);
+		}
 		return nIdForm;
 	}
 
@@ -97,20 +99,22 @@ public class FormService {
 		DisplayService.updateDisplay(appointmentForm, nIdForm);
 		FormRuleService.updateFormRule(appointmentForm, nIdForm);
 		if (dateOfModification != null) {
-			ReservationRuleService.updateReservationRule(appointmentForm, nIdForm, dateOfModification);
+			ReservationRule reservationRule = ReservationRuleService.updateReservationRule(appointmentForm, nIdForm,
+					dateOfModification);
+			int nMaxCapacity = reservationRule.getMaxCapacityPerSlot();
 			WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition(nIdForm, dateOfModification);
 			int nIdWeekDefinition = weekDefinition.getIdWeekDefinition();
 			List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition(nIdWeekDefinition);
-			if (listWorkingDay != null && !listWorkingDay.isEmpty()){
+			if (listWorkingDay != null && !listWorkingDay.isEmpty()) {
 				WorkingDayService.deleteListWorkingDay(listWorkingDay);
 			}
 			LocalTime startingHour = LocalTime.parse(appointmentForm.getTimeStart());
 			LocalTime endingHour = LocalTime.parse(appointmentForm.getTimeEnd());
-			int nDuration = appointmentForm.getDurationAppointments();			
+			int nDuration = appointmentForm.getDurationAppointments();
 			for (DayOfWeek dayOfWeek : WorkingDayService.getOpenDays(appointmentForm)) {
-				WorkingDayService.generateWorkingDayAndListTimeSlot(nIdWeekDefinition, dayOfWeek,
-						startingHour, endingHour, nDuration);
-			}			
+				WorkingDayService.generateWorkingDayAndListTimeSlot(nIdWeekDefinition, dayOfWeek, startingHour,
+						endingHour, nDuration, nMaxCapacity);
+			}
 		}
 	}
 
@@ -163,16 +167,15 @@ public class FormService {
 			if (nIdReservationRule > 0) {
 				reservationRule = ReservationRuleService.findReservationRuleById(nIdReservationRule);
 				dateOfApply = reservationRule.getDateOfApply();
-			} else {				
+			} else {
 				reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm,
 						dateOfApply);
 			}
 			if (reservationRule != null) {
 				fillAppointmentFormWithReservationRulePart(appointmentForm, reservationRule);
 			}
-
-			WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm,
-					dateOfApply);
+			WeekDefinition weekDefinition = WeekDefinitionService
+					.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm, dateOfApply);
 			if (weekDefinition != null) {
 				fillAppointmentFormWithWeekDefinitionPart(appointmentForm, weekDefinition);
 			}
@@ -187,55 +190,56 @@ public class FormService {
 	 */
 	private static void fillAppointmentFormWithWeekDefinitionPart(AppointmentForm appointmentForm,
 			WeekDefinition weekDefinition) {
-		for (WorkingDay workingDay : weekDefinition.getListWorkingDay()) {
-			DayOfWeek dayOfWeek = DayOfWeek.of(workingDay.getDayOfWeek());
-			switch (dayOfWeek) {
-			case MONDAY:
-				appointmentForm.setIsOpenMonday(Boolean.TRUE);
-				break;
-			case TUESDAY:
-				appointmentForm.setIsOpenTuesday(Boolean.TRUE);
-				break;
-			case WEDNESDAY:
-				appointmentForm.setIsOpenWednesday(Boolean.TRUE);
-				break;
-			case THURSDAY:
-				appointmentForm.setIsOpenThursday(Boolean.TRUE);
-				break;
-			case FRIDAY:
-				appointmentForm.setIsOpenFriday(Boolean.TRUE);
-				break;
-			case SATURDAY:
-				appointmentForm.setIsOpenSaturday(Boolean.TRUE);
-				break;
-			case SUNDAY:
-				appointmentForm.setIsOpenSunday(Boolean.TRUE);
-				break;
+		if (weekDefinition != null && !weekDefinition.getListWorkingDay().isEmpty()) {			
+			for (WorkingDay workingDay : weekDefinition.getListWorkingDay()) {
+				DayOfWeek dayOfWeek = DayOfWeek.of(workingDay.getDayOfWeek());
+				switch (dayOfWeek) {
+				case MONDAY:
+					appointmentForm.setIsOpenMonday(Boolean.TRUE);
+					break;
+				case TUESDAY:
+					appointmentForm.setIsOpenTuesday(Boolean.TRUE);
+					break;
+				case WEDNESDAY:
+					appointmentForm.setIsOpenWednesday(Boolean.TRUE);
+					break;
+				case THURSDAY:
+					appointmentForm.setIsOpenThursday(Boolean.TRUE);
+					break;
+				case FRIDAY:
+					appointmentForm.setIsOpenFriday(Boolean.TRUE);
+					break;
+				case SATURDAY:
+					appointmentForm.setIsOpenSaturday(Boolean.TRUE);
+					break;
+				case SUNDAY:
+					appointmentForm.setIsOpenSunday(Boolean.TRUE);
+					break;
+				}
 			}
-		}
-		// We suppose that all the days have the same opening and closing hours
-		LocalTime minStartingTime = null;
-		LocalTime maxEndingTime = null;
-		long lDurationAppointment = 0;
-		if (weekDefinition != null && !weekDefinition.getListWorkingDay().isEmpty()) {
+			// We suppose that all the days have the same opening and closing
+			// hours
+			LocalTime minStartingTime = null;
+			LocalTime maxEndingTime = null;
+			long lDurationAppointment = 0;
 			for (WorkingDay workingDay : weekDefinition.getListWorkingDay()) {
 				if (workingDay.getListTimeSlot() != null) {
 					for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
-						LocalTime startingHour = timeSlot.getStartingHour();
-						LocalTime endingHour = timeSlot.getEndingHour();
+						LocalTime startingTime = timeSlot.getStartingTime();
+						LocalTime endingTime = timeSlot.getEndingTime();
 						if (minStartingTime == null) {
-							minStartingTime = startingHour;
+							minStartingTime = startingTime;
 						}
-						if (startingHour.isBefore(minStartingTime)) {
-							minStartingTime = startingHour;
+						if (startingTime.isBefore(minStartingTime)) {
+							minStartingTime = startingTime;
 						}
 						if (maxEndingTime == null) {
-							maxEndingTime = endingHour;
+							maxEndingTime = endingTime;
 						}
-						if (endingHour.isAfter(maxEndingTime)) {
-							maxEndingTime = endingHour;
+						if (endingTime.isAfter(maxEndingTime)) {
+							maxEndingTime = endingTime;
 						}
-						long lDurationTemp = startingHour.until(endingHour, ChronoUnit.MINUTES);
+						long lDurationTemp = startingTime.until(endingTime, ChronoUnit.MINUTES);
 						if (lDurationAppointment == 0) {
 							lDurationAppointment = lDurationTemp;
 						}
@@ -245,10 +249,10 @@ public class FormService {
 					}
 				}
 			}
+			appointmentForm.setTimeStart(minStartingTime.toString());
+			appointmentForm.setTimeEnd(maxEndingTime.toString());
+			appointmentForm.setDurationAppointments(toIntExact(lDurationAppointment));
 		}
-		appointmentForm.setTimeStart(minStartingTime.toString());
-		appointmentForm.setTimeEnd(maxEndingTime.toString());
-		appointmentForm.setDurationAppointments(toIntExact(lDurationAppointment));
 	}
 
 	/**
@@ -286,7 +290,7 @@ public class FormService {
 		appointmentForm.setCategory(form.getCategory());
 		appointmentForm.setDateStartValidity(form.getStartingValiditySqlDate());
 		appointmentForm.setDateEndValidity(form.getEndingValiditySqlDate());
-		appointmentForm.setIdWorkflow(form.getIdWorkflow());		
+		appointmentForm.setIdWorkflow(form.getIdWorkflow());
 		appointmentForm.setIsActive(form.isActive());
 	}
 

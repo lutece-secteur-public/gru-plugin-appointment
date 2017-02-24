@@ -137,8 +137,8 @@ public class AppointmentService {
 	public List<AppointmentDay> computeDayList(AppointmentForm form) {
 		Date dateMin = getDateMonday(0);
 
-		String[] strOpeningTime = form.getTimeStart().split(CONSTANT_H);
-		String[] strClosingTime = form.getTimeEnd().split(CONSTANT_H);
+		//String[] strOpeningTime = form.getTimeStart().split(CONSTANT_H);
+		//String[] strClosingTime = form.getTimeEnd().split(CONSTANT_H);
 		
 		boolean[] bArrayIsOpen = { form.getIsOpenMonday(), form.getIsOpenTuesday(), form.getIsOpenWednesday(),
 				form.getIsOpenThursday(), form.getIsOpenFriday(), form.getIsOpenSaturday(), form.getIsOpenSunday(), };
@@ -204,8 +204,8 @@ public class AppointmentService {
 							 * - 12/03
 							 */
 
-		String[] strOpeningTime = form.getTimeStart().split(CONSTANT_H);
-		String[] strClosingTime = form.getTimeEnd().split(CONSTANT_H);
+		//String[] strOpeningTime = form.getTimeStart().split(CONSTANT_H);
+		//String[] strClosingTime = form.getTimeEnd().split(CONSTANT_H);
 		
 		boolean[] bArrayIsOpen = { form.getIsOpenMonday(), form.getIsOpenTuesday(), form.getIsOpenWednesday(),
 				form.getIsOpenThursday(), form.getIsOpenFriday(), form.getIsOpenSaturday(), form.getIsOpenSunday(), };

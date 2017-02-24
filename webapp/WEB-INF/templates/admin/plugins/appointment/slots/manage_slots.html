@@ -1,187 +1,129 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.css' />
+<script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/locale-all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.css" />
 <div class="row" >
-   
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <#if day??>
-            <@tabs tab="days" appointmentform=appointmentform />
-        <#else>
-            <@tabs tab="slots" appointmentform=appointmentform />
-        </#if>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">        
         <fieldset>
             <legend>#i18n{appointment.manageCalendarSlots.pageTitle}</legend>
-        
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="hidden-phone">
-            <table class="table appointment-table-container">
-                <tr>
-
-                    <td>
-                        <table class="table appointment-inner-table">
-                            <tr>
-                               <td>
-                                    <#if nb_week != 0>
-                                        <div>
-                                            <center>
-                                                <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}&nb_week=0" title="#i18n{appointment.manage_appointment_calendar.labelCurrentWeek}">
-                                                    <i class="glyphicon glyphicon-calendar"></i>
-                                                </a>
-                                            </center>
-                                        </div>
-                                    <#else>
-                                        <br />
-                                    </#if>
-                                    <#if nb_week &gt; -max_week & nb_week &gt; 0  >
-                                    <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewmanageAppointmentSlots&id_form=${appointmentform.idForm}&nb_week=${nb_week - 1}"  title="#i18n{appointment.appointmentApp.previousWeek}">
-                                        <i class="glyphicon glyphicon-arrow-left"></i> 
-                                    </a>
-                                    </#if>
-                                    <#if nb_week < max_week>
-                                    <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewmanageAppointmentSlots&id_form=${appointmentform.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}" >
-                                        <i class="glyphicon glyphicon-arrow-right"></i> 
-                                    </a>
-                                    </#if>
-
-                                </td>
-                               
-                            </tr>
-                            <#list list_time_begin as time_begin>
-                                <tr>
-                                       <td rowspan="rowspan"  class="appointment-tooltip " >
-                                        <a   class="btn btn-xs btn-primary   "  >
-                                        ${time_begin}
-                                    </a>
-                                    </td>
-                                </tr>
-                            </#list>
-                        </table>
-                    </td>
-                     
-                    <#list listDays as day>
-                        <td>
-                            <table class="table table-stripped appointment-inner-table">
-                                <tr>
-                                    <th>
-                                         
-                                            #i18n{${list_days_of_week[day_index]}}<br />
-                                            ${day.date}
-                                             
-                                         
-                                    </th>
-                                </tr>
-                                <#if day.isOpen>
-                                    <#assign rowspan=day.appointmentDuration/min_duration_appointments>
-                                    <#assign first_slot = day.listSlots?first>
-                                    <#if first_slot.startingHour &lt; 10>
-                                        <#assign first_time = '0' + first_slot.startingHour + 'h'>
-                                    <#else>
-                                        <#assign first_time = first_slot.startingHour + 'h'>
-                                    </#if>
-                                    <#if first_slot.startingMinute &lt; 10>
-                                        <#assign first_time = first_time + '0' + first_slot.startingMinute>
-                                    <#else>
-                                        <#assign first_time = first_time + first_slot.startingMinute>
-                                    </#if>
-                                    <#list list_time_begin as time_begin>
-                                        <#if time_begin != first_time>
-                                            <tr>
-                                                <td class="appointment-slot-closed appointment-row1">
-                                                    &nbsp;
-                                                </td>
-                                            </tr>
-                                        <#else>
-                                            <#break>
-                                        </#if>
-                                    </#list>
-                                    <#list day.listSlots as slot>
-                                        <tr>
-                                            <#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - ( slot.startingHour * 60 + slot.startingMinute ) >
-                                            <#if slotDuration != day.appointmentDuration>
-                                                <#assign slotSpan= (slotDuration / min_duration_appointments)?round >
-                                            <#else>
-                                                <#assign slotSpan=rowspan >
-                                            </#if>
-                             
-                                                <td   class="appointment-tooltip " >
-                                                                                    
-                                                                <a id="${slot.idSlot}" class="btn btn-xs btn-primary <#if slot.isEnabled>btn-success<#else>btn-danger</#if>" 
-
-                                                                    href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?action=doChangeSlotEnabling&id_slot=${slot.idSlot}&id_form=${appointmentform.idForm}&nb_week=${nb_week}">
-                                                             
-                                                                <#if slot.isEnabled>
-                                                                    #i18n{appointment.manageCalendarSlots.labelOpened}
-                                                                <#else>
-                                                                    #i18n{appointment.manageCalendarSlots.labelClosed}
-                                                                </#if>
-                                                            </a>
-                                                            
-                                                            <a class="btn btn-default btn-xs" 
-                                                            href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_slot=${slot.idSlot}&nb_week=${nb_week}&id_form=${appointmentform.idForm}" title="#i18n{portal.util.labelModify}">
-                                                                <i class="glyphicon glyphicon-edit"></i>
-                                                            </a>
-                                                         
-                                                    <@getCellTooltip appointmentSlot=slot />
-                                                  
-                                                </td>            
- 
-                                     
-                                        </tr>
-                                    </#list>
-                                <#else>
-                                    <#list list_time_begin as time_begin>
-                                        <tr>
-                                            <td class="appointment-slot-closed appointment-row1">
-                                                 <a   class="btn btn-xs btn-primary  btn-danger "  >
-                                                             
-                                                                 
-                                                                    #i18n{appointment.manageCalendarSlots.labelClosed}
-                                                              
-                                                            </a>
-                                            </td>
-                                        </tr>
-                                    </#list>
-                                </#if>
-                            </table>
-                        </td>
-                    </#list>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div>     
-
-       
-            <#if day??>
-                <div class="form-group">
-                    <a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}">
-                        <i class="glyphicon glyphicon-remove-circle">&nbsp;</i>#i18n{portal.util.labelBack}
-                    </a>
-                </div>
-            </#if>
+				<div id="calendar"></div>	
         </fieldset>
     </div>
 </div>
-
-<br />
-<br />
-
-<#macro getCellTooltip appointmentSlot>
-    <span class="appointment-tooltip-title appointment-tooltip-title-fo">
-        <#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute}
-        <div> #i18n{appointment.manageCalendarSlots.lablelNbPlace}: ${appointmentSlot.nbPlaces}</div>
-    </span>
-
-</#macro>
-
-<link href="css/plugins/appointment/appointment.css" rel="stylesheet">
-<@getDatePickerBootstrap idField="dateMin" language="fr" />
 <script type="text/javascript">
-$('#dateMin').datepicker({
-    language:        "${language}",
-    startDate:         new Date(),
-    endDate:        "${bornDates[1]}",
-    todayBtn: true,
-    todayHighLight: true,
-    autoclose:        true
-}).on('changeDate', function(ev){});
+	var slotDuration = '${min_duration}';
+    var minTime = '${min_time}';
+    var maxTime = '${max_time}';
+    var dow = [
+		<#if dow??>								   
+			<#list dow as day>
+				'${day}',								
+			</#list>
+		</#if>				
+	];
+    var nbMaxWeeks = 2;
+    var eventUrl = 'http://www.google.fr?q=';
+    var dateUrl = 'http://www.google.fr?q=';
+    var columnFormat = 'dddd DD/MM/YYYY';
+    var events = [
+		<#if events??>								   
+			<#list events as event>
+				{
+					title : '${event.idTimeSlot}',
+					start : '${event.startingDateTime}',
+					end : '${event.endingDateTime}',
+					id : '${event.idTimeSlot}',
+				},								
+			</#list>
+		</#if>
+	];
+    $(document).ready(function() {
+		$('#calendar').fullCalendar({
+			defaultView: 'agendaWeek',
+			height: 'auto',
+			locale: 'fr',
+			theme: true,                    
+			editable: false,
+			customButtons: {
+				datePicker: {
+					themeIcon:'circle-triangle-s',
+					click: function () {
+						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
+						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
+						$("#hiddenDate").datepicker({
+							showOn: "button",
+							dateFormat:"yy-mm-dd",
+							autoclose: true,                  
+						});
+						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
+						//Below are required for manipulating dynamically created datepicker on custom button click
+						$("#hiddenDate").focus().hide();
+						$btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
+						$btnDatepicker.hide();
+						$btnDatepicker.remove();
+						$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
+						$("#hiddenDate").change(function () {
+							$('#calendar').fullCalendar('gotoDate', $("#hiddenDate").val());
+						});
+					}
+				}			
+			},
+			// header
+			header: {
+				left: 'prev,next datePicker today',
+				center: 'title',
+				right: ''
+			},
+			columnFormat: columnFormat,
+			slotLabelFormat: 'H:mm',
+			slotLabelInterval: slotDuration,
+			slotDuration: slotDuration,
+			allDaySlot: false,
+			minTime: minTime,
+			maxTime: maxTime,         
+			businessHours: {
+				start: minTime,
+				end: maxTime,
+				dow: dow
+			},
+			eventClick: function(calEvent, jsEvent, view) {
+				location.href = eventUrl + calEvent.id;
+			},
+			events: events,
+			viewRender: function(view, element) {
+				var minDate = moment();
+				var maxDate = moment().add(nbMaxWeeks, 'weeks');
+				// Past
+				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
+					$(".fc-prev-button").prop('disabled', true); 
+					$(".fc-prev-button").addClass('fc-state-disabled'); 
+				} else {
+					$(".fc-prev-button").removeClass('fc-state-disabled'); 
+					$(".fc-prev-button").prop('disabled', false); 
+				}
+				// Future
+				if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
+					$(".fc-next-button").prop('disabled', true); 
+					$(".fc-next-button").addClass('fc-state-disabled'); 
+				} else {
+					$(".fc-next-button").removeClass('fc-state-disabled'); 
+					$(".fc-next-button").prop('disabled', false); 
+				}
+			},
+			eventAfterAllRender: function(view) {
+				$('.fc-day-header').click(function() {
+					location.href = dateUrl + $(this).attr('data-date');
+				});
+				$('.fc-day-header').css('cursor', 'pointer');
+				$('.fc-day-header').css('text-transform', 'uppercase');
+				$('.fc-event').css('cursor', 'pointer');
+			},
+		});        
+	});      
 </script>

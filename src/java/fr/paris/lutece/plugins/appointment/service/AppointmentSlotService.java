@@ -200,8 +200,8 @@ public class AppointmentSlotService {
 		// If the duration of appointments, the starting time or the ending time
 		// has changed we recreate appointments slots associated with this form
 		if ((formFromDb.getDurationAppointments() != appointmentForm.getDurationAppointments())
-				|| !StringUtils.equals(formFromDb.getTimeStart(), appointmentForm.getTimeStart())
-				|| !StringUtils.equals(formFromDb.getTimeEnd(), appointmentForm.getTimeEnd())) {
+			
+			) {
 			AppointmentSlotHome.deleteByIdForm(appointmentForm.getIdForm());
 
 			List<AppointmentDay> listAppointmentDay = AppointmentService.getInstance().computeDayList(appointmentForm);

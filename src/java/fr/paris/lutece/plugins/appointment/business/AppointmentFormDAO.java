@@ -103,8 +103,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO {
 		daoUtil.setInt(nIndex++, appointmentForm.getIdForm());
 		daoUtil.setString(nIndex++, appointmentForm.getTitle());
 		daoUtil.setString(nIndex++, appointmentForm.getDescription());
-		daoUtil.setString(nIndex++, appointmentForm.getTimeStart());
-		daoUtil.setString(nIndex++, appointmentForm.getTimeEnd());
+		//daoUtil.setString(nIndex++, appointmentForm.getTimeStart());
+		//daoUtil.setString(nIndex++, appointmentForm.getTimeEnd());
 		daoUtil.setInt(nIndex++, appointmentForm.getDurationAppointments());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenMonday());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenTuesday());
@@ -178,8 +178,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO {
 
 		daoUtil.setString(nIndex++, appointmentForm.getTitle());
 		daoUtil.setString(nIndex++, appointmentForm.getDescription());
-		daoUtil.setString(nIndex++, appointmentForm.getTimeStart());
-		daoUtil.setString(nIndex++, appointmentForm.getTimeEnd());
+		//daoUtil.setString(nIndex++, appointmentForm.getTimeStart());
+		//daoUtil.setString(nIndex++, appointmentForm.getTimeEnd());
 		daoUtil.setInt(nIndex++, appointmentForm.getDurationAppointments());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenMonday());
 		daoUtil.setBoolean(nIndex++, appointmentForm.getIsOpenTuesday());
@@ -263,8 +263,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO {
 		appointmentForm.setIdForm(daoUtil.getInt(nIndex++));
 		appointmentForm.setTitle(daoUtil.getString(nIndex++));
 		appointmentForm.setDescription(daoUtil.getString(nIndex++));
-		appointmentForm.setTimeStart(daoUtil.getString(nIndex++));
-		appointmentForm.setTimeEnd(daoUtil.getString(nIndex++));
+		//appointmentForm.setTimeStart(daoUtil.getString(nIndex++));
+		//appointmentForm.setTimeEnd(daoUtil.getString(nIndex++));
 		appointmentForm.setDurationAppointments(daoUtil.getInt(nIndex++));
 		appointmentForm.setIsOpenMonday(daoUtil.getBoolean(nIndex++));
 		appointmentForm.setIsOpenTuesday(daoUtil.getBoolean(nIndex++));
