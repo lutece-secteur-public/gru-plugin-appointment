@@ -3,6 +3,8 @@ package fr.paris.lutece.plugins.appointment.service;
 import static java.lang.Math.toIntExact;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -123,12 +125,12 @@ public class WorkingDayService {
 		}
 	}
 
-	public static WorkingDay findWorkingDayById(int nIdWorkingDay) {
-		WorkingDay workingDay = WorkingDayHome.findByPrimaryKey(nIdWorkingDay);		
+	public static WorkingDay findWorkingDayLightById(int nIdWorkingDay) {
+		WorkingDay workingDay = WorkingDayHome.findByPrimaryKey(nIdWorkingDay);
 		return workingDay;
 	}
-	
-	public static WorkingDay findWorkingDayWithListTimeSlotById(int nIdWorkingDay) {
+
+	public static WorkingDay findWorkingDayById(int nIdWorkingDay) {
 		WorkingDay workingDay = WorkingDayHome.findByPrimaryKey(nIdWorkingDay);
 		workingDay.setListTimeSlot(TimeSlotService.findListTimeSlotByWorkingDay(nIdWorkingDay));
 		return workingDay;
@@ -138,15 +140,51 @@ public class WorkingDayService {
 		LocalTime endingTime = null;
 		LocalTime endingTimeTemp;
 		for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
-			endingTimeTemp = timeSlot.getEndingTime(); 
+			endingTimeTemp = timeSlot.getEndingTime();
 			if (endingTime == null || endingTimeTemp.isAfter(endingTime)) {
 				endingTime = endingTimeTemp;
-			}			
+			}
 		}
 		return endingTime;
 	}
-	
-	public static int getMinDurationTimeSlotOfAWorkingDay(WorkingDay workingDay){
+
+	public static LocalTime getMaxEndingTimeOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
+		LocalTime endingTime = null;
+		LocalTime endingTimeTemp;
+		for (WorkingDay workingDay : listWorkingDay) {
+			endingTimeTemp = getMaxEndingTimeOfAWorkingDay(workingDay);
+			if (endingTime == null || endingTimeTemp.isAfter(endingTime)) {
+				endingTime = endingTimeTemp;
+			}
+		}
+		return endingTime;
+	}
+
+	public static LocalTime getMinStartingTimeOfAWorkingDay(WorkingDay workingDay) {
+		LocalTime startingTime = null;
+		LocalTime startingTimeTemp;
+		for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
+			startingTimeTemp = timeSlot.getStartingTime();
+			if (startingTime == null || startingTimeTemp.isBefore(startingTime)) {
+				startingTime = startingTimeTemp;
+			}
+		}
+		return startingTime;
+	}
+
+	public static LocalTime getMinStartingTimeOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
+		LocalTime startingTime = null;
+		LocalTime startingTimeTemp;
+		for (WorkingDay workingDay : listWorkingDay) {
+			startingTimeTemp = getMinStartingTimeOfAWorkingDay(workingDay);
+			if (startingTime == null || startingTimeTemp.isBefore(startingTime)) {
+				startingTime = startingTimeTemp;
+			}
+		}
+		return startingTime;
+	}
+
+	public static int getMinDurationTimeSlotOfAWorkingDay(WorkingDay workingDay) {
 		long lMinDuration = 0;
 		LocalTime startingTimeTemp;
 		LocalTime endingTimeTemp;
@@ -157,8 +195,29 @@ public class WorkingDayService {
 			lDurationTemp = startingTimeTemp.until(endingTimeTemp, ChronoUnit.MINUTES);
 			if (lMinDuration == 0 || lMinDuration > lDurationTemp) {
 				lMinDuration = lDurationTemp;
-			}			
+			}
 		}
 		return toIntExact(lMinDuration);
 	}
+
+	public static int getMinDurationTimeSlotOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
+		long lMinDuration = 0;
+		long lDurationTemp;
+		for (WorkingDay workingDay : listWorkingDay) {
+			lDurationTemp = getMinDurationTimeSlotOfAWorkingDay(workingDay);
+			if (lMinDuration == 0 || lMinDuration > lDurationTemp) {
+				lMinDuration = lDurationTemp;
+			}
+		}
+		return toIntExact(lMinDuration);
+	}
+
+	public static List<String> getListDayOfWeekOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
+		List<String> listDayOfWeek = new ArrayList<>();
+		for (WorkingDay workingDay : listWorkingDay) {
+			listDayOfWeek.add(new Integer(workingDay.getDayOfWeek()).toString());
+		}
+		return listDayOfWeek;
+	}
+
 }

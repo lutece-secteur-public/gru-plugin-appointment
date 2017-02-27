@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -94,7 +96,7 @@ public class TimeSlotService {
 
 	public static void updateTimeSlot(TimeSlot timeSlot, boolean bEndingTimeHasChanged) {
 		if (bEndingTimeHasChanged) {					 
-			WorkingDay workingDay = WorkingDayService.findWorkingDayWithListTimeSlotById(timeSlot.getIdWorkingDay());
+			WorkingDay workingDay = WorkingDayService.findWorkingDayById(timeSlot.getIdWorkingDay());
 			int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay(workingDay);
 			LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAWorkingDay(workingDay);
 			// Need to delete all the time slot after this one 
@@ -102,7 +104,7 @@ public class TimeSlotService {
 			// and to regenerate time slots after this one, with the god rules for the slot capacity
 			
 			WeekDefinition weekDefinition = WeekDefinitionService
-					.findWeekDefinitionById(workingDay.getIdWeekDefinition());
+					.findWeekDefinitionLightById(workingDay.getIdWeekDefinition());
 			ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply(
 					weekDefinition.getIdForm(), weekDefinition.getDateOfApply());
 			generateListTimeSlot(timeSlot.getIdWorkingDay(), timeSlot.getEndingTime(),
@@ -128,5 +130,21 @@ public class TimeSlotService {
 		for (TimeSlot timeSlot : listTimeSlot) {
 			TimeSlotHome.delete(timeSlot.getIdTimeSlot());
 		}
+	}
+	
+	public static List<TimeSlot> getListTimeSlotOfAListOfWorkingDay(List<WorkingDay> listWorkingDay,
+			LocalDate dateInWeek) {
+		List<TimeSlot> listTimeSlot = new ArrayList<>();
+		for (WorkingDay workingDay : listWorkingDay) {
+			for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
+				// Need to add the current date to the hour
+				timeSlot.setStartingDateTime(
+						dateInWeek.with(DayOfWeek.of(workingDay.getDayOfWeek())).atTime(timeSlot.getStartingTime()));
+				timeSlot.setEndingDateTime(
+						dateInWeek.with(DayOfWeek.of(workingDay.getDayOfWeek())).atTime(timeSlot.getEndingTime()));
+				listTimeSlot.add(timeSlot);
+			}
+		}
+		return listTimeSlot;
 	}
 }

@@ -61,7 +61,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	private static final String MARK_ENTRY_TYPE_LIST = "entry_type_list";
 	private static final String MARK_GROUP_ENTRY_LIST = "entry_group_list";
 	private static final String MARK_LIST_ORDER_FIRST_LEVEL = "listOrderFirstLevel";
-	
+
 	/**
 	 * Get an instance of the service
 	 * 
@@ -315,7 +315,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 		}
 	}
 
-	public static void addListEntryToModel(int nIdForm, Map<String, Object> model){
+	public static void addListEntryToModel(int nIdForm, Map<String, Object> model) {
 		EntryFilter entryFilter = new EntryFilter();
 		entryFilter.setIdResource(nIdForm);
 		entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
@@ -343,7 +343,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 		model.put(MARK_ENTRY_LIST, listEntry);
 		model.put(MARK_LIST_ORDER_FIRST_LEVEL, listOrderFirstLevel);
 	}
-	
+
 	/**
 	 * Get the reference list of groups
 	 * 
@@ -363,5 +363,5 @@ public class EntryService extends RemovalListenerService implements Serializable
 		}
 		return refListGroups;
 	}
-	
+
 }

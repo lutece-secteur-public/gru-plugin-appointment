@@ -24,8 +24,8 @@
 			</a>
         </li>
         <li <#if tab="entries">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&page=form_rdv">
-				#i18n{appointment.modify_appointmentform.pageTitle}
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
+				#i18n{appointment.modify_appointmentform_entries.pageTitle}
 			</a>
         </li>
         <li <#if tab="typicalWeek">class="active"</#if>>
@@ -49,12 +49,9 @@
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
 	<div class="tab-content">
-		<fieldset>    
-			<legend> #i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</legend>	    
+		<fieldset>    			   
 			<form method="post" class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data" >	     
-				<@messages errors=errors />
-				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-				<input type="hidden" id="formName" name="formName" value="second_form"/>
+				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.create_appointmentform.labelTitle' maxlength=255 /> 
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='category' mandatory=false value=appointmentform.category!'' i18nHelpBlockKey='appointment.create_appointmentform.labelCategory' maxlength=255 /> 
 				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDescription'/>								

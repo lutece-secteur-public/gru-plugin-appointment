@@ -52,7 +52,7 @@ public class FormService {
 	 * @param newNameForCopy
 	 */
 	public static void copyForm(int nIdForm, String newNameForCopy) {
-		AppointmentForm appointmentForm = buildAppointmentForm(nIdForm, 0);
+		AppointmentForm appointmentForm = buildAppointmentForm(nIdForm, 0, 0);
 		appointmentForm.setTitle(newNameForCopy);
 		appointmentForm.setIsActive(Boolean.FALSE);
 		int nIdNewForm = createAppointmentForm(appointmentForm);
@@ -149,37 +149,34 @@ public class FormService {
 	 * @param nIdReservationRule
 	 * @return
 	 */
-	public static AppointmentForm buildAppointmentForm(int nIdForm, int nIdReservationRule) {
+	public static AppointmentForm buildAppointmentForm(int nIdForm, int nIdReservationRule, int nIdWeekDefinition) {
 		AppointmentForm appointmentForm = new AppointmentForm();
-		Form form = FormService.findFormByPrimaryKey(nIdForm);
-		if (form != null) {
-			fillAppointmentFormWithFormPart(appointmentForm, form);
-			Display display = DisplayService.findDisplayWithFormId(nIdForm);
-			if (display != null) {
-				fillAppointmentFormWithDisplayPart(appointmentForm, display);
-			}
-			FormRule formRule = FormRuleService.findFormRuleWithFormId(nIdForm);
-			if (formRule != null) {
-				fillAppointmentFormWithFormRulePart(appointmentForm, formRule);
-			}
-			ReservationRule reservationRule;
-			LocalDate dateOfApply = LocalDate.now();
-			if (nIdReservationRule > 0) {
-				reservationRule = ReservationRuleService.findReservationRuleById(nIdReservationRule);
-				dateOfApply = reservationRule.getDateOfApply();
-			} else {
-				reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm,
-						dateOfApply);
-			}
-			if (reservationRule != null) {
-				fillAppointmentFormWithReservationRulePart(appointmentForm, reservationRule);
-			}
-			WeekDefinition weekDefinition = WeekDefinitionService
-					.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm, dateOfApply);
-			if (weekDefinition != null) {
-				fillAppointmentFormWithWeekDefinitionPart(appointmentForm, weekDefinition);
-			}
+		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
+		fillAppointmentFormWithFormPart(appointmentForm, form);
+		Display display = DisplayService.findDisplayWithFormId(nIdForm);
+		fillAppointmentFormWithDisplayPart(appointmentForm, display);
+		FormRule formRule = FormRuleService.findFormRuleWithFormId(nIdForm);
+		fillAppointmentFormWithFormRulePart(appointmentForm, formRule);
+		ReservationRule reservationRule = null;
+		WeekDefinition weekDefinition = null;
+		LocalDate dateOfApply = LocalDate.now();
+		if (nIdReservationRule > 0) {
+			reservationRule = ReservationRuleService.findReservationRuleById(nIdReservationRule);
+			dateOfApply = reservationRule.getDateOfApply();
 		}
+		if (nIdWeekDefinition > 0) {
+			weekDefinition = WeekDefinitionService.findWeekDefinitionById(nIdWeekDefinition);
+			dateOfApply = weekDefinition.getDateOfApply();
+		}
+		if (reservationRule == null) {
+			reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm, dateOfApply);
+		}
+		if (weekDefinition == null) {
+			weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm,
+					dateOfApply);
+		}
+		fillAppointmentFormWithReservationRulePart(appointmentForm, reservationRule);
+		fillAppointmentFormWithWeekDefinitionPart(appointmentForm, weekDefinition);
 		return appointmentForm;
 	}
 
@@ -190,7 +187,7 @@ public class FormService {
 	 */
 	private static void fillAppointmentFormWithWeekDefinitionPart(AppointmentForm appointmentForm,
 			WeekDefinition weekDefinition) {
-		if (weekDefinition != null && !weekDefinition.getListWorkingDay().isEmpty()) {			
+		if (weekDefinition != null && !weekDefinition.getListWorkingDay().isEmpty()) {
 			for (WorkingDay workingDay : weekDefinition.getListWorkingDay()) {
 				DayOfWeek dayOfWeek = DayOfWeek.of(workingDay.getDayOfWeek());
 				switch (dayOfWeek) {
@@ -324,7 +321,7 @@ public class FormService {
 	 * @return
 	 */
 	public static Form updateForm(AppointmentForm appointmentForm) {
-		Form form = FormService.findFormByPrimaryKey(appointmentForm.getIdForm());
+		Form form = FormService.findFormLightByPrimaryKey(appointmentForm.getIdForm());
 		form = fillInFormWithAppointmentForm(form, appointmentForm);
 		FormHome.update(form);
 		return form;
@@ -369,7 +366,7 @@ public class FormService {
 	 * @param nIdForm
 	 * @return
 	 */
-	public static Form findFormByPrimaryKey(int nIdForm) {
+	public static Form findFormLightByPrimaryKey(int nIdForm) {
 		return FormHome.findByPrimaryKey(nIdForm);
 	}
 

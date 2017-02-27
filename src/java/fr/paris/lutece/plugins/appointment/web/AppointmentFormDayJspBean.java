@@ -76,8 +76,7 @@ import fr.paris.lutece.util.url.UrlItem;
 /**
  * JspBean to manage days
  */
-@Controller(controllerJsp = "ManageAppointmentFormDays.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM)
-public class AppointmentFormDayJspBean extends MVCAdminJspBean {
+@Controller(controllerJsp = "ManageAppointmentFormDays.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM) class AppointmentFormDayJspBean extends MVCAdminJspBean {
 	private static final long serialVersionUID = -4951787792196104967L;
 
 	// Parameters

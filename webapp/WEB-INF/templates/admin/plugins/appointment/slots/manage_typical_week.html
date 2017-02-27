@@ -13,23 +13,34 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     	<@tabs tab="typicalWeek" appointmentform=appointmentform />
 		<div class="tab-content">
-		<fieldset>
-			<legend>#i18n{appointment.typicalWeek.pageTitle}</legend>
-			<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&forceReload=true">
+		<fieldset>			
+			<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}">
 				<#if listDateOfModification??>					
-					<@fieldInputCombo i18nLabelKey='appointment.modify_appointmentform.listDateOfModification' inputName='id_reservation_rule' items=listDateOfModification value="${id_reservation_rule!}" cssClass="form-control" />
-				</#if>	
-				<div align="center">
-					<button type="submit" class="btn btn-primary">#i18n{appointment.modify_appointmentform.refresh}</button>
-				</div>
-			</form>
-			
+					<div class="form-group">
+							<label class="col-xs-12 col-sm-3 control-label" for="id_week_definition">#i18n{appointment.modify_appointmentform.listDateOfModification}:</label>
+							<div class="col-xs-12 col-sm-9">							
+								<select id="id_week_definition" name="id_week_definition" class="form-control" onchange="refresh()">
+									<#list listDateOfModification as item>
+										<#if "${id_week_definition}"="${item.code}">
+											<option selected="selected" value="${item.code}" >${item.name}</option>
+										<#else>
+											<option value="${item.code}" >${item.name}</option>
+										</#if>
+									</#list>	
+								</select>
+							</div>
+						</div>					
+				</#if>					
+			</form>			
 			<hr color="black">
 			<div id="calendar"></div>	
 		</fieldset>				
 	</div>
 </div>
 <script type="text/javascript">	
+	function refresh() {
+		document.getElementById("listOfDates").submit();
+	}
 	var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
@@ -40,7 +51,7 @@
 			</#list>
 		</#if>				
 	];    
-    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlots&id_form=${id_form}&id_week_definition=${id_week_definition}&id_time_slot=';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${id_form}&id_week_definition=${id_week_definition}&id_time_slot=';
     var dateUrl = 'http://www.google.fr?q=';
     var columnFormat = 'dddd';
     var events = [

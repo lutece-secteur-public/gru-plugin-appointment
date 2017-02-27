@@ -16,8 +16,7 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     	<@tabs tab="entries" appointmentform=appointmentform />
 		<div class="tab-content">
-    	<fieldset>
-    		<legend>#i18n{appointment.modify_appointmentform.pageTitle}</legend>
+    	<fieldset>    		
 			<form method="get" class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
 				<input type="hidden" value="getCreateEntry" name="view">
 				<input type="hidden" name="id_form" value="${appointmentform.idForm}">

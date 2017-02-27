@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
@@ -124,9 +125,10 @@ public class ReservationRuleService {
 	 */
 	public static ReferenceList findAllDateOfReservationRule(int nIdForm) {
 		ReferenceList listDate = new ReferenceList();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm(nIdForm);
 		for (ReservationRule reservationRule : listReservationRule) {
-			listDate.addItem(reservationRule.getIdReservationRule(), reservationRule.getDateOfApply().toString());
+			listDate.addItem(reservationRule.getIdReservationRule(), reservationRule.getDateOfApply().format(formatter));
 		}
 		return listDate;
 	}

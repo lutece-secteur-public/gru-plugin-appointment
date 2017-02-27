@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import static java.lang.Math.toIntExact;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -50,6 +48,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -78,12 +77,10 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
-import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
-import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
@@ -102,6 +99,7 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.url.UrlItem;
+
 /**
  * JspBean to manage calendar slots
  */
@@ -121,6 +119,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	private static final String MESSAGE_MANAGE_SLOTS_PAGE_TITLE = "appointment.manageCalendarSlots.pageTitle";
 	private static final String MESSAGE_TYPICAL_WEEK_PAGE_TITLE = "appointment.typicalWeek.pageTitle";
 	private static final String MESSAGE_MODIFY_SLOT_PAGE_TITLE = "appointment.modifyCalendarSlots.pageTitle";
+	private static final String MESSAGE_MODIFY_TIME_SLOT_PAGE_TITLE = "appointment.modifyCalendarSlots.pageTitle";
 	private static final String MESSAGE_WARNING_CHANGES_APPLY_TO_ALL = "appointment.modifyCalendarSlots.warningModifiyingEndingTime";
 	private static final String MESSAGE_ERROR_DAY_HAS_APPOINTMENT = "appointment.modifyCalendarSlots.errorDayHasAppointment";
 	private static final String MESSAGE_ERROR_FORM_NOT_ACTIVE = "appointment.message.error.formNotActive";
@@ -158,6 +157,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 
 	// Marks
 	private static final String MARK_SLOT = "slot";
+	private static final String MARK_TIME_SLOT = "timeSlot";
 	private static final String MARK_LOCALE = "language";
 	private static final String MARK_HOLIDAY = "dateHoliday";
 	private static final String MARK_LIST_DAYS = "listDays";
@@ -178,11 +178,11 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	// Views
 	private static final String VIEW_MANAGE_APPOINTMENT_SLOTS = "manageAppointmentSlots";
 	private static final String VIEW_MANAGE_TYPICAL_WEEK = "manageTypicalWeek";
-	private static final String VIEW_MODIFY_APPOINTMENT_SLOT = "viewModifySlots";
+	private static final String VIEW_MODIFY_TIME_SLOT = "viewModifyTimeSlot";
 
 	// Actions
 	private static final String ACTION_DO_CHANGE_SLOT_ENABLING = "doChangeSlotEnabling";
-	private static final String ACTION_DO_MODIFY_SLOT = "doModifySlot";
+	private static final String ACTION_DO_MODIFY_TIME_SLOT = "doModifyTimeSlot";
 	private static final String ACTION_DO_MODIFY_HOLIDAYS = "doModifyHolidays";
 
 	// JSP URL
@@ -192,11 +192,149 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	// Templates
 	private static final String TEMPLATE_MANAGE_SLOTS = "admin/plugins/appointment/slots/manage_slots.html";
 	private static final String TEMPLATE_MANAGE_TYPICAL_WEEK = "admin/plugins/appointment/slots/manage_typical_week.html";
-	private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modify_slot.html";
+	private static final String TEMPLATE_MODIFY_TIME_SLOT = "admin/plugins/appointment/slots/modify_time_slot.html";
 	private static final String TEMPLATE_MANAGE_HOLIDAYS = "admin/plugins/appointment/slots/modify_appointmentform_holidays.html";
 	// services
 	private final AppointmentFormService _appointmentFormService = SpringContextService
 			.getBean(AppointmentFormService.BEAN_NAME);
+	
+	// Session variable to store working values
+	private static final String SESSION_ATTRIBUTE_TIME_SLOT = "appointment.session.timeSlot";
+
+	@View(value = VIEW_MANAGE_TYPICAL_WEEK)
+	public String getManageTypicalWeek(HttpServletRequest request) throws AccessDeniedException {
+		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
+		String strIdWeekDefinition = request.getParameter(PARAMETER_ID_WEEK_DEFINITION);
+		request.getSession().removeAttribute(SESSION_ATTRIBUTE_TIME_SLOT);
+		int nIdWeekDefinition = 0;
+		if (StringUtils.isNotEmpty(strIdWeekDefinition)) {
+			nIdWeekDefinition = Integer.parseInt(strIdWeekDefinition);
+		}
+		LocalDate dateOfApply = LocalDate.now();
+		int nIdForm = Integer.parseInt(strIdForm);
+		WeekDefinition weekDefinition;
+		if (nIdWeekDefinition != 0) {
+			weekDefinition = WeekDefinitionService.findWeekDefinitionLightById(nIdWeekDefinition);
+			dateOfApply = weekDefinition.getDateOfApply();
+		} else {
+			weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm,
+					dateOfApply);
+		}
+		List<WorkingDay> listWorkingDay = WorkingDayService
+				.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition());
+		List<String> listDayOfWeek = WorkingDayService.getListDayOfWeekOfAListOfWorkingDay(listWorkingDay);
+		List<TimeSlot> listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay(listWorkingDay, dateOfApply);
+		LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay(listWorkingDay);
+		LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(listWorkingDay);
+		int nMinDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay(listWorkingDay);
+		AppointmentForm appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, nIdWeekDefinition);
+		Map<String, Object> model = getModel();
+		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
+		model.put(PARAMETER_EVENTS, listTimeSlot);
+		model.put(PARAMETER_MIN_TIME, minStartingTime);
+		model.put(PARAMETER_MAX_TIME, maxEndingTime);
+		model.put(PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes(nMinDuration));
+		model.put(PARAMETER_ID_WEEK_DEFINITION, weekDefinition.getIdWeekDefinition());
+		model.put(MARK_LIST_DATE_OF_MODIFICATION, WeekDefinitionService.findAllDateOfWeekDefinition(nIdForm));
+		model.put(PARAMETER_DATE_OF_APPLY, dateOfApply);
+		model.put(PARAMETER_ID_FORM, nIdForm);
+		model.put(MARK_LOCALE, getLocale());
+		AppointmentFormJspBean.addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
+		return getPage(MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model);
+	}
+
+	/**
+	 * Get the slot modification page
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The HTML content to display
+	 */
+	@View(VIEW_MODIFY_TIME_SLOT)
+	public String getViewModifyTimeSlot(HttpServletRequest request) {
+		int nIdTimeSlot = Integer.parseInt(request.getParameter(PARAMETER_ID_TIME_SLOT));		
+		TimeSlot timeSlot = (TimeSlot) request.getSession()
+				.getAttribute(SESSION_ATTRIBUTE_TIME_SLOT);
+		if ((timeSlot == null) || (nIdTimeSlot != timeSlot.getIdTimeSlot())) {
+			timeSlot = TimeSlotService.findTimeSlotById(nIdTimeSlot);
+			request.getSession().setAttribute(SESSION_ATTRIBUTE_TIME_SLOT, timeSlot);
+		}		
+		addInfo(MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale());
+		Map<String, Object> model = getModel();
+		model.put(PARAMETER_ID_FORM, request.getParameter(PARAMETER_ID_FORM));
+		model.put(PARAMETER_ID_WEEK_DEFINITION, request.getParameter(PARAMETER_ID_WEEK_DEFINITION));
+		model.put(MARK_TIME_SLOT, timeSlot);
+		return getPage(MESSAGE_MODIFY_TIME_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_TIME_SLOT, model);
+	}
+
+	/**
+	 * Do modify a slot
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The next URL to redirect to
+	 */
+	/**
+	 * @param request
+	 * @return
+	 */
+	@Action(ACTION_DO_MODIFY_TIME_SLOT)
+	public String doModifyTimeSlot(HttpServletRequest request) {
+		String strIdTimeSlot = request.getParameter(PARAMETER_ID_TIME_SLOT);		
+		int nIdTimeSlot = Integer.parseInt(strIdTimeSlot);		
+		TimeSlot timeSlot = (TimeSlot) request.getSession()
+				.getAttribute(SESSION_ATTRIBUTE_TIME_SLOT);
+		if ((timeSlot == null) || (nIdTimeSlot != timeSlot.getIdTimeSlot())) {
+			timeSlot = TimeSlotService.findTimeSlotById(nIdTimeSlot);
+		}
+		
+		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
+		int nIdForm = Integer.parseInt(strIdForm);
+		String strIdWeekDefinition = request.getParameter(PARAMETER_ID_WEEK_DEFINITION);
+		int nIdWeekDefinition = Integer.parseInt(strIdWeekDefinition);
+		boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
+		int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
+		LocalTime endingTime = LocalTime.parse(request.getParameter(PARAMETER_ENDING_TIME));
+		TimeSlot timeSlotFromDb = TimeSlotService.findTimeSlotById(nIdTimeSlot);
+		boolean endingTimeHasChanged = false;
+		if (bIsOpen != timeSlotFromDb.getIsOpen()) {
+			timeSlotFromDb.setIsOpen(bIsOpen);
+		}
+		if (nMaxCapacity != timeSlotFromDb.getMaxCapacity()) {
+			timeSlotFromDb.setMaxCapacity(nMaxCapacity);
+		}
+		if (!endingTime.equals(timeSlotFromDb.getEndingTime())) {
+			timeSlotFromDb.setEndingTime(endingTime);
+			if (!checkEndingTime(endingTime, timeSlotFromDb)) {
+				Map<String, String> additionalParameters = new HashMap<>();
+				additionalParameters.put(PARAMETER_ID_FORM, strIdForm);
+				additionalParameters.put(PARAMETER_ID_WEEK_DEFINITION, strIdWeekDefinition);
+				additionalParameters.put(PARAMETER_ID_TIME_SLOT, strIdTimeSlot);
+				request.getSession().setAttribute(SESSION_ATTRIBUTE_TIME_SLOT, timeSlotFromDb);
+				return redirect(request, VIEW_MODIFY_TIME_SLOT, additionalParameters);
+			}			
+			endingTimeHasChanged = true;
+		}
+		TimeSlotService.updateTimeSlot(timeSlotFromDb, endingTimeHasChanged);
+		addInfo(MESSAGE_INFO_SLOT_UPDATED, getLocale());
+		request.getSession().removeAttribute(SESSION_ATTRIBUTE_TIME_SLOT);
+		return redirect(request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_WEEK_DEFINITION,
+				nIdWeekDefinition);
+	}
+
+	private boolean checkEndingTime(LocalTime endingTime, TimeSlot timeSlot) {
+		boolean bReturn = true;
+		WorkingDay workingDay = WorkingDayService.findWorkingDayById(timeSlot.getIdWorkingDay());
+		if (endingTime.isAfter(WorkingDayService.getMaxEndingTimeOfAWorkingDay(workingDay))) {
+			bReturn = false;
+			addError(MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale());
+		}
+		if (endingTime.isBefore(timeSlot.getStartingTime())) {
+			bReturn = false;
+			addError(MESSAGE_ERROR_TIME_END_BEFORE_TIME_START, getLocale());
+		}
+		return bReturn;
+	}
 
 	@View(VIEW_MANAGE_HOLIDAYS)
 	public String getManageHolidays(HttpServletRequest request) throws AccessDeniedException {
@@ -505,7 +643,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		int nIdForm = Integer.parseInt(strIdForm);
 		_appointmentFormService.removeAppointmentFromSession(request.getSession());
 		_appointmentFormService.removeValidatedAppointmentFromSession(request.getSession());
-		AppointmentForm form = FormService.buildAppointmentForm(nIdForm, 0);
+		AppointmentForm form = FormService.buildAppointmentForm(nIdForm, 0, 0);
 
 		LocalDate dateNow = LocalDate.now();
 		WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm,
@@ -561,91 +699,6 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		model.put(MARK_LOCALE, getLocale());
 		AppointmentFormJspBean.addElementsToModelForLeftColumn(request, form, getUser(), getLocale(), model);
 		return getPage(MESSAGE_MANAGE_SLOTS_PAGE_TITLE, TEMPLATE_MANAGE_SLOTS, model);
-	}
-
-	@View(value = VIEW_MANAGE_TYPICAL_WEEK)
-	public String getManageTypicalWeek(HttpServletRequest request) throws AccessDeniedException {
-		Map<String, Object> model = getModel();
-		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
-		if (StringUtils.isEmpty(strIdForm)) {
-
-		}
-		String strIdReservationRule = request.getParameter(PARAMETER_ID_RESERVATION_RULE);
-		int nIdReservationRule = 0;
-		if (StringUtils.isNotEmpty(strIdReservationRule) && StringUtils.isNumeric(strIdReservationRule)) {
-			nIdReservationRule = Integer.parseInt(strIdReservationRule);
-		}
-		LocalDate dateOfApply = LocalDate.now();
-		int nIdForm = Integer.parseInt(strIdForm);
-		ReservationRule reservationRule;
-		if (nIdReservationRule != 0) {
-			reservationRule = ReservationRuleService.findReservationRuleById(nIdReservationRule);
-			dateOfApply = reservationRule.getDateOfApply();
-		} else {
-			reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm,
-					dateOfApply);
-		}
-		AppointmentForm form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule());
-		WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm,
-				dateOfApply);
-		if (weekDefinition != null) {
-			List<WorkingDay> listWorkingDay = WorkingDayService
-					.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition());
-			LocalTime minStartingTime = null;
-			LocalTime maxEndingTime = null;
-			long lDurationAppointment = 0;
-			List<TimeSlot> listTimeSlot = new ArrayList<>();
-			List<String> listDayOfWeek = new ArrayList<>();
-			for (WorkingDay workingDay : listWorkingDay) {
-				listDayOfWeek.add(new Integer(workingDay.getDayOfWeek()).toString());
-				if (workingDay.getListTimeSlot() != null) {
-					for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
-						LocalTime startingHour = timeSlot.getStartingTime();
-						LocalTime endingHour = timeSlot.getEndingTime();
-						// Need to add the current date to the hour
-						LocalDateTime startingDateTime = dateOfApply.with(DayOfWeek.of(workingDay.getDayOfWeek()))
-								.atTime(startingHour);
-						LocalDateTime endingDateTime = dateOfApply.with(DayOfWeek.of(workingDay.getDayOfWeek()))
-								.atTime(endingHour);
-						timeSlot.setStartingDateTime(startingDateTime);
-						timeSlot.setEndingDateTime(endingDateTime);
-						listTimeSlot.add(timeSlot);
-						if (minStartingTime == null) {
-							minStartingTime = startingHour;
-						}
-						if (startingHour.isBefore(minStartingTime)) {
-							minStartingTime = startingHour;
-						}
-						if (maxEndingTime == null) {
-							maxEndingTime = endingHour;
-						}
-						if (endingHour.isAfter(maxEndingTime)) {
-							maxEndingTime = endingHour;
-						}
-						long lDurationTemp = startingHour.until(endingHour, ChronoUnit.MINUTES);
-						if (lDurationAppointment == 0) {
-							lDurationAppointment = lDurationTemp;
-						}
-						if (lDurationTemp < lDurationAppointment) {
-							lDurationAppointment = lDurationTemp;
-						}
-					}
-				}
-			}
-			model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
-			model.put(PARAMETER_EVENTS, listTimeSlot);
-			model.put(PARAMETER_MIN_TIME, minStartingTime.toString());
-			model.put(PARAMETER_MAX_TIME, maxEndingTime.toString());			
-			model.put(PARAMETER_MIN_DURATION, LocalTime.of(0, toIntExact(lDurationAppointment)));
-			model.put(PARAMETER_ID_WEEK_DEFINITION, weekDefinition.getIdWeekDefinition());
-			model.put(PARAMETER_ID_RESERVATION_RULE, reservationRule.getIdReservationRule());
-		}
-		model.put(MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule(nIdForm));
-		model.put(PARAMETER_DATE_OF_APPLY, dateOfApply);
-		model.put(PARAMETER_ID_FORM, nIdForm);
-		model.put(MARK_LOCALE, getLocale());
-		AppointmentFormJspBean.addElementsToModelForLeftColumn(request, form, getUser(), getLocale(), model);
-		return getPage(MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model);
 	}
 
 	/**
@@ -715,93 +768,6 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		}
 
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
-	}
-
-	/**
-	 * Get the slot modification page
-	 * 
-	 * @param request
-	 *            The request
-	 * @return The HTML content to display
-	 */
-	@View(VIEW_MODIFY_APPOINTMENT_SLOT)
-	public String getViewModifySlot(HttpServletRequest request) {
-		String strIdSlot = request.getParameter(PARAMETER_ID_TIME_SLOT);
-		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
-		TimeSlot timeSlot = null;
-		Map<String, Object> model = getModel();
-		int nIdForm = 0;
-		if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
-			nIdForm = Integer.parseInt(strIdForm);
-			model.put(PARAMETER_APPOINTMENT_FORM, nIdForm);
-		}
-		if (StringUtils.isNotEmpty(strIdSlot) && StringUtils.isNumeric(strIdSlot)) {
-			int nIdSlot = Integer.parseInt(strIdSlot);
-			timeSlot = TimeSlotService.findTimeSlotById(nIdSlot);
-		}
-		if (timeSlot != null) {
-			addInfo(MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale());
-			model.put(MARK_SLOT, timeSlot);
-			model.put(MARK_LOCALE, getLocale());
-			AppointmentForm appointmentForm = FormService.buildAppointmentForm(nIdForm, 0);
-			AppointmentFormJspBean.addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(),
-					model);
-			return getPage(MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, model);
-		}
-		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
-	}
-
-	/**
-	 * Do modify a slot
-	 * 
-	 * @param request
-	 *            The request
-	 * @return The next URL to redirect to
-	 */
-	/**
-	 * @param request
-	 * @return
-	 */
-	@Action(ACTION_DO_MODIFY_SLOT)
-	public String doModifySlot(HttpServletRequest request) {
-		int nIdTimeSlot = Integer.parseInt(request.getParameter(PARAMETER_ID_TIME_SLOT));
-		boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
-		int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
-		LocalTime endingTime = LocalTime.parse(request.getParameter(PARAMETER_ENDING_TIME));
-		TimeSlot timeSlotFromDb = TimeSlotService.findTimeSlotById(nIdTimeSlot);
-		boolean endingTimeHasChanged = false;
-		if (bIsOpen != timeSlotFromDb.getIsOpen()) {
-			timeSlotFromDb.setIsOpen(bIsOpen);
-		}
-		if (nMaxCapacity != timeSlotFromDb.getMaxCapacity()) {
-			timeSlotFromDb.setMaxCapacity(nMaxCapacity);
-		}
-		if (!endingTime.equals(timeSlotFromDb.getEndingTime())) {
-			if (!checkEndingTime(endingTime, timeSlotFromDb)){
-				return redirectView(request, VIEW_MODIFY_APPOINTMENT_SLOT);
-			}
-			timeSlotFromDb.setEndingTime(endingTime);
-			endingTimeHasChanged = true;
-		}
-		TimeSlotService.updateTimeSlot(timeSlotFromDb, endingTimeHasChanged);
-		addInfo(MESSAGE_INFO_SLOT_UPDATED, getLocale());
-		return redirect(request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM,
-				Integer.parseInt(request.getParameter(PARAMETER_ID_FORM)), PARAMETER_ID_WEEK_DEFINITION,
-				Integer.parseInt(request.getParameter(PARAMETER_ID_WEEK_DEFINITION)));
-	}
-
-	private boolean checkEndingTime(LocalTime endingTime, TimeSlot timeSlot) {
-		boolean bReturn = true;
-		WorkingDay workingDay = WorkingDayService.findWorkingDayWithListTimeSlotById(timeSlot.getIdWorkingDay());
-		if (endingTime.isAfter(WorkingDayService.getMaxEndingTimeOfAWorkingDay(workingDay))) {
-			bReturn = false;
-			addError(MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale());
-		}
-		if (endingTime.isBefore(timeSlot.getStartingTime())) {
-			bReturn = false;
-			addError(MESSAGE_ERROR_TIME_END_BEFORE_TIME_START, getLocale());
-		}
-		return bReturn;
 	}
 
 	/**

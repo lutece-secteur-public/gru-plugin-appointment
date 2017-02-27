@@ -1,10 +1,13 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
+import fr.paris.lutece.util.ReferenceList;
 
 public class WeekDefinitionService {
 
@@ -85,8 +88,25 @@ public class WeekDefinitionService {
 		return weekDefinition;
 	}
 	
-	public static WeekDefinition findWeekDefinitionById(int nIdWeekDefinition){
+	public static WeekDefinition findWeekDefinitionLightById(int nIdWeekDefinition){
 		return WeekDefinitionHome.findByPrimaryKey(nIdWeekDefinition);
+	}
+	
+	public static WeekDefinition findWeekDefinitionById(int nIdWeekDefinition){
+		WeekDefinition weekDefinition = WeekDefinitionHome.findByPrimaryKey(nIdWeekDefinition);
+		weekDefinition.setListWorkingDay(
+				WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
+		return weekDefinition;
+	}
+	
+	public static ReferenceList findAllDateOfWeekDefinition(int nIdForm) {
+		ReferenceList listDate = new ReferenceList();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			listDate.addItem(weekDefinition.getIdWeekDefinition(), weekDefinition.getDateOfApply().format(formatter));
+		}
+		return listDate;
 	}
 
 }
