@@ -428,15 +428,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
 
-        Map<Integer, String> listGenatt = new HashMap<Integer, String>( );
         Map<Integer, String> mapDefaultValueGenAttBackOffice = new HashMap<Integer, String>( );
 
         for ( Entry e : listEntry )
         {
-            if ( ( e.getTitle( ) != null ) && !e.getTitle( ).isEmpty( ) )
-            {
-                listGenatt.put( e.getIdEntry( ), e.getTitle( ) );
-            }
             if ( e.isOnlyDisplayInBack( ) )
             {
 
@@ -460,7 +455,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         }
 
-        int nTaille = 10 + ( listGenatt.size( ) + 1 );
+        int nTaille = 10 + ( listEntry.size( ) + 1 );
 
         if ( tmpForm != null )
         {
@@ -485,12 +480,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 strInfos [10] = I18nService.getLocalizedString( "appointment.manage_appointments.columnNumberOfBookedseatsPerAppointment", getLocale( ) );
                 nIndex = 1;
             }
-            if ( listGenatt.size( ) > 0 )
+            
+            if ( listEntry.size( ) > 0 )
             {
 
-                for ( Integer key : listGenatt.keySet( ) )
+                for ( Entry e : listEntry )
                 {
-                    strInfos [10 + nIndex] = listGenatt.get( key );
+                    strInfos [10 + nIndex] = e.getTitle( );
                     nIndex++;
                 }
             }
@@ -551,8 +547,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     }
                 }
 
-                for ( Integer key : listGenatt.keySet( ) )
+                for ( Entry e : listEntry )
                 {
+                	Integer key = e.getIdEntry( );
                     String strValue = StringUtils.EMPTY;
                     String strPrefix = StringUtils.EMPTY;
 
