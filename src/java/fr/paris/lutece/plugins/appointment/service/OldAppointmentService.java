@@ -63,7 +63,7 @@ import fr.paris.lutece.portal.service.util.CryptoService;
 /**
  * Service to manage calendars
  */
-public class AppointmentService {
+public class OldAppointmentService {
 	/**
 	 * Name of the bean of the service
 	 */
@@ -100,14 +100,14 @@ public class AppointmentService {
 	/**
 	 * Instance of the service
 	 */
-	private static volatile AppointmentService _instance;
+	private static volatile OldAppointmentService _instance;
 
 	/**
 	 * Get an instance of the service
 	 * 
 	 * @return An instance of the service
 	 */
-	public static AppointmentService getInstance() {
+	public static OldAppointmentService getInstance() {
 		if (_instance == null) {
 			_instance = SpringContextService.getBean(BEAN_NAME);
 		}
@@ -709,7 +709,7 @@ public class AppointmentService {
 
 		// We synchronize the method by id form to avoid collisions between
 		// manual and daemon checks
-		synchronized (AppointmentService.class + Integer.toString(form.getIdForm())) {
+		synchronized (OldAppointmentService.class + Integer.toString(form.getIdForm())) {
 			int maxWeek = form.getNbWeeksToDisplay() + nNbWeeksToCreate;
 
 			if (form.getNbWeeksToDisplay() == 0) {

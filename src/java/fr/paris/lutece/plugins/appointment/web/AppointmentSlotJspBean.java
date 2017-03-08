@@ -53,7 +53,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.service.AppointmentService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentsService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
@@ -387,7 +387,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		List<Slot> listSlotImpacted = new ArrayList<>(SlotService
 				.findListSLotByIdFormAndDateRange(slot.getIdForm(), slot.getStartingDateTime(), endingDateTime)
 				.values());
-		List<Appointment> listAppointment = AppointmentService.findAppointmentByListSlot(listSlotImpacted);
+		List<Appointment> listAppointment = AppointmentsService.findAppointmentByListSlot(listSlotImpacted);
 		if (!CollectionUtils.isEmpty(listAppointment)) {
 			bReturn = false;
 			addError(MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale());
