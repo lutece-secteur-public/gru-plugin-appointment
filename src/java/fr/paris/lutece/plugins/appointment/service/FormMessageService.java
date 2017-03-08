@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 public class FormMessageService {
@@ -31,24 +30,6 @@ public class FormMessageService {
 	private static final String PROPERTY_DEFAULT_CALENDAR_DESCRIPTION = "appointment.formMessages.defaultCalendarDescription";
 	private static final String PROPERTY_DEFAULT_CALENDAR_RESERVE_LABEL = "appointment.formMessages.defaultCalendarReserveLabel";
 	private static final String PROPERTY_DEFAULT_CALENDAR_FULL_LABEL = "appointment.formMessages.defaultCalendarFullLabel";
-
-	/**
-	 * Instance of the service
-	 */
-	private static volatile FormMessageService _instance;
-
-	/**
-	 * Get an instance of the service
-	 * 
-	 * @return An instance of the service
-	 */
-	public static FormMessageService getInstance() {
-		if (_instance == null) {
-			_instance = SpringContextService.getBean(BEAN_NAME);
-		}
-
-		return _instance;
-	}
 	
 	/**
 	 * 

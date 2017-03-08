@@ -2,7 +2,9 @@ package fr.paris.lutece.plugins.appointment.business.slot;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * The business class of the slot
@@ -22,25 +24,32 @@ public class Slot implements Serializable {
 	 */
 	private int _nIdSlot;
 
+	private LocalDate _date;
+	
+	private LocalTime _startingTime;
+	
+	private LocalTime _endingTime;
 	/**
 	 * Starting date (Date + Time) of the slot
 	 */
-	private LocalDateTime _startingDate;
-
+	private LocalDateTime _startingDateTime;
+	
 	/**
 	 * Ending date (Date + Time) of the slot
 	 */
-	private LocalDateTime _endingDate;
+	private LocalDateTime _endingDateTime;
 
 	/**
 	 * Indicate whether the slot is open or not
 	 */
 	private boolean _bIsOpen;
+	
+	private int _nMaxCapacity;
 
 	/**
 	 * Nb Remaining Places of the slot
 	 */
-	private int _nNb_Remaining_Places;
+	private int _nNbRemainingPlaces;
 
 	/**
 	 * Form Id the slot belongs to (foreign key)
@@ -54,6 +63,30 @@ public class Slot implements Serializable {
 	 */
 	public int getIdSlot() {
 		return _nIdSlot;
+	}	
+	
+	public LocalDate getDate() {
+		return _date;
+	}
+
+	public void setDate(LocalDate _date) {
+		this._date = _date;
+	}
+
+	public LocalTime getStartingTime() {
+		return _startingTime;
+	}
+
+	public void setStartingTime(LocalTime startingTime) {
+		this._startingTime = startingTime;
+	}
+
+	public LocalTime getEndingTime() {
+		return _endingTime;
+	}
+
+	public void setEndingTime(LocalTime endingTime) {
+		this._endingTime = endingTime;
 	}
 
 	/**
@@ -71,8 +104,8 @@ public class Slot implements Serializable {
 	 * 
 	 * @return the starting date of the slot
 	 */
-	public LocalDateTime getStartingDate() {
-		return _startingDate;
+	public LocalDateTime getStartingDateTime() {
+		return _startingDateTime;
 	}
 
 	/**
@@ -82,8 +115,8 @@ public class Slot implements Serializable {
 	 */
 	public Timestamp getStartingTimestampDate() {
 		Timestamp timestamp = null;
-		if (this._startingDate != null) {
-			timestamp = Timestamp.valueOf(this._startingDate);
+		if (this._startingDateTime != null) {
+			timestamp = Timestamp.valueOf(this._startingDateTime);
 		}
 		return timestamp;
 	}
@@ -91,22 +124,22 @@ public class Slot implements Serializable {
 	/**
 	 * Set the starting date of the slot
 	 * 
-	 * @param startingDate
+	 * @param startingDateTime
 	 *            the starting date to set
 	 */
-	public void setStartingDate(LocalDateTime startingDate) {
-		this._startingDate = startingDate;
+	public void setStartingDateTime(LocalDateTime startingDateTime) {
+		this._startingDateTime = startingDateTime;
 	}
 
 	/**
 	 * Set the starting date of the slot
 	 * 
-	 * @param startingDate
+	 * @param startingTimeStampDate
 	 *            the starting date to set (in Timestamp format)
 	 */
-	public void setStartingDate(Timestamp startingDate) {
-		if (startingDate != null) {
-			this._startingDate = startingDate.toLocalDateTime();
+	public void setStartingTimeStampDate(Timestamp startingTimeStampDate) {
+		if (startingTimeStampDate != null) {
+			this._startingDateTime = startingTimeStampDate.toLocalDateTime();
 		}
 	}
 
@@ -115,8 +148,8 @@ public class Slot implements Serializable {
 	 * 
 	 * @return the ending date of the slot
 	 */
-	public LocalDateTime getEndingDate() {
-		return _endingDate;
+	public LocalDateTime getEndingDateTime() {
+		return _endingDateTime;
 	}
 
 	/**
@@ -126,8 +159,8 @@ public class Slot implements Serializable {
 	 */
 	public Timestamp getEndingTimestampDate() {
 		Timestamp timestamp = null;
-		if (this._endingDate != null) {
-			timestamp = Timestamp.valueOf(_endingDate);
+		if (this._endingDateTime != null) {
+			timestamp = Timestamp.valueOf(_endingDateTime);
 		}
 		return timestamp;
 	}
@@ -135,22 +168,22 @@ public class Slot implements Serializable {
 	/**
 	 * Set the ending date of the slot
 	 * 
-	 * @param endingDate
+	 * @param endingDateTime
 	 *            the ending date of the slot (in LocalDateTime format)
 	 */
-	public void setEndingDate(LocalDateTime endingDate) {
-		this._endingDate = endingDate;
+	public void setEndingDateTime(LocalDateTime endingDateTime) {
+		this._endingDateTime = endingDateTime;
 	}
 
 	/**
 	 * Set the ending date of the slot
 	 * 
-	 * @param endingDate
+	 * @param endingTimeStampDate
 	 *            the ending date of the slot (in Timestamp format)
 	 */
-	public void setEndingDate(Timestamp endingDate) {
-		if (endingDate != null) {
-			this._endingDate = endingDate.toLocalDateTime();
+	public void setEndingTimeStampDate(Timestamp endingTimeStampDate) {
+		if (endingTimeStampDate != null) {
+			this._endingDateTime = endingTimeStampDate.toLocalDateTime();
 		}
 	}
 
@@ -159,7 +192,7 @@ public class Slot implements Serializable {
 	 * 
 	 * @return true if the slot is open
 	 */
-	public boolean isOpen() {
+	public boolean getIsOpen() {
 		return _bIsOpen;
 	}
 
@@ -179,7 +212,7 @@ public class Slot implements Serializable {
 	 * @return the number of remaining places of the slot
 	 */
 	public int getNbRemainingPlaces() {
-		return _nNb_Remaining_Places;
+		return _nNbRemainingPlaces;
 	}
 
 	/**
@@ -189,7 +222,17 @@ public class Slot implements Serializable {
 	 *            the number of remaining places
 	 */
 	public void setNbRemainingPlaces(int nNbRemainingPlaces) {
-		this._nNb_Remaining_Places = nNbRemainingPlaces;
+		this._nNbRemainingPlaces = nNbRemainingPlaces;
+	}
+
+	
+	
+	public int getMaxCapacity() {
+		return _nMaxCapacity;
+	}
+
+	public void setMaxCapacity(int nMaxCapacity) {
+		this._nMaxCapacity = nMaxCapacity;
 	}
 
 	/**

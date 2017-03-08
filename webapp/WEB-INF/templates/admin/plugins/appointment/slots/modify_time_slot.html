@@ -1,13 +1,14 @@
+
 <script src="js/jquery/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap-datetimepicker.min.js"></script>
 <div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">				
 		<div class="tab-content">
+			<hr color="black">
 			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
-				<fieldset>
-					<legend>#i18n{appointment.modifyCalendarSlots.pageTitle}</legend>
-					<@messages errors=errors />					
+				<fieldset>							
+					<@messages errors=errors infos=infos/>					
 					<input type="hidden" name="action" value="doModifyTimeSlot">
 					<input type="hidden" name="id_time_slot" value="${timeSlot.idTimeSlot}">
 					<input type="hidden" name="id_form" value="${id_form}">
@@ -17,7 +18,7 @@
 						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" id="is_open" name="is_open" value="true" onClick="javascript:switchVisibilityOpeningField();" <#if timeSlot.isOpen>checked="checked"</#if> />&#160;
+									<input type="checkbox" id="is_open" name="is_open" value="true" <#if timeSlot.isOpen>checked="checked"</#if> />&#160;
 								</label>
 								<span class="help-block">#i18n{appointment.modify_slot.labelOpenHelp}</span>
 							</div>
@@ -42,7 +43,7 @@
 							<span id="ending_time" class="add-on">
 								<i data-time-icon="icon-time" data-date-icon="icon-calendar">
 								</i>
-							</span>							
+							</span>	
 						</div>
 					</div>							
 					<div class="form-group">

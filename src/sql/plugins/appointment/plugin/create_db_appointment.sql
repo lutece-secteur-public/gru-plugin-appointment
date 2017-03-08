@@ -42,14 +42,15 @@ DROP TABLE IF EXISTS appointment_slot ;
 
 CREATE TABLE IF NOT EXISTS appointment_slot (
   id_slot INT NOT NULL,
-  starting_date TIMESTAMP NULL,
-  ending_date TIMESTAMP NULL,
+  starting_date_time TIMESTAMP NULL,
+  ending_date_time TIMESTAMP NULL,
   is_open BOOLEAN NOT NULL DEFAULT TRUE,
+  max_capacity INT NOT NULL DEFAULT 0,
   nb_remaining_places INT NOT NULL DEFAULT 0,
   id_form INT NOT NULL,
   PRIMARY KEY (id_slot, id_form),
-  UNIQUE KEY unique_index_starting_date (id_form,starting_date),
-  UNIQUE KEY unique_index_ending_date (id_form,ending_date),
+  UNIQUE KEY unique_index_starting_date_time (id_form,starting_date_time),
+  UNIQUE KEY unique_index_ending_date_time (id_form,ending_date_time),
   CONSTRAINT fk_appointment_slot_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
@@ -59,9 +60,9 @@ ENGINE = InnoDB;
 
 CREATE INDEX fk_appointment_slot_appointment_form_idx ON appointment_slot (id_form ASC);
 
-CREATE INDEX starting_date_idx ON appointment_slot (starting_date ASC);
+CREATE INDEX starting_date_time_idx ON appointment_slot (starting_date_time ASC);
 
-CREATE INDEX ending_date_idx ON appointment_slot (ending_date ASC);
+CREATE INDEX ending_date_time_idx ON appointment_slot (ending_date_time ASC);
 
 -- -----------------------------------------------------
 -- Table appointment_appointment
@@ -111,7 +112,6 @@ DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_unicode_ci;
 
 CREATE INDEX fk_appointment_appointment_response_appointment_appointment_idx ON appointment_appointment_response (id_appointment ASC);
-
 
 -- -----------------------------------------------------
 -- Table appointment_calendar_template
@@ -244,8 +244,8 @@ CREATE TABLE IF NOT EXISTS appointment_time_slot (
   max_capacity INT NOT NULL DEFAULT 0,
   id_working_day INT NOT NULL,
   PRIMARY KEY (id_time_slot, id_working_day),
-  UNIQUE KEY unique_index_starting_hour (id_working_day,starting_hour),
-  UNIQUE KEY unique_index_ending_hour (id_working_day,ending_hour),
+  UNIQUE KEY unique_index_starting_time (id_working_day,starting_time),
+  UNIQUE KEY unique_index_ending_time (id_working_day,ending_time),
   CONSTRAINT fk_appointment_time_slot_appointment_working_day
     FOREIGN KEY (id_working_day)
     REFERENCES appointment_working_day (id_working_day)
@@ -255,9 +255,9 @@ ENGINE = InnoDB;
 
 CREATE INDEX fk_appointment_time_slot_appointment_working_day_idx ON appointment_time_slot (id_working_day ASC);
 
-CREATE INDEX starting_hour_idx ON appointment_time_slot (starting_hour ASC);
+CREATE INDEX starting_time_idx ON appointment_time_slot (starting_time ASC);
 
-CREATE INDEX ending_hour_idx ON appointment_time_slot (ending_hour ASC);
+CREATE INDEX ending_time_idx ON appointment_time_slot (ending_time ASC);
 
 
 -- -----------------------------------------------------

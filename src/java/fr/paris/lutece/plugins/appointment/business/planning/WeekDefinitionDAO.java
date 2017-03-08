@@ -24,6 +24,7 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_MIN_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND min(date_of_apply)";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_CLOSEST_TO_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1"; 
 	
 	@Override
@@ -130,6 +131,25 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO {
 			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_CLOSEST_TO_DATE_OF_APPLY, plugin);
 			daoUtil.setInt(1, nIdForm);
 			daoUtil.setDate(2, Date.valueOf(dateOfApply));
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				weekDefinition = buildWeekDefinition(daoUtil);
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return weekDefinition;
+	}
+	
+	@Override
+	public WeekDefinition findByIdFormAndMinDateOfApply(int nIdForm, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		WeekDefinition weekDefinition = null;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_MIN_DATE_OF_APPLY, plugin);
+			daoUtil.setInt(1, nIdForm);			
 			daoUtil.executeQuery();
 			if (daoUtil.next()) {
 				weekDefinition = buildWeekDefinition(daoUtil);

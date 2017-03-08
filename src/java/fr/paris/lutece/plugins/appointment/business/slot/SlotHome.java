@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.slot;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
@@ -81,15 +82,15 @@ public class SlotHome {
 	 * 
 	 * @param nIdForm
 	 *            the Form Id
-	 * @param startingDate
+	 * @param startingDateTime
 	 *            the starting Date
-	 * @param endingDate
+	 * @param endingDateTime
 	 *            the ending Date
 	 * @return a list of slots whose dates are included in the given period
 	 */
-	public static List<Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDate,
-			LocalDateTime endingDate) {
-		return _dao.findByIdFormAndDateRange(nIdForm, startingDate, endingDate, _plugin);
+	public static HashMap<LocalDateTime, Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime,
+			LocalDateTime endingDateTime) {
+		return _dao.findByIdFormAndDateRange(nIdForm, startingDateTime, endingDateTime, _plugin);
 	}
 
 	/**
@@ -97,15 +98,15 @@ public class SlotHome {
 	 * 
 	 * @param nIdForm
 	 *            the Form Id
-	 * @param startingDate
+	 * @param startingDateTime
 	 *            the starting Date
-	 * @param endingDate
+	 * @param endingDateTime
 	 *            the ending Date
 	 * @return a list of open slots whose dates are included in the given period
 	 */
-	public static List<Slot> findOpenSlotsByIdFormAndDateRange(int nIdForm, LocalDateTime startingDate,
-			LocalDateTime endingDate) {
-		return _dao.findOpenSlotsByIdFormAndDateRange(nIdForm, startingDate, endingDate, _plugin);
+	public static List<Slot> findOpenSlotsByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime,
+			LocalDateTime endingDateTime) {
+		return _dao.findOpenSlotsByIdFormAndDateRange(nIdForm, startingDateTime, endingDateTime, _plugin);
 	}
 
 	/**

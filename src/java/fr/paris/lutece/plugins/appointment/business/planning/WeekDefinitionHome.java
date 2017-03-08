@@ -87,7 +87,7 @@ public class WeekDefinitionHome {
 	public static List<WeekDefinition> findByIdForm(int nIdForm) {
 		return _dao.findByIdForm(nIdForm, _plugin);
 	}
-	
+		
 	/**
 	 * Get week definition for the form id and the date of apply given
 	 * 

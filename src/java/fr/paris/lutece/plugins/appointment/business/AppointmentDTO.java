@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
-import fr.paris.lutece.plugins.appointment.service.AppointmentService;
+import fr.paris.lutece.plugins.appointment.service.OldAppointmentService;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 
 /**
@@ -145,6 +145,6 @@ public class AppointmentDTO extends Appointment {
 	 * @return The reference of the appointment
 	 */
 	public String getRefAppointment() {
-		return AppointmentService.getInstance().computeRefAppointment(this);
+		return OldAppointmentService.getInstance().computeRefAppointment(this);
 	}
 }

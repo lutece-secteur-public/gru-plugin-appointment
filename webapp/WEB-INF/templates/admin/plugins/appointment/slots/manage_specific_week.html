@@ -8,13 +8,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.css" />
-<div class="row" >
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">        
-        <fieldset>
-            <legend>#i18n{appointment.manageCalendarSlots.pageTitle}</legend>
-				<div id="calendar"></div>	
-        </fieldset>
-    </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    	<@tabs tab="specificWeek" appointmentform=appointmentform />
+		<div class="tab-content">
+		<fieldset>									
+			<div id="calendar"></div>	
+		</fieldset>				
+	</div>
 </div>
 <script type="text/javascript">
 	var slotDuration = '${min_duration}';
@@ -27,24 +28,29 @@
 			</#list>
 		</#if>				
 	];
-    var nbMaxWeeks = 2;
-    var eventUrl = 'http://www.google.fr?q=';
+    var nbMaxWeeks = '${nb_weeks_to_display}';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}';
     var dateUrl = 'http://www.google.fr?q=';
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
 		<#if events??>								   
 			<#list events as event>
 				{
-					title : '${event.idTimeSlot}',
+					title : <#if event.isOpen>'#i18n{appointment.manageCalendarSlots.labelOpened}'<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if> 
+								+ ' / ' + 'Capacit\u00e9 max : ' + '${event.maxCapacity}',
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
-					id : '${event.idTimeSlot}',
+					id : '${event.idSlot}',
+					color : <#if event.isOpen>'default'<#else>'red'</#if>,
+					url : eventUrl + '&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&max_capacity=${event.maxCapacity}',
 				},								
 			</#list>
 		</#if>
 	];
+	var defaultDate = '${date_of_display}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
+			defaultDate: defaultDate,
 			defaultView: 'agendaWeek',
 			height: 'auto',
 			locale: 'fr',
@@ -93,7 +99,7 @@
 				dow: dow
 			},
 			eventClick: function(calEvent, jsEvent, view) {
-				location.href = eventUrl + calEvent.id;
+				location.href = calEvent.url;
 			},
 			events: events,
 			viewRender: function(view, element) {
@@ -120,8 +126,7 @@
 				$('.fc-day-header').click(function() {
 					location.href = dateUrl + $(this).attr('data-date');
 				});
-				$('.fc-day-header').css('cursor', 'pointer');
-				$('.fc-day-header').css('text-transform', 'uppercase');
+				$('.fc-day-header').css('cursor', 'pointer');				
 				$('.fc-event').css('cursor', 'pointer');
 			},
 		});        

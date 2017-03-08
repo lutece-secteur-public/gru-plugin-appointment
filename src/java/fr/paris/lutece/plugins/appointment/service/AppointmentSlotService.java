@@ -77,7 +77,7 @@ public class AppointmentSlotService {
 	public synchronized void computeAndCreateSlotsForDay(AppointmentDay day, AppointmentForm form) {
 		List<AppointmentSlot> listSlots;
 
-		listSlots = AppointmentService.getInstance().computeDaySlots(day);
+		listSlots = OldAppointmentService.getInstance().computeDaySlots(day);
 
 		for (AppointmentSlot slot : listSlots) {
 			slot.setIdDay(day.getIdDay());
@@ -97,7 +97,7 @@ public class AppointmentSlotService {
 	 *            in the database.
 	 */
 	public synchronized void computeAndCreateSlotsForForm(AppointmentForm appointmentForm) {
-		List<AppointmentDay> listAppointmentDay = AppointmentService.getInstance().computeDayList(appointmentForm);
+		List<AppointmentDay> listAppointmentDay = OldAppointmentService.getInstance().computeDayList(appointmentForm);
 
 		for (AppointmentDay day : listAppointmentDay) {
 			int nFreePlaces = 0;
@@ -204,7 +204,7 @@ public class AppointmentSlotService {
 			) {
 			AppointmentSlotHome.deleteByIdForm(appointmentForm.getIdForm());
 
-			List<AppointmentDay> listAppointmentDay = AppointmentService.getInstance().computeDayList(appointmentForm);
+			List<AppointmentDay> listAppointmentDay = OldAppointmentService.getInstance().computeDayList(appointmentForm);
 
 			for (AppointmentDay day : listAppointmentDay) {
 				int nFreePlaces = 0;
@@ -233,10 +233,10 @@ public class AppointmentSlotService {
 		for (int i = 0; i < bArrayDayOpened.length; i++) {
 			if (bArrayDayOpenedfromDb[i] != bArrayDayOpened[i]) {
 				if (bArrayDayOpened[i]) {
-					AppointmentDay day = AppointmentService.getInstance().getAppointmentDayFromForm(appointmentForm);
+					AppointmentDay day = OldAppointmentService.getInstance().getAppointmentDayFromForm(appointmentForm);
 					day.setIsOpen(true);
 
-					List<AppointmentSlot> listSlots = AppointmentService.getInstance().computeDaySlots(day, i + 1);
+					List<AppointmentSlot> listSlots = OldAppointmentService.getInstance().computeDaySlots(day, i + 1);
 
 					for (AppointmentSlot slot : listSlots) {
 						AppointmentSlotHome.create(slot);

@@ -33,18 +33,11 @@
 				#i18n{appointment.typicalWeek.pageTitle}
 			</a>
         </li>
-		<li <#if tab="slots">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_form=${appointmentform.idForm}">
-				#i18n{appointment.manageCalendarSlots.pageTitle}
+		<li <#if tab="specificWeek">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}">
+				#i18n{appointment.specificWeek.pageTitle}
 			</a>
-        </li>           
-        <#if isResourceInstalled?? && isResourceInstalled>
-			<li <#if tab="resources">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
-					#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
-				</a>
-			</li>
-        </#if>
+        </li>                   
     </ul>
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >

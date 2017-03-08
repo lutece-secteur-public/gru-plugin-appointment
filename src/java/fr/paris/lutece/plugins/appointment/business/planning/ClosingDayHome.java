@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.planning;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -76,6 +77,14 @@ public class ClosingDayHome {
 		return _dao.select(nKey, _plugin);
 	}
 
+	public static List<ClosingDay> findByIdForm(int nIdForm){
+		return _dao.findByIdForm(nIdForm, _plugin);
+	}
+	
+	public static List<ClosingDay> findByIdFormAndDateRange(int nIdForm, LocalDate startingDate, LocalDate endingDate){
+		return _dao.findByIdFormAndDateRange(nIdForm, startingDate, endingDate, _plugin);
+	}
+	
 	/**
 	 * Returns the closing day
 	 * 

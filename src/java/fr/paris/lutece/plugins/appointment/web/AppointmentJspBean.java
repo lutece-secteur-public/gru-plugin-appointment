@@ -70,7 +70,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.OldAppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
@@ -81,7 +81,7 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
-import fr.paris.lutece.plugins.appointment.service.AppointmentService;
+import fr.paris.lutece.plugins.appointment.service.OldAppointmentService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
@@ -298,7 +298,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
 	// Messages
-	private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek();
+	private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = OldAppointmentService.getListDaysOfWeek();
 
 	// Constants
 	private static final int STATUS_CODE_ZERO = 0;
@@ -417,7 +417,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				.createSheet(I18nService.getLocalizedString("appointment.permission.label.resourceType", getLocale()));
 
 		List<Object[]> tmpObj = new ArrayList<Object[]>();
-		List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter(filter);
+		List<Integer> listIdAppointments = OldAppointmentHome.getAppointmentIdByFilter(filter);
 
 		EntryFilter entryFilter = new EntryFilter();
 		entryFilter.setIdResource(Integer.valueOf(strIdResponse));
@@ -489,7 +489,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		}
 
 		if (listIdAppointments.size() > 0) {
-			List<Appointment> listAppointments = AppointmentHome.getAppointmentListById(listIdAppointments,
+			List<Appointment> listAppointments = OldAppointmentHome.getAppointmentListById(listIdAppointments,
 					filter.getOrderBy(), filter.getOrderAsc());
 
 			for (Appointment tmpApp : listAppointments) {
@@ -526,7 +526,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					strWriter[10] = "" + tmpApp.getNumberPlacesReserved();
 
 				}
-				List<Integer> listIdResponse = AppointmentHome.findListIdResponse(tmpApp.getIdAppointment());
+				List<Integer> listIdResponse = OldAppointmentHome.findListIdResponse(tmpApp.getIdAppointment());
 				List<Response> listResponses = new ArrayList<Response>();
 
 				for (int nIdResponse : listIdResponse) {
@@ -718,14 +718,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			}
 
 			if (StringUtils.isNotEmpty(strNbWeek)) {
-				nNbWeek = AppointmentService.getInstance().parseInt(strNbWeek);
+				nNbWeek = OldAppointmentService.getInstance().parseInt(strNbWeek);
 
 				if (Math.abs(nNbWeek) > nNbWeeksToCreate) {
 					return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 				}
 			}
 
-			List<AppointmentDay> listDays = AppointmentService.getInstance().findAndComputeDayList(form, nNbWeek, false);
+			List<AppointmentDay> listDays = OldAppointmentService.getInstance().findAndComputeDayList(form, nNbWeek, false);
 
 			for (AppointmentDay day : listDays) {
 				if (nNbWeek < 0) {
@@ -764,7 +764,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			listDays = computeUnavailableDays(form.getIdForm(), listDays, false);
 
 			List<String> listTimeBegin = new ArrayList<String>();
-			int nMinAppointmentDuration = AppointmentService.getInstance().getListTimeBegin(listDays, form,
+			int nMinAppointmentDuration = OldAppointmentService.getInstance().getListTimeBegin(listDays, form,
 					listTimeBegin);
 
 			model.put(MARK_FORM, form);
@@ -1066,12 +1066,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			String strUrl = url.getUrl();
 			request.getSession().setAttribute(MARK_FILTER, filter);
 
-			List<Integer> listIdAppointments = AppointmentHome.getAppointmentIdByFilter(filter);
+			List<Integer> listIdAppointments = OldAppointmentHome.getAppointmentIdByFilter(filter);
 
 			LocalizedPaginator<Integer> paginator = new LocalizedPaginator<Integer>(listIdAppointments, nItemsPerPage,
 					strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale());
 
-			List<Appointment> listAppointments = AppointmentHome.getAppointmentListById(paginator.getPageItems(),
+			List<Appointment> listAppointments = OldAppointmentHome.getAppointmentListById(paginator.getPageItems(),
 					filter.getOrderBy(), filter.getOrderAsc());
 
 			LocalizedDelegatePaginator<Appointment> delegatePaginator = new LocalizedDelegatePaginator<Appointment>(
@@ -1291,7 +1291,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 			if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
 				int nIdAppointment = Integer.parseInt(strIdAppointment);
-				Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+				Appointment appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 				nIdForm = slot.getIdForm();
 
@@ -1408,9 +1408,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
 
-			Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+			Appointment appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 
-			List<Integer> listIdResponse = AppointmentHome.findListIdResponse(appointment.getIdAppointment());
+			List<Integer> listIdResponse = OldAppointmentHome.findListIdResponse(appointment.getIdAppointment());
 
 			List<Response> listResponses = new ArrayList<Response>(listIdResponse.size());
 
@@ -1507,7 +1507,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
 
 			if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
-				appointment = new AppointmentDTO(AppointmentHome.findByPrimaryKey(Integer.parseInt(strIdAppointment)));
+				appointment = new AppointmentDTO(OldAppointmentHome.findByPrimaryKey(Integer.parseInt(strIdAppointment)));
 			} else {
 				appointment = new AppointmentDTO();
 
@@ -1712,19 +1712,19 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT);
 				}
 
-				AppointmentHome.update(appointment);
+				OldAppointmentHome.update(appointment);
 
-				List<Integer> listIdResponse = AppointmentHome.findListIdResponse(appointment.getIdAppointment());
+				List<Integer> listIdResponse = OldAppointmentHome.findListIdResponse(appointment.getIdAppointment());
 
 				for (int nIdResponse : listIdResponse) {
 					ResponseHome.remove(nIdResponse);
 				}
 
-				AppointmentHome.removeAppointmentResponse(appointment.getIdAppointment());
+				OldAppointmentHome.removeAppointmentResponse(appointment.getIdAppointment());
 
 				for (Response response : appointment.getListResponse()) {
 					ResponseHome.create(response);
-					AppointmentHome.insertAppointmentResponse(appointment.getIdAppointment(), response.getIdResponse());
+					OldAppointmentHome.insertAppointmentResponse(appointment.getIdAppointment(), response.getIdResponse());
 				}
 
 				if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_SAVE_AND_BACK))) {
@@ -1791,7 +1791,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 			if (!listDays.isEmpty()) {
 				List<String> listTimeBegin = new ArrayList<String>();
-				int nMinAppointmentDuration = AppointmentService.getInstance().getListTimeBegin(listDays, form,
+				int nMinAppointmentDuration = OldAppointmentService.getInstance().getListTimeBegin(listDays, form,
 						listTimeBegin);
 
 				listDays = computeUnavailableDays(form.getIdForm(), listDays, false);
@@ -2009,7 +2009,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
 			int nId = Integer.parseInt(strIdAppointment);
-			Appointment appointment = AppointmentHome.findByPrimaryKey(nId);
+			Appointment appointment = OldAppointmentHome.findByPrimaryKey(nId);
 
 			if (appointment != null) {
 				AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
@@ -2024,7 +2024,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				}
 
 				iReturn = slot.getIdForm();
-				AppointmentHome.remove(nId);
+				OldAppointmentHome.remove(nId);
 			}
 		}
 
@@ -2140,7 +2140,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		boolean bCreation = appointment.getIdAppointment() == 0;
 
 		if (!bCreation) {
-			Appointment appt = AppointmentHome.findByPrimaryKey(appointment.getIdAppointment());
+			Appointment appt = OldAppointmentHome.findByPrimaryKey(appointment.getIdAppointment());
 
 			if (appt.getIdSlot() != appointment.getIdSlot() &&
 
@@ -2229,7 +2229,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		}
 
 		int nId = Integer.parseInt(strIdAppointment);
-		Appointment appointment = AppointmentHome.findByPrimaryKey(nId);
+		Appointment appointment = OldAppointmentHome.findByPrimaryKey(nId);
 		AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 		AppointmentForm form = AppointmentFormHome.findByPrimaryKey(slot.getIdForm());
 
@@ -2240,7 +2240,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT);
 		}
 
-		List<Response> listResponse = AppointmentHome.findListResponse(nId);
+		List<Response> listResponse = OldAppointmentHome.findListResponse(nId);
 
 		for (Response response : listResponse) {
 			if (response.getFile() != null) {
@@ -2397,8 +2397,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 		int nIdResponse = Integer.parseInt(strIdResponse);
 
-		int nIdAppointment = AppointmentHome.findIdAppointmentByIdResponse(nIdResponse);
-		Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+		int nIdAppointment = OldAppointmentHome.findIdAppointmentByIdResponse(nIdResponse);
+		Appointment appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 		AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 
 		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, Integer.toString(slot.getIdForm()),
@@ -2447,8 +2447,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
 			String strNewStatus = request.getParameter(PARAMETER_NEW_STATUS);
-			int nNewStatus = AppointmentService.getInstance().parseInt(strNewStatus);
-			Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+			int nNewStatus = OldAppointmentService.getInstance().parseInt(strNewStatus);
+			Appointment appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 
 			if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, Integer.toString(slot.getIdForm()),
@@ -2477,7 +2477,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 														 * .getValeur() )
 														 */) {
 				appointment.setStatus(nNewStatus);
-				AppointmentHome.update(appointment);
+				OldAppointmentHome.update(appointment);
 			}
 
 			return redirect(request, getUrlManageAppointment(request, slot.getIdForm()));
@@ -2542,7 +2542,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			int nIdAction = Integer.parseInt(strIdAction);
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
 
-			Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+			Appointment appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 
 			if (request.getParameter(PARAMETER_BACK) == null) {

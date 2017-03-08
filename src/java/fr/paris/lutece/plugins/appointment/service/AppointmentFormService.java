@@ -53,7 +53,7 @@ import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.OldAppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
@@ -910,9 +910,9 @@ public class AppointmentFormService implements Serializable {
 			boolean bCreate = !bIsAdmin || (appointment.getIdAppointment() == 0);
 
 			if (bCreate) {
-				AppointmentHome.create(appointment);
+				OldAppointmentHome.create(appointment);
 			} else {
-				AppointmentHome.update(appointment);
+				OldAppointmentHome.update(appointment);
 			}
 
 			// For modification (by an admin), the update of responses have
@@ -920,7 +920,7 @@ public class AppointmentFormService implements Serializable {
 			if (bCreate) {
 				for (Response response : appointment.getListResponse()) {
 					ResponseHome.create(response);
-					AppointmentHome.insertAppointmentResponse(appointment.getIdAppointment(), response.getIdResponse());
+					OldAppointmentHome.insertAppointmentResponse(appointment.getIdAppointment(), response.getIdResponse());
 				}
 			}
 

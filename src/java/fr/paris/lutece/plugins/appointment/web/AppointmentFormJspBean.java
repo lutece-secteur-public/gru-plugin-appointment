@@ -73,8 +73,6 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -114,7 +112,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String TEMPLATE_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform.html";
 	private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES = "/admin/plugins/appointment/appointmentform/modify_appointmentform_messages.html";
 	private static final String TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_advanced_appointmentform.html";
-	
 
 	// Parameters
 	private static final String PARAMETER_ID_FORM = "id_form";
@@ -124,13 +121,13 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
 	private static final String PARAMETER_FORCE_RELOAD = "forceReload";
 	private static final String PARAMETER_ICON_RESSOURCE = "image_resource";
-	private static final String PARAMETER_DELETE_ICON = "deleteIcon";	
+	private static final String PARAMETER_DELETE_ICON = "deleteIcon";
 
 	// Properties for page titles
 	private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_GENERAL_SETTINGS = "appointment.modify_appointmentForm.titleAlterablesParameters";
 	private static final String PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS = "appointment.modify_appointmentForm.titleStructuralsParameters";
-	
+
 	private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.create_appointmentform.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentform_messages.pageTitle";
 
@@ -143,13 +140,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String MARK_LIST_DATE_OF_MODIFICATION = "listDateOfModification";
 	private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
 	private static final String MARK_FORM_MESSAGE = "formMessage";
-	private static final String MARK_WEBAPP_URL = "webapp_url";
-	private static final String MARK_LOCALE = "language";
-	private static final String MARK_LOCALE_TINY = "locale";
-	private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
 	private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
-	private static final String MARK_NULL = "NULL";	
+	private static final String MARK_NULL = "NULL";
 	private static final String MARK_FALSE = "false";
+	private static final String MARK_LOCALE = "language";
 
 	// Jsp
 	private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -161,7 +155,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
 	private static final String ERROR_MESSAGE_TIME_START_AFTER_DATE_END = "appointment.message.error.dateStartAfterTimeEnd";
 	private static final String ERROR_MESSAGE_NO_WORKING_DAY_CHECKED = "appointment.message.error.noWorkingDayChecked";
-	private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
 	private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE = "appointment.message.error.formatDaysBeforeAppointmentMiddleSuperior";
 	private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
 	private static final String MMMMMMM = "appointment.message.error.refreshDays.modifyFormHasAppointments";
@@ -173,7 +166,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
 	private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
 	private static final String VIEW_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
-	
+
 	private static final String VIEW_ADVANCED_MODIFY_APPOINTMENTFORM = "modifyAppointmentFormAdvanced";
 	private static final String VIEW_MODIFY_FORM_MESSAGES = "modifyAppointmentFormMessages";
 	private static final String VIEW_PERMISSIONS_FORM = "permissions";
@@ -260,9 +253,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		if (appointmentForm == null) {
 			appointmentForm = new AppointmentForm();
 		}
-		Map<String, Object> model = getModel();
-		model.put(MARK_LOCALE, getLocale());
-		model.put(MARK_LOCALE_TINY, getLocale());
+		Map<String, Object> model = getModel();		
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
 		return getPage(PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model);
 	}
@@ -378,14 +369,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 		}
-		Map<String, Object> model = getModel();
-		model.put(MARK_LOCALE, getLocale());
-		model.put(MARK_LOCALE_TINY, getLocale());		
+		Map<String, Object> model = getModel();		
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
 		return getPage(PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model);
 	}
-
-
 
 	/**
 	 * Returns the form to update info about a appointment form
@@ -421,9 +408,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 		}
 		Map<String, Object> model = getModel();
-		model.put(MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule(nIdForm));
-		model.put(MARK_LOCALE, getLocale());
-		model.put(MARK_LOCALE_TINY, getLocale());		
+		model.put(MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule(nIdForm));		
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
 		return getPage(PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS, TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM, model);
 	}
@@ -448,7 +433,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
-			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
+			appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
 		}
 		populate(appointmentForm, request);
 		AppointmentForm appointmentFormDb = FormService.buildAppointmentForm(nIdForm, 0, 0);
@@ -511,8 +496,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		FormService.updateAppointmentForm(appointmentForm, dateOfModification);
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		addInfo(INFO_APPOINTMENTFORM_UPDATED, getLocale());
-		ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, dateOfModification);
-		return redirect(request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RESERVATION_RULE, reservationRule.getIdReservationRule());
+		ReservationRule reservationRule = ReservationRuleService
+				.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, dateOfModification);
+		return redirect(request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm,
+				PARAMETER_ID_RESERVATION_RULE, reservationRule.getIdReservationRule());
 	}
 
 	/**
@@ -536,7 +523,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_CHANGE_STATE);
 		}
 		int nIdForm = Integer.parseInt(strIdForm);
-		Form form = FormHome.findByPrimaryKey(nIdForm);
+		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
 		if (form != null) {
 			if (!form.isActive()) {
 				if ((form.getEndingValidityDate() != null)
@@ -615,9 +602,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		FormMessage formMessage = FormMessageHome.findByIdForm(nIdForm);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MARK_FORM_MESSAGE, formMessage);
-		model.put(MARK_WEBAPP_URL, AppPathService.getBaseUrl(request));
-		model.put(MARK_LOCALE, getLocale());
-		model.put(MARK_LOCALE_TINY, getLocale());
 		return getPage(PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES, TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES,
 				model);
 	}
@@ -682,13 +666,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	public static void addElementsToModelForLeftColumn(HttpServletRequest request, AppointmentForm appointmentForm,
 			AdminUser user, Locale locale, Map<String, Object> model) {
 		model.put(MARK_APPOINTMENT_FORM, appointmentForm);
+		model.put(MARK_LOCALE, locale);
 		model.put(MARK_LIST_WORKFLOWS, WorkflowService.getInstance().getWorkflowsEnabled(user, locale));
 		model.put(MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable());
 		model.put(MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList());
-		Plugin pluginAppointmentResource = PluginService
-				.getPlugin(AppPropertiesService.getProperty(PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME));
-		model.put(MARK_APPOINTMENT_RESOURCE_ENABLED,
-				(pluginAppointmentResource != null) && pluginAppointmentResource.isInstalled());
 		request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 	}
 

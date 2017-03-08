@@ -2,38 +2,15 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
-public class ReservationRuleService {
-
-	/**
-	 * Name of the bean of the service
-	 */
-	public static final String BEAN_NAME = "appointment.reservationRuleService";
-
-	/**
-	 * Instance of the service
-	 */
-	private static volatile ReservationRuleService _instance;
-
-	/**
-	 * Get an instance of the service
-	 * 
-	 * @return An instance of the service
-	 */
-	public static ReservationRuleService getInstance() {
-		if (_instance == null) {
-			_instance = SpringContextService.getBean(BEAN_NAME);
-		}
-
-		return _instance;
-	}
+public class ReservationRuleService {	
 
 	/**
 	 * 
@@ -125,12 +102,21 @@ public class ReservationRuleService {
 	 */
 	public static ReferenceList findAllDateOfReservationRule(int nIdForm) {
 		ReferenceList listDate = new ReferenceList();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.FORMAT_DATE);
 		List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm(nIdForm);
 		for (ReservationRule reservationRule : listReservationRule) {
 			listDate.addItem(reservationRule.getIdReservationRule(), reservationRule.getDateOfApply().format(formatter));
 		}
 		return listDate;
+	}
+	
+	public static HashMap<LocalDate, ReservationRule> findAllReservationRule(int nIdForm) {
+		HashMap<LocalDate, ReservationRule> mapReservationRule = new HashMap<>();
+		List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm(nIdForm);
+		for (ReservationRule reservationRule : listReservationRule) {
+			mapReservationRule.put(reservationRule.getDateOfApply(), reservationRule);
+		}
+		return mapReservationRule;
 	}
 
 }

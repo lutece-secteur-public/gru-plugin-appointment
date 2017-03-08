@@ -1,13 +1,12 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import static java.lang.Math.toIntExact;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
@@ -15,36 +14,12 @@ import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
-import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 public class FormService {
-	/**
-	 * Name of the bean of the service
-	 */
-	public static final String BEAN_NAME = "appointment.formService";
-
-	/**
-	 * Instance of the service
-	 */
-	private static volatile FormService _instance;
-
-	/**
-	 * Get an instance of the service
-	 * 
-	 * @return An instance of the service
-	 */
-	public static FormService getInstance() {
-		if (_instance == null) {
-			_instance = SpringContextService.getBean(BEAN_NAME);
-		}
-
-		return _instance;
-	}
 
 	/**
 	 * 
@@ -105,7 +80,7 @@ public class FormService {
 			WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition(nIdForm, dateOfModification);
 			int nIdWeekDefinition = weekDefinition.getIdWeekDefinition();
 			List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition(nIdWeekDefinition);
-			if (listWorkingDay != null && !listWorkingDay.isEmpty()) {
+			if (!CollectionUtils.isEmpty(listWorkingDay)) {
 				WorkingDayService.deleteListWorkingDay(listWorkingDay);
 			}
 			LocalTime startingHour = LocalTime.parse(appointmentForm.getTimeStart());
@@ -135,12 +110,23 @@ public class FormService {
 	 * @param form
 	 * @return
 	 */
-	private static AppointmentForm buildAppointmentFormLight(Form form) {
+	public static AppointmentForm buildAppointmentFormLight(Form form) {
 		AppointmentForm appointmentForm = new AppointmentForm();
+		fillAppointmentFormLightWithFormPart(appointmentForm, form);
+		return appointmentForm;
+	}
+
+	public static AppointmentForm buildAppointmentFormLight(int nIdForm) {
+		AppointmentForm appointmentForm = new AppointmentForm();
+		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
+		fillAppointmentFormLightWithFormPart(appointmentForm, form);
+		return appointmentForm;
+	}
+
+	private static void fillAppointmentFormLightWithFormPart(AppointmentForm appointmentForm, Form form) {
 		appointmentForm.setIdForm(form.getIdForm());
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setIsActive(form.isActive());
-		return appointmentForm;
 	}
 
 	/**
@@ -169,10 +155,10 @@ public class FormService {
 			dateOfApply = weekDefinition.getDateOfApply();
 		}
 		if (reservationRule == null) {
-			reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm, dateOfApply);
+			reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, dateOfApply);
 		}
 		if (weekDefinition == null) {
-			weekDefinition = WeekDefinitionService.findWeekDefinitionByFormIdAndClosestToDateOfApply(nIdForm,
+			weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm,
 					dateOfApply);
 		}
 		fillAppointmentFormWithReservationRulePart(appointmentForm, reservationRule);
@@ -187,69 +173,41 @@ public class FormService {
 	 */
 	private static void fillAppointmentFormWithWeekDefinitionPart(AppointmentForm appointmentForm,
 			WeekDefinition weekDefinition) {
-		if (weekDefinition != null && !weekDefinition.getListWorkingDay().isEmpty()) {
-			for (WorkingDay workingDay : weekDefinition.getListWorkingDay()) {
-				DayOfWeek dayOfWeek = DayOfWeek.of(workingDay.getDayOfWeek());
-				switch (dayOfWeek) {
-				case MONDAY:
-					appointmentForm.setIsOpenMonday(Boolean.TRUE);
-					break;
-				case TUESDAY:
-					appointmentForm.setIsOpenTuesday(Boolean.TRUE);
-					break;
-				case WEDNESDAY:
-					appointmentForm.setIsOpenWednesday(Boolean.TRUE);
-					break;
-				case THURSDAY:
-					appointmentForm.setIsOpenThursday(Boolean.TRUE);
-					break;
-				case FRIDAY:
-					appointmentForm.setIsOpenFriday(Boolean.TRUE);
-					break;
-				case SATURDAY:
-					appointmentForm.setIsOpenSaturday(Boolean.TRUE);
-					break;
-				case SUNDAY:
-					appointmentForm.setIsOpenSunday(Boolean.TRUE);
-					break;
-				}
+		List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay();
+		for (WorkingDay workingDay : listWorkingDay) {
+			DayOfWeek dayOfWeek = DayOfWeek.of(workingDay.getDayOfWeek());
+			switch (dayOfWeek) {
+			case MONDAY:
+				appointmentForm.setIsOpenMonday(Boolean.TRUE);
+				break;
+			case TUESDAY:
+				appointmentForm.setIsOpenTuesday(Boolean.TRUE);
+				break;
+			case WEDNESDAY:
+				appointmentForm.setIsOpenWednesday(Boolean.TRUE);
+				break;
+			case THURSDAY:
+				appointmentForm.setIsOpenThursday(Boolean.TRUE);
+				break;
+			case FRIDAY:
+				appointmentForm.setIsOpenFriday(Boolean.TRUE);
+				break;
+			case SATURDAY:
+				appointmentForm.setIsOpenSaturday(Boolean.TRUE);
+				break;
+			case SUNDAY:
+				appointmentForm.setIsOpenSunday(Boolean.TRUE);
+				break;
 			}
-			// We suppose that all the days have the same opening and closing
-			// hours
-			LocalTime minStartingTime = null;
-			LocalTime maxEndingTime = null;
-			long lDurationAppointment = 0;
-			for (WorkingDay workingDay : weekDefinition.getListWorkingDay()) {
-				if (workingDay.getListTimeSlot() != null) {
-					for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
-						LocalTime startingTime = timeSlot.getStartingTime();
-						LocalTime endingTime = timeSlot.getEndingTime();
-						if (minStartingTime == null) {
-							minStartingTime = startingTime;
-						}
-						if (startingTime.isBefore(minStartingTime)) {
-							minStartingTime = startingTime;
-						}
-						if (maxEndingTime == null) {
-							maxEndingTime = endingTime;
-						}
-						if (endingTime.isAfter(maxEndingTime)) {
-							maxEndingTime = endingTime;
-						}
-						long lDurationTemp = startingTime.until(endingTime, ChronoUnit.MINUTES);
-						if (lDurationAppointment == 0) {
-							lDurationAppointment = lDurationTemp;
-						}
-						if (lDurationTemp < lDurationAppointment) {
-							lDurationAppointment = lDurationTemp;
-						}
-					}
-				}
-			}
-			appointmentForm.setTimeStart(minStartingTime.toString());
-			appointmentForm.setTimeEnd(maxEndingTime.toString());
-			appointmentForm.setDurationAppointments(toIntExact(lDurationAppointment));
 		}
+		// We suppose that all the days have the same opening and closing
+		// hours
+		LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay(listWorkingDay);
+		LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(listWorkingDay);
+		int nDurationAppointment = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay(listWorkingDay);
+		appointmentForm.setTimeStart(minStartingTime.toString());
+		appointmentForm.setTimeEnd(maxEndingTime.toString());
+		appointmentForm.setDurationAppointments(nDurationAppointment);
 	}
 
 	/**

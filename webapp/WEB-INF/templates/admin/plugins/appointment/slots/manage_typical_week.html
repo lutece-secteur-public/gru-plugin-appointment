@@ -14,7 +14,7 @@
     	<@tabs tab="typicalWeek" appointmentform=appointmentform />
 		<div class="tab-content">
 		<fieldset>			
-			<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}">
+			<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
 				<#if listDateOfModification??>					
 					<div class="form-group">
 							<label class="col-xs-12 col-sm-3 control-label" for="id_week_definition">#i18n{appointment.modify_appointmentform.listDateOfModification}:</label>
@@ -51,8 +51,7 @@
 			</#list>
 		</#if>				
 	];    
-    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${id_form}&id_week_definition=${id_week_definition}&id_time_slot=';
-    var dateUrl = 'http://www.google.fr?q=';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_week_definition=${id_week_definition}&id_time_slot=';
     var columnFormat = 'dddd';
     var events = [
 		<#if events??>								   
@@ -67,10 +66,8 @@
 			</#list>
 		</#if>
 	];
-	var defaultDate = '${date_of_apply}';
     $(document).ready(function() {
-		$('#calendar').fullCalendar({
-			defaultDate: defaultDate,
+		$('#calendar').fullCalendar({		
 			defaultView: 'agendaWeek',
 			height: 'auto',
 			locale: 'fr',			
@@ -93,12 +90,7 @@
 				location.href = eventUrl + calEvent.id;
 			},
 			events: events,
-			eventAfterAllRender: function(view) {
-				$('.fc-day-header').click(function() {
-					location.href = dateUrl + $(this).attr('data-date');
-				});
-				$('.fc-day-header').css('cursor', 'pointer');
-				$('.fc-day-header').css('text-transform', 'uppercase');
+			eventAfterAllRender: function(view) {								
 				$('.fc-event').css('cursor', 'pointer');
 			},
 		});        

@@ -56,7 +56,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * This class provides instances management methods (create, find, ...) for
  * Appointment objects
  */
-public final class AppointmentHome {
+public final class OldAppointmentHome {
 	// Static variable pointed at the DAO instance
 	private static IAppointmentDAO _dao = SpringContextService.getBean("appointment.oldAppointmentDAO");
 	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
@@ -65,7 +65,7 @@ public final class AppointmentHome {
 	/**
 	 * Private constructor - this class need not be instantiated
 	 */
-	private AppointmentHome() {
+	private OldAppointmentHome() {
 	}
 
 	/**

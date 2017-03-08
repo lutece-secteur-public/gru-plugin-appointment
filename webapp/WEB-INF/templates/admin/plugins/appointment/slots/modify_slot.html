@@ -1,0 +1,81 @@
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="tab-content">
+			<hr color="black">
+			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
+				<fieldset>					
+					<@messages errors=errors infos=infos/>					
+					<input type="hidden" name="action" value="doModifySlot">
+					<input type="hidden" name="id_slot" value="${slot.idSlot}">						
+					<input type="hidden" name="date_of_display" value="${date_of_display}">						
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.modify_slot.labelDate} :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<p class="form-control-static">${slot.date}</p>
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="is_open" >#i18n{appointment.modify_appointmentformDays.labelOpen} * :</label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" id="is_open" name="is_open" value="true" <#if slot.isOpen>checked="checked"</#if> />&#160;
+								</label>
+								<span class="help-block">#i18n{appointment.modify_slot.labelOpenHelp}</span>
+							</div>
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.modify_slot.labelMaxCapacityForThisSlot} * :</label>
+						<div class="col-xs-3 col-sm-9 col-md-9 col-lg-9">
+							<input type="text" name="max_capacity" value="${slot.maxCapacity}" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="3"/>	
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.model.entity.appointmentform.attribute.timeStart} :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<p class="form-control-static">${slot.startingTime}</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.model.entity.appointmentform.attribute.timeEnd} * : </label>
+						<div id="time_end" class="col-xs-12 col-sm-9 col-md-9 input-append">
+							<input id="ending_time" name="ending_time" data-format="hh:mm" type="text" value="${slot.endingTime!''}"></input>
+							<span id="ending_time" class="add-on">
+								<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+								</i>
+							</span>															
+							<span class="help-block">#i18n{appointment.modify_slot.helpModifyEndSlot} :</span>																					
+						</div>							
+					</div>	
+					<div class="form-group">			
+						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="shift_slot"/></label>
+						<div id="shift_slot" class="col-xs-12 col-sm-9 col-md-9 input-append">
+						<input type= "radio" name="shift_slot" value="false" checked="checked">#i18n{appointment.modify_slot.notShiftSlot}<br>
+						<input type= "radio" name="shift_slot" value="true">#i18n{appointment.modify_slot.shiftSlot}<br>						
+						</div>	
+					</div>	
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+							<button class="btn btn-sm btn-primary">
+								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelModify}
+							</button>  
+							<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${slot.idForm}&date_of_display=${date_of_display}">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+							</a>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">			
+	$('#time_end').datetimepicker({
+      pickDate: false,
+	  pickSeconds: false
+    });
+</script>

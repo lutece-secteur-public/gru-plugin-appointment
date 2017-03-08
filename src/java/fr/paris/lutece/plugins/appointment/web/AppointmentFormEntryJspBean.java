@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.OldAppointmentHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
@@ -145,7 +145,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_FORM);
 		}
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
-		AppointmentForm appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);			
+		AppointmentForm appointmentForm = FormService.buildAppointmentFormLight(nIdForm);			
 		Map<String, Object> model = getModel();		
 		EntryService.addListEntryToModel(nIdForm, model);
 		model.put(MARK_APPOINTMENT_FORM, appointmentForm);
@@ -398,7 +398,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 				EntryHome.decrementOrderByOne(entry.getPosition(), entry.getFieldDepend().getIdField(),
 						entry.getIdResource(), entry.getResourceType());
 			}
-			AppointmentHome.removeResponsesByIdEntry(nIdEntry);
+			OldAppointmentHome.removeResponsesByIdEntry(nIdEntry);
 			EntryHome.remove(nIdEntry);
 			if (entry.getFieldDepend() != null) {
 				return redirect(request,

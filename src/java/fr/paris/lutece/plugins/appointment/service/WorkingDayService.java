@@ -3,44 +3,19 @@ package fr.paris.lutece.plugins.appointment.service;
 import static java.lang.Math.toIntExact;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 public class WorkingDayService {
-
-	/**
-	 * Name of the bean of the service
-	 */
-	public static final String BEAN_NAME = "appointment.workingDayService";
-
-	/**
-	 * Instance of the service
-	 */
-	private static volatile WorkingDayService _instance;
-
-	/**
-	 * Get an instance of the service
-	 * 
-	 * @return An instance of the service
-	 */
-	public static WorkingDayService getInstance() {
-		if (_instance == null) {
-			_instance = SpringContextService.getBean(BEAN_NAME);
-		}
-
-		return _instance;
-	}
-
+	
 	/**
 	 * 
 	 * @param nIdWeekDefinition
@@ -137,54 +112,39 @@ public class WorkingDayService {
 	}
 
 	public static LocalTime getMaxEndingTimeOfAWorkingDay(WorkingDay workingDay) {
-		LocalTime endingTime = null;
-		LocalTime endingTimeTemp;
-		for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
-			endingTimeTemp = timeSlot.getEndingTime();
-			if (endingTime == null || endingTimeTemp.isAfter(endingTime)) {
-				endingTime = endingTimeTemp;
-			}
-		}
-		return endingTime;
+		return workingDay.getListTimeSlot().stream().map(TimeSlot::getEndingTime).max(LocalTime::compareTo).get();
 	}
 
 	public static LocalTime getMaxEndingTimeOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
-		LocalTime endingTime = null;
+
+		LocalTime maxEndingTime = null;
 		LocalTime endingTimeTemp;
 		for (WorkingDay workingDay : listWorkingDay) {
 			endingTimeTemp = getMaxEndingTimeOfAWorkingDay(workingDay);
-			if (endingTime == null || endingTimeTemp.isAfter(endingTime)) {
-				endingTime = endingTimeTemp;
+			if (maxEndingTime == null || endingTimeTemp.isAfter(maxEndingTime)) {
+				maxEndingTime = endingTimeTemp;
 			}
 		}
-		return endingTime;
+		return maxEndingTime;
 	}
 
 	public static LocalTime getMinStartingTimeOfAWorkingDay(WorkingDay workingDay) {
-		LocalTime startingTime = null;
-		LocalTime startingTimeTemp;
-		for (TimeSlot timeSlot : workingDay.getListTimeSlot()) {
-			startingTimeTemp = timeSlot.getStartingTime();
-			if (startingTime == null || startingTimeTemp.isBefore(startingTime)) {
-				startingTime = startingTimeTemp;
-			}
-		}
-		return startingTime;
+		return workingDay.getListTimeSlot().stream().map(TimeSlot::getStartingTime).min(LocalTime::compareTo).get();
 	}
 
 	public static LocalTime getMinStartingTimeOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
-		LocalTime startingTime = null;
+		LocalTime minStartingTime = null;
 		LocalTime startingTimeTemp;
 		for (WorkingDay workingDay : listWorkingDay) {
 			startingTimeTemp = getMinStartingTimeOfAWorkingDay(workingDay);
-			if (startingTime == null || startingTimeTemp.isBefore(startingTime)) {
-				startingTime = startingTimeTemp;
+			if (minStartingTime == null || startingTimeTemp.isBefore(minStartingTime)) {
+				minStartingTime = startingTimeTemp;
 			}
 		}
-		return startingTime;
+		return minStartingTime;
 	}
 
-	public static int getMinDurationTimeSlotOfAWorkingDay(WorkingDay workingDay) {
+	public static int getMinDurationTimeSlotOfAWorkingDay(WorkingDay workingDay) {		
 		long lMinDuration = 0;
 		LocalTime startingTimeTemp;
 		LocalTime endingTimeTemp;
@@ -201,6 +161,7 @@ public class WorkingDayService {
 	}
 
 	public static int getMinDurationTimeSlotOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
+		
 		long lMinDuration = 0;
 		long lDurationTemp;
 		for (WorkingDay workingDay : listWorkingDay) {
@@ -212,12 +173,16 @@ public class WorkingDayService {
 		return toIntExact(lMinDuration);
 	}
 
-	public static List<String> getListDayOfWeekOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
-		List<String> listDayOfWeek = new ArrayList<>();
+	public static HashSet<String> getSetDayOfWeekOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
+		HashSet<String> setDayOfWeek = new HashSet<>();
 		for (WorkingDay workingDay : listWorkingDay) {
-			listDayOfWeek.add(new Integer(workingDay.getDayOfWeek()).toString());
+			setDayOfWeek.add(new Integer(workingDay.getDayOfWeek()).toString());
 		}
-		return listDayOfWeek;
+		return setDayOfWeek;
+	}
+
+	public static WorkingDay getWorkingDayOfDayOfWeek(List<WorkingDay> listWorkingDay, DayOfWeek dayOfWeek) {
+		return listWorkingDay.stream().filter(x -> x.getDayOfWeek() == dayOfWeek.getValue()).findFirst().orElse(null);
 	}
 
 }

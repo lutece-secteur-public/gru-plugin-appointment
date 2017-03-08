@@ -63,7 +63,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.OldAppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
@@ -76,7 +76,7 @@ import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
-import fr.paris.lutece.plugins.appointment.service.AppointmentService;
+import fr.paris.lutece.plugins.appointment.service.OldAppointmentService;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -253,7 +253,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
 	// Messages
-	private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = AppointmentService.getListDaysOfWeek();
+	private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = OldAppointmentService.getListDaysOfWeek();
 	private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancel_appointment.pageTitle";
 	private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.my_appointments.pageTitle";
 	private static final StateService _stateService = SpringContextService.getBean(StateService.BEAN_SERVICE);
@@ -431,7 +431,7 @@ public class AppointmentApp extends MVCApplication {
 				filterEmail.setDateAppointmentMin(dDateMin);
 			}
 
-			List<Appointment> listAppointmentForEmail = AppointmentHome.getAppointmentListByFilter(filterEmail);
+			List<Appointment> listAppointmentForEmail = OldAppointmentHome.getAppointmentListByFilter(filterEmail);
 			int nAppointments = listAppointmentForEmail.size();
 
 			if ((nMaxAppointments != 0) && (nWeeksLimits != 0)) {
@@ -844,7 +844,7 @@ public class AppointmentApp extends MVCApplication {
 				&& StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
 			int nIdForm = Integer.parseInt(strIdForm);
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
-			Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+			Appointment appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 			AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
 			FormMessage formMessages = FormMessageHome.findByPrimaryKey(nIdForm);
 			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
@@ -855,7 +855,7 @@ public class AppointmentApp extends MVCApplication {
 					slot.getEndingMinute());
 			String strReference = StringUtils.isEmpty(form.getReference()) ? ""
 					: (Strings.toUpperCase(form.getReference().trim()) + " - ");
-			strReference += AppointmentService.getInstance().computeRefAppointment(appointment);
+			strReference += OldAppointmentService.getInstance().computeRefAppointment(appointment);
 			formMessages.setTextAppointmentCreated(
 					formMessages.getTextAppointmentCreated().replaceAll(MARK_REF, strReference)
 							.replaceAll(MARK_DATE_APP, getDateFormat().format(appointment.getDateAppointment()))
@@ -903,12 +903,12 @@ public class AppointmentApp extends MVCApplication {
 	public XPage getViewCancelAppointment(HttpServletRequest request) throws SiteMessageException {
 		String refAppointment = request.getParameter(PARAMETER_REF_APPOINTMENT);
 		String strIdAppointment = refAppointment.substring(0,
-				refAppointment.length() - AppointmentService.getInstance().getRefSizeRandomPart());
+				refAppointment.length() - OldAppointmentService.getInstance().getRefSizeRandomPart());
 		Appointment appointment = null;
 
 		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
-			appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+			appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 
 		}
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -944,16 +944,16 @@ public class AppointmentApp extends MVCApplication {
 		String strRef = request.getParameter(PARAMETER_REF_APPOINTMENT);
 
 		String strIdAppointment = strRef.substring(0,
-				strRef.length() - AppointmentService.getInstance().getRefSizeRandomPart());
+				strRef.length() - OldAppointmentService.getInstance().getRefSizeRandomPart());
 		String strDate = request.getParameter(PARAMETER_DATE_APPOINTMENT);
 
 		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
 			int nIdAppointment = Integer.parseInt(strIdAppointment);
-			Appointment appointment = AppointmentHome.findByPrimaryKey(nIdAppointment);
+			Appointment appointment = OldAppointmentHome.findByPrimaryKey(nIdAppointment);
 
 			Date date = (Date) getDateConverter().convert(Date.class, strDate);
 
-			if (StringUtils.equals(strRef, AppointmentService.getInstance().computeRefAppointment(appointment))
+			if (StringUtils.equals(strRef, OldAppointmentService.getInstance().computeRefAppointment(appointment))
 					&& DateUtils.isSameDay(date, appointment.getDateAppointment())) {
 				AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
 				AppointmentForm form = AppointmentFormHome.findByPrimaryKey(appointmentSlot.getIdForm());
@@ -972,7 +972,7 @@ public class AppointmentApp extends MVCApplication {
 								form.getIdForm(), request, request.getLocale(), automaticUpdate);
 					} else {
 						appointment.setStatus(Appointment.Status.STATUS_UNRESERVED.getValeur());
-						AppointmentHome.update(appointment);
+						OldAppointmentHome.update(appointment);
 					}
 
 					TransactionManager.commitTransaction(appointmentPlugin);
@@ -1134,7 +1134,7 @@ public class AppointmentApp extends MVCApplication {
 		appointmentFilter.setAuthenticationService(luteceUser.getAuthenticationService());
 		appointmentFilter.setDateAppointmentMin(new Date(System.currentTimeMillis()));
 
-		List<Appointment> listAppointments = AppointmentHome.getAppointmentListByFilter(appointmentFilter);
+		List<Appointment> listAppointments = OldAppointmentHome.getAppointmentListByFilter(appointmentFilter);
 
 		List<AppointmentDTO> listAppointmentDTO = new ArrayList<AppointmentDTO>(listAppointments.size());
 
@@ -1319,15 +1319,15 @@ public class AppointmentApp extends MVCApplication {
 			}
 
 			List<String> listTimeBegin = new ArrayList<String>();
-			int nMinAppointmentDuration = AppointmentService.getInstance().getListTimeBegin(listDays, form,
+			int nMinAppointmentDuration = OldAppointmentService.getInstance().getListTimeBegin(listDays, form,
 					listTimeBegin);
-			List<AppointmentDay> listAvailableDays = AppointmentService.getInstance().getAllAvailableDays(form);
+			List<AppointmentDay> listAvailableDays = OldAppointmentService.getInstance().getAllAvailableDays(form);
 			model.put(MARK_LIST_DAYS, listDays);
 			model.put(MARK_LIST_AVAILABLE_DAYS, listAvailableDays);
 			model.put(MARK_LIST_TIME_BEGIN, listTimeBegin);
 			model.put(MARK_MIN_DURATION_APPOINTMENT, nMinAppointmentDuration);
 			model.put(MARK_DATE_LAST_MONDAY,
-					DateUtils.truncate(AppointmentService.getInstance().getDateLastMonday(), Calendar.DATE).getTime());
+					DateUtils.truncate(OldAppointmentService.getInstance().getDateLastMonday(), Calendar.DATE).getTime());
 		} else {
 			addInfo(model, formMessages.getNoAvailableSlot());
 		}
@@ -1472,7 +1472,7 @@ public class AppointmentApp extends MVCApplication {
 		urlItem.addParameter(MVCUtils.PARAMETER_PAGE, XPAGE_NAME);
 		urlItem.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT);
 		urlItem.addParameter(PARAMETER_REF_APPOINTMENT,
-				AppointmentService.getInstance().computeRefAppointment(appointment));
+				OldAppointmentService.getInstance().computeRefAppointment(appointment));
 
 		return urlItem.getUrl();
 	}
@@ -1491,7 +1491,7 @@ public class AppointmentApp extends MVCApplication {
 		urlItem.addParameter(MVCUtils.PARAMETER_PAGE, XPAGE_NAME);
 		urlItem.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT);
 		urlItem.addParameter(PARAMETER_REF_APPOINTMENT,
-				AppointmentService.getInstance().computeRefAppointment(appointment));
+				OldAppointmentService.getInstance().computeRefAppointment(appointment));
 
 		return urlItem.getUrl();
 	}

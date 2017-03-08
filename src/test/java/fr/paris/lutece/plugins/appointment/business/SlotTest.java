@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -44,8 +45,8 @@ public class SlotTest extends LuteceTestCase {
 		checkAsserts(slotStored, slot);
 
 		// Update the Slot
-		slot.setStartingDate(STARTING_DATE_2);
-		slot.setEndingDate(ENDING_DATE_2);
+		slot.setStartingDateTime(STARTING_DATE_2);
+		slot.setEndingDateTime(ENDING_DATE_2);
 		slot.setIsOpen(IS_OPEN_2);
 		slot.setNbRemainingPlaces(NB_REMAINING_PLACES_2);
 		// Update the Slot in database
@@ -107,7 +108,7 @@ public class SlotTest extends LuteceTestCase {
 		SlotHome.create(slot2);
 
 		// Find the Slot created in database
-		List<Slot> listSlotStored = SlotHome.findByIdFormAndDateRange(form.getIdForm(), STARTING_DATE_1, ENDING_DATE_1);
+		HashMap<LocalDateTime, Slot> listSlotStored = SlotHome.findByIdFormAndDateRange(form.getIdForm(), STARTING_DATE_1, ENDING_DATE_1);
 		assertEquals(listSlotStored.size(), 1);
 
 		// Clean
@@ -182,8 +183,8 @@ public class SlotTest extends LuteceTestCase {
 	 */
 	public static Slot buildSlot() {
 		Slot slot = new Slot();
-		slot.setStartingDate(STARTING_DATE_1);
-		slot.setEndingDate(ENDING_DATE_1);
+		slot.setStartingDateTime(STARTING_DATE_1);
+		slot.setEndingDateTime(ENDING_DATE_1);
 		slot.setIsOpen(IS_OPEN_1);
 		slot.setNbRemainingPlaces(NB_REMAINING_PLACES_1);
 		return slot;
@@ -196,8 +197,8 @@ public class SlotTest extends LuteceTestCase {
 	 */
 	public static Slot buildSlot2() {
 		Slot slot = new Slot();
-		slot.setStartingDate(STARTING_DATE_2);
-		slot.setEndingDate(ENDING_DATE_2);
+		slot.setStartingDateTime(STARTING_DATE_2);
+		slot.setEndingDateTime(ENDING_DATE_2);
 		slot.setIsOpen(IS_OPEN_1);
 		slot.setNbRemainingPlaces(NB_REMAINING_PLACES_2);
 		return slot;
@@ -210,8 +211,8 @@ public class SlotTest extends LuteceTestCase {
 	 */
 	public static Slot buildClosedSlot() {
 		Slot slot = new Slot();
-		slot.setStartingDate(STARTING_DATE_2);
-		slot.setEndingDate(ENDING_DATE_2);
+		slot.setStartingDateTime(STARTING_DATE_2);
+		slot.setEndingDateTime(ENDING_DATE_2);
 		slot.setIsOpen(IS_OPEN_2);
 		slot.setNbRemainingPlaces(NB_REMAINING_PLACES_2);
 		return slot;
@@ -226,9 +227,9 @@ public class SlotTest extends LuteceTestCase {
 	 *            the Slot created
 	 */
 	public void checkAsserts(Slot slotStored, Slot slot) {
-		assertEquals(slotStored.getStartingDate(), slot.getStartingDate());
-		assertEquals(slotStored.getEndingDate(), slot.getEndingDate());
-		assertEquals(slotStored.isOpen(), slot.isOpen());
+		assertEquals(slotStored.getStartingDateTime(), slot.getStartingDateTime());
+		assertEquals(slotStored.getEndingDateTime(), slot.getEndingDateTime());
+		assertEquals(slotStored.getIsOpen(), slot.getIsOpen());
 		assertEquals(slotStored.getNbRemainingPlaces(), slot.getNbRemainingPlaces());
 		assertEquals(slotStored.getIdForm(), slot.getIdForm());
 	}

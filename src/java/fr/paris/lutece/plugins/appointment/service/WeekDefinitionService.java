@@ -1,38 +1,18 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
 public class WeekDefinitionService {
-
-	/**
-	 * Name of the bean of the service
-	 */
-	public static final String BEAN_NAME = "appointment.weekDefinitionService";
-
-	/**
-	 * Instance of the service
-	 */
-	private static volatile WeekDefinitionService _instance;
-
-	/**
-	 * Get an instance of the service
-	 * 
-	 * @return An instance of the service
-	 */
-	public static WeekDefinitionService getInstance() {
-		if (_instance == null) {
-			_instance = SpringContextService.getBean(BEAN_NAME);
-		}
-
-		return _instance;
-	}
 
 	/**
 	 * 
@@ -75,33 +55,56 @@ public class WeekDefinitionService {
 		weekDefinition.setIdForm(nIdForm);
 	}
 
+	public static List<WeekDefinition> findWeekDefinitionByIdForm(int nIdForm) {
+		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
+		fillInListWeekDefinition(listWeekDefinition);
+		return listWeekDefinition;
+	}	
+
+	private static void fillInListWeekDefinition(List<WeekDefinition> listWeekDefinition) {
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			fillInWeekDefinition(weekDefinition);
+		}
+	}
+
+	private static void fillInWeekDefinition(WeekDefinition weekDefinition) {
+		weekDefinition.setListWorkingDay(
+				WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
+	}
+	
 	/**
 	 * 
 	 * @param nIdForm
 	 * @param dateOfApply
 	 * @return
 	 */
-	public static WeekDefinition findWeekDefinitionByFormIdAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply) {
-		WeekDefinition weekDefinition = WeekDefinitionHome.findByIdFormAndClosestToDateOfApply(nIdForm, dateOfApply);
+	public static WeekDefinition findWeekDefinitionByIdFormAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply) {
+		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
+		List<LocalDate> listDate = new ArrayList<>();
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			listDate.add(weekDefinition.getDateOfApply());
+		}		
+		LocalDate closestDate = Utilities.getClosestDateInPast(listDate, dateOfApply);
+		WeekDefinition weekDefinition = listWeekDefinition.stream().filter(x -> closestDate.isEqual(x.getDateOfApply())).findAny().orElse(null);
 		weekDefinition.setListWorkingDay(
 				WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
 		return weekDefinition;
 	}
-	
-	public static WeekDefinition findWeekDefinitionLightById(int nIdWeekDefinition){
+
+	public static WeekDefinition findWeekDefinitionLightById(int nIdWeekDefinition) {
 		return WeekDefinitionHome.findByPrimaryKey(nIdWeekDefinition);
 	}
-	
-	public static WeekDefinition findWeekDefinitionById(int nIdWeekDefinition){
+
+	public static WeekDefinition findWeekDefinitionById(int nIdWeekDefinition) {
 		WeekDefinition weekDefinition = WeekDefinitionHome.findByPrimaryKey(nIdWeekDefinition);
 		weekDefinition.setListWorkingDay(
 				WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
 		return weekDefinition;
 	}
-	
+
 	public static ReferenceList findAllDateOfWeekDefinition(int nIdForm) {
 		ReferenceList listDate = new ReferenceList();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.FORMAT_DATE);
 		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
 		for (WeekDefinition weekDefinition : listWeekDefinition) {
 			listDate.addItem(weekDefinition.getIdWeekDefinition(), weekDefinition.getDateOfApply().format(formatter));
@@ -109,4 +112,74 @@ public class WeekDefinitionService {
 		return listDate;
 	}
 
+	public static HashMap<LocalDate, WeekDefinition> findAllWeekDefinition(int nIdForm) {
+		HashMap<LocalDate, WeekDefinition> mapWeekDefinition = new HashMap<>();
+		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			weekDefinition.setListWorkingDay(
+					WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
+			mapWeekDefinition.put(weekDefinition.getDateOfApply(), weekDefinition);
+		}
+		return mapWeekDefinition;
+	}
+
+	public static LocalTime getMinStartingTimeOfAListOfWeekDefinition(List<WeekDefinition> listWeekDefinition) {
+		LocalTime minStartingTime = null;
+		LocalTime startingTimeTemp;
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			startingTimeTemp = getMinStartingTimeOfAWeekDefinition(weekDefinition);
+			if (minStartingTime == null || startingTimeTemp.isBefore(minStartingTime)) {
+				minStartingTime = startingTimeTemp;
+			}
+		}
+		return minStartingTime;
+	}
+
+	public static LocalTime getMinStartingTimeOfAWeekDefinition(WeekDefinition weekDefinition) {
+		return WorkingDayService.getMinStartingTimeOfAListOfWorkingDay(weekDefinition.getListWorkingDay());
+	}
+
+	public static LocalTime getMaxEndingTimeOfAListOfWeekDefinition(List<WeekDefinition> listWeekDefinition) {
+		LocalTime maxEndingTime = null;
+		LocalTime endingTimeTemp;
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			endingTimeTemp = getMaxEndingTimeOfAWeekDefinition(weekDefinition);
+			if (maxEndingTime == null || endingTimeTemp.isAfter(maxEndingTime)) {
+				maxEndingTime = endingTimeTemp;
+			}
+		}
+		return maxEndingTime;
+	}
+
+	public static LocalTime getMaxEndingTimeOfAWeekDefinition(WeekDefinition weekDefinition) {
+		return WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(weekDefinition.getListWorkingDay());
+	}
+
+	public static int getMinDurationTimeSlotOfAListOfWeekDefinition(List<WeekDefinition> listWeekDefinition) {
+		int nMinDuration = 0;
+		int nDurationTemp;
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			nDurationTemp = getMinDurationTimeSlotOfAWeekDefinition(weekDefinition);
+			if (nMinDuration == 0 || nMinDuration > nDurationTemp) {
+				nMinDuration = nDurationTemp;
+			}
+		}
+		return nMinDuration;
+	}
+
+	public static int getMinDurationTimeSlotOfAWeekDefinition(WeekDefinition weekDefinition) {
+		return WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay(weekDefinition.getListWorkingDay());
+	}
+
+	public static HashSet<String> getSetDayOfWeekOfAListOfWeekDefinition(List<WeekDefinition> listWeekDefinition) {
+		HashSet<String> setDayOfWeek = new HashSet<>();
+		for (WeekDefinition weekDefinition : listWeekDefinition) {
+			setDayOfWeek
+					.addAll(WorkingDayService.getSetDayOfWeekOfAListOfWorkingDay(weekDefinition.getListWorkingDay()));
+		}
+		return setDayOfWeek;
+	}
+	
+	
+	
 }
