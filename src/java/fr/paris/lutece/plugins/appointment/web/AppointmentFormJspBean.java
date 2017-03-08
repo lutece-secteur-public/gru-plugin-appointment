@@ -185,6 +185,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String INFO_APPOINTMENTFORM_CREATED = "appointment.info.appointmentform.created";
 	private static final String INFO_APPOINTMENTFORM_UPDATED = "appointment.info.appointmentform.updated";
 	private static final String INFO_APPOINTMENTFORM_REMOVED = "appointment.info.appointmentform.removed";
+	private static final String INFO_APPOINTMENTFORM_MESSAGES_MODIFIED = "appointment.info.appointmentform_messages.updated";
 
 	// Session variable to store working values
 	private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
@@ -630,6 +631,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			FormMessage formMessage = FormMessageHome.findByIdForm(nIdForm);
 			populate(formMessage, request);
 			FormMessageHome.update(formMessage);
+			addInfo(INFO_APPOINTMENTFORM_MESSAGES_MODIFIED, getLocale());
 			return redirect(request, VIEW_MODIFY_FORM_MESSAGES, PARAMETER_ID_FORM, nIdForm);
 		}
 		return redirectView(request, VIEW_MANAGE_APPOINTMENTFORMS);
