@@ -7,12 +7,12 @@ import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 
-public class AppointmentsService {
+public class AppointmentService {
 
 	public static List<Appointment> findAppointmentByListSlot(List<Slot> listSlot) {
 		List<Appointment> listAppointment = new ArrayList<>();
 		for (Slot slot : listSlot) {
-			listAppointment.addAll(AppointmentsService.findAppointmentBySlot(slot.getIdSlot()));
+			listAppointment.addAll(AppointmentService.findAppointmentBySlot(slot.getIdSlot()));
 		}
 		return listAppointment;
 	}
