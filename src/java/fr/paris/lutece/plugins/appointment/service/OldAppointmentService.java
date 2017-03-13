@@ -513,7 +513,7 @@ public class OldAppointmentService {
 
 		Calendar calendarTo = GregorianCalendar.getInstance(Locale.FRANCE);
 		calendarTo.setTime(getDateLastMonday());
-		calendarTo.add(Calendar.WEEK_OF_MONTH, AppointmentApp.getMaxWeek(form.getNbWeeksToDisplay(), form));
+		//calendarTo.add(Calendar.WEEK_OF_MONTH, AppointmentApp.getMaxWeek(form.getNbWeeksToDisplay(), form));
 		// We remove the last monday
 		calendarTo.add(Calendar.DAY_OF_MONTH, -1);
 

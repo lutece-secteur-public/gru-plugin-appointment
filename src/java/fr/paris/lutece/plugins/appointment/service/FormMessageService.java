@@ -86,5 +86,9 @@ public class FormMessageService {
 
 		return formMessage;
 	}
+	
+	public static FormMessage findFormMessageByIdForm(int nIdForm){
+		return FormMessageHome.findByIdForm(nIdForm);
+	}
 
 }

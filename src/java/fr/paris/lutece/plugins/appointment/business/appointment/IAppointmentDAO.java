@@ -1,5 +1,6 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -88,4 +89,7 @@ public interface IAppointmentDAO {
 	 * @return a list of the appointments
 	 */
 	List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin);
+	
+	List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime, Plugin plugin);
+	
 }

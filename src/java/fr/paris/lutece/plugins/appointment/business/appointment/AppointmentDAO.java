@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +20,12 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (id_appointment, id_user, id_slot) VALUES (?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_user = ?, id_slot = ? WHERE id_appointment = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
-	private static final String SQL_QUER_SELECT_COLUMNS = "SELECT id_appointment, id_user, id_slot FROM appointment_appointment";
-	private static final String SQL_QUERY_SELECT = SQL_QUER_SELECT_COLUMNS + " WHERE id_appointment = ?";
-	private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUER_SELECT_COLUMNS + " WHERE id_user = ?";
-	private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUER_SELECT_COLUMNS + " WHERE id_slot = ?";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.id_user, appointment.id_slot FROM appointment_appointment appointment";
+	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_appointment = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_AFTER_A_DATE = SQL_QUERY_SELECT_COLUMNS
+			+ " INNER JOIN appointment_slot slot ON appointment.id_slot = slot.id_slot WHERE slot.id_form = ? AND slot.starting_date_time >= ?";
 
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
@@ -106,6 +110,27 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		try {
 			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_SLOT, plugin);
 			daoUtil.setInt(1, nIdSlot);
+			daoUtil.executeQuery();
+			while (daoUtil.next()) {
+				listAppointment.add(buildAppointment(daoUtil));
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return listAppointment;
+	}
+
+	@Override
+	public List<Appointment> findByIdFormAndAfterADateTime(int nIdForm,
+			LocalDateTime startingDateTime, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		List<Appointment> listAppointment = new ArrayList<>();
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_AFTER_A_DATE, plugin);
+			daoUtil.setInt(1, nIdForm);
+			daoUtil.setTimestamp(2, Timestamp.valueOf(startingDateTime));
 			daoUtil.executeQuery();
 			while (daoUtil.next()) {
 				listAppointment.add(buildAppointment(daoUtil));

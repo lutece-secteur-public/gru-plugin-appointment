@@ -24,7 +24,7 @@ public class SlotDAO implements ISlotDAO {
 	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, max_capacity, nb_remaining_places, id_form FROM appointment_slot";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS
-			+ " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ?";
+			+ " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ?";	
 	private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS
 			+ " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ? AND is_open = 1";
 	private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS

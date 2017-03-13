@@ -1,3 +1,12 @@
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.css' />
+<script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/locale-all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.standalone.css" />
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>
@@ -16,388 +25,125 @@
 		</div>
 	</div>
 </div>
-<div class="row calendar-row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="layout-wrapper">
-			<div class="row">
-			<#if listDays??>
-				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-					<#if nb_week &gt; 0>
-						<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true" title="#i18n{appointment.appointmentApp.previousWeek}">
-							<i class="glyphicon glyphicon-arrow-left"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentApp.previousWeek}</span>
-						</a>
-					</#if>
-				</div>
-				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
-					<button class="btn btn-primary btn-sm" id="buttonCalendarAvailableDays" type="button">
-						<i class="glyphicon glyphicon-calendar"></i><span class="hidden-xs">&nbsp;#i18n{appointment.appointmentCalendar.labelChooseDate}</span>
-					</button>
-				</div>
-				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-					<#if nb_week &lt; max_week - 1>
-						<a class="btn btn-primary btn-sm pull-right" href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}" title="#i18n{appointment.appointmentApp.nextWeek}">
-							<i class="glyphicon glyphicon-arrow-right"></i>
-							<span class="hidden-xs">#i18n{appointment.appointmentApp.nextWeek}&nbsp;</span>
-						</a>
-					</#if>
-				</div>
-			</#if>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="layout-wrapper">
-		<#if listDays??>
-			<div class="hidden-xs hidden-sm">
-				<table class="table desktop-table appointment-table-container">
-					<tr>
-						<td>
-							<table class="table appointment-inner-table">
-								<tr>
-									<td style="height:44px;">
-										<#if nb_week &gt; 0>
-											<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week - 1}&dir=true">
-												<i class="glyphicon glyphicon-arrow-left">&nbsp;</i>
-											</a>
-										</#if>
-										<#if nb_week &lt; max_week - 1>
-											<a href="jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nb_week+1}">
-												<i class="glyphicon glyphicon-arrow-right">&nbsp;</i>
-											</a>
-										</#if>
-									</td>
-								</tr>
-								<#list list_time_begin as time_begin>
-									<tr>
-										<td class="appointment-row1">
-											${time_begin}
-										</td>
-									</tr>
-								</#list>
-							</table>
-						</td>
-						<#list listDays as day>
-							<td>
-								<table class="table appointment-inner-table">
-									<tr>
-										<th>
-											#i18n{${list_days_of_week[day_index]}}<br />
-											${day.date}
-										</th>
-									</tr>
-									<#if day.isOpen>
-										<#assign rowspan=day.appointmentDuration/min_duration_appointments>
-										<#assign first_slot = day.listSlots?first>
-										<#assign nbSlotsFilled = 0>
-										<#if first_slot.startingHour &lt; 10>
-											<#assign first_time = '0' + first_slot.startingHour + 'h'>
-										<#else>
-											<#assign first_time = first_slot.startingHour + 'h'>
-										</#if>
-										<#if first_slot.startingMinute &lt; 10>
-											<#assign first_time = first_time + '0' + first_slot.startingMinute>
-										<#else>
-											<#assign first_time = first_time + first_slot.startingMinute>
-										</#if>
-										<#list list_time_begin as time_begin>
-											<#if time_begin != first_time>
-												<tr>
-													<td class="appointment-slot-closed appointment-row1">
-														&nbsp;
-													</td>
-												</tr>
-												<#assign nbSlotsFilled = nbSlotsFilled + 1>
-											<#else>
-												<#break>
-											</#if>
-										</#list>
-										<#list day.listSlots as slot>
-											<tr>
-												<#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - ( slot.startingHour * 60 + slot.startingMinute ) >
-												<#if slotDuration != day.appointmentDuration>
-													<#assign slotSpan= (slotDuration / min_duration_appointments)?round >
-												<#else>
-													<#assign slotSpan=rowspan >
-												</#if>
-												<#if slot.isEnabled>
-												<#assign bool ='true' >
-													<#if slotListDisponibility??>
-													
-													
-												<#list slotListDisponibility as idSlotActive>
-													<#if slot.idSlot == idSlotActive.idSlot  >
-														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
-															${formMessages.calendarFullLabel}
-															<@getCellTooltip appointmentSlot=slot />
-														</td>			
-														<#assign bool ='false'>
-													</#if>
-												</#list>
-												</#if>	
-													<#if bool == 'true' >
-													<#if slot.nbFreePlaces &gt; 0>
-														<td class="appointment-slot-available appointment-row${slotSpan} appointment-tooltip">
-															<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
-																${formMessages.calendarReserveLabel}
-															</a>
-															<@getCellTooltip appointmentSlot=slot />
-														</td>
-													<#else>
-														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
-															${formMessages.calendarFullLabel}
-															<@getCellTooltip appointmentSlot=slot />
-														</td>
-													</#if>
-													<#else>
-													<#assign bool ='true' >
-													</#if>
-												<#else>
-													<td class="appointment-slot-closed appointment-row${slotSpan} appointment-tooltip">
-														&nbsp;
-														<@getCellTooltip appointmentSlot=slot />
-													</td>
-												</#if>
-												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
-											</tr>
-										</#list>
-										<#if nbSlotsFilled &lt; list_time_begin?size - 1>
-											<#list nbSlotsFilled..(list_time_begin?size - 1) as slotToFill>
-												<tr>
-													<td class="appointment-slot-closed appointment-row1">
-														&nbsp;
-													</td>
-												</tr>
-											</#list>
-										</#if>
-									<#else>
-										<#list list_time_begin as time_begin>
-											<tr>
-												<td class="appointment-slot-closed appointment-row1">
-													&nbsp;
-												</td>
-											</tr>
-										</#list>
-									</#if>
-								</table>
-							</td>
-						</#list>
-					</tr>
-				</table>
-			</div>
-			<div class="hidden-md hidden-lg">
-				<#list listDays as day>
-					<#if day.isOpen>
-						<table class="table table-responsive appointment-inner-table">
-								<tr>
-									<th colspan="2">
-										<center>
-											#i18n{${list_days_of_week[day_index]}}
-											${day.date}
-
-										</center>
-									</th>
-								</tr>
-
-
-
-								<#if day.isOpen>
-										<#assign rowspan=day.appointmentDuration/min_duration_appointments>
-										<#assign first_slot = day.listSlots?first>
-										<#assign nbSlotsFilled = 0>
-										<#if first_slot.startingHour &lt; 10>
-											<#assign first_time = '0' + first_slot.startingHour + 'h'>
-										<#else>
-											<#assign first_time = first_slot.startingHour + 'h'>
-										</#if>
-										<#if first_slot.startingMinute &lt; 10>
-											<#assign first_time = first_time + '0' + first_slot.startingMinute>
-										<#else>
-											<#assign first_time = first_time + first_slot.startingMinute>
-										</#if>
-										<#list list_time_begin as time_begin>
-											<#if time_begin != first_time>
-												<tr>
-													<td class="appointment-slot-closed appointment-row1">
-														&nbsp;
-													</td>
-												</tr>
-												<#assign nbSlotsFilled = nbSlotsFilled + 1>
-											<#else>
-												<#break>
-											</#if>
-										</#list>
-
-
-<#list day.listSlots as slot>
-											<tr>
-												<#assign slotDuration = (slot.endingHour * 60 + slot.endingMinute) - ( slot.startingHour * 60 + slot.startingMinute ) >
-												<#if slotDuration != day.appointmentDuration>
-													<#assign slotSpan= (slotDuration / min_duration_appointments)?round >
-												<#else>
-													<#assign slotSpan=rowspan >
-												</#if>
-												<#if slot.isEnabled>
-												<#assign bool ='true' >
-													<#if slotListDisponibility??>
-													
-													
-												<#list slotListDisponibility as idSlotActive>
-													<#if slot.idSlot == idSlotActive.idSlot  >
-														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
-															${formMessages.calendarFullLabel}
-															<@getCellTooltip appointmentSlot=slot />
-														</td>			
-														<#assign bool ='false'>
-													</#if>
-												</#list>
-												</#if>	
-													<#if bool == 'true' >
-													<#if slot.nbFreePlaces &gt; 0>
-														<td class="appointment-slot-available appointment-row${slotSpan} appointment-tooltip">
-															<a href="jsp/site/Portal.jsp?page=appointment&action=doSelectSlot&idSlot=${slot.idSlot}">
-																${formMessages.calendarReserveLabel}
-															</a>
-															<@getCellTooltip appointmentSlot=slot />
-														</td>
-													<#else>
-														<td class="appointment-slot-full appointment-row${slotSpan} appointment-tooltip">
-															${formMessages.calendarFullLabel}
-															<@getCellTooltip appointmentSlot=slot />
-														</td>
-													</#if>
-													<#else>
-													<#assign bool ='true' >
-													</#if>
-												<#else>
-													<td class="appointment-slot-closed appointment-row${slotSpan} appointment-tooltip">
-														&nbsp;
-														<@getCellTooltip appointmentSlot=slot />
-													</td>
-												</#if>
-												<#assign nbSlotsFilled = nbSlotsFilled + slotSpan>
-											</tr>
-										</#list>
-										<#if nbSlotsFilled &lt; list_time_begin?size - 1>
-											<#list nbSlotsFilled..(list_time_begin?size - 1) as slotToFill>
-												<tr>
-													<td class="appointment-slot-closed appointment-row1">
-														&nbsp;
-													</td>
-												</tr>
-											</#list>
-										</#if>
-									<#else>
-										<#list list_time_begin as time_begin>
-											<tr>
-												<td class="appointment-slot-closed appointment-row1">
-													&nbsp;
-												</td>
-											</tr>
-										</#list>
-									</#if>
-								</table>
-					</#if>
-				</#list>
-			</div>
-		</#if>
-		&nbsp;
-		<#if isFormFirstStep>
-			<div class="hidden-md hidden-lg">
-				<a class="btn btn-primary btn-block btn-md" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form.idForm}">
-					#i18n{portal.util.labelBack}
-				</a>
-			</div>
-			<div class="hidden-xs hidden-sm">
-				<a class="btn btn-primary btn-md" href="jsp/site/Portal.jsp?page=appointment&view=getAppointmentFormFirstStep&id_form=${form.idForm}">
-					#i18n{portal.util.labelBack}
-				</a>
-			</div>
-			<br>
-		</#if>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">    	
+		<div class="tab-content">
+		<fieldset>									
+			<div id="calendar"></div>	
+		</fieldset>				
 	</div>
 </div>
-
-<#macro getCellTooltip appointmentSlot>
-	<span class="appointment-tooltip-title appointment-tooltip-title-fo">
-		<#if appointmentSlot.startingHour &lt; 10>0</#if>${appointmentSlot.startingHour}h<#if appointmentSlot.startingMinute &lt; 10>0</#if>${appointmentSlot.startingMinute} - <#if appointmentSlot.endingHour &lt; 10>0</#if>${appointmentSlot.endingHour}h<#if appointmentSlot.endingMinute &lt; 10>0</#if>${appointmentSlot.endingMinute} 
-	</span> 
-</#macro>
-
-<script src="js/bootstrap-datepicker.js"></script>
-<script src="js/locales/bootstrap-datepicker.fr.js"></script>
-
 <script type="text/javascript">
-	function dateToString( date ) {
-	    var dateStr = padString(date.getDate()) + "/" + padString(1 + date.getMonth()) + "/" + padString(date.getFullYear()); 
-	    return dateStr;
-	}
-	
-	function padString(i) {
-	    return (i < 10) ? "0" + i : "" + i;
-	}
-
-	$(function()
-	{
-		$('#buttonCalendarAvailableDays').show();
-		
-		<#assign hasDays = false >
-		var validDays = [<#list listAvailableDays as day><#if day.isOpen && day.freePlaces &gt; 0><#if hasDays >, </#if>'${day.date}'<#assign hasDays=true></#if></#list>];
-		var hrefs = [<#list 0..max_week as nbWeek><#if nbWeek_index &gt; 0>, </#if>'jsp/site/Portal.jsp?page=appointment&view=<#if isFormFirstStep>getAppointmentFormSecondStep<#else>getAppointmentFormFirstStep</#if>&id_form=${form.idForm}&nb_week=${nbWeek}'</#list>];
-		var nowTemp = new Date();
-		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-		$("#buttonCalendarAvailableDays").datepicker({
-		    weekStart: 1,
-		    format: 'dd/mm/yyyy',
-		    language: 'fr',
-		    beforeShowDay: function (date) {
-		    	if( date.valueOf() <= now.valueOf() )
+	var slotDuration = '${min_duration}';
+    var minTime = '${min_time}';
+    var maxTime = '${max_time}';
+    var dow = [
+		<#if dow??>								   
+			<#list dow as day>
+				'${day}',								
+			</#list>
+		</#if>				
+	];
+    var nbMaxWeeks = '${nb_weeks_to_display}';
+    var eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';    
+    var columnFormat = 'dddd DD/MM/YYYY';
+    var events = [
+		<#if events??>								   
+			<#list events as event>
 				{
+					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'${formMessages.calendarReserveLabel}' + ' / ' + '${event.nbRemainingPlaces} place(s) restante(s)'
+							<#elseif event.isOpen>'${formMessages.calendarFullLabel}'<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,							
+					start : '${event.startingDateTime}',
+					end : '${event.endingDateTime}',
+					id : '${event.idSlot}',
+					color : <#if event.isOpen & (event.nbRemainingPlaces > 0)l >'default'<#else>'red'</#if>,
+					url : eventUrl + '&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}',
+				},								
+			</#list>
+		</#if>
+	];
+	var defaultDate = '${date_of_display}';
+    $(document).ready(function() {
+		$('#calendar').fullCalendar({
+			defaultDate: defaultDate,
+			defaultView: 'agendaWeek',
+			height: 'auto',
+			locale: 'fr',
+			theme: true,                    
+			editable: false,
+			customButtons: {
+				datePicker: {
+					themeIcon:'circle-triangle-s',
+					click: function () {
+						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
+						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
+						$("#hiddenDate").datepicker({
+							showOn: "button",
+							dateFormat:"yy-mm-dd",
+							autoclose: true,                  
+						});
+						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
+						//Below are required for manipulating dynamically created datepicker on custom button click
+						$("#hiddenDate").focus().hide();
+						$btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
+						$btnDatepicker.hide();
+						$btnDatepicker.remove();
+						$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
+						$("#hiddenDate").change(function () {
+							$('#calendar').fullCalendar('gotoDate', $("#hiddenDate").val());
+						});
+					}
+				}			
+			},
+			// header
+			header: {
+				left: 'prev,next datePicker today',
+				center: 'title',
+				right: ''
+			},
+			columnFormat: columnFormat,
+			slotLabelFormat: 'H:mm',
+			slotLabelInterval: slotDuration,
+			slotDuration: slotDuration,
+			allDaySlot: false,
+			minTime: minTime,
+			maxTime: maxTime,         
+			businessHours: {
+				start: minTime,
+				end: maxTime,
+				dow: dow
+			},
+			eventClick: function(event) {
+				if (event.title == '${formMessages.calendarFullLabel}' || event.title == '#i18n{appointment.manageCalendarSlots.labelClosed}') {
 					return false;
+				} else {
+					location.href = event.url;							
 				}
-		    	var stringDate = dateToString(date);
-		    	for (var i = 0; i < validDays.length; i++) {
-		            if ($.inArray(stringDate, validDays) != -1) {
-		                return {enabled: true, classes: 'appointment-datepicker-day-highlighted', tooltip: null};
-		            }
-		        }
-		    	return false;
-		    }
-		}).on( 'changeDate', function(e) {
-			var stringDate = dateToString( e.date );
-	        if ( $.inArray( stringDate, validDays ) != -1 )
-	        {
-	        	var dateMonday = new Date( ${dateLastMonday} );
-// 	        	var dateNearestMonday = new Date(e.date);
-// 	        	dateNearestMonday.setHour(0,0,0);
-// 	        	// We set the day on the previous monday
-// 	        	dateNearestMonday.setDate(dateNearestMonday.getDate - (e.date.getDay() + 1) );
-	        	
-// 	        	var dateLastMonday = new Date(now);
-// 	        	dateLastMonday.setHour(0,0,0);
-// 	        	// We set the day on the previous monday
-// 	        	dateLastMonday.setDate(dateLastMonday.getDate - (now.getDay() + 1) );
-	        	
-// 	        	var nbWeek = Math.ceil( (dateNearestMonday - dateLastMonday) / 604800000 );
-
-			var nbWeek = Math.floor( (e.date - dateMonday) / 604800000 );
-	       	// TODO : compute nb weeks
-	       	var loc=""+location;
-	       	var n=loc.indexOf("jsp");
-	       	var urlbase=loc.substring(0,n);
-	       	window.location = urlbase + hrefs[nbWeek];
-	        }
-	    });
-		
-		// Affiche infos
-		$("#infos").css("cursor","pointer").css("color","#3276B1");
-		$("#infos").click( function(){
-			$("#messages_infos_div").toggle();
-		});
-		$("a.close").click( function( e ){
-			e.preventDefault();
-			$("#messages_infos_div").toggle();
-		});
-		
-	});
+			},			
+			events: events,
+			viewRender: function(view, element) {
+				var minDate = moment();
+				var maxDate = moment().add(nbMaxWeeks, 'weeks');
+				// Past
+				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
+					$(".fc-prev-button").prop('disabled', true); 
+					$(".fc-prev-button").addClass('fc-state-disabled'); 
+				} else {
+					$(".fc-prev-button").removeClass('fc-state-disabled'); 
+					$(".fc-prev-button").prop('disabled', false); 
+				}
+				// Future
+				if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
+					$(".fc-next-button").prop('disabled', true); 
+					$(".fc-next-button").addClass('fc-state-disabled'); 
+				} else {
+					$(".fc-next-button").removeClass('fc-state-disabled'); 
+					$(".fc-next-button").prop('disabled', false); 
+				}
+			},
+			eventAfterAllRender: function(view) {			
+				$('.fc-event').css('cursor', 'pointer');
+			},
+		});        
+	});      
 </script>

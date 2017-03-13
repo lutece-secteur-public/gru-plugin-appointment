@@ -385,9 +385,9 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 			endingDateTime = slot.getDate().atTime(LocalTime.MAX);
 		}
 		List<Slot> listSlotImpacted = new ArrayList<>(SlotService
-				.findListSLotByIdFormAndDateRange(slot.getIdForm(), slot.getStartingDateTime(), endingDateTime)
+				.findListSlotByIdFormAndDateRange(slot.getIdForm(), slot.getStartingDateTime(), endingDateTime)
 				.values());
-		List<Appointment> listAppointment = AppointmentService.findAppointmentByListSlot(listSlotImpacted);
+		List<Appointment> listAppointment = AppointmentService.findListAppointmentByListSlot(listSlotImpacted);
 		if (!CollectionUtils.isEmpty(listAppointment)) {
 			bReturn = false;
 			addError(MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale());

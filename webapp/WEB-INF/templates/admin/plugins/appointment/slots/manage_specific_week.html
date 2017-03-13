@@ -29,8 +29,7 @@
 		</#if>				
 	];
     var nbMaxWeeks = '${nb_weeks_to_display}';
-    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}';
-    var dateUrl = 'http://www.google.fr?q=';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}';    
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
 		<#if events??>								   
@@ -122,11 +121,7 @@
 					$(".fc-next-button").prop('disabled', false); 
 				}
 			},
-			eventAfterAllRender: function(view) {
-				$('.fc-day-header').click(function() {
-					location.href = dateUrl + $(this).attr('data-date');
-				});
-				$('.fc-day-header').css('cursor', 'pointer');				
+			eventAfterAllRender: function(view) {							
 				$('.fc-event').css('cursor', 'pointer');
 			},
 		});        

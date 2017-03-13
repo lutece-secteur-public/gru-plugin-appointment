@@ -740,7 +740,7 @@ public class AppointmentFormService implements Serializable {
 		UrlItem url = new UrlItem(AppPathService.getPortalUrl());
 		url.addParameter(XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME);
 		url.addParameter(MVCUtils.PARAMETER_VIEW, isFormFirstStep(nIdform)
-				? AppointmentApp.VIEW_APPOINTMENT_FORM_FIRST_STEP : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP);
+				? AppointmentApp.VIEW_APPOINTMENT_CALENDAR : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP);
 
 		if ((entry != null) && (entry.getIdResource() > 0)) {
 			url.addParameter(PARAMETER_ID_FORM, entry.getIdResource());

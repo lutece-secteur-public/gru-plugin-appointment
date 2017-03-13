@@ -46,10 +46,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -57,6 +59,7 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
@@ -157,7 +160,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String ERROR_MESSAGE_NO_WORKING_DAY_CHECKED = "appointment.message.error.noWorkingDayChecked";
 	private static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE = "appointment.message.error.formatDaysBeforeAppointmentMiddleSuperior";
 	private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
-	private static final String MMMMMMM = "appointment.message.error.refreshDays.modifyFormHasAppointments";
+	private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
 	private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
 	private static final String PROPERTY_COPY_OF_FORM = "appointment.manage_appointmentforms.Copy";
 	private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
@@ -254,7 +257,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		if (appointmentForm == null) {
 			appointmentForm = new AppointmentForm();
 		}
-		Map<String, Object> model = getModel();		
+		Map<String, Object> model = getModel();
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
 		return getPage(PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model);
 	}
@@ -370,7 +373,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 		}
-		Map<String, Object> model = getModel();		
+		Map<String, Object> model = getModel();
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
 		return getPage(PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model);
 	}
@@ -409,7 +412,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 		}
 		Map<String, Object> model = getModel();
-		model.put(MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule(nIdForm));		
+		model.put(MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule(nIdForm));
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
 		return getPage(PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS, TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM, model);
 	}
@@ -487,8 +490,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			return redirect(request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm);
 		}
 		LocalDate dateOfModification = appointmentForm.getDateOfModification().toLocalDate();
-		// TODO Vérifier s'il existe des rendez-vous après la date de
-		// modification
+		// Check if there are appointments after the date of modification of the form
+		List<Appointment> listAppointment = AppointmentService.findListAppointmentByIdFormAndAfterADateTime(nIdForm,
+				dateOfModification.atTime(LocalTime.MIN));		 
+		if (!CollectionUtils.isEmpty(listAppointment)) {
+			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
+			addError(MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale());
+			return redirect(request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm);
+		}
 		if (!validateBean(appointmentForm, VALIDATION_ATTRIBUTES_PREFIX) || !checkConstraints(appointmentForm)) {
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 			return redirect(request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm);

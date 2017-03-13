@@ -1,5 +1,6 @@
 package fr.paris.lutece.plugins.appointment.business.slot;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +86,8 @@ public interface ISlotDAO {
 	HashMap<LocalDateTime, Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime,
 			Plugin plugin);
 
+	
+	
 	/**
 	 * Returns all the open slots for the given date range
 	 * 
@@ -111,4 +114,5 @@ public interface ISlotDAO {
 	 * @return a list of open slots
 	 */
 	List<Slot> findOpenSlotsByIdForm(int nIdForm, Plugin plugin);
+		
 }
