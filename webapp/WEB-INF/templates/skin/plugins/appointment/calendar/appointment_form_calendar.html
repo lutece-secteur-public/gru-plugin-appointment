@@ -1,4 +1,5 @@
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.0/fullcalendar.css' />
+<link rel='stylesheet' href='css/plugins/fullcalendar/fullcalendar_ow.css' />
 <script src='http://code.jquery.com/jquery-1.11.3.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js'></script>
@@ -51,12 +52,14 @@
 		<#if events??>								   
 			<#list events as event>
 				{
-					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'${formMessages.calendarReserveLabel}' + ' / ' + '${event.nbRemainingPlaces} place(s) restante(s)'
-							<#elseif event.isOpen>'${formMessages.calendarFullLabel}'<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,							
+					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'${formMessages.calendarReserveLabel}' + ' \n ' + '${event.nbRemainingPlaces} place(s) restante(s)'
+							<#elseif event.isOpen>'${formMessages.calendarFullLabel}'<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,		
+					className : <#if !event.isOpen>'slot-full'
+								<#else>''</#if>,		
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
-					color : <#if event.isOpen & (event.nbRemainingPlaces > 0)l >'default'<#else>'red'</#if>,
+					color : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'default'<#else>'red'</#if>,
 					url : eventUrl + '&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}',
 				},								
 			</#list>
@@ -73,6 +76,7 @@
 			editable: false,
 			customButtons: {
 				datePicker: {
+					text: 'Choisir une date',
 					themeIcon:'circle-triangle-s',
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
@@ -80,7 +84,9 @@
 						$("#hiddenDate").datepicker({
 							showOn: "button",
 							dateFormat:"yy-mm-dd",
-							autoclose: true,                  
+							autoclose: true,
+							startDate: "today",
+							endDate: '+' + nbMaxWeeks + 'w'
 						});
 						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
 						//Below are required for manipulating dynamically created datepicker on custom button click
@@ -93,13 +99,13 @@
 							$('#calendar').fullCalendar('gotoDate', $("#hiddenDate").val());
 						});
 					}
-				}			
+				}
 			},
 			// header
 			header: {
-				left: 'prev,next datePicker today',
-				center: 'title',
-				right: ''
+				left: 'prev, today',
+				center: 'datePicker, title',
+				right: 'next'
 			},
 			columnFormat: columnFormat,
 			slotLabelFormat: 'H:mm',
@@ -135,7 +141,7 @@
 				// Future
 				if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
 					$(".fc-next-button").prop('disabled', true); 
-					$(".fc-next-button").addClass('fc-state-disabled'); 
+					$(".fc-next-button").addClass('fc-state-disabled');  
 				} else {
 					$(".fc-next-button").removeClass('fc-state-disabled'); 
 					$(".fc-next-button").prop('disabled', false); 
@@ -143,7 +149,21 @@
 			},
 			eventAfterAllRender: function(view) {			
 				$('.fc-event').css('cursor', 'pointer');
+				$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
+				$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
+				$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
+				$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
 			},
-		});        
+			windowResize: function(view) {
+			        if ($(window).width() < 1050){
+			            $('#calendar').fullCalendar( 'changeView', 'agendaDay' );
+			        } else {
+			            $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );
+			        }
+			},
+		});  
+		$('.fc-next-button').html("<span style='margin-right: 5px;'>Suivant</span>" + $('.fc-next-button').html());
+		$('.fc-prev-button').html($('.fc-prev-button').html() + "<span style='margin-left: 5px;'>Précédent</span>");
+		$('.fc-datePicker-button').html($('.fc-datePicker-button').html() + "<span style='margin-left: 5px;'>Choisir une date</span>");
 	});      
 </script>
