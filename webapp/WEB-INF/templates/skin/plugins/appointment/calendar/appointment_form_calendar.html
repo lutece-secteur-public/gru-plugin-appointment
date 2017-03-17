@@ -54,12 +54,11 @@
 				{
 					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'${formMessages.calendarReserveLabel}' + ' \n ' + '${event.nbRemainingPlaces} place(s) restante(s)'
 							<#elseif event.isOpen>'${formMessages.calendarFullLabel}'<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,		
-					className : <#if !event.isOpen>'slot-full'
-								<#else>''</#if>,		
+					className : <#if event.isOpen & (event.nbRemainingPlaces > 0) >''
+								<#elseif event.isOpen>'slot-full'<#else>'slot-closed'</#if>,
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
-					color : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'default'<#else>'red'</#if>,
 					url : eventUrl + '&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}',
 				},								
 			</#list>
@@ -76,7 +75,7 @@
 			editable: false,
 			customButtons: {
 				datePicker: {
-					text: 'Choisir une date',
+					text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
 					themeIcon:'circle-triangle-s',
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
@@ -103,8 +102,8 @@
 			},
 			// header
 			header: {
-				left: 'prev, today',
-				center: 'datePicker, title',
+				left: 'prev',
+				center: 'today, datePicker, title',
 				right: 'next'
 			},
 			columnFormat: columnFormat,
@@ -162,8 +161,8 @@
 			        }
 			},
 		});  
-		$('.fc-next-button').html("<span style='margin-right: 5px;'>Suivant</span>" + $('.fc-next-button').html());
-		$('.fc-prev-button').html($('.fc-prev-button').html() + "<span style='margin-left: 5px;'>Précédent</span>");
-		$('.fc-datePicker-button').html($('.fc-datePicker-button').html() + "<span style='margin-left: 5px;'>Choisir une date</span>");
+		$('.fc-next-button').html("<span style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>" + $('.fc-next-button').html());
+		$('.fc-prev-button').html($('.fc-prev-button').html() + "<span style='margin-left: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
+		$('.fc-datePicker-button').html($('.fc-datePicker-button').html() + "<span style='margin-left: 5px;'>#i18n{appointment.appointmentCalendar.labelChooseDate}</span>");
 	});      
 </script>

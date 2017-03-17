@@ -93,11 +93,7 @@ td.fc-axis.ui-widget-content {
 
 a.fc-event:hover {
     background-color: rgba(43,209,34,0.5) !important;
-	    text-shadow: none;
-}
-
-.fc-content:hover {
-    text-shadow: 1px 1px 10px #000;
+	text-shadow: 1px 1px 10px #000;
 }
 
 button.fc-prev-button[disabled] {
@@ -141,11 +137,29 @@ button.fc-today-button:hover, button.fc-today-button:active, button.fc-today-but
     padding: 0px 10px;
 }
 
-.slot-full {
+a.fc-event.slot-closed {
+    background: #d7d7d7 !important;
+	opacity: 0.3;
+    color: black;
+}
+
+a.fc-event.slot-closed:hover {
+    background: #d7d7d7 !important;
+	text-shadow: none;
+	cursor:default !important;
+}
+
+a.fc-event.slot-full {
     background-color: rgba(255,0,0,0.4) !important;
 }
 
-.slot-full:hover {
-    background-color: rgba(255,255,255,0.4) !important;
+a.fc-event.slot-full:hover {
+    background-color: rgba(255,0,0,0.4) !important;
 	text-shadow: none;
+	cursor:default !important;
+}
+
+td.fc-day.ui-widget-content.fc-fri.fc-today.ui-state-highlight {
+	background-color: rgba(255, 255, 255, 0.5) !important;
+	border: 0px;
 }
