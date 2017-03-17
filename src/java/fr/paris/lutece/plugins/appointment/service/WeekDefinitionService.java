@@ -2,7 +2,6 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

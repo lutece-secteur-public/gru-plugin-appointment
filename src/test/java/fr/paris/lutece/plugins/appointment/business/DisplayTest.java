@@ -1,11 +1,11 @@
 package fr.paris.lutece.plugins.appointment.business;
 
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.test.LuteceTestCase;
 

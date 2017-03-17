@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.business.template;
+package fr.paris.lutece.plugins.appointment.business.calendar;
 
 import java.util.ArrayList;
 import java.util.List;

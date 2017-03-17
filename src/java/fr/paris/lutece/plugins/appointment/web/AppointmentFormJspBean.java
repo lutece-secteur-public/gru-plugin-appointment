@@ -52,12 +52,12 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;

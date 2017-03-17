@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.web;
 
 import static java.lang.Math.toIntExact;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,11 +55,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.util.Strings;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
 import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -68,12 +68,10 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
+import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
@@ -100,7 +98,6 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -245,9 +242,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancel_appointment.pageTitle";
 	private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.my_appointments.pageTitle";
 
-	// Local variables
-	protected final AppointmentFormService _appointmentFormService = SpringContextService
-			.getBean(AppointmentFormService.BEAN_NAME);
+	// Local variables	
 	private transient CaptchaSecurityService _captchaSecurityService;	
 
 	@View(VIEW_APPOINTMENT_CALENDAR)
@@ -384,9 +379,9 @@ public class AppointmentApp extends MVCApplication {
 		Map<String, Object> model = getModel();
 		Locale locale = getLocale(request);
 		StringBuffer strBuffer = new StringBuffer();
-		List<Entry> listEntryFirstLevel = AppointmentFormService.getFilter(form.getIdForm(), true);
+		List<Entry> listEntryFirstLevel = EntryService.getFilter(form.getIdForm(), true);
 		for (Entry entry : listEntryFirstLevel) {
-			_appointmentFormService.getHtmlEntry(entry.getIdEntry(), strBuffer, locale, true, request);
+			EntryService.getHtmlEntry(entry.getIdEntry(), strBuffer, locale, true, request);
 		}
 		model.put(PARAMETER_DATE_OF_DISPLAY, slot.getDate());
 		model.put(MARK_FORM, form);
@@ -397,7 +392,7 @@ public class AppointmentApp extends MVCApplication {
 		List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession()
 				.getAttribute(SESSION_APPOINTMENT_FORM_ERRORS);
 		model.put(MARK_FORM_ERRORS, listErrors);
-		model.put(MARK_LIST_ERRORS, _appointmentFormService.getAllErrors(request));
+		model.put(MARK_LIST_ERRORS, AppointmentFrontDTO.getAllErrors(request));
 		HtmlTemplate templateForm = AppTemplateService.getTemplate(TEMPLATE_HTML_CODE_FORM, locale, model);
 		model.put(MARK_FORM_HTML, templateForm.getHtml());
 		if (listErrors != null) {
@@ -496,7 +491,7 @@ public class AppointmentApp extends MVCApplication {
 		}
 		for (Entry entry : listEntryFirstLevel) {
 			listFormErrors.addAll(
-					_appointmentFormService.getResponseEntry(request, entry.getIdEntry(), locale, appointmentFrontDTO));
+					EntryService.getResponseEntry(request, entry.getIdEntry(), locale, appointmentFrontDTO));
 		}
 		// If there is some errors, we redirect the user to the form page
 		if (listFormErrors.size() > 0) {
@@ -631,7 +626,7 @@ public class AppointmentApp extends MVCApplication {
 	@View(value = VIEW_APPOINTMENT_FORM_LIST, defaultView = true)
 	public XPage getFormList(HttpServletRequest request) {
 		Locale locale = getLocale(request);
-		String strHtmlContent = getFormListHtml(request, _appointmentFormService, null, locale);
+		String strHtmlContent = getFormListHtml(request, locale);
 		XPage xpage = new XPage();
 		xpage.setContent(strHtmlContent);
 		xpage.setPathLabel(getDefaultPagePath(locale));
@@ -854,10 +849,10 @@ public class AppointmentApp extends MVCApplication {
 			throw new UserNotSignedException();
 		}
 
-		AppointmentFilter appointmentFilter = new AppointmentFilter();
-		appointmentFilter.setIdUser(luteceUser.getName());
-		appointmentFilter.setAuthenticationService(luteceUser.getAuthenticationService());
-		appointmentFilter.setDateAppointmentMin(new Date(System.currentTimeMillis()));
+//		AppointmentFilter appointmentFilter = new AppointmentFilter();
+//		appointmentFilter.setIdUser(luteceUser.getName());
+//		appointmentFilter.setAuthenticationService(luteceUser.getAuthenticationService());
+//		appointmentFilter.setDateAppointmentMin(new Date(System.currentTimeMillis()));
 
 		List<Appointment> listAppointments = null;// OldAppointmentHome.getAppointmentListByFilter(appointmentFilter);
 
@@ -903,8 +898,7 @@ public class AppointmentApp extends MVCApplication {
 	 *            The locale
 	 * @return The HTML content to display
 	 */
-	public static String getFormListHtml(HttpServletRequest request, AppointmentFormService appointmentFormService,
-			String strTitle, Locale locale) {
+	public static String getFormListHtml(HttpServletRequest request, Locale locale) {
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -924,8 +918,7 @@ public class AppointmentApp extends MVCApplication {
 			}
 		}
 		model.put(MARK_ICONS, icons);
-		model.put(MARK_FORM_LIST, listAppointmentForm);
-		model.put(MARK_TITLE, strTitle);
+		model.put(MARK_FORM_LIST, listAppointmentForm);		
 		HtmlTemplate template = AppTemplateService.getTemplate(TEMPLATE_APPOINTMENT_FORM_LIST, locale, model);
 		return template.getHtml();
 	}

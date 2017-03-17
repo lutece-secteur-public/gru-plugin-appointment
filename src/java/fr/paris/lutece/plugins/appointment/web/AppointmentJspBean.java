@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
@@ -219,15 +217,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	public static final String ACTIVATEWORKFLOW = AppPropertiesService.getProperty("appointment.activate.workflow");
 	public static final String PREVIEOUS_FORM = "calendar";
 
-	// services
-	private final AppointmentFormService _appointmentFormService = SpringContextService
-			.getBean(AppointmentFormService.BEAN_NAME);
+	// services	
 	private final StateService _stateService = SpringContextService.getBean(StateService.BEAN_SERVICE);
 	private final ITaskService _taskService = SpringContextService.getBean(TaskService.BEAN_SERVICE);
 
 	// Session variable to store working values
 	private int _nDefaultItemsPerPage;
-	private AppointmentFilter _filter;
+	
 	private int idSlot;
 
 	/**

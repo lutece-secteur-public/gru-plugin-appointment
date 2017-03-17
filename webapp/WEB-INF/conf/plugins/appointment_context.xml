@@ -2,29 +2,22 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 	<bean id="appointment.appointmentDAO"  class="fr.paris.lutece.plugins.appointment.business.appointment.AppointmentDAO" />  
+	<bean id="appointment.calendarTemplateDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateDAO" />
+	<bean id="appointment.closingDayDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.ClosingDayDAO" />
 	<bean id="appointment.displayDAO"  class="fr.paris.lutece.plugins.appointment.business.display.DisplayDAO" />
 	<bean id="appointment.formDAO"  class="fr.paris.lutece.plugins.appointment.business.form.FormDAO" />
-	<bean id="appointment.formMessageDAO"  class="fr.paris.lutece.plugins.appointment.business.message.FormMessageDAO" />
-	<bean id="appointment.closingDayDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.ClosingDayDAO" />
-	<bean id="appointment.timeSlotDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.TimeSlotDAO" />
-	<bean id="appointment.weekDefinitionDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionDAO" />
-	<bean id="appointment.workingDayDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.WorkingDayDAO" />
+	<bean id="appointment.formMessageDAO"  class="fr.paris.lutece.plugins.appointment.business.message.FormMessageDAO" />	
 	<bean id="appointment.formRuleDAO"  class="fr.paris.lutece.plugins.appointment.business.rule.FormRuleDAO" />
 	<bean id="appointment.reservationRuleDAO"  class="fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleDAO" />
 	<bean id="appointment.slotDAO"  class="fr.paris.lutece.plugins.appointment.business.slot.SlotDAO" />
+	<bean id="appointment.timeSlotDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.TimeSlotDAO" />
 	<bean id="appointment.userDAO"  class="fr.paris.lutece.plugins.appointment.business.user.UserDAO" />
+	<bean id="appointment.weekDefinitionDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionDAO" />
+	<bean id="appointment.workingDayDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.WorkingDayDAO" />				
 	     
     <bean id="appointment.appointmentPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentPortletDAO" />
     <bean id="appointment.appointmentFormPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletDAO" />
-    <bean id="appointment.appointmentFormListPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletDAO" />    
-   	<bean id="appointment.calendarTemplateDAO" class="fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateDAO" />
-   	<bean id="appointment.appointmentSlotDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDAO" >
-   		<property name="defaultSlotListSize">
-   			<value>100</value>
-   		</property>
-   	</bean>
-    
-    <bean id="appointment.appointmentFormService" class="fr.paris.lutece.plugins.appointment.service.AppointmentFormService" />        
+    <bean id="appointment.appointmentFormListPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletDAO" />       	   	             
     
     <bean id="appointment.appointmentAsynchronousUploadHandler" class="fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler" />
     
@@ -45,5 +38,4 @@
 	<bean id="appointment.entryTypeImage" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeImage" />
 	<bean id="appointment.entryTypeFile" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeFile" />
 	<bean id="appointment.entryTypePhone" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypePhone" />
-	<bean id="appointment.appointmentHoliDaysDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDaysDAO" />
 </beans>

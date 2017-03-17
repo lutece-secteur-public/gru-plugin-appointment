@@ -1,10 +1,12 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
@@ -12,9 +14,21 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 
 public class AppointmentFrontDTO implements Serializable {
 
+	private static final String PROPERTY_EMPTY_FIELD_FIRST_NAME = "appointment.validation.appointment.FirstName.notEmpty";
+	private static final String PROPERTY_EMPTY_FIELD_LAST_NAME = "appointment.validation.appointment.LastName.notEmpty";
+	private static final String PROPERTY_UNVAILABLE_EMAIL = "appointment.validation.appointment.Email.email";
+	private static final String PROPERTY_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
+	private static final String PROPERTY_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
+	private static final String PROPERTY_UNVAILABLE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+	private static final String PROPERTY_EMPTY_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.notEmpty";
+	private static final String PROPERTY_UNVAILABLE_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.error";
+	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE = "appointment.message.error.MaxAppointmentPeriode";
+	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE_BACK = "appointment.info.appointment.emailerror";
+	
 	/**
 	 * Appointment resource type
 	 */
@@ -191,5 +205,20 @@ public class AppointmentFrontDTO implements Serializable {
 	public void setMapResponsesByIdEntry(Map<Integer, List<Response>> mapResponsesByIdEntry) {
 		this._mapResponsesByIdEntry = mapResponsesByIdEntry;
 	}	
+	
+	public static List<String> getAllErrors(HttpServletRequest request) {
+		List<String> listAllErrors = new ArrayList<String>();
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_LAST_NAME, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_EMAIL, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_CONFIRM_EMAIL, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_CONFIRM_EMAIL, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_NB_SEATS, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_NB_SEATS, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE_BACK, request.getLocale()));
+		return listAllErrors;
+	}
 	
 }

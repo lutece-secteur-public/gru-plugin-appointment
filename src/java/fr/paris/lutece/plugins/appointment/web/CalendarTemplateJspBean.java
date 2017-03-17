@@ -44,8 +44,8 @@ import javax.validation.ConstraintViolation;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppLogService;

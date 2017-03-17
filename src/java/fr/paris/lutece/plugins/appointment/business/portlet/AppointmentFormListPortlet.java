@@ -37,18 +37,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * This class represents business objects AppointmentPortlet
  */
-public class AppointmentFormListPortlet extends PortletHtmlContent {
-	private final AppointmentFormService _appointmentFormService = SpringContextService
-			.getBean(AppointmentFormService.BEAN_NAME);
-
+public class AppointmentFormListPortlet extends PortletHtmlContent {	
 	/**
 	 * Sets the identifier of the portlet type to value specified
 	 */
@@ -62,8 +57,7 @@ public class AppointmentFormListPortlet extends PortletHtmlContent {
 	@Override
 	public String getHtmlContent(HttpServletRequest request) {
 		if (request != null) {
-			return AppointmentApp.getFormListHtml(request, _appointmentFormService,
-					(getDisplayPortletTitle() == 0) ? getName() : null, request.getLocale());
+			return AppointmentApp.getFormListHtml(request, request.getLocale());
 		}
 
 		return StringUtils.EMPTY;
