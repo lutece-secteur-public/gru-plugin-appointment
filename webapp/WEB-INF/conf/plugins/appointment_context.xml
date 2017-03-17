@@ -24,9 +24,7 @@
    		</property>
    	</bean>
     
-    <bean id="appointment.appointmentFormService" class="fr.paris.lutece.plugins.appointment.service.AppointmentFormService" />    
-    <bean id="appointment.appointmentSlotService" class="fr.paris.lutece.plugins.appointment.service.AppointmentSlotService" />    
-    <bean id="appointment.appointmentService" class="fr.paris.lutece.plugins.appointment.service.AppointmentService" />    
+    <bean id="appointment.appointmentFormService" class="fr.paris.lutece.plugins.appointment.service.AppointmentFormService" />        
     
     <bean id="appointment.appointmentAsynchronousUploadHandler" class="fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler" />
     

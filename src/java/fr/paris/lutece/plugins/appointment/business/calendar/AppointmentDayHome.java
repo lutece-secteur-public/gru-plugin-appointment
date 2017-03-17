@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 import java.sql.Date;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormCacheService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -67,9 +66,8 @@ public final class AppointmentDayHome {
 		_dao.create(day, _plugin);
 
 		AppointmentDay dayClone = day.clone();
-		dayClone.setListSlots(null);
-		AppointmentFormCacheService.getInstance()
-				.putInCache(AppointmentFormCacheService.getAppointmentDayKey(day.getIdDay()), dayClone);
+		
+		
 	}
 
 	/**
@@ -82,9 +80,8 @@ public final class AppointmentDayHome {
 		_dao.update(day, _plugin);
 
 		AppointmentDay dayClone = day.clone();
-		dayClone.setListSlots(null);
-		AppointmentFormCacheService.getInstance()
-				.putInCache(AppointmentFormCacheService.getAppointmentDayKey(day.getIdDay()), dayClone);
+		
+		
 	}
 
 	/**
@@ -94,9 +91,9 @@ public final class AppointmentDayHome {
 	 *            The id of the day to remove
 	 */
 	public static void remove(int nIdDay) {
-		AppointmentSlotHome.deleteByIdDay(nIdDay);
+		
 		_dao.remove(nIdDay, _plugin);
-		AppointmentFormCacheService.getInstance().removeKey(AppointmentFormCacheService.getAppointmentDayKey(nIdDay));
+		
 	}
 
 	/**
@@ -131,20 +128,9 @@ public final class AppointmentDayHome {
 	 * @return an instance of AppointmentDay
 	 */
 	public static AppointmentDay findByPrimaryKey(int nIdDay) {
-		String strKey = AppointmentFormCacheService.getAppointmentDayKey(nIdDay);
-		AppointmentDay day = (AppointmentDay) AppointmentFormCacheService.getInstance().getFromCache(strKey);
 
-		if (day != null) {
-			return day.clone();
-		}
 
-		day = _dao.findByPrimaryKey(nIdDay, _plugin);
-
-		if (day != null) {
-			AppointmentFormCacheService.getInstance().putInCache(strKey, day.clone());
-		}
-
-		return day;
+		return null;
 	}
 
 	/**
@@ -172,8 +158,7 @@ public final class AppointmentDayHome {
 	public static synchronized void incrementDayFreePlaces(int nIdDay) {
 		AppointmentDay day = findByPrimaryKey(nIdDay);
 		_dao.updateDayFreePlaces(day, true, _plugin);
-		AppointmentFormCacheService.getInstance()
-				.putInCache(AppointmentFormCacheService.getAppointmentDayKey(day.getIdDay()), day.clone());
+		
 	}
 
 	/**
@@ -185,8 +170,7 @@ public final class AppointmentDayHome {
 	public static synchronized void decrementDayFreePlaces(int nIdDay) {
 		AppointmentDay day = findByPrimaryKey(nIdDay);
 		_dao.updateDayFreePlaces(day, false, _plugin);
-		AppointmentFormCacheService.getInstance()
-				.putInCache(AppointmentFormCacheService.getAppointmentDayKey(day.getIdDay()), day.clone());
+		
 	}
 
 	/**
@@ -197,29 +181,12 @@ public final class AppointmentDayHome {
 	 */
 	public static synchronized void resetDayFreePlaces(int nIdDay) {
 		AppointmentDay day = findByPrimaryKey(nIdDay);
-		List<AppointmentSlot> listAppointmentSlot = AppointmentSlotHome.findByIdDayWithFreePlaces(nIdDay);
-		int nFreePlaces = 0;
-
-		for (AppointmentSlot slot : listAppointmentSlot) {
-			if (slot.getIsEnabled()) {
-				nFreePlaces += slot.getNbFreePlaces();
-			}
-		}
-
-		day.setFreePlaces(nFreePlaces);
-		update(day);
+		
 	}
 
 	public static synchronized void resetDayPlaces(AppointmentDay day, int nIdForm, int nDayOfWeek) {
-		List<AppointmentSlot> listAppointmentSlot = AppointmentSlotHome.findByIdFormAndDayOfWeek(nIdForm, nDayOfWeek);
-		int nPlaces = day.getPeoplePerAppointment();
-
-		for (AppointmentSlot slot : listAppointmentSlot) {
-			if (slot.getIsEnabled() & (slot.getIdDay() == 0)) {
-				slot.setNbPlaces(nPlaces);
-				AppointmentSlotHome.update(slot);
-			}
-		}
+		
+		
 	}
 
 	/**

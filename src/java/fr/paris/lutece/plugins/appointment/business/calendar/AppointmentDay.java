@@ -51,7 +51,7 @@ public class AppointmentDay implements Cloneable {
 	private int _nAppointmentDuration;
 	private int _nPeoplePerAppointment;
 	private int _nDayFreePlaces;
-	private List<AppointmentSlot> _listSlots;
+	
 
 	/**
 	 * Get the id of the day
@@ -297,34 +297,7 @@ public class AppointmentDay implements Cloneable {
 		_nPeoplePerAppointment = nPeoplePerAppointment;
 	}
 
-	/**
-	 * Get the list of slots of this day, if any
-	 * 
-	 * @return The list of slots of this day, if any
-	 */
-	public List<AppointmentSlot> getListSlots() {
-		return _listSlots;
-	}
-
-	/**
-	 * Set the list of slots of this day, if any
-	 * 
-	 * @param listSlots
-	 *            The list of slots of this day, if any
-	 */
-	public void setListSlots(List<AppointmentSlot> listSlots) {
-		this._listSlots = listSlots;
-	}
-
-	/**
-	 * Get the number of free places of this day
-	 * 
-	 * @return The number of free places of this day
-	 */
-	public int getFreePlaces() {
-		return _nDayFreePlaces;
-	}
-
+	
 	/**
 	 * Set the number of free places of this day
 	 * 
@@ -360,7 +333,7 @@ public class AppointmentDay implements Cloneable {
 		int result = 1;
 		result = (prime * result) + (_bIsOpen ? 1231 : 1237);
 		result = (prime * result) + ((_date == null) ? 0 : _date.hashCode());
-		result = (prime * result) + ((_listSlots == null) ? 0 : _listSlots.hashCode());
+		
 		result = (prime * result) + _nAppointmentDuration;
 		result = (prime * result) + _nClosingHour;
 		result = (prime * result) + _nClosingMinutes;
@@ -407,14 +380,7 @@ public class AppointmentDay implements Cloneable {
 			return false;
 		}
 
-		if (_listSlots == null) {
-			if (other._listSlots != null) {
-				return false;
-			}
-		} else if (!_listSlots.equals(other._listSlots)) {
-			return false;
-		}
-
+		
 		if (_nAppointmentDuration != other._nAppointmentDuration) {
 			return false;
 		}
