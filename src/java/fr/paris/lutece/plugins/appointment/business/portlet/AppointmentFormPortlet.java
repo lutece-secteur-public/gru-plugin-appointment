@@ -33,25 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
-import java.util.HashMap;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
-import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
  * This class represents business objects AppointmentPortlet
  */
 public class AppointmentFormPortlet extends PortletHtmlContent {
-	private final AppointmentFormService _appointmentFormService = SpringContextService
-			.getBean(AppointmentFormService.BEAN_NAME);
 	private int _nIdAppointmentForm;
 
 	// ///////////////////////////////////////////////////////////////////////////////
@@ -74,12 +65,15 @@ public class AppointmentFormPortlet extends PortletHtmlContent {
 	@Override
 	public String getHtmlContent(HttpServletRequest request) {
 		if ((request != null) && (_nIdAppointmentForm > 0)) {
-			AppointmentForm form = AppointmentFormHome.findByPrimaryKey(_nIdAppointmentForm);
+			// TODO ???
+			// AppointmentForm form =
+			// AppointmentFormHome.findByPrimaryKey(_nIdAppointmentForm);
 
-			if ((form != null) && form.getIsActive()) {
-				return AppointmentApp.getHtmlFormFirstStep(request, form, _appointmentFormService,
-						new HashMap<String, Object>(), request.getLocale());
-			}
+			// if ((form != null) && form.getIsActive()) {
+			// return AppointmentApp.getHtmlFormFirstStep(request, form,
+			// _appointmentFormService,
+			// new HashMap<String, Object>(), request.getLocale());
+			// }
 		}
 
 		return StringUtils.EMPTY;
@@ -98,26 +92,6 @@ public class AppointmentFormPortlet extends PortletHtmlContent {
 	@Override
 	public void remove() {
 		AppointmentFormPortletHome.getInstance().remove(this);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean canBeCachedForConnectedUsers() {
-		// We only allow cache is the form is the first step of the appointment
-		// process
-		return _appointmentFormService.isFormFirstStep(_nIdAppointmentForm);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean canBeCachedForAnonymousUsers() {
-		// We only allow cache is the form is the first step of the appointment
-		// process
-		return _appointmentFormService.isFormFirstStep(_nIdAppointmentForm);
 	}
 
 	/**

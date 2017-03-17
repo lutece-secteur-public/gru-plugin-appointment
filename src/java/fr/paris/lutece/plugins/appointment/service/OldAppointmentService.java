@@ -46,7 +46,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.lang.time.DateUtils;
 
-import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
@@ -54,11 +53,9 @@ import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentHoliDays
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.IAppointmentFormListener;
-import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.util.CryptoService;
 
 /**
  * Service to manage calendars
@@ -989,19 +986,7 @@ public class OldAppointmentService {
 		return AppPropertiesService.getPropertyInt(PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART);
 	}
 
-	/**
-	 * Compute the unique reference of an appointment
-	 * 
-	 * @param appointment
-	 *            The appointment
-	 * @return The unique reference of an appointment
-	 */
-	public String computeRefAppointment(Appointment appointment) {
-		return appointment.getIdAppointment() + CryptoService
-				.encrypt(appointment.getIdAppointment() + appointment.getEmail(),
-						AppPropertiesService.getProperty(PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256))
-				.substring(0, getRefSizeRandomPart());
-	}
+
 
 	/**
 	 * Parse a string representing a positive or negative integer

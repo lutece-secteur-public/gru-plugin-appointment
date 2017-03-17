@@ -33,106 +33,15 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolation;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableInt;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import fr.paris.lutece.plugins.appointment.business.Appointment;
-import fr.paris.lutece.plugins.appointment.business.Appointment.Status;
-import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.OldAppointmentHome;
-import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDay;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotDisponiblity;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
-import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
-import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
-import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
-import fr.paris.lutece.plugins.appointment.service.OldAppointmentService;
-import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
-import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
-import fr.paris.lutece.plugins.genericattributes.business.Entry;
-import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
-import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.plugins.genericattributes.business.Field;
-import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
-import fr.paris.lutece.plugins.genericattributes.business.GenAttFileItem;
-import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
-import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
-import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
-import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
-import fr.paris.lutece.plugins.workflowcore.business.state.State;
-import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
-import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
-import fr.paris.lutece.portal.business.file.File;
-import fr.paris.lutece.portal.business.file.FileHome;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
-import fr.paris.lutece.portal.business.user.AdminUser;
-import fr.paris.lutece.portal.business.user.AdminUserHome;
-import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.message.AdminMessage;
-import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.message.SiteMessageException;
-import fr.paris.lutece.portal.service.rbac.RBACService;
-import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
-import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
-import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
-import fr.paris.lutece.portal.web.LocalVariables;
-import fr.paris.lutece.portal.web.util.LocalizedDelegatePaginator;
-import fr.paris.lutece.portal.web.util.LocalizedPaginator;
-import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
-import fr.paris.lutece.util.date.DateUtil;
-import fr.paris.lutece.util.html.Paginator;
-import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * This class provides the user interface to manage Appointment features (
@@ -297,8 +206,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.itemsPerPage";
 	private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
 
-	// Messages
-	private static final String[] MESSAGE_LIST_DAYS_OF_WEEK = OldAppointmentService.getListDaysOfWeek();
+	
 
 	// Constants
 	private static final int STATUS_CODE_ZERO = 0;
@@ -355,11 +263,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		_nDefaultItemsPerPage = AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 10);
 	}
 
-	/**
+/*	*//**
 	 * Get Sattus for CSV Writer
 	 * 
 	 * @return
-	 */
+	 *//*
 	private Hashtable<Integer, String> getStatus(Locale myLocale) {
 		Status[] mich = Appointment.Status.values();
 		Hashtable<Integer, String> myStatus = new Hashtable<Integer, String>();
@@ -370,11 +278,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return myStatus;
 	}
 
-	/**
+	*//**
 	 * Get Admin for CSV Writer
 	 * 
 	 * @return
-	 */
+	 *//*
 	private static Hashtable<Integer, String> getAdmins() {
 		Collection<AdminUser> listAdminUser = AdminUserHome.findUserList();
 		Hashtable<Integer, String> myStatus = new Hashtable<Integer, String>();
@@ -385,7 +293,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return myStatus;
 	}
 
-	/**
+	*//**
 	 * Do download a file from an appointment response
 	 * 
 	 * @param request
@@ -395,7 +303,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return nothing.
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	public String getDownloadFileAppointment(HttpServletRequest request, HttpServletResponse response)
 			throws AccessDeniedException {
 		String strIdResponse = request.getParameter(PARAMETER_ID_FORM);
@@ -625,12 +533,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return null;
 	}
 
-	/**
+	*//**
 	 * Get Limited Date
 	 * 
 	 * @param nBWeeks
 	 * @return
-	 */
+	 *//*
 	private String[] getLimitedDate(int nBWeeks) {
 		Calendar startCal = GregorianCalendar.getInstance(Locale.FRENCH);
 		Calendar endCal = GregorianCalendar.getInstance(Locale.FRENCH);
@@ -654,14 +562,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		
 	}
 
-	/**
+	*//**
 	 * Get the page to manage appointments. Appointments are displayed in a
 	 * calendar.
 	 * 
 	 * @param request
 	 *            The request
 	 * @return The HTML code to display
-	 */
+	 *//*
 	@View(value = VIEW_CALENDAR_MANAGE_APPOINTMENTS, defaultView = true)
 	public String getCalendarManageAppointments(HttpServletRequest request) {
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());
@@ -784,12 +692,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Erase unavailable slots
 	 * 
 	 * @param mySlots
 	 * @return
-	 */
+	 *//*
 	private static List<AppointmentSlot> setSlotToErase(Calendar precisedDateFromNow, List<AppointmentSlot> mySlots,
 			boolean bCheck) {
 		if (mySlots != null) {
@@ -812,12 +720,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return mySlots;
 	}
 
-	/**
+	*//**
 	 * Compute unavailable Days
 	 * 
 	 * @param form
 	 * @param listDays
-	 */
+	 *//*
 	private static List<AppointmentDay> computeUnavailableDays(int nIdform, List<AppointmentDay> listDays,
 			boolean bCheck) {
 		if (listDays != null) {
@@ -870,12 +778,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return listDays;
 	}
 
-	/**
+	*//**
 	 * ComputeWeek in time
 	 * 
 	 * @param objMyTime
 	 * @return
-	 */
+	 *//*
 	private static int computeWeek(Date objMyTime) {
 		int nNbWeek;
 		Calendar objNow = new GregorianCalendar();
@@ -905,14 +813,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return nNbWeek;
 	}
 
-	/**
+	*//**
 	 * Transform Date to Calendar
 	 * 
 	 * @param objTime
 	 * @param iHour
 	 * @param iMinute
 	 * @return
-	 */
+	 *//*
 	private static Calendar getCalendarTime(Date objTime, int iHour, int iMinute) {
 		Calendar calendar = GregorianCalendar.getInstance(Locale.FRENCH);
 
@@ -927,13 +835,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return calendar;
 	}
 
-	/**
+	*//**
 	 * Get the page to manage appointments
 	 * 
 	 * @param request
 	 *            The request
 	 * @return The HTML code to display
-	 */
+	 *//*
 	@View(value = VIEW_MANAGE_APPOINTMENTS)
 	public String getManageAppointments(HttpServletRequest request) {
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());
@@ -1093,7 +1001,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				refListExports.addItem(tmpFilter.getValeur(),
 						I18nService.getLocalizedString(tmpFilter.getLibelle(), getLocale()));
 
-			/* WORKFLOW FUTURE model.put( MARK_STATUS, lsSta); */
+			 WORKFLOW FUTURE model.put( MARK_STATUS, lsSta); 
 			model.put(MARK_FORM, form);
 			model.put(MARK_FORM_MESSAGES, FormMessageHome.findByPrimaryKey(nIdForm));
 			model.put(MARK_NB_ITEMS_PER_PAGE, Integer.toString(nItemsPerPage));
@@ -1170,10 +1078,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * @param strCheckDate
 	 * @param filter
-	 */
+	 *//*
 	private static AppointmentFilter dateFiltered(AppointmentFilter filter) {
 		// Check filter from Date. Be careful if a slot is enabled
 		if (filter.getIdSlot() <= 0) {
@@ -1193,12 +1101,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return filter;
 	}
 
-	/**
+	*//**
 	 * Write Title Day MM/DD/YYY locale and Hours
 	 * 
 	 * @param nIdSlot
 	 * @return
-	 */
+	 *//*
 	private String getTitleComment(int nIdSlot) {
 		String strComment = null;
 		AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey(nIdSlot);
@@ -1215,7 +1123,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return strComment;
 	}
 
-	/**
+	*//**
 	 * Returns the form to create an appointment
 	 * 
 	 * @param request
@@ -1223,7 +1131,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return the HTML code of the appointment form
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	@View(VIEW_CREATE_APPOINTMENT)
 	public String getCreateAppointment(HttpServletRequest request) throws AccessDeniedException {
 		boolean notNull = true;
@@ -1390,7 +1298,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return getPage(PROPERTY_PAGE_TITLE_CREATE_APPOINTMENT, TEMPLATE_CREATE_APPOINTMENT, model);
 	}
 
-	/**
+	*//**
 	 * Get the page to modify an appointment
 	 * 
 	 * @param request
@@ -1398,7 +1306,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return The HTML content to display or the next URL to redirect to
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	@View(VIEW_MODIFY_APPOINTMENT)
 	public String getModifyAppointment(HttpServletRequest request) throws AccessDeniedException {
 		clearUploadFilesIfNeeded(request.getSession());
@@ -1450,12 +1358,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Come from calendar pick date ?
 	 * 
 	 * @param strIdSlot
 	 * @return
-	 */
+	 *//*
 	private static boolean comeFromCalendarAppointment(String strIdSlot) {
 		boolean bReturn = false;
 
@@ -1468,7 +1376,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return bReturn;
 	}
 
-	/**
+	*//**
 	 * Do validate data entered by a user to fill a form
 	 * 
 	 * @param request
@@ -1477,7 +1385,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
 	 * @throws SiteMessageExcamoreption
-	 */
+	 *//*
 	@Action(ACTION_DO_VALIDATE_FORM)
 	public String doValidateForm(HttpServletRequest request) throws AccessDeniedException, SiteMessageException {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
@@ -1486,7 +1394,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		if ((strIdForm != null) && StringUtils.isNumeric(strIdForm)) {
 			int nIdForm = Integer.parseInt(strIdForm);
 
-			/* WORKFLOW_FUTURE State myState = getStatus( nIdForm ); */
+			 WORKFLOW_FUTURE State myState = getStatus( nIdForm ); 
 			EntryFilter filter = new EntryFilter();
 			filter.setIdResource(nIdForm);
 			filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
@@ -1511,10 +1419,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			} else {
 				appointment = new AppointmentDTO();
 
-				/*
+				
 				 * WORKFLOW_FUTURE if ( myState != null ) {
 				 * appointment.setStatus( myState.getId() ); }
-				 */
+				 
 				if (SecurityService.isAuthenticationEnable()) {
 					AdminUser AdminUser = getUser();
 
@@ -1746,14 +1654,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Get the page with the calendar with opened and closed days for an
 	 * appointment form
 	 * 
 	 * @param request
 	 *            The request
 	 * @return The XPage to display
-	 */
+	 *//*
 	@View(VIEW_GET_APPOINTMENT_CALENDAR)
 	public String getAppointmentCalendar(HttpServletRequest request) {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
@@ -1820,11 +1728,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * @param form
 	 * @param listDays
 	 * @param myApmt
-	 */
+	 *//*
 	private List<AppointmentDay> computeIntervalsDays(int nIdForm, List<AppointmentDay> listDays, String strMail) {
 		Date[] tmpLimit = { listDays.get(0).getDate(), listDays.get(listDays.size() - 1).getDate() };
 		List<Date> unvailableSlots = AppointmentFormHome.getLimitedByMail(null, tmpLimit, nIdForm, strMail);
@@ -1840,13 +1748,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return listDays;
 	}
 
-	/**
+	*//**
 	 * Compute Days beetween date
 	 * 
 	 * @param nStart
 	 * @param nEnd
 	 * @return
-	 */
+	 *//*
 	private static int getNumbersDay(Date nStart, Date nEnd) {
 		long timeDiff = nEnd.getTime() - nStart.getTime();
 		timeDiff = timeDiff / 1000 / (24 * 60 * 60);
@@ -1854,12 +1762,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return Integer.valueOf(String.valueOf(timeDiff));
 	}
 
-	/**
+	*//**
 	 * Erase slots
 	 * 
 	 * @param objSlots
 	 * @return
-	 */
+	 *//*
 	private static List<AppointmentSlot> eraseSlots(List<AppointmentSlot> objSlots) {
 		List<AppointmentSlot> returnSlots = objSlots;
 
@@ -1875,13 +1783,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return returnSlots;
 	}
 
-	/**
+	*//**
 	 * Unvalid appointsments before Now Is is not necessary to check appointment
 	 * slots if date is before now Add the time necessary beetwen an appointment
 	 * 
 	 * @param form
 	 * @param listDays
-	 */
+	 *//*
 	private static List<AppointmentDay> unvalidAppointmentsbeforeNow(int iDaysBeforeAppointment,
 			List<AppointmentDay> listDays, Calendar objStart, Calendar objEnd) {
 		Calendar objNow = new GregorianCalendar(Locale.FRENCH);
@@ -1918,14 +1826,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return listDays;
 	}
 
-	/**
+	*//**
 	 * Manages the removal form of a appointment whose identifier is in the HTTP
 	 * request
 	 * 
 	 * @param request
 	 *            The HTTP request
 	 * @return the HTML code to confirm
-	 */
+	 *//*
 	@Action(ACTION_CONFIRM_REMOVE_MASS_APPOINTMENT)
 	public String getConfirmRemoveMassAppointment(HttpServletRequest request) {
 		UrlItem url = new UrlItem(getActionUrl(ACTION_REMOVE_MASSAPPOINTMENT));
@@ -1935,14 +1843,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, strMessageUrl);
 	}
 
-	/**
+	*//**
 	 * Manages the removal form of a appointment whose identifier is in the HTTP
 	 * request
 	 * 
 	 * @param request
 	 *            The HTTP request
 	 * @return the HTML code to confirm
-	 */
+	 *//*
 	@Action(ACTION_CONFIRM_REMOVE_APPOINTMENT)
 	public String getConfirmRemoveAppointment(HttpServletRequest request) {
 		int nId = Integer.parseInt(request.getParameter(PARAMETER_ID_APPOINTMENT));
@@ -1955,7 +1863,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, strMessageUrl);
 	}
 
-	/**
+	*//**
 	 * Handles the removal form of a appointment
 	 * 
 	 * @param request
@@ -1963,7 +1871,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return the JSP URL to display the form to manage appointments
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	@Action(ACTION_REMOVE_MASSAPPOINTMENT)
 	public String doRemoveMassAppointment(HttpServletRequest request) throws AccessDeniedException {
 		String[] strTableaudelete = (String[]) request.getSession().getAttribute(PARAMETER_ID_APPOINTMENT_DELETE);
@@ -1994,7 +1902,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Handles the removal form of a appointment
 	 * 
 	 * @param request
@@ -2002,7 +1910,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return the JSP URL to display the form to manage appointments
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	private static Integer doRemoveSingleAppointment(String strIdAppointment, AdminUser getUser)
 			throws AccessDeniedException {
 		Integer iReturn = null;
@@ -2031,7 +1939,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return iReturn;
 	}
 
-	/**
+	*//**
 	 * Handles the removal form of a appointment
 	 * 
 	 * @param request
@@ -2039,7 +1947,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return the JSP URL to display the form to manage appointments
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	@Action(ACTION_REMOVE_APPOINTMENT)
 	public String doRemoveAppointment(HttpServletRequest request) throws AccessDeniedException {
 		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
@@ -2054,13 +1962,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Display the recap before validating an appointment
 	 * 
 	 * @param request
 	 *            The request
 	 * @return The HTML content to display or the next URL to redirect to
-	 */
+	 *//*
 	@View(VIEW_DISPLAY_RECAP_APPOINTMENT)
 	public String displayRecapAppointment(HttpServletRequest request) {
 		String strIdSlot = request.getParameter(PARAMETER_ID_SLOT);
@@ -2109,7 +2017,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Do save an appointment into the database if it is valid
 	 * 
 	 * @param request
@@ -2117,7 +2025,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return The XPage to display
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	@Action(ACTION_DO_MAKE_APPOINTMENT)
 	public String doMakeAppointment(HttpServletRequest request) throws AccessDeniedException {
 		Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession(request.getSession());
@@ -2207,7 +2115,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		// form.getIdForm( ) ) );
 	}
 
-	/**
+	*//**
 	 * View details of an appointment
 	 * 
 	 * @param request
@@ -2215,7 +2123,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return The HTML content to display
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	@View(VIEW_VIEW_APPOINTMENT)
 	public String getViewAppointment(HttpServletRequest request) throws AccessDeniedException {
 		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
@@ -2320,7 +2228,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return getPage(PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model);
 	}
 
-	/**
+	*//**
 	 * Do download a file from an appointment response stored in session and not
 	 * yet on server fs
 	 * 
@@ -2331,7 +2239,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return nothing.
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	public String getDownloadFileFromSession(HttpServletRequest request, HttpServletResponse httpResponse)
 			throws AccessDeniedException {
 		String strIdResponse = request.getParameter(PARAMETER_ID_RESPONSE);
@@ -2376,7 +2284,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return StringUtils.EMPTY;
 	}
 
-	/**
+	*//**
 	 * Do download a file from an appointment response
 	 * 
 	 * @param request
@@ -2386,7 +2294,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return nothing.
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	public String getDownloadFile(HttpServletRequest request, HttpServletResponse httpResponse)
 			throws AccessDeniedException {
 		String strIdResponse = request.getParameter(PARAMETER_ID_RESPONSE);
@@ -2431,7 +2339,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return StringUtils.EMPTY;
 	}
 
-	/**
+	*//**
 	 * Do change the status of an appointment
 	 * 
 	 * @param request
@@ -2439,7 +2347,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @return The next URL to redirect to
 	 * @throws AccessDeniedException
 	 *             If the user is not authorized to access this feature
-	 */
+	 *//*
 	@Action(ACTION_DO_CHANGE_APPOINTMENT_STATUS)
 	public String doChangeAppointmentStatus(HttpServletRequest request) throws AccessDeniedException {
 		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
@@ -2470,12 +2378,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 						AdminMessageService.getMessageUrl(request, MESSAGE_UNVAILABLBLE_SLOT, AdminMessage.TYPE_STOP));
 			}
 
-			if ((appointment.getStatus() != nNewStatus) /*
+			if ((appointment.getStatus() != nNewStatus) 
 														 * && ( nNewStatus !=
 														 * Appointment .Status.
 														 * STATUS_RESERVED
 														 * .getValeur() )
-														 */) {
+														 ) {
 				appointment.setStatus(nNewStatus);
 				OldAppointmentHome.update(appointment);
 			}
@@ -2486,7 +2394,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Get the workflow action form before processing the action. If the action
 	 * does not need to display any form, then redirect the user to the workflow
 	 * action processing page.
@@ -2495,7 +2403,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 *            The request
 	 * @return The HTML content to display, or the next URL to redirect the user
 	 *         to
-	 */
+	 *//*
 	@View(VIEW_WORKFLOW_ACTION_FORM)
 	public String getWorkflowActionForm(HttpServletRequest request) {
 		String strIdAction = request.getParameter(PARAMETER_ID_ACTION);
@@ -2525,13 +2433,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Do process a workflow action over an appointment
 	 * 
 	 * @param request
 	 *            The request
 	 * @return The next URL to redirect to
-	 */
+	 *//*
 	@Action(ACTION_DO_PROCESS_WORKFLOW_ACTION)
 	public String doProcessWorkflowAction(HttpServletRequest request) {
 		String strIdAction = request.getParameter(PARAMETER_ID_ACTION);
@@ -2586,7 +2494,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
-	/**
+	*//**
 	 * Get an integer attribute from the session
 	 * 
 	 * @param session
@@ -2595,7 +2503,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 *            The session key of the item
 	 * @return The value of the attribute, or 0 if the key is not associated
 	 *         with any value
-	 */
+	 *//*
 	private int getIntSessionAttribute(HttpSession session, String strSessionKey) {
 		Integer nAttr = (Integer) session.getAttribute(strSessionKey);
 
@@ -2606,7 +2514,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return 0;
 	}
 
-	/**
+	*//**
 	 * Get the URL to manage appointments of a given form
 	 * 
 	 * @param request
@@ -2614,12 +2522,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @param nIdForm
 	 *            The id of the form
 	 * @return The URL
-	 */
+	 *//*
 	public static String getUrlManageAppointment(HttpServletRequest request, int nIdForm) {
 		return getUrlManageAppointment(request, Integer.toString(nIdForm));
 	}
 
-	/**
+	*//**
 	 * Get the URL to manage appointments of a given form
 	 * 
 	 * @param request
@@ -2627,7 +2535,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @param strIdForm
 	 *            The id of the form
 	 * @return The URL
-	 */
+	 *//*
 	public static String getUrlManageAppointment(HttpServletRequest request, String strIdForm) {
 		UrlItem url = new UrlItem(AppPathService.getBaseUrl(request) + JSP_MANAGE_APPOINTMENTS);
 		url.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS);
@@ -2637,7 +2545,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return url.getUrl();
 	}
 
-	/**
+	*//**
 	 * Get the URL to display the form of a workflow action. If the action has
 	 * no form, then the user is redirected to the page to execute the workflow
 	 * action
@@ -2649,12 +2557,12 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @param nIdAction
 	 *            The id of the workflow action
 	 * @return The URL
-	 */
+	 *//*
 	public static String getUrlExecuteWorkflowAction(HttpServletRequest request, int nIdAppointment, int nIdAction) {
 		return getUrlExecuteWorkflowAction(request, Integer.toString(nIdAppointment), Integer.toString(nIdAction));
 	}
 
-	/**
+	*//**
 	 * Get the URL to display the form of a workflow action. If the action has
 	 * no form, then the user is redirected to the page to execute the workflow
 	 * action
@@ -2666,7 +2574,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @param strIdAction
 	 *            The id of the workflow action
 	 * @return The URL
-	 */
+	 *//*
 	public static String getUrlExecuteWorkflowAction(HttpServletRequest request, String strIdAppointment,
 			String strIdAction) {
 		UrlItem url = new UrlItem(AppPathService.getBaseUrl(request) + JSP_MANAGE_APPOINTMENTS);
@@ -2677,18 +2585,18 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return url.getUrl();
 	}
 
-	/**
+	*//**
 	 * Clear uploaded files if needed.
 	 * 
 	 * @param session
 	 *            The session of the current user
-	 */
+	 *//*
 	private void clearUploadFilesIfNeeded(HttpSession session) {
 		// If we do not reload an appointment, we clear uploaded files.
 		if ((_appointmentFormService.getAppointmentFromSession(session) == null)
 				&& (_appointmentFormService.getValidatedAppointmentFromSession(session) == null)) {
 			AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(session.getId());
 		}
-	}
+	}*/
 
 }

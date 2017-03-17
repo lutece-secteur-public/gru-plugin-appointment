@@ -101,11 +101,10 @@ public class ReservationRuleService {
 	 * @return
 	 */
 	public static ReferenceList findAllDateOfReservationRule(int nIdForm) {
-		ReferenceList listDate = new ReferenceList();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.FORMAT_DATE);
+		ReferenceList listDate = new ReferenceList();		
 		List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm(nIdForm);
 		for (ReservationRule reservationRule : listReservationRule) {
-			listDate.addItem(reservationRule.getIdReservationRule(), reservationRule.getDateOfApply().format(formatter));
+			listDate.addItem(reservationRule.getIdReservationRule(), reservationRule.getDateOfApply().format(Utilities.formatter));
 		}
 		return listDate;
 	}

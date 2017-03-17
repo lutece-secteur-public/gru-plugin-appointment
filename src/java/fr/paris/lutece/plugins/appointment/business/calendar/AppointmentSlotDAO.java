@@ -37,7 +37,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.Appointment;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -76,13 +75,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO {
 	private static final String SQL_QUERY_SELECT_BY_ID_DAY = SQL_QUERY_SELECT
 			+ " WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
 	private static final String SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES = "SELECT id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled, (SELECT SUM(nb_place_reserved) FROM appointment_appointment app WHERE app.id_slot = slot.id_slot AND status != ? ) FROM appointment_slot slot WHERE id_day = ? ORDER BY starting_hour, starting_minute, day_of_week ASC";
-	private static final String SQL_QUERY_FIND_LIMITS_MOMENT = "select count(*) nbre, TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') startHour, "
-			+ " TIME_FORMAT( CONCAT_WS(':',slot.ending_hour,slot.ending_minute),'%H:%i:%s') maxRdv,"
-			+ "  slot.nb_places from appointment_appointment apmt, appointment_slot slot, appointment_form form"
-			+ " where  apmt.id_slot<>" + Appointment.Status.STATUS_UNRESERVED.getValeur() + " and apmt.status<>"
-			+ Appointment.Status.STATUS_UNRESERVED.getValeur() + " and apmt.id_slot=slot.id_slot and slot.id_day = ?"
-			+ " and form.id_form=slot.id_form and form.id_form= ? group by apmt.id_slot"
-			+ " order by TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') ";
+	
 	private static final String SQL_QUERY_FIND_SLOTS__UNAVAILABLED = "select id_slot, id_form, id_day, day_of_week, nb_places, starting_hour, starting_minute, ending_hour, ending_minute, is_enabled from appointment_slot slot"
 			+ " where slot.id_form=? and slot.id_day = ?"
 			+ " and TIME_FORMAT(CONCAT_WS(':',slot.starting_hour, slot.starting_minute),'%H:%i:%s') >="
@@ -252,7 +245,6 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO {
 	public AppointmentSlot findByPrimaryKeyWithFreePlaces(int nIdSlot, Date date, Plugin plugin) {
 		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACES, plugin);
 		daoUtil.setDate(1, date);
-		daoUtil.setInt(2, Appointment.Status.STATUS_UNRESERVED.getValeur());
 		daoUtil.setInt(3, nIdSlot);
 		daoUtil.executeQuery();
 
@@ -351,7 +343,6 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO {
 	@Override
 	public List<AppointmentSlot> findByIdDayWithFreePlaces(int nIdDay, Plugin plugin) {
 		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_DAY_WITH_FREE_PLACES, plugin);
-		daoUtil.setInt(1, Appointment.Status.STATUS_UNRESERVED.getValeur());
 		daoUtil.setInt(2, nIdDay);
 		daoUtil.executeQuery();
 
@@ -491,7 +482,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO {
 	private static List<String[]> updateAppointmentsUnavailable(int nIdDay, int nIdForm, Plugin plugin) {
 		List<String[]> objTab = new ArrayList<String[]>();
 		int nIndex = 1;
-		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_FIND_LIMITS_MOMENT, plugin);
+		DAOUtil daoUtil = null;
 		daoUtil.setInt(1, nIdDay);
 		daoUtil.setInt(2, nIdForm);
 
@@ -533,7 +524,7 @@ public class AppointmentSlotDAO implements IAppointmentSlotDAO {
 	public AppointmentSlot findByPrimaryKeyWithFreePlace(int nIdSlot, Plugin plugin) {
 		DAOUtil daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_PRIMARY_KEY_WITH_FREE_PLACE, plugin);
 		daoUtil.setInt(2, nIdSlot);
-		daoUtil.setInt(1, Appointment.Status.STATUS_UNRESERVED.getValeur());
+		//daoUtil.setInt(1, Appointment.Status.STATUS_UNRESERVED.getValeur());
 		daoUtil.executeQuery();
 
 		AppointmentSlot slot = new AppointmentSlot();

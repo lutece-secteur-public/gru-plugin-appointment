@@ -2,6 +2,7 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -13,7 +14,8 @@ import java.util.List;
 public class Utilities {
 
 	public static final String FORMAT_DATE = "dd/MM/yyyy";
-
+	public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_DATE);
+	
 	/**
 	 * Return the closest date in a list of date with the given date The return
 	 * date will always be before the given date

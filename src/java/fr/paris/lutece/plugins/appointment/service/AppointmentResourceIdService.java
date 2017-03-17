@@ -39,7 +39,7 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.portal.service.rbac.Permission;
 import fr.paris.lutece.portal.service.rbac.ResourceIdService;
 import fr.paris.lutece.portal.service.rbac.ResourceType;
@@ -184,13 +184,11 @@ public class AppointmentResourceIdService extends ResourceIdService {
 	 */
 	@Override
 	public ReferenceList getResourceIdList(Locale locale) {
-		Collection<AppointmentForm> listForms = AppointmentFormHome.getAppointmentFormsList();
+		Collection<Form> listForms = FormService.findAllForms();
 		ReferenceList refListForms = new ReferenceList();
-
-		for (AppointmentForm form : listForms) {
+		for (Form form : listForms) {
 			refListForms.addItem(form.getIdForm(), form.getTitle());
 		}
-
 		return refListForms;
 	}
 
@@ -200,15 +198,12 @@ public class AppointmentResourceIdService extends ResourceIdService {
 	@Override
 	public String getTitle(String strId, Locale locale) {
 		int nIdForm = -1;
-
 		try {
 			nIdForm = Integer.parseInt(strId);
 		} catch (NumberFormatException ne) {
 			AppLogService.error(ne);
 		}
-
-		AppointmentForm form = AppointmentFormHome.findByPrimaryKey(nIdForm);
-
+		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
 		return (form == null) ? StringUtils.EMPTY : form.getTitle();
 	}
 }

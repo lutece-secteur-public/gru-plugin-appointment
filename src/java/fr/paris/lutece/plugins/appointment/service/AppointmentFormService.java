@@ -34,10 +34,6 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,33 +41,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
-
-import fr.paris.lutece.plugins.appointment.business.Appointment;
-import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.OldAppointmentHome;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
-import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
-import fr.paris.lutece.plugins.appointment.business.display.Display;
-import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
-import fr.paris.lutece.plugins.appointment.business.form.Form;
-import fr.paris.lutece.plugins.appointment.business.form.FormHome;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
-import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
-import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
-import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
-import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
-import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
-import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
-import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
-import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
-import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
-import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
-import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -80,27 +53,16 @@ import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeUpload;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.security.LuteceUser;
-import fr.paris.lutece.portal.service.security.SecurityService;
-import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.service.util.AppException;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
@@ -189,196 +151,13 @@ public class AppointmentFormService implements Serializable {
 	}
 
 	/**
-	 * @param appointmentForm
-	 */
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-
-	
-
-	
-
-	
-
-	/**
-	 * Gets the html form.
-	 *
-	 * @param nWeek
-	 *            the n week
-	 * @param strDay
-	 *            the str day
-	 * @param strSlot
-	 *            the str slot
-	 * @param form
-	 *            the form
-	 * @param formMessages
-	 *            the form messages
-	 * @param locale
-	 *            the locale
-	 * @param bDisplayFront
-	 *            the b display front
-	 * @param request
-	 *            the request
-	 * @return the html form
-	 */
-	public String getHtmlForm(int nWeek, String strDay, String strSlot, AppointmentForm form, FormMessage formMessages,
-			Locale locale, boolean bDisplayFront, HttpServletRequest request) {
-		Map<String, Object> model = new HashMap<String, Object>();
-		StringBuffer strBuffer = new StringBuffer();
-
-		List<Entry> listEntryFirstLevel = getFilter(form.getIdForm(), bDisplayFront);
-
-		for (Entry entry : listEntryFirstLevel) {
-			getHtmlEntry(entry.getIdEntry(), strBuffer, locale, bDisplayFront, request);
-		}
-
-		List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession()
-				.getAttribute(SESSION_APPOINTMENT_FORM_ERRORS);
-
-		model.put(MARK_FORM_ERRORS, listErrors);
-		model.put(MARK_APPOINTMENTSLOT, strSlot);
-		model.put(MARK_APPOINTMENTSLOTDAY, strDay);
-		model.put(MARK_FORM, form);
-		model.put(MARK_FORM_MESSAGES, formMessages);
-		model.put(MARK_STR_ENTRY, strBuffer.toString());
-		model.put(MARK_LOCALE, locale);
-		model.put(MARK_WEEK, nWeek);
-		model.put(MARK_PLACES,
-				AppointmentSlotHome.findByPrimaryKeyWithFreePlace(Integer.parseInt(strSlot)).getNbFreePlaces());
-
-		model.put(MARK_CUSTOMER_ID, "");
-		model.put(MARK_USER_ID_OPAM, "");
-
-		AppointmentDTO appointment = getAppointmentFromSession(request.getSession());
-
-		if (appointment == null) {
-			appointment = new AppointmentDTO();
-
-			setUserInfo(request, appointment);
-		}
-
-		model.put(MARK_APPOINTMENT, appointment);
-		model.put(MARK_LIST_ERRORS, getAllErrors(request));
-
-		if (bDisplayFront) {
-			model.put(MARK_IS_FORM_FIRST_STEP, isFormFirstStep(form.getIdForm()));
-		}
-
-		if (!bDisplayFront && (appointment.getIdAppointment() > 0)) {
-			model.put(MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn(appointment.getIdAppointment(), locale));
-		}
-
-		HtmlTemplate template = AppTemplateService
-				.getTemplate(bDisplayFront ? TEMPLATE_HTML_CODE_FORM : TEMPLATE_HTML_CODE_FORM_ADMIN, locale, model);
-
-		return template.getHtml();
-	}
-
-	/**
-	 * Gets the html form.
-	 *
-	 * @param nWeek
-	 *            the n week
-	 * @param strDay
-	 *            the str day
-	 * @param strSlot
-	 *            the str slot
-	 * @param form
-	 *            the form
-	 * @param formMessages
-	 *            the form messages
-	 * @param locale
-	 *            the locale
-	 * @param bDisplayFront
-	 *            the b display front
-	 * @param request
-	 *            the request
-	 * @param strCustomerId
-	 *            the str customer id
-	 * @param strUserIdOpam
-	 *            the str user id opam
-	 * @return the html form
-	 */
-	public String getHtmlForm(int nWeek, String strDay, String strSlot, AppointmentForm form, FormMessage formMessages,
-			Locale locale, boolean bDisplayFront, HttpServletRequest request, String strCustomerId,
-			String strUserIdOpam) {
-		Map<String, Object> model = new HashMap<String, Object>();
-		StringBuffer strBuffer = new StringBuffer();
-
-		List<Entry> listEntryFirstLevel = getFilter(form.getIdForm(), bDisplayFront);
-
-		for (Entry entry : listEntryFirstLevel) {
-			getHtmlEntry(entry.getIdEntry(), strBuffer, locale, bDisplayFront, request);
-		}
-
-		List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession()
-				.getAttribute(SESSION_APPOINTMENT_FORM_ERRORS);
-
-		model.put(MARK_FORM_ERRORS, listErrors);
-		model.put(MARK_APPOINTMENTSLOT, strSlot);
-		model.put(MARK_APPOINTMENTSLOTDAY, strDay);
-		model.put(MARK_FORM, form);
-		model.put(MARK_FORM_MESSAGES, formMessages);
-		model.put(MARK_STR_ENTRY, strBuffer.toString());
-		model.put(MARK_LOCALE, locale);
-		model.put(MARK_WEEK, nWeek);
-		if (StringUtils.isNotBlank(strSlot)) {
-			int nIdSlot = Integer.parseInt(strSlot);
-			AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace(nIdSlot);
-			model.put(MARK_PLACES, Math.min(slot.getNbFreePlaces(), form.getMaxPeoplePerAppointment()));
-		}
-		AppLogService.info("Appintment To GRU : strCustomerId " + strCustomerId);
-		AppLogService.info("Appintment To GRU : strUserIdOpam " + strUserIdOpam);
-
-		model.put(MARK_CUSTOMER_ID, strCustomerId);
-		model.put(MARK_USER_ID_OPAM, strUserIdOpam);
-
-		AppointmentDTO appointment = getAppointmentFromSession(request.getSession());
-
-		if (appointment == null) {
-			appointment = new AppointmentDTO();
-
-			setUserInfo(request, appointment);
-		}
-
-		model.put(MARK_APPOINTMENT, appointment);
-		model.put(MARK_LIST_ERRORS, getAllErrors(request));
-
-		if (bDisplayFront) {
-			model.put(MARK_IS_FORM_FIRST_STEP, isFormFirstStep(form.getIdForm()));
-		}
-
-		if (!bDisplayFront && (appointment.getIdAppointment() > 0)) {
-			model.put(MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn(appointment.getIdAppointment(), locale));
-		}
-
-		HtmlTemplate template = AppTemplateService
-				.getTemplate(bDisplayFront ? TEMPLATE_HTML_CODE_FORM : TEMPLATE_HTML_CODE_FORM_ADMIN, locale, model);
-
-		return template.getHtml();
-	}
-
-	/**
 	 * Get an Entry Filter
 	 * 
 	 * @param iform
 	 *            the id form
 	 * @return List a filter Entry
 	 */
-	private static List<Entry> getFilter(int iform, boolean bDisplayFront) {
+	public static List<Entry> getFilter(int iform, boolean bDisplayFront) {
 		EntryFilter filter = new EntryFilter();
 		filter.setIdResource(iform);
 		filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
@@ -388,7 +167,6 @@ public class AppointmentFormService implements Serializable {
 			filter.setIsOnlyDisplayInBack(EntryFilter.FILTER_FALSE);
 		}
 		List<Entry> listEntryFirstLevel = EntryHome.getEntryList(filter);
-
 		return listEntryFirstLevel;
 	}
 
@@ -412,60 +190,26 @@ public class AppointmentFormService implements Serializable {
 			HttpServletRequest request) {
 		Map<String, Object> model = new HashMap<String, Object>();
 		StringBuffer strBuffer = new StringBuffer();
-
 		List<Entry> listEntryFirstLevel = getFilter(form.getIdForm(), bDisplayFront);
-
 		for (Entry entry : listEntryFirstLevel) {
 			getHtmlEntry(entry.getIdEntry(), strBuffer, locale, bDisplayFront, request);
 		}
-
 		model.put(MARK_FORM, form);
 		model.put(MARK_FORM_MESSAGES, formMessages);
 		model.put(MARK_STR_ENTRY, strBuffer.toString());
-		model.put(MARK_LOCALE, locale);
-
-		AppointmentDTO appointment = getAppointmentFromSession(request.getSession());
-
-		if (appointment == null) {
-			appointment = new AppointmentDTO();
-
-			setUserInfo(request, appointment);
-		}
-		if (getAppointmentFromSession(request.getSession()) != null) {
-			AppointmentSlot slot = AppointmentSlotHome
-					.findByPrimaryKeyWithFreePlace(getAppointmentFromSession(request.getSession()).getIdSlot());
-			model.put(MARK_PLACES, Math.min(slot.getNbFreePlaces(), form.getMaxPeoplePerAppointment()));
-		} else {
-			model.put(MARK_PLACES, 0);
-		}
-
-		model.put(MARK_APPOINTMENT, appointment);
-		if (!isFormFirstStep(form.getIdForm())) {
-			model.put(MARK_APPOINTMENTSLOT, getAppointmentFromSession(request.getSession()).getIdSlot());
-		}
-		if (bDisplayFront) {
-			model.put(MARK_IS_FORM_FIRST_STEP, isFormFirstStep(form.getIdForm()));
-		}
-
-		if (!bDisplayFront && (appointment.getIdAppointment() > 0)) {
-			model.put(MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn(appointment.getIdAppointment(), locale));
-		}
-
+		model.put(MARK_LOCALE, locale);		
+		model.put(MARK_PLACES, 200);
 		List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession()
 				.getAttribute(SESSION_APPOINTMENT_FORM_ERRORS);
-
 		model.put(MARK_FORM_ERRORS, listErrors);
 		model.put(MARK_LIST_ERRORS, getAllErrors(request));
-
 		HtmlTemplate template = AppTemplateService
 				.getTemplate(bDisplayFront ? TEMPLATE_HTML_CODE_FORM : TEMPLATE_HTML_CODE_FORM_ADMIN, locale, model);
-
 		return template.getHtml();
 	}
 
-	private List<String> getAllErrors(HttpServletRequest request) {
+	public List<String> getAllErrors(HttpServletRequest request) {
 		List<String> listAllErrors = new ArrayList<String>();
-
 		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_LAST_NAME, request.getLocale()));
 		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale()));
 		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_EMAIL, request.getLocale()));
@@ -476,33 +220,10 @@ public class AppointmentFormService implements Serializable {
 		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_NB_SEATS, request.getLocale()));
 		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE, request.getLocale()));
 		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE_BACK, request.getLocale()));
-
 		return listAllErrors;
 	}
 
-	/**
-	 * Set the info of the current LuteceUser to an appointment. If there is no
-	 * current lutece user, then do nothing
-	 * 
-	 * @param request
-	 *            The request
-	 * @param appointment
-	 *            The appointment to set user info
-	 */
-	public void setUserInfo(HttpServletRequest request, Appointment appointment) {
-		if (SecurityService.isAuthenticationEnable() && (appointment != null)) {
-			LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
-
-			if (user != null) {
-				appointment.setFirstName(user.getUserInfo(
-						AppPropertiesService.getProperty(PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY)));
-				appointment.setLastName(user.getUserInfo(
-						AppPropertiesService.getProperty(PROPERTY_USER_ATTRIBUTE_LAST_NAME, StringUtils.EMPTY)));
-				appointment.setEmail(user.getUserInfo(
-						AppPropertiesService.getProperty(PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY)));
-			}
-		}
-	}
+	
 
 	/**
 	 * Insert in the string buffer the content of the HTML code of the entry
@@ -526,14 +247,11 @@ public class AppointmentFormService implements Serializable {
 		StringBuffer strConditionalQuestionStringBuffer = null;
 		HtmlTemplate template;
 		Entry entry = EntryHome.findByPrimaryKey(nIdEntry);
-
 		if (entry.getEntryType().getGroup()) {
 			StringBuffer strGroupStringBuffer = new StringBuffer();
-
 			for (Entry entryChild : entry.getChildren()) {
 				getHtmlEntry(entryChild.getIdEntry(), strGroupStringBuffer, locale, bDisplayFront, request);
 			}
-
 			model.put(MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString());
 		} else {
 			if (entry.getNumberConditionalQuestion() != 0) {
@@ -543,61 +261,37 @@ public class AppointmentFormService implements Serializable {
 				}
 			}
 		}
-
 		if (entry.getNumberConditionalQuestion() != 0) {
 			strConditionalQuestionStringBuffer = new StringBuffer();
-
 			for (Field field : entry.getFields()) {
 				if (field.getConditionalQuestions().size() != 0) {
 					StringBuffer strGroupStringBuffer = new StringBuffer();
-
 					for (Entry entryConditional : field.getConditionalQuestions()) {
 						getHtmlEntry(entryConditional.getIdEntry(), strGroupStringBuffer, locale, bDisplayFront,
 								request);
 					}
-
 					model.put(MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString());
 					model.put(MARK_FIELD, field);
 					template = AppTemplateService.getTemplate(TEMPLATE_DIV_CONDITIONAL_ENTRY, locale, model);
 					strConditionalQuestionStringBuffer.append(template.getHtml());
 				}
 			}
-
 			model.put(MARK_STR_LIST_CHILDREN, strConditionalQuestionStringBuffer.toString());
 		}
-
 		model.put(MARK_ENTRY, entry);
 		model.put(MARK_LOCALE, locale);
-
-		LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
-
-		if ((user == null) && SecurityService.isAuthenticationEnable()
-				&& SecurityService.getInstance().isExternalAuthentication()) {
-			try {
-				user = SecurityService.getInstance().getRemoteUser(request);
-			} catch (UserNotSignedException e) {
-				// Nothing to do : lutece user is not mandatory
-			}
-		}
-
-		model.put(MARK_USER, user);
-
 		if (request != null) {
-			AppointmentDTO appointment = getAppointmentFromSession(request.getSession());
-
-			if ((appointment != null) && (appointment.getMapResponsesByIdEntry() != null)) {
-				List<Response> listResponses = appointment.getMapResponsesByIdEntry().get(entry.getIdEntry());
+			AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession().getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
+			if ((appointmentFrontDTO != null) && (appointmentFrontDTO.getMapResponsesByIdEntry() != null)) {
+				List<Response> listResponses = appointmentFrontDTO.getMapResponsesByIdEntry().get(entry.getIdEntry());
 				model.put(MARK_LIST_RESPONSES, listResponses);
 			}
 		}
-
 		IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService(entry);
-
 		// If the entry type is a file, we add the
 		if (entryTypeService instanceof AbstractEntryTypeUpload) {
 			model.put(MARK_UPLOAD_HANDLER, ((AbstractEntryTypeUpload) entryTypeService).getAsynchronousUploadHandler());
 		}
-
 		template = AppTemplateService.getTemplate(entryTypeService.getTemplateHtmlForm(entry, bDisplayFront), locale,
 				model);
 		stringBuffer.append(template.getHtml());
@@ -622,13 +316,15 @@ public class AppointmentFormService implements Serializable {
 	 *         found
 	 */
 	public List<GenericAttributeError> getResponseEntry(HttpServletRequest request, int nIdEntry, Locale locale,
-			AppointmentDTO appointment) {
+			AppointmentFrontDTO appointment) {
 		List<Response> listResponse = new ArrayList<Response>();
 		appointment.getMapResponsesByIdEntry().put(nIdEntry, listResponse);
 
 		return getResponseEntry(request, nIdEntry, listResponse, false, locale, appointment);
 	}
 
+	
+	
 	/**
 	 * Get the responses associated with an entry.<br />
 	 * Return null if there is no error in the response, or return the list of
@@ -650,7 +346,7 @@ public class AppointmentFormService implements Serializable {
 	 *         found
 	 */
 	private List<GenericAttributeError> getResponseEntry(HttpServletRequest request, int nIdEntry,
-			List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentDTO appointment) {
+			List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentFrontDTO appointment) {
 		List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>();
 		Entry entry = EntryHome.findByPrimaryKey(nIdEntry);
 
@@ -679,7 +375,7 @@ public class AppointmentFormService implements Serializable {
 						listResponse, locale);
 
 				if (formError != null) {
-					formError.setUrl(getEntryUrl(entry, appointment.getAppointmentForm().getIdForm()));
+					formError.setUrl(getEntryUrl(entry, appointment.getIdForm()));
 				}
 			} else {
 				Response response = new Response();
@@ -710,6 +406,7 @@ public class AppointmentFormService implements Serializable {
 		return listFormErrors;
 	}
 
+	
 	/**
 	 * Check if a field is in a response list
 	 * 
@@ -739,8 +436,7 @@ public class AppointmentFormService implements Serializable {
 	public String getEntryUrl(Entry entry, int nIdform) {
 		UrlItem url = new UrlItem(AppPathService.getPortalUrl());
 		url.addParameter(XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME);
-		url.addParameter(MVCUtils.PARAMETER_VIEW, isFormFirstStep(nIdform)
-				? AppointmentApp.VIEW_APPOINTMENT_CALENDAR : AppointmentApp.VIEW_APPOINTMENT_FORM_SECOND_STEP);
+		url.addParameter(MVCUtils.PARAMETER_VIEW, AppointmentApp.VIEW_APPOINTMENT_FORM);
 
 		if ((entry != null) && (entry.getIdResource() > 0)) {
 			url.addParameter(PARAMETER_ID_FORM, entry.getIdResource());
@@ -748,195 +444,5 @@ public class AppointmentFormService implements Serializable {
 		}
 
 		return url.getUrl();
-	}
-
-	/**
-	 * Save an appointment in the session of the user
-	 * 
-	 * @param session
-	 *            The session
-	 * @param appointment
-	 *            The appointment to save
-	 */
-	public void saveAppointmentInSession(HttpSession session, AppointmentDTO appointment) {
-		session.setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointment);
-	}
-
-	/**
-	 * Get the current appointment form from the session
-	 * 
-	 * @param session
-	 *            The session of the user
-	 * @return The appointment form
-	 */
-	public AppointmentDTO getAppointmentFromSession(HttpSession session) {
-		return (AppointmentDTO) session.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
-	}
-
-	/**
-	 * Remove any appointment form responses stored in the session of the user
-	 * 
-	 * @param session
-	 *            The session
-	 */
-	public void removeAppointmentFromSession(HttpSession session) {
-		session.removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
-	}
-
-	/**
-	 * Save a validated appointment into the session of the user
-	 * 
-	 * @param session
-	 *            The session
-	 * @param appointment
-	 *            The appointment to save
-	 */
-	public void saveValidatedAppointmentForm(HttpSession session, Appointment appointment) {
-		removeAppointmentFromSession(session);
-		session.setAttribute(SESSION_VALIDATED_APPOINTMENT, appointment);
-	}
-
-	/**
-	 * Get a validated appointment from the session
-	 * 
-	 * @param session
-	 *            The session of the user
-	 * @return The appointment
-	 */
-	public Appointment getValidatedAppointmentFromSession(HttpSession session) {
-		return (Appointment) session.getAttribute(SESSION_VALIDATED_APPOINTMENT);
-	}
-
-	/**
-	 * Remove a validated appointment stored in the session of the user
-	 * 
-	 * @param session
-	 *            The session
-	 */
-	public void removeValidatedAppointmentFromSession(HttpSession session) {
-		session.removeAttribute(SESSION_VALIDATED_APPOINTMENT);
-	}
-
-	/**
-	 * Convert an AppointmentDTO to an Appointment by transferring response from
-	 * the map of class AppointmentDTO to the list of class Appointment.
-	 * 
-	 * @param appointment
-	 *            The appointment to convert
-	 */
-	public void convertMapResponseToList(AppointmentDTO appointment) {
-		List<Response> listResponse = new ArrayList<Response>();
-
-		for (List<Response> listResponseByEntry : appointment.getMapResponsesByIdEntry().values()) {
-			listResponse.addAll(listResponseByEntry);
-		}
-
-		appointment.setMapResponsesByIdEntry(null);
-		appointment.setListResponse(listResponse);
-	}
-
-	/**
-	 * Check if the form is the first step of the creation of appointments, or
-	 * if it is the calendar.
-	 * 
-	 * @return True if the form is the first step of the creation of
-	 *         appointments, false otherwise
-	 */
-	public boolean isFormFirstStep(int nAppointmentFormId) {		
-		_bIsFormFirstStep = true;
-
-		return _bIsFormFirstStep;
-	}
-
-	/**
-	 * Convert a time into string
-	 * 
-	 * @param nHour
-	 *            The hour
-	 * @param nMinute
-	 *            The minute
-	 * @return The string representing the given time
-	 */
-	public String convertTimeIntoString(int nHour, int nMinute) {
-		StringBuilder sbTime = new StringBuilder();
-
-		if (nHour < 10) {
-			sbTime.append(0);
-		}
-
-		sbTime.append(nHour);
-		sbTime.append(AppointmentForm.CONSTANT_H);
-
-		if (nMinute < 10) {
-			sbTime.append(0);
-		}
-
-		sbTime.append(nMinute);
-
-		return sbTime.toString();
-	}
-
-	/**
-	 * Do check if an appointment can be made and make an appointment.
-	 * 
-	 * @param appointment
-	 *            The appointment to make
-	 * @param form
-	 *            The appointment form associated with the appointment
-	 * @param bIsAdmin
-	 *            True if this method was called by an admin, false if it was
-	 *            called by a regular user
-	 * @return True if the appointment was successfully made, false if the
-	 *         selected slot is empty or does not exist
-	 * @throws AppException
-	 *             If an error occurs when processing the creation or the update
-	 *             of the appointment
-	 */
-	public synchronized boolean doMakeAppointment(Appointment appointment, AppointmentForm form, boolean bIsAdmin)
-			throws AppException {
-		AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces(appointment.getIdSlot(),
-				appointment.getDateAppointment());
-
-		if ((slot == null) || (slot.getNbPlaces() < 0)) {
-			return false;
-		}
-
-		Plugin pluginAppointment = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
-
-		TransactionManager.beginTransaction(pluginAppointment);
-
-		try {
-			// Only admins can modify appointments
-			boolean bCreate = !bIsAdmin || (appointment.getIdAppointment() == 0);
-
-			if (bCreate) {
-				OldAppointmentHome.create(appointment);
-			} else {
-				OldAppointmentHome.update(appointment);
-			}
-
-			// For modification (by an admin), the update of responses have
-			// already been made when this method is called
-			if (bCreate) {
-				for (Response response : appointment.getListResponse()) {
-					ResponseHome.create(response);
-					OldAppointmentHome.insertAppointmentResponse(appointment.getIdAppointment(), response.getIdResponse());
-				}
-			}
-
-			if (form.getIdWorkflow() > 0) {
-				WorkflowService.getInstance().getState(appointment.getIdAppointment(),
-						Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
-				WorkflowService.getInstance().executeActionAutomatic(appointment.getIdAppointment(),
-						Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
-			}
-
-			TransactionManager.commitTransaction(pluginAppointment);
-		} catch (Exception e) {
-			TransactionManager.rollBack(pluginAppointment);
-			throw new AppException(e.getMessage(), e);
-		}
-
-		return true;
 	}
 }

@@ -71,6 +71,7 @@ DROP TABLE IF EXISTS appointment_appointment ;
 
 CREATE TABLE IF NOT EXISTS appointment_appointment (
   id_appointment INT NOT NULL,
+  reference VARCHAR(45) NULL,
   id_user INT NOT NULL,
   id_slot INT NOT NULL,
   PRIMARY KEY (id_appointment, id_user, id_slot),

@@ -80,13 +80,6 @@
 			<daemon-description>appointment.daemon.appointmentPublicationDaemon.description</daemon-description>
 			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.AppointmentPublicationDaemon</daemon-class>
 		</daemon>
-	
-   		<daemon>
-			<daemon-id>AppointmentSlotDisponibilityDaemon</daemon-id>
-			<daemon-name>appointment.Daemon.AppointmentSlotDisponibilityDaemon.name</daemon-name>
-			<daemon-description>appointment.Daemon.AppointmentSlotDisponibilityDaemon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.appointment.Daemon.AppointmentSlotDisponibilityDaemon</daemon-class>
-		</daemon>
    </daemons>
     <css-stylesheets>
         <css-stylesheets-scope>portal</css-stylesheets-scope>

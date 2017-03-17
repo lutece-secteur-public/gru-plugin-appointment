@@ -104,6 +104,14 @@ public class FormService {
 		}
 		return listAppointmentFormLight;
 	}
+	
+	public static List<AppointmentForm> buildAllActiveAppointmentForm() {
+		List<AppointmentForm> listAppointmentForm = new ArrayList<>();
+		for (Form form : FormService.findAllActiveForms()) {
+			listAppointmentForm.add(buildAppointmentForm(form.getIdForm(), 0,  0));
+		}
+		return listAppointmentForm;
+	}
 
 	/**
 	 * 
@@ -319,6 +327,10 @@ public class FormService {
 		return FormHome.findAllForms();
 	}
 
+	
+	public static List<Form> findAllActiveForms(){
+		return FormHome.findActiveForms();
+	}
 	/**
 	 * 
 	 * @param nIdForm

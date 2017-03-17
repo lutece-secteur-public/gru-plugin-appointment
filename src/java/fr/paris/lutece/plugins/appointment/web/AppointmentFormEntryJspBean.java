@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.OldAppointmentHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
@@ -398,7 +397,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 				EntryHome.decrementOrderByOne(entry.getPosition(), entry.getFieldDepend().getIdField(),
 						entry.getIdResource(), entry.getResourceType());
 			}
-			OldAppointmentHome.removeResponsesByIdEntry(nIdEntry);
+			// TODO 
+			// OldAppointmentHome.removeResponsesByIdEntry(nIdEntry);
 			EntryHome.remove(nIdEntry);
 			if (entry.getFieldDepend() != null) {
 				return redirect(request,

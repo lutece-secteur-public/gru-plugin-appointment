@@ -103,11 +103,10 @@ public class WeekDefinitionService {
 	}
 
 	public static ReferenceList findAllDateOfWeekDefinition(int nIdForm) {
-		ReferenceList listDate = new ReferenceList();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Utilities.FORMAT_DATE);
+		ReferenceList listDate = new ReferenceList();		
 		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
 		for (WeekDefinition weekDefinition : listWeekDefinition) {
-			listDate.addItem(weekDefinition.getIdWeekDefinition(), weekDefinition.getDateOfApply().format(formatter));
+			listDate.addItem(weekDefinition.getIdWeekDefinition(), weekDefinition.getDateOfApply().format(Utilities.formatter));
 		}
 		return listDate;
 	}

@@ -17,10 +17,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class AppointmentDAO implements IAppointmentDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_appointment) FROM appointment_appointment";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (id_appointment, id_user, id_slot) VALUES (?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET id_user = ?, id_slot = ? WHERE id_appointment = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (id_appointment, reference, id_user, id_slot) VALUES (?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET reference = ?, id_user = ?, id_slot = ? WHERE id_appointment = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.id_user, appointment.id_slot FROM appointment_appointment appointment";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.reference, appointment.id_user, appointment.id_slot FROM appointment_appointment appointment";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_appointment = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
@@ -155,6 +155,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		int nIndex = 1;
 		Appointment appointment = new Appointment();
 		appointment.setIdAppointment(daoUtil.getInt(nIndex++));
+		appointment.setReference(daoUtil.getString(nIndex++));
 		appointment.setIdUser(daoUtil.getInt(nIndex++));
 		appointment.setIdSlot(daoUtil.getInt(nIndex));
 		return appointment;
@@ -182,6 +183,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		if (isInsert) {
 			daoUtil.setInt(nIndex++, appointment.getIdAppointment());
 		}
+		daoUtil.setString(nIndex++, appointment.getReference());
 		daoUtil.setInt(nIndex++, appointment.getIdUser());
 		daoUtil.setInt(nIndex++, appointment.getIdSlot());
 		if (!isInsert) {

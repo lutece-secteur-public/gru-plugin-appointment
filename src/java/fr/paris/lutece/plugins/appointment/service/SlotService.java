@@ -180,14 +180,21 @@ public class SlotService {
 				listSlotToCreate.addAll(generateListSlotToCreateAfterASlot(slot));
 			}
 		}
-		if (slot.getIdSlot() == 0) {
-			SlotHome.create(slot);
-		} else {
-			SlotHome.update(slot);
-		}
+		saveSlot(slot);
 		createListSlot(listSlotToCreate);
 	}
 
+	public static Slot saveSlot(Slot slot){
+		Slot slotSaved = null;
+		if (slot.getIdSlot() == 0){
+			slotSaved = SlotHome.create(slot);
+		} else {
+			slotSaved = SlotHome.update(slot);
+		}
+		return slotSaved;
+	}
+		
+	
 	private static List<Slot> generateListSlotToCreateAfterASlot(Slot slot) {
 		List<Slot> listSlotToCreate = new ArrayList<>();
 		LocalDate dateOfSlot = slot.getDate();

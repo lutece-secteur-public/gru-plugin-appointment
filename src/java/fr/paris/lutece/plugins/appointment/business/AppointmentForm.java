@@ -54,21 +54,10 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 * Name of the resource type of Appointment Forms
 	 */
 	public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
-
+	
 	/**
-	 * Constant for separator between hours and minutes.
+	 * Serial version UID
 	 */
-	public static final String CONSTANT_H = "h";
-
-	/**
-	 * Constant for separator between hours and minutes.
-	 */
-	public static final String CONSTANT_HOUR_SEPARATOR = ":";
-
-	/**
-	 * Regular expression used to control time format
-	 */
-	public static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]" + CONSTANT_HOUR_SEPARATOR + "[0-5][0-9]$";
 	private static final long serialVersionUID = 307685220867535209L;
 
 	// Variables declarations
@@ -110,34 +99,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	private boolean _bEnableMandatoryEmail;
 	private ImageResource _imageResource;
 	private String _strCategory;	
-	private int _nIdReservationRule;	
-		
+	private int _nIdReservationRule;		
 	
-	
-	public int getIdReservationRule() {
-		return _nIdReservationRule;
-	}
-
-	public void setIdReservationRule(int nIdReservationRule) {
-		this._nIdReservationRule = nIdReservationRule;
-	}
-
-	public int getMaxCapacityPerSlot() {
-		return _nMaxCapacityPerSlot;
-	}
-
-	public void setMaxCapacityPerSlot(int nMaxCapacityPerSlot) {
-		this._nMaxCapacityPerSlot = nMaxCapacityPerSlot;
-	}
-
-	public int getMaxPeoplePerAppointment() {
-		return _nMaxPeoplePerAppointment;
-	}
-
-	public void setMaxPeoplePerAppointment(int nMaxPeoplePerAppointment) {
-		this._nMaxPeoplePerAppointment = nMaxPeoplePerAppointment;
-	}
-
 	/**
 	 * Returns the IdForm
 	 * 
@@ -174,9 +137,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 */
 	public void setTitle(String strTitle) {
 		_strTitle = strTitle;
-	}
-
-	
+	}	
 	
 	public Date getDateOfModification() {
 		return _dateOfModification;
@@ -636,6 +597,30 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 */
 	public void setCategory(String strCategory) {
 		_strCategory = strCategory;
+	}
+	
+	public int getIdReservationRule() {
+		return _nIdReservationRule;
+	}
+
+	public void setIdReservationRule(int nIdReservationRule) {
+		this._nIdReservationRule = nIdReservationRule;
+	}
+
+	public int getMaxCapacityPerSlot() {
+		return _nMaxCapacityPerSlot;
+	}
+
+	public void setMaxCapacityPerSlot(int nMaxCapacityPerSlot) {
+		this._nMaxCapacityPerSlot = nMaxCapacityPerSlot;
+	}
+
+	public int getMaxPeoplePerAppointment() {
+		return _nMaxPeoplePerAppointment;
+	}
+
+	public void setMaxPeoplePerAppointment(int nMaxPeoplePerAppointment) {
+		this._nMaxPeoplePerAppointment = nMaxPeoplePerAppointment;
 	}
 
 }
