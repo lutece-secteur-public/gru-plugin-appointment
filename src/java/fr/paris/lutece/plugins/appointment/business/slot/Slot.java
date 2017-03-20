@@ -25,15 +25,15 @@ public class Slot implements Serializable {
 	private int _nIdSlot;
 
 	private LocalDate _date;
-	
+
 	private LocalTime _startingTime;
-	
+
 	private LocalTime _endingTime;
 	/**
 	 * Starting date (Date + Time) of the slot
 	 */
 	private LocalDateTime _startingDateTime;
-	
+
 	/**
 	 * Ending date (Date + Time) of the slot
 	 */
@@ -43,7 +43,7 @@ public class Slot implements Serializable {
 	 * Indicate whether the slot is open or not
 	 */
 	private boolean _bIsOpen;
-	
+
 	private int _nMaxCapacity;
 
 	/**
@@ -63,8 +63,8 @@ public class Slot implements Serializable {
 	 */
 	public int getIdSlot() {
 		return _nIdSlot;
-	}	
-	
+	}
+
 	public LocalDate getDate() {
 		return _date;
 	}
@@ -225,8 +225,6 @@ public class Slot implements Serializable {
 		this._nNbRemainingPlaces = nNbRemainingPlaces;
 	}
 
-	
-	
 	public int getMaxCapacity() {
 		return _nMaxCapacity;
 	}

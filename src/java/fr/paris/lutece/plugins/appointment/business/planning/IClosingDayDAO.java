@@ -81,8 +81,7 @@ public interface IClosingDayDAO {
 	 */
 	ClosingDay findByIdFormAndDateOfClosingDay(int nIdForm, LocalDate dateOfCLosingDay, Plugin plugin);
 
-	
 	List<ClosingDay> findByIdForm(int nIdForm, Plugin plugin);
-	
+
 	List<ClosingDay> findByIdFormAndDateRange(int nIdForm, LocalDate startingDate, LocalDate endingDate, Plugin plugin);
 }

@@ -91,7 +91,7 @@ public interface IReservationRuleDAO {
 	 * @return the reservation rule that matches
 	 */
 	ReservationRule findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin);
-	
+
 	/**
 	 * Returns the Reservation Rule with the given search parameters
 	 * 
@@ -104,5 +104,5 @@ public interface IReservationRuleDAO {
 	 * @return the reservation rule that matches
 	 */
 	ReservationRule findByIdFormAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin);
-	
+
 }

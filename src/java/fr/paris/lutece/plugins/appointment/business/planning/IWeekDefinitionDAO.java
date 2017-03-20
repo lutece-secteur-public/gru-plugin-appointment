@@ -78,32 +78,32 @@ public interface IWeekDefinitionDAO {
 	 * @return a list of all the weekdefinitions of the form given
 	 */
 	List<WeekDefinition> findByIdForm(int nIdForm, Plugin plugin);
-		
+
 	/**
 	 * Get the week definitions of a form for the date of apply
 	 * 
 	 * @param nIdForm
 	 *            the form id
-	 * @param dateOfApply 
-     * 			  the date of apply
+	 * @param dateOfApply
+	 *            the date of apply
 	 * @param plugin
 	 *            the plugin
 	 * @return the week definition
 	 */
 	WeekDefinition findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin);
-	
+
 	/**
 	 * Get the week definitions of a form for the closest date of apply
 	 * 
 	 * @param nIdForm
 	 *            the form id
-	 * @param dateOfApply 
-     * 			  the date of apply
+	 * @param dateOfApply
+	 *            the date of apply
 	 * @param plugin
 	 *            the plugin
 	 * @return the week definition
 	 */
 	WeekDefinition findByIdFormAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin);
-	
+
 	WeekDefinition findByIdFormAndMinDateOfApply(int nIdForm, Plugin plugin);
 }

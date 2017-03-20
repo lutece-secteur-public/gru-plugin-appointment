@@ -27,10 +27,9 @@ public class TimeSlot implements Serializable {
 	 * Starting time of the slot
 	 */
 	private LocalTime _startingTime;
-	
+
 	/**
-	 * The starting time + date
-	 * Need to have the date for the display
+	 * The starting time + date Need to have the date for the display
 	 */
 	private LocalDateTime _startingDateTime;
 
@@ -40,11 +39,10 @@ public class TimeSlot implements Serializable {
 	private LocalTime _endingTime;
 
 	/**
-	 * The endind time + date 
-	 * need to have the date for the display
+	 * The endind time + date need to have the date for the display
 	 */
 	private LocalDateTime _endingDateTime;
-	
+
 	/**
 	 * Indicate whether the time slot is open or not
 	 */
@@ -185,9 +183,9 @@ public class TimeSlot implements Serializable {
 		this._bIsOpen = bIsOpen;
 	}
 
-	
 	/**
 	 * Get the maximum capacity of the slot
+	 * 
 	 * @return the maximum capacity
 	 */
 	public int getMaxCapacity() {
@@ -196,7 +194,9 @@ public class TimeSlot implements Serializable {
 
 	/**
 	 * Set the maximum capacity of the slot
-	 * @param nMaxCapacity the maximum capacity
+	 * 
+	 * @param nMaxCapacity
+	 *            the maximum capacity
 	 */
 	public void setMaxCapacity(int nMaxCapacity) {
 		this._nMaxCapacity = nMaxCapacity;
@@ -237,5 +237,4 @@ public class TimeSlot implements Serializable {
 		this._endingDateTime = endingDateTime;
 	}
 
-	
 }

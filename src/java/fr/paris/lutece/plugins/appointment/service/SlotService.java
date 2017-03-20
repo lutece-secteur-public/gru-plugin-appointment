@@ -184,17 +184,16 @@ public class SlotService {
 		createListSlot(listSlotToCreate);
 	}
 
-	public static Slot saveSlot(Slot slot){
+	public static Slot saveSlot(Slot slot) {
 		Slot slotSaved = null;
-		if (slot.getIdSlot() == 0){
+		if (slot.getIdSlot() == 0) {
 			slotSaved = SlotHome.create(slot);
 		} else {
 			slotSaved = SlotHome.update(slot);
 		}
 		return slotSaved;
 	}
-		
-	
+
 	private static List<Slot> generateListSlotToCreateAfterASlot(Slot slot) {
 		List<Slot> listSlotToCreate = new ArrayList<>();
 		LocalDate dateOfSlot = slot.getDate();
@@ -248,7 +247,8 @@ public class SlotService {
 		// Get all the slot between these two dates
 		HashMap<LocalDateTime, Slot> mapSlot = SlotService.findListSlotByIdFormAndDateRange(nIdForm,
 				startingDate.atStartOfDay(), endingDate.atTime(LocalTime.MAX));
-		while (!bFreeSlotFound && (currentDateOfSearch.isBefore(endingDate) || !currentDateOfSearch.equals(endingDate))) {
+		while (!bFreeSlotFound
+				&& (currentDateOfSearch.isBefore(endingDate) || !currentDateOfSearch.equals(endingDate))) {
 			if (!listClosingDate.contains(currentDateOfSearch)) {
 				WeekDefinition weekDefinition = WeekDefinitionService
 						.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm, currentDateOfSearch);

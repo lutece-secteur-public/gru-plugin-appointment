@@ -54,7 +54,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 * Name of the resource type of Appointment Forms
 	 */
 	public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
-	
+
 	/**
 	 * Serial version UID
 	 */
@@ -98,9 +98,9 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	private String _strReference;
 	private boolean _bEnableMandatoryEmail;
 	private ImageResource _imageResource;
-	private String _strCategory;	
-	private int _nIdReservationRule;		
-	
+	private String _strCategory;
+	private int _nIdReservationRule;
+
 	/**
 	 * Returns the IdForm
 	 * 
@@ -137,8 +137,8 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 */
 	public void setTitle(String strTitle) {
 		_strTitle = strTitle;
-	}	
-	
+	}
+
 	public Date getDateOfModification() {
 		return _dateOfModification;
 	}
@@ -598,7 +598,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	public void setCategory(String strCategory) {
 		_strCategory = strCategory;
 	}
-	
+
 	public int getIdReservationRule() {
 		return _nIdReservationRule;
 	}

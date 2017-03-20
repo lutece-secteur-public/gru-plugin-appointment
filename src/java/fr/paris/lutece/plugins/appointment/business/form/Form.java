@@ -77,11 +77,11 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	 * Workflow Id
 	 */
 	private int _nIdWorkflow;
-	
+
 	/**
 	 * List of the week definitions of the form
 	 */
-	private List<WeekDefinition> _listWeekDefinition;	
+	private List<WeekDefinition> _listWeekDefinition;
 
 	/**
 	 * Get the form Id
@@ -285,9 +285,9 @@ public class Form implements RBACResource, Cloneable, Serializable {
 		this._bIsActive = bIsActive;
 	}
 
-	
 	/**
 	 * Get the workflow id
+	 * 
 	 * @return the workflow id
 	 */
 	public int getIdWorkflow() {
@@ -296,7 +296,9 @@ public class Form implements RBACResource, Cloneable, Serializable {
 
 	/**
 	 * Set the workflow Id
-	 * @param nIdWorkflow the workflow id to set
+	 * 
+	 * @param nIdWorkflow
+	 *            the workflow id to set
 	 */
 	public void setIdWorkflow(int nIdWorkflow) {
 		this._nIdWorkflow = nIdWorkflow;
@@ -319,7 +321,7 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	 */
 	public void setListWeekDefinition(List<WeekDefinition> listWeekDefinition) {
 		this._listWeekDefinition = listWeekDefinition;
-	}	
+	}
 
 	@Override
 	public String getResourceTypeCode() {

@@ -100,7 +100,7 @@ public class ReservationRuleHome {
 	public static ReservationRule findByIdFormAndDateOfApply(int nIdForm, LocalDate dateOfApply) {
 		return _dao.findByIdFormAndDateOfApply(nIdForm, dateOfApply, _plugin);
 	}
-	
+
 	/**
 	 * Returns the Reservation Rule with the given search parameters
 	 * 
@@ -113,5 +113,5 @@ public class ReservationRuleHome {
 	public static ReservationRule findByIdFormAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply) {
 		return _dao.findByIdFormAndClosestToDateOfApply(nIdForm, dateOfApply, _plugin);
 	}
-	
+
 }

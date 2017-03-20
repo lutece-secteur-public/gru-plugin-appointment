@@ -104,11 +104,11 @@ public class FormService {
 		}
 		return listAppointmentFormLight;
 	}
-	
+
 	public static List<AppointmentForm> buildAllActiveAppointmentForm() {
 		List<AppointmentForm> listAppointmentForm = new ArrayList<>();
 		for (Form form : FormService.findAllActiveForms()) {
-			listAppointmentForm.add(buildAppointmentForm(form.getIdForm(), 0,  0));
+			listAppointmentForm.add(buildAppointmentForm(form.getIdForm(), 0, 0));
 		}
 		return listAppointmentForm;
 	}
@@ -163,7 +163,8 @@ public class FormService {
 			dateOfApply = weekDefinition.getDateOfApply();
 		}
 		if (reservationRule == null) {
-			reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, dateOfApply);
+			reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm,
+					dateOfApply);
 		}
 		if (weekDefinition == null) {
 			weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm,
@@ -327,10 +328,10 @@ public class FormService {
 		return FormHome.findAllForms();
 	}
 
-	
-	public static List<Form> findAllActiveForms(){
+	public static List<Form> findAllActiveForms() {
 		return FormHome.findActiveForms();
 	}
+
 	/**
 	 * 
 	 * @param nIdForm

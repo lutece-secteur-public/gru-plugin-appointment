@@ -97,7 +97,7 @@ public class AppointmentHome {
 	public static List<Appointment> findByIdSlot(int nIdSlot) {
 		return _dao.findByIdSlot(nIdSlot, _plugin);
 	}
-	
+
 	public static List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime) {
 		return _dao.findByIdFormAndAfterADateTime(nIdForm, startingDateTime, _plugin);
 	}

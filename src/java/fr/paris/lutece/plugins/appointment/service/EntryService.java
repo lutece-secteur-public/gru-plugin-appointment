@@ -86,15 +86,15 @@ public class EntryService extends RemovalListenerService implements Serializable
 	private static final String MARK_FIELD = "field";
 	private static final String MARK_LIST_RESPONSES = "list_responses";
 	private static final String MARK_UPLOAD_HANDLER = "uploadHandler";
-	
+
 	private static final String PARAMETER_ID_FORM = "id_form";
 	private static final String PREFIX_ATTRIBUTE = "attribute";
-	
+
 	// Templates
 	private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
-	
+
 	private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
-	
+
 	/**
 	 * Get an instance of the service
 	 * 
@@ -396,7 +396,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 		}
 		return refListGroups;
 	}
-	
+
 	public static void getHtmlEntry(int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
 			HttpServletRequest request) {
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -437,7 +437,8 @@ public class EntryService extends RemovalListenerService implements Serializable
 		model.put(MARK_ENTRY, entry);
 		model.put(MARK_LOCALE, locale);
 		if (request != null) {
-			AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession().getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
+			AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
+					.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 			if ((appointmentFrontDTO != null) && (appointmentFrontDTO.getMapResponsesByIdEntry() != null)) {
 				List<Response> listResponses = appointmentFrontDTO.getMapResponsesByIdEntry().get(entry.getIdEntry());
 				model.put(MARK_LIST_RESPONSES, listResponses);
@@ -452,7 +453,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 				model);
 		stringBuffer.append(template.getHtml());
 	}
-	
+
 	public static List<GenericAttributeError> getResponseEntry(HttpServletRequest request, int nIdEntry, Locale locale,
 			AppointmentFrontDTO appointment) {
 		List<Response> listResponse = new ArrayList<Response>();
@@ -521,7 +522,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 
 		return listFormErrors;
 	}
-	
+
 	public static Boolean isFieldInTheResponseList(int nIdField, List<Response> listResponse) {
 		for (Response response : listResponse) {
 			if ((response.getField() != null) && (response.getField().getIdField() == nIdField)) {
@@ -531,7 +532,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 
 		return false;
 	}
-	
+
 	public static String getEntryUrl(Entry entry, int nIdform) {
 		UrlItem url = new UrlItem(AppPathService.getPortalUrl());
 		url.addParameter(XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME);
@@ -544,7 +545,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 
 		return url.getUrl();
 	}
-	
+
 	public static List<Entry> getFilter(int iform, boolean bDisplayFront) {
 		EntryFilter filter = new EntryFilter();
 		filter.setIdResource(iform);
@@ -557,5 +558,5 @@ public class EntryService extends RemovalListenerService implements Serializable
 		List<Entry> listEntryFirstLevel = EntryHome.getEntryList(filter);
 		return listEntryFirstLevel;
 	}
-	
+
 }

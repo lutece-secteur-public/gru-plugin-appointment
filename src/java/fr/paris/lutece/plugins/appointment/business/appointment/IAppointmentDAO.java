@@ -89,7 +89,7 @@ public interface IAppointmentDAO {
 	 * @return a list of the appointments
 	 */
 	List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin);
-	
+
 	List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime, Plugin plugin);
-	
+
 }

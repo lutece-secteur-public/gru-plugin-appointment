@@ -159,7 +159,7 @@ a.fc-event.slot-full:hover {
 	cursor:default !important;
 }
 
-td.fc-day.ui-widget-content.fc-fri.fc-today.ui-state-highlight {
-	background-color: rgba(255, 255, 255, 0.5) !important;
+td.fc-day.ui-widget-content.fc-today.ui-state-highlight {
+	background-color: #ffffff !important;
 	border: 0px;
 }

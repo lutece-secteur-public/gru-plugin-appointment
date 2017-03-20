@@ -70,7 +70,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent {
 	 */
 	@Override
 	public String getDashboardData(AdminUser user, HttpServletRequest request) {
-		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();		
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();
 		Map<String, Object> model = new HashMap<String, Object>();
 		Plugin plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 		model.put(MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection(listAppointmentForm,

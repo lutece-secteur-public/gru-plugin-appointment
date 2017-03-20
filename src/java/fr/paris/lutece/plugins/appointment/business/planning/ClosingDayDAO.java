@@ -131,7 +131,7 @@ public class ClosingDayDAO implements IClosingDayDAO {
 			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE, plugin);
 			daoUtil.setInt(1, nIdForm);	
 			daoUtil.setDate(2, Date.valueOf(startingDate));
-			daoUtil.setDate(3, Date.valueOf(endingDate ));
+			daoUtil.setDate(3, Date.valueOf(endingDate));
 			daoUtil.executeQuery();
 			while (daoUtil.next()) {
 				listClosingDay.add(buildClosingDay(daoUtil));

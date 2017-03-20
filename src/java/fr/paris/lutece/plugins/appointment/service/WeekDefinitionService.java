@@ -58,7 +58,7 @@ public class WeekDefinitionService {
 		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
 		fillInListWeekDefinition(listWeekDefinition);
 		return listWeekDefinition;
-	}	
+	}
 
 	private static void fillInListWeekDefinition(List<WeekDefinition> listWeekDefinition) {
 		for (WeekDefinition weekDefinition : listWeekDefinition) {
@@ -70,7 +70,7 @@ public class WeekDefinitionService {
 		weekDefinition.setListWorkingDay(
 				WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
 	}
-	
+
 	/**
 	 * 
 	 * @param nIdForm
@@ -82,9 +82,10 @@ public class WeekDefinitionService {
 		List<LocalDate> listDate = new ArrayList<>();
 		for (WeekDefinition weekDefinition : listWeekDefinition) {
 			listDate.add(weekDefinition.getDateOfApply());
-		}		
+		}
 		LocalDate closestDate = Utilities.getClosestDateInPast(listDate, dateOfApply);
-		WeekDefinition weekDefinition = listWeekDefinition.stream().filter(x -> closestDate.isEqual(x.getDateOfApply())).findAny().orElse(null);
+		WeekDefinition weekDefinition = listWeekDefinition.stream().filter(x -> closestDate.isEqual(x.getDateOfApply()))
+				.findAny().orElse(null);
 		weekDefinition.setListWorkingDay(
 				WorkingDayService.findListWorkingDayByWeekDefinition(weekDefinition.getIdWeekDefinition()));
 		return weekDefinition;
@@ -102,10 +103,11 @@ public class WeekDefinitionService {
 	}
 
 	public static ReferenceList findAllDateOfWeekDefinition(int nIdForm) {
-		ReferenceList listDate = new ReferenceList();		
+		ReferenceList listDate = new ReferenceList();
 		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
 		for (WeekDefinition weekDefinition : listWeekDefinition) {
-			listDate.addItem(weekDefinition.getIdWeekDefinition(), weekDefinition.getDateOfApply().format(Utilities.formatter));
+			listDate.addItem(weekDefinition.getIdWeekDefinition(),
+					weekDefinition.getDateOfApply().format(Utilities.formatter));
 		}
 		return listDate;
 	}
@@ -177,7 +179,5 @@ public class WeekDefinitionService {
 		}
 		return setDayOfWeek;
 	}
-	
-	
-	
+
 }

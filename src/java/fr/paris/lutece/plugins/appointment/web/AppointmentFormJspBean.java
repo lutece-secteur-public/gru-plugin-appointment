@@ -490,9 +490,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			return redirect(request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm);
 		}
 		LocalDate dateOfModification = appointmentForm.getDateOfModification().toLocalDate();
-		// Check if there are appointments after the date of modification of the form
+		// Check if there are appointments after the date of modification of the
+		// form
 		List<Appointment> listAppointment = AppointmentService.findListAppointmentByIdFormAndAfterADateTime(nIdForm,
-				dateOfModification.atTime(LocalTime.MIN));		 
+				dateOfModification.atTime(LocalTime.MIN));
 		if (!CollectionUtils.isEmpty(listAppointment)) {
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 			addError(MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale());

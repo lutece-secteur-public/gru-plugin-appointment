@@ -82,11 +82,9 @@ public interface ISlotDAO {
 	 *            the plugin
 	 * @return a list of slots whose dates are included in the given period
 	 */
-	HashMap<LocalDateTime, Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime,
-			Plugin plugin);
+	HashMap<LocalDateTime, Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime,
+			LocalDateTime endingDateTime, Plugin plugin);
 
-	
-	
 	/**
 	 * Returns all the open slots for the given date range
 	 * 
@@ -100,8 +98,8 @@ public interface ISlotDAO {
 	 *            the plugin
 	 * @return a list of open slots whose dates are included in the given period
 	 */
-	List<Slot> findOpenSlotsByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime,
-			Plugin plugin);
+	List<Slot> findOpenSlotsByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime,
+			LocalDateTime endingDateTime, Plugin plugin);
 
 	/**
 	 * Returns all the open slots
@@ -113,5 +111,5 @@ public interface ISlotDAO {
 	 * @return a list of open slots
 	 */
 	List<Slot> findOpenSlotsByIdForm(int nIdForm, Plugin plugin);
-		
+
 }

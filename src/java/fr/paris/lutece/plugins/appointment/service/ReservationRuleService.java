@@ -9,7 +9,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.util.ReferenceList;
 
-public class ReservationRuleService {	
+public class ReservationRuleService {
 
 	/**
 	 * 
@@ -83,7 +83,7 @@ public class ReservationRuleService {
 		ReservationRule reservationRule = ReservationRuleHome.findByIdFormAndDateOfApply(nIdForm, dateOfApply);
 		return reservationRule;
 	}
-	
+
 	/**
 	 * 
 	 * @param nIdReservationRule
@@ -100,14 +100,15 @@ public class ReservationRuleService {
 	 * @return
 	 */
 	public static ReferenceList findAllDateOfReservationRule(int nIdForm) {
-		ReferenceList listDate = new ReferenceList();		
+		ReferenceList listDate = new ReferenceList();
 		List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm(nIdForm);
 		for (ReservationRule reservationRule : listReservationRule) {
-			listDate.addItem(reservationRule.getIdReservationRule(), reservationRule.getDateOfApply().format(Utilities.formatter));
+			listDate.addItem(reservationRule.getIdReservationRule(),
+					reservationRule.getDateOfApply().format(Utilities.formatter));
 		}
 		return listDate;
 	}
-	
+
 	public static HashMap<LocalDate, ReservationRule> findAllReservationRule(int nIdForm) {
 		HashMap<LocalDate, ReservationRule> mapReservationRule = new HashMap<>();
 		List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm(nIdForm);

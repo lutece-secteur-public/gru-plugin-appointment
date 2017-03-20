@@ -5,19 +5,19 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
 
 public class FormRuleService {
-	
+
 	/**
 	 * 
 	 * @param formRule
 	 * @param appointmentForm
 	 * @param nIdForm
 	 */
-	public static void fillInFormRule(FormRule formRule, AppointmentForm appointmentForm, int nIdForm) {		
+	public static void fillInFormRule(FormRule formRule, AppointmentForm appointmentForm, int nIdForm) {
 		formRule.setIsCaptchaEnabled(appointmentForm.getEnableCaptcha());
 		formRule.setIsMandatoryEmailEnabled(appointmentForm.getEnableMandatoryEmail());
-		formRule.setIdForm(nIdForm);				
+		formRule.setIdForm(nIdForm);
 	}
-	
+
 	/**
 	 * 
 	 * @param appointmentForm
@@ -28,9 +28,9 @@ public class FormRuleService {
 		FormRule formRule = new FormRule();
 		fillInFormRule(formRule, appointmentForm, nIdForm);
 		FormRuleHome.create(formRule);
-		return formRule;		
+		return formRule;
 	}
-	
+
 	/**
 	 * 
 	 * @param appointmentForm
@@ -43,14 +43,14 @@ public class FormRuleService {
 		FormRuleHome.update(formRule);
 		return formRule;
 	}
-	
+
 	/**
 	 * 
 	 * @param nIdForm
 	 * @return
 	 */
-	public static FormRule findFormRuleWithFormId(int nIdForm){
+	public static FormRule findFormRuleWithFormId(int nIdForm) {
 		return FormRuleHome.findByIdForm(nIdForm);
 	}
-	
+
 }

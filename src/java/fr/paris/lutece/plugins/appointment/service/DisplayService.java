@@ -13,15 +13,16 @@ public class DisplayService {
 	 * @param nIdForm
 	 * @return
 	 */
-	public static Display fillInDisplayWithAppointmentForm(Display display, AppointmentForm appointmentForm, int nIdForm) {		
+	public static Display fillInDisplayWithAppointmentForm(Display display, AppointmentForm appointmentForm,
+			int nIdForm) {
 		display.setDisplayTitleFo(appointmentForm.getDisplayTitleFo());
 		display.setIcon(appointmentForm.getIcon());
 		display.setNbWeeksToDisplay(appointmentForm.getNbWeeksToDisplay());
 		display.setIdCalendarTemplate(appointmentForm.getCalendarTemplateId());
-		display.setIdForm(nIdForm);		
+		display.setIdForm(nIdForm);
 		return display;
 	}
-	
+
 	/**
 	 * 
 	 * @param appointmentForm
@@ -34,7 +35,7 @@ public class DisplayService {
 		DisplayHome.create(display);
 		return display;
 	}
-	
+
 	/**
 	 * 
 	 * @param appointmentForm
@@ -47,7 +48,7 @@ public class DisplayService {
 		DisplayHome.update(display);
 		return display;
 	}
-	
+
 	/**
 	 * 
 	 * @param nIdForm
@@ -56,5 +57,5 @@ public class DisplayService {
 	public static Display findDisplayWithFormId(int nIdForm) {
 		return DisplayHome.findByIdForm(nIdForm);
 	}
-	
+
 }

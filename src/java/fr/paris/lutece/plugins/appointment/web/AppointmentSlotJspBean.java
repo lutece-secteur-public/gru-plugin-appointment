@@ -204,7 +204,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		}
 		boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
 		int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
-		LocalTime endingTime = LocalTime.parse(request.getParameter(PARAMETER_ENDING_TIME));		
+		LocalTime endingTime = LocalTime.parse(request.getParameter(PARAMETER_ENDING_TIME));
 		boolean endingTimeHasChanged = false;
 		if (bIsOpen != timeSlotFromSession.getIsOpen()) {
 			timeSlotFromSession.setIsOpen(bIsOpen);
@@ -304,10 +304,10 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	public String doModifySlot(HttpServletRequest request) {
 		Slot slotFromSessionOrFromDb = null;
 		String strIdSlot = request.getParameter(PARAMETER_ID_SLOT);
-		int nIdSlot = Integer.parseInt(strIdSlot);				
+		int nIdSlot = Integer.parseInt(strIdSlot);
 		if (nIdSlot != 0) {
 			slotFromSessionOrFromDb = SlotService.findSlotById(nIdSlot);
-			SlotService.addDateAndTimeToSlot(slotFromSessionOrFromDb);			
+			SlotService.addDateAndTimeToSlot(slotFromSessionOrFromDb);
 		} else {
 			slotFromSessionOrFromDb = (Slot) request.getSession().getAttribute(SESSION_ATTRIBUTE_SLOT);
 		}

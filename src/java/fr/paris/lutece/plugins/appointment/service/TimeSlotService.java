@@ -124,7 +124,6 @@ public class TimeSlotService {
 
 	public static TimeSlot getTimeSlotInListOfTimeSlotWithStartingTime(List<TimeSlot> listTimeSlot,
 			LocalTime timeToSearch) {
-		return listTimeSlot.stream().filter(x -> timeToSearch.equals(x.getStartingTime())).findFirst()
-				.orElse(null);		
+		return listTimeSlot.stream().filter(x -> timeToSearch.equals(x.getStartingTime())).findFirst().orElse(null);
 	}
 }

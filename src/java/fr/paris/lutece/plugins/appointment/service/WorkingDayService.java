@@ -15,7 +15,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 
 public class WorkingDayService {
-	
+
 	/**
 	 * 
 	 * @param nIdWeekDefinition
@@ -144,7 +144,7 @@ public class WorkingDayService {
 		return minStartingTime;
 	}
 
-	public static int getMinDurationTimeSlotOfAWorkingDay(WorkingDay workingDay) {		
+	public static int getMinDurationTimeSlotOfAWorkingDay(WorkingDay workingDay) {
 		long lMinDuration = 0;
 		LocalTime startingTimeTemp;
 		LocalTime endingTimeTemp;
@@ -161,7 +161,7 @@ public class WorkingDayService {
 	}
 
 	public static int getMinDurationTimeSlotOfAListOfWorkingDay(List<WorkingDay> listWorkingDay) {
-		
+
 		long lMinDuration = 0;
 		long lDurationTemp;
 		for (WorkingDay workingDay : listWorkingDay) {

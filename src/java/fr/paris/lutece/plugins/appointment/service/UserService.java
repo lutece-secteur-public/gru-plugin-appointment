@@ -6,7 +6,7 @@ import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 
 public class UserService {
 
-	public static User saveUser(AppointmentFrontDTO appointment){
+	public static User saveUser(AppointmentFrontDTO appointment) {
 		User user = new User();
 		user.setFirstName(appointment.getFirstName());
 		user.setLastName(appointment.getLastName());
@@ -14,5 +14,5 @@ public class UserService {
 		user = UserHome.create(user);
 		return user;
 	}
-	
+
 }

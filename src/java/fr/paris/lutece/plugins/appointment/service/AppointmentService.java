@@ -52,7 +52,7 @@ public class AppointmentService {
 		appointment.setIdUser(user.getIdUser());
 		appointment = AppointmentHome.create(appointment);
 		String strEmailOrLastNamePlusFirstName = StringUtils.EMPTY;
-		if (StringUtils.isEmpty(user.getEmail())){
+		if (StringUtils.isEmpty(user.getEmail())) {
 			strEmailOrLastNamePlusFirstName = user.getLastName() + user.getFirstName();
 		}
 		String strReference = appointment.getIdAppointment() + CryptoService

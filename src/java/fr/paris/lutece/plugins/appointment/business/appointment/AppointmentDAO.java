@@ -123,8 +123,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	}
 
 	@Override
-	public List<Appointment> findByIdFormAndAfterADateTime(int nIdForm,
-			LocalDateTime startingDateTime, Plugin plugin) {
+	public List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime, Plugin plugin) {
 		DAOUtil daoUtil = null;
 		List<Appointment> listAppointment = new ArrayList<>();
 		try {

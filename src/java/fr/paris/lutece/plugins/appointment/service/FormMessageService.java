@@ -12,7 +12,7 @@ public class FormMessageService {
 	 * Name of the bean of the service
 	 */
 	public static final String BEAN_NAME = "appointment.formMessageService";
-	
+
 	private static final String PROPERTY_DEFAULT_CALENDAR_TITLE = "appointment.formMessages.defaultCalendarTitle";
 	private static final String PROPERTY_DEFAULT_FIELD_FIRST_NAME_TITLE = "appointment.formMessages.defaultFieldFirstNameTitle";
 	private static final String PROPERTY_DEFAULT_FIELD_FIRST_NAME_HELP = "appointment.formMessages.defaultFieldFirstNameHelp";
@@ -30,7 +30,7 @@ public class FormMessageService {
 	private static final String PROPERTY_DEFAULT_CALENDAR_DESCRIPTION = "appointment.formMessages.defaultCalendarDescription";
 	private static final String PROPERTY_DEFAULT_CALENDAR_RESERVE_LABEL = "appointment.formMessages.defaultCalendarReserveLabel";
 	private static final String PROPERTY_DEFAULT_CALENDAR_FULL_LABEL = "appointment.formMessages.defaultCalendarFullLabel";
-	
+
 	/**
 	 * 
 	 * @param nIdForm
@@ -40,7 +40,7 @@ public class FormMessageService {
 		formMessage.setIdForm(nIdForm);
 		FormMessageHome.create(formMessage);
 	}
-	
+
 	/**
 	 * Get the default form message with values loaded from properties.
 	 * 
@@ -86,8 +86,8 @@ public class FormMessageService {
 
 		return formMessage;
 	}
-	
-	public static FormMessage findFormMessageByIdForm(int nIdForm){
+
+	public static FormMessage findFormMessageByIdForm(int nIdForm) {
 		return FormMessageHome.findByIdForm(nIdForm);
 	}
 

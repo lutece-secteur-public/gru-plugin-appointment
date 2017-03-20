@@ -104,9 +104,9 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 	// Views
 	private static final String VIEW_GET_CREATE_ENTRY = "getCreateEntry";
 	private static final String VIEW_GET_MODIFY_ENTRY = "getModifyEntry";
-	private static final String VIEW_CONFIRM_REMOVE_ENTRY = "confirmRemoveEntry";	
+	private static final String VIEW_CONFIRM_REMOVE_ENTRY = "confirmRemoveEntry";
 	private static final String VIEW_MODIFY_APPOINTMENTFORM_ENTRIES = "modifyAppointmentFormEntries";
-	
+
 	// Actions
 	private static final String ACTION_DO_CREATE_ENTRY = "doCreateEntry";
 	private static final String ACTION_DO_MODIFY_ENTRY = "doModifyEntry";
@@ -127,30 +127,30 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 	private static final String MARK_LIST = "list";
 	private static final String MARK_FORM = "form";
 	private static final String MARK_ENTRY_TYPE_SERVICE = "entryTypeService";
-	private static final String MARK_APPOINTMENT_FORM = "appointmentform";		
+	private static final String MARK_APPOINTMENT_FORM = "appointmentform";
 
 	private static final String PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES = "appointment.modify_appointmentform_entries.pageTitle";
-	
+
 	private static final String TEMPLATE_MODIFY_APPOINTMENT_FORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform_entries.html";
-	
+
 	// Local variables
 	private EntryService _entryService = EntryService.getService();
 
 	@View(VIEW_MODIFY_APPOINTMENTFORM_ENTRIES)
 	public String getModifyAppointmentFormEntries(HttpServletRequest request) throws AccessDeniedException {
-		String strIdForm = request.getParameter(PARAMETER_ID_FORM);		
+		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
 				AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser(request))) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_FORM);
 		}
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
-		AppointmentForm appointmentForm = FormService.buildAppointmentFormLight(nIdForm);			
-		Map<String, Object> model = getModel();		
+		AppointmentForm appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
+		Map<String, Object> model = getModel();
 		EntryService.addListEntryToModel(nIdForm, model);
 		model.put(MARK_APPOINTMENT_FORM, appointmentForm);
 		return getPage(PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES, TEMPLATE_MODIFY_APPOINTMENT_FORM, model);
 	}
-	
+
 	/**
 	 * Get the HTML code to create an entry
 	 * 
@@ -397,7 +397,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 				EntryHome.decrementOrderByOne(entry.getPosition(), entry.getFieldDepend().getIdField(),
 						entry.getIdResource(), entry.getResourceType());
 			}
-			// TODO 
+			// TODO
 			// OldAppointmentHome.removeResponsesByIdEntry(nIdEntry);
 			EntryHome.remove(nIdEntry);
 			if (entry.getFieldDepend() != null) {
