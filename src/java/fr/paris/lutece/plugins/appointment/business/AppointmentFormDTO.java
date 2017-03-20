@@ -49,7 +49,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 /**
  * This is the business class for the object AppointmentForm
  */
-public class AppointmentForm implements RBACResource, Cloneable, Serializable {
+public class AppointmentFormDTO implements RBACResource, Cloneable, Serializable {
 	/**
 	 * Name of the resource type of Appointment Forms
 	 */

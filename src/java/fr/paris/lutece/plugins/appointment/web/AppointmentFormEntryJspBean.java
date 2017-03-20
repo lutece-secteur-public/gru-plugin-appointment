@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
@@ -139,12 +139,12 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 	@View(VIEW_MODIFY_APPOINTMENTFORM_ENTRIES)
 	public String getModifyAppointmentFormEntries(HttpServletRequest request) throws AccessDeniedException {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
-		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
+		if (!RBACService.isAuthorized(AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
 				AppointmentResourceIdService.PERMISSION_MODIFY_FORM, AdminUserService.getAdminUser(request))) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_FORM);
 		}
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
-		AppointmentForm appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
+		AppointmentFormDTO appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
 		Map<String, Object> model = getModel();
 		EntryService.addListEntryToModel(nIdForm, model);
 		model.put(MARK_APPOINTMENT_FORM, appointmentForm);
@@ -181,8 +181,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 			entry.setFieldDepend(field);
 		}
 		entry.setIdResource(nIdForm);
-		entry.setResourceType(AppointmentForm.RESOURCE_TYPE);
-		AppointmentForm appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
+		entry.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
+		AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MARK_ENTRY, entry);
 		model.put(MARK_FORM, appointmentForm);
@@ -233,7 +233,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 				return redirect(request, strError);
 			}
 			entry.setIdResource(nIdForm);
-			entry.setResourceType(AppointmentForm.RESOURCE_TYPE);
+			entry.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
 			entry.setIdEntry(EntryHome.create(entry));
 			if (entry.getFields() != null) {
 				for (Field field : entry.getFields()) {
@@ -388,7 +388,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 			List<Entry> listEntry;
 			EntryFilter filter = new EntryFilter();
 			filter.setIdResource(entry.getIdResource());
-			filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+			filter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
 			listEntry = EntryHome.getEntryList(filter);
 			if (entry.getFieldDepend() == null) {
 				_entryService.moveDownEntryOrder(listEntry.size(), entry);

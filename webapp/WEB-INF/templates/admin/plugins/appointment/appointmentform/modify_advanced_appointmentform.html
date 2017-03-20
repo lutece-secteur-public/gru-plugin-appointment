@@ -9,7 +9,7 @@
 		<@tabs tab="advancedParams" appointmentform=appointmentform />
 		<div class="tab-content">
 			<fieldset>				
-				<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormsAdvanced.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}&forceReload=true">
+				<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormsAdvanced.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}">
 					<#if listDateOfModification??>	
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-3 control-label" for="id_reservation_rule">#i18n{appointment.modify_appointmentform.listDateOfModification}:</label>

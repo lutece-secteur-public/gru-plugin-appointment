@@ -55,7 +55,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.util.Strings;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
 import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
@@ -367,7 +367,7 @@ public class AppointmentApp extends MVCApplication {
 				.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, slot.getDate());
 		WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm,
 				slot.getDate());
-		AppointmentForm form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
+		AppointmentFormDTO form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 				weekDefinition.getIdWeekDefinition());
 		appointmentFrontDTO.setIdForm(nIdForm);
 		appointmentFrontDTO.setNbMaxPeoplePerAppointment(reservationRule.getMaxPeoplePerAppointment());
@@ -426,7 +426,7 @@ public class AppointmentApp extends MVCApplication {
 		int nIdForm = Integer.parseInt(strIdForm);
 		EntryFilter filter = new EntryFilter();
 		filter.setIdResource(nIdForm);
-		filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+		filter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
 		filter.setEntryParentNull(EntryFilter.FILTER_TRUE);
 		filter.setFieldDependNull(EntryFilter.FILTER_TRUE);
 		filter.setIdIsComment(EntryFilter.FILTER_FALSE);
@@ -907,9 +907,9 @@ public class AppointmentApp extends MVCApplication {
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());
 		Map<String, Object> model = new HashMap<String, Object>();
-		Collection<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAppointmentForm();
+		Collection<AppointmentFormDTO> listAppointmentForm = FormService.buildAllActiveAppointmentForm();
 		List<String> icons = new ArrayList<String>();
-		for (AppointmentForm form : listAppointmentForm) {
+		for (AppointmentFormDTO form : listAppointmentForm) {
 			ImageResource img = form.getIcon();
 			if ((img.getImage() == null) || StringUtils.isBlank(img.getMimeType())) {
 				icons.add(MARK_ICON_NULL);

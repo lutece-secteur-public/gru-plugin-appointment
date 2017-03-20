@@ -14,12 +14,12 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
  		<li <#if tab="params">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true">
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
 				#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}
 			</a>
         </li>
 		<li <#if tab="advancedParams">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}&forceReload=true">
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}">
 				#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}
 			</a>
         </li>

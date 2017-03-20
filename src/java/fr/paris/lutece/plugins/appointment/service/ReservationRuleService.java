@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.util.ReferenceList;
@@ -18,7 +18,7 @@ public class ReservationRuleService {
 	 * @param dateOfApply
 	 * @return
 	 */
-	public static ReservationRule createReservationRule(AppointmentForm appointmentForm, int nIdForm,
+	public static ReservationRule createReservationRule(AppointmentFormDTO appointmentForm, int nIdForm,
 			LocalDate dateOfApply) {
 		ReservationRule reservationRule = new ReservationRule();
 		fillInReservationRule(reservationRule, appointmentForm, nIdForm, dateOfApply);
@@ -33,7 +33,7 @@ public class ReservationRuleService {
 	 * @param dateOfApply
 	 * @return
 	 */
-	public static ReservationRule updateReservationRule(AppointmentForm appointmentForm, int nIdForm,
+	public static ReservationRule updateReservationRule(AppointmentFormDTO appointmentForm, int nIdForm,
 			LocalDate dateOfApply) {
 		ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm,
 				dateOfApply);
@@ -53,7 +53,7 @@ public class ReservationRuleService {
 	 * @param nIdForm
 	 * @param dateOfApply
 	 */
-	public static void fillInReservationRule(ReservationRule reservationRule, AppointmentForm appointmentForm,
+	public static void fillInReservationRule(ReservationRule reservationRule, AppointmentFormDTO appointmentForm,
 			int nIdForm, LocalDate dateOfApply) {
 		reservationRule.setDateOfApply(dateOfApply);
 		reservationRule.setMaxCapacityPerSlot(appointmentForm.getMaxCapacityPerSlot());

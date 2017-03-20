@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
@@ -161,7 +161,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay(listWorkingDay);
 		LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(listWorkingDay);
 		int nMinDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay(listWorkingDay);
-		AppointmentForm appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
+		AppointmentFormDTO appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
 		Map<String, Object> model = getModel();
 		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
 		model.put(PARAMETER_EVENTS, listTimeSlot);
@@ -243,7 +243,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		// Get the nb weeks to display
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
-		AppointmentForm appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
+		AppointmentFormDTO appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
 		// Get all the week definitions
 		HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition(nIdForm);
 		List<WeekDefinition> listWeekDefinition = new ArrayList<WeekDefinition>(mapWeekDefinition.values());

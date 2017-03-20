@@ -42,7 +42,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
@@ -351,7 +351,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	public static void addListEntryToModel(int nIdForm, Map<String, Object> model) {
 		EntryFilter entryFilter = new EntryFilter();
 		entryFilter.setIdResource(nIdForm);
-		entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+		entryFilter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
 		entryFilter.setEntryParentNull(EntryFilter.FILTER_TRUE);
 		entryFilter.setFieldDependNull(EntryFilter.FILTER_TRUE);
 		List<Entry> listEntryFirstLevel = EntryHome.getEntryList(entryFilter);
@@ -363,7 +363,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 			if (entry.getEntryType().getGroup()) {
 				entryFilter = new EntryFilter();
 				entryFilter.setIdResource(nIdForm);
-				entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+				entryFilter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
 				entryFilter.setFieldDependNull(EntryFilter.FILTER_TRUE);
 				entryFilter.setIdEntryParent(entry.getIdEntry());
 				List<Entry> listEntryGroup = EntryHome.getEntryList(entryFilter);
@@ -387,7 +387,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	private static ReferenceList getRefListGroups(int nIdForm) {
 		EntryFilter entryFilter = new EntryFilter();
 		entryFilter.setIdResource(nIdForm);
-		entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+		entryFilter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
 		entryFilter.setIdIsGroup(1);
 		List<Entry> listEntry = EntryHome.getEntryList(entryFilter);
 		ReferenceList refListGroups = new ReferenceList();
@@ -549,7 +549,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	public static List<Entry> getFilter(int iform, boolean bDisplayFront) {
 		EntryFilter filter = new EntryFilter();
 		filter.setIdResource(iform);
-		filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+		filter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
 		filter.setEntryParentNull(EntryFilter.FILTER_TRUE);
 		filter.setFieldDependNull(EntryFilter.FILTER_TRUE);
 		if (bDisplayFront) {

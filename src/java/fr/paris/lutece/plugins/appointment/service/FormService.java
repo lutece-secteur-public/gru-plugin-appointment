@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
@@ -27,7 +27,7 @@ public class FormService {
 	 * @param newNameForCopy
 	 */
 	public static void copyForm(int nIdForm, String newNameForCopy) {
-		AppointmentForm appointmentForm = buildAppointmentForm(nIdForm, 0, 0);
+		AppointmentFormDTO appointmentForm = buildAppointmentForm(nIdForm, 0, 0);
 		appointmentForm.setTitle(newNameForCopy);
 		appointmentForm.setIsActive(Boolean.FALSE);
 		int nIdNewForm = createAppointmentForm(appointmentForm);
@@ -41,7 +41,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @return
 	 */
-	public static int createAppointmentForm(AppointmentForm appointmentForm) {
+	public static int createAppointmentForm(AppointmentFormDTO appointmentForm) {
 		Form form = FormService.createForm(appointmentForm);
 		int nIdForm = form.getIdForm();
 		FormMessageService.createFormMessageWithDefaultValues(nIdForm);
@@ -68,7 +68,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @param dateOfModification
 	 */
-	public static void updateAppointmentForm(AppointmentForm appointmentForm, LocalDate dateOfModification) {
+	public static void updateAppointmentForm(AppointmentFormDTO appointmentForm, LocalDate dateOfModification) {
 		Form form = FormService.updateForm(appointmentForm);
 		int nIdForm = form.getIdForm();
 		DisplayService.updateDisplay(appointmentForm, nIdForm);
@@ -97,16 +97,16 @@ public class FormService {
 	 * 
 	 * @return
 	 */
-	public static List<AppointmentForm> buildAllAppointmentFormLight() {
-		List<AppointmentForm> listAppointmentFormLight = new ArrayList<>();
+	public static List<AppointmentFormDTO> buildAllAppointmentFormLight() {
+		List<AppointmentFormDTO> listAppointmentFormLight = new ArrayList<>();
 		for (Form form : FormService.findAllForms()) {
 			listAppointmentFormLight.add(buildAppointmentFormLight(form));
 		}
 		return listAppointmentFormLight;
 	}
 
-	public static List<AppointmentForm> buildAllActiveAppointmentForm() {
-		List<AppointmentForm> listAppointmentForm = new ArrayList<>();
+	public static List<AppointmentFormDTO> buildAllActiveAppointmentForm() {
+		List<AppointmentFormDTO> listAppointmentForm = new ArrayList<>();
 		for (Form form : FormService.findAllActiveForms()) {
 			listAppointmentForm.add(buildAppointmentForm(form.getIdForm(), 0, 0));
 		}
@@ -118,20 +118,20 @@ public class FormService {
 	 * @param form
 	 * @return
 	 */
-	public static AppointmentForm buildAppointmentFormLight(Form form) {
-		AppointmentForm appointmentForm = new AppointmentForm();
+	public static AppointmentFormDTO buildAppointmentFormLight(Form form) {
+		AppointmentFormDTO appointmentForm = new AppointmentFormDTO();
 		fillAppointmentFormLightWithFormPart(appointmentForm, form);
 		return appointmentForm;
 	}
 
-	public static AppointmentForm buildAppointmentFormLight(int nIdForm) {
-		AppointmentForm appointmentForm = new AppointmentForm();
+	public static AppointmentFormDTO buildAppointmentFormLight(int nIdForm) {
+		AppointmentFormDTO appointmentForm = new AppointmentFormDTO();
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
 		fillAppointmentFormLightWithFormPart(appointmentForm, form);
 		return appointmentForm;
 	}
 
-	private static void fillAppointmentFormLightWithFormPart(AppointmentForm appointmentForm, Form form) {
+	private static void fillAppointmentFormLightWithFormPart(AppointmentFormDTO appointmentForm, Form form) {
 		appointmentForm.setIdForm(form.getIdForm());
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setIsActive(form.isActive());
@@ -143,8 +143,8 @@ public class FormService {
 	 * @param nIdReservationRule
 	 * @return
 	 */
-	public static AppointmentForm buildAppointmentForm(int nIdForm, int nIdReservationRule, int nIdWeekDefinition) {
-		AppointmentForm appointmentForm = new AppointmentForm();
+	public static AppointmentFormDTO buildAppointmentForm(int nIdForm, int nIdReservationRule, int nIdWeekDefinition) {
+		AppointmentFormDTO appointmentForm = new AppointmentFormDTO();
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
 		fillAppointmentFormWithFormPart(appointmentForm, form);
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
@@ -180,7 +180,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @param weekDefinition
 	 */
-	private static void fillAppointmentFormWithWeekDefinitionPart(AppointmentForm appointmentForm,
+	private static void fillAppointmentFormWithWeekDefinitionPart(AppointmentFormDTO appointmentForm,
 			WeekDefinition weekDefinition) {
 		List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay();
 		for (WorkingDay workingDay : listWorkingDay) {
@@ -224,7 +224,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @param reservationRule
 	 */
-	private static void fillAppointmentFormWithReservationRulePart(AppointmentForm appointmentForm,
+	private static void fillAppointmentFormWithReservationRulePart(AppointmentFormDTO appointmentForm,
 			ReservationRule reservationRule) {
 		appointmentForm.setIdReservationRule(reservationRule.getIdReservationRule());
 		appointmentForm.setMaxCapacityPerSlot(reservationRule.getMaxCapacityPerSlot());
@@ -236,7 +236,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @param formRule
 	 */
-	private static void fillAppointmentFormWithFormRulePart(AppointmentForm appointmentForm, FormRule formRule) {
+	private static void fillAppointmentFormWithFormRulePart(AppointmentFormDTO appointmentForm, FormRule formRule) {
 		appointmentForm.setEnableCaptcha(formRule.isCaptchaEnabled());
 		appointmentForm.setEnableMandatoryEmail(formRule.isMandatoryEmailEnabled());
 	}
@@ -246,7 +246,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @param form
 	 */
-	private static void fillAppointmentFormWithFormPart(AppointmentForm appointmentForm, Form form) {
+	private static void fillAppointmentFormWithFormPart(AppointmentFormDTO appointmentForm, Form form) {
 		appointmentForm.setIdForm(form.getIdForm());
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setDescription(form.getDescription());
@@ -263,7 +263,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @param display
 	 */
-	private static void fillAppointmentFormWithDisplayPart(AppointmentForm appointmentForm, Display display) {
+	private static void fillAppointmentFormWithDisplayPart(AppointmentFormDTO appointmentForm, Display display) {
 		appointmentForm.setDisplayTitleFo(display.isDisplayTitleFo());
 		appointmentForm.setIcon(display.getIcon());
 		appointmentForm.setNbWeeksToDisplay(display.getNbWeeksToDisplay());
@@ -275,7 +275,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @return
 	 */
-	public static Form createForm(AppointmentForm appointmentForm) {
+	public static Form createForm(AppointmentFormDTO appointmentForm) {
 		Form form = new Form();
 		form = fillInFormWithAppointmentForm(form, appointmentForm);
 		FormHome.create(form);
@@ -287,7 +287,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @return
 	 */
-	public static Form updateForm(AppointmentForm appointmentForm) {
+	public static Form updateForm(AppointmentFormDTO appointmentForm) {
 		Form form = FormService.findFormLightByPrimaryKey(appointmentForm.getIdForm());
 		form = fillInFormWithAppointmentForm(form, appointmentForm);
 		FormHome.update(form);
@@ -300,7 +300,7 @@ public class FormService {
 	 * @param appointmentForm
 	 * @return
 	 */
-	public static Form fillInFormWithAppointmentForm(Form form, AppointmentForm appointmentForm) {
+	public static Form fillInFormWithAppointmentForm(Form form, AppointmentFormDTO appointmentForm) {
 		form.setTitle(appointmentForm.getTitle());
 		form.setDescription(appointmentForm.getDescription());
 		form.setReference(appointmentForm.getReference());

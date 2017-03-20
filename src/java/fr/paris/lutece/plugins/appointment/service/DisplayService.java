@@ -1,6 +1,6 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
 
@@ -13,7 +13,7 @@ public class DisplayService {
 	 * @param nIdForm
 	 * @return
 	 */
-	public static Display fillInDisplayWithAppointmentForm(Display display, AppointmentForm appointmentForm,
+	public static Display fillInDisplayWithAppointmentForm(Display display, AppointmentFormDTO appointmentForm,
 			int nIdForm) {
 		display.setDisplayTitleFo(appointmentForm.getDisplayTitleFo());
 		display.setIcon(appointmentForm.getIcon());
@@ -29,7 +29,7 @@ public class DisplayService {
 	 * @param nIdForm
 	 * @return
 	 */
-	public static Display createDisplay(AppointmentForm appointmentForm, int nIdForm) {
+	public static Display createDisplay(AppointmentFormDTO appointmentForm, int nIdForm) {
 		Display display = new Display();
 		display = fillInDisplayWithAppointmentForm(display, appointmentForm, nIdForm);
 		DisplayHome.create(display);
@@ -42,7 +42,7 @@ public class DisplayService {
 	 * @param nIdForm
 	 * @return
 	 */
-	public static Display updateDisplay(AppointmentForm appointmentForm, int nIdForm) {
+	public static Display updateDisplay(AppointmentFormDTO appointmentForm, int nIdForm) {
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
 		display = fillInDisplayWithAppointmentForm(display, appointmentForm, nIdForm);
 		DisplayHome.update(display);
