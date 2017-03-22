@@ -4,7 +4,7 @@
 			<div class="jumbotron-wrapper">
 				<div class="jumbotron-content">
 					<h1>
-						${appointment.description!}
+						${form.description!}
 					</h1>
 				</div>
 			</div>
@@ -21,8 +21,8 @@
 					<fieldset>
 						<legend>
 							#i18n{appointment.appointmentApp.recap.title} - 
-							<#if appointment.displayTitleFo && appointment.title != "" >
-								${appointment.title}
+							<#if form.displayTitleFo && form.title != "" >
+								${form.title}
 							<#else>
 								#i18n{appointment.appointmentApp.defaultTitle}
 							</#if>
@@ -46,7 +46,7 @@
 								<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.email}">
 							</div>
 						</div>
-						<#if appointment.nbMaxPeoplePerAppointment &gt; 1>
+						<#if form.maxPeoplePerAppointment &gt; 1>
 							<div class="form-group">
 								<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="nbSeat">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment}</label>
 								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

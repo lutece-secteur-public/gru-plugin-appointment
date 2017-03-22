@@ -42,7 +42,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
+import org.apache.commons.collections.CollectionUtils;
+
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
@@ -104,6 +106,16 @@ public class EntryService extends RemovalListenerService implements Serializable
 		return SpringContextService.getBean(BEAN_NAME);
 	}
 
+	public static EntryFilter buildEntryFilter(int nIdForm){
+		EntryFilter filter = new EntryFilter();
+		filter.setIdResource(nIdForm);
+		filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
+		filter.setEntryParentNull(EntryFilter.FILTER_TRUE);
+		filter.setFieldDependNull(EntryFilter.FILTER_TRUE);
+		filter.setIdIsComment(EntryFilter.FILTER_FALSE);
+		filter.setIsOnlyDisplayInBack(EntryFilter.FILTER_FALSE);
+		return filter;
+	}
 	/**
 	 * Change the attribute's order to a greater one (move down in the list)
 	 * 
@@ -351,7 +363,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	public static void addListEntryToModel(int nIdForm, Map<String, Object> model) {
 		EntryFilter entryFilter = new EntryFilter();
 		entryFilter.setIdResource(nIdForm);
-		entryFilter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
+		entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
 		entryFilter.setEntryParentNull(EntryFilter.FILTER_TRUE);
 		entryFilter.setFieldDependNull(EntryFilter.FILTER_TRUE);
 		List<Entry> listEntryFirstLevel = EntryHome.getEntryList(entryFilter);
@@ -363,7 +375,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 			if (entry.getEntryType().getGroup()) {
 				entryFilter = new EntryFilter();
 				entryFilter.setIdResource(nIdForm);
-				entryFilter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
+				entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
 				entryFilter.setFieldDependNull(EntryFilter.FILTER_TRUE);
 				entryFilter.setIdEntryParent(entry.getIdEntry());
 				List<Entry> listEntryGroup = EntryHome.getEntryList(entryFilter);
@@ -387,7 +399,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	private static ReferenceList getRefListGroups(int nIdForm) {
 		EntryFilter entryFilter = new EntryFilter();
 		entryFilter.setIdResource(nIdForm);
-		entryFilter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
+		entryFilter.setResourceType(AppointmentForm.RESOURCE_TYPE);
 		entryFilter.setIdIsGroup(1);
 		List<Entry> listEntry = EntryHome.getEntryList(entryFilter);
 		ReferenceList refListGroups = new ReferenceList();
@@ -420,7 +432,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 		if (entry.getNumberConditionalQuestion() != 0) {
 			strConditionalQuestionStringBuffer = new StringBuffer();
 			for (Field field : entry.getFields()) {
-				if (field.getConditionalQuestions().size() != 0) {
+				if (CollectionUtils.isNotEmpty(field.getConditionalQuestions())) {
 					StringBuffer strGroupStringBuffer = new StringBuffer();
 					for (Entry entryConditional : field.getConditionalQuestions()) {
 						getHtmlEntry(entryConditional.getIdEntry(), strGroupStringBuffer, locale, bDisplayFront,
@@ -549,7 +561,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	public static List<Entry> getFilter(int iform, boolean bDisplayFront) {
 		EntryFilter filter = new EntryFilter();
 		filter.setIdResource(iform);
-		filter.setResourceType(AppointmentFormDTO.RESOURCE_TYPE);
+		filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
 		filter.setEntryParentNull(EntryFilter.FILTER_TRUE);
 		filter.setFieldDependNull(EntryFilter.FILTER_TRUE);
 		if (bDisplayFront) {

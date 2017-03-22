@@ -39,7 +39,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
@@ -70,7 +70,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent {
 	 */
 	@Override
 	public String getDashboardData(AdminUser user, HttpServletRequest request) {
-		List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight();
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();
 		Map<String, Object> model = new HashMap<String, Object>();
 		Plugin plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 		model.put(MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection(listAppointmentForm,
@@ -90,19 +90,19 @@ public class AppointmentFormDashboardComponent extends DashboardComponent {
 	 * @param request
 	 * @return
 	 */
-	private static String[][] getPermissions(List<AppointmentFormDTO> listForms, AdminUser user) {
+	private static String[][] getPermissions(List<AppointmentForm> listForms, AdminUser user) {
 		String[][] retour = new String[listForms.size()][4];
 		int nI = 0;
 
-		for (AppointmentFormDTO tmpForm : listForms) {
+		for (AppointmentForm tmpForm : listForms) {
 			String[] strRetour = new String[4];
-			strRetour[0] = String.valueOf(RBACService.isAuthorized(AppointmentFormDTO.RESOURCE_TYPE,
+			strRetour[0] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
 					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_CREATE_FORM, user));
-			strRetour[1] = String.valueOf(RBACService.isAuthorized(AppointmentFormDTO.RESOURCE_TYPE,
+			strRetour[1] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
 					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user));
-			strRetour[2] = String.valueOf(RBACService.isAuthorized(AppointmentFormDTO.RESOURCE_TYPE,
+			strRetour[2] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
 					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user));
-			strRetour[3] = String.valueOf(RBACService.isAuthorized(AppointmentFormDTO.RESOURCE_TYPE,
+			strRetour[3] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
 					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_DELETE_FORM, user));
 			retour[nI++] = strRetour;
 		}

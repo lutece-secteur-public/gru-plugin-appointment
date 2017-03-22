@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS appointment_user (
   PRIMARY KEY (id_user))
 ENGINE = InnoDB;
 
+CREATE INDEX email_idx ON appointment_user (email ASC);
+
 -- -----------------------------------------------------
 -- Table appointment_form
 -- -----------------------------------------------------
@@ -324,6 +326,7 @@ CREATE TABLE IF NOT EXISTS appointment_form_rule (
   id_form_rule INT NOT NULL,
   is_captcha_enabled BOOLEAN NOT NULL DEFAULT FALSE,
   is_mandatory_email_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+  nb_days_before_new_appointment INT NOT NULL DEFAULT 0,
   id_form INT NOT NULL,
   PRIMARY KEY (id_form_rule, id_form),
   UNIQUE KEY unique_index (id_form),

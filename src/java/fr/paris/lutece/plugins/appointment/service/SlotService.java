@@ -25,37 +25,38 @@ public class SlotService {
 		return SlotHome.findByIdFormAndDateRange(nIdForm, startingDateTime, endingDateTime);
 	}
 
+	public static List<Slot> findListOpenSlotByIdFormAndDateRange(int nIdForm,
+			LocalDateTime startingDateTime, LocalDateTime endingDateTime) {
+		return SlotHome.findOpenSlotsByIdFormAndDateRange(nIdForm, startingDateTime, endingDateTime);
+	}
+	
 	public static Slot findSlotById(int nIdSlot) {
 		return SlotHome.findByPrimaryKey(nIdSlot);
 	}
 
 	public static List<Slot> buildListSlot(int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition,
-			int nNbWeeksToDisplay) {
+			LocalDate startingDate, int nNbWeeksToDisplay) {
 		List<Slot> listSlot = new ArrayList<>();
-		// Get the date of today
-		LocalDate dateNow = LocalDate.now();
-		// Get the date of the monday of this week
-		LocalDate dateOfMondayOrFirstDateToDisplay = dateNow.with(DayOfWeek.MONDAY);
 		// Need to check if this date is not before the form date creation
 		// Get all the reservation rules
 		HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule(nIdForm);
 		LocalDate firstDateOfReservationRule = new ArrayList<>(mapReservationRule.keySet()).stream().sorted()
 				.findFirst().orElse(null);
-		if (dateOfMondayOrFirstDateToDisplay.isBefore(firstDateOfReservationRule)) {
-			dateOfMondayOrFirstDateToDisplay = firstDateOfReservationRule;
+		if (startingDate.isBefore(firstDateOfReservationRule)) {
+			startingDate = firstDateOfReservationRule;
 		}
 		// Add the nb weeks to display to have the ending date (and get the last
 		// day of the week : Sunday)
-		LocalDate endingDateToDisplay = dateNow.plusWeeks(nNbWeeksToDisplay).with(DayOfWeek.SUNDAY);
+		LocalDate endingDateToDisplay = startingDate.plusWeeks(nNbWeeksToDisplay).with(DayOfWeek.SUNDAY);
 		// Get all the closing day of this period
 		List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange(nIdForm,
-				dateOfMondayOrFirstDateToDisplay, endingDateToDisplay);
+				startingDate, endingDateToDisplay);
 		// Get all the slot between these two dates
 		HashMap<LocalDateTime, Slot> mapSlot = SlotService.findListSlotByIdFormAndDateRange(nIdForm,
-				dateOfMondayOrFirstDateToDisplay.atStartOfDay(), endingDateToDisplay.atTime(LocalTime.MAX));
+				startingDate.atStartOfDay(), endingDateToDisplay.atTime(LocalTime.MAX));
 
 		// Get or build all the event for the period
-		LocalDate dateTemp = dateOfMondayOrFirstDateToDisplay;
+		LocalDate dateTemp = startingDate;
 		while (dateTemp.isBefore(endingDateToDisplay) || !dateTemp.isAfter(endingDateToDisplay)) {
 			final LocalDate dateToCompare = dateTemp;
 			// Find the closest date of apply of week definition with the given
@@ -148,7 +149,7 @@ public class SlotService {
 				List<LocalDateTime> listStartingDateTimeNextSlot = new ArrayList<>(mapNextSlot.keySet());
 				// Get the next date time slot
 				LocalDateTime nextStartingDateTime = null;
-				if (!CollectionUtils.isEmpty(listStartingDateTimeNextSlot)) {
+				if (CollectionUtils.isNotEmpty(listStartingDateTimeNextSlot)) {
 					nextStartingDateTime = Utilities.getClosestDateTimeInFuture(listStartingDateTimeNextSlot,
 							slot.getEndingDateTime());
 				} else {

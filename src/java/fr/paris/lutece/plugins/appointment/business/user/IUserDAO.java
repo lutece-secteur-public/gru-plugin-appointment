@@ -65,4 +65,14 @@ public interface IUserDAO {
 	 */
 	User select(int nIdUser, Plugin plugin);
 
+	/**
+	 * Return the user by its email
+	 * 
+	 * @param strEmail
+	 *            the email of the user
+	 * @param plugin
+	 *            the plugin
+	 * @return The User found
+	 */
+	User findByEmail(String strEmail, Plugin plugin);
 }

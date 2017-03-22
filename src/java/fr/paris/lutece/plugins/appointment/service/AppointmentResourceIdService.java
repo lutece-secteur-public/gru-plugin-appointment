@@ -38,7 +38,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.portal.service.rbac.Permission;
 import fr.paris.lutece.portal.service.rbac.ResourceIdService;
@@ -113,7 +113,7 @@ public class AppointmentResourceIdService extends ResourceIdService {
 		ResourceType rt = new ResourceType();
 		rt.setResourceIdServiceClass(AppointmentResourceIdService.class.getName());
 		rt.setPluginName(AppointmentPlugin.PLUGIN_NAME);
-		rt.setResourceTypeKey(AppointmentFormDTO.RESOURCE_TYPE);
+		rt.setResourceTypeKey(AppointmentForm.RESOURCE_TYPE);
 		rt.setResourceTypeLabelKey(PROPERTY_LABEL_RESOURCE_TYPE);
 
 		Permission p = new Permission();

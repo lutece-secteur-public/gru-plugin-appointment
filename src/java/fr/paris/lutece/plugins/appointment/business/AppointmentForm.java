@@ -49,7 +49,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
 /**
  * This is the business class for the object AppointmentForm
  */
-public class AppointmentFormDTO implements RBACResource, Cloneable, Serializable {
+public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	/**
 	 * Name of the resource type of Appointment Forms
 	 */
@@ -100,6 +100,7 @@ public class AppointmentFormDTO implements RBACResource, Cloneable, Serializable
 	private ImageResource _imageResource;
 	private String _strCategory;
 	private int _nIdReservationRule;
+	private int _nNbDaysBeforeNewAppointment;
 
 	/**
 	 * Returns the IdForm
@@ -552,6 +553,15 @@ public class AppointmentFormDTO implements RBACResource, Cloneable, Serializable
 
 	public void setIcon(ImageResource imgIcon) {
 		this._imageResource = imgIcon;
+	}
+
+	
+	public int getNbDaysBeforeNewAppointment() {
+		return _nNbDaysBeforeNewAppointment;
+	}
+
+	public void setNbDaysBeforeNewAppointment(int nNbDaysBeforeNewAppointment) {
+		this._nNbDaysBeforeNewAppointment = nNbDaysBeforeNewAppointment;
 	}
 
 	/**

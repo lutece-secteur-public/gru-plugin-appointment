@@ -14,5 +14,9 @@ public class UserService {
 		user = UserHome.create(user);
 		return user;
 	}
+	
+	public static User findUserByEmail(String strEmail) {
+		return UserHome.findByEmail(strEmail);
+	}
 
 }

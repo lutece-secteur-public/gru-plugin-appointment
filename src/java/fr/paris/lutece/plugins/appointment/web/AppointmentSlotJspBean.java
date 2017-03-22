@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
@@ -135,6 +135,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	// Session variable to store working values
 	private static final String SESSION_ATTRIBUTE_TIME_SLOT = "appointment.session.timeSlot";
 	private static final String SESSION_ATTRIBUTE_SLOT = "appointment.session.slot";
+	private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
 
 	@View(value = VIEW_MANAGE_TYPICAL_WEEK)
 	public String getViewManageTypicalWeek(HttpServletRequest request) throws AccessDeniedException {
@@ -161,7 +162,11 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay(listWorkingDay);
 		LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(listWorkingDay);
 		int nMinDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay(listWorkingDay);
-		AppointmentFormDTO appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
+		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
+				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
+		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
+			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);			
+		}
 		Map<String, Object> model = getModel();
 		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
 		model.put(PARAMETER_EVENTS, listTimeSlot);
@@ -234,16 +239,26 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	@View(defaultView = true, value = VIEW_MANAGE_SPECIFIC_WEEK)
 	public String getViewManageSpecificWeek(HttpServletRequest request) throws AccessDeniedException {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_SLOT);
-		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
-		LocalDate dateOfDisplay = LocalDate.now();
-		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
-		if (!StringUtils.isEmpty(strDateOfDisplay)) {
-			dateOfDisplay = LocalDate.parse(strDateOfDisplay);
-		}
+		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));		
 		// Get the nb weeks to display
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
-		AppointmentFormDTO appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
+		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
+				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
+		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
+			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);			
+		}
+		LocalDate dateOfDisplay = LocalDate.now();
+		if (appointmentForm.getDateStartValidity() != null){
+			dateOfDisplay = appointmentForm.getDateStartValidity().toLocalDate();
+		}		 
+		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
+		if (StringUtils.isNotEmpty(strDateOfDisplay)) {
+			dateOfDisplay = LocalDate.parse(strDateOfDisplay);
+		}
+		if (dateOfDisplay == null) {
+			dateOfDisplay = LocalDate.now();
+		}
 		// Get all the week definitions
 		HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition(nIdForm);
 		List<WeekDefinition> listWeekDefinition = new ArrayList<WeekDefinition>(mapWeekDefinition.values());
@@ -257,7 +272,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		List<String> listDayOfWeek = new ArrayList<>(
 				WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition(listWeekDefinition));
 		// Build the slots
-		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, nNbWeeksToDisplay);
+		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, dateOfDisplay, nNbWeeksToDisplay);
 		Map<String, Object> model = getModel();
 		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
 		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay);
@@ -388,7 +403,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 				.findListSlotByIdFormAndDateRange(slot.getIdForm(), slot.getStartingDateTime(), endingDateTime)
 				.values());
 		List<Appointment> listAppointment = AppointmentService.findListAppointmentByListSlot(listSlotImpacted);
-		if (!CollectionUtils.isEmpty(listAppointment)) {
+		if (CollectionUtils.isNotEmpty(listAppointment)) {
 			bReturn = false;
 			addError(MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale());
 		}

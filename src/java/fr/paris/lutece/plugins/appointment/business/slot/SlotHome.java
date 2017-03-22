@@ -91,7 +91,7 @@ public class SlotHome {
 	public static HashMap<LocalDateTime, Slot> findByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime,
 			LocalDateTime endingDateTime) {
 		return _dao.findByIdFormAndDateRange(nIdForm, startingDateTime, endingDateTime, _plugin);
-	}
+	}	
 
 	/**
 	 * Returns a list of open slots for a date range

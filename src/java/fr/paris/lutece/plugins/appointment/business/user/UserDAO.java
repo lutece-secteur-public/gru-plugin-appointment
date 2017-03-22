@@ -15,8 +15,10 @@ public class UserDAO implements IUserDAO {
 	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user (id_user, id_lutece_user, first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_user SET id_lutece_user = ?, first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE id_user = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_user WHERE id_user = ?";
-	private static final String SQL_QUERY_SELECT = "SELECT id_user, id_lutece_user, first_name, last_name, email, phone_number FROM appointment_user WHERE id_user = ?";
-
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_user, id_lutece_user, first_name, last_name, email, phone_number FROM appointment_user"; 
+	private static final String SQL_QUERY_SELECT =  SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
+	private static final String SQL_QUERY_SELECT_BY_EMAIL = SQL_QUERY_SELECT_COLUMNS + " WHERE email = ?";
+	
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -74,6 +76,25 @@ public class UserDAO implements IUserDAO {
 		return user;
 	}
 
+	@Override
+	public User findByEmail(String strEmail, Plugin plugin) {		
+		DAOUtil daoUtil = null;
+		User user = null;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_EMAIL, plugin);
+			daoUtil.setString(1, strEmail);
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				user = buildUser(daoUtil);
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return user;
+	}
+	
 	/**
 	 * Build a User business object from the resultset
 	 * 
@@ -141,5 +162,7 @@ public class UserDAO implements IUserDAO {
 			}
 		}
 	}
+
+
 
 }

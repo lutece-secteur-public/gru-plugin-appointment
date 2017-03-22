@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
@@ -28,6 +28,7 @@ public class AppointmentFrontDTO implements Serializable {
 	private static final String PROPERTY_UNVAILABLE_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.error";
 	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE = "appointment.message.error.MaxAppointmentPeriode";
 	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE_BACK = "appointment.info.appointment.emailerror";
+	private static final String PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
 	
 	/**
 	 * Appointment resource type
@@ -53,54 +54,13 @@ public class AppointmentFrontDTO implements Serializable {
 	
 	@Size(max = 255, message = "appointment.validation.appointment.Email.size")
 	@Email(message = "appointment.validation.appointment.Email.email")
-	private String _strEmail;
-
-	private String _strDescription;
-	private boolean _bDisplayTitleFo;
-	private String str_Title;
+	private String _strEmail;	
 	
-	private int _nNbBookedSeats;
-	private int _nNbMaxPeoplePerAppointment;
+	private int _nNbBookedSeats;	
 	private Slot _slot;
-	
-	private boolean _bIsMandatoryEmail;	
+			
 	private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>();	
-	private List<Response> _listResponse;	
-	
-	private boolean _bCaptchaEnabled;
-	
-	
-	public String getDescription() {
-		return _strDescription;
-	}
-
-	public void setDescription(String description) {
-		this._strDescription = description;
-	}
-
-	public boolean getDisplayTitleFo() {
-		return _bDisplayTitleFo;
-	}
-
-	public void setDisplayTitleFo(boolean bDisplayTitleFo) {
-		this._bDisplayTitleFo = bDisplayTitleFo;
-	}
-
-	public String getTitle() {
-		return str_Title;
-	}
-
-	public void setTitle(String title) {
-		this.str_Title = title;
-	}
-
-	public boolean getCaptchaEnabled() {
-		return _bCaptchaEnabled;
-	}
-
-	public void setCaptchaEnabled(boolean bCaptchaEnabled) {
-		this._bCaptchaEnabled = bCaptchaEnabled;
-	}
+	private List<Response> _listResponse;		
 
 	public String getDateOfTheAppointment() {
 		return _strDateOfTheAppointment;
@@ -109,23 +69,7 @@ public class AppointmentFrontDTO implements Serializable {
 	public void setDateOfTheAppointment(String strDateOfTheAppointment) {
 		this._strDateOfTheAppointment = strDateOfTheAppointment;
 	}
-
-	public boolean getIsMandatoryEmail() {
-		return _bIsMandatoryEmail;
-	}
-
-	public void setIsMandatoryEmail(boolean bIsMandatoryEmail) {
-		this._bIsMandatoryEmail = bIsMandatoryEmail;
-	}
-
-	public int getNbMaxPeoplePerAppointment() {
-		return _nNbMaxPeoplePerAppointment;
-	}
-
-	public void setNbMaxPeoplePerAppointment(int nNbMaxPeoplePerAppointment) {
-		this._nNbMaxPeoplePerAppointment = nNbMaxPeoplePerAppointment;
-	}
-
+	
 	public List<Response> getListResponse() {
 		return _listResponse;
 	}
@@ -206,18 +150,19 @@ public class AppointmentFrontDTO implements Serializable {
 		this._mapResponsesByIdEntry = mapResponsesByIdEntry;
 	}	
 	
-	public static List<String> getAllErrors(HttpServletRequest request) {
+	public static List<String> getAllErrors(Locale locale) {
 		List<String> listAllErrors = new ArrayList<String>();
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_LAST_NAME, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_FIRST_NAME, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_EMAIL, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MESSAGE_EMPTY_EMAIL, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_CONFIRM_EMAIL, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_CONFIRM_EMAIL, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_NB_SEATS, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_NB_SEATS, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE, request.getLocale()));
-		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE_BACK, request.getLocale()));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_LAST_NAME, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_FIELD_FIRST_NAME, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_EMAIL, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MESSAGE_EMPTY_EMAIL, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_CONFIRM_EMAIL, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_CONFIRM_EMAIL, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_EMPTY_NB_SEATS, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_UNVAILABLE_NB_SEATS, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_MAX_APPOINTMENT_PERIODE_BACK, locale));
+		listAllErrors.add(I18nService.getLocalizedString(PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS, locale));
 		return listAllErrors;
 	}
 	

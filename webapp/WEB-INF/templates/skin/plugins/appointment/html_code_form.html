@@ -60,7 +60,7 @@
 						</#list>
 						<#if hasDisplayableError>
 							<#list form_errors as form_error>	
-								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
+								<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[0] || form_error.errorMessage==listAllErrors[10])>
 									<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
 								</#if>	
 							</#list>

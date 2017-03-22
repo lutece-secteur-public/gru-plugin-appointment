@@ -36,6 +36,10 @@ public class AppointmentService {
 		return AppointmentHome.findByIdSlot(nIdSlot);
 	}
 
+	public static List<Appointment> findListAppointmentByUserId(int nIdUser) {
+		return AppointmentHome.findByIdUser(nIdUser);
+	}
+	
 	public static List<Appointment> findListAppointmentByIdFormAndAfterADateTime(int nIdForm,
 			LocalDateTime startingDateTime) {
 		return AppointmentHome.findByIdFormAndAfterADateTime(nIdForm, startingDateTime);

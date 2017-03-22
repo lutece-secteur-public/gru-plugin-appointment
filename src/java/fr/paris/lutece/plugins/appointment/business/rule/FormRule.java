@@ -31,6 +31,10 @@ public class FormRule implements Serializable {
 	private boolean _bIsMandatoryEmailEnabled;
 
 	/**
+	 * Nb Days before the user can take another appointment
+	 */
+	private int _nNbDaysBeforeNewAppointment;
+	/**
 	 * Form id (foreign key)
 	 */
 	private int _nIdForm;
@@ -90,6 +94,22 @@ public class FormRule implements Serializable {
 	 */
 	public void setIsMandatoryEmailEnabled(boolean bIsMandatoryEmailEnabled) {
 		this._bIsMandatoryEmailEnabled = bIsMandatoryEmailEnabled;
+	}
+
+	/**
+	 * 	Get the number of days the user has to wait before he can take another appointment
+	 * @return the number of days
+	 */
+	public int getNbDaysBeforeNewAppointment() {
+		return _nNbDaysBeforeNewAppointment;
+	}
+
+	/**
+	 * Set the number of days the user have to wait before he can take another appointment
+	 * @param _nNbDaysBeforeNewAppointment the number of days
+	 */
+	public void setNbDaysBeforeNewAppointment(int nNbDaysBeforeNewAppointment) {
+		this._nNbDaysBeforeNewAppointment = nNbDaysBeforeNewAppointment;
 	}
 
 	/**

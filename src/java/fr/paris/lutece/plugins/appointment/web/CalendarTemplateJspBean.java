@@ -41,6 +41,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -242,7 +243,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean {
 
 		Set<ConstraintViolation<CalendarTemplate>> listErrors = validate(_template);
 
-		if ((listErrors != null) && (listErrors.size() > 0)) {
+		if (CollectionUtils.isNotEmpty(listErrors)) {
 			for (ConstraintViolation<CalendarTemplate> error : listErrors) {
 				addError(error.getMessage());
 			}

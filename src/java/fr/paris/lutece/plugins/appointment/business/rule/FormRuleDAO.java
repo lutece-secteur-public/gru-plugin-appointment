@@ -12,10 +12,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class FormRuleDAO implements IFormRuleDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form_rule) FROM appointment_form_rule";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule (id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form) VALUES (?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, id_form = ? WHERE id_form_rule = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule (id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, nb_days_before_new_appointment, id_form) VALUES (?, ?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, nb_days_before_new_appointment = ?, id_form = ? WHERE id_form_rule = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_rule WHERE id_form_rule = ?";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, id_form FROM appointment_form_rule";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, nb_days_before_new_appointment, id_form FROM appointment_form_rule";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_rule = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
@@ -108,6 +108,7 @@ public class FormRuleDAO implements IFormRuleDAO {
 		formRule.setIdFormRule(daoUtil.getInt(nIndex++));
 		formRule.setIsCaptchaEnabled(daoUtil.getBoolean(nIndex++));
 		formRule.setIsMandatoryEmailEnabled(daoUtil.getBoolean(nIndex++));
+		formRule.setNbDaysBeforeNewAppointment(daoUtil.getInt(nIndex++));
 		formRule.setIdForm(daoUtil.getInt(nIndex));
 		return formRule;
 	}
@@ -135,6 +136,7 @@ public class FormRuleDAO implements IFormRuleDAO {
 		}
 		daoUtil.setBoolean(nIndex++, formRule.isCaptchaEnabled());
 		daoUtil.setBoolean(nIndex++, formRule.isMandatoryEmailEnabled());
+		daoUtil.setInt(nIndex++, formRule.getNbDaysBeforeNewAppointment());
 		daoUtil.setInt(nIndex++, formRule.getIdForm());
 		if (!isInsert) {
 			daoUtil.setInt(nIndex, formRule.getIdFormRule());
