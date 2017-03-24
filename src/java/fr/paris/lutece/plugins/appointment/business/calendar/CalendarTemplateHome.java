@@ -42,7 +42,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
- * This class provides instances management methods for Calendar Teplate objects
+ * This class provides instances management methods for Calendar Template
+ * objects
  * 
  * @author Laurent Payen
  *

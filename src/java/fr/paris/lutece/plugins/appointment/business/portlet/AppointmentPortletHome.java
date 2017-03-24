@@ -41,6 +41,9 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * This class provides instances management methods for AppointmentPortlet
  * objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public class AppointmentPortletHome extends PortletHome {
 	// Static variable pointed at the DAO instance

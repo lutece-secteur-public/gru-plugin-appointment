@@ -70,6 +70,9 @@ import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * Service to manage entries
+ * 
+ * @author Laurent Payen
+ *
  */
 public class EntryService extends RemovalListenerService implements Serializable {
 	/**
@@ -106,7 +109,14 @@ public class EntryService extends RemovalListenerService implements Serializable
 		return SpringContextService.getBean(BEAN_NAME);
 	}
 
-	public static EntryFilter buildEntryFilter(int nIdForm){
+	/**
+	 * Build an entry filter with static parameter
+	 * 
+	 * @param nIdForm
+	 *            the Form Id
+	 * @return the entry filter
+	 */
+	public static EntryFilter buildEntryFilter(int nIdForm) {
 		EntryFilter filter = new EntryFilter();
 		filter.setIdResource(nIdForm);
 		filter.setResourceType(AppointmentForm.RESOURCE_TYPE);
@@ -116,6 +126,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 		filter.setIsOnlyDisplayInBack(EntryFilter.FILTER_FALSE);
 		return filter;
 	}
+
 	/**
 	 * Change the attribute's order to a greater one (move down in the list)
 	 * 
@@ -360,6 +371,14 @@ public class EntryService extends RemovalListenerService implements Serializable
 		}
 	}
 
+	/**
+	 * Add the entries to the model
+	 * 
+	 * @param nIdForm
+	 *            The form Id
+	 * @param model
+	 *            the model
+	 */
 	public static void addListEntryToModel(int nIdForm, Map<String, Object> model) {
 		EntryFilter entryFilter = new EntryFilter();
 		entryFilter.setIdResource(nIdForm);
@@ -409,6 +428,17 @@ public class EntryService extends RemovalListenerService implements Serializable
 		return refListGroups;
 	}
 
+	/**
+	 * Get the html part of the additional entry of the form
+	 * 
+	 * @param nIdEntry
+	 *            the entry id
+	 * @param stringBuffer
+	 *            the string buffer
+	 * @param locale
+	 * @param bDisplayFront
+	 * @param request
+	 */
 	public static void getHtmlEntry(int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
 			HttpServletRequest request) {
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -466,6 +496,20 @@ public class EntryService extends RemovalListenerService implements Serializable
 		stringBuffer.append(template.getHtml());
 	}
 
+	/**
+	 * Add to the map of the appointment the response of the additional entry of
+	 * the form
+	 * 
+	 * @param request
+	 *            the Request
+	 * @param nIdEntry
+	 *            the Entry Id
+	 * @param locale
+	 *            the Locale
+	 * @param appointment
+	 *            the Appointment
+	 * @return the list of possible errors
+	 */
 	public static List<GenericAttributeError> getResponseEntry(HttpServletRequest request, int nIdEntry, Locale locale,
 			AppointmentFrontDTO appointment) {
 		List<Response> listResponse = new ArrayList<Response>();
@@ -474,6 +518,24 @@ public class EntryService extends RemovalListenerService implements Serializable
 		return getResponseEntry(request, nIdEntry, listResponse, false, locale, appointment);
 	}
 
+	/**
+	 * Add to the map of the appointment the response of the additional entry of
+	 * the form
+	 * 
+	 * @param request
+	 *            the request
+	 * @param nIdEntry
+	 *            the entry id
+	 * @param listResponse
+	 *            the list of the responses
+	 * @param bResponseNull
+	 *            true if the response can be null
+	 * @param locale
+	 *            the local
+	 * @param appointment
+	 *            the appointment
+	 * @return a list of possible errors
+	 */
 	private static List<GenericAttributeError> getResponseEntry(HttpServletRequest request, int nIdEntry,
 			List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentFrontDTO appointment) {
 		List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>();

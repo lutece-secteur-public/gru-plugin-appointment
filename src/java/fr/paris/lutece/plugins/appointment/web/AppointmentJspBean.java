@@ -44,6 +44,8 @@ import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 /**
  * This class provides the user interface to manage Appointment features (
  * manage, create, modify, remove )
+ * @author Laurent Payen
+ //TODO Need to redefine all the pages of the management of the appointments on back office side 
  */
 @Controller(controllerJsp = "ManageAppointments.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM)
 public class AppointmentJspBean extends MVCAdminJspBean {

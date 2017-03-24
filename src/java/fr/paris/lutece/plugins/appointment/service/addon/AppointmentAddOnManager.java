@@ -38,9 +38,12 @@ import java.util.Locale;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
- * Manager service for add-ons of appointments<br />
- * Add-ons are additional content of appointments provided by appointment
- * modules. Add-ons should only be displayed to admin users.
+ * Manager service for add-ons of appointments Add-ons are additional content of
+ * appointments provided by appointment modules. Add-ons should only be
+ * displayed to admin users.
+ * 
+ * @author Laurent Payen
+ *
  */
 public final class AppointmentAddOnManager {
 	/**

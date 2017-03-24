@@ -11,29 +11,31 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>
-		<div class="jumbotron">
-			<div class="jumbotron-wrapper">
-				<div class="jumbotron-content">
-					<h1 class="">${formMessages.calendarTitle}</h1>
+			<div class="jumbotron">
+				<div class="jumbotron-wrapper">
+					<div class="jumbotron-content">
+						<h1 class="">${formMessages.calendarTitle}</h1>
+					</div>
 				</div>
 			</div>
-		</div>
 		</#if>
 		<div class="layout-wrapper">
-		<#if infos?? && errors??>
-			<@messages infos=infos errors=errors />
-		</#if>
+			<#if infos?? || errors??>
+				<@messages infos=infos errors=errors />			
+			</#if>
 		</div>
 	</div>
 </div>
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">    	
-		<div class="tab-content">
-		<fieldset>									
-			<div id="calendar"></div>	
-		</fieldset>				
+<#if !errors??>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">    	
+			<div class="tab-content">
+			<fieldset>									
+				<div id="calendar"></div>	
+			</fieldset>				
+		</div>
 	</div>
-</div>
+</#if>
 <script type="text/javascript">
 	var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
@@ -81,8 +83,7 @@
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
 						$("#hiddenDate").datepicker({
-							showOn: "button",
-							dateFormat:"yy-mm-dd",
+							showOn: "button",							
 							autoclose: true,
 							startDate: "today",
 							endDate: '+' + nbMaxWeeks + 'w'

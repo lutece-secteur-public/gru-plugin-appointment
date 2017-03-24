@@ -10,6 +10,12 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
+/**
+ * Appointment Response Home
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class AppointmentResponseHome {
 
 	// Static variable pointed at the DAO instance

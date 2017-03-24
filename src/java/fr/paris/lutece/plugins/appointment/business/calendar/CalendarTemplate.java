@@ -51,13 +51,29 @@ public class CalendarTemplate implements Serializable {
 	 * Serial version UID
 	 */
 	private static final long serialVersionUID = 8029294463873867355L;
+
+	/**
+	 * Calendar Template Id
+	 */
 	private int _nIdCalendarTemplate;
+
+	/**
+	 * Calendar Title
+	 */
 	@NotBlank(message = "#i18n{appointment.calendarTemplate.labelTitleBlank}")
 	@Size(max = 255, message = "#i18n{appointment.calendarTemplate.labelTitleSize}")
 	private String _strTitle;
+
+	/**
+	 * Calendar Description
+	 */
 	@NotBlank(message = "#i18n{appointment.calendarTemplate.labelDescriptionBlank}")
 	@Size(max = 255, message = "#i18n{appointment.calendarTemplate.labelDescriptionSize}")
 	private String _strDescription;
+
+	/**
+	 * Path for the template
+	 */
 	@NotBlank(message = "#i18n{appointment.calendarTemplate.labelTemplatePathBlank}")
 	@Size(max = 255, message = "#i18n{appointment.calendarTemplate.labelTemplatePathSize}")
 	private String _strTemplatePath;

@@ -36,6 +36,9 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 /**
  * Interface for listeners that should be notified when appointment forms are
  * removed. <b>The listener must be a Spring bean.</b>
+ * 
+ * @author Laurent Payen
+ * 
  */
 public interface IAppointmentFormRemovalListener {
 	/**

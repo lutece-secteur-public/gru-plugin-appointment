@@ -38,6 +38,9 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * The Class EntryTypeGeolocation.
+ * 
+ * @author Laurent Payen
+ * 
  */
 public class EntryTypeGeolocation extends AbstractEntryTypeGeolocation {
 	/** The Constant CONSTANT_ID_ADDRESS. */

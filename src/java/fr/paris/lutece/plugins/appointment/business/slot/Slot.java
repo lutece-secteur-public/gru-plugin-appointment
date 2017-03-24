@@ -24,11 +24,21 @@ public class Slot implements Serializable {
 	 */
 	private int _nIdSlot;
 
+	/**
+	 * Date of the slot
+	 */
 	private LocalDate _date;
 
+	/**
+	 * Starting Time of The SLot
+	 */
 	private LocalTime _startingTime;
 
+	/**
+	 * Ending Time Of The Slot
+	 */
 	private LocalTime _endingTime;
+
 	/**
 	 * Starting date (Date + Time) of the slot
 	 */
@@ -44,6 +54,9 @@ public class Slot implements Serializable {
 	 */
 	private boolean _bIsOpen;
 
+	/**
+	 * Max Capacity of the Slot
+	 */
 	private int _nMaxCapacity;
 
 	/**
@@ -65,26 +78,59 @@ public class Slot implements Serializable {
 		return _nIdSlot;
 	}
 
+	/**
+	 * Get the date of the slot
+	 * 
+	 * @return the date of the slot
+	 */
 	public LocalDate getDate() {
 		return _date;
 	}
 
+	/**
+	 * Set the date of the slot
+	 * 
+	 * @param _date
+	 *            the date to set
+	 */
 	public void setDate(LocalDate _date) {
 		this._date = _date;
 	}
 
+	/**
+	 * Get the starting time of the slot
+	 * 
+	 * @return the starting time of the slot
+	 */
 	public LocalTime getStartingTime() {
 		return _startingTime;
 	}
 
+	/**
+	 * Set the starting time of the slot
+	 * 
+	 * @param startingTime
+	 *            the starting time to set
+	 */
 	public void setStartingTime(LocalTime startingTime) {
 		this._startingTime = startingTime;
 	}
 
+	/**
+	 * Get the ending time of the slot
+	 * 
+	 * @return the ending time of the slot
+	 */
 	public LocalTime getEndingTime() {
 		return _endingTime;
 	}
 
+	/**
+	 * Set the ending time of the slot
+	 * 
+	 * @param endingTime
+	 *            the ending time to set
+	 */
 	public void setEndingTime(LocalTime endingTime) {
 		this._endingTime = endingTime;
 	}

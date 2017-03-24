@@ -3,6 +3,12 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
+/**
+ * Appointment Response DAO
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class AppointmentResponseDAO implements IAppointmentResponseDAO {
 
 	private static final String SQL_QUERY_REMOVE_FROM_ID_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_response = ?";

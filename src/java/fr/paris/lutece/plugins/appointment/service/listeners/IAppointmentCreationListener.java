@@ -35,6 +35,9 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 
 /**
  * IAppointmentCreationListener Interface
+ * 
+ * @author Laurent Payen
+ * 
  */
 public interface IAppointmentCreationListener {
 	/**

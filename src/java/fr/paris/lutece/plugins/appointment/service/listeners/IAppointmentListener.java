@@ -38,6 +38,9 @@ import java.util.Locale;
 /**
  * Interface for listeners that should be notified when appointments are removed
  * or when the date changed. <b>The listener must be a Spring bean.</b>
+ * 
+ * @author Laurent Payen
+ * 
  */
 public interface IAppointmentListener {
 	/**

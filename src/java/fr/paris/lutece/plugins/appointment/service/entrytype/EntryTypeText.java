@@ -38,6 +38,9 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * class EntryTypeText
+ * 
+ * @author Laurent Payen
+ * 
  */
 public class EntryTypeText extends AbstractEntryTypeText {
 	private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_text.html";

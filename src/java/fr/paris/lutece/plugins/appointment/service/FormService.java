@@ -19,12 +19,21 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 
+/**
+ * Service class for a form
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class FormService {
 
 	/**
+	 * Make a copy of form, with all its values
 	 * 
 	 * @param nIdForm
+	 *            the Form Id to copy
 	 * @param newNameForCopy
+	 *            the new Name of the copy
 	 */
 	public static void copyForm(int nIdForm, String newNameForCopy) {
 		AppointmentForm appointmentForm = buildAppointmentForm(nIdForm, 0, 0);
@@ -37,9 +46,11 @@ public class FormService {
 	}
 
 	/**
+	 * Create a form from an appointmentForm DTO
 	 * 
 	 * @param appointmentForm
-	 * @return
+	 *            the appointmentForm DTO
+	 * @return the id of the form created
 	 */
 	public static int createAppointmentForm(AppointmentForm appointmentForm) {
 		Form form = FormService.createForm(appointmentForm);
@@ -64,9 +75,12 @@ public class FormService {
 	}
 
 	/**
+	 * Update a form with the new values of an appointmentForm DTO
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param dateOfModification
+	 *            the date of the update
 	 */
 	public static void updateAppointmentForm(AppointmentForm appointmentForm, LocalDate dateOfModification) {
 		Form form = FormService.updateForm(appointmentForm);
@@ -94,8 +108,11 @@ public class FormService {
 	}
 
 	/**
+	 * Build all the appointForm DTO of the database light because the
+	 * appointFormDTO is only fill in with the form id, the title and if the
+	 * form is active or not
 	 * 
-	 * @return
+	 * @return the list of all the appointmentForm DTO
 	 */
 	public static List<AppointmentForm> buildAllAppointmentFormLight() {
 		List<AppointmentForm> listAppointmentFormLight = new ArrayList<>();
@@ -105,6 +122,11 @@ public class FormService {
 		return listAppointmentFormLight;
 	}
 
+	/**
+	 * Build all the active forms of the database
+	 * 
+	 * @return a list of appointmentForm DTO
+	 */
 	public static List<AppointmentForm> buildAllActiveAppointmentForm() {
 		List<AppointmentForm> listAppointmentForm = new ArrayList<>();
 		for (Form form : FormService.findAllActiveForms()) {
@@ -114,9 +136,11 @@ public class FormService {
 	}
 
 	/**
+	 * Build an appointmentFormDTO light
 	 * 
 	 * @param form
-	 * @return
+	 *            the form object
+	 * @return the appointmentForm DTO
 	 */
 	public static AppointmentForm buildAppointmentFormLight(Form form) {
 		AppointmentForm appointmentForm = new AppointmentForm();
@@ -124,15 +148,26 @@ public class FormService {
 		return appointmentForm;
 	}
 
+	/**
+	 * Build an appointmentForm light
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @return the appointmentForm DTO
+	 */
 	public static AppointmentForm buildAppointmentFormLight(int nIdForm) {
-		AppointmentForm appointmentForm = new AppointmentForm();
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
-		fillAppointmentFormLightWithFormPart(appointmentForm, form);	
-		Display display = DisplayService.findDisplayWithFormId(nIdForm);
-		fillAppointmentFormWithDisplayPart(appointmentForm, display);	
-		return appointmentForm;
+		return buildAppointmentFormLight(form);
 	}
 
+	/**
+	 * Fill the appointmentForm DTO with the values of the form object
+	 * 
+	 * @param appointmentForm
+	 *            the appointmentForm DTO
+	 * @param form
+	 *            the form Object
+	 */
 	private static void fillAppointmentFormLightWithFormPart(AppointmentForm appointmentForm, Form form) {
 		appointmentForm.setIdForm(form.getIdForm());
 		appointmentForm.setTitle(form.getTitle());
@@ -140,10 +175,15 @@ public class FormService {
 	}
 
 	/**
+	 * Build an appointmentForm DTO
 	 * 
 	 * @param nIdForm
+	 *            the Form Id
 	 * @param nIdReservationRule
-	 * @return
+	 *            the Reservation Rule Id
+	 * @param nIdWeekDefinition
+	 *            the WeekDefinition Id
+	 * @return the apointmentForm DTO built
 	 */
 	public static AppointmentForm buildAppointmentForm(int nIdForm, int nIdReservationRule, int nIdWeekDefinition) {
 		AppointmentForm appointmentForm = new AppointmentForm();
@@ -178,9 +218,12 @@ public class FormService {
 	}
 
 	/**
+	 * Fill the appointmentForm DTO with the WeekDefinition
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param weekDefinition
+	 *            the week definition
 	 */
 	private static void fillAppointmentFormWithWeekDefinitionPart(AppointmentForm appointmentForm,
 			WeekDefinition weekDefinition) {
@@ -212,7 +255,7 @@ public class FormService {
 			}
 		}
 		// We suppose that all the days have the same opening and closing
-		// hours
+		// hours (it can be modified after)
 		LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay(listWorkingDay);
 		LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(listWorkingDay);
 		int nDurationAppointment = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay(listWorkingDay);
@@ -222,9 +265,12 @@ public class FormService {
 	}
 
 	/**
+	 * Fill the appointmentForm DTO with the Reservation Rule
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param reservationRule
+	 *            the reservation rule
 	 */
 	private static void fillAppointmentFormWithReservationRulePart(AppointmentForm appointmentForm,
 			ReservationRule reservationRule) {
@@ -234,9 +280,12 @@ public class FormService {
 	}
 
 	/**
+	 * Fill the appointmentForm DTO with the form rule
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param formRule
+	 *            the form rule
 	 */
 	private static void fillAppointmentFormWithFormRulePart(AppointmentForm appointmentForm, FormRule formRule) {
 		appointmentForm.setEnableCaptcha(formRule.isCaptchaEnabled());
@@ -245,9 +294,12 @@ public class FormService {
 	}
 
 	/**
+	 * Fill the appointmentForm DTO with the form
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param form
+	 *            the Form
 	 */
 	private static void fillAppointmentFormWithFormPart(AppointmentForm appointmentForm, Form form) {
 		appointmentForm.setIdForm(form.getIdForm());
@@ -262,9 +314,12 @@ public class FormService {
 	}
 
 	/**
+	 * Fill the appointmentForm DTO with the display
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param display
+	 *            the display
 	 */
 	private static void fillAppointmentFormWithDisplayPart(AppointmentForm appointmentForm, Display display) {
 		appointmentForm.setDisplayTitleFo(display.isDisplayTitleFo());
@@ -274,9 +329,11 @@ public class FormService {
 	}
 
 	/**
+	 * Create a form from an appointmentForm DTO
 	 * 
 	 * @param appointmentForm
-	 * @return
+	 *            the appointmentForm DTO
+	 * @return the Form created
 	 */
 	public static Form createForm(AppointmentForm appointmentForm) {
 		Form form = new Form();
@@ -286,9 +343,11 @@ public class FormService {
 	}
 
 	/**
+	 * Update a form object with the values of the appointmentForm DTO
 	 * 
 	 * @param appointmentForm
-	 * @return
+	 *            the appointmentForm DTO
+	 * @return the Form object updated
 	 */
 	public static Form updateForm(AppointmentForm appointmentForm) {
 		Form form = FormService.findFormLightByPrimaryKey(appointmentForm.getIdForm());
@@ -298,10 +357,13 @@ public class FormService {
 	}
 
 	/**
+	 * Fill the form object with the values of the appointmentForm DTO
 	 * 
 	 * @param form
+	 *            the form object
 	 * @param appointmentForm
-	 * @return
+	 *            the appointmentForm DTO
+	 * @return the form completed
 	 */
 	public static Form fillInFormWithAppointmentForm(Form form, AppointmentForm appointmentForm) {
 		form.setTitle(appointmentForm.getTitle());
@@ -316,29 +378,38 @@ public class FormService {
 	}
 
 	/**
+	 * Remove a Form from the database
 	 * 
 	 * @param nIdForm
+	 *            the form id to remove
 	 */
 	public static void removeForm(int nIdForm) {
 		FormHome.delete(nIdForm);
 	}
 
 	/**
+	 * Find all the forms in the database
 	 * 
-	 * @return
+	 * @return a list of all the forms
 	 */
 	public static List<Form> findAllForms() {
 		return FormHome.findAllForms();
 	}
 
+	/**
+	 * Find all the active forms in database
+	 * 
+	 * @return a list of all the active forms
+	 */
 	public static List<Form> findAllActiveForms() {
 		return FormHome.findActiveForms();
 	}
 
 	/**
+	 * Find a form by its primary key
 	 * 
 	 * @param nIdForm
-	 * @return
+	 *            the form id
 	 */
 	public static Form findFormLightByPrimaryKey(int nIdForm) {
 		return FormHome.findByPrimaryKey(nIdForm);

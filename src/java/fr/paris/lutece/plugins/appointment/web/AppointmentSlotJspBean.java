@@ -68,6 +68,9 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 
 /**
  * JspBean to manage calendar slots
+ * 
+ * @author Laurent Payen
+ *
  */
 @Controller(controllerJsp = AppointmentSlotJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM)
 public class AppointmentSlotJspBean extends MVCAdminJspBean {
@@ -137,6 +140,14 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	private static final String SESSION_ATTRIBUTE_SLOT = "appointment.session.slot";
 	private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
 
+	/**
+	 * Get the view of the typical week
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the page
+	 * @throws AccessDeniedException
+	 */
 	@View(value = VIEW_MANAGE_TYPICAL_WEEK)
 	public String getViewManageTypicalWeek(HttpServletRequest request) throws AccessDeniedException {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_TIME_SLOT);
@@ -165,7 +176,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
-			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);			
+			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
 		}
 		Map<String, Object> model = getModel();
 		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
@@ -179,6 +190,13 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return getPage(MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model);
 	}
 
+	/**
+	 * Get the view to modify a time slot
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the page
+	 */
 	@View(VIEW_MODIFY_TIME_SLOT)
 	public String getViewModifyTimeSlot(HttpServletRequest request) {
 		int nIdTimeSlot = Integer.parseInt(request.getParameter(PARAMETER_ID_TIME_SLOT));
@@ -195,6 +213,13 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return getPage(MESSAGE_MODIFY_TIME_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_TIME_SLOT, model);
 	}
 
+	/**
+	 * Do modify a time slot
+	 * 
+	 * @param request
+	 *            the request
+	 * @return to the page of the typical week
+	 */
 	@Action(ACTION_DO_MODIFY_TIME_SLOT)
 	public String doModifyTimeSlot(HttpServletRequest request) {
 		TimeSlot timeSlotFromSession = (TimeSlot) request.getSession().getAttribute(SESSION_ATTRIBUTE_TIME_SLOT);
@@ -236,22 +261,30 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 				nIdWeekDefinition);
 	}
 
+	/**
+	 * Get the view of the specific week
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the page
+	 * @throws AccessDeniedException
+	 */
 	@View(defaultView = true, value = VIEW_MANAGE_SPECIFIC_WEEK)
 	public String getViewManageSpecificWeek(HttpServletRequest request) throws AccessDeniedException {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_SLOT);
-		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));		
+		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		// Get the nb weeks to display
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
-			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);			
+			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
 		}
 		LocalDate dateOfDisplay = LocalDate.now();
-		if (appointmentForm.getDateStartValidity() != null){
+		if (appointmentForm.getDateStartValidity() != null) {
 			dateOfDisplay = appointmentForm.getDateStartValidity().toLocalDate();
-		}		 
+		}
 		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
 		if (StringUtils.isNotEmpty(strDateOfDisplay)) {
 			dateOfDisplay = LocalDate.parse(strDateOfDisplay);
@@ -286,6 +319,13 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return getPage(MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, model);
 	}
 
+	/**
+	 * Get the view to modify a slot
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the page
+	 */
 	@View(VIEW_MODIFY_SLOT)
 	public String getViewModifySlot(HttpServletRequest request) {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
@@ -315,6 +355,13 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return getPage(MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, model);
 	}
 
+	/**
+	 * Do modify a slot
+	 * 
+	 * @param request
+	 *            the request
+	 * @return to the page of the specific week
+	 */
 	@Action(ACTION_DO_MODIFY_SLOT)
 	public String doModifySlot(HttpServletRequest request) {
 		Slot slotFromSessionOrFromDb = null;
@@ -359,6 +406,15 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return redirect(request, VIEW_MANAGE_SPECIFIC_WEEK, additionalParameters);
 	}
 
+	/**
+	 * Check the ending time of a time slot
+	 * 
+	 * @param endingTime
+	 *            the new ending time
+	 * @param timeSlot
+	 *            the time slot
+	 * @return false if there is an error
+	 */
 	private boolean checkEndingTimeOfTimeSlot(LocalTime endingTime, TimeSlot timeSlot) {
 		boolean bReturn = true;
 		WorkingDay workingDay = WorkingDayService.findWorkingDayById(timeSlot.getIdWorkingDay());
@@ -373,6 +429,15 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return bReturn;
 	}
 
+	/**
+	 * Check the ending time of a slot
+	 * 
+	 * @param endingTime
+	 *            the new ending time
+	 * @param slot
+	 *            the slot
+	 * @return false if there is an error
+	 */
 	private boolean checkEndingTimeOfSlot(LocalTime endingTime, Slot slot) {
 		boolean bReturn = true;
 		LocalDate dateOfSlot = slot.getDate();
@@ -391,6 +456,16 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		return bReturn;
 	}
 
+	/**
+	 * Check that there is no appointment on a slot or on the impacted slots
+	 * that will be modified
+	 * 
+	 * @param slot
+	 *            the slot
+	 * @param bShiftSLot
+	 *            true if the next slots will be modified
+	 * @return false if there is an error
+	 */
 	private boolean checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted(Slot slot, boolean bShiftSLot) {
 		boolean bReturn = true;
 		LocalDateTime endingDateTime = slot.getEndingDateTime();
@@ -400,8 +475,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 			endingDateTime = slot.getDate().atTime(LocalTime.MAX);
 		}
 		List<Slot> listSlotImpacted = new ArrayList<>(SlotService
-				.findListSlotByIdFormAndDateRange(slot.getIdForm(), slot.getStartingDateTime(), endingDateTime)
-				.values());
+				.findSlotsByIdFormAndDateRange(slot.getIdForm(), slot.getStartingDateTime(), endingDateTime).values());
 		List<Appointment> listAppointment = AppointmentService.findListAppointmentByListSlot(listSlotImpacted);
 		if (CollectionUtils.isNotEmpty(listAppointment)) {
 			bReturn = false;

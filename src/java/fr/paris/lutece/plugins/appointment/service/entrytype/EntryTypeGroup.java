@@ -39,6 +39,8 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 /**
  *
  * class EntryTypeGroup
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeGroup extends AbstractEntryTypeGroup {

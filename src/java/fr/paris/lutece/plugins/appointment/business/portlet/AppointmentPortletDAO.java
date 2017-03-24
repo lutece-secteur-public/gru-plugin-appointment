@@ -37,6 +37,9 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 
 /**
  * this class provides Data Access methods for AppointmentPortlet objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public final class AppointmentPortletDAO implements IAppointmentPortletDAO {
 	// /////////////////////////////////////////////////////////////////////////////////////

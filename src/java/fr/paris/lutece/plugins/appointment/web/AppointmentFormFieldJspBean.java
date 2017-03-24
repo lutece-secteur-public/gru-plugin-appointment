@@ -59,7 +59,10 @@ import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
- * JspBean to manage appointment form fields
+ * JspBean to manage appointment form fieldsl
+ * 
+ * @author Laurent Payen
+ *
  */
 @Controller(controllerJsp = "ManageAppointmentFormFields.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM)
 public class AppointmentFormFieldJspBean extends MVCAdminJspBean {

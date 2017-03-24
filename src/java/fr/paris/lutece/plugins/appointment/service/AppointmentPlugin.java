@@ -43,6 +43,9 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
  * Appointment plugin
+ * 
+ * @author Laurent Payen
+ * 
  */
 public class AppointmentPlugin extends Plugin {
 	/**

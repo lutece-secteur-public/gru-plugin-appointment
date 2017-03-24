@@ -18,22 +18,72 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 
+/**
+ * Service class of a slot
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class SlotService {
 
-	public static HashMap<LocalDateTime, Slot> findListSlotByIdFormAndDateRange(int nIdForm,
+	/**
+	 * Find slots of a form on a given period of time
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param startingDateTime
+	 *            the starting date time to search
+	 * @param endingDateTime
+	 *            the ending date time to search
+	 * @return a HashMap with the starting Date Time in Key and the
+	 *         corresponding slot in value
+	 */
+	public static HashMap<LocalDateTime, Slot> findSlotsByIdFormAndDateRange(int nIdForm,
 			LocalDateTime startingDateTime, LocalDateTime endingDateTime) {
 		return SlotHome.findByIdFormAndDateRange(nIdForm, startingDateTime, endingDateTime);
 	}
 
-	public static List<Slot> findListOpenSlotByIdFormAndDateRange(int nIdForm,
-			LocalDateTime startingDateTime, LocalDateTime endingDateTime) {
+	/**
+	 * Find the open slots of a form on a given period of time
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param startingDateTime
+	 *            the starting Date time to search
+	 * @param endingDateTime
+	 *            the ending Date time to search
+	 * @return a list of open slots whose matches the criteria
+	 */
+	public static List<Slot> findListOpenSlotByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime,
+			LocalDateTime endingDateTime) {
 		return SlotHome.findOpenSlotsByIdFormAndDateRange(nIdForm, startingDateTime, endingDateTime);
 	}
-	
+
+	/**
+	 * Find a slot with its primary key
+	 * 
+	 * @param nIdSlot
+	 *            the slot Id
+	 * @return the Slot object
+	 */
 	public static Slot findSlotById(int nIdSlot) {
 		return SlotHome.findByPrimaryKey(nIdSlot);
 	}
 
+	/**
+	 * Build all the slot for a period with all the rules (open hours ...) to
+	 * apply on each day, for each slot
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param mapWeekDefinition
+	 *            the map of the week definition
+	 * @param startingDate
+	 *            the starting date of the period
+	 * @param nNbWeeksToDisplay
+	 *            the number of weeks to build
+	 * @return a list of all the slots built
+	 */
 	public static List<Slot> buildListSlot(int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition,
 			LocalDate startingDate, int nNbWeeksToDisplay) {
 		List<Slot> listSlot = new ArrayList<>();
@@ -52,7 +102,7 @@ public class SlotService {
 		List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange(nIdForm,
 				startingDate, endingDateToDisplay);
 		// Get all the slot between these two dates
-		HashMap<LocalDateTime, Slot> mapSlot = SlotService.findListSlotByIdFormAndDateRange(nIdForm,
+		HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange(nIdForm,
 				startingDate.atStartOfDay(), endingDateToDisplay.atTime(LocalTime.MAX));
 
 		// Get or build all the event for the period
@@ -118,6 +168,23 @@ public class SlotService {
 		return listSlot;
 	}
 
+	/**
+	 * Build a slot with all its values
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param startingDateTime
+	 *            the starting date time
+	 * @param endingDateTime
+	 *            the ending date time
+	 * @param nMaxCapacity
+	 *            the maximum capacity for the slot
+	 * @param nNbRemainingPlaces
+	 *            the number of remaining places of the slot
+	 * @param bIsOpen
+	 *            true if the slot is open
+	 * @return the slot built
+	 */
 	public static Slot buildSlot(int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime,
 			int nMaxCapacity, int nNbRemainingPlaces, boolean bIsOpen) {
 		Slot slot = new Slot();
@@ -132,6 +199,18 @@ public class SlotService {
 		return slot;
 	}
 
+	/**
+	 * Update a slot in database and possibly all the slots after (if the ending
+	 * hour has changed, all the next slots are impacted in case of the user
+	 * decide to shift the next slots)
+	 * 
+	 * @param slot
+	 *            the slot to update
+	 * @param bEndingTimeHasChanged
+	 *            true if the ending time has changed
+	 * @param bShifSlot
+	 *            true if the user has decided to shift the next slots
+	 */
 	public static void updateSlot(Slot slot, boolean bEndingTimeHasChanged, boolean bShifSlot) {
 		List<Slot> listSlotToCreate = new ArrayList<>();
 		if (bEndingTimeHasChanged) {
@@ -139,13 +218,13 @@ public class SlotService {
 			if (!bShifSlot) {
 				// Need to get all the slots until the new end of this slot
 				List<Slot> listSlotToDelete = new ArrayList<>(SlotService
-						.findListSlotByIdFormAndDateRange(slot.getIdForm(),
+						.findSlotsByIdFormAndDateRange(slot.getIdForm(),
 								slot.getStartingDateTime().plus(1, ChronoUnit.MINUTES), slot.getEndingDateTime())
 						.values());
 				deleteListSlot(listSlotToDelete);
 				// Get the list of slot after the modified slot
-				HashMap<LocalDateTime, Slot> mapNextSlot = SlotService.findListSlotByIdFormAndDateRange(
-						slot.getIdForm(), slot.getEndingDateTime(), slot.getDate().atTime(LocalTime.MAX));
+				HashMap<LocalDateTime, Slot> mapNextSlot = SlotService.findSlotsByIdFormAndDateRange(slot.getIdForm(),
+						slot.getEndingDateTime(), slot.getDate().atTime(LocalTime.MAX));
 				List<LocalDateTime> listStartingDateTimeNextSlot = new ArrayList<>(mapNextSlot.keySet());
 				// Get the next date time slot
 				LocalDateTime nextStartingDateTime = null;
@@ -173,7 +252,7 @@ public class SlotService {
 				}
 			} else {
 				// Need to delete the slot until the end of the day
-				List<Slot> listSlotToDelete = new ArrayList<>(SlotService.findListSlotByIdFormAndDateRange(
+				List<Slot> listSlotToDelete = new ArrayList<>(SlotService.findSlotsByIdFormAndDateRange(
 						slot.getIdForm(), slot.getStartingDateTime().plus(1, ChronoUnit.MINUTES),
 						slot.getDate().atTime(LocalTime.MAX)).values());
 				deleteListSlot(listSlotToDelete);
@@ -185,6 +264,13 @@ public class SlotService {
 		createListSlot(listSlotToCreate);
 	}
 
+	/**
+	 * Save a slot in database
+	 * 
+	 * @param slot
+	 *            the slot to save
+	 * @return the slot saved
+	 */
 	public static Slot saveSlot(Slot slot) {
 		Slot slotSaved = null;
 		if (slot.getIdSlot() == 0) {
@@ -195,6 +281,14 @@ public class SlotService {
 		return slotSaved;
 	}
 
+	/**
+	 * Generate the list of slot to create after a slot (taking into account the
+	 * week definition and the rules to apply)
+	 * 
+	 * @param slot
+	 *            the slot
+	 * @return the list of next slots
+	 */
 	private static List<Slot> generateListSlotToCreateAfterASlot(Slot slot) {
 		List<Slot> listSlotToCreate = new ArrayList<>();
 		LocalDate dateOfSlot = slot.getDate();
@@ -221,24 +315,53 @@ public class SlotService {
 		return listSlotToCreate;
 	}
 
+	/**
+	 * Form the DTO, adding the date and the time to the slot
+	 * 
+	 * @param slot
+	 *            the slot on which to add values
+	 */
 	public static void addDateAndTimeToSlot(Slot slot) {
 		slot.setDate(slot.getStartingDateTime().toLocalDate());
 		slot.setStartingTime(slot.getStartingDateTime().toLocalTime());
 		slot.setEndingTime(slot.getEndingDateTime().toLocalTime());
 	}
 
+	/**
+	 * Create in database the slots given
+	 * 
+	 * @param listSlotToCreate
+	 *            the list of slots to create in database
+	 */
 	private static void createListSlot(List<Slot> listSlotToCreate) {
 		for (Slot slotTemp : listSlotToCreate) {
 			SlotHome.create(slotTemp);
 		}
 	}
 
+	/**
+	 * Delete a list of slots
+	 * 
+	 * @param listSlotToDelete
+	 *            the lost of slots to delete
+	 */
 	private static void deleteListSlot(List<Slot> listSlotToDelete) {
 		for (Slot slotToDelete : listSlotToDelete) {
 			SlotHome.delete(slotToDelete.getIdSlot());
 		}
 	}
 
+	/**
+	 * Find the first open slot with free places
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param startingDate
+	 *            the starting date to search
+	 * @param endingDate
+	 *            the ending date to search
+	 * @return the date of the slot found
+	 */
 	public static LocalDate findFirstDateOfFreeOpenSlot(int nIdForm, LocalDate startingDate, LocalDate endingDate) {
 		boolean bFreeSlotFound = false;
 		LocalDate localDateFound = null;
@@ -246,7 +369,7 @@ public class SlotService {
 		List<LocalDate> listClosingDate = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange(nIdForm,
 				startingDate, endingDate);
 		// Get all the slot between these two dates
-		HashMap<LocalDateTime, Slot> mapSlot = SlotService.findListSlotByIdFormAndDateRange(nIdForm,
+		HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange(nIdForm,
 				startingDate.atStartOfDay(), endingDate.atTime(LocalTime.MAX));
 		while (!bFreeSlotFound
 				&& (currentDateOfSearch.isBefore(endingDate) || !currentDateOfSearch.equals(endingDate))) {
@@ -292,6 +415,7 @@ public class SlotService {
 					}
 				}
 			}
+			currentDateOfSearch = currentDateOfSearch.plus(1, ChronoUnit.DAYS);
 		}
 		return localDateFound;
 	}

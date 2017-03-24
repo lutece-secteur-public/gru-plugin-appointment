@@ -77,10 +77,22 @@ public class ClosingDayHome {
 		return _dao.select(nKey, _plugin);
 	}
 
+	/**
+	 * Returns all the Closing Days of a form
+	 * @param nIdForm the form id
+	 * @return the list of closing days of the form 
+	 */
 	public static List<ClosingDay> findByIdForm(int nIdForm) {
 		return _dao.findByIdForm(nIdForm, _plugin);
 	}
 
+	/**
+	 * Returns a list of closing days of the form on a period
+	 * @param nIdForm the form Id
+	 * @param startingDate the starting date
+	 * @param endingDate the ending date
+	 * @return a list of closing days matches the criteria
+	 */
 	public static List<ClosingDay> findByIdFormAndDateRange(int nIdForm, LocalDate startingDate, LocalDate endingDate) {
 		return _dao.findByIdFormAndDateRange(nIdForm, startingDate, endingDate, _plugin);
 	}

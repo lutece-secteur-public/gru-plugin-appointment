@@ -103,7 +103,5 @@ public interface IWeekDefinitionDAO {
 	 *            the plugin
 	 * @return the week definition
 	 */
-	WeekDefinition findByIdFormAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin);
-
-	WeekDefinition findByIdFormAndMinDateOfApply(int nIdForm, Plugin plugin);
+	WeekDefinition findByIdFormAndClosestToDateOfApply(int nIdForm, LocalDate dateOfApply, Plugin plugin);	
 }

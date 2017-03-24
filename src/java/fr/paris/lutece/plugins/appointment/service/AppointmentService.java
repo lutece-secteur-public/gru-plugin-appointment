@@ -14,6 +14,12 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
 
+/**
+ * Service class for an appointment
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class AppointmentService {
 
 	private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
@@ -24,6 +30,13 @@ public class AppointmentService {
 	 */
 	private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
 
+	/**
+	 * Find all the appointments of the slots given in parameter
+	 * 
+	 * @param listSlot
+	 *            the list of slots
+	 * @return a list of the appointments on these slots
+	 */
 	public static List<Appointment> findListAppointmentByListSlot(List<Slot> listSlot) {
 		List<Appointment> listAppointment = new ArrayList<>();
 		for (Slot slot : listSlot) {
@@ -32,19 +45,49 @@ public class AppointmentService {
 		return listAppointment;
 	}
 
+	/**
+	 * Find the appointments of a slot
+	 * 
+	 * @param nIdSlot
+	 *            the slot Id
+	 * @return the appointments of the slot
+	 */
 	public static List<Appointment> findListAppointmentBySlot(int nIdSlot) {
 		return AppointmentHome.findByIdSlot(nIdSlot);
 	}
 
+	/**
+	 * Find the appointments of a user
+	 * 
+	 * @param nIdUser
+	 *            the user Id
+	 * @return the apointment of the user
+	 */
 	public static List<Appointment> findListAppointmentByUserId(int nIdUser) {
 		return AppointmentHome.findByIdUser(nIdUser);
 	}
-	
+
+	/**
+	 * Find the appointments by form and that will be after a given date
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param startingDateTime
+	 *            the starting date
+	 * @return the appointments that matches the criteria
+	 */
 	public static List<Appointment> findListAppointmentByIdFormAndAfterADateTime(int nIdForm,
 			LocalDateTime startingDateTime) {
 		return AppointmentHome.findByIdFormAndAfterADateTime(nIdForm, startingDateTime);
 	}
 
+	/**
+	 * Save an appointment in database
+	 * 
+	 * @param appointmentDTO
+	 *            the appointment dto
+	 * @return the id of the appointment saved
+	 */
 	public static int saveAppointment(AppointmentFrontDTO appointmentDTO) {
 		Slot slot = appointmentDTO.getSlot();
 		int oldNbRemainingPLaces = slot.getNbRemainingPlaces();
@@ -69,6 +112,13 @@ public class AppointmentService {
 		return appointment.getIdAppointment();
 	}
 
+	/**
+	 * Find an appointment by ots primary key
+	 * 
+	 * @param nIdAppointment
+	 *            the appointment Id
+	 * @return the appointment
+	 */
 	public static Appointment findAppointmentById(int nIdAppointment) {
 		return AppointmentHome.findByPrimaryKey(nIdAppointment);
 	}

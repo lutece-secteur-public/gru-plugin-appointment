@@ -38,6 +38,9 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * class EntryTypeText
+ * 
+ * @author Laurent Payen
+ * 
  */
 public class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser {
 	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";

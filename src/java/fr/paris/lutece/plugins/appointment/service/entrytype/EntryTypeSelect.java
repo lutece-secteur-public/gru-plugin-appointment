@@ -39,6 +39,8 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 /**
  *
  * class EntryTypeSelect
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeSelect extends AbstractEntryTypeSelect {

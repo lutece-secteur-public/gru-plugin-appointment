@@ -44,7 +44,7 @@ import fr.paris.lutece.portal.service.daemon.Daemon;
 /**
  * Daemon to publish and unpublish appointment form regarding the date of
  * valditity of the form
- * 
+ // TODO Remove this daemon !!!!!! 
  * @author Laurent Payen
  */
 public class AppointmentPublicationDaemon extends Daemon {

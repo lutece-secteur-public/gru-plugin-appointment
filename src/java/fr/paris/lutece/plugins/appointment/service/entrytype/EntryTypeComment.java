@@ -37,8 +37,9 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeComment;
 
 /**
- *
  * class EntryTypeComment
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeComment extends AbstractEntryTypeComment {

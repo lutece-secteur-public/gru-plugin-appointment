@@ -39,6 +39,8 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 /**
  *
  * class EntryTypeRadioButton
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeRadioButton extends AbstractEntryTypeRadioButton {

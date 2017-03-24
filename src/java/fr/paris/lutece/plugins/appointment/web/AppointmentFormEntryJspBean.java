@@ -74,6 +74,9 @@ import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * JspBean to manage appointment form entries
+ * 
+ * @author Laurent Payen
+ *
  */
 @Controller(controllerJsp = "ManageAppointmentFormEntries.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM)
 public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
@@ -91,6 +94,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_ID_ENTRY_GROUP = "id_entry_group";
 	private static final String PARAMETER_ENTRY_ID_MOVE = "entry_id_move";
 	private static final String PARAMETER_ID_EXPRESSION = "id_expression";
+
 	// Urls
 	private static final String JSP_URL_MANAGE_APPOINTMENT_FORM_ENTRIES = "jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp";
 
@@ -136,6 +140,14 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean {
 	// Local variables
 	private EntryService _entryService = EntryService.getService();
 
+	/**
+	 * Get the view of the entries of the form
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the page
+	 * @throws AccessDeniedException
+	 */
 	@View(VIEW_MODIFY_APPOINTMENTFORM_ENTRIES)
 	public String getModifyAppointmentFormEntries(HttpServletRequest request) throws AccessDeniedException {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);

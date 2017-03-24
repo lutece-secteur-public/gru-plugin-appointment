@@ -40,13 +40,24 @@ import fr.paris.lutece.portal.business.file.File;
 
 /**
  * DTO that represent a response to display a recap
+ * 
+ * @author Laurent Payen
+ *
  */
 public class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO> {
 	/**
 	 * Serial version UID
 	 */
 	private static final long serialVersionUID = -248405445729375667L;
+	
+	/**
+	 * The recap value
+	 */
 	private String _strRecapValue;
+	
+	/**
+	 * The response
+	 */
 	private Response _response;
 
 	/**

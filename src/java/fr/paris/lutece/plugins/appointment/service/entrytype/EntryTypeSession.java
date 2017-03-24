@@ -38,6 +38,9 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * Entry of type session
+ * 
+ * @author Laurent Payen
+ * 
  */
 public class EntryTypeSession extends AbstractEntryTypeSession {
 	private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_session.html";

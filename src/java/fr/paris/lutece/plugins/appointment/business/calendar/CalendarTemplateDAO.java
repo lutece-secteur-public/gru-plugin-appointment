@@ -41,6 +41,9 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  * This class provides Data Access methods for Calendar Template objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public class CalendarTemplateDAO implements ICalendarTemplateDAO {
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_calendar_template) FROM appointment_calendar_template";

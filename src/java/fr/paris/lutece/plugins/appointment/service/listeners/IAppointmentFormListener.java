@@ -35,6 +35,9 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 
 /**
  * IAppointmentFormListener Interface
+ * 
+ * @author Laurent Payen
+ * 
  */
 public interface IAppointmentFormListener {
 	void onFormModifed(int nIdForm);

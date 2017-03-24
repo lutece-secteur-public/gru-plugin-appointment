@@ -9,6 +9,11 @@
 				</div>
 			</div>
 		</div>
+		<div class="layout-wrapper">
+			<#if infos?? || errors??>
+				<@messages infos=infos errors=errors />			
+			</#if>
+		</div>
 	</div>
 </div>
 <div class="row calendar-row">
@@ -60,7 +65,7 @@
 						</#list>
 						<#if hasDisplayableError>
 							<#list form_errors as form_error>	
-								<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[0] || form_error.errorMessage==listAllErrors[10])>
+								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
 									<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
 								</#if>	
 							</#list>

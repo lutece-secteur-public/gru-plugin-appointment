@@ -6,6 +6,12 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
+/**
+ * Service class of the form message
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class FormMessageService {
 
 	/**
@@ -32,8 +38,10 @@ public class FormMessageService {
 	private static final String PROPERTY_DEFAULT_CALENDAR_FULL_LABEL = "appointment.formMessages.defaultCalendarFullLabel";
 
 	/**
+	 * Create a default form message for a form
 	 * 
 	 * @param nIdForm
+	 *            the form Id
 	 */
 	public static void createFormMessageWithDefaultValues(int nIdForm) {
 		FormMessage formMessage = getDefaultAppointmentFormMessage();
@@ -87,6 +95,13 @@ public class FormMessageService {
 		return formMessage;
 	}
 
+	/**
+	 * Find the form messages of a form
+	 * 
+	 * @param nIdForm
+	 *            the form id
+	 * @return the form message object
+	 */
 	public static FormMessage findFormMessageByIdForm(int nIdForm) {
 		return FormMessageHome.findByIdForm(nIdForm);
 	}

@@ -4,14 +4,24 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
 
+/**
+ * Service class for the display
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class DisplayService {
 
 	/**
+	 * Fill a display object with the appointment form DTO
 	 * 
 	 * @param display
+	 *            the display object
 	 * @param appointmentForm
+	 *            the appointmentform DTO
 	 * @param nIdForm
-	 * @return
+	 *            the form Id
+	 * @return the display overload
 	 */
 	public static Display fillInDisplayWithAppointmentForm(Display display, AppointmentForm appointmentForm,
 			int nIdForm) {
@@ -24,10 +34,13 @@ public class DisplayService {
 	}
 
 	/**
+	 * Create a display object from an appointment form DTO
 	 * 
 	 * @param appointmentForm
+	 *            the appointment form DTO
 	 * @param nIdForm
-	 * @return
+	 *            the form Id
+	 * @return the display object created
 	 */
 	public static Display createDisplay(AppointmentForm appointmentForm, int nIdForm) {
 		Display display = new Display();
@@ -37,10 +50,13 @@ public class DisplayService {
 	}
 
 	/**
+	 * Update a display object with the values of an appointment form DTO
 	 * 
 	 * @param appointmentForm
+	 *            the appointment form DTO
 	 * @param nIdForm
-	 * @return
+	 *            the form Id
+	 * @return the display object updated
 	 */
 	public static Display updateDisplay(AppointmentForm appointmentForm, int nIdForm) {
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
@@ -50,9 +66,11 @@ public class DisplayService {
 	}
 
 	/**
+	 * Find the display of the form
 	 * 
 	 * @param nIdForm
-	 * @return
+	 *            the form Id
+	 * @return the display of the form
 	 */
 	public static Display findDisplayWithFormId(int nIdForm) {
 		return DisplayHome.findByIdForm(nIdForm);

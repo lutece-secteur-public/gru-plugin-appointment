@@ -38,6 +38,9 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  * this class provides Data Access methods for AppointmentPortlet objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public final class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO {
 	// //////////////////////////////////////////////////////////////////////////

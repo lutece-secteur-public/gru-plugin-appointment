@@ -20,6 +20,9 @@ public class Appointment implements Serializable {
 	 */
 	private int _nIdAppointment;
 
+	/**
+	 * Reference of the Appointment
+	 */
 	private String _strReference;
 
 	/**
@@ -32,10 +35,21 @@ public class Appointment implements Serializable {
 	 */
 	private int _nIdSlot;
 
+	/**
+	 * Get the reference of the appointment
+	 * 
+	 * @return the reference
+	 */
 	public String getReference() {
 		return _strReference;
 	}
 
+	/**
+	 * Set the reference of the appointment
+	 * 
+	 * @param strReference
+	 *            the reference to set
+	 */
 	public void setReference(String strReference) {
 		this._strReference = strReference;
 	}

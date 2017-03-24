@@ -90,6 +90,17 @@ public interface IAppointmentDAO {
 	 */
 	List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin);
 
+	/**
+	 * Returns a list of all the appointment that start after a given date
+	 * 
+	 * @param nIdForm
+	 *            the form id
+	 * @param startingDateTime
+	 *            the starting date
+	 * @param plugin
+	 *            the plugin
+	 * @return a list of the appointments
+	 */
 	List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime, Plugin plugin);
 
 }

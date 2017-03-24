@@ -22,11 +22,28 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
 
+/**
+ * Service class for the closing day
+ * 
+ * @author Laurent Payen
+ *
+ */
 public class ClosingDayService {
 
 	private static final String MARK_EXCEL_EXTENSION_XLSX = "xlsx";
-	private static final String MARK_FORMAT_DATE_REGEX = "([0-9]{2})/([0-9]{2})/([0-9]{4})";	
+	private static final String MARK_FORMAT_DATE_REGEX = "([0-9]{2})/([0-9]{2})/([0-9]{4})";
 
+	/**
+	 * Find all the closing dates of the form on a given period
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param startingDate
+	 *            the starting date
+	 * @param endingDate
+	 *            the ending date
+	 * @return a list of closing dates
+	 */
 	public static List<LocalDate> findListDateOfClosingDayByIdFormAndDateRange(int nIdForm, LocalDate startingDate,
 			LocalDate endingDate) {
 		List<LocalDate> listDate = new ArrayList<>();
@@ -37,6 +54,13 @@ public class ClosingDayService {
 		return listDate;
 	}
 
+	/**
+	 * Find all the dates of the closing days of the form
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @return the list of closing dates
+	 */
 	public static List<LocalDate> findListDateOfClosingDayByIdForm(int nIdForm) {
 		List<LocalDate> listDate = new ArrayList<>();
 		List<ClosingDay> listClosingDay = ClosingDayHome.findByIdForm(nIdForm);
@@ -46,19 +70,44 @@ public class ClosingDayService {
 		return listDate;
 	}
 
+	/**
+	 * Save the closing days of a form
+	 * 
+	 * @param nIdForm
+	 *            the form id
+	 * @param listClosingDate
+	 *            the closing dates to save
+	 */
 	public static void saveListClosingDay(int nIdForm, List<LocalDate> listClosingDate) {
 		for (LocalDate closingDate : listClosingDate) {
 			saveClosingDay(nIdForm, closingDate);
 		}
 	}
-	
+
+	/**
+	 * Save a closing day of a form
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param closingDate
+	 *            the closing date
+	 */
 	public static void saveClosingDay(int nIdForm, LocalDate closingDate) {
 		ClosingDay closingDay = new ClosingDay();
 		closingDay.setIdForm(nIdForm);
-		closingDay.setDateOfClosingDay(closingDate);		
+		closingDay.setDateOfClosingDay(closingDate);
 		ClosingDayHome.create(closingDay);
 	}
 
+	/**
+	 * Import the closing dates of a given file
+	 * 
+	 * @param item
+	 *            the file in input
+	 * @return the list of the closing dates in the file
+	 * @throws IOException
+	 *             if error during reading file
+	 */
 	public static List<LocalDate> getImportClosingDays(FileItem item) throws IOException {
 		HashSet<LocalDate> listDays = new HashSet<LocalDate>();
 		FileInputStream fis = null;
@@ -90,10 +139,10 @@ public class ClosingDayService {
 										Instant instant = cell.getDateCellValue().toInstant();
 										LocalDate localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
 										strdate = localDate.format(Utilities.formatter);
-									}									
+									}
 									if (StringUtils.isNotEmpty(strdate) && strdate.matches(MARK_FORMAT_DATE_REGEX)) {
-											LocalDate date = LocalDate.parse(strdate, Utilities.formatter);
-											listDays.add(date);										
+										LocalDate date = LocalDate.parse(strdate, Utilities.formatter);
+										listDays.add(date);
 									}
 								}
 							}

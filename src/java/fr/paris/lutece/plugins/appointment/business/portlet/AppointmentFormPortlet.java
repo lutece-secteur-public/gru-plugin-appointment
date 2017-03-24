@@ -41,13 +41,13 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 
 /**
  * This class represents business objects AppointmentPortlet
+ * 
+ * @author Laurent Payen
+ *
  */
 public class AppointmentFormPortlet extends PortletHtmlContent {
+	
 	private int _nIdAppointmentForm;
-
-	// ///////////////////////////////////////////////////////////////////////////////
-	// Constants
-
 	/**
 	 * Sets the identifier of the portlet type to value specified
 	 */

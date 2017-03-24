@@ -37,8 +37,9 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeCheckBox;
 
 /**
- *
  * class EntryTypeCheckBox
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeCheckBox extends AbstractEntryTypeCheckBox {

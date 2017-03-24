@@ -43,6 +43,9 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * This class provides the user interface to manage AppointmentPortlet features
+ * 
+ * @author Laurent Payen
+ *
  */
 public class AppointmentPortletJspBean extends PortletJspBean {
 	/**

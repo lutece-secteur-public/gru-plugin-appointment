@@ -53,7 +53,10 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
- * Calendar Dashboard Component This component displays directories
+ * Calendar Dashboard Component
+ * 
+ * @author Laurent Payen
+ *
  */
 public class AppointmentFormDashboardComponent extends DashboardComponent {
 	// MARKS
@@ -62,7 +65,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent {
 	private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
 	private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
-	// TEMPALTES
+	// TEMPLATES
 	private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
 
 	/**

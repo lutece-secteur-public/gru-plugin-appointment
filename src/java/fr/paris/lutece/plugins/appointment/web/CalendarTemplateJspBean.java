@@ -62,6 +62,9 @@ import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * This class provides the user interface to manage calendar templates
+ * 
+ * @author Laurent Payen
+ *
  */
 @Controller(controllerJsp = CalendarTemplateJspBean.CONTROLLER_JSP, controllerPath = CalendarTemplateJspBean.CONTROLLER_PATH, right = CalendarTemplateJspBean.RIGHT_MANAGE_CALENDAR_TEMPLATES)
 public class CalendarTemplateJspBean extends MVCAdminJspBean {

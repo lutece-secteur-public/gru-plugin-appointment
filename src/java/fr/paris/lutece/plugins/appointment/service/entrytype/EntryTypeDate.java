@@ -37,8 +37,9 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntryTypeDate;
 
 /**
- *
  * class EntryTypeDate
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeDate extends AbstractEntryTypeDate {

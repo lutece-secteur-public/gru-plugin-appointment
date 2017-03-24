@@ -38,6 +38,9 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * EntryTypeNumbering
+ * 
+ * @author Laurent Payen
+ * 
  */
 public class EntryTypeNumbering extends AbstractEntryTypeNumbering {
 	// TEMPLATES

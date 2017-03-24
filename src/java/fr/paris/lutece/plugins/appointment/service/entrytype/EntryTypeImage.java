@@ -50,6 +50,8 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 /**
  *
  * class EntryTypeImage
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeImage extends EntryTypeFile {

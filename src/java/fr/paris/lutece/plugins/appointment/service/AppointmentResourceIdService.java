@@ -50,6 +50,8 @@ import fr.paris.lutece.util.ReferenceList;
 /**
  *
  * class FormResourceIdService
+ * 
+ * @author Laurent Payen
  *
  */
 public class AppointmentResourceIdService extends ResourceIdService {

@@ -41,8 +41,9 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
- *
  * EntryTypeService
+ * 
+ * @author Laurent Payen
  *
  */
 public final class EntryTypeService {

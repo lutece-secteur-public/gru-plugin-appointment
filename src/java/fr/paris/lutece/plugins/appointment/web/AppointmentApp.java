@@ -33,20 +33,18 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import static java.lang.Math.toIntExact;
-
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
@@ -113,15 +111,14 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
 
 /**
- * This class provides a simple implementation of an XPage
+ * This class provides a simple implementation of an Appointment XPage (On Front
+ * Office)
+ * 
+ * @author Laurent Payen
+ *
  */
 @Controller(xpageName = AppointmentApp.XPAGE_NAME, pageTitleI18nKey = AppointmentApp.MESSAGE_DEFAULT_PAGE_TITLE, pagePathI18nKey = AppointmentApp.MESSAGE_DEFAULT_PATH)
 public class AppointmentApp extends MVCApplication {
-	/**
-	 * Name of the view of the first step of the form
-	 */
-	public static final String VIEW_APPOINTMENT_CALENDAR = "getViewAppointmentCalendar";
-	public static final String VIEW_APPOINTMENT_FORM = "getViewAppointmentForm";
 
 	/**
 	 * Default page of XPages of this app
@@ -151,7 +148,11 @@ public class AppointmentApp extends MVCApplication {
 	private static final String TEMPLATE_CANCEL_APPOINTMENT = "skin/plugins/appointment/cancel_appointment.html";
 	private static final String TEMPLATE_APPOINTMENT_CANCELED = "skin/plugins/appointment/appointment_canceled.html";
 	private static final String TEMPLATE_MY_APPOINTMENTS = "skin/plugins/appointment/my_appointments.html";
+	private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
+
 	// Views
+	public static final String VIEW_APPOINTMENT_FORM = "getViewAppointmentForm";
+	public static final String VIEW_APPOINTMENT_CALENDAR = "getViewAppointmentCalendar";
 	private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
 	private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
 	private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
@@ -222,6 +223,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String MARK_COLON = ":";
 	private static final String MARK_ICONS = "icons";
 	private static final String MARK_ICON_NULL = "NULL";
+
 	// Errors
 	private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 	private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
@@ -233,8 +235,10 @@ public class AppointmentApp extends MVCApplication {
 	private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
 	private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 	private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
-
-	private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
+	private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
+	private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
+	private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
+	private static final String ERROR_MESSAGE_NO_AVAILABLE_SLOT = "appointment.validation.appointment.noAvailableSlot";
 
 	// Session keys
 	private static final String SESSION_APPOINTMENT_FORM_ERRORS = "appointment.session.formErrors";
@@ -249,6 +253,12 @@ public class AppointmentApp extends MVCApplication {
 	// Local variables
 	private transient CaptchaSecurityService _captchaSecurityService;
 
+	/**
+	 * Get the calendar view
+	 * 
+	 * @param request
+	 * @return the Xpage
+	 */
 	@View(VIEW_APPOINTMENT_CALENDAR)
 	public XPage getViewAppointmentCalendar(HttpServletRequest request) {
 		clearSession(request);
@@ -256,50 +266,46 @@ public class AppointmentApp extends MVCApplication {
 		Map<String, Object> model = getModel();
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
 		if (!form.isActive()) {
-			return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
-		}
-		LocalDate dateOfDisplay = null;
-		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
-		if (StringUtils.isNotEmpty(strDateOfDisplay)) {
-			dateOfDisplay = LocalDate.parse(strDateOfDisplay);
+			addError(ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale(request));
 		}
 		FormMessage formMessages = FormMessageHome.findByPrimaryKey(nIdForm);
 		// Check if the date of display and the endDateOfDisplay are in the
 		// validity date range of the form
 		LocalDate startingValidityDate = form.getStartingValidityDate();
-		LocalDate endingValidityDate = form.getEndingValidityDate();
 		if (startingValidityDate == null) {
-			// Do not display the form
-			// TODO
-			return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
+			addError(ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, getLocale(request));
 		}
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
 		// Get the nb weeks to display
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
 		// Find first open slot free in future
-		LocalDate dateNow = LocalDate.now();
-		LocalDate startingDateOfDisplay = startingValidityDate;
-		if (startingDateOfDisplay.isBefore(dateNow)) {
-			startingDateOfDisplay = dateNow;
-		}
+		LocalDate startingDateOfDisplay = LocalDate.now();
+		// Calculate the ending date of display with the nb weeks to display
+		// since today
 		LocalDate endingDateOfDisplay = startingDateOfDisplay.plus(nNbWeeksToDisplay, ChronoUnit.WEEKS);
+		// if the ending date of display is after the ending validity date of
+		// the form
+		// assign the ending date of display with the ending validity date of
+		// the form
+		LocalDate endingValidityDate = form.getEndingValidityDate();
 		if (endingValidityDate != null) {
 			if (endingDateOfDisplay.isAfter(endingValidityDate)) {
 				endingDateOfDisplay = endingValidityDate;
-				nNbWeeksToDisplay = toIntExact(startingValidityDate.until(endingDateOfDisplay, ChronoUnit.WEEKS));
 			}
 			if (startingDateOfDisplay.isAfter(endingDateOfDisplay)) {
-				// Form no more valid
-				// TODO
-				return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
+				addError(ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale(request));
 			}
 		}
-		startingDateOfDisplay = SlotService.findFirstDateOfFreeOpenSlot(nIdForm, startingDateOfDisplay,
+		LocalDate firstDateOfFreeOpenSlot = SlotService.findFirstDateOfFreeOpenSlot(nIdForm, startingDateOfDisplay,
 				endingDateOfDisplay);
-		if (startingDateOfDisplay == null) {
-			// No Available Slot
-			// TODO
-			return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
+		if (firstDateOfFreeOpenSlot == null) {
+			addError(ERROR_MESSAGE_NO_AVAILABLE_SLOT, getLocale(request));
+		}
+		// Get the current date of display of the calendar, if it exists
+		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
+		LocalDate dateOfDisplay = startingDateOfDisplay;
+		if (StringUtils.isNotEmpty(strDateOfDisplay)) {
+			dateOfDisplay = LocalDate.parse(strDateOfDisplay);
 		}
 		// Get all the week definitions
 		HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition(nIdForm);
@@ -314,12 +320,14 @@ public class AppointmentApp extends MVCApplication {
 		List<String> listDayOfWeek = new ArrayList<>(
 				WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition(listWeekDefinition));
 		// Build the slots
-		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, startingDateOfDisplay, nNbWeeksToDisplay);
+		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, startingDateOfDisplay,
+				nNbWeeksToDisplay);
 		if (dateOfDisplay != null) {
 			startingDateOfDisplay = dateOfDisplay;
 		}
-		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay);
-		model.put(PARAMETER_DATE_OF_DISPLAY, startingDateOfDisplay);
+		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY,
+				Math.toIntExact(startingDateOfDisplay.until(endingDateOfDisplay, ChronoUnit.WEEKS)));
+		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
 		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
 		model.put(PARAMETER_EVENTS, listSlot);
 		model.put(PARAMETER_MIN_TIME, minStartingTime);
@@ -337,6 +345,13 @@ public class AppointmentApp extends MVCApplication {
 		return xpage;
 	}
 
+	/**
+	 * Get the form appointment view (front office)
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the xpage
+	 */
 	@View(VIEW_APPOINTMENT_FORM)
 	public XPage getViewAppointmentForm(HttpServletRequest request) {
 		AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
@@ -362,10 +377,10 @@ public class AppointmentApp extends MVCApplication {
 				slot = SlotService.findSlotById(nIdSlot);
 				SlotService.addDateAndTimeToSlot(slot);
 			}
-			
+
 			appointmentFrontDTO.setSlot(slot);
 			appointmentFrontDTO.setIdForm(nIdForm);
-			LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);		
+			LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
 			if (user != null) {
 				Map<String, String> map = user.getUserInfos();
 				appointmentFrontDTO.setEmail(map.get("user.business-info.online.email"));
@@ -375,12 +390,12 @@ public class AppointmentApp extends MVCApplication {
 			request.getSession().setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentFrontDTO);
 			ReservationRule reservationRule = ReservationRuleService
 					.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, slot.getDate());
-			WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm,
-					slot.getDate());
+			WeekDefinition weekDefinition = WeekDefinitionService
+					.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm, slot.getDate());
 			form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 					weekDefinition.getIdWeekDefinition());
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
-		}										
+		}
 		Locale locale = getLocale(request);
 		StringBuffer strBuffer = new StringBuffer();
 		List<Entry> listEntryFirstLevel = EntryService.getFilter(form.getIdForm(), true);
@@ -436,8 +451,11 @@ public class AppointmentApp extends MVCApplication {
 		Locale locale = request.getLocale();
 		String strEmail = request.getParameter(PARAMETER_EMAIL);
 		checkEmail(strEmail, request.getParameter(PARAMETER_EMAIL_CONFIRMATION), form, locale, listFormErrors);
-		checkUserAndAppointment(appointmentFrontDTO.getSlot().getStartingDateTime().toLocalDate(), strEmail, form,
-				locale, listFormErrors);
+		if (!checkUserAndAppointment(appointmentFrontDTO.getSlot().getStartingDateTime().toLocalDate(), strEmail, form,
+				locale, listFormErrors)) {
+			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
+					appointmentFrontDTO.getSlot().getIdSlot());
+		}
 		int nbBookedSeats = checkAndReturnNbBookedSeats(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS), form,
 				appointmentFrontDTO.getSlot().getNbRemainingPlaces(), locale, listFormErrors);
 		fillAppointmentFrontDTO(appointmentFrontDTO, nbBookedSeats, strEmail,
@@ -519,7 +537,7 @@ public class AppointmentApp extends MVCApplication {
 		if (appointment.getSlot().getIdSlot() != 0) {
 			slot = SlotService.findSlotById(appointment.getSlot().getIdSlot());
 		} else {
-			HashMap<LocalDateTime, Slot> mapSlot = SlotService.findListSlotByIdFormAndDateRange(appointment.getIdForm(),
+			HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange(appointment.getIdForm(),
 					appointment.getSlot().getStartingDateTime(), appointment.getSlot().getEndingDateTime());
 			if (!mapSlot.isEmpty()) {
 				slot = mapSlot.get(appointment.getSlot().getStartingDateTime());
@@ -570,6 +588,13 @@ public class AppointmentApp extends MVCApplication {
 		return getXPage(TEMPLATE_APPOINTMENT_CREATED, getLocale(request), model);
 	}
 
+	/**
+	 * Get the view of all the forms on front office side
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the xpage
+	 */
 	@View(value = VIEW_APPOINTMENT_FORM_LIST, defaultView = true)
 	public XPage getFormList(HttpServletRequest request) {
 		Locale locale = getLocale(request);
@@ -578,10 +603,10 @@ public class AppointmentApp extends MVCApplication {
 		xpage.setContent(strHtmlContent);
 		xpage.setPathLabel(getDefaultPagePath(locale));
 		xpage.setTitle(getDefaultPageTitle(locale));
-
 		return xpage;
 	}
 
+	// TODO
 	@View(VIEW_GET_CANCEL_APPOINTMENT)
 	public XPage getCancelAppointment(HttpServletRequest request) {
 
@@ -595,14 +620,7 @@ public class AppointmentApp extends MVCApplication {
 		return xpage;
 	}
 
-	/**
-	 * Get the page to cancel an appointment
-	 * 
-	 * @param request
-	 *            The request
-	 * @return The XPage to display
-	 * @throws SiteMessageException
-	 */
+	// TODO
 	@View(VIEW_GET_VIEW_CANCEL_APPOINTMENT)
 	public XPage getViewCancelAppointment(HttpServletRequest request) throws SiteMessageException {
 		String refAppointment = request.getParameter(PARAMETER_REF_APPOINTMENT);
@@ -638,15 +656,7 @@ public class AppointmentApp extends MVCApplication {
 		return xpage;
 	}
 
-	/**
-	 * Do cancel an appointment
-	 * 
-	 * @param request
-	 *            The request
-	 * @return The XPage to display
-	 * @throws SiteMessageException
-	 *             If a site message needs to be displayed
-	 */
+	// TODO
 	@Action(ACTION_DO_CANCEL_APPOINTMENT)
 	public XPage doCancelAppointment(HttpServletRequest request) throws SiteMessageException {
 		String strRef = request.getParameter(PARAMETER_REF_APPOINTMENT);
@@ -722,13 +732,7 @@ public class AppointmentApp extends MVCApplication {
 		return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
 	}
 
-	/**
-	 * Get the page to confirm that the appointment has been canceled
-	 * 
-	 * @param request
-	 *            The request
-	 * @return The XPage to display
-	 */
+	// TODO
 	@View(VIEW_APPOINTMENT_CANCELED)
 	public XPage getAppointmentCanceled(HttpServletRequest request) {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
@@ -751,16 +755,7 @@ public class AppointmentApp extends MVCApplication {
 		return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
 	}
 
-	/**
-	 * Get the page to view the appointments of a user
-	 * 
-	 * @param request
-	 *            The request
-	 * @return The XPage to display
-	 * @throws UserNotSignedException
-	 *             If the authentication is enabled and the user has not signed
-	 *             in
-	 */
+	// TODO
 	@View(VIEW_GET_MY_APPOINTMENTS)
 	public XPage getMyAppointments(HttpServletRequest request) throws UserNotSignedException {
 		if (!SecurityService.isAuthenticationEnable()) {
@@ -775,17 +770,7 @@ public class AppointmentApp extends MVCApplication {
 		return xpage;
 	}
 
-	/**
-	 * Get the HTML content of the my appointment page of a user
-	 * 
-	 * @param request
-	 *            The request
-	 * @param locale
-	 *            The locale
-	 * @return The HTML content, or null if the
-	 * @throws UserNotSignedException
-	 *             If the user has not signed in
-	 */
+	// TODO
 	public static String getMyAppointmentsXPage(HttpServletRequest request, Locale locale)
 			throws UserNotSignedException {
 		if (!SecurityService.isAuthenticationEnable()) {
@@ -841,6 +826,8 @@ public class AppointmentApp extends MVCApplication {
 	}
 
 	/**
+	 * Get the html content of the list of forms
+	 * 
 	 * @param appointmentFormService
 	 *            The service to use
 	 * @param strTitle
@@ -852,11 +839,16 @@ public class AppointmentApp extends MVCApplication {
 	public static String getFormListHtml(HttpServletRequest request, Locale locale) {
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		Map<String, Object> model = new HashMap<String, Object>();
-		Collection<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAppointmentForm();
+		// We keep only the active
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAppointmentForm().stream()
+				.filter(a -> a.getDateStartValidity().toLocalDate().isBefore(LocalDate.now())
+						|| a.getDateStartValidity().toLocalDate().equals(LocalDate.now()))
+				.sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle())).collect(Collectors.toList());
 		List<String> icons = new ArrayList<String>();
 		for (AppointmentForm form : listAppointmentForm) {
 			ImageResource img = form.getIcon();
-			if ((img.getImage() == null) || StringUtils.isBlank(img.getMimeType())) {
+			if (img == null || img.getImage() == null || StringUtils.isEmpty(img.getMimeType())
+					|| StringUtils.equals(img.getMimeType(), MARK_ICON_NULL)) {
 				icons.add(MARK_ICON_NULL);
 			} else {
 				byte[] imgBytesAsBase64 = Base64.encodeBase64(img.getImage());
@@ -886,6 +878,21 @@ public class AppointmentApp extends MVCApplication {
 		return _captchaSecurityService;
 	}
 
+	/**
+	 * Check that the email is correct and matches the confirm email
+	 * 
+	 * @param strEmail
+	 *            the email
+	 * @param strConfirmEmail
+	 *            the confirm email
+	 * @param form
+	 *            the form
+	 * @param locale
+	 *            the local
+	 * @param listFormErrors
+	 *            the list of errors that can be fill in with the errors found
+	 *            for the email
+	 */
 	private void checkEmail(String strEmail, String strConfirmEmail, AppointmentForm form, Locale locale,
 			List<GenericAttributeError> listFormErrors) {
 		if (form.getEnableMandatoryEmail()) {
@@ -907,6 +914,22 @@ public class AppointmentApp extends MVCApplication {
 		}
 	}
 
+	/**
+	 * Check and validate all the rules for the number of booked seats asked
+	 * 
+	 * @param strNbBookedSeats
+	 *            the number of booked seats
+	 * @param form
+	 *            the form
+	 * @param nbRemainingPlaces
+	 *            the number of remaining places on the slot asked
+	 * @param locale
+	 *            the locale
+	 * @param listFormErrors
+	 *            the list of errors that can be fill in with the errors found
+	 *            for the number of booked seats
+	 * @return
+	 */
 	private int checkAndReturnNbBookedSeats(String strNbBookedSeats, AppointmentForm form, int nbRemainingPlaces,
 			Locale locale, List<GenericAttributeError> listFormErrors) {
 		int nbBookedSeats = 1;
@@ -926,8 +949,25 @@ public class AppointmentApp extends MVCApplication {
 		return nbBookedSeats;
 	}
 
-	private void checkUserAndAppointment(LocalDate dateOfTheAppointment, String strEmail, AppointmentForm form,
+	/**
+	 * Check that the user has no previous appointment or that the previous
+	 * appointment respect the delay
+	 * 
+	 * @param dateOfTheAppointment
+	 *            date of the new appointment
+	 * @param strEmail
+	 *            the email of the user
+	 * @param form
+	 *            the form
+	 * @param locale
+	 *            the locale
+	 * @param listFormErrors
+	 *            the list of errors that can be fill in with the errors found
+	 * @return
+	 */
+	private boolean checkUserAndAppointment(LocalDate dateOfTheAppointment, String strEmail, AppointmentForm form,
 			Locale locale, List<GenericAttributeError> listFormErrors) {
+		boolean bError = false;
 		if (StringUtils.isNotEmpty(strEmail)) {
 			int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment();
 			if (nbDaysBetweenTwoAppointments != 0) {
@@ -953,17 +993,30 @@ public class AppointmentApp extends MVCApplication {
 								|| dateOfTheLastAppointment.equals(dateOfTheAppointment))
 								&& dateOfTheLastAppointment.until(dateOfTheAppointment,
 										ChronoUnit.DAYS) <= nbDaysBetweenTwoAppointments) {
-							GenericAttributeError genAttError = new GenericAttributeError();
-							genAttError.setErrorMessage(I18nService
-									.getLocalizedString(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale));
-							listFormErrors.add(genAttError);
+							addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
+							bError = true;
 						}
 					}
 				}
 			}
 		}
+		return bError;
 	}
 
+	/**
+	 * Fill the appoinmentFront DTO with the given parameters
+	 * 
+	 * @param appointmentFrontDTO
+	 *            the appointmentFront DTO
+	 * @param nbBookedSeats
+	 *            the number of booked seats
+	 * @param strEmail
+	 *            the email of the user
+	 * @param strFirstName
+	 *            the first name of the user
+	 * @param strLastName
+	 *            the last name of the user
+	 */
 	private void fillAppointmentFrontDTO(AppointmentFrontDTO appointmentFrontDTO, int nbBookedSeats, String strEmail,
 			String strFirstName, String strLastName) {
 		appointmentFrontDTO
@@ -983,6 +1036,17 @@ public class AppointmentApp extends MVCApplication {
 		}
 	}
 
+	/**
+	 * Validate the form and the additional entries of the form
+	 * 
+	 * @param appointmentFrontDTO
+	 *            the appointmentFron DTo to validate
+	 * @param request
+	 *            the request
+	 * @param listFormErrors
+	 *            the list of errors that can be fill with the errors found at
+	 *            the validation
+	 */
 	private void validateFormAndEntries(AppointmentFrontDTO appointmentFrontDTO, HttpServletRequest request,
 			List<GenericAttributeError> listFormErrors) {
 		Set<ConstraintViolation<AppointmentFrontDTO>> listErrors = BeanValidationUtil.validate(appointmentFrontDTO);
@@ -1002,6 +1066,12 @@ public class AppointmentApp extends MVCApplication {
 		}
 	}
 
+	/**
+	 * Clear the user's session
+	 * 
+	 * @param request
+	 *            the request
+	 */
 	private void clearSession(HttpServletRequest request) {
 		request.getSession().removeAttribute(SESSION_APPOINTMENT_FORM_ERRORS);
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);

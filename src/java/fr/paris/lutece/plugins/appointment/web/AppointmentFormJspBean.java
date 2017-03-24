@@ -134,7 +134,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_GENERAL_SETTINGS = "appointment.modify_appointmentForm.titleAlterablesParameters";
 	private static final String PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS = "appointment.modify_appointmentForm.titleStructuralsParameters";
-
 	private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.create_appointmentform.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentform_messages.pageTitle";
 
@@ -169,7 +168,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
 	private static final String PROPERTY_COPY_OF_FORM = "appointment.manage_appointmentforms.Copy";
 	private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
-	private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";	
+	private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
 	private static final String MESSAGE_ERROR_OPEN_SLOTS = "appointment.message.error.openSlots";
 	private static final String MESSAGE_INFO_IMPORTED_CLOSING_DAYS = "appointment.info.appointmentform.closingDayImport";
 
@@ -177,7 +176,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
 	private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
 	private static final String VIEW_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
-
 	private static final String VIEW_ADVANCED_MODIFY_APPOINTMENTFORM = "modifyAppointmentFormAdvanced";
 	private static final String VIEW_MODIFY_FORM_MESSAGES = "modifyAppointmentFormMessages";
 	private static final String VIEW_PERMISSIONS_FORM = "permissions";
@@ -234,8 +232,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		UrlItem url = new UrlItem(JSP_MANAGE_APPOINTMENTFORMS);
 		String strUrl = url.getUrl();
 		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();
-		LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>(
-				listAppointmentForm, nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale());
+		LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>(listAppointmentForm,
+				nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale());
 		Map<String, Object> model = getModel();
 		model.put(MARK_NB_ITEMS_PER_PAGE, Integer.toString(nItemsPerPage));
 		model.put(MARK_PAGINATOR, paginator);
@@ -378,7 +376,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
-			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);			
+			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
 		}
 		Map<String, Object> model = getModel();
 		addElementsToModelForLeftColumn(request, appointmentForm, getUser(), getLocale(), model);
@@ -414,7 +412,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
-			appointmentForm = FormService.buildAppointmentForm(nIdForm, nIdReservationRule, 0);			
+			appointmentForm = FormService.buildAppointmentForm(nIdForm, nIdReservationRule, 0);
 		}
 		Map<String, Object> model = getModel();
 		model.put(MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule(nIdForm));
@@ -457,10 +455,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		} else {
 			buildImageResource(mRequest);
 		}
-		if (importClosingDayFile(mRequest, nIdForm)){			
+		if (importClosingDayFile(mRequest, nIdForm)) {
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 			return redirect(request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm);
-		};
+		}
+		;
 		setParametersDays(appointmentForm, appointmentFormDb);
 		if (!validateBean(appointmentForm, VALIDATION_ATTRIBUTES_PREFIX) || !checkConstraints(appointmentForm)) {
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
@@ -473,6 +472,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		return redirect(request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm);
 	}
 
+	/**
+	 * Do modify a form (advanced parameters part)
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the JSP URL to display the form to modify appointment forms
+	 * @throws AccessDeniedException
+	 */
 	@Action(ACTION_MODIFY_ADVANCED_APPOINTMENTFORM)
 	public String doModifyAdvancedAppointmentForm(HttpServletRequest request) throws AccessDeniedException {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
@@ -545,7 +552,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		}
 		int nIdForm = Integer.parseInt(strIdForm);
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
-		if (form != null) {			
+		if (form != null) {
 			if (!form.isActive()) {
 				if (form.getStartingValidityDate() == null) {
 					addError(ERROR_APPOINTMENTFORM_NO_STARTING_VALIDITY_DATE, getLocale());
@@ -574,6 +581,13 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		return redirectView(request, VIEW_MANAGE_APPOINTMENTFORMS);
 	}
 
+	/**
+	 * Do copy a form
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the JSP URL to display the form to manage appointment forms
+	 */
 	@Action(ACTION_DO_COPY_FORM)
 	public String doCopyAppointmentForm(HttpServletRequest request) {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
@@ -660,7 +674,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			populate(formMessage, request);
 			FormMessageHome.update(formMessage);
 			addInfo(INFO_APPOINTMENTFORM_MESSAGES_MODIFIED, getLocale());
-			return redirect(request, VIEW_MODIFY_FORM_MESSAGES, PARAMETER_ID_FORM, nIdForm);
 		}
 		return redirectView(request, VIEW_MANAGE_APPOINTMENTFORMS);
 	}
@@ -770,9 +783,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	}
 
 	/**
+	 * Set the days to the appointment form DTO
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param appointmentFormTmp
+	 *            the appointmentForm temp DTO
 	 */
 	private void setParametersDays(AppointmentForm appointmentForm, AppointmentForm appointmentFormTmp) {
 		appointmentForm.setIsOpenMonday(appointmentFormTmp.getIsOpenMonday());
@@ -785,9 +801,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	}
 
 	/**
+	 * Set the alterables parameters to the appointmentForm DTO
 	 * 
 	 * @param appointmentForm
+	 *            the appointmentForm DTO
 	 * @param appointmentFormTmp
+	 *            the appointmentForm temp DTO
 	 */
 	private void setAlterablesParameters(AppointmentForm appointmentForm, AppointmentForm appointmentFormTmp) {
 		appointmentForm.setDisplayTitleFo(appointmentFormTmp.getDisplayTitleFo());
@@ -808,6 +827,13 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 				&& checkAtLeastOneWorkingDayOpen(appointmentForm);
 	}
 
+	/**
+	 * Check that the user has checked as least one working day on its form
+	 * 
+	 * @param appointmentForm
+	 *            the appointForm DTO
+	 * @return true if at least one working day is checked, false otherwise
+	 */
 	private boolean checkAtLeastOneWorkingDayOpen(AppointmentForm appointmentForm) {
 		boolean bReturn = true;
 		if (!(appointmentForm.getIsOpenMonday() || appointmentForm.getIsOpenTuesday()
@@ -821,9 +847,11 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	}
 
 	/**
+	 * Check the starting time and the ending time of the appointmentFormDTO
 	 * 
 	 * @param appointmentForm
-	 * @return
+	 *            the appointmentForm DTO
+	 * @return false if there is an error
 	 */
 	private boolean checkStartingAndEndingTime(AppointmentForm appointmentForm) {
 		boolean bReturn = true;
@@ -846,9 +874,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	}
 
 	/**
+	 * Check the starting and the ending validity date of the appointmentForm
+	 * DTO
 	 * 
 	 * @param appointmentForm
-	 * @return
+	 *            the appointmentForm DTO
+	 * @return false if there is an error
 	 */
 	private boolean checkStartingAndEndingValidityDate(AppointmentForm appointmentForm) {
 		boolean bReturn = true;
@@ -863,9 +894,13 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	}
 
 	/**
+	 * Check the slot capacity and the max people per appointment of the
+	 * appointmentForm DTO
 	 * 
 	 * @param appointmentForm
-	 * @return
+	 *            athe appointmentForm DTO
+	 * @return false if the maximum number of people per appointment is bigger
+	 *         than the maximum capacity of the slot
 	 */
 	private boolean checkSlotCapacityAndPeoplePerAppointment(AppointmentForm appointmentForm) {
 		boolean bReturn = true;
@@ -876,12 +911,21 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		return bReturn;
 	}
 
+	/**
+	 * Import the file of the closing days
+	 * 
+	 * @param mRequest
+	 *            the request
+	 * @param nIdForm
+	 *            the form Id
+	 * @return false if there is an error during the import
+	 */
 	private boolean importClosingDayFile(MultipartHttpServletRequest mRequest, int nIdForm) {
 		boolean bError = false;
 		String strPathFile = StringUtils.EMPTY;
 		FileItem item = mRequest.getFile(MARK_FILE_CLOSING_DAYS);
 		if (item != null && StringUtils.isNotEmpty(item.getName())) {
-				strPathFile = item.getName();			
+			strPathFile = item.getName();
 		}
 		if (StringUtils.isNotEmpty(strPathFile)) {
 			List<LocalDate> listClosingDaysDb = ClosingDayService.findListDateOfClosingDayByIdForm(nIdForm);
@@ -889,7 +933,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			List<LocalDate> listDateToSave = new ArrayList<>();
 			try {
 				listDateImported = ClosingDayService.getImportClosingDays(item);
-			} catch (IOException e) {}
+			} catch (IOException e) {
+			}
 			if (CollectionUtils.isEmpty(listDateImported)) {
 				addError(MESSAGE_ERROR_EMPTY_FILE, getLocale());
 				bError = true;
@@ -901,22 +946,22 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 						List<Slot> listSlot = SlotService.findListOpenSlotByIdFormAndDateRange(nIdForm,
 								closingDate.atStartOfDay(), closingDate.atTime(LocalTime.MAX));
 						if (CollectionUtils.isNotEmpty(listSlot)) {
-							bErrorOpenSlotOnClosingDay = true;							
+							bErrorOpenSlotOnClosingDay = true;
 							break;
 						} else {
 							listDateToSave.add(closingDate);
 						}
 					}
 				}
-				if (bErrorOpenSlotOnClosingDay){
-					addError(MESSAGE_ERROR_OPEN_SLOTS, getLocale());							
+				if (bErrorOpenSlotOnClosingDay) {
+					addError(MESSAGE_ERROR_OPEN_SLOTS, getLocale());
 					bError = true;
 				} else {
 					ClosingDayService.saveListClosingDay(nIdForm, listDateToSave);
 					addInfo(MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale());
-				}				
-			}			
+				}
+			}
 		}
-		return bError;		
+		return bError;
 	}
 }

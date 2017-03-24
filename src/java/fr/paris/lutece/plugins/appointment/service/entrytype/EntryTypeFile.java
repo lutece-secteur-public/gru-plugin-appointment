@@ -39,8 +39,9 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 import fr.paris.lutece.plugins.genericattributes.service.upload.AbstractGenAttUploadHandler;
 
 /**
- *
  * class EntryTypeImage
+ * 
+ * @author Laurent Payen
  *
  */
 public class EntryTypeFile extends AbstractEntryTypeFile {

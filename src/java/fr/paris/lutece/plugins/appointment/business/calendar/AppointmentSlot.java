@@ -34,9 +34,10 @@
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
 /**
- * Slot for an appointment in a day. The slot may have 3 states : free,
- * partially free or occupied.
+ * Don't know why, if we remove this class, the server does'nt start anymore
+ * @author Laurent Payen
+ *
  */
 public class AppointmentSlot {
-	
+
 }
