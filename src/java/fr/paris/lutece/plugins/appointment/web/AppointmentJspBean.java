@@ -2312,12 +2312,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 Locale locale = getLocale( );
 
                 List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( ).size( ) );
-
+                
                 for ( Response response : appointment.getListResponse( ) )
                 {
+                	int nIndex = response.getEntry().getPosition() ;
                     IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-                    listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
-                            response, locale ) ) );
+                    
+                    addInPosition(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ), listResponseRecapDTO);
+                    
+                    //listResponseRecapDTO.add(new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ) );
+           
                 }
 
                 model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
@@ -2329,6 +2333,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+    
+    /**
+     * add  an object in a collection list 
+     * 
+     * @param int the index
+     * @param ResponseRecapDTO the object
+     * @param List<ResponseRecapDTO> the collection
+     */
+    public void addInPosition( int i, ResponseRecapDTO response, List<ResponseRecapDTO> list)
+    {
+    	while(list.size() < i) {
+            list.add(list.size(), null);
+        }
+        list.set( i - 1, response );
     }
 
     /**
@@ -2958,5 +2977,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
         }
     }
+    
+    
 
 }
