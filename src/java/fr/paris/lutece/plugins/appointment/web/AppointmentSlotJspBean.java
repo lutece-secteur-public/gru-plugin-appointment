@@ -61,6 +61,7 @@ import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -140,6 +141,9 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 	private static final String SESSION_ATTRIBUTE_SLOT = "appointment.session.slot";
 	private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
 
+	// Porperties
+	private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
+	
 	/**
 	 * Get the view of the typical week
 	 * 
@@ -274,8 +278,9 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_SLOT);
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		// Get the nb weeks to display
-		Display display = DisplayService.findDisplayWithFormId(nIdForm);
+		Display display = DisplayService.findDisplayWithFormId(nIdForm);		
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
+		AppPropertiesService.getPropertyInt(PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, nNbWeeksToDisplay);
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {

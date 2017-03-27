@@ -117,6 +117,7 @@ public class FormService {
 	public static List<AppointmentForm> buildAllAppointmentFormLight() {
 		List<AppointmentForm> listAppointmentFormLight = new ArrayList<>();
 		for (Form form : FormService.findAllForms()) {
+			checkValidityDate(form);
 			listAppointmentFormLight.add(buildAppointmentFormLight(form));
 		}
 		return listAppointmentFormLight;
@@ -326,6 +327,26 @@ public class FormService {
 		appointmentForm.setIcon(display.getIcon());
 		appointmentForm.setNbWeeksToDisplay(display.getNbWeeksToDisplay());
 		appointmentForm.setCalendarTemplateId(display.getIdCalendarTemplate());
+	}
+
+	/**
+	 * Check the validity of the form and update it if necessary
+	 * @param form the form to check
+	 */
+	private static void checkValidityDate(Form form) {
+		LocalDate dateNow = LocalDate.now();
+		if (form.getStartingValidityDate() != null && !form.isActive()
+				&& (form.getStartingValidityDate().isBefore(dateNow))
+				&& (form.getEndingValidityDate() == null || form.getEndingValidityDate().isAfter(dateNow))) {
+			form.setIsActive(true);
+			FormHome.update(form);
+
+		} else if (form.getEndingValidityDate() != null && form.isActive()
+				&& form.getEndingValidityDate().isBefore(dateNow)) {
+			form.setIsActive(false);
+			FormHome.update(form);
+		}
+
 	}
 
 	/**
