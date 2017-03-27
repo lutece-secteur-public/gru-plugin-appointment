@@ -2510,6 +2510,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
                 response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
             }
+            
+            if ( response.getEntry() != null )
+            {
+                response.setEntry( EntryHome.findByPrimaryKey( response.getEntry( ).getIdEntry( ) ) );
+            }
         }
 
         appointment.setListResponse( listResponse );
@@ -2560,9 +2565,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         for ( Response response : appointment.getListResponse( ) )
         {
+        	int nIndex = response.getEntry().getPosition() ;
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,
-                    locale ) ) );
+            //listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,locale ) ) );
+            addInPosition(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,locale ) ), listResponseRecapDTO);
         }
 
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
