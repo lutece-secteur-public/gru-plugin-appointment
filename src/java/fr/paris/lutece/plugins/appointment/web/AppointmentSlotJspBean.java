@@ -143,7 +143,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 
 	// Porperties
 	private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
-	
+
 	/**
 	 * Get the view of the typical week
 	 * 
@@ -164,8 +164,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		LocalDate dateOfApply = LocalDate.now();
 		WeekDefinition weekDefinition;
 		if (nIdWeekDefinition != 0) {
-			weekDefinition = WeekDefinitionService.findWeekDefinitionById(nIdWeekDefinition);
-			dateOfApply = weekDefinition.getDateOfApply();
+			weekDefinition = WeekDefinitionService.findWeekDefinitionById(nIdWeekDefinition);			
 		} else {
 			weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm,
 					dateOfApply);
@@ -278,25 +277,18 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_SLOT);
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		// Get the nb weeks to display
-		Display display = DisplayService.findDisplayWithFormId(nIdForm);		
-		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
-		AppPropertiesService.getPropertyInt(PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, nNbWeeksToDisplay);
+		Display display = DisplayService.findDisplayWithFormId(nIdForm);
+		int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt(PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay());
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
 			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
-		}
+		}		
 		LocalDate dateOfDisplay = LocalDate.now();
-		if (appointmentForm.getDateStartValidity() != null) {
-			dateOfDisplay = appointmentForm.getDateStartValidity().toLocalDate();
-		}
-		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
-		if (StringUtils.isNotEmpty(strDateOfDisplay)) {
-			dateOfDisplay = LocalDate.parse(strDateOfDisplay);
-		}
-		if (dateOfDisplay == null) {
-			dateOfDisplay = LocalDate.now();
-		}
+		if (appointmentForm.getDateStartValidity() != null
+				&& appointmentForm.getDateStartValidity().toLocalDate().isAfter(dateOfDisplay)) {
+			dateOfDisplay = appointmentForm.getDateStartValidity().toLocalDate();			
+		}			
 		// Get all the week definitions
 		HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition(nIdForm);
 		List<WeekDefinition> listWeekDefinition = new ArrayList<WeekDefinition>(mapWeekDefinition.values());
@@ -310,7 +302,11 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		List<String> listDayOfWeek = new ArrayList<>(
 				WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition(listWeekDefinition));
 		// Build the slots
-		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, dateOfDisplay, nNbWeeksToDisplay);
+		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, dateOfDisplay, nNbWeeksToDisplay);				
+		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
+		if (StringUtils.isNotEmpty(strDateOfDisplay)) {
+			dateOfDisplay = LocalDate.parse(strDateOfDisplay);
+		}
 		Map<String, Object> model = getModel();
 		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
 		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay);

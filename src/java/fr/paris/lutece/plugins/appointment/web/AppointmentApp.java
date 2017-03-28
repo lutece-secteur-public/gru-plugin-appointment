@@ -183,7 +183,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String PARAMETER_EMAIL_CONFIRMATION = "emailConfirm";
 	private static final String PARAMETER_FIRST_NAME = "firstname";
 	private static final String PARAMETER_LAST_NAME = "lastname";
-	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberPlacesReserved";
+	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "nbBookedSeats";
 	private static final String PARAMETER_ID_SLOT = "id_slot";
 	private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
 	private static final String PARAMETER_BACK = "back";
@@ -275,11 +275,13 @@ public class AppointmentApp extends MVCApplication {
 		if (startingValidityDate == null) {
 			addError(ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, getLocale(request));
 		}
+		LocalDate startingDateOfDisplay = LocalDate.now();
+		if (startingValidityDate.isAfter(startingDateOfDisplay)) {
+			startingDateOfDisplay = startingValidityDate;
+		}
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
 		// Get the nb weeks to display
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
-		// Find first open slot free in future
-		LocalDate startingDateOfDisplay = LocalDate.now();
 		// Calculate the ending date of display with the nb weeks to display
 		// since today
 		LocalDate endingDateOfDisplay = startingDateOfDisplay.plus(nNbWeeksToDisplay, ChronoUnit.WEEKS);
@@ -322,9 +324,6 @@ public class AppointmentApp extends MVCApplication {
 		// Build the slots
 		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, startingDateOfDisplay,
 				nNbWeeksToDisplay);
-		if (dateOfDisplay != null) {
-			startingDateOfDisplay = dateOfDisplay;
-		}
 		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY,
 				Math.toIntExact(startingDateOfDisplay.until(endingDateOfDisplay, ChronoUnit.WEEKS)));
 		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
@@ -335,7 +334,7 @@ public class AppointmentApp extends MVCApplication {
 		model.put(PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes(nMinDuration));
 		model.put(PARAMETER_ID_FORM, nIdForm);
 		model.put(MARK_FORM_MESSAGES, formMessages);
-		Locale locale = Locale.FRANCE;
+		Locale locale = getLocale(request);
 		CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey(display.getIdCalendarTemplate());
 		HtmlTemplate template = AppTemplateService.getTemplate(calendarTemplate.getTemplatePath(), locale, model);
 		XPage xpage = new XPage();
@@ -354,47 +353,55 @@ public class AppointmentApp extends MVCApplication {
 	 */
 	@View(VIEW_APPOINTMENT_FORM)
 	public XPage getViewAppointmentForm(HttpServletRequest request) {
-		AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
-				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 		int nIdForm = Integer.parseInt(strIdForm);
+		// Get the not validated appointment in session if it exists
+		AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
+				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);		
 		if (appointmentFrontDTO == null) {
-			appointmentFrontDTO = new AppointmentFrontDTO();
-			int nIdSlot = Integer.parseInt(request.getParameter(PARAMETER_ID_SLOT));
-			Slot slot = null;
-			// If nIdSlot == 0, the slot has not been created yet
-			if (nIdSlot == 0) {
-				// Need to get all the informations to create the slot
-				LocalDateTime startingDateTime = LocalDateTime
-						.parse(request.getParameter(PARAMETER_STARTING_DATE_TIME));
-				LocalDateTime endingDateTime = LocalDateTime.parse(request.getParameter(PARAMETER_ENDING_DATE_TIME));
-				boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
-				int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
-				slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
-						bIsOpen);
-			} else {
-				slot = SlotService.findSlotById(nIdSlot);
-				SlotService.addDateAndTimeToSlot(slot);
-			}
+			// Try to get the validated appointment in session 
+			// (in case the user click on back button in the recap view
+			appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
+					.getAttribute(SESSION_VALIDATED_APPOINTMENT);
+			if (appointmentFrontDTO == null) {
+				appointmentFrontDTO = new AppointmentFrontDTO();
+				int nIdSlot = Integer.parseInt(request.getParameter(PARAMETER_ID_SLOT));
+				Slot slot = null;
+				// If nIdSlot == 0, the slot has not been created yet
+				if (nIdSlot == 0) {
+					// Need to get all the informations to create the slot
+					LocalDateTime startingDateTime = LocalDateTime
+							.parse(request.getParameter(PARAMETER_STARTING_DATE_TIME));
+					LocalDateTime endingDateTime = LocalDateTime
+							.parse(request.getParameter(PARAMETER_ENDING_DATE_TIME));
+					boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
+					int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
+					slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
+							bIsOpen);
+				} else {
+					slot = SlotService.findSlotById(nIdSlot);
+					SlotService.addDateAndTimeToSlot(slot);
+				}
 
-			appointmentFrontDTO.setSlot(slot);
-			appointmentFrontDTO.setIdForm(nIdForm);
-			LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
-			if (user != null) {
-				Map<String, String> map = user.getUserInfos();
-				appointmentFrontDTO.setEmail(map.get("user.business-info.online.email"));
-				appointmentFrontDTO.setFirstName(map.get("user.name.given"));
-				appointmentFrontDTO.setLastName(map.get("user.name.family"));
+				appointmentFrontDTO.setSlot(slot);
+				appointmentFrontDTO.setIdForm(nIdForm);
+				LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
+				if (user != null) {
+					Map<String, String> map = user.getUserInfos();
+					appointmentFrontDTO.setEmail(map.get("user.business-info.online.email"));
+					appointmentFrontDTO.setFirstName(map.get("user.name.given"));
+					appointmentFrontDTO.setLastName(map.get("user.name.family"));
+				}
+				request.getSession().setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentFrontDTO);
+				ReservationRule reservationRule = ReservationRuleService
+						.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, slot.getDate());
+				WeekDefinition weekDefinition = WeekDefinitionService
+						.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm, slot.getDate());
+				form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
+						weekDefinition.getIdWeekDefinition());
+				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
 			}
-			request.getSession().setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentFrontDTO);
-			ReservationRule reservationRule = ReservationRuleService
-					.findReservationRuleByIdFormAndClosestToDateOfApply(nIdForm, slot.getDate());
-			WeekDefinition weekDefinition = WeekDefinitionService
-					.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm, slot.getDate());
-			form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
-					weekDefinition.getIdWeekDefinition());
-			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
 		}
 		Locale locale = getLocale(request);
 		StringBuffer strBuffer = new StringBuffer();
@@ -946,6 +953,11 @@ public class AppointmentApp extends MVCApplication {
 			genAttError.setErrorMessage(I18nService.getLocalizedString(ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale));
 			listFormErrors.add(genAttError);
 		}
+		if (nbBookedSeats == 0) {
+			GenericAttributeError genAttError = new GenericAttributeError();
+			genAttError.setErrorMessage(I18nService.getLocalizedString(ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT, locale));
+			listFormErrors.add(genAttError);
+		}
 		return nbBookedSeats;
 	}
 
@@ -967,7 +979,7 @@ public class AppointmentApp extends MVCApplication {
 	 */
 	private boolean checkUserAndAppointment(LocalDate dateOfTheAppointment, String strEmail, AppointmentForm form,
 			Locale locale, List<GenericAttributeError> listFormErrors) {
-		boolean bError = false;
+		boolean bCheckPassed = true;
 		if (StringUtils.isNotEmpty(strEmail)) {
 			int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment();
 			if (nbDaysBetweenTwoAppointments != 0) {
@@ -975,7 +987,8 @@ public class AppointmentApp extends MVCApplication {
 				User user = UserService.findUserByEmail(strEmail);
 				if (user != null) {
 					// looking for its appointment
-					List<Appointment> listAppointment = AppointmentService.findListAppointmentBySlot(user.getIdUser());
+					List<Appointment> listAppointment = AppointmentService
+							.findListAppointmentByUserId(user.getIdUser());
 					if (CollectionUtils.isNotEmpty(listAppointment)) {
 						// I know we could have a join sql query, but I don't
 						// want to join the appointment table with the slot
@@ -984,8 +997,9 @@ public class AppointmentApp extends MVCApplication {
 						for (Appointment appointment : listAppointment) {
 							listSlot.add(SlotService.findSlotById(appointment.getIdSlot()));
 						}
-						// Get the last appointment date
-						LocalDate dateOfTheLastAppointment = listSlot.stream().map(Slot::getStartingDateTime)
+						// Get the last appointment date for this form
+						LocalDate dateOfTheLastAppointment = listSlot.stream()
+								.filter(s -> s.getIdForm() == form.getIdForm()).map(Slot::getStartingDateTime)
 								.max(LocalDateTime::compareTo).get().toLocalDate();
 						// Check the number of days between this appointment and
 						// the last appointment the user has taken
@@ -994,13 +1008,13 @@ public class AppointmentApp extends MVCApplication {
 								&& dateOfTheLastAppointment.until(dateOfTheAppointment,
 										ChronoUnit.DAYS) <= nbDaysBetweenTwoAppointments) {
 							addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
-							bError = true;
+							bCheckPassed = false;
 						}
 					}
 				}
 			}
 		}
-		return bError;
+		return bCheckPassed;
 	}
 
 	/**

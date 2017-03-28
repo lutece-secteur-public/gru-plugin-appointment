@@ -411,7 +411,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		}
 		AppointmentForm appointmentForm = (AppointmentForm) request.getSession()
 				.getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
-		if ((appointmentForm == null) || (nIdForm != appointmentForm.getIdForm())) {
+		if ((appointmentForm == null) || (nIdReservationRule != appointmentForm.getIdReservationRule())) {
 			appointmentForm = FormService.buildAppointmentForm(nIdForm, nIdReservationRule, 0);
 		}
 		Map<String, Object> model = getModel();

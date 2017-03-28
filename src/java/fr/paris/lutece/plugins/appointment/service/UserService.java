@@ -13,18 +13,26 @@ import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 public class UserService {
 
 	/**
-	 * Save a user in database
+	 * Save a user in database / A user is defined by its email (unique)
 	 * 
 	 * @param appointment
 	 *            the appointment DTO
 	 * @return the user saved
 	 */
-	public static User saveUser(AppointmentFrontDTO appointment) {
+	public static User saveUser(AppointmentFrontDTO appointment) {	
 		User user = new User();
 		user.setFirstName(appointment.getFirstName());
 		user.setLastName(appointment.getLastName());
 		user.setEmail(appointment.getEmail());
-		user = UserHome.create(user);
+		User userFromDb = UserHome.findByEmail(user.getEmail()); 
+		if (userFromDb == null){
+			user = UserHome.create(user);
+		} else {
+			// TODO need to update the users infos ?
+			userFromDb.setFirstName(appointment.getFirstName());
+			userFromDb.setLastName(appointment.getLastName());
+			user = UserHome.update(userFromDb);					
+		}		
 		return user;
 	}
 

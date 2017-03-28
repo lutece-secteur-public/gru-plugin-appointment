@@ -193,9 +193,9 @@
 							</#if>
 						</#if>
 						<div class="form-group <#if formGroupError!=''>has-error</#if>">
-							<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="numberPlacesReserved">#i18n{appointment.create_appointmentform.labelMaxPeoplePerAppointment}*</label>
+							<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="nbBookedSeats">#i18n{appointment.create_appointmentform.labelMaxPeoplePerAppointment}*</label>
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<input type="text"  maxlength="3" id="numberPlacesReserved" name="numberPlacesReserved" class="form-control" onchange="this.value = minmax(this.value, 1, ${nbplaces})" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+								<input type="text"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" onchange="this.value = minmax(this.value, 1, ${nbplaces})" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
 								<#if formGroupError!=''>
 									${formGroupError}
 								<#else>
