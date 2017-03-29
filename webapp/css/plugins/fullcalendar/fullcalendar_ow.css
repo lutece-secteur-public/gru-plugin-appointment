@@ -160,6 +160,6 @@ a.fc-event.slot-full:hover {
 }
 
 td.fc-day.ui-widget-content.fc-today.ui-state-highlight {
-	background-color: #ffffff !important;
-	border: 0px;
+	background: none !important;
+	border: 1px solid #d7d7d7 !important;
 }
