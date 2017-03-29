@@ -292,6 +292,7 @@ public class FormService {
 		appointmentForm.setEnableCaptcha(formRule.isCaptchaEnabled());
 		appointmentForm.setEnableMandatoryEmail(formRule.isMandatoryEmailEnabled());
 		appointmentForm.setNbDaysBeforeNewAppointment(formRule.getNbDaysBeforeNewAppointment());
+		appointmentForm.setMinTimeBeforeAppointment(formRule.getMinTimeBeforeAppointment());
 	}
 
 	/**

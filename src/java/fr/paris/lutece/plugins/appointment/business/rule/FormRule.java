@@ -34,6 +34,12 @@ public class FormRule implements Serializable {
 	 * Nb Days before the user can take another appointment
 	 */
 	private int _nNbDaysBeforeNewAppointment;
+	
+	/**
+	 * Minimum time from now before the user can take an appointment
+	 */
+	private int _nMinTimeBeforeAppointment;
+	
 	/**
 	 * Form id (foreign key)
 	 */
@@ -110,6 +116,22 @@ public class FormRule implements Serializable {
 	 */
 	public void setNbDaysBeforeNewAppointment(int nNbDaysBeforeNewAppointment) {
 		this._nNbDaysBeforeNewAppointment = nNbDaysBeforeNewAppointment;
+	}	
+	
+	/**
+	 * Get the minimal time from now before the user can take an appointment
+	 * @return The minimal time in hours
+	 */
+	public int getMinTimeBeforeAppointment() {
+		return _nMinTimeBeforeAppointment;
+	}
+
+	/**
+	 * Set the minimal time from now before the user can take an appointment
+	 * @param nMinTimeBeforeAppointment the minimal time in hours
+	 */
+	public void setMinTimeBeforeAppointment(int nMinTimeBeforeAppointment) {
+		this._nMinTimeBeforeAppointment = nMinTimeBeforeAppointment;
 	}
 
 	/**

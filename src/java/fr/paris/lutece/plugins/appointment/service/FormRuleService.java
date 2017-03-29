@@ -26,6 +26,7 @@ public class FormRuleService {
 		formRule.setIsCaptchaEnabled(appointmentForm.getEnableCaptcha());
 		formRule.setIsMandatoryEmailEnabled(appointmentForm.getEnableMandatoryEmail());
 		formRule.setNbDaysBeforeNewAppointment(appointmentForm.getNbDaysBeforeNewAppointment());
+		formRule.setMinTimeBeforeAppointment(appointmentForm.getMinTimeBeforeAppointment());
 		formRule.setIdForm(nIdForm);
 	}
 

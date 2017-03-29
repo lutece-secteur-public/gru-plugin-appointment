@@ -65,6 +65,7 @@ import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -73,6 +74,7 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
+import fr.paris.lutece.plugins.appointment.service.FormRuleService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
@@ -204,6 +206,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String MARK_FORM_LIST = "form_list";
 	private static final String MARK_FORM_HTML = "form_html";
 	private static final String MARK_FORM_ERRORS = "form_errors";
+	private static final String MARK_FORM_CALENDAR_ERRORS = "formCalendarErrors";
 	private static final String MARK_CAPTCHA = "captcha";
 	private static final String MARK_REF = "%%REF%%";
 	private static final String MARK_DATE_APP = "%%DATE%%";
@@ -265,8 +268,10 @@ public class AppointmentApp extends MVCApplication {
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		Map<String, Object> model = getModel();
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
+		boolean bError = false;
 		if (!form.isActive()) {
 			addError(ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale(request));
+			bError = true;
 		}
 		FormMessage formMessages = FormMessageHome.findByPrimaryKey(nIdForm);
 		// Check if the date of display and the endDateOfDisplay are in the
@@ -274,9 +279,10 @@ public class AppointmentApp extends MVCApplication {
 		LocalDate startingValidityDate = form.getStartingValidityDate();
 		if (startingValidityDate == null) {
 			addError(ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, getLocale(request));
+			bError = true;
 		}
 		LocalDate startingDateOfDisplay = LocalDate.now();
-		if (startingValidityDate.isAfter(startingDateOfDisplay)) {
+		if (startingValidityDate != null && startingValidityDate.isAfter(startingDateOfDisplay)) {
 			startingDateOfDisplay = startingValidityDate;
 		}
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
@@ -296,12 +302,14 @@ public class AppointmentApp extends MVCApplication {
 			}
 			if (startingDateOfDisplay.isAfter(endingDateOfDisplay)) {
 				addError(ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale(request));
+				bError = true;
 			}
 		}
 		LocalDate firstDateOfFreeOpenSlot = SlotService.findFirstDateOfFreeOpenSlot(nIdForm, startingDateOfDisplay,
 				endingDateOfDisplay);
 		if (firstDateOfFreeOpenSlot == null) {
 			addError(ERROR_MESSAGE_NO_AVAILABLE_SLOT, getLocale(request));
+			bError = true;
 		}
 		// Get the current date of display of the calendar, if it exists
 		String strDateOfDisplay = request.getParameter(PARAMETER_DATE_OF_DISPLAY);
@@ -321,9 +329,25 @@ public class AppointmentApp extends MVCApplication {
 		// Get all the working days of all the week definitions
 		List<String> listDayOfWeek = new ArrayList<>(
 				WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition(listWeekDefinition));
-		// Build the slots
-		List<Slot> listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, startingDateOfDisplay,
-				nNbWeeksToDisplay);
+		// Build the slots if no errors
+		List<Slot> listSlot = new ArrayList<>();
+		if (!bError) {
+			listSlot = SlotService.buildListSlot(nIdForm, mapWeekDefinition, startingDateOfDisplay, nNbWeeksToDisplay);
+			// Get the min time from now before a user can take an appointment
+			// (in hours)
+			FormRule formRule = FormRuleService.findFormRuleWithFormId(nIdForm);
+			int minTimeBeforeAppointment = formRule.getMinTimeBeforeAppointment();
+			LocalDateTime dateTimeBeforeAppointment = LocalDateTime.now().plus(minTimeBeforeAppointment,
+					ChronoUnit.HOURS);
+			// Filter the list of slots
+			listSlot = listSlot.stream().filter(s -> s.getStartingDateTime().isAfter(dateTimeBeforeAppointment))
+					.collect(Collectors.toList());
+		}
+		if (bError) {
+			model.put(MARK_FORM_CALENDAR_ERRORS, bError);
+		}
+		model.put(PARAMETER_ID_FORM, nIdForm);
+		model.put(MARK_FORM_MESSAGES, formMessages);
 		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY,
 				Math.toIntExact(startingDateOfDisplay.until(endingDateOfDisplay, ChronoUnit.WEEKS)));
 		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
@@ -332,14 +356,15 @@ public class AppointmentApp extends MVCApplication {
 		model.put(PARAMETER_MIN_TIME, minStartingTime);
 		model.put(PARAMETER_MAX_TIME, maxEndingTime);
 		model.put(PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes(nMinDuration));
-		model.put(PARAMETER_ID_FORM, nIdForm);
-		model.put(MARK_FORM_MESSAGES, formMessages);
+
 		Locale locale = getLocale(request);
 		CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey(display.getIdCalendarTemplate());
 		HtmlTemplate template = AppTemplateService.getTemplate(calendarTemplate.getTemplatePath(), locale, model);
 		XPage xpage = new XPage();
 		xpage.setContent(template.getHtml());
-		xpage.setPathLabel(getDefaultPagePath(locale));
+		xpage.setPathLabel(
+
+				getDefaultPagePath(locale));
 		xpage.setTitle(getDefaultPageTitle(locale));
 		return xpage;
 	}
@@ -358,9 +383,9 @@ public class AppointmentApp extends MVCApplication {
 		int nIdForm = Integer.parseInt(strIdForm);
 		// Get the not validated appointment in session if it exists
 		AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
-				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);		
+				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		if (appointmentFrontDTO == null) {
-			// Try to get the validated appointment in session 
+			// Try to get the validated appointment in session
 			// (in case the user click on back button in the recap view
 			appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
 					.getAttribute(SESSION_VALIDATED_APPOINTMENT);

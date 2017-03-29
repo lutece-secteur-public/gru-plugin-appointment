@@ -18,22 +18,23 @@
 					</div>
 				</div>
 			</div>
-		</#if>
-		<div class="layout-wrapper">
-			<#if infos?? || errors??>
-				<@messages infos=infos errors=errors />			
-			</#if>
+		</#if>		
+	</div>
+</div>
+<#if formCalendarErrors??>
+	<div class="layout-wrapper">
+		<@messages errors=errors />					
+	</div>
+<#else>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">    	
+			<div class="tab-content">
+			<fieldset>									
+				<div id="calendar"></div>	
+			</fieldset>				
 		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">    	
-		<div class="tab-content">
-		<fieldset>									
-			<div id="calendar"></div>	
-		</fieldset>				
-	</div>
-</div>
+</#if>
 <script type="text/javascript">
 	var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
@@ -154,14 +155,18 @@
 			},
 			windowResize: function(view) {
 			        if ($(window).width() < 1050){
-			            $('#calendar').fullCalendar( 'changeView', 'agendaDay' );
+			            $('#calendar').fullCalendar( 'changeView', 'agendaDay' );	
+						$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
+						$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
 			        } else {
-			            $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );
+			            $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );						
+						$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
+						$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
 			        }
 			},
-		});  
-		$('.fc-next-button').html("<span style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>" + $('.fc-next-button').html());
-		$('.fc-prev-button').html($('.fc-prev-button').html() + "<span style='margin-left: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
+		});  		
+		$('.fc-next-button').html("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>" + $('.fc-next-button').html());
+		$('.fc-prev-button').html($('.fc-prev-button').html() + "<span class='spanPrevButton' style='margin-left: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
 		$('.fc-datePicker-button').html($('.fc-datePicker-button').html() + "<span style='margin-left: 5px;'>#i18n{appointment.appointmentCalendar.labelChooseDate}</span>");
 	});      
 </script>

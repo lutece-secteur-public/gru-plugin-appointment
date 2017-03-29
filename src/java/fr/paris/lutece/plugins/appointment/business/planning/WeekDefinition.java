@@ -98,6 +98,8 @@ public class WeekDefinition implements Serializable {
 	public void setDateOfApply(Date dateOfApply) {
 		if (dateOfApply != null) {
 			this._dateOfApply = dateOfApply.toLocalDate();
+		} else {
+			this._dateOfApply = null;
 		}
 	}
 

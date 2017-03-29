@@ -219,6 +219,8 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	public void setStartingValiditySqlDate(Date startingValidityDate) {
 		if (startingValidityDate != null) {
 			this._startingValidityDate = startingValidityDate.toLocalDate();
+		} else {
+			this._startingValidityDate = null;
 		}
 	}
 
@@ -263,6 +265,8 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	public void setEndingValiditySqlDate(Date endingValidityDate) {
 		if (endingValidityDate != null) {
 			this._endingValidityDate = endingValidityDate.toLocalDate();
+		} else {
+			this._endingValidityDate = null;
 		}
 	}
 

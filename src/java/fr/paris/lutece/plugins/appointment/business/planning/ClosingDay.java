@@ -92,6 +92,8 @@ public class ClosingDay implements Serializable {
 	public void setDateOfClosingDay(Date dateOfClosingDay) {
 		if (dateOfClosingDay != null) {
 			this._dateOfClosingDay = dateOfClosingDay.toLocalDate();
+		} else {
+			this._dateOfClosingDay = null;
 		}
 	}
 

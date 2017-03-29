@@ -48,6 +48,13 @@
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.create_appointmentform.labelTitle' maxlength=255 /> 
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='category' mandatory=false value=appointmentform.category!'' i18nHelpBlockKey='appointment.create_appointmentform.labelCategory' maxlength=255 /> 
 				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDescription'/>								
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" name="min_time_before_appointment" value="${appointmentform.minTimeBeforeAppointment!''}" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="2"/>	
+						<p class="help-block">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment.help}</p>
+					</div>
+				</div>	
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='form-control input-sm' />
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='form-control input-sm' />						
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />				

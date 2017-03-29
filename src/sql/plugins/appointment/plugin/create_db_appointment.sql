@@ -328,6 +328,7 @@ CREATE TABLE IF NOT EXISTS appointment_form_rule (
   is_captcha_enabled BOOLEAN NOT NULL DEFAULT FALSE,
   is_mandatory_email_enabled BOOLEAN NOT NULL DEFAULT FALSE,
   nb_days_before_new_appointment INT NOT NULL DEFAULT 0,
+  min_time_before_appointment INT NOT NULL DEFAULT 0,
   id_form INT NOT NULL,
   PRIMARY KEY (id_form_rule, id_form),
   UNIQUE KEY unique_index (id_form),

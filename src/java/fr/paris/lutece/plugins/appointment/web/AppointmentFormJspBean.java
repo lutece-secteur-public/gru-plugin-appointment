@@ -196,6 +196,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String INFO_APPOINTMENTFORM_REMOVED = "appointment.info.appointmentform.removed";
 	private static final String INFO_APPOINTMENTFORM_MESSAGES_MODIFIED = "appointment.info.appointmentform_messages.updated";
 	private static final String ERROR_APPOINTMENTFORM_NO_STARTING_VALIDITY_DATE = "appointment.error.appointmentform.noStartingValidityDate";
+	private static final String ERROR_APPOINTMENTFORM_ENDING_VALIDITY_DATE_BEFORE_NOW = "appointment.error.appointmentform.endingValidityDateBeforeNow";
 
 	// Session variable to store working values
 	private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
@@ -564,7 +565,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 				}
 				if ((form.getEndingValidityDate() != null)
 						&& (form.getEndingValidityDate().isBefore(LocalDate.now()))) {
-					form.setEndingValidityDate(null);
+					addError(ERROR_APPOINTMENTFORM_ENDING_VALIDITY_DATE_BEFORE_NOW, getLocale());
+					if (Boolean.valueOf(request.getParameter(PARAMETER_FROM_DASHBOARD))) {
+						return redirect(request, AppPathService.getBaseUrl(request) + AppPathService.getAdminMenuUrl());
+					} else {
+						return redirectView(request, VIEW_MANAGE_APPOINTMENTFORMS);
+					}
 				}
 			} else {
 				if ((form.getStartingValidityDate() != null)
