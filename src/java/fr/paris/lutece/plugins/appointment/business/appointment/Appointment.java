@@ -2,6 +2,9 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.io.Serializable;
 
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.user.User;
+
 /**
  * Business class of the Appointment
  * 
@@ -10,6 +13,11 @@ import java.io.Serializable;
  */
 public class Appointment implements Serializable {
 
+	/**
+	 * Appointment resource type
+	 */
+	public static final String APPOINTMENT_RESOURCE_TYPE = "appointment";
+	
 	/**
 	 * Serial version UID
 	 */
@@ -26,6 +34,15 @@ public class Appointment implements Serializable {
 	private String _strReference;
 
 	/**
+	 * Number of places for the appointment
+	 */
+	private int _nNbPlaces;
+	/**
+	 * Tell if the appointment is cancelled or not
+	 */
+	private boolean _bIsCancelled;
+	
+	/**
 	 * User id
 	 */
 	private int _nIdUser;
@@ -33,8 +50,17 @@ public class Appointment implements Serializable {
 	/**
 	 * Slot id
 	 */
-	private int _nIdSlot;
+	private int _nIdSlot;	
 
+	/**
+	 * The slot on which the appointment is
+	 */
+	private Slot _slot;
+	
+	/**
+	 * The user of the appointment
+	 */
+	private User _user;
 	/**
 	 * Get the reference of the appointment
 	 * 
@@ -52,6 +78,38 @@ public class Appointment implements Serializable {
 	 */
 	public void setReference(String strReference) {
 		this._strReference = strReference;
+	}
+	
+	/**
+	 * Get the number of places of the appointment
+	 * @return the number of places
+	 */
+	public int getNbPlaces() {
+		return _nNbPlaces;
+	}
+
+	/**
+	 * Set the number of places for the appointment
+	 * @param nNbPlaces the number of places to set 
+	 */
+	public void setNbPlaces(int nNbPlaces) {
+		this._nNbPlaces = nNbPlaces;
+	}
+
+	/**
+	 * Get if the appointment is cancelled
+	 * @return true if the appointment is cancelled
+	 */
+	public boolean getIsCancelled() {
+		return _bIsCancelled;
+	}
+
+	/**
+	 * Set if the appointment is cancelled
+	 * @param bIsCancelled the boolean value to set
+	 */
+	public void setIsCancelled(boolean bIsCancelled) {
+		this._bIsCancelled = bIsCancelled;
 	}
 
 	/**
@@ -110,5 +168,39 @@ public class Appointment implements Serializable {
 	public void setIdSlot(int nIdSlot) {
 		this._nIdSlot = nIdSlot;
 	}
+
+	/**
+	 * Get the slot of the appointment
+	 * @return the slot
+	 */
+	public Slot getSlot() {
+		return _slot;
+	}
+
+	/**
+	 * Set the slot of the appointment
+	 * @param slot the slot to set
+	 */
+	public void setSlot(Slot slot) {
+		this._slot = slot;
+	}
+
+	/**
+	 * Get the user of the appointment
+	 * @return the user
+	 */
+	public User getUser() {
+		return _user;
+	}
+
+	/**
+	 * Set the user of the appointment
+	 * @param user the user
+	 */
+	public void setUser(User user) {
+		this._user = user;
+	}
+	
+	 
 
 }

@@ -1,5 +1,6 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
@@ -19,7 +20,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public class AppointmentResponseHome {
 
 	// Static variable pointed at the DAO instance
-	private static IAppointmentResponseDAO _dao = SpringContextService.getBean("appointment.appointmentResponseDAO");
+	private static IAppointmentResponseDAO _dao = SpringContextService.getBean(IAppointmentResponseDAO.BEAN_NAME);
 	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 
 	/**
@@ -36,6 +37,26 @@ public class AppointmentResponseHome {
 			_dao.removeAppointmentResponsesByIdResponse(response.getIdResponse(), _plugin);
 			ResponseHome.remove(response.getIdResponse());
 		}
+	}
+
+	/**
+	 * Get the list of responses associated with an appointment
+	 * 
+	 * @param nIdAppointment
+	 *            the id of the appointment
+	 * @return the list of responses, or an empty list if no response was found
+	 */
+	public static List<Response> findListResponse(int nIdAppointment) {
+		List<Integer> listIdResponse = _dao.findListIdResponse(nIdAppointment, _plugin);
+		List<Response> listResponse = new ArrayList<Response>(listIdResponse.size());
+		for (Integer nIdResponse : listIdResponse) {
+			listResponse.add(ResponseHome.findByPrimaryKey(nIdResponse));
+		}
+		return listResponse;
+	}
+	
+	public static List<Integer> findListIdResponse(int nIdAppointment) {
+		return _dao.findListIdResponse(nIdAppointment, _plugin);
 	}
 
 }

@@ -234,4 +234,9 @@ function minmax(value, min, max)
         return ${nbplaces}; 
     else return value;
 }
+$(document).ready(function () {
+      $('#emailConfirm').bind('paste', function (e) {
+         e.preventDefault();
+      });
+   });
 </script>

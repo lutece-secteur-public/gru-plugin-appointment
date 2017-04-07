@@ -110,7 +110,7 @@ public class UserDAO implements IUserDAO {
 		user.setFirstName(daoUtil.getString(nIndex++));
 		user.setLastName(daoUtil.getString(nIndex++));
 		user.setEmail(daoUtil.getString(nIndex++));
-		user.setPhoneNumber(daoUtil.getString(nIndex++));
+		user.setPhoneNumber(daoUtil.getString(nIndex));
 		return user;
 	}
 

@@ -23,7 +23,7 @@ public class Slot implements Serializable {
 	 * Id of the slot
 	 */
 	private int _nIdSlot;
-
+	
 	/**
 	 * Date of the slot
 	 */

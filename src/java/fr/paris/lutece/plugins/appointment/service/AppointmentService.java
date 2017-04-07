@@ -6,13 +6,19 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
 
 /**
  * Service class for an appointment
@@ -88,16 +94,13 @@ public class AppointmentService {
 	 *            the appointment dto
 	 * @return the id of the appointment saved
 	 */
-	public static int saveAppointment(AppointmentFrontDTO appointmentDTO) {
+	public static int saveAppointment(AppointmentDTO appointmentDTO) {
 		Slot slot = appointmentDTO.getSlot();
 		int oldNbRemainingPLaces = slot.getNbRemainingPlaces();
 		slot.setNbRemainingPlaces(oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats());
 		slot = SlotService.saveSlot(slot);
 		User user = UserService.saveUser(appointmentDTO);
-		Appointment appointment = new Appointment();
-		appointment.setIdSlot(slot.getIdSlot());
-		appointment.setIdUser(user.getIdUser());
-		appointment = AppointmentHome.create(appointment);
+		Appointment appointment = buildAppointment(appointmentDTO, user, slot);
 		String strEmailOrLastNamePlusFirstName = StringUtils.EMPTY;
 		if (StringUtils.isEmpty(user.getEmail())) {
 			strEmailOrLastNamePlusFirstName = user.getLastName() + user.getFirstName();
@@ -113,6 +116,25 @@ public class AppointmentService {
 	}
 
 	/**
+	 * Build and create in database an appointment from the dto
+	 * 
+	 * @param appointmentDTO
+	 *            the appointment dto
+	 * @param user
+	 *            the user
+	 * @param slot
+	 *            the slot
+	 * @return the appointment created
+	 */
+	private static Appointment buildAppointment(AppointmentDTO appointmentDTO, User user, Slot slot) {
+		Appointment appointment = new Appointment();
+		appointment.setNbPlaces(appointmentDTO.getNbBookedSeats());
+		appointment.setIdSlot(slot.getIdSlot());
+		appointment.setIdUser(user.getIdUser());
+		return AppointmentHome.create(appointment);
+	}
+
+	/**
 	 * Find an appointment by ots primary key
 	 * 
 	 * @param nIdAppointment
@@ -122,4 +144,72 @@ public class AppointmentService {
 	public static Appointment findAppointmentById(int nIdAppointment) {
 		return AppointmentHome.findByPrimaryKey(nIdAppointment);
 	}
+
+	/**
+	 * Find a list of appointments matching the filter
+	 * 
+	 * @param appointmentFilter
+	 *            the filter
+	 * @return a list of appointments
+	 */
+	public static List<AppointmentDTO> findListAppointmentsByFilter(AppointmentFilter appointmentFilter) {
+		List<AppointmentDTO> listAppointmentsDTO = new ArrayList<>();
+		for (Appointment appointment : AppointmentHome.findByFilter(appointmentFilter)) {
+			listAppointmentsDTO.add(buildAppointmentDTO(appointment));
+		}
+		return listAppointmentsDTO;
+	}
+
+	private static AppointmentDTO buildAppointmentDTO(Appointment appointment) {
+		AppointmentDTO appointmentDTO = new AppointmentDTO();
+		appointmentDTO.setIdUser(appointment.getIdUser());
+		appointmentDTO.setIdAppointment(appointment.getIdAppointment());
+		appointmentDTO.setFirstName(appointment.getUser().getFirstName());
+		appointmentDTO.setLastName(appointment.getUser().getLastName());
+		appointmentDTO.setEmail(appointment.getUser().getEmail());
+		LocalDateTime startingDateTime = appointment.getSlot().getStartingDateTime();
+		appointmentDTO.setStartingDateTime(startingDateTime);
+		appointmentDTO.setDateOfTheAppointment(startingDateTime.toLocalDate().format(Utilities.formatter));
+		appointmentDTO.setStartingTime(startingDateTime.toLocalTime());
+		appointmentDTO.setEndingTime(appointment.getSlot().getEndingDateTime().toLocalTime());
+		appointmentDTO.setIsCancelled(appointment.getIsCancelled());
+		appointmentDTO.setNbBookedSeats(appointment.getNbPlaces());
+		return appointmentDTO;
+	}
+
+	/**
+	 * Delete an appointment (and update the number of remaining places of the
+	 * related slot)
+	 * 
+	 * @param nIdAppointment
+	 *            the id of the appointment to delete
+	 */
+	public static void deleteAppointment(int nIdAppointment, AdminUser user) throws AccessDeniedException {
+		Appointment appointmentToDelete = AppointmentHome.findByPrimaryKey(nIdAppointment);
+		Slot slotOfTheAppointmentToDelete = SlotService.findSlotById(appointmentToDelete.getIdSlot());
+		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
+				Integer.toString(slotOfTheAppointmentToDelete.getIdForm()),
+				AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, user)) {
+			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT);
+		}
+		if (WorkflowService.getInstance().isAvailable()) {
+			WorkflowService.getInstance().doRemoveWorkFlowResource(nIdAppointment,
+					Appointment.APPOINTMENT_RESOURCE_TYPE);
+		}
+		int nbRemainingPlaces = slotOfTheAppointmentToDelete.getNbRemainingPlaces();
+		int nbNewRemainingPlaces = nbRemainingPlaces + appointmentToDelete.getNbPlaces();
+		slotOfTheAppointmentToDelete.setNbRemainingPlaces(nbNewRemainingPlaces);
+		SlotService.updateSlot(slotOfTheAppointmentToDelete);
+		AppointmentHome.delete(nIdAppointment);
+	}
+	
+	public static AppointmentDTO buildAppointmentDTOFromIdAppointment(int nIdAppointment){		
+		Appointment appointment = AppointmentService.findAppointmentById(nIdAppointment);
+		User user = UserService.findUserById(appointment.getIdUser());
+		Slot slot = SlotService.findSlotById(appointment.getIdSlot());
+		appointment.setUser(user);
+		appointment.setSlot(slot);		
+		return buildAppointmentDTO(appointment);
+	}
+
 }

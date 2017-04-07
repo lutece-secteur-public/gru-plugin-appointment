@@ -454,7 +454,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			img.setMimeType(null);
 			appointmentForm.setIcon(img);
 		} else {
-			buildImageResource(mRequest);
+			appointmentForm.setIcon(buildImageResource(mRequest));
 		}
 		if (importClosingDayFile(mRequest, nIdForm)) {
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);

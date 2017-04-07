@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -479,10 +479,10 @@ public class EntryService extends RemovalListenerService implements Serializable
 		model.put(MARK_ENTRY, entry);
 		model.put(MARK_LOCALE, locale);
 		if (request != null) {
-			AppointmentFrontDTO appointmentFrontDTO = (AppointmentFrontDTO) request.getSession()
+			AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession()
 					.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
-			if ((appointmentFrontDTO != null) && (appointmentFrontDTO.getMapResponsesByIdEntry() != null)) {
-				List<Response> listResponses = appointmentFrontDTO.getMapResponsesByIdEntry().get(entry.getIdEntry());
+			if ((appointmentDTO != null) && (appointmentDTO.getMapResponsesByIdEntry() != null)) {
+				List<Response> listResponses = appointmentDTO.getMapResponsesByIdEntry().get(entry.getIdEntry());
 				model.put(MARK_LIST_RESPONSES, listResponses);
 			}
 		}
@@ -511,7 +511,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	 * @return the list of possible errors
 	 */
 	public static List<GenericAttributeError> getResponseEntry(HttpServletRequest request, int nIdEntry, Locale locale,
-			AppointmentFrontDTO appointment) {
+			AppointmentDTO appointment) {
 		List<Response> listResponse = new ArrayList<Response>();
 		appointment.getMapResponsesByIdEntry().put(nIdEntry, listResponse);
 
@@ -537,7 +537,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 	 * @return a list of possible errors
 	 */
 	private static List<GenericAttributeError> getResponseEntry(HttpServletRequest request, int nIdEntry,
-			List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentFrontDTO appointment) {
+			List<Response> listResponse, boolean bResponseNull, Locale locale, AppointmentDTO appointment) {
 		List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>();
 		Entry entry = EntryHome.findByPrimaryKey(nIdEntry);
 

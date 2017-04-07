@@ -282,6 +282,14 @@ public class SlotService {
 	}
 
 	/**
+	 * Update a slot
+	 * @param slot the slot updated
+	 */
+	public static void updateSlot(Slot slot){
+		SlotHome.update(slot);
+	}
+	
+	/**
 	 * Generate the list of slot to create after a slot (taking into account the
 	 * week definition and the rules to apply)
 	 * 

@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -103,4 +104,11 @@ public interface IAppointmentDAO {
 	 */
 	List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime, Plugin plugin);
 
+	/**
+	 * Returns a list of appointments matching the filter
+	 * @param appointmentFilter the filter
+	 * @param plugin the plugin
+	 * @return a list of appointments
+	 */
+	List<Appointment> findByFilter(AppointmentFilter appointmentFilter, Plugin plugin);
 }

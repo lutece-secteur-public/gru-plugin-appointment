@@ -1,6 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,9 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 
 /**
@@ -22,7 +26,7 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
  * @author Laurent Payen
  *
  */
-public class AppointmentFrontDTO implements Serializable {
+public class AppointmentDTO implements Serializable {
 
 	private static final String PROPERTY_EMPTY_FIELD_FIRST_NAME = "appointment.validation.appointment.FirstName.notEmpty";
 	private static final String PROPERTY_EMPTY_FIELD_LAST_NAME = "appointment.validation.appointment.LastName.notEmpty";
@@ -34,13 +38,10 @@ public class AppointmentFrontDTO implements Serializable {
 	private static final String PROPERTY_UNVAILABLE_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.error";
 	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE = "appointment.message.error.MaxAppointmentPeriode";
 	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE_BACK = "appointment.info.appointment.emailerror";
-	private static final String PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
+	private static final String PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";	
 
-	/**
-	 * Appointment resource type
-	 */
-	public static final String APPOINTMENT_RESOURCE_TYPE = "appointment";
-
+	public static final String PROPERTY_APPOINTMENT_STATUS_UNRESERVED = "appointment.message.labelStatusUnreserved";
+	public static final String PROPERTY_APPOINTMENT_STATUS_RESERVED = "appointment.message.labelStatusReserved";
 	/**
 	 * Serial version UID
 	 */
@@ -56,6 +57,15 @@ public class AppointmentFrontDTO implements Serializable {
 	 */
 	private String _strDateOfTheAppointment;
 
+	private LocalDateTime _startingDateTime;
+	
+	private LocalTime _startingTime;
+	
+	private LocalTime _endingTime;
+	
+	private boolean _isCancelled;
+	
+	private State _state;
 	/**
 	 * The Form Id
 	 */
@@ -96,6 +106,8 @@ public class AppointmentFrontDTO implements Serializable {
 	 * The slot of the apointment
 	 */
 	private Slot _slot;
+	
+	private User user;		
 
 	/**
 	 * The Map of the responses for the additional entries of the form
@@ -105,7 +117,55 @@ public class AppointmentFrontDTO implements Serializable {
 	/**
 	 * The list of the responses for the additional entries of the form
 	 */
-	private List<Response> _listResponse;
+	private List<Response> _listResponse;	
+	
+	public State getState() {
+		return _state;
+	}
+
+	public void setState(State state) {
+		this._state = state;
+	}
+
+	public LocalDateTime getStartingDateTime() {
+		return _startingDateTime;
+	}
+
+	public void setStartingDateTime(LocalDateTime _startingDateTime) {
+		this._startingDateTime = _startingDateTime;
+	}
+
+	public LocalTime getStartingTime() {
+		return _startingTime;
+	}
+
+	public void setStartingTime(LocalTime startingTime) {
+		this._startingTime = startingTime;
+	}
+
+	public LocalTime getEndingTime() {
+		return _endingTime;
+	}
+
+	public void setEndingTime(LocalTime endingTime) {
+		this._endingTime = endingTime;
+	}
+
+	public boolean getIsCancelled() {
+		return _isCancelled;
+	}
+
+	public void setIsCancelled(boolean isCancelled) {
+		this._isCancelled = isCancelled;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	/**
 	 * Get the date of the appointment
@@ -145,6 +205,7 @@ public class AppointmentFrontDTO implements Serializable {
 		this._listResponse = listResponse;
 	}
 
+	
 	/**
 	 * Get the form Id
 	 * 

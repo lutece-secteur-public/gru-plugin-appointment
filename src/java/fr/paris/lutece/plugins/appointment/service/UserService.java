@@ -1,6 +1,6 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFrontDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 
@@ -19,7 +19,7 @@ public class UserService {
 	 *            the appointment DTO
 	 * @return the user saved
 	 */
-	public static User saveUser(AppointmentFrontDTO appointment) {	
+	public static User saveUser(AppointmentDTO appointment) {	
 		User user = new User();
 		user.setFirstName(appointment.getFirstName());
 		user.setLastName(appointment.getLastName());
@@ -36,6 +36,14 @@ public class UserService {
 		return user;
 	}
 
+	/**
+	 * Find a User by its primary key
+	 * @param nIdUser the primary key
+	 * @return the User found
+	 */
+	public static User findUserById(int nIdUser){
+		return UserHome.findByPrimaryKey(nIdUser);
+	}
 	/**
 	 * Find a user with its email
 	 * 

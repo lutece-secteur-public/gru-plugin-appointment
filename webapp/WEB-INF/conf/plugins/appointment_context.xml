@@ -2,6 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 	<bean id="appointment.appointmentDAO"  class="fr.paris.lutece.plugins.appointment.business.appointment.AppointmentDAO" />  
+	<bean id="appointment.appointmentResponseDAO"  class="fr.paris.lutece.plugins.appointment.business.appointment.AppointmentResponseDAO" />
 	<bean id="appointment.calendarTemplateDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateDAO" />
 	<bean id="appointment.closingDayDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.ClosingDayDAO" />
 	<bean id="appointment.displayDAO"  class="fr.paris.lutece.plugins.appointment.business.display.DisplayDAO" />
