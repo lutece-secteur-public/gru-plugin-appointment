@@ -48,7 +48,9 @@
 			<#list events as event>				
 				<#assign nbAppointments = event.maxCapacity - event.nbRemainingPlaces>
 				{					
-					title : <#if event.isOpen & (event.nbRemainingPlaces > 0)>
+					title : <#if modifDateAppointment??>
+								'Choisir ce creneau'
+							<#elseif event.isOpen & (event.nbRemainingPlaces > 0)>
 								'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
 								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
@@ -61,7 +63,10 @@
 					id : '${event.idSlot}',
 					color : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'default'
 								<#elseif event.isOpen>'red'<#else>'red'</#if>,
-					url : eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}',					
+					url : <#if modifDateAppointment??>
+							eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}'
+							<#else>
+							eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}'</#if>,					
 				},								
 			</#list>
 		</#if>
@@ -86,7 +91,8 @@
 							showOn: "button",							
 							autoclose: true,
 							startDate: "today",
-							endDate: '+' + nbMaxWeeks + 'w'
+							endDate: '+' + nbMaxWeeks + 'w',
+							orientation: "bottom"
 						});
 						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
 						//Below are required for manipulating dynamically created datepicker on custom button click

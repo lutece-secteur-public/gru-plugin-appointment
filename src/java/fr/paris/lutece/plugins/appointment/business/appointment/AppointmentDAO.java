@@ -6,6 +6,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -172,9 +174,9 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		}
 		if (appointmentFilter.getStartingDateOfSearch() != null) {
 			Timestamp startingTimestamp;
-			if (appointmentFilter.getStartingTimeOfSearch() != null) {
+			if (StringUtils.isNotEmpty(appointmentFilter.getStartingTimeOfSearch())) {
 				startingTimestamp = Timestamp.valueOf(appointmentFilter.getStartingDateOfSearch().toLocalDate()
-						.atTime(appointmentFilter.getStartingTimeOfSearch()));
+						.atTime(LocalTime.parse(appointmentFilter.getStartingTimeOfSearch())));
 			} else {
 				startingTimestamp = Timestamp
 						.valueOf(appointmentFilter.getStartingDateOfSearch().toLocalDate().atStartOfDay());
@@ -183,9 +185,9 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		}
 		if (appointmentFilter.getEndingDateOfSearch() != null) {
 			Timestamp endingTimestamp;
-			if (appointmentFilter.getEndingTimeOfSearch() != null) {
+			if (StringUtils.isNotEmpty(appointmentFilter.getEndingTimeOfSearch())) {
 				endingTimestamp = Timestamp.valueOf(appointmentFilter.getEndingDateOfSearch().toLocalDate()
-						.atTime(appointmentFilter.getEndingTimeOfSearch()));
+						.atTime(LocalTime.parse(appointmentFilter.getEndingTimeOfSearch())));
 			} else {
 				endingTimestamp = Timestamp
 						.valueOf(appointmentFilter.getEndingDateOfSearch().toLocalDate().atTime(LocalTime.MAX));

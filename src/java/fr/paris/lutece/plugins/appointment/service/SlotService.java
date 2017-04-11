@@ -67,7 +67,9 @@ public class SlotService {
 	 * @return the Slot object
 	 */
 	public static Slot findSlotById(int nIdSlot) {
-		return SlotHome.findByPrimaryKey(nIdSlot);
+		Slot slot = SlotHome.findByPrimaryKey(nIdSlot);
+		SlotService.addDateAndTimeToSlot(slot);
+		return slot;
 	}
 
 	/**

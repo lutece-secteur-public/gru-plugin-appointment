@@ -13,6 +13,9 @@
 						#i18n{appointment.appointmentApp.defaultTitle}
 					</#if>
 				</legend>
+				<#if infos?? || errors??>
+					<@messages infos=infos errors=errors />			
+				</#if>
 				<br>				
 				<#if form_errors??>
 					<#assign hasDisplayableError = false>
@@ -144,7 +147,7 @@
 				<div class="form-group <#if formGroupError!=''>has-error</#if>">
 					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="text" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
+						<input type="text" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
 						<#if formGroupError!=''>
 							${formGroupError}
 						<#else>
@@ -153,8 +156,8 @@
 							</#if>
 						</#if>
 					</div>
-				</div>							
-				<#if form.maxPeoplePerAppointment &gt; 1>
+				</div>	
+				<#if form.maxPeoplePerAppointment &gt; 1>				
 					<#assign formGroupError = '' />
 					<#if form_errors??>
 						<#assign hasDisplayableError = false>
@@ -184,21 +187,24 @@
 								</#if>
 							</#if>
 						</div>
-					</div>
-				</#if>								
+					</div>	
+				</#if>					
 				${str_entry}
 				${addon!}  
 				<div class="form-group">
 					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
 						<button class="btn btn-primary btn-sm" type="submit" name="save" >
 							<i class="glyphicon glyphicon-ok"></i><span class="hidden-xs">&nbsp;#i18n{appointment.display_appointment_form.labelValidate}</span>
-						</button>
-						<button type="reset" name="reset" class="btn btn-primary btn-sm">
-							<i class="glyphicon glyphicon-refresh"></i><span class="hidden-xs">&nbsp;#i18n{appointment.display_appointment_form.labelReset}</span>
-						</button>
-						<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}">
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-						</a>														
+						</button>						
+						<#if appointment.idAppointment &gt; 0>
+							<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+							</a>
+						<#else>
+							<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+							</a>
+						</#if>						
 					</div>
 				</div>				
 			</fieldset>

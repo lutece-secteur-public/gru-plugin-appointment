@@ -56,14 +56,14 @@
 							<br/>
 							<div class="form-inline">
 								<div class="form-group">
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingDateOfSearch">#i18n{appointment.manage_appointments.startingDateOfSearch}&nbsp;:</label>
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingDateOfSearch">#i18n{appointment.manage_appointments.startingDateOfSearch}</label>
 									<div class="col-xs-6 col-sm-9 col-md-6 col-lg-4">
 										<div class="input-group">
 											<div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
 											<input class="form-control" id="startingDateOfSearch" name="startingDateOfSearch" type="text" value="${filter.startingDateOfSearch!}" >
 										</div>																					
 									</div>
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingTimeOfSearch">#i18n{appointment.manage_appointment_calendar.labelTo}&nbsp;:</label>
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingTimeOfSearch">#i18n{appointment.manage_appointment_calendar.labelTo}</label>
 									<div id="startingTimeOfSearch" class="col-xs-12 col-sm-9 col-md-6 input-append">
 										<input id="startingTimeOfSearch" name="startingTimeOfSearch" data-format="hh:mm" type="text" value="${filter.startingTimeOfSearch!''}"></input>
 										<span id="timestart" class="add-on">
@@ -73,14 +73,14 @@
 									</div>
 								</div>								
 								<div class="form-group">
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingDateOfSearch">#i18n{appointment.manage_appointments.endingDateOfSearch}&nbsp;:</label>
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingDateOfSearch">#i18n{appointment.manage_appointments.endingDateOfSearch}</label>
 									<div class="col-xs-6 col-sm-9 col-md-6 col-lg-4">
 										<div class="input-group">
 											<div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
 											<input class="form-control" id="endingDateOfSearch" name="endingDateOfSearch" type="text" value="${filter.endingDateOfSearch!}" >
 										</div>											
 									</div>
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingTimeOfSearch">#i18n{appointment.manage_appointment_calendar.labelTo}&nbsp;:</label>
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingTimeOfSearch">#i18n{appointment.manage_appointment_calendar.labelTo}</label>
 									<div id="endingTimeOfSearch" class="col-xs-12 col-sm-9 col-md-6 input-append">
 										<input id="endingTimeOfSearch" name="endingTimeOfSearch" data-format="hh:mm" type="text" value="${filter.endingTimeOfSearch!''}"></input>
 										<span id="timeend" class="add-on">
@@ -194,7 +194,12 @@
 											</td>
 											<td>
 												<#if rightModify?? && rightModify && !appointment.isCancelled> 
-													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}"> 
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointments.labelModifyDateAppointment}"> 
+														<i class="glyphicon icon-time"></i>
+													</a>
+												</#if> 
+												<#if rightModify?? && rightModify && !appointment.isCancelled> 
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{appointment.manage_appointments.labelModifyAppointment}"> 
 														<i class="glyphicon glyphicon-edit"></i>
 													</a>
 												</#if> 

@@ -95,23 +95,47 @@ public class AppointmentService {
 	 * @return the id of the appointment saved
 	 */
 	public static int saveAppointment(AppointmentDTO appointmentDTO) {
+		// if it's an update for modification of the date of the appointment
+		if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
+			// Need to update the old slot
+			Slot oldSlot = SlotService.findSlotById(appointmentDTO.getIdSlot());
+			int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces();
+			oldSlot.setNbRemainingPlaces(oldNbRemainingPlaces + appointmentDTO.getNbBookedSeats());
+			SlotService.updateSlot(oldSlot);
+		}
+		// Update of the remaining places of the slot
 		Slot slot = appointmentDTO.getSlot();
 		int oldNbRemainingPLaces = slot.getNbRemainingPlaces();
-		slot.setNbRemainingPlaces(oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats());
+		int newNbRemainingPlaces = 0;
+		if (appointmentDTO.getIdAppointment() == 0
+				|| appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
+			newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats();
+		} else {
+			Appointment appointment = AppointmentService.findAppointmentById(appointmentDTO.getIdAppointment());
+			newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats() + appointment.getNbPlaces();
+		}
+		slot.setNbRemainingPlaces(newNbRemainingPlaces);
 		slot = SlotService.saveSlot(slot);
+		// Create or update the user
 		User user = UserService.saveUser(appointmentDTO);
+		// Create or update the appointment
 		Appointment appointment = buildAppointment(appointmentDTO, user, slot);
 		String strEmailOrLastNamePlusFirstName = StringUtils.EMPTY;
 		if (StringUtils.isEmpty(user.getEmail())) {
 			strEmailOrLastNamePlusFirstName = user.getLastName() + user.getFirstName();
 		}
-		String strReference = appointment.getIdAppointment() + CryptoService
-				.encrypt(appointment.getIdAppointment() + strEmailOrLastNamePlusFirstName,
-						AppPropertiesService.getProperty(PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256))
-				.substring(0, AppPropertiesService.getPropertyInt(PROPERTY_REF_SIZE_RANDOM_PART,
-						CONSTANT_REF_SIZE_RANDOM_PART));
-		appointment.setReference(strReference);
-		AppointmentHome.update(appointment);
+		// Create a unique reference for a new appointment
+		if (appointmentDTO.getIdAppointment() == 0) {
+			String strReference = appointment.getIdAppointment()
+					+ CryptoService
+							.encrypt(appointment.getIdAppointment() + strEmailOrLastNamePlusFirstName,
+									AppPropertiesService.getProperty(PROPERTY_REF_ENCRYPTION_ALGORITHM,
+											CONSTANT_SHA256))
+							.substring(0, AppPropertiesService.getPropertyInt(PROPERTY_REF_SIZE_RANDOM_PART,
+									CONSTANT_REF_SIZE_RANDOM_PART));
+			appointment.setReference(strReference);
+			AppointmentHome.update(appointment);
+		}
 		return appointment.getIdAppointment();
 	}
 
@@ -128,10 +152,18 @@ public class AppointmentService {
 	 */
 	private static Appointment buildAppointment(AppointmentDTO appointmentDTO, User user, Slot slot) {
 		Appointment appointment = new Appointment();
+		if (appointmentDTO.getIdAppointment() != 0) {
+			appointment = AppointmentService.findAppointmentById(appointmentDTO.getIdAppointment());
+		}
 		appointment.setNbPlaces(appointmentDTO.getNbBookedSeats());
 		appointment.setIdSlot(slot.getIdSlot());
 		appointment.setIdUser(user.getIdUser());
-		return AppointmentHome.create(appointment);
+		if (appointmentDTO.getIdAppointment() == 0) {
+			appointment = AppointmentHome.create(appointment);
+		} else {
+			appointment = AppointmentHome.update(appointment);
+		}
+		return appointment;
 	}
 
 	/**
@@ -162,7 +194,9 @@ public class AppointmentService {
 
 	private static AppointmentDTO buildAppointmentDTO(Appointment appointment) {
 		AppointmentDTO appointmentDTO = new AppointmentDTO();
+		appointmentDTO.setIdForm(appointment.getSlot().getIdForm());
 		appointmentDTO.setIdUser(appointment.getIdUser());
+		appointmentDTO.setIdSlot(appointment.getIdSlot());
 		appointmentDTO.setIdAppointment(appointment.getIdAppointment());
 		appointmentDTO.setFirstName(appointment.getUser().getFirstName());
 		appointmentDTO.setLastName(appointment.getUser().getLastName());
@@ -174,6 +208,9 @@ public class AppointmentService {
 		appointmentDTO.setEndingTime(appointment.getSlot().getEndingDateTime().toLocalTime());
 		appointmentDTO.setIsCancelled(appointment.getIsCancelled());
 		appointmentDTO.setNbBookedSeats(appointment.getNbPlaces());
+		SlotService.addDateAndTimeToSlot(appointment.getSlot());
+		appointmentDTO.setSlot(appointment.getSlot());
+		appointmentDTO.setUser(appointment.getUser());
 		return appointmentDTO;
 	}
 
@@ -202,13 +239,13 @@ public class AppointmentService {
 		SlotService.updateSlot(slotOfTheAppointmentToDelete);
 		AppointmentHome.delete(nIdAppointment);
 	}
-	
-	public static AppointmentDTO buildAppointmentDTOFromIdAppointment(int nIdAppointment){		
+
+	public static AppointmentDTO buildAppointmentDTOFromIdAppointment(int nIdAppointment) {
 		Appointment appointment = AppointmentService.findAppointmentById(nIdAppointment);
 		User user = UserService.findUserById(appointment.getIdUser());
 		Slot slot = SlotService.findSlotById(appointment.getIdSlot());
 		appointment.setUser(user);
-		appointment.setSlot(slot);		
+		appointment.setSlot(slot);
 		return buildAppointmentDTO(appointment);
 	}
 

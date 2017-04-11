@@ -75,6 +75,11 @@ public class AppointmentDTO implements Serializable {
 	 * The User Id
 	 */
 	private int _nIdUser;
+	
+	/**
+	 * The SLot Id
+	 */
+	private int _nIdSlot;
 
 	/**
 	 * The First Name of the User
@@ -107,7 +112,7 @@ public class AppointmentDTO implements Serializable {
 	 */
 	private Slot _slot;
 	
-	private User user;		
+	private User _user;		
 
 	/**
 	 * The Map of the responses for the additional entries of the form
@@ -160,11 +165,11 @@ public class AppointmentDTO implements Serializable {
 	}
 
 	public User getUser() {
-		return user;
+		return _user;
 	}
 
 	public void setUser(User user) {
-		this.user = user;
+		this._user = user;
 	}
 
 	/**
@@ -261,6 +266,22 @@ public class AppointmentDTO implements Serializable {
 	 */
 	public void setIdUser(int nIdUser) {
 		this._nIdUser = nIdUser;
+	}
+
+	/**
+	 * Get the slot id
+	 * @return the slot id
+	 */
+	public int getIdSlot() {
+		return _nIdSlot;
+	}
+
+	/**
+	 * Set the slot id
+	 * @param nIdSlot the slot id to set
+	 */
+	public void setIdSlot(int nIdSlot) {
+		this._nIdSlot = nIdSlot;
 	}
 
 	/**

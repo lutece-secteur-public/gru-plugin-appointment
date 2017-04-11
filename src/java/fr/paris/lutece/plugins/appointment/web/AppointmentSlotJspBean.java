@@ -345,8 +345,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 				slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
 						bIsOpen);
 			} else {
-				slot = SlotService.findSlotById(nIdSlot);
-				SlotService.addDateAndTimeToSlot(slot);
+				slot = SlotService.findSlotById(nIdSlot);				
 			}
 			request.getSession().setAttribute(SESSION_ATTRIBUTE_SLOT, slot);
 		}
@@ -369,8 +368,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 		String strIdSlot = request.getParameter(PARAMETER_ID_SLOT);
 		int nIdSlot = Integer.parseInt(strIdSlot);
 		if (nIdSlot != 0) {
-			slotFromSessionOrFromDb = SlotService.findSlotById(nIdSlot);
-			SlotService.addDateAndTimeToSlot(slotFromSessionOrFromDb);
+			slotFromSessionOrFromDb = SlotService.findSlotById(nIdSlot);			
 		} else {
 			slotFromSessionOrFromDb = (Slot) request.getSession().getAttribute(SESSION_ATTRIBUTE_SLOT);
 		}

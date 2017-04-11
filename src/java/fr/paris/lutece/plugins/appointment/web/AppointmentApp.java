@@ -54,7 +54,6 @@ import org.bouncycastle.util.Strings;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
@@ -80,9 +79,6 @@ import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
-import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
-import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -225,7 +221,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 	private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
 	private static final String ERROR_MESSAGE_UNKNOWN_REF = "appointment.message.error.unknownRef";
-	private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";	
+	private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
 	private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
 	private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
 	private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
@@ -377,9 +373,11 @@ public class AppointmentApp extends MVCApplication {
 		if (appointmentDTO == null) {
 			// Try to get the validated appointment in session
 			// (in case the user click on back button in the recap view
-			appointmentDTO = (AppointmentDTO) request.getSession()
-					.getAttribute(SESSION_VALIDATED_APPOINTMENT);
-			if (appointmentDTO == null) {
+			appointmentDTO = (AppointmentDTO) request.getSession().getAttribute(SESSION_VALIDATED_APPOINTMENT);
+			if (appointmentDTO != null){
+				request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
+				request.getSession().setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO);
+			} else {
 				appointmentDTO = new AppointmentDTO();
 				int nIdSlot = Integer.parseInt(request.getParameter(PARAMETER_ID_SLOT));
 				Slot slot = null;
@@ -395,8 +393,7 @@ public class AppointmentApp extends MVCApplication {
 					slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
 							bIsOpen);
 				} else {
-					slot = SlotService.findSlotById(nIdSlot);
-					SlotService.addDateAndTimeToSlot(slot);
+					slot = SlotService.findSlotById(nIdSlot);					
 				}
 
 				appointmentDTO.setSlot(slot);
@@ -472,15 +469,15 @@ public class AppointmentApp extends MVCApplication {
 		List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>();
 		Locale locale = request.getLocale();
 		String strEmail = request.getParameter(PARAMETER_EMAIL);
-		AppointmentUtilities.checkEmail(strEmail, request.getParameter(PARAMETER_EMAIL_CONFIRMATION), form, locale, listFormErrors);
-		if (!AppointmentUtilities.checkUserAndAppointment(appointmentDTO.getSlot().getStartingDateTime().toLocalDate(), strEmail, form,
-				locale, listFormErrors)) {
+		AppointmentUtilities.checkEmail(strEmail, request.getParameter(PARAMETER_EMAIL_CONFIRMATION), form, locale,
+				listFormErrors);
+		if (!AppointmentUtilities.checkUserAndAppointment(appointmentDTO, strEmail, form)) {
 			addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
 		}
-		int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats(request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS), form,
-				appointmentDTO.getSlot().getNbRemainingPlaces(), locale, listFormErrors);
+		int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats(
+				request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS), form, appointmentDTO, locale, listFormErrors);
 		AppointmentUtilities.fillAppointmentDTO(appointmentDTO, nbBookedSeats, strEmail,
 				request.getParameter(PARAMETER_FIRST_NAME), request.getParameter(PARAMETER_LAST_NAME));
 		AppointmentUtilities.validateFormAndEntries(appointmentDTO, request, listFormErrors);
@@ -505,8 +502,7 @@ public class AppointmentApp extends MVCApplication {
 	 */
 	@View(VIEW_DISPLAY_RECAP_APPOINTMENT)
 	public XPage displayRecapAppointment(HttpServletRequest request) throws UserNotSignedException {
-		AppointmentDTO appointment = (AppointmentDTO) request.getSession()
-				.getAttribute(SESSION_VALIDATED_APPOINTMENT);
+		AppointmentDTO appointment = (AppointmentDTO) request.getSession().getAttribute(SESSION_VALIDATED_APPOINTMENT);
 		if (appointment == null) {
 			return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
 		}
@@ -519,16 +515,9 @@ public class AppointmentApp extends MVCApplication {
 		fillCommons(model);
 		model.put(MARK_APPOINTMENT, appointment);
 		Locale locale = getLocale(request);
-		List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>(
-				appointment.getListResponse().size());
-		for (Response response : appointment.getListResponse()) {
-			IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService(response.getEntry());
-			listResponseRecapDTO.add(new ResponseRecapDTO(response,
-					entryTypeService.getResponseValueForRecap(response.getEntry(), request, response, locale)));
-		}
-		model.put(MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO);
+		model.put(MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse(appointment, request, locale));
 		model.put(MARK_FORM, form);
-		return getXPage(TEMPLATE_APPOINTMENT_FORM_RECAP, getLocale(request), model);
+		return getXPage(TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model);
 	}
 
 	/**
@@ -541,8 +530,7 @@ public class AppointmentApp extends MVCApplication {
 	 */
 	@Action(ACTION_DO_MAKE_APPOINTMENT)
 	public XPage doMakeAppointment(HttpServletRequest request) throws UserNotSignedException {
-		AppointmentDTO appointment = (AppointmentDTO) request.getSession()
-				.getAttribute(SESSION_VALIDATED_APPOINTMENT);
+		AppointmentDTO appointment = (AppointmentDTO) request.getSession().getAttribute(SESSION_VALIDATED_APPOINTMENT);
 		if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_BACK))) {
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, appointment.getIdForm());
 		}
@@ -899,7 +887,7 @@ public class AppointmentApp extends MVCApplication {
 		}
 
 		return _captchaSecurityService;
-	}	
+	}
 
 	/**
 	 * Clear the user's session
