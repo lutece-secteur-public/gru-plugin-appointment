@@ -106,7 +106,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	@NotNull(message = "#i18n{portal.validation.message.notEmpty}")
 	@Min(value = 0, message = "#i18n{portal.validation.message.notEmpty}")
 	private int _nMinTimeBeforeAppointment;
-	
+
 	/**
 	 * True if it is open on Monday (checkbox)
 	 */
@@ -386,6 +386,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 
 	/**
 	 * Get the minimum time from now before a user can take an appointment
+	 * 
 	 * @return
 	 */
 	public int getMinTimeBeforeAppointment() {

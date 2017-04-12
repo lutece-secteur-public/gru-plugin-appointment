@@ -114,7 +114,9 @@ public class AppointmentHome {
 
 	/**
 	 * Returns a list of appointment matching the filter
-	 * @param appointmentFilter the filter
+	 * 
+	 * @param appointmentFilter
+	 *            the filter
 	 * @return a list of appointments
 	 */
 	public static List<Appointment> findByFilter(AppointmentFilter appointmentFilter) {

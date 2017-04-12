@@ -374,7 +374,7 @@ public class AppointmentApp extends MVCApplication {
 			// Try to get the validated appointment in session
 			// (in case the user click on back button in the recap view
 			appointmentDTO = (AppointmentDTO) request.getSession().getAttribute(SESSION_VALIDATED_APPOINTMENT);
-			if (appointmentDTO != null){
+			if (appointmentDTO != null) {
 				request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 				request.getSession().setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO);
 			} else {
@@ -393,7 +393,7 @@ public class AppointmentApp extends MVCApplication {
 					slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
 							bIsOpen);
 				} else {
-					slot = SlotService.findSlotById(nIdSlot);					
+					slot = SlotService.findSlotById(nIdSlot);
 				}
 
 				appointmentDTO.setSlot(slot);
@@ -850,11 +850,14 @@ public class AppointmentApp extends MVCApplication {
 	public static String getFormListHtml(HttpServletRequest request, Locale locale) {
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		Map<String, Object> model = new HashMap<String, Object>();
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAppointmentForm();
 		// We keep only the active
-		List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAppointmentForm().stream()
-				.filter(a -> a.getDateStartValidity().toLocalDate().isBefore(LocalDate.now())
-						|| a.getDateStartValidity().toLocalDate().equals(LocalDate.now()))
-				.sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle())).collect(Collectors.toList());
+		if (CollectionUtils.isNotEmpty(listAppointmentForm)) {
+			listAppointmentForm = listAppointmentForm.stream()
+					.filter(a -> a.getDateStartValidity().toLocalDate().isBefore(LocalDate.now())
+							|| a.getDateStartValidity().toLocalDate().equals(LocalDate.now()))
+					.sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle())).collect(Collectors.toList());
+		}
 		List<String> icons = new ArrayList<String>();
 		for (AppointmentForm form : listAppointmentForm) {
 			ImageResource img = form.getIcon();

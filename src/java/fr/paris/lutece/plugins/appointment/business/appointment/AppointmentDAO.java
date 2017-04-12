@@ -157,6 +157,14 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		return listAppointment;
 	}
 
+	/**
+	 * Add all the filters to the daoUtil
+	 * 
+	 * @param appointmentFilter
+	 *            the filter
+	 * @param daoUtil
+	 *            the daoutil
+	 */
 	private void addFilterParametersToDAOUtil(AppointmentFilter appointmentFilter, DAOUtil daoUtil) {
 		int nIndex = 1;
 		daoUtil.setInt(nIndex++, appointmentFilter.getIdForm());
@@ -196,6 +204,13 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		}
 	}
 
+	/**
+	 * Build the sql query with the elements of the filter
+	 * 
+	 * @param appointmentFilter
+	 *            the filter
+	 * @return the query
+	 */
 	private String getSqlQueryFromFilter(AppointmentFilter appointmentFilter) {
 		StringBuilder sbSql = new StringBuilder(SQL_QUERY_SELECT_BY_FILTER);
 		if (appointmentFilter.getFirstName() != null) {
@@ -265,6 +280,14 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		return appointment;
 	}
 
+	/**
+	 * Build an appointment business object with its complete slot and its
+	 * complete user
+	 * 
+	 * @param daoUtil
+	 *            the daoutil
+	 * @return the appointment
+	 */
 	private Appointment buildAppointmentHeavy(DAOUtil daoUtil) {
 		int nIndex = 1;
 		Appointment appointment = new Appointment();

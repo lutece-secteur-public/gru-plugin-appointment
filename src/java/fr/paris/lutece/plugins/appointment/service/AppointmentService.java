@@ -192,6 +192,13 @@ public class AppointmentService {
 		return listAppointmentsDTO;
 	}
 
+	/**
+	 * Build an appointment dto from an appointment business object
+	 * 
+	 * @param appointment
+	 *            the appointment business object
+	 * @return the appointment DTO
+	 */
 	private static AppointmentDTO buildAppointmentDTO(Appointment appointment) {
 		AppointmentDTO appointmentDTO = new AppointmentDTO();
 		appointmentDTO.setIdForm(appointment.getSlot().getIdForm());
@@ -240,6 +247,13 @@ public class AppointmentService {
 		AppointmentHome.delete(nIdAppointment);
 	}
 
+	/**
+	 * Build an appointment DTO from the id of an appointment business object
+	 * 
+	 * @param nIdAppointment
+	 *            the id of the appointment
+	 * @return the appointment DTO
+	 */
 	public static AppointmentDTO buildAppointmentDTOFromIdAppointment(int nIdAppointment) {
 		Appointment appointment = AppointmentService.findAppointmentById(nIdAppointment);
 		User user = UserService.findUserById(appointment.getIdUser());

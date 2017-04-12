@@ -332,7 +332,9 @@ public class FormService {
 
 	/**
 	 * Check the validity of the form and update it if necessary
-	 * @param form the form to check
+	 * 
+	 * @param form
+	 *            the form to check
 	 */
 	private static void checkValidityDate(Form form) {
 		LocalDate dateNow = LocalDate.now();

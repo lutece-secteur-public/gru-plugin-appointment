@@ -297,6 +297,13 @@ public class AppointmentUtilities {
 		}
 	}
 
+	/**
+	 * Build a list of response of the appointment
+	 * @param appointment the appointment 
+	 * @param request the request
+	 * @param locale the local
+	 * @return a list of response
+	 */
 	public static List<ResponseRecapDTO> buildListResponse(AppointmentDTO appointment, HttpServletRequest request,
 			Locale locale) {
 		List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>();
@@ -314,14 +321,22 @@ public class AppointmentUtilities {
 		return listResponseRecapDTO;
 	}
 
-	public static void buildExcelFileWithAppointments(String strIdResponse, HttpServletResponse response, Locale locale,
+	/**
+	 * Build the excel fil of the list of the appointments found in the manage appointment viw by filter
+	 * @param strIdForm the form id
+	 * @param response the response
+	 * @param locale the local
+	 * @param listAppointmentsDTO the list of the appointments to input in the excel file
+	 * @param _stateService the state service
+	 */
+	public static void buildExcelFileWithAppointments(String strIdForm, HttpServletResponse response, Locale locale,
 			List<AppointmentDTO> listAppointmentsDTO, StateService _stateService) {
-		AppointmentForm tmpForm = FormService.buildAppointmentFormLight(Integer.parseInt(strIdResponse));
+		AppointmentForm tmpForm = FormService.buildAppointmentFormLight(Integer.parseInt(strIdForm));
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet(I18nService.getLocalizedString(KEY_RESOURCE_TYPE, locale));
 		List<Object[]> tmpObj = new ArrayList<Object[]>();
 		EntryFilter entryFilter = new EntryFilter();
-		entryFilter.setIdResource(Integer.valueOf(strIdResponse));
+		entryFilter.setIdResource(Integer.valueOf(strIdForm));
 		List<Entry> listEntry = EntryHome.getEntryList(entryFilter);
 		Map<Integer, String> mapDefaultValueGenAttBackOffice = new HashMap<Integer, String>();
 		for (Entry e : listEntry) {

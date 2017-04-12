@@ -44,8 +44,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
+import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -597,6 +597,15 @@ public class EntryService extends RemovalListenerService implements Serializable
 		return listFormErrors;
 	}
 
+	/**
+	 * Tell if the id of the field given is in the response list
+	 * 
+	 * @param nIdField
+	 *            the id of the field
+	 * @param listResponse
+	 *            the list to search in
+	 * @return true if the id is in the list
+	 */
 	public static Boolean isFieldInTheResponseList(int nIdField, List<Response> listResponse) {
 		for (Response response : listResponse) {
 			if ((response.getField() != null) && (response.getField().getIdField() == nIdField)) {
@@ -607,6 +616,15 @@ public class EntryService extends RemovalListenerService implements Serializable
 		return false;
 	}
 
+	/**
+	 * Add parameters to the url with the entry given
+	 * 
+	 * @param entry
+	 *            the entry
+	 * @param nIdform
+	 *            the form id
+	 * @return the url
+	 */
 	public static String getEntryUrl(Entry entry, int nIdform) {
 		UrlItem url = new UrlItem(AppPathService.getPortalUrl());
 		url.addParameter(XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME);
@@ -620,6 +638,15 @@ public class EntryService extends RemovalListenerService implements Serializable
 		return url.getUrl();
 	}
 
+	/**
+	 * Get the list of entries filtered
+	 * 
+	 * @param iform
+	 *            the form id
+	 * @param bDisplayFront
+	 *            true if it is displayed on FO
+	 * @return the list of entries
+	 */
 	public static List<Entry> getFilter(int iform, boolean bDisplayFront) {
 		EntryFilter filter = new EntryFilter();
 		filter.setIdResource(iform);

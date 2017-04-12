@@ -17,7 +17,7 @@ public class Appointment implements Serializable {
 	 * Appointment resource type
 	 */
 	public static final String APPOINTMENT_RESOURCE_TYPE = "appointment";
-	
+
 	/**
 	 * Serial version UID
 	 */
@@ -41,7 +41,7 @@ public class Appointment implements Serializable {
 	 * Tell if the appointment is cancelled or not
 	 */
 	private boolean _bIsCancelled;
-	
+
 	/**
 	 * User id
 	 */
@@ -50,17 +50,18 @@ public class Appointment implements Serializable {
 	/**
 	 * Slot id
 	 */
-	private int _nIdSlot;	
+	private int _nIdSlot;
 
 	/**
 	 * The slot on which the appointment is
 	 */
 	private Slot _slot;
-	
+
 	/**
 	 * The user of the appointment
 	 */
 	private User _user;
+
 	/**
 	 * Get the reference of the appointment
 	 * 
@@ -79,9 +80,10 @@ public class Appointment implements Serializable {
 	public void setReference(String strReference) {
 		this._strReference = strReference;
 	}
-	
+
 	/**
 	 * Get the number of places of the appointment
+	 * 
 	 * @return the number of places
 	 */
 	public int getNbPlaces() {
@@ -90,7 +92,9 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Set the number of places for the appointment
-	 * @param nNbPlaces the number of places to set 
+	 * 
+	 * @param nNbPlaces
+	 *            the number of places to set
 	 */
 	public void setNbPlaces(int nNbPlaces) {
 		this._nNbPlaces = nNbPlaces;
@@ -98,6 +102,7 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Get if the appointment is cancelled
+	 * 
 	 * @return true if the appointment is cancelled
 	 */
 	public boolean getIsCancelled() {
@@ -106,7 +111,9 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Set if the appointment is cancelled
-	 * @param bIsCancelled the boolean value to set
+	 * 
+	 * @param bIsCancelled
+	 *            the boolean value to set
 	 */
 	public void setIsCancelled(boolean bIsCancelled) {
 		this._bIsCancelled = bIsCancelled;
@@ -171,6 +178,7 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Get the slot of the appointment
+	 * 
 	 * @return the slot
 	 */
 	public Slot getSlot() {
@@ -179,7 +187,9 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Set the slot of the appointment
-	 * @param slot the slot to set
+	 * 
+	 * @param slot
+	 *            the slot to set
 	 */
 	public void setSlot(Slot slot) {
 		this._slot = slot;
@@ -187,6 +197,7 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Get the user of the appointment
+	 * 
 	 * @return the user
 	 */
 	public User getUser() {
@@ -195,12 +206,12 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Set the user of the appointment
-	 * @param user the user
+	 * 
+	 * @param user
+	 *            the user
 	 */
 	public void setUser(User user) {
 		this._user = user;
 	}
-	
-	 
 
 }

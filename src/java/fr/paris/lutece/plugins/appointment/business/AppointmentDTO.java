@@ -38,10 +38,10 @@ public class AppointmentDTO implements Serializable {
 	private static final String PROPERTY_UNVAILABLE_NB_SEATS = "appointment.validation.appointment.NbBookedSeat.error";
 	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE = "appointment.message.error.MaxAppointmentPeriode";
 	private static final String PROPERTY_MAX_APPOINTMENT_PERIODE_BACK = "appointment.info.appointment.emailerror";
-	private static final String PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";	
-
+	private static final String PROPERTY_NB_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
 	public static final String PROPERTY_APPOINTMENT_STATUS_UNRESERVED = "appointment.message.labelStatusUnreserved";
 	public static final String PROPERTY_APPOINTMENT_STATUS_RESERVED = "appointment.message.labelStatusReserved";
+
 	/**
 	 * Serial version UID
 	 */
@@ -53,19 +53,35 @@ public class AppointmentDTO implements Serializable {
 	private int _nIdAppointment;
 
 	/**
-	 * The Date of the appointment
+	 * The Date of the appointment in string format
 	 */
 	private String _strDateOfTheAppointment;
 
+	/**
+	 * The starting date in LocalDateTime
+	 */
 	private LocalDateTime _startingDateTime;
-	
+
+	/**
+	 * The starting time
+	 */
 	private LocalTime _startingTime;
-	
+
+	/**
+	 * The ending time
+	 */
 	private LocalTime _endingTime;
-	
+
+	/**
+	 * Tell if the appointment has been cancelled or not
+	 */
 	private boolean _isCancelled;
-	
+
+	/**
+	 * The state of the appointment
+	 */
 	private State _state;
+
 	/**
 	 * The Form Id
 	 */
@@ -75,7 +91,7 @@ public class AppointmentDTO implements Serializable {
 	 * The User Id
 	 */
 	private int _nIdUser;
-	
+
 	/**
 	 * The SLot Id
 	 */
@@ -108,11 +124,14 @@ public class AppointmentDTO implements Serializable {
 	private int _nNbBookedSeats;
 
 	/**
-	 * The slot of the apointment
+	 * The slot of the appointment
 	 */
 	private Slot _slot;
-	
-	private User _user;		
+
+	/**
+	 * The user of the appointment
+	 */
+	private User _user;
 
 	/**
 	 * The Map of the responses for the additional entries of the form
@@ -122,52 +141,118 @@ public class AppointmentDTO implements Serializable {
 	/**
 	 * The list of the responses for the additional entries of the form
 	 */
-	private List<Response> _listResponse;	
-	
+	private List<Response> _listResponse;
+
+	/**
+	 * Get the state of the appointment
+	 * 
+	 * @return the state of the appointment
+	 */
 	public State getState() {
 		return _state;
 	}
 
+	/**
+	 * Set the state of the appointment
+	 * 
+	 * @param state
+	 *            the state to set
+	 */
 	public void setState(State state) {
 		this._state = state;
 	}
 
+	/**
+	 * Get the starting date time of the appointment
+	 * 
+	 * @return the starting date time
+	 */
 	public LocalDateTime getStartingDateTime() {
 		return _startingDateTime;
 	}
 
+	/**
+	 * Set the starting date time of the appointment
+	 * 
+	 * @param _startingDateTime
+	 *            the starting date time
+	 */
 	public void setStartingDateTime(LocalDateTime _startingDateTime) {
 		this._startingDateTime = _startingDateTime;
 	}
 
+	/**
+	 * Get the starting time of the appointment
+	 * 
+	 * @return the starting time
+	 */
 	public LocalTime getStartingTime() {
 		return _startingTime;
 	}
 
+	/**
+	 * Set the starting time of the appointment
+	 * 
+	 * @param startingTime
+	 *            the starting time to set
+	 */
 	public void setStartingTime(LocalTime startingTime) {
 		this._startingTime = startingTime;
 	}
 
+	/**
+	 * Get the ending time of the appointment
+	 * 
+	 * @return the ending time
+	 */
 	public LocalTime getEndingTime() {
 		return _endingTime;
 	}
 
+	/**
+	 * Set the ending time of the appointment
+	 * 
+	 * @param endingTime
+	 *            the ending time
+	 */
 	public void setEndingTime(LocalTime endingTime) {
 		this._endingTime = endingTime;
 	}
 
+	/**
+	 * Tell if the appointment is cancelled
+	 * 
+	 * @return true if the appointment is cancelled
+	 */
 	public boolean getIsCancelled() {
 		return _isCancelled;
 	}
 
+	/**
+	 * Set if the appointment is cancelled
+	 * 
+	 * @param isCancelled
+	 *            the boolean value
+	 */
 	public void setIsCancelled(boolean isCancelled) {
 		this._isCancelled = isCancelled;
 	}
 
+	/**
+	 * Get the user of the appointment
+	 * 
+	 * @return the user
+	 */
 	public User getUser() {
 		return _user;
 	}
 
+	/**
+	 * Set the user of the appointment
+	 * 
+	 * @param user
+	 *            the user to set
+	 */
 	public void setUser(User user) {
 		this._user = user;
 	}
@@ -210,7 +295,6 @@ public class AppointmentDTO implements Serializable {
 		this._listResponse = listResponse;
 	}
 
-	
 	/**
 	 * Get the form Id
 	 * 
@@ -270,6 +354,7 @@ public class AppointmentDTO implements Serializable {
 
 	/**
 	 * Get the slot id
+	 * 
 	 * @return the slot id
 	 */
 	public int getIdSlot() {
@@ -278,7 +363,9 @@ public class AppointmentDTO implements Serializable {
 
 	/**
 	 * Set the slot id
-	 * @param nIdSlot the slot id to set
+	 * 
+	 * @param nIdSlot
+	 *            the slot id to set
 	 */
 	public void setIdSlot(int nIdSlot) {
 		this._nIdSlot = nIdSlot;

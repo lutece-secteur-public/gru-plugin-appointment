@@ -106,8 +106,11 @@ public interface IAppointmentDAO {
 
 	/**
 	 * Returns a list of appointments matching the filter
-	 * @param appointmentFilter the filter
-	 * @param plugin the plugin
+	 * 
+	 * @param appointmentFilter
+	 *            the filter
+	 * @param plugin
+	 *            the plugin
 	 * @return a list of appointments
 	 */
 	List<Appointment> findByFilter(AppointmentFilter appointmentFilter, Plugin plugin);

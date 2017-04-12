@@ -28,24 +28,45 @@ public class AppointmentResponseService {
 
 	/**
 	 * Remove the responses for the given entry
-	 * @param nIdEntry the entry
+	 * 
+	 * @param nIdEntry
+	 *            the entry
 	 */
 	public static void removeResponsesByIdEntry(int nIdEntry) {
 		AppointmentResponseHome.removeResponsesByIdEntry(nIdEntry);
 	}
-	
+
 	/**
 	 * Return the list of the responses of the appointment
-	 * @param nIdAppointment the appointment id
+	 * 
+	 * @param nIdAppointment
+	 *            the appointment id
 	 * @return the list of the responses
 	 */
 	public static List<Response> findListResponse(int nIdAppointment) {
 		return AppointmentResponseHome.findListResponse(nIdAppointment);
 	}
-	
+
+	/**
+	 * Return the list of the id of the response of the appointment
+	 * 
+	 * @param nIdAppointment
+	 *            the appointment id
+	 * @return the list of the response id
+	 */
 	public static List<Integer> findListIdResponse(int nIdAppointment) {
 		return AppointmentResponseHome.findListIdResponse(nIdAppointment);
 	}
+
+	/**
+	 * Find and build all the response of an appointment
+	 * 
+	 * @param nIdAppointment
+	 *            the appointment id
+	 * @param request
+	 *            the request
+	 * @return a list of response
+	 */
 	public static List<Response> findAndBuildListResponse(int nIdAppointment, HttpServletRequest request) {
 		List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse(nIdAppointment);
 		List<Response> listResponses = new ArrayList<Response>(listIdResponse.size());

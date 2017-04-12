@@ -49,12 +49,12 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
 	 * Serial version UID
 	 */
 	private static final long serialVersionUID = -248405445729375667L;
-	
+
 	/**
 	 * The recap value
 	 */
 	private String _strRecapValue;
-	
+
 	/**
 	 * The response
 	 */

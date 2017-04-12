@@ -701,18 +701,18 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	@SuppressWarnings("unchecked")
 	public String getDownloadFileAppointment(HttpServletRequest request, HttpServletResponse response)
 			throws AccessDeniedException {
-		String strIdResponse = request.getParameter(PARAMETER_ID_FORM);
-		if (StringUtils.isEmpty(strIdResponse) || !StringUtils.isNumeric(strIdResponse)) {
+		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
+		if (StringUtils.isEmpty(strIdForm) || !StringUtils.isNumeric(strIdForm)) {
 			return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 		}
-		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdResponse,
+		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
 				AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, getUser())) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT);
 		}
 		Locale locale = getLocale();
 		List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession()
 				.getAttribute(SESSION_LIST_APPOINTMENTS);
-		AppointmentUtilities.buildExcelFileWithAppointments(strIdResponse, response, locale, listAppointmentsDTO,
+		AppointmentUtilities.buildExcelFileWithAppointments(strIdForm, response, locale, listAppointmentsDTO,
 				_stateService);
 		return null;
 	}
@@ -882,6 +882,15 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		return redirect(request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, nIdForm);
 	}
 
+	/**
+	 * Return to the display recap view withthe new date slected on the calendar
+	 * 
+	 * @param request
+	 *            the request
+	 * @return to the display recap view
+	 * @throws AccessDeniedException
+	 * @throws SiteMessageException
+	 */
 	@View(VIEW_CHANGE_DATE_APPOINTMENT)
 	public String getViewChangeDateAppointment(HttpServletRequest request)
 			throws AccessDeniedException, SiteMessageException {
@@ -1067,6 +1076,17 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		}
 	}
 
+	/**
+	 * Order the list of the appointment in the result tab with the order by and
+	 * order asc given
+	 * 
+	 * @param listAppointmentsDTO
+	 *            the llist of appointments
+	 * @param strOrderBy
+	 *            the order by
+	 * @param strOrderAsc
+	 *            the order asc
+	 */
 	private void orderList(List<AppointmentDTO> listAppointmentsDTO, String strOrderBy, String strOrderAsc) {
 		if (strOrderBy != null && strOrderAsc != null) {
 			boolean bAsc = Boolean.parseBoolean(strOrderAsc);

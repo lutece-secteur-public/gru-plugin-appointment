@@ -54,7 +54,14 @@ public class AppointmentResponseHome {
 		}
 		return listResponse;
 	}
-	
+
+	/**
+	 * Get the list of the response id of an appointment
+	 * 
+	 * @param nIdAppointment
+	 *            the id of the appointment
+	 * @return the list of the id.
+	 */
 	public static List<Integer> findListIdResponse(int nIdAppointment) {
 		return _dao.findListIdResponse(nIdAppointment, _plugin);
 	}
