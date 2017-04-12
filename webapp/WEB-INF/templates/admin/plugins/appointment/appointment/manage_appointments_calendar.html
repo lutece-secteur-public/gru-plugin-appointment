@@ -49,7 +49,7 @@
 				<#assign nbAppointments = event.maxCapacity - event.nbRemainingPlaces>
 				{					
 					title : <#if modifDateAppointment??>
-								'Choisir ce creneau'
+								'#i18n{appointment.manageCalendarSlots.chooseThisSlot}'
 							<#elseif event.isOpen & (event.nbRemainingPlaces > 0)>
 								'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
 								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
