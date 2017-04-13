@@ -89,10 +89,27 @@ public class SlotService {
 	public static List<Slot> buildListSlot(int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition,
 			LocalDate startingDate, int nNbWeeksToDisplay) {
 		List<Slot> listSlot = new ArrayList<>();
-		// Need to check if this date is not before the form date creation
 		// Get all the reservation rules
-		HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule(nIdForm);
-		LocalDate firstDateOfReservationRule = new ArrayList<>(mapReservationRule.keySet()).stream().sorted()
+		final HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule(nIdForm);		
+		final List<LocalDate> listDateWeekDefinition = new ArrayList<>(mapWeekDefinition.keySet());
+		final List<LocalDate> listDateReservationTule = new ArrayList<>(mapReservationRule.keySet());
+		LocalDate closestDateWeekDefinition;
+		LocalDate closestDateReservationRule;
+		WeekDefinition weekDefinitionToApply;
+		ReservationRule reservationRuleToApply;
+		LocalDate dateTemp = startingDate;						
+		int nMaxCapacity;
+		DayOfWeek dayOfWeek;
+		WorkingDay workingDay;
+		LocalTime minTimeForThisDay;
+		LocalTime maxTimeForThisDay;
+		LocalTime timeTemp;
+		LocalDateTime dateTimeTemp;
+		Slot slotToAdd;
+		TimeSlot timeSlot;
+		LocalDate dateToCompare;
+		// Need to check if this date is not before the form date creation
+		final LocalDate firstDateOfReservationRule = new ArrayList<>(mapReservationRule.keySet()).stream().sorted()
 				.findFirst().orElse(null);
 		if (startingDate.isBefore(firstDateOfReservationRule)) {
 			startingDate = firstDateOfReservationRule;
@@ -108,42 +125,37 @@ public class SlotService {
 				startingDate.atStartOfDay(), endingDateToDisplay.atTime(LocalTime.MAX));
 
 		// Get or build all the event for the period
-		LocalDate dateTemp = startingDate;
-		while (dateTemp.isBefore(endingDateToDisplay) || !dateTemp.isAfter(endingDateToDisplay)) {
-			final LocalDate dateToCompare = dateTemp;
+		while (dateTemp.isBefore(endingDateToDisplay) && !dateTemp.isAfter(endingDateToDisplay)) {
+			dateToCompare = dateTemp;
 			// Find the closest date of apply of week definition with the given
 			// date
-			LocalDate closestDateWeekDefinition = Utilities
-					.getClosestDateInPast(new ArrayList<>(mapWeekDefinition.keySet()), dateToCompare);
-			WeekDefinition weekDefinition = mapWeekDefinition.get(closestDateWeekDefinition);
+			closestDateWeekDefinition = Utilities.getClosestDateInPast(listDateWeekDefinition, dateToCompare);
+			weekDefinitionToApply = mapWeekDefinition.get(closestDateWeekDefinition);
 			// Find the closest date of apply of reservation rule with the given
 			// date
-			LocalDate closestDateReservationRule = Utilities
-					.getClosestDateInPast(new ArrayList<>(mapReservationRule.keySet()), dateToCompare);
-			ReservationRule reservationRule = mapReservationRule.get(closestDateReservationRule);
-			int nMaxCapacity = reservationRule.getMaxCapacityPerSlot();
+			closestDateReservationRule = Utilities.getClosestDateInPast(listDateReservationTule, dateToCompare);
+			reservationRuleToApply = mapReservationRule.get(closestDateReservationRule);
+			nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot();
 			// Get the day of week of the date
-			DayOfWeek dayOfWeek = dateTemp.getDayOfWeek();
+			dayOfWeek = dateTemp.getDayOfWeek();
 			// Get the working day of this day of week
-			WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek(weekDefinition.getListWorkingDay(),
+			workingDay = WorkingDayService.getWorkingDayOfDayOfWeek(weekDefinitionToApply.getListWorkingDay(),
 					dayOfWeek);
 			// if there is no working day, it's because it is not a working day,
-			// so nothing to add in the lost of slots
+			// so nothing to add in the list of slots
 			if (workingDay != null) {
-				LocalTime minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAWorkingDay(workingDay);
-				LocalTime maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay(workingDay);
+				minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAWorkingDay(workingDay);
+				maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay(workingDay);
 				// Check if this day is a closing day
-				boolean isAClosingDay = listDateOfClosingDay.contains(dateTemp);
-				if (isAClosingDay) {
+				if (listDateOfClosingDay.contains(dateTemp)) {
 					listSlot.add(buildSlot(nIdForm, dateTemp.atTime(minTimeForThisDay),
 							dateTemp.atTime(maxTimeForThisDay), nMaxCapacity, nMaxCapacity, Boolean.FALSE));
 				} else {
-					LocalTime timeTemp = minTimeForThisDay;
+					timeTemp = minTimeForThisDay;
 					// For each slot of this day
 					while (timeTemp.isBefore(maxTimeForThisDay) || !timeTemp.equals(maxTimeForThisDay)) {
 						// Get the LocalDateTime
-						LocalDateTime dateTimeTemp = dateTemp.atTime(timeTemp);
-						Slot slotToAdd;
+						dateTimeTemp = dateTemp.atTime(timeTemp);
 						// Search if there is a slot for this datetime
 						if (mapSlot.containsKey(dateTimeTemp)) {
 							slotToAdd = mapSlot.get(dateTimeTemp);
@@ -151,7 +163,7 @@ public class SlotService {
 							listSlot.add(slotToAdd);
 						} else {
 							// Search the timeslot
-							TimeSlot timeSlot = TimeSlotService.getTimeSlotInListOfTimeSlotWithStartingTime(
+							timeSlot = TimeSlotService.getTimeSlotInListOfTimeSlotWithStartingTime(
 									workingDay.getListTimeSlot(), timeTemp);
 							if (timeSlot != null) {
 								timeTemp = timeSlot.getEndingTime();
