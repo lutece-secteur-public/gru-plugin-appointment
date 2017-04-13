@@ -257,12 +257,12 @@ public class AppointmentUtilities {
 		appointmentDTO.setFirstName(strFirstName);
 		appointmentDTO.setLastName(strLastName);
 		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();
-		if (mapResponses != null) {
+		if (mapResponses != null && !mapResponses.isEmpty()) {
 			List<Response> listResponse = new ArrayList<Response>();
 			for (List<Response> listResponseByEntry : mapResponses.values()) {
 				listResponse.addAll(listResponseByEntry);
 			}
-			appointmentDTO.setMapResponsesByIdEntry(null);
+			appointmentDTO.setMapResponsesByIdEntry(new HashMap<Integer, List<Response>>());
 			appointmentDTO.setListResponse(listResponse);
 		}
 	}
@@ -299,9 +299,13 @@ public class AppointmentUtilities {
 
 	/**
 	 * Build a list of response of the appointment
-	 * @param appointment the appointment 
-	 * @param request the request
-	 * @param locale the local
+	 * 
+	 * @param appointment
+	 *            the appointment
+	 * @param request
+	 *            the request
+	 * @param locale
+	 *            the local
 	 * @return a list of response
 	 */
 	public static List<ResponseRecapDTO> buildListResponse(AppointmentDTO appointment, HttpServletRequest request,
@@ -322,12 +326,19 @@ public class AppointmentUtilities {
 	}
 
 	/**
-	 * Build the excel fil of the list of the appointments found in the manage appointment viw by filter
-	 * @param strIdForm the form id
-	 * @param response the response
-	 * @param locale the local
-	 * @param listAppointmentsDTO the list of the appointments to input in the excel file
-	 * @param _stateService the state service
+	 * Build the excel fil of the list of the appointments found in the manage
+	 * appointment viw by filter
+	 * 
+	 * @param strIdForm
+	 *            the form id
+	 * @param response
+	 *            the response
+	 * @param locale
+	 *            the local
+	 * @param listAppointmentsDTO
+	 *            the list of the appointments to input in the excel file
+	 * @param _stateService
+	 *            the state service
 	 */
 	public static void buildExcelFileWithAppointments(String strIdForm, HttpServletResponse response, Locale locale,
 			List<AppointmentDTO> listAppointmentsDTO, StateService _stateService) {
