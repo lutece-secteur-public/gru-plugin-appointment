@@ -256,13 +256,13 @@ public class AppointmentUtilities {
 		appointmentDTO.setEmail(strEmail);
 		appointmentDTO.setFirstName(strFirstName);
 		appointmentDTO.setLastName(strLastName);
-		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();
+		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();		
 		if (mapResponses != null && !mapResponses.isEmpty()) {
 			List<Response> listResponse = new ArrayList<Response>();
 			for (List<Response> listResponseByEntry : mapResponses.values()) {
 				listResponse.addAll(listResponseByEntry);
 			}
-			appointmentDTO.setMapResponsesByIdEntry(new HashMap<Integer, List<Response>>());
+			appointmentDTO.clearMapResponsesByIdEntry();
 			appointmentDTO.setListResponse(listResponse);
 		}
 	}

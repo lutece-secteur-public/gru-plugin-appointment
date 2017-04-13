@@ -486,6 +486,9 @@ public class AppointmentDTO implements Serializable {
 		this._mapResponsesByIdEntry = mapResponsesByIdEntry;
 	}
 
+	public void clearMapResponsesByIdEntry(){
+		this._mapResponsesByIdEntry.clear();
+	}
 	/**
 	 * Get all the possible errors of the form
 	 * 
