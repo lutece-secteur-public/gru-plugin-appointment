@@ -97,7 +97,7 @@ public class SlotService {
 		LocalDate closestDateReservationRule;
 		WeekDefinition weekDefinitionToApply;
 		ReservationRule reservationRuleToApply;
-		LocalDate dateTemp = startingDate;						
+		LocalDate dateTemp = startingDate;
 		int nMaxCapacity;
 		DayOfWeek dayOfWeek;
 		WorkingDay workingDay;
