@@ -25,6 +25,7 @@ To run the application, just put the site-rendezvous-integration-XXX.war to the 
 
 You will have access to the application at the urls : 
 htp://localhost:8080/site-rendezvous-integration-XXX/jsp/admin/AdminLogin.jsp for the Back Office pages
+
 http://localhost:8080/site-rendezvous-integration-XXX/jsp/site/Portal.jsp?page=appointment&view=getViewFormList for the front office pages
 
 If you have development to make on the plugin appointment, you have to get from github the plugin directory and on eclipse import this project.
