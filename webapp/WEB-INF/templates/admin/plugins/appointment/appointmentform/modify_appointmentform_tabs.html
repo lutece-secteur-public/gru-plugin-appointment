@@ -12,12 +12,7 @@
 </div>
 <#macro tabs tab appointmentform >
 <div class="nav-tabs-custom">
-    <ul class="nav nav-tabs">
-    	<li <#if tab="entries">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
-				#i18n{appointment.modify_appointmentform_entries.pageTitle}
-			</a>
-        </li>
+    <ul class="nav nav-tabs">    	
  		<li <#if tab="params">class="active"</#if>>
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
 				#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}
@@ -26,6 +21,11 @@
 		<li <#if tab="advancedParams">class="active"</#if>>
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}">
 				#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}
+			</a>
+        </li>
+        <li <#if tab="entries">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
+				#i18n{appointment.modify_appointmentform_entries.pageTitle}
 			</a>
         </li>        
         <li <#if tab="typicalWeek">class="active"</#if>>
@@ -37,7 +37,7 @@
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}">
 				#i18n{appointment.specificWeek.pageTitle}
 			</a>
-        </li>                   
+        </li>                          
     </ul>
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
