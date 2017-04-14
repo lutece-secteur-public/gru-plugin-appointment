@@ -1,6 +1,6 @@
 # Plugin Appointment
 
-This plugin offers you to manage appointments with form that users have access on a front page.
+This plugin allows you to manage appointments using forms that users can access from the front office.
 On back office, you will be able to define your week definition and working days and many rules to apply to the appointment.
 
 ### Prerequisites
