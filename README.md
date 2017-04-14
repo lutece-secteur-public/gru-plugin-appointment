@@ -23,8 +23,9 @@ To create the lutece schema, you will have to run the ant script in site-rendezv
 
 To run the application, just put the site-rendezvous-integration-XXX.war to the webapps directory of your tomcat and launch : catalina jpda start
 
-You will have access to the application at the urls : 
-htp://localhost:8080/site-rendezvous-integration-XXX/jsp/admin/AdminLogin.jsp for the Back Office pages
+You will have access to the application at the urls :
+
+http://localhost:8080/site-rendezvous-integration-XXX/jsp/admin/AdminLogin.jsp for the Back Office pages
 
 http://localhost:8080/site-rendezvous-integration-XXX/jsp/site/Portal.jsp?page=appointment&view=getViewFormList for the front office pages
 
