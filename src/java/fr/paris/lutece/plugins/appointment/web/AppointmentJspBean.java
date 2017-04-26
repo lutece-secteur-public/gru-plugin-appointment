@@ -357,12 +357,13 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			listSlot = listSlot.stream().filter(s -> s.getNbRemainingPlaces() >= nbBookedSeats && s.getIsOpen())
 					.collect(Collectors.toList());
 			request.getSession().setAttribute(SESSION_VALIDATED_APPOINTMENT, appointmentDTO);
-			model.put(MARK_MODIFICATION_DATE_APPOINTMENT, "true");
+			model.put(MARK_MODIFICATION_DATE_APPOINTMENT, Boolean.TRUE.toString());
 		}
 		model.put(MARK_FORM, FormService.buildAppointmentFormLight(nIdForm));
 		model.put(PARAMETER_ID_FORM, nIdForm);
 		model.put(MARK_FORM_MESSAGES, formMessages);
-		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay);
+		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY,
+				Math.toIntExact(startingDateOfDisplay.until(endingDateOfDisplay, ChronoUnit.WEEKS)));
 		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
 		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
 		model.put(PARAMETER_EVENTS, listSlot);
