@@ -284,6 +284,7 @@ public class AppointmentApp extends MVCApplication {
 		if (endingValidityDate != null) {
 			if (endingDateOfDisplay.isAfter(endingValidityDate)) {
 				endingDateOfDisplay = endingValidityDate;
+				nNbWeeksToDisplay = Math.toIntExact(startingDateOfDisplay.until(endingDateOfDisplay, ChronoUnit.WEEKS));
 			}
 			if (startingDateOfDisplay.isAfter(endingDateOfDisplay)) {
 				addError(ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale(request));
@@ -333,8 +334,7 @@ public class AppointmentApp extends MVCApplication {
 		}
 		model.put(PARAMETER_ID_FORM, nIdForm);
 		model.put(MARK_FORM_MESSAGES, formMessages);
-		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY,
-				Math.toIntExact(startingDateOfDisplay.until(endingDateOfDisplay, ChronoUnit.WEEKS)));
+		model.put(PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay);
 		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
 		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
 		model.put(PARAMETER_EVENTS, listSlot);

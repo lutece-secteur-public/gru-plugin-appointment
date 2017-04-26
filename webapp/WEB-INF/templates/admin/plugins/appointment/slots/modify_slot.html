@@ -31,7 +31,7 @@
 					<div class="form-group">
 						<label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.modify_slot.labelMaxCapacityForThisSlot} * :</label>
 						<div class="col-xs-3 col-sm-9 col-md-9 col-lg-9">
-							<input type="text" name="max_capacity" value="${slot.maxCapacity}" class="form-control" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="3"/>	
+							<input type="text" name="max_capacity" value="${slot.maxCapacity}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
 						</div>
 					</div>
 					<div class="form-group">
@@ -73,7 +73,19 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript">			
+<script type="text/javascript">		
+	function validateQty(event) {
+		var key = window.event ? event.keyCode : event.which;
+	
+	if (event.keyCode == 8 || event.keyCode == 46
+	 || event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	}
+	else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
+	};
 	$('#time_end').datetimepicker({
       pickDate: false,
 	  pickSeconds: false

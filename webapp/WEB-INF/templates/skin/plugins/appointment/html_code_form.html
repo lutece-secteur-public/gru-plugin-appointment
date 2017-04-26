@@ -195,7 +195,7 @@
 						<div class="form-group <#if formGroupError!=''>has-error</#if>">
 							<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="nbBookedSeats">#i18n{appointment.create_appointmentform.labelMaxPeoplePerAppointment}*</label>
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<input type="text"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" onchange="this.value = minmax(this.value, 1, ${nbplaces})" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+								<input type="text"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" onchange="this.value = minmax(this.value, 1, ${nbplaces})" onkeypress='return validateQty(event);'>
 								<#if formGroupError!=''>
 									${formGroupError}
 								<#else>
@@ -226,6 +226,18 @@
 	</div>
 </div>
 <script type="text/javascript">
+function validateQty(event) {
+	var key = window.event ? event.keyCode : event.which;
+
+if (event.keyCode == 8 || event.keyCode == 46
+ || event.keyCode == 37 || event.keyCode == 39) {
+	return true;
+}
+else if ( key < 48 || key > 57 ) {
+	return false;
+}
+else return true;
+};
 function minmax(value, min, max) 
 {
     if(parseInt(value) < min || isNaN(parseInt(value))) 
