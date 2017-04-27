@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFormMessages;
 import fr.paris.lutece.plugins.appointment.business.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentDayHome;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.calendar.AppointmentSlotHome;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
@@ -116,6 +117,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_USER = "user";
     private static final String MARK_LIST_RESPONSES = "list_responses";
     private static final String MARK_APPOINTMENT = "appointment";
+    private static final String MARK_SLOT = "slot";
     private static final String MARK_ADDON = "addon";
     private static final String MARK_IS_FORM_FIRST_STEP = "isFormFirstStep";
     private static final String MARK_UPLOAD_HANDLER = "uploadHandler";
@@ -126,6 +128,7 @@ public class AppointmentFormService implements Serializable
     private static final String MARK_CUSTOMER_ID = "cid";
     private static final String MARK_USER_ID_OPAM = "guid";
     private static final String MARK_PLACES = "nbplaces";
+    private static final String MARK_APPOINTMENT_DAY = "appointmentDay";
 
     // Session keys
     private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
@@ -402,6 +405,8 @@ public class AppointmentFormService implements Serializable
         {
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( getAppointmentFromSession( request.getSession( ) ).getIdSlot( ) );
             model.put( MARK_PLACES, Math.min( slot.getNbFreePlaces( ), form.getMaximumNumberOfBookedSeats( ) ) );
+            model.put(MARK_SLOT, slot);
+            model.put(MARK_APPOINTMENT_DAY, AppointmentDayHome.findByPrimaryKey(slot.getIdDay( )));
         }
         else
         {
