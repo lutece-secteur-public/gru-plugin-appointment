@@ -96,9 +96,11 @@ import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.util.mvc.utils.MVCMessage;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
+import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
 
@@ -185,6 +187,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String PARAMETER_REFERER = "referer";
 
 	// Mark
+	private static final String MARK_INFOS = "infos";
 	private static final String MARK_LOCALE = "locale";
 	private static final String MARK_FORM = "form";
 	private static final String MARK_FORM_MESSAGES = "formMessages";
@@ -247,6 +250,7 @@ public class AppointmentApp extends MVCApplication {
 	 * @param request
 	 * @return the Xpage
 	 */
+	@SuppressWarnings("unchecked")
 	@View(VIEW_APPOINTMENT_CALENDAR)
 	public XPage getViewAppointmentCalendar(HttpServletRequest request) {
 		clearSession(request);
@@ -331,6 +335,15 @@ public class AppointmentApp extends MVCApplication {
 		}
 		if (bError) {
 			model.put(MARK_FORM_CALENDAR_ERRORS, bError);
+		}
+		if (formMessages != null && StringUtils.isNotEmpty(formMessages.getCalendarDescription())) {
+			List<ErrorMessage> listInfos = (List<ErrorMessage>) model.get(MARK_INFOS);
+			if (listInfos == null) {
+				listInfos = new ArrayList<ErrorMessage>();
+				model.put(MARK_INFOS, listInfos);
+			}
+			MVCMessage message = new MVCMessage(formMessages.getCalendarDescription());
+			listInfos.add(message);
 		}
 		model.put(PARAMETER_ID_FORM, nIdForm);
 		model.put(MARK_FORM_MESSAGES, formMessages);

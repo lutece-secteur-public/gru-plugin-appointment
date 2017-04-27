@@ -138,6 +138,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentform_messages.pageTitle";
 
 	// Markers
+	private static final String MARK_WEBAPP_URL = "webapp_url";
 	private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
 	private static final String MARK_APPOINTMENT_FORM = "appointmentform";
 	private static final String MARK_PAGINATOR = "paginator";
@@ -150,6 +151,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String MARK_NULL = "NULL";
 	private static final String MARK_FALSE = "false";
 	private static final String MARK_LOCALE = "language";
+	private static final String MARK_LOCALE_TINY = "locale";
 	private static final String MARK_FILE_CLOSING_DAYS = "fileClosingDays";
 
 	// Jsp
@@ -651,6 +653,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		FormMessage formMessage = FormMessageHome.findByIdForm(nIdForm);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put(MARK_FORM_MESSAGE, formMessage);
+		model.put(MARK_WEBAPP_URL, AppPathService.getBaseUrl(request));
+		model.put(MARK_LOCALE, getLocale());
+		model.put(MARK_LOCALE_TINY, getLocale());
 		return getPage(PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES, TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES,
 				model);
 	}

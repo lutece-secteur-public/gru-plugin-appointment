@@ -18,7 +18,12 @@
 					</div>
 				</div>
 			</div>
-		</#if>		
+		</#if>	
+		<div class="layout-wrapper">
+		<#if infos??>
+			<@messages infos=infos />
+		</#if>
+		</div>	
 	</div>
 </div>
 <#if formCalendarErrors??>
