@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
   reference VARCHAR(45) NULL,
   nb_places INT NOT NULL DEFAULT 0,
   is_cancelled BOOLEAN NOT NULL DEFAULT FALSE,
+  id_action_cancelled INT,
   id_user INT NOT NULL,
   id_slot INT NOT NULL,
   PRIMARY KEY (id_appointment, id_user, id_slot),

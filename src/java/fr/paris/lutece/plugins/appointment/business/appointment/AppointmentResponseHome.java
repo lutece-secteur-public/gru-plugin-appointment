@@ -24,6 +24,15 @@ public class AppointmentResponseHome {
 	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 
 	/**
+	 * Associate a response to an appointment
+	 * @param nIdAppointment the appointment
+	 * @param nIdResponse the response
+	 */
+	public static void insertAppointmentResponse(int nIdAppointment, int nIdResponse) {
+		_dao.insertAppointmentResponse(nIdAppointment, nIdResponse, _plugin);
+	}
+
+	/**
 	 * Remove every appointment responses associated with a given entry.
 	 * 
 	 * @param nIdEntry

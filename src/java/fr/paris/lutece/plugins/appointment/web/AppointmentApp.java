@@ -93,16 +93,19 @@ import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCMessage;
+import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.sql.TransactionManager;
+import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * This class provides a simple implementation of an Appointment XPage (On Front
@@ -916,5 +919,22 @@ public class AppointmentApp extends MVCApplication {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		request.getSession().removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
+	}
+
+	/**
+	 * Get the URL
+	 * 
+	 * @param request
+	 *            Get the URL to cancel an appointment in FO
+	 * @param appointment
+	 *            The appointment
+	 * @return The URL to cancel the appointment
+	 */
+	public static String getCancelAppointmentUrl(HttpServletRequest request, Appointment appointment) {
+		UrlItem urlItem = new UrlItem(AppPathService.getProdUrl(request) + AppPathService.getPortalUrl());
+		urlItem.addParameter(MVCUtils.PARAMETER_PAGE, XPAGE_NAME);
+		urlItem.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT);
+		urlItem.addParameter(PARAMETER_REF_APPOINTMENT, appointment.getReference());
+		return urlItem.getUrl();
 	}
 }

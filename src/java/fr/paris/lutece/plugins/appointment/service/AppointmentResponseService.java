@@ -27,6 +27,16 @@ import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 public class AppointmentResponseService {
 
 	/**
+	 * Associate a response to an appointment
+	 * @param nIdAppointment the appointment
+	 * @param nIdResponse the response
+	 */
+	public static void insertAppointmentResponse( int nIdAppointment, int nIdResponse )
+    {
+        AppointmentResponseHome.insertAppointmentResponse(nIdAppointment, nIdResponse);
+    }
+	
+	/**
 	 * Remove the responses for the given entry
 	 * 
 	 * @param nIdEntry

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 
@@ -143,6 +145,11 @@ public class AppointmentDTO implements Serializable {
 	 */
 	private List<Response> _listResponse;
 
+	/**
+	 * List of the available action of the workflow for this appointment
+	 */
+	private transient Collection<Action> _listWorkflowActions;
+	
 	/**
 	 * Get the state of the appointment
 	 * 
@@ -454,6 +461,22 @@ public class AppointmentDTO implements Serializable {
 	 */
 	public Slot getSlot() {
 		return _slot;
+	}
+
+	/**
+	 * Get the available actions of the workflow for this appointment
+	 * @return the actions
+	 */
+	public Collection<Action> getListWorkflowActions() {
+		return _listWorkflowActions;
+	}
+
+	/**
+	 * Set the available actions of the workflow for this appointment
+	 * @param _listWorkflowActions
+	 */
+	public void setListWorkflowActions(Collection<Action> _listWorkflowActions) {
+		this._listWorkflowActions = _listWorkflowActions;
 	}
 
 	/**

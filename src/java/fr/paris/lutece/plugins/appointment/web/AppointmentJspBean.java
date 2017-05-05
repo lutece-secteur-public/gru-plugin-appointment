@@ -86,6 +86,9 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
+import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
+import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
+import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -97,6 +100,7 @@ import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
@@ -157,6 +161,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_MIN_TIME = "min_time";
 	private static final String PARAMETER_MAX_TIME = "max_time";
 	private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
+	private static final String PARAMETER_ID_ACTION = "id_action";
 	private static final String PARAMETER_ID_FORM = "id_form";
 	private static final String PARAMETER_COME_FROM_CALENDAR = "comeFromCalendar";
 	private static final String PARAMETER_EMAIL = "email";
@@ -172,8 +177,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_SEARCH = "Search";
 	private static final String PARAMETER_RESET = "reset";
 	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberPlacesReserved";
+	private static final String PARAMETER_STATUS_CANCELLED = "status_cancelled";
 
 	// Markers
+	private static final String MARK_TASKS_FORM = "tasks_form";
 	private static final String MARK_APPOINTMENT_LIST = "appointment_list";
 	private static final String MARK_APPOINTMENT = "appointment";
 	private static final String MARK_PAGINATOR = "paginator";
@@ -239,6 +246,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
 	private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
 	private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
+	private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.slot.unvailable";
 
 	// Session keys
 	private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
@@ -262,6 +270,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 
 	// services
 	private final StateService _stateService = SpringContextService.getBean(StateService.BEAN_SERVICE);
+	private final ITaskService _taskService = SpringContextService.getBean(TaskService.BEAN_SERVICE);
 
 	// Session variable to store working values
 	private int _nDefaultItemsPerPage;
@@ -434,7 +443,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		// If it is an order by
 		String strOrderBy = request.getParameter(PARAMETER_ORDER_BY);
 		String strOrderAsc = request.getParameter(PARAMETER_ORDER_ASC);
-		orderList(listAppointmentsDTO, strOrderBy, strOrderAsc);
+		listAppointmentsDTO = orderList(listAppointmentsDTO, strOrderBy, strOrderAsc);
 		if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_DELETE_AND_BACK))) {
 			String[] tabIdAppointmentToDelete = request.getParameterValues(PARAMETER_ID_APPOINTMENT_DELETE);
 			if (tabIdAppointmentToDelete != null) {
@@ -472,33 +481,21 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		model.put(MARK_PAGINATOR, paginator);
 		model.put(MARK_LANGUAGE, getLocale());
 		model.put(MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW);
-		// if ((form.getIdWorkflow() > 0) &&
-		// WorkflowService.getInstance().isAvailable()) {
-		// for (Appointment appointment : delegatePaginator.getPageItems()) {
-		// int nIdWorkflow = form.getIdWorkflow();
-		//
-		// StateFilter stateFilter = new StateFilter();
-		// stateFilter.setIdWorkflow(nIdWorkflow);
-		//
-		// State stateAppointment =
-		// _stateService.findByResource(appointment.getIdAppointment(),
-		// Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
-		//
-		// if (stateAppointment != null) {
-		// appointment.setState(stateAppointment);
-		// }
-		//
-		// appointment.setListWorkflowActions(
-		// WorkflowService.getInstance().getActions(appointment.getIdAppointment(),
-		// Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(),
-		// getUser()));
-		// }
-		// }
-		//
-		// if (bfilterByWorkFlow) {
-		// Collections.sort(delegatePaginator.getPageItems(), new
-		// AppointmentFilterWorkFlow(filter.getOrderAsc()));
-		// }
+		if ((form.getIdWorkflow() > 0) && WorkflowService.getInstance().isAvailable()) {
+			int nIdWorkflow = form.getIdWorkflow();
+			StateFilter stateFilter = new StateFilter();
+			stateFilter.setIdWorkflow(nIdWorkflow);
+			for (AppointmentDTO appointment : paginator.getPageItems()) {
+				State stateAppointment = _stateService.findByResource(appointment.getIdAppointment(),
+						Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow);
+				if (stateAppointment != null) {
+					appointment.setState(stateAppointment);
+				}
+				appointment
+						.setListWorkflowActions(WorkflowService.getInstance().getActions(appointment.getIdAppointment(),
+								Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), getUser()));
+			}
+		}
 		AdminUser user = getUser();
 		model.put(MARK_APPOINTMENT_LIST, paginator.getPageItems());
 		model.put(MARK_FILTER, filter);
@@ -1088,38 +1085,182 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	 * @param strOrderAsc
 	 *            the order asc
 	 */
-	private void orderList(List<AppointmentDTO> listAppointmentsDTO, String strOrderBy, String strOrderAsc) {
+	private List<AppointmentDTO> orderList(List<AppointmentDTO> listAppointmentsDTO, String strOrderBy,
+			String strOrderAsc) {
+		List<AppointmentDTO> sortedList = null;
+		if (CollectionUtils.isNotEmpty(listAppointmentsDTO)) {
+			sortedList = new ArrayList<>();
+			sortedList.addAll(listAppointmentsDTO);
+		}
 		if (strOrderBy != null && strOrderAsc != null) {
 			boolean bAsc = Boolean.parseBoolean(strOrderAsc);
 			Stream<AppointmentDTO> stream = null;
 			switch (strOrderBy) {
 			case LAST_NAME:
-				stream = listAppointmentsDTO.stream().sorted((a1, a2) -> a1.getLastName().compareTo(a2.getLastName()));
+				stream = sortedList.stream().sorted((a1, a2) -> a1.getLastName().compareTo(a2.getLastName()));
 				break;
 			case FIRST_NAME:
-				stream = listAppointmentsDTO.stream()
-						.sorted((a1, a2) -> a1.getFirstName().compareTo(a2.getFirstName()));
+				stream = sortedList.stream().sorted((a1, a2) -> a1.getFirstName().compareTo(a2.getFirstName()));
 				break;
 			case EMAIL:
-				stream = listAppointmentsDTO.stream().sorted((a1, a2) -> a1.getEmail().compareTo(a2.getEmail()));
+				stream = sortedList.stream().sorted((a1, a2) -> a1.getEmail().compareTo(a2.getEmail()));
 				break;
 			case DATE_APPOINTMENT:
-				stream = listAppointmentsDTO.stream()
+				stream = sortedList.stream()
 						.sorted((a1, a2) -> a1.getStartingDateTime().compareTo(a2.getStartingDateTime()));
 				break;
 			case STATUS:
-				stream = listAppointmentsDTO.stream()
+				stream = sortedList.stream()
 						.sorted((a1, a2) -> Boolean.compare(a1.getIsCancelled(), a2.getIsCancelled()));
 				break;
 			default:
-				stream = listAppointmentsDTO.stream()
+				stream = sortedList.stream()
 						.sorted((a1, a2) -> Integer.compare(a1.getIdAppointment(), a2.getIdAppointment()));
 			}
-			listAppointmentsDTO = stream.collect(Collectors.toList());
+			sortedList = stream.collect(Collectors.toList());
 			if (!bAsc) {
-				Collections.reverse(listAppointmentsDTO);
+				Collections.reverse(sortedList);
 			}
 		}
+		return sortedList;
+	}
+
+	/**
+	 * Get the URL to display the form of a workflow action. If the action has
+	 * no form, then the user is redirected to the page to execute the workflow
+	 * action
+	 * 
+	 * @param request
+	 *            The request
+	 * @param strIdAppointment
+	 *            The id of the appointment
+	 * @param strIdAction
+	 *            The id of the workflow action
+	 * @return The URL
+	 */
+	public static String getUrlExecuteWorkflowAction(HttpServletRequest request, String strIdAppointment,
+			String strIdAction) {
+		UrlItem url = new UrlItem(AppPathService.getBaseUrl(request) + JSP_MANAGE_APPOINTMENTS);
+		url.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_WORKFLOW_ACTION_FORM);
+		url.addParameter(PARAMETER_ID_APPOINTMENT, strIdAppointment);
+		url.addParameter(PARAMETER_ID_ACTION, strIdAction);
+
+		return url.getUrl();
+	}
+
+	/**
+	 * Get the workflow action form before processing the action. If the action
+	 * does not need to display any form, then redirect the user to the workflow
+	 * action processing page.
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The HTML content to display, or the next URL to redirect the user
+	 *         to
+	 */
+	@View(VIEW_WORKFLOW_ACTION_FORM)
+	public String getWorkflowActionForm(HttpServletRequest request) {
+		String strIdAction = request.getParameter(PARAMETER_ID_ACTION);
+		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
+		if (StringUtils.isNotEmpty(strIdAction) && StringUtils.isNumeric(strIdAction)
+				&& StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
+			int nIdAction = Integer.parseInt(strIdAction);
+			int nIdAppointment = Integer.parseInt(strIdAppointment);
+			if (WorkflowService.getInstance().isDisplayTasksForm(nIdAction, getLocale())) {
+				String strHtmlTasksForm = WorkflowService.getInstance().getDisplayTasksForm(nIdAppointment,
+						Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, request, getLocale());
+				Map<String, Object> model = new HashMap<String, Object>();
+				model.put(MARK_TASKS_FORM, strHtmlTasksForm);
+				model.put(PARAMETER_ID_ACTION, nIdAction);
+				model.put(PARAMETER_ID_APPOINTMENT, nIdAppointment);
+				return getPage(PROPERTY_PAGE_TITLE_TASKS_FORM_WORKFLOW, TEMPLATE_TASKS_FORM_WORKFLOW, model);
+			}
+			return doProcessWorkflowAction(request);
+		}
+		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
+	}
+
+	/**
+	 * Do process a workflow action over an appointment
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The next URL to redirect to
+	 */
+	@Action(ACTION_DO_PROCESS_WORKFLOW_ACTION)
+	public String doProcessWorkflowAction(HttpServletRequest request) {
+		String strIdAction = request.getParameter(PARAMETER_ID_ACTION);
+		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
+		if (StringUtils.isNotEmpty(strIdAction) && StringUtils.isNumeric(strIdAction)
+				&& StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
+			int nIdAction = Integer.parseInt(strIdAction);
+			int nIdAppointment = Integer.parseInt(strIdAppointment);
+			Appointment appointment = AppointmentService.findAppointmentById(nIdAppointment);
+			Slot slot = SlotService.findSlotById(appointment.getIdSlot());
+			if (request.getParameter(PARAMETER_BACK) == null) {
+				AppointmentForm form = FormService.buildAppointmentFormLight(slot.getIdForm());
+				if (WorkflowService.getInstance().isDisplayTasksForm(nIdAction, getLocale())) {
+					String strError = WorkflowService.getInstance().doSaveTasksForm(nIdAppointment,
+							Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, form.getIdForm(), request, getLocale());
+					if (strError != null) {
+						return redirect(request, strError);
+					}
+				} else {
+					List<ITask> listActionTasks = _taskService.getListTaskByIdAction(nIdAction, getLocale());
+					for (ITask task : listActionTasks) {
+						if (task.getTaskType().getKey().equals("taskChangeAppointmentStatus")
+								&& (slot.getNbRemainingPlaces() == 0) && (appointment.getIsCancelled())) {
+							return redirect(request, AdminMessageService.getMessageUrl(request, MESSAGE_UNVAILABLE_SLOT,
+									AdminMessage.TYPE_STOP));
+						}
+					}
+					WorkflowService.getInstance().doProcessAction(nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE,
+							nIdAction, form.getIdForm(), request, getLocale(), false);
+				}
+				Map<String, String> mapParams = new HashMap<String, String>();
+				mapParams.put(PARAMETER_ID_FORM, Integer.toString(form.getIdForm()));
+				request.getSession().removeAttribute(SESSION_LIST_APPOINTMENTS);
+				return redirect(request, VIEW_MANAGE_APPOINTMENTS, mapParams);
+			}
+			return redirect(request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, slot.getIdForm());
+		}
+		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
+	}
+
+	/**
+	 * Do change the status of an appointment
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The next URL to redirect to
+	 * @throws AccessDeniedException
+	 *             If the user is not authorized to access this feature
+	 */
+	@Action(ACTION_DO_CHANGE_APPOINTMENT_STATUS)
+	public String doChangeAppointmentStatus(HttpServletRequest request) throws AccessDeniedException {
+		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
+		String strStatusCancelled = request.getParameter(PARAMETER_STATUS_CANCELLED);
+		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)
+				&& StringUtils.isNotEmpty(strStatusCancelled)) {
+			int nIdAppointment = Integer.parseInt(strIdAppointment);
+			boolean bStatusCancelled = Boolean.parseBoolean(strStatusCancelled);
+			Appointment appointment = AppointmentService.findAppointmentById(nIdAppointment);
+			Slot slot = SlotService.findSlotById(appointment.getIdSlot());
+			if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, Integer.toString(slot.getIdForm()),
+					AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, getUser())) {
+				throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS);
+			}
+			if ((slot.getNbRemainingPlaces() == 0) && appointment.getIsCancelled() && !bStatusCancelled) {
+				return redirect(request,
+						AdminMessageService.getMessageUrl(request, MESSAGE_UNVAILABLE_SLOT, AdminMessage.TYPE_STOP));
+			}
+			if (appointment.getIsCancelled() != bStatusCancelled) {
+				appointment.setIsCancelled(bStatusCancelled);
+				AppointmentService.updateAppointment(appointment);
+			}
+			return redirect(request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, slot.getIdForm());
+		}
+		return redirect(request, AppointmentFormJspBean.getURLManageAppointmentForms(request));
 	}
 
 }

@@ -173,6 +173,7 @@ public class FormService {
 		appointmentForm.setIdForm(form.getIdForm());
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setIsActive(form.isActive());
+		appointmentForm.setIdWorkflow(form.getIdWorkflow());
 	}
 
 	/**

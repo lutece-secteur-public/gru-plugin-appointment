@@ -2,17 +2,24 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.util.CollectionUtil;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -67,7 +74,7 @@ public class AppointmentService {
 	 * 
 	 * @param nIdUser
 	 *            the user Id
-	 * @return the apointment of the user
+	 * @return the appointment of the user
 	 */
 	public static List<Appointment> findListAppointmentByUserId(int nIdUser) {
 		return AppointmentHome.findByIdUser(nIdUser);
@@ -135,6 +142,20 @@ public class AppointmentService {
 									CONSTANT_REF_SIZE_RANDOM_PART));
 			appointment.setReference(strReference);
 			AppointmentHome.update(appointment);
+			if (CollectionUtils.isNotEmpty(appointmentDTO.getListResponse())) {
+				for (Response response : appointmentDTO.getListResponse()) {
+					ResponseHome.create(response);
+					AppointmentResponseService.insertAppointmentResponse(appointment.getIdAppointment(),
+							response.getIdResponse());
+				}
+			}
+		}
+		Form form = FormService.findFormLightByPrimaryKey(slot.getIdForm());
+		if (form.getIdWorkflow() > 0) {
+			WorkflowService.getInstance().getState(appointment.getIdAppointment(),
+					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
+			WorkflowService.getInstance().executeActionAutomatic(appointment.getIdAppointment(),
+					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
 		}
 		return appointment.getIdAppointment();
 	}
@@ -263,4 +284,13 @@ public class AppointmentService {
 		return buildAppointmentDTO(appointment);
 	}
 
+	/**
+	 * Update an appointment in database
+	 * 
+	 * @param appointment
+	 *            the appointment to update
+	 */
+	public static void updateAppointment(Appointment appointment) {
+		AppointmentHome.update(appointment);
+	}
 }

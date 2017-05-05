@@ -218,12 +218,12 @@
 												<#if activateWorkflow == "true" > 
 													<#if rightChangeStatus> 
 														<#if appointment.isCancelled>
-															<a class="btn btn-xs btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_reserved}" title="#i18n{appointment.manage_appointments.labelValidateAppointment}">
+															<a class="btn btn-xs btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true" title="#i18n{appointment.manage_appointments.labelValidateAppointment}">
 																<i class="glyphicon glyphicon-ok"></i>
 															</a>
 														</#if> 
 														<#if !appointment.isCancelled> 
-															<a class="btn btn-xs btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_unreserved}" title="#i18n{appointment.manage_appointments.labelRejectAppointment}">
+															<a class="btn btn-xs btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true" title="#i18n{appointment.manage_appointments.labelRejectAppointment}">
 																<i class="glyphicon glyphicon-remove"></i>
 															</a> 
 														</#if> 
