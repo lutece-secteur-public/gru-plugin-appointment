@@ -650,9 +650,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			if (stateAppointment != null) {
 				appointmentDTO.setState(stateAppointment);
 			}
-			// appointmentDTO.setListWorkflowActions(WorkflowService.getInstance().getActions(appointmentDTO.getIdAppointment(),
-			// Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(),
-			// getUser()));
+			appointmentDTO
+					.setListWorkflowActions(WorkflowService.getInstance().getActions(appointmentDTO.getIdAppointment(),
+							Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), getUser()));
 		}
 		Locale locale = getLocale();
 		List<Response> listResponse = AppointmentResponseService.findListResponse(nIdAppointment);
