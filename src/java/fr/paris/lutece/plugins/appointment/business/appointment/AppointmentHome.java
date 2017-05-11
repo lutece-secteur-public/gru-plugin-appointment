@@ -77,6 +77,18 @@ public class AppointmentHome {
 	public static Appointment findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
 	}
+	
+	/**
+	 * Return an instance of the Appointment whose reference is specified in
+	 * parameter
+	 * 
+	 * @param strReference
+	 *            The Appointment reference
+	 * @return an instance of the Appointment
+	 */
+	public static Appointment findByReference(String strReference) {
+		return _dao.findByReference(strReference, _plugin);
+	}
 
 	/**
 	 * Return the appointments of a user

@@ -30,6 +30,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_appointment = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
+	private static final String SQL_QUERY_SELECT_BY_REFERENCE = SQL_QUERY_SELECT_COLUMNS + " WHERE reference = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_AFTER_A_DATE = SQL_QUERY_SELECT_COLUMNS
 			+ " INNER JOIN appointment_slot slot ON appointment.id_slot = slot.id_slot WHERE slot.id_form = ? AND slot.starting_date_time >= ?";
 	private static final String SQL_QUERY_SELECT_BY_FILTER = "SELECT "
@@ -123,7 +124,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 			}
 		}
 		return listAppointment;
-	}
+	}	
 
 	@Override
 	public List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin) {
@@ -144,6 +145,25 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		return listAppointment;
 	}
 
+	@Override
+	public Appointment findByReference(String strReference, Plugin plugin) {
+		DAOUtil daoUtil = null;
+		Appointment appointment = null;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_REFERENCE, plugin);
+			daoUtil.setString(1, strReference);
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				appointment = buildAppointment(daoUtil);
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return appointment;
+	}
+	
 	@Override
 	public List<Appointment> findByFilter(AppointmentFilter appointmentFilter, Plugin plugin) {
 		List<Appointment> listAppointment = new ArrayList<Appointment>();

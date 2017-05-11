@@ -16,30 +16,24 @@
 							${appointment.appointmentForm.title}
 						</td>
 						<td>
-							${appointment.dateAppointment}
+							${appointment.dateOfTheAppointment}
 						</td>
 						<td>
-							<#assign startingHour = appointment.appointmentSlot.startingHour>
-							<#assign startingMinute = appointment.appointmentSlot.startingMinute>
-							<#if startingHour &lt; 10>0</#if>${startingHour}H<#if startingMinute &lt; 10>0</#if>${startingMinute}
+							#i18n{appointment.manage_appointment_calendar.labelFrom} ${appointment.startingTime} #i18n{appointment.manage_appointment_calendar.labelTo} ${appointment.endingTime}							
 						</td>
 						<td>
-							<#if appointment.status == status_reserved>
-								<span class="label label-success">
-									#i18n{appointment.message.labelStatusValidated}
-								</span>
-							<#elseif appointment.status == status_unreserved>
+							<#if appointment.isCancelled>
 								<span class="label label-important">
 									#i18n{appointment.message.labelStatusRejected}
-								</span>
+								</span>									
 							<#else>
-								<span class="label">
-									#i18n{appointment.message.labelStatusNotValidated}
-								</span>
+								<span class="label label-success">
+									#i18n{appointment.message.labelStatusValidated}
+								</span>						
 							</#if>
 						</td>
 						<td>
-							<#if appointment.appointmentForm.allowUsersToCancelAppointments && appointment.status != status_unreserved >
+							<#if !appointment.isCancelled>
 								<a class="btn btn-danger btn-small" title="#i18n{appointment.my_appointments.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&refAppointment=${appointment.refAppointment}&fromMyappointments=true">
 									<i class="glyphicon glyphicon-remove">&nbsp;</i>
 								</a>

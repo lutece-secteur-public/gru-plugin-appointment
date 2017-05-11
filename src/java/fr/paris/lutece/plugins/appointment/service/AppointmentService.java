@@ -2,13 +2,10 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.util.CollectionUtil;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
@@ -188,7 +185,7 @@ public class AppointmentService {
 	}
 
 	/**
-	 * Find an appointment by ots primary key
+	 * Find an appointment by its primary key
 	 * 
 	 * @param nIdAppointment
 	 *            the appointment Id
@@ -196,6 +193,17 @@ public class AppointmentService {
 	 */
 	public static Appointment findAppointmentById(int nIdAppointment) {
 		return AppointmentHome.findByPrimaryKey(nIdAppointment);
+	}
+
+	/**
+	 * Find an appointment by its reference
+	 * 
+	 * @param strReference
+	 *            the appointment Reference
+	 * @return the appointment
+	 */
+	public static Appointment findAppointmentByReference(String strReference) {
+		return AppointmentHome.findByReference(strReference);
 	}
 
 	/**

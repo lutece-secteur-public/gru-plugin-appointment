@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -65,7 +64,6 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
@@ -86,13 +84,10 @@ import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
-import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -104,7 +99,6 @@ import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.html.HtmlTemplate;
-import fr.paris.lutece.util.sql.TransactionManager;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
@@ -153,7 +147,6 @@ public class AppointmentApp extends MVCApplication {
 	private static final String VIEW_APPOINTMENT_FORM_LIST = "getViewFormList";
 	private static final String VIEW_DISPLAY_RECAP_APPOINTMENT = "displayRecapAppointment";
 	private static final String VIEW_GET_APPOINTMENT_CREATED = "getAppointmentCreated";
-	private static final String VIEW_GET_CANCEL_APPOINTMENT = "getCancelAppointment";
 	private static final String VIEW_APPOINTMENT_CANCELED = "getAppointmentCanceled";
 	private static final String VIEW_GET_MY_APPOINTMENTS = "getMyAppointments";
 	private static final String VIEW_GET_VIEW_CANCEL_APPOINTMENT = "getViewCancelAppointment";
@@ -185,7 +178,6 @@ public class AppointmentApp extends MVCApplication {
 	private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
 	private static final String PARAMETER_BACK = "back";
 	private static final String PARAMETER_REF_APPOINTMENT = "refAppointment";
-	private static final String PARAMETER_DATE_APPOINTMENT = "dateAppointment";
 	private static final String PARAMETER_FROM_MY_APPOINTMENTS = "fromMyappointments";
 	private static final String PARAMETER_REFERER = "referer";
 
@@ -198,6 +190,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String MARK_APPOINTMENT = "appointment";
 	private static final String MARK_LIST_ERRORS = "listAllErrors";
 	private static final String MARK_PLACES = "nbplaces";
+	private static final String MARK_DATE_APPOINTMENT = "dateAppointment";
 	private static final String MARK_TIME_APPOINTMENT = "timeAppointment";
 	private static final String MARK_FORM_LIST = "form_list";
 	private static final String MARK_FORM_HTML = "form_html";
@@ -210,11 +203,8 @@ public class AppointmentApp extends MVCApplication {
 	private static final String MARK_TIME_END = "%%HEURE_FIN%%";
 	private static final String MARK_LIST_APPOINTMENTS = "list_appointments";
 	private static final String MARK_BACK_URL = "backUrl";
-	private static final String MARK_STATUS_RESERVED = "status_reserved";
-	private static final String MARK_STATUS_UNRESERVED = "status_unreserved";
 	private static final String MARK_FROM_URL = "fromUrl";
 	private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
-	private static final String MARK_TITLE = "title";
 	private static final String MARK_DATA = "data";
 	private static final String MARK_BASE_64 = "base64";
 	private static final String MARK_SEMI_COLON = ";";
@@ -226,7 +216,6 @@ public class AppointmentApp extends MVCApplication {
 	// Errors
 	private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 	private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
-	private static final String ERROR_MESSAGE_UNKNOWN_REF = "appointment.message.error.unknownRef";
 	private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
 	private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
 	private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
@@ -633,222 +622,141 @@ public class AppointmentApp extends MVCApplication {
 		return xpage;
 	}
 
-	// TODO
-	@View(VIEW_GET_CANCEL_APPOINTMENT)
-	public XPage getCancelAppointment(HttpServletRequest request) {
-
-		Map<String, Object> model = new HashMap<String, Object>();
-
-		// model.put( MARK_FORM, form );
-		Locale locale = getLocale(request);
-		XPage xpage = getXPage(TEMPLATE_CANCEL_APPOINTMENT, locale, model);
-		xpage.setTitle(I18nService.getLocalizedString(MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale));
-
-		return xpage;
-	}
-
-	// TODO
+	/**
+	 * Get the view for he user who wants to cancel its appointment
+	 * 
+	 * @param request
+	 * @return the view
+	 * @throws SiteMessageException
+	 */
 	@View(VIEW_GET_VIEW_CANCEL_APPOINTMENT)
 	public XPage getViewCancelAppointment(HttpServletRequest request) throws SiteMessageException {
 		String refAppointment = request.getParameter(PARAMETER_REF_APPOINTMENT);
-		String strIdAppointment = "";// refAppointment.substring(0,
-		// refAppointment.length() -
-		// OldAppointmentService.getInstance().getRefSizeRandomPart());
 		Appointment appointment = null;
-
-		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
-			int nIdAppointment = Integer.parseInt(strIdAppointment);
-			// appointment =
-			// OldAppointmentHome.findByPrimaryKey(nIdAppointment);
-
+		if (StringUtils.isNotEmpty(refAppointment)) {
+			appointment = AppointmentService.findAppointmentByReference(refAppointment);
 		}
 		Map<String, Object> model = new HashMap<String, Object>();
-
 		model.put(PARAMETER_REF_APPOINTMENT, refAppointment);
-
 		if (appointment != null) {
-			// model.put(MARK_DATE_APPOINTMENT,
-			// appointment.getDateAppointment());
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-			// String currentTime =
-			// simpleDateFormat.format(appointment.getStartAppointment());
-			model.put(MARK_TIME_APPOINTMENT, "");
+			Slot slot = SlotService.findSlotById(appointment.getIdSlot());
+			model.put(MARK_DATE_APPOINTMENT, slot.getDate());
+			model.put(MARK_TIME_APPOINTMENT, slot.getStartingTime());
 		} else {
 			SiteMessageService.setMessage(request, ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT, SiteMessage.TYPE_STOP);
 		}
 		Locale locale = getLocale(request);
 		XPage xpage = getXPage(TEMPLATE_CANCEL_APPOINTMENT, locale, model);
 		xpage.setTitle(I18nService.getLocalizedString(MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale));
-
 		return xpage;
 	}
 
-	// TODO
+	/**
+	 * Cancel an appointment
+	 * 
+	 * @param request
+	 * @return the confirmation view of the appointment cancelled
+	 * @throws SiteMessageException
+	 */
 	@Action(ACTION_DO_CANCEL_APPOINTMENT)
 	public XPage doCancelAppointment(HttpServletRequest request) throws SiteMessageException {
 		String strRef = request.getParameter(PARAMETER_REF_APPOINTMENT);
-
-		String strIdAppointment = "";// strRef.substring(0,
-		// strRef.length() -
-		// OldAppointmentService.getInstance().getRefSizeRandomPart());
-		String strDate = request.getParameter(PARAMETER_DATE_APPOINTMENT);
-
-		if (StringUtils.isNotEmpty(strIdAppointment) && StringUtils.isNumeric(strIdAppointment)) {
-			int nIdAppointment = Integer.parseInt(strIdAppointment);
-			Appointment appointment = null;// OldAppointmentHome.findByPrimaryKey(nIdAppointment);
-
-			// Date date = (Date) getDateConverter().convert(Date.class,
-			// strDate);
-
-			if (StringUtils.equals(strRef, "")) {// OldAppointmentService.getInstance().computeRefAppointment(appointment))
-				// && DateUtils.isSameDay(date,
-				// appointment.getDateAppointment())) {
-				// AppointmentSlot appointmentSlot =
-				// AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot());
-				// AppointmentForm form =
-				// AppointmentFormHome.findByPrimaryKey(appointmentSlot.getIdForm());
-
-				Plugin appointmentPlugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
-
-				TransactionManager.beginTransaction(appointmentPlugin);
-
-				try {
-					if (true) {// appointment.getIdActionCancel() > 0) {
-						boolean automaticUpdate = (AdminUserService.getAdminUser(request) == null) ? true : false;
-						WorkflowService.getInstance().doProcessAction(appointment.getIdAppointment(), "",
-								// Appointment.APPOINTMENT_RESOURCE_TYPE,
-								1,
-								// appointment.getIdActionCancel(),
-								// form.getIdForm(),
-								1, request, request.getLocale(), automaticUpdate);
-					} else {
-						// appointment.setStatus(Appointment.Status.STATUS_UNRESERVED.getValeur());
-						// OldAppointmentHome.update(appointment);
-					}
-
-					TransactionManager.commitTransaction(appointmentPlugin);
-				} catch (Exception e) {
-					TransactionManager.rollBack(appointmentPlugin);
-					throw new AppException(e.getMessage(), e);
-				}
-
-				if (StringUtils.isNotEmpty(strRef)) {
-					Map<String, String> mapParameters = new HashMap<String, String>();
-
-					if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS))) {
-						String strReferer = request.getHeader(PARAMETER_REFERER);
-
-						if (StringUtils.isNotEmpty(strReferer)) {
-							mapParameters.put(MARK_FROM_URL, strReferer);
-						}
-
-						mapParameters.put(PARAMETER_FROM_MY_APPOINTMENTS,
-								request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS));
-					}
-
-					// mapParameters.put(PARAMETER_ID_FORM,
-					// Integer.toString(appointmentSlot.getIdForm()));
-
-					return redirect(request, VIEW_APPOINTMENT_CANCELED, mapParameters);
-				}
-
-				SiteMessageService.setMessage(request, ERROR_MESSAGE_UNKNOWN_REF, SiteMessage.TYPE_STOP);
+		if (StringUtils.isNotEmpty(strRef)) {
+			Appointment appointment = AppointmentService.findAppointmentByReference(strRef);
+			Slot slot = SlotService.findSlotById(appointment.getIdSlot());
+			if (appointment.getIdActionCancelled() > 0) {
+				boolean automaticUpdate = (AdminUserService.getAdminUser(request) == null) ? true : false;
+				WorkflowService.getInstance().doProcessAction(appointment.getIdAppointment(),
+						Appointment.APPOINTMENT_RESOURCE_TYPE, appointment.getIdActionCancelled(), slot.getIdForm(),
+						request, request.getLocale(), automaticUpdate);
+			} else {
+				appointment.setIsCancelled(Boolean.TRUE);
+				AppointmentService.updateAppointment(appointment);
 			}
+			Map<String, String> mapParameters = new HashMap<String, String>();
+			if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS))) {
+				String strReferer = request.getHeader(PARAMETER_REFERER);
+				if (StringUtils.isNotEmpty(strReferer)) {
+					mapParameters.put(MARK_FROM_URL, strReferer);
+				}
+				mapParameters.put(PARAMETER_FROM_MY_APPOINTMENTS, request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS));
+			}
+			mapParameters.put(PARAMETER_ID_FORM, Integer.toString(slot.getIdForm()));
+			return redirect(request, VIEW_APPOINTMENT_CANCELED, mapParameters);
 		}
-
 		return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
 	}
 
-	// TODO
+	/**
+	 * Get the page to confirm that the appointment has been canceled
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The XPage to display
+	 */
 	@View(VIEW_APPOINTMENT_CANCELED)
 	public XPage getAppointmentCanceled(HttpServletRequest request) {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
-
 		if (StringUtils.isNotEmpty(strIdForm) && StringUtils.isNumeric(strIdForm)) {
 			int nIdForm = Integer.parseInt(strIdForm);
-
 			Map<String, Object> model = new HashMap<String, Object>();
 			model.put(MARK_FORM_MESSAGES, FormMessageHome.findByPrimaryKey(nIdForm));
-
 			if (Boolean.parseBoolean(request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS))) {
 				String strFromUrl = request.getParameter(MARK_FROM_URL);
 				model.put(MARK_BACK_URL,
 						StringUtils.isNotEmpty(strFromUrl) ? strFromUrl : getViewUrl(VIEW_GET_MY_APPOINTMENTS));
 			}
-
 			return getXPage(TEMPLATE_APPOINTMENT_CANCELED, getLocale(request), model);
 		}
-
 		return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
 	}
 
-	// TODO
+	/**
+	 * Get the page to view the appointments of a user
+	 * 
+	 * @param request
+	 *            The request
+	 * @return The XPage to display
+	 * @throws UserNotSignedException
+	 *             If the authentication is enabled and the user has not signed
+	 *             in
+	 */
 	@View(VIEW_GET_MY_APPOINTMENTS)
 	public XPage getMyAppointments(HttpServletRequest request) throws UserNotSignedException {
 		if (!SecurityService.isAuthenticationEnable()) {
 			return redirectView(request, VIEW_APPOINTMENT_FORM_LIST);
 		}
-
 		XPage xpage = new XPage();
 		Locale locale = getLocale(request);
 		xpage.setContent(getMyAppointmentsXPage(request, locale));
 		xpage.setTitle(I18nService.getLocalizedString(MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale));
-
 		return xpage;
 	}
 
-	// TODO
+	/**
+	 * Get the HTML content of the my appointment page of a user
+	 * 
+	 * @param request
+	 *            The request
+	 * @param locale
+	 *            The locale
+	 * @return The HTML content, or null if the
+	 * @throws UserNotSignedException
+	 *             If the user has not signed in
+	 */
 	public static String getMyAppointmentsXPage(HttpServletRequest request, Locale locale)
 			throws UserNotSignedException {
 		if (!SecurityService.isAuthenticationEnable()) {
 			return null;
 		}
-
 		LuteceUser luteceUser = SecurityService.getInstance().getRegisteredUser(request);
-
 		if (luteceUser == null) {
 			throw new UserNotSignedException();
 		}
-
-		// AppointmentFilter appointmentFilter = new AppointmentFilter();
-		// appointmentFilter.setIdUser(luteceUser.getName());
-		// appointmentFilter.setAuthenticationService(luteceUser.getAuthenticationService());
-		// appointmentFilter.setDateAppointmentMin(new
-		// Date(System.currentTimeMillis()));
-
-		List<Appointment> listAppointments = null;// OldAppointmentHome.getAppointmentListByFilter(appointmentFilter);
-
-		// List<AppointmentDTO> listAppointmentDTO = new
-		// ArrayList<AppointmentDTO>(listAppointments.size());
-		//
-		// Map<String, String> lsSta = new HashMap<String, String>();
-		// for (Appointment appointment : listAppointments) {
-		// AppointmentDTO appointmentDTO = null;// new
-		// // AppointmentDTO(appointment);
-		// appointmentDTO.setAppointmentSlot(AppointmentSlotHome.findByPrimaryKey(appointment.getIdSlot()));
-		// /*
-		// * WORKFLOW FUTURE if (!nidForm.contains( Integer.valueOf(
-		// * appointmantDTO.getAppointmentSlot( ).getIdForm( ) ) )); {
-		// * nidForm.add(Integer.valueOf( appointmantDTO.getAppointmentSlot(
-		// * ).getIdForm( ) ) ); }
-		// */
-		// appointmentDTO.setAppointmentForm(
-		// AppointmentFormHome.findByPrimaryKey(appointmentDTO.getAppointmentSlot().getIdForm()));
-		// listAppointmentDTO.add(appointmentDTO);
-		// }
-
+		List<AppointmentDTO> listAppointmentDTO = new ArrayList<>();
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put(MARK_LIST_APPOINTMENTS, "");
-		/*
-		 * WORKFLOW FUTURE model.put( MARK_STATUS, getAllStatus (nidForm));
-		 */
-		// model.put(MARK_STATUS_RESERVED,
-		// Appointment.Status.STATUS_RESERVED.getValeur());
-		// model.put(MARK_STATUS_UNRESERVED,
-		// Appointment.Status.STATUS_UNRESERVED.getValeur());
-
+		model.put(MARK_LIST_APPOINTMENTS, listAppointmentDTO);
 		HtmlTemplate template = AppTemplateService.getTemplate(TEMPLATE_MY_APPOINTMENTS, locale, model);
-
 		return template.getHtml();
 	}
 

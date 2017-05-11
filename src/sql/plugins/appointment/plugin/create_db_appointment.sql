@@ -98,6 +98,8 @@ CREATE INDEX fk_appointment_appointment_appointment_user_idx ON appointment_appo
 
 CREATE INDEX fk_appointment_appointment_appointment_slot_idx ON appointment_appointment (id_slot ASC);
 
+CREATE INDEX reference_idx ON appointment_appointment (reference ASC);
+
 -- -----------------------------------------------------
 -- Table appointment_appointment_response
 -- -----------------------------------------------------

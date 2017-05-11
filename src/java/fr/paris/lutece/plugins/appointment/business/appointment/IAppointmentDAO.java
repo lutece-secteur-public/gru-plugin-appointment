@@ -90,6 +90,17 @@ public interface IAppointmentDAO {
 	 * @return a list of the appointments
 	 */
 	List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin);
+	
+	/**
+	 * Returns the appointment with its reference
+	 * 
+	 * @param strReference
+	 *            the appointment reference
+	 * @param plugin
+	 *            the plugin
+	 * @return the appointment
+	 */
+	Appointment findByReference(String strReference, Plugin plugin);
 
 	/**
 	 * Returns a list of all the appointment that start after a given date
