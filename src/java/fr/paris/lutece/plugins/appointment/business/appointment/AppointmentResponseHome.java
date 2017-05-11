@@ -25,8 +25,11 @@ public class AppointmentResponseHome {
 
 	/**
 	 * Associate a response to an appointment
-	 * @param nIdAppointment the appointment
-	 * @param nIdResponse the response
+	 * 
+	 * @param nIdAppointment
+	 *            the appointment
+	 * @param nIdResponse
+	 *            the response
 	 */
 	public static void insertAppointmentResponse(int nIdAppointment, int nIdResponse) {
 		_dao.insertAppointmentResponse(nIdAppointment, nIdResponse, _plugin);

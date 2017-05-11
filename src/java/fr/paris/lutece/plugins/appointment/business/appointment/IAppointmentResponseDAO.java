@@ -18,17 +18,17 @@ public interface IAppointmentResponseDAO {
 	static String BEAN_NAME = "appointment.appointmentResponseDAO";
 
 	/**
-     * Associates a response to an appointment
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment
-     * @param nIdResponse
-     *            The id of the response
-     * @param plugin
-     *            The plugin
-     */
-    void insertAppointmentResponse( int nIdAppointment, int nIdResponse, Plugin plugin );
-    
+	 * Associates a response to an appointment
+	 * 
+	 * @param nIdAppointment
+	 *            The id of the appointment
+	 * @param nIdResponse
+	 *            The id of the response
+	 * @param plugin
+	 *            The plugin
+	 */
+	void insertAppointmentResponse(int nIdAppointment, int nIdResponse, Plugin plugin);
+
 	/**
 	 * Remove an appointment responses from the id of a response.
 	 * 

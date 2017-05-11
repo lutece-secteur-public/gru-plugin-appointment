@@ -124,7 +124,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 			}
 		}
 		return listAppointment;
-	}	
+	}
 
 	@Override
 	public List<Appointment> findByIdSlot(int nIdSlot, Plugin plugin) {
@@ -163,7 +163,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 		}
 		return appointment;
 	}
-	
+
 	@Override
 	public List<Appointment> findByFilter(AppointmentFilter appointmentFilter, Plugin plugin) {
 		List<Appointment> listAppointment = new ArrayList<Appointment>();

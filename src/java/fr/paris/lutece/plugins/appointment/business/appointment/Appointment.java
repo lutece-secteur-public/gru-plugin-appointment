@@ -43,10 +43,10 @@ public class Appointment implements Serializable {
 	private boolean _bIsCancelled;
 
 	/**
-	 * Id for a cancelled appointment 
+	 * Id for a cancelled appointment
 	 */
 	private int _nIdActionCancelled;
-	
+
 	/**
 	 * User id
 	 */
@@ -126,6 +126,7 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Get the id for the cancelled appointment
+	 * 
 	 * @return the id
 	 */
 	public int getIdActionCancelled() {
@@ -134,7 +135,9 @@ public class Appointment implements Serializable {
 
 	/**
 	 * Set the id for the cancelled action
-	 * @param _nIdActionCancelled the id to set
+	 * 
+	 * @param _nIdActionCancelled
+	 *            the id to set
 	 */
 	public void setIdActionCancelled(int _nIdActionCancelled) {
 		this._nIdActionCancelled = _nIdActionCancelled;

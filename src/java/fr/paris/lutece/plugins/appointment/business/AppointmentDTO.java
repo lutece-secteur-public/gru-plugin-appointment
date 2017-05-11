@@ -149,7 +149,7 @@ public class AppointmentDTO implements Serializable {
 	 * List of the available action of the workflow for this appointment
 	 */
 	private transient Collection<Action> _listWorkflowActions;
-	
+
 	/**
 	 * Get the state of the appointment
 	 * 
@@ -465,6 +465,7 @@ public class AppointmentDTO implements Serializable {
 
 	/**
 	 * Get the available actions of the workflow for this appointment
+	 * 
 	 * @return the actions
 	 */
 	public Collection<Action> getListWorkflowActions() {
@@ -473,6 +474,7 @@ public class AppointmentDTO implements Serializable {
 
 	/**
 	 * Set the available actions of the workflow for this appointment
+	 * 
 	 * @param _listWorkflowActions
 	 */
 	public void setListWorkflowActions(Collection<Action> _listWorkflowActions) {
@@ -509,9 +511,10 @@ public class AppointmentDTO implements Serializable {
 		this._mapResponsesByIdEntry = mapResponsesByIdEntry;
 	}
 
-	public void clearMapResponsesByIdEntry(){
+	public void clearMapResponsesByIdEntry() {
 		this._mapResponsesByIdEntry.clear();
 	}
+
 	/**
 	 * Get all the possible errors of the form
 	 * 
