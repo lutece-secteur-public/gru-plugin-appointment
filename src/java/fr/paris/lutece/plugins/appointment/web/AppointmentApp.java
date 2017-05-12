@@ -191,7 +191,8 @@ public class AppointmentApp extends MVCApplication {
 	private static final String MARK_LIST_ERRORS = "listAllErrors";
 	private static final String MARK_PLACES = "nbplaces";
 	private static final String MARK_DATE_APPOINTMENT = "dateAppointment";
-	private static final String MARK_TIME_APPOINTMENT = "timeAppointment";
+	private static final String MARK_STARTING_TIME_APPOINTMENT = "startingTimeAppointment";
+	private static final String MARK_ENDING_TIME_APPOINTMENT = "endingTimeAppointment";
 	private static final String MARK_FORM_LIST = "form_list";
 	private static final String MARK_FORM_HTML = "form_html";
 	private static final String MARK_FORM_ERRORS = "form_errors";
@@ -640,8 +641,9 @@ public class AppointmentApp extends MVCApplication {
 		model.put(PARAMETER_REF_APPOINTMENT, refAppointment);
 		if (appointment != null) {
 			Slot slot = SlotService.findSlotById(appointment.getIdSlot());
-			model.put(MARK_DATE_APPOINTMENT, slot.getDate());
-			model.put(MARK_TIME_APPOINTMENT, slot.getStartingTime());
+			model.put(MARK_DATE_APPOINTMENT, slot.getDate().format(Utilities.formatter));
+			model.put(MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime());
+			model.put(MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime());
 		} else {
 			SiteMessageService.setMessage(request, ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT, SiteMessage.TYPE_STOP);
 		}
