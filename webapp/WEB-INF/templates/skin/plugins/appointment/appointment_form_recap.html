@@ -29,6 +29,12 @@
 						</legend>
 						<@messages errors=errors />
 						<div class="form-group">
+							<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<input type="text" class="form-control" disabled readonly="readonly" value="#i18n{appointment.appointmentApp.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.appointmentApp.labelTimeAppointmentFrom} ${appointment.slot.startingTime} #i18n{appointment.appointmentApp.labelTimeAppointmentTo} ${appointment.slot.endingTime}">
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="lastname">${formMessages.fieldLastNameTitle!}</label>
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.lastName}">
@@ -65,13 +71,7 @@
 									</div>
 								</div>
 							</#if>
-						</#list>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.dateOfTheAppointment} #i18n{appointment.appointmentApp.labelTimeAppointmentFrom} ${appointment.slot.startingTime} #i18n{appointment.appointmentApp.labelTimeAppointmentTo} ${appointment.slot.endingTime}">
-							</div>
-						</div>
+						</#list>						
 						<#if captcha??>
 							${captcha!}
 						</#if>

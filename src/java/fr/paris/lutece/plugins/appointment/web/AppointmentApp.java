@@ -403,6 +403,7 @@ public class AppointmentApp extends MVCApplication {
 				}
 
 				appointmentDTO.setSlot(slot);
+				appointmentDTO.setDateOfTheAppointment(slot.getDate().format(Utilities.formatter));
 				appointmentDTO.setIdForm(nIdForm);
 				LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
 				if (user != null) {
