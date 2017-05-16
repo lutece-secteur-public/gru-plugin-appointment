@@ -18,10 +18,10 @@
 </div>
 
 <#macro actionColumnCalendarTemplate item>
-	<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.id}" >
+	<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}" >
 		<i class="glyphicon glyphicon-edit"></i>
 	</a>
-	<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.id}" >
+	<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}" >
 		<i class="glyphicon glyphicon-trash"></i>
 	</a>
 </#macro>
