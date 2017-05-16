@@ -15,38 +15,74 @@ import fr.paris.lutece.util.ReferenceList;
  *
  */
 public class CategoryService {
-	
-	public static List<Category> findAllCategories(){
+
+	/**
+	 * Find all the categories
+	 * 
+	 * @return a list of all the categories
+	 */
+	public static List<Category> findAllCategories() {
 		return CategoryHome.findAllCategories();
 	}
-	
-	public static void removeCategory(int nIdCategory){
+
+	/**
+	 * Remove a category
+	 * 
+	 * @param nIdCategory
+	 *            the id of the category to remove
+	 */
+	public static void removeCategory(int nIdCategory) {
 		CategoryHome.delete(nIdCategory);
 	}
-	
-	public static void createCategory(Category category){
+
+	/**
+	 * Create a category
+	 * 
+	 * @param category
+	 *            the category to store
+	 */
+	public static void createCategory(Category category) {
 		Category categoryInDb = CategoryHome.findByLabel(category.getLabel());
 		if (categoryInDb == null) {
 			CategoryHome.create(category);
 		}
 	}
-	
-	public static Category findCategoryById(int nIdCategory){
+
+	/**
+	 * Find a category by its primary key
+	 * 
+	 * @param nIdCategory
+	 *            the id of the category
+	 * @return the category
+	 */
+	public static Category findCategoryById(int nIdCategory) {
 		return CategoryHome.findByPrimaryKey(nIdCategory);
 	}
-	
-	public static void updateCategory(Category category){
+
+	/**
+	 * Update a category
+	 * 
+	 * @param category
+	 *            the category to update
+	 */
+	public static void updateCategory(Category category) {
 		CategoryHome.update(category);
 	}
-	
+
+	/**
+	 * Build a list of all the category (id, label) + an empty line for the form
+	 * creation
+	 * 
+	 * @return the reference list
+	 */
 	public static ReferenceList findAllInReferenceList() {
 		List<Category> listCategory = findAllCategories();
-		ReferenceList refListTemplates = new ReferenceList(listCategory.size()+1);
+		ReferenceList refListTemplates = new ReferenceList(listCategory.size() + 1);
 		refListTemplates.addItem(-1, StringUtils.EMPTY);
 		for (Category category : listCategory) {
 			refListTemplates.addItem(category.getIdCategory(), category.getLabel());
 		}
 		return refListTemplates;
 	}
-	
+
 }

@@ -16,7 +16,7 @@ public class Category implements Serializable, RBACResource {
 	 * Name of the resource type of Appointment Forms
 	 */
 	public static final String RESOURCE_TYPE = "APPOINTMENT_CATEGORY";
-	
+
 	/**
 	 * Serial version UID
 	 */
@@ -72,14 +72,12 @@ public class Category implements Serializable, RBACResource {
 
 	@Override
 	public String getResourceTypeCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return RESOURCE_TYPE;
 	}
 
 	@Override
 	public String getResourceId() {
-		// TODO Auto-generated method stub
-		return null;
+		return Integer.toString(getIdCategory());
 	}
 
 }

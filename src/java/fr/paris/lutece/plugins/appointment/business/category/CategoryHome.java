@@ -74,18 +74,24 @@ public class CategoryHome {
 	public static Category findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
 	}
-	
+
 	/**
-	 * Returns all the Categories
-	 * parameter
+	 * Returns all the Categories parameter
 	 * 
 	 * @return a list of all the categories
 	 */
 	public static List<Category> findAllCategories() {
 		return _dao.findAllCategories(_plugin);
 	}
-	
-	public static Category findByLabel(String strLabel){
+
+	/**
+	 * Find a category by its Label
+	 * 
+	 * @param strLabel
+	 *            the label
+	 * @return an instance of the category
+	 */
+	public static Category findByLabel(String strLabel) {
 		return _dao.findByLabel(strLabel, _plugin);
 	}
 

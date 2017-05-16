@@ -3,7 +3,6 @@ package fr.paris.lutece.plugins.appointment.business.category;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -117,7 +116,7 @@ public class CategoryDAO implements ICategoryDAO {
 		}
 		return category;
 	}
-	
+
 	/**
 	 * Build a Category business object from the resultset
 	 * 
@@ -177,7 +176,5 @@ public class CategoryDAO implements ICategoryDAO {
 			}
 		}
 	}
-
-	
 
 }

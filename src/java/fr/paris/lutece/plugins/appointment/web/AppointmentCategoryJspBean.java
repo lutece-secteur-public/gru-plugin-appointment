@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
@@ -65,10 +64,6 @@ import fr.paris.lutece.util.url.UrlItem;
  */
 @Controller(controllerJsp = "ManageAppointmentCategory.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentCategoryJspBean.RIGHT_MANAGECATEGORY)
 public class AppointmentCategoryJspBean extends MVCAdminJspBean {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5438468406405679511L;
 
 	/**
@@ -88,7 +83,7 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	private static final String PROPERTY_PAGE_TITLE_MANAGE_CATEGORY = "appointment.manage_category.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_CREATE_CATEGORY = "appointment.create_category.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_CATEGORY = "appointment.modify_category.pageTitle";
-	
+
 	// Markers
 	private static final String MARK_CATEGORY_LIST = "category_list";
 	private static final String MARK_CATEGORY = "category";
@@ -133,6 +128,16 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 		return getPage(PROPERTY_PAGE_TITLE_MANAGE_CATEGORY, TEMPLATE_MANAGE_CATEGORY, model);
 	}
 
+	/**
+	 * Display a popup to ask the user if he really wants to delete the category
+	 * he selected
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the HTML code to confirm
+	 * @throws AccessDeniedException
+	 *             If the user is not authorized
+	 */
 	@Action(ACTION_CONFIRM_REMOVE_CATEGORY)
 	public String getConfirmRemoveAppointmentForm(HttpServletRequest request) throws AccessDeniedException {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
@@ -151,6 +156,15 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 		return redirect(request, strMessageUrl);
 	}
 
+	/**
+	 * Remove the category selected
+	 * 
+	 * @param request
+	 *            the request
+	 * @return The JSP URL of the process result
+	 * @throws AccessDeniedException
+	 *             If the user is not authorized
+	 */
 	@Action(ACTION_REMOVE_CATEGORY)
 	public String doRemoveCategory(HttpServletRequest request) throws AccessDeniedException {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
@@ -167,6 +181,15 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 		return redirectView(request, VIEW_MANAGE_CATEGORY);
 	}
 
+	/**
+	 * Display the screen to create a new category
+	 * 
+	 * @param request
+	 *            the request
+	 * @return The HTML content to display
+	 * @throws AccessDeniedException
+	 *             If the user is not authorized
+	 */
 	@View(VIEW_CREATE_CATEGORY)
 	public String getCreateCategory(HttpServletRequest request) throws AccessDeniedException {
 		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, "0",
@@ -178,8 +201,17 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 		return getPage(PROPERTY_PAGE_TITLE_CREATE_CATEGORY, TEMPLATE_CREATE_CATEGORY, model);
 	}
 
+	/**
+	 * Create a new category with the fields completed
+	 * 
+	 * @param request
+	 *            the request
+	 * @return The JSP URL of the process result
+	 * @throws AccessDeniedException
+	 *             If the user is not authorized
+	 */
 	@Action(ACTION_CREATE_CATEGORY)
-	public String doCreateCategory(HttpServletRequest request) throws AccessDeniedException, FileNotFoundException {
+	public String doCreateCategory(HttpServletRequest request) throws AccessDeniedException {
 		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, "0",
 				AppointmentResourceIdService.PERMISSION_CREATE_CATEGORY, AdminUserService.getAdminUser(request))) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_CREATE_CATEGORY);
@@ -191,6 +223,15 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 		return redirectView(request, VIEW_MANAGE_CATEGORY);
 	}
 
+	/**
+	 * Get the view to modify an existed category
+	 * 
+	 * @param request
+	 *            the request
+	 * @return The HTML content to display
+	 * @throws AccessDeniedException
+	 *             If the user is not authorized
+	 */
 	@View(VIEW_MODIFY_CATEGORY)
 	public String getModifyCategory(HttpServletRequest request) throws AccessDeniedException {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
@@ -205,6 +246,15 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 		return getPage(PROPERTY_PAGE_TITLE_MODIFY_CATEGORY, TEMPLATE_MODIFY_CATEGORY, model);
 	}
 
+	/**
+	 * Modify a category
+	 * 
+	 * @param request
+	 *            the request
+	 * @return The JSP URL of the process result
+	 * @throws AccessDeniedException
+	 *             If the user is not authorized
+	 */
 	@Action(ACTION_MODIFY_CATEGORY)
 	public String doModifyCategory(HttpServletRequest request) throws AccessDeniedException {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
