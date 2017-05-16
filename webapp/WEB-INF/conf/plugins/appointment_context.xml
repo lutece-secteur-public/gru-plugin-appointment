@@ -4,6 +4,7 @@
 	<bean id="appointment.appointmentDAO"  class="fr.paris.lutece.plugins.appointment.business.appointment.AppointmentDAO" />  
 	<bean id="appointment.appointmentResponseDAO"  class="fr.paris.lutece.plugins.appointment.business.appointment.AppointmentResponseDAO" />
 	<bean id="appointment.calendarTemplateDAO" class="fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateDAO" />
+	<bean id="appointment.categoryDAO"  class="fr.paris.lutece.plugins.appointment.business.category.CategoryDAO" />
 	<bean id="appointment.closingDayDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.ClosingDayDAO" />
 	<bean id="appointment.displayDAO"  class="fr.paris.lutece.plugins.appointment.business.display.DisplayDAO" />
 	<bean id="appointment.formDAO"  class="fr.paris.lutece.plugins.appointment.business.form.FormDAO" />

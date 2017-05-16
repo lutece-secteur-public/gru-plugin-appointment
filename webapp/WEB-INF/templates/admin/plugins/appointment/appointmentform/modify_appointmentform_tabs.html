@@ -46,7 +46,7 @@
 			<form method="post" class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data" >	     
 				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.create_appointmentform.labelTitle' maxlength=255 /> 
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='category' mandatory=false value=appointmentform.category!'' i18nHelpBlockKey='appointment.create_appointmentform.labelCategory' maxlength=255 /> 
+				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>				 
 				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDescription'/>								
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment} * :</label>

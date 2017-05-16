@@ -174,6 +174,7 @@ public class FormService {
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setIsActive(form.isActive());
 		appointmentForm.setIdWorkflow(form.getIdWorkflow());
+		appointmentForm.setIdCategory(form.getIdCategory());
 	}
 
 	/**
@@ -309,7 +310,7 @@ public class FormService {
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setDescription(form.getDescription());
 		appointmentForm.setReference(form.getReference());
-		appointmentForm.setCategory(form.getCategory());
+		appointmentForm.setIdCategory(form.getIdCategory());
 		appointmentForm.setDateStartValidity(form.getStartingValiditySqlDate());
 		appointmentForm.setDateEndValidity(form.getEndingValiditySqlDate());
 		appointmentForm.setIdWorkflow(form.getIdWorkflow());
@@ -394,7 +395,7 @@ public class FormService {
 		form.setTitle(appointmentForm.getTitle());
 		form.setDescription(appointmentForm.getDescription());
 		form.setReference(appointmentForm.getReference());
-		form.setCategory(appointmentForm.getCategory());
+		form.setIdCategory(appointmentForm.getIdCategory());
 		form.setStartingValiditySqlDate(appointmentForm.getDateStartValidity());
 		form.setEndingValiditySqlDate(appointmentForm.getDateEndValidity());
 		form.setIsActive(appointmentForm.getIsActive());

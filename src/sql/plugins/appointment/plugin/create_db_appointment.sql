@@ -1,4 +1,15 @@
 -- -----------------------------------------------------
+-- Table appointment_category
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS appointment_category ;
+CREATE TABLE appointment_category (
+  id_category INT NOT NULL,
+  label VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id_category),
+  UNIQUE KEY unique_label (label))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
 -- Table appointment_user
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS appointment_user ;
@@ -26,7 +37,7 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   title VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL,
   reference VARCHAR(255) NULL,
-  category VARCHAR(255) NULL,
+  id_category INT NULL,
   starting_validity_date DATE NULL,
   ending_validity_date DATE NULL,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,

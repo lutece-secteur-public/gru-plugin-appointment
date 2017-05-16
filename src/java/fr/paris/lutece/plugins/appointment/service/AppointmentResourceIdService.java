@@ -57,18 +57,27 @@ import fr.paris.lutece.util.ReferenceList;
 public class AppointmentResourceIdService extends ResourceIdService {
 	/** Permission to create appointments */
 	public static final String PERMISSION_CREATE_FORM = "CREATE_FORM";
+	
+	/** Permission to create categories */
+	public static final String PERMISSION_CREATE_CATEGORY = "CREATE_CATEGORY";
 
 	/** Permission to create appointments of the form */
 	public static final String PERMISSION_CREATE_APPOINTMENT = "CREATE_APPOINTMENT";
 
 	/** Permission for deleting a form */
 	public static final String PERMISSION_DELETE_FORM = "DELETE_FORM";
+	
+	/** Permission for deleting a category */
+	public static final String PERMISSION_DELETE_CATEGORY = "DELETE_CATEGORY";
 
 	/** Permission for deleting appointments of the form */
 	public static final String PERMISSION_DELETE_APPOINTMENT = "DELETE_APPOINTMENT";
 
 	/** Permission for modifying a form */
 	public static final String PERMISSION_MODIFY_FORM = "MODIFY_FORM";
+	
+	/** Permission for modifying a category */
+	public static final String PERMISSION_MODIFY_CATEGORY = "MODIFY_CATEGORY";
 
 	/** Permission for modifying an advanced setting form */
 	public static final String PERMISSION_MODIFY_ADVANCED_SETTING_FORM = "MODIFY_ADVANCED_SETTING_FORM";

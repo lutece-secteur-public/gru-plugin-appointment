@@ -219,7 +219,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	/**
 	 * The category of the form
 	 */
-	private String _strCategory;
+	private int _nIdCategory;
 
 	/**
 	 * The reservation rule id (Rules that need to be applied to the form)
@@ -747,18 +747,18 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 * 
 	 * @return the category of the form
 	 */
-	public String getCategory() {
-		return _strCategory;
+	public int getIdCategory() {
+		return _nIdCategory;
 	}
 
 	/**
 	 * Set the category of the form
 	 * 
-	 * @param strCategory
+	 * @param nIdCategory
 	 *            the category to set
 	 */
-	public void setCategory(String strCategory) {
-		_strCategory = strCategory;
+	public void setIdCategory(int nIdCategory) {
+		_nIdCategory = nIdCategory;
 	}
 
 	/**

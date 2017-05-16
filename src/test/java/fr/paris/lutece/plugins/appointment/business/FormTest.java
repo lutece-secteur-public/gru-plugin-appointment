@@ -25,8 +25,8 @@ public class FormTest extends LuteceTestCase {
 	public final static String TITLE_FORM_2 = "TitreForm2";
 	public final static String DESCRIPTION_FORM_1 = "DescriptionForm1";
 	public final static String DESCRIPTION_FORM_2 = "DescriptionForm2";
-	public final static String CATEGORY_FORM_1 = "CategoryForm1";
-	public final static String CATEGORY_FORM_2 = "CategoryForm2";
+	public final static int CATEGORY_FORM_1 = 1;
+	public final static int CATEGORY_FORM_2 = 2;
 	public final static LocalDate STARTING_VALIDITY_DATE_1 = LocalDate.parse("2017-01-24");
 	public final static LocalDate STARTING_VALIDITY_DATE_2 = LocalDate.parse("2017-01-25");
 	public final static LocalDate ENDING_VALIDITY_DATE_1 = LocalDate.parse("2017-02-28");
@@ -52,7 +52,7 @@ public class FormTest extends LuteceTestCase {
 		// Update the form
 		form.setTitle(TITLE_FORM_2);
 		form.setDescription(DESCRIPTION_FORM_2);
-		form.setCategory(CATEGORY_FORM_2);
+		form.setIdCategory(CATEGORY_FORM_2);
 		form.setStartingValidityDate(STARTING_VALIDITY_DATE_2);
 		form.setEndingValidityDate(ENDING_VALIDITY_DATE_2);
 		form.setIsActive(IS_ACTIVE2);
@@ -181,7 +181,7 @@ public class FormTest extends LuteceTestCase {
 		Form form = new Form();
 		form.setTitle(TITLE_FORM_1);
 		form.setDescription(DESCRIPTION_FORM_1);
-		form.setCategory(CATEGORY_FORM_1);
+		form.setIdCategory(CATEGORY_FORM_1);
 		form.setStartingValidityDate(STARTING_VALIDITY_DATE_1);
 		form.setEndingValidityDate(ENDING_VALIDITY_DATE_1);
 		form.setIsActive(IS_ACTIVE1);
@@ -200,7 +200,7 @@ public class FormTest extends LuteceTestCase {
 	public void checkAsserts(Form formStored, Form form) {
 		assertEquals(formStored.getTitle(), form.getTitle());
 		assertEquals(formStored.getDescription(), form.getDescription());
-		assertEquals(formStored.getCategory(), form.getCategory());
+		assertEquals(formStored.getIdCategory(), form.getIdCategory());
 		assertEquals(formStored.getStartingValidityDate(), form.getStartingValidityDate());
 		assertEquals(formStored.getEndingValidityDate(), form.getEndingValidityDate());
 		assertEquals(formStored.isActive(), form.isActive());

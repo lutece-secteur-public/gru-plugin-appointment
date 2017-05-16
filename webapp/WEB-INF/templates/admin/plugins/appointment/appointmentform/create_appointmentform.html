@@ -14,8 +14,8 @@
 					<legend class="hidden">#i18n{appointment.create_appointmentform.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
-					<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />
-					<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='category' mandatory=false value=appointmentform.category!'' maxlength=255 />
+					<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />									
+					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>
 					<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' />
 					<div class="form-group">
 						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_start">#i18n{appointment.create_appointmentform.labelTimeStart}&nbsp;*&nbsp;:</label>

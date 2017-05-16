@@ -63,6 +63,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
+import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
@@ -148,6 +149,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
 	private static final String MARK_FORM_MESSAGE = "formMessage";
 	private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
+	private static final String MARK_LIST_CATEGORIES = "listCategories";
 	private static final String MARK_NULL = "NULL";
 	private static final String MARK_FALSE = "false";
 	private static final String MARK_LOCALE = "language";
@@ -724,6 +726,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		model.put(MARK_LIST_WORKFLOWS, WorkflowService.getInstance().getWorkflowsEnabled(user, locale));
 		model.put(MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable());
 		model.put(MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList());
+		model.put(MARK_LIST_CATEGORIES, CategoryService.findAllInReferenceList());
 		request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm);
 	}
 

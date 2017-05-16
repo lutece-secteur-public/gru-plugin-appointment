@@ -15,10 +15,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class FormDAO implements IFormDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form) FROM appointment_form";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form (id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active, id_workflow) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ?, id_workflow = ? WHERE id_form = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form (id_form, title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, id_category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ?, id_workflow = ? WHERE id_form = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, category, starting_validity_date, ending_validity_date, is_active, id_workflow FROM appointment_form";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow FROM appointment_form";
 	private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 	private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
@@ -130,7 +130,7 @@ public class FormDAO implements IFormDAO {
 		form.setTitle(daoUtil.getString(nIndex++));
 		form.setDescription(daoUtil.getString(nIndex++));
 		form.setReference(daoUtil.getString(nIndex++));
-		form.setCategory(daoUtil.getString(nIndex++));
+		form.setIdCategory(daoUtil.getInt(nIndex++));
 		form.setStartingValiditySqlDate(daoUtil.getDate(nIndex++));
 		form.setEndingValiditySqlDate(daoUtil.getDate(nIndex++));
 		form.setIsActive(daoUtil.getBoolean(nIndex++));
@@ -162,7 +162,7 @@ public class FormDAO implements IFormDAO {
 		daoUtil.setString(nIndex++, form.getTitle());
 		daoUtil.setString(nIndex++, form.getDescription());
 		daoUtil.setString(nIndex++, form.getReference());
-		daoUtil.setString(nIndex++, form.getCategory());
+		daoUtil.setInt(nIndex++, form.getIdCategory());
 		daoUtil.setDate(nIndex++, form.getStartingValiditySqlDate());
 		daoUtil.setDate(nIndex++, form.getEndingValiditySqlDate());
 		daoUtil.setBoolean(nIndex++, form.isActive());
