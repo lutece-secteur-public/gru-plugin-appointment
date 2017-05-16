@@ -41,6 +41,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.category.Category;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
@@ -49,10 +51,12 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.util.datatable.DataTableManager;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
@@ -83,14 +87,21 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	private static final String PROPERTY_PAGE_TITLE_MANAGE_CATEGORY = "appointment.manage_category.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_CREATE_CATEGORY = "appointment.create_category.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_CATEGORY = "appointment.modify_category.pageTitle";
-
+	private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
+	private static final String PROPERTY_ID = "idCategory";
+	private static final String PROPERTY_LABEL = "label";
+	
 	// Markers
 	private static final String MARK_CATEGORY_LIST = "category_list";
 	private static final String MARK_CATEGORY = "category";
-
+	private static final String MARK_DATA_TABLE_MANAGER = "dataTableManager";
+	
 	// Properties
 	private static final String MESSAGE_CONFIRM_REMOVE_CATEGORY = "appointment.message.confirmRemoveCategory";
-
+	private static final String MESSAGE_COLUMN_TITLE_ID = "appointment.manage_category.columnId";
+	private static final String MESSAGE_COLUMN_TITLE_LABEL = "appointment.manage_category.columnLabel";
+	private static final String MESSAGE_COLUMN_TITLE_ACTIONS = "portal.util.labelActions";
+	
 	// Views
 	private static final String VIEW_MANAGE_CATEGORY = "manageCategory";
 	private static final String VIEW_CREATE_CATEGORY = "createCategory";
@@ -107,6 +118,10 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	private static final String INFO_CATEGORY_UPDATED = "appointment.info.category.updated";
 	private static final String INFO_CATEGORY_REMOVED = "appointment.info.category.removed";
 
+	// Session variables
+	private DataTableManager<Category> _dataTableManager;
+	private CalendarTemplate _template;
+
 	/**
 	 * Default constructor
 	 */
@@ -122,10 +137,27 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 */
 	@View(value = VIEW_MANAGE_CATEGORY, defaultView = true)
 	public String getManageCategory(HttpServletRequest request) {
-		List<Category> listCategory = CategoryService.findAllCategories();
+		_template = null;
+
+		if (_dataTableManager == null) {
+			_dataTableManager = new DataTableManager<Category>(getViewFullUrl(VIEW_MANAGE_CATEGORY),
+					null, AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50), true);
+			_dataTableManager.addColumn(MESSAGE_COLUMN_TITLE_ID, PROPERTY_ID, true);
+			_dataTableManager.addColumn(MESSAGE_COLUMN_TITLE_LABEL, PROPERTY_LABEL, true);			
+			_dataTableManager.addActionColumn(MESSAGE_COLUMN_TITLE_ACTIONS);
+		}
+
+		_dataTableManager.filterSortAndPaginate(request, CategoryService.findAllCategories());
+
 		Map<String, Object> model = getModel();
-		model.put(MARK_CATEGORY_LIST, listCategory);
-		return getPage(PROPERTY_PAGE_TITLE_MANAGE_CATEGORY, TEMPLATE_MANAGE_CATEGORY, model);
+		model.put(MARK_DATA_TABLE_MANAGER, _dataTableManager);
+
+		String strContent = getPage(PROPERTY_PAGE_TITLE_MANAGE_CATEGORY, TEMPLATE_MANAGE_CATEGORY, model);
+
+		_dataTableManager.clearItems();
+
+		return strContent;
+		
 	}
 
 	/**

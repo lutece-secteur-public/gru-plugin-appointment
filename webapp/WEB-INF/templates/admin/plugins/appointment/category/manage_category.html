@@ -4,43 +4,24 @@
 			<div class="box-header with-border">
 				<h3 class="box-title">#i18n{appointment.manage_category.pageTitle}</h3>
 				<div class="box-tools">
-					<a class="btn btn-primary btn-sm pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory">
-						<i class="fa fa-plus" aria-hidden="true"></i><span class="hidden-xs"> #i18n{appointment.manage_category.buttonAdd}</span>
-					</a>
+					<a class="btn btn-sm btn-primary" href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory" >
+					<i class="glyphicon glyphicon-plus">&nbsp;</i>&nbsp;#i18n{appointment.manage_category.buttonAdd}
+				</a>
 				</div>
 			</div>
 			<div class="box-body">
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<@messages infos=infos errors=errors/>											
-						<table class="table table-condensed table-striped">
-							<tr>
-								<th>#i18n{appointment.manage_category.columnId}</th>
-								<th>#i18n{appointment.manage_category.columnLabel}</th>
-								<th>#i18n{portal.util.labelActions}</th>
-							</tr>
-							<#list category_list as category >
-								<tr>
-									<td>
-										${category.idCategory}										
-									</td>
-									<td>										
-										${category.label}										
-									</td>
-									<td>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
-											<i class="glyphicon glyphicon-edit"></i>
-										</a>	
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${category.idCategory}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
-											<i class="glyphicon glyphicon-trash"></i>
-										</a>										
-									</td>
-								</tr>
-							</#list>
-						</table>						
-					</div>
-				</div>
+				<@messages infos=infos errors=errors />
+				<@dataTable dataTableManager=dataTableManager actionMacro="actionColumnCategory" />
 			</div>
 		</div>
 	</div>
 </div>
+
+<#macro actionColumnCategory item>
+	<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${item.idCategory}" >
+		<i class="glyphicon glyphicon-edit"></i>
+	</a>
+	<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${item.idCategory}" >
+		<i class="glyphicon glyphicon-trash"></i>
+	</a>
+</#macro>
