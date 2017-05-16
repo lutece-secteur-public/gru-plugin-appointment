@@ -42,12 +42,19 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   ending_validity_date DATE NULL,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   id_workflow INT NULL,
-  PRIMARY KEY (id_form))
+  PRIMARY KEY (id_form),
+   CONSTRAINT fk_appointment_form_appointment_category
+    FOREIGN KEY (id_category)
+    REFERENCES appointment_category (id_category)
+    ON DELETE SET NULL
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX starting_validity_date_idx ON appointment_form (starting_validity_date ASC);
 
 CREATE INDEX ending_validity_date_idx ON appointment_form (ending_validity_date ASC);
+
+CREATE INDEX fk_appointment_form_appointment_category_idx ON appointment_form (id_category ASC);
 
 -- -----------------------------------------------------
 -- Table appointment_slot
