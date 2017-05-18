@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,8 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
-import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.category.Category;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
@@ -90,18 +87,17 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
 	private static final String PROPERTY_ID = "idCategory";
 	private static final String PROPERTY_LABEL = "label";
-	
+
 	// Markers
-	private static final String MARK_CATEGORY_LIST = "category_list";
 	private static final String MARK_CATEGORY = "category";
 	private static final String MARK_DATA_TABLE_MANAGER = "dataTableManager";
-	
+
 	// Properties
 	private static final String MESSAGE_CONFIRM_REMOVE_CATEGORY = "appointment.message.confirmRemoveCategory";
 	private static final String MESSAGE_COLUMN_TITLE_ID = "appointment.manage_category.columnId";
 	private static final String MESSAGE_COLUMN_TITLE_LABEL = "appointment.manage_category.columnLabel";
 	private static final String MESSAGE_COLUMN_TITLE_ACTIONS = "portal.util.labelActions";
-	
+
 	// Views
 	private static final String VIEW_MANAGE_CATEGORY = "manageCategory";
 	private static final String VIEW_CREATE_CATEGORY = "createCategory";
@@ -120,7 +116,6 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 
 	// Session variables
 	private DataTableManager<Category> _dataTableManager;
-	private CalendarTemplate _template;
 
 	/**
 	 * Default constructor
@@ -137,27 +132,20 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 */
 	@View(value = VIEW_MANAGE_CATEGORY, defaultView = true)
 	public String getManageCategory(HttpServletRequest request) {
-		_template = null;
-
 		if (_dataTableManager == null) {
-			_dataTableManager = new DataTableManager<Category>(getViewFullUrl(VIEW_MANAGE_CATEGORY),
-					null, AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50), true);
+			_dataTableManager = new DataTableManager<Category>(getViewFullUrl(VIEW_MANAGE_CATEGORY), null,
+					AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50), true);
 			_dataTableManager.addColumn(MESSAGE_COLUMN_TITLE_ID, PROPERTY_ID, true);
-			_dataTableManager.addColumn(MESSAGE_COLUMN_TITLE_LABEL, PROPERTY_LABEL, true);			
+			_dataTableManager.addColumn(MESSAGE_COLUMN_TITLE_LABEL, PROPERTY_LABEL, true);
 			_dataTableManager.addActionColumn(MESSAGE_COLUMN_TITLE_ACTIONS);
 		}
-
 		_dataTableManager.filterSortAndPaginate(request, CategoryService.findAllCategories());
-
 		Map<String, Object> model = getModel();
 		model.put(MARK_DATA_TABLE_MANAGER, _dataTableManager);
-
 		String strContent = getPage(PROPERTY_PAGE_TITLE_MANAGE_CATEGORY, TEMPLATE_MANAGE_CATEGORY, model);
-
 		_dataTableManager.clearItems();
-
 		return strContent;
-		
+
 	}
 
 	/**
