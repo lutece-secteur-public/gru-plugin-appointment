@@ -36,11 +36,11 @@ package fr.paris.lutece.plugins.appointment.business;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
-
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
@@ -51,7 +51,7 @@ import javax.validation.constraints.Size;
 /**
  * This is the business class for the object AppointmentForm
  */
-public class AppointmentForm implements RBACResource, Cloneable, Serializable
+public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
 {
     /**
      * Name of the resource type of Appointment Forms
@@ -123,6 +123,7 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     private boolean _bIsFormStep;
     private boolean _bEnableConfirmEmail;
     private boolean _bEnableMandatoryEmail;
+    private String _strWorkgroup;
     private ImageResource _imageResource;
     @Min( value = 0, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}" )
     private int _nseizureDuration;
@@ -936,6 +937,25 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable
     public void setEnableMandatoryEmail( boolean bEnableMandatoryEmail )
     {
         this._bEnableMandatoryEmail = bEnableMandatoryEmail;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getWorkgroup( )
+    {
+        return _strWorkgroup;
+    }
+
+    /**
+     * set the work group associate to the form
+     * 
+     * @param workGroup
+     *            the work group associate to the form
+     */
+    public void setWorkgroup( String workGroup )
+    {
+        _strWorkgroup = workGroup;
     }
 
     public ImageResource getIcon( )

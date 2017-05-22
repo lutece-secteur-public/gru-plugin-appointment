@@ -130,6 +130,8 @@
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsFormStep' inputName='is_form_step' value='true' checked=appointmentform.isFormStep!false />
 				
 				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
+				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />
+				
 				<#if isCaptchaEnabled>
 					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>

@@ -50,6 +50,8 @@ CREATE TABLE appointment_form (
 	latitude float NULL,
 	category varchar(255) NOT NULL default '',
 	active_mylutece_authentification smallint default NULL,
+	workgroup varchar(255),
+
 
 	PRIMARY KEY (id_form)
 );

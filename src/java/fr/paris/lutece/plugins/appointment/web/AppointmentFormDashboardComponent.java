@@ -44,6 +44,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 import java.util.HashMap;
@@ -73,6 +74,8 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
         List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
+        listAppointmentForms = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForms, user );
+
 
         Map<String, Object> model = new HashMap<String, Object>( );
 

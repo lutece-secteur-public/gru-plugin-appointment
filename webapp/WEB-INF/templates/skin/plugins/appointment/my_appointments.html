@@ -24,7 +24,7 @@
 							<#if startingHour &lt; 10>0</#if>${startingHour}H<#if startingMinute &lt; 10>0</#if>${startingMinute}
 						</td>
 						<td>
-							<#if appointment.status == status_reserved>
+							<#if appointment.status == status_reserved >
 								<span class="label label-success">
 									#i18n{appointment.message.labelStatusValidated}
 								</span>

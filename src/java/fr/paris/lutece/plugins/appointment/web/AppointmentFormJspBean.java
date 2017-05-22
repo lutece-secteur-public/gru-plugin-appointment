@@ -89,6 +89,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -179,7 +180,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MARK_NULL = "NULL";
     private static final String MARK_PAGE = "page";
     private static final String MARK_FALSE = "false";
-
+    private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
 
@@ -237,6 +238,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private final EntryService _entryService = EntryService.getService( );
     private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
     private int _nDefaultItemsPerPage;
+    private String _strWorkGroup = AdminWorkgroupService.ALL_GROUPS;
 
     /**
      * Default constructor
@@ -256,6 +258,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     @View( value = VIEW_MANAGE_APPOINTMENTFORMS, defaultView = true )
     public String getManageAppointmentForms( HttpServletRequest request )
     {
+    	AdminUser adminUser = getUser( );
+        
         String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
                 (String) request.getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
 
@@ -275,6 +279,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
         String strUrl = url.getUrl( );
         List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
+        listAppointmentForms = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForms, adminUser );
+
 
         // PAGINATOR
         LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms, nItemsPerPage, strUrl,
@@ -343,6 +349,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
         String strUrl = url.getUrl( );
         List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
+        listAppointmentForms = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForms, getUser( ) );
 
         // PAGINATOR
         LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms, nItemsPerPage, strUrl,
@@ -1392,7 +1399,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( user, locale ) );
         model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
         model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
-
+        model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
+        
         Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
         model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
