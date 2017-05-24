@@ -597,9 +597,14 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	 * @param request
 	 *            the request
 	 * @return the JSP URL to display the form to manage appointment forms
+	 * @throws AccessDeniedException 
 	 */
 	@Action(ACTION_DO_COPY_FORM)
-	public String doCopyAppointmentForm(HttpServletRequest request) {
+	public String doCopyAppointmentForm(HttpServletRequest request) throws AccessDeniedException {
+		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, "0",
+				AppointmentResourceIdService.PERMISSION_COPY_FORM, AdminUserService.getAdminUser(request))) {
+			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_COPY_FORM);
+		}
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 		if (StringUtils.isEmpty(strIdForm)) {
 			return redirectView(request, VIEW_MANAGE_APPOINTMENTFORMS);
