@@ -57,6 +57,11 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 * Name of the resource type of Appointment Forms
 	 */
 	public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+	
+	/**
+	 * Name of the resource type create of Appointment Forms
+	 */
+	public static final String RESOURCE_TYPE_CREATE = "APPOINTMENT_FORM_CREATION";
 
 	/**
 	 * Serial version UID

@@ -99,7 +99,9 @@ public class AppointmentResourceIdService extends ResourceIdService {
 
 	// Permission labels
 	private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.permission.label.resourceType";
+	private static final String PROPERTY_LABEL_RESOURCE_TYPE_CREATE = "appointment.permission.label.resourceType.create";
 	private static final String PROPERTY_LABEL_CREATE_FORM = "appointment.permission.label.createForm";
+	private static final String PROPERTY_LABEL_COPY_FORM = "appointment.permission.label.copyForm";
 	private static final String PROPERTY_LABEL_CREATE_APPOINTMENT = "appointment.permission.label.createAppointment";
 	private static final String PROPERTY_LABEL_DELETE_FORM = "appointment.permission.label.deleteForm";
 	private static final String PROPERTY_LABEL_DELETE_APPOINTMENT = "appointment.permission.label.deleteAppointment";
@@ -121,73 +123,88 @@ public class AppointmentResourceIdService extends ResourceIdService {
 	 */
 	@Override
 	public void register() {
-		ResourceType rt = new ResourceType();
-		rt.setResourceIdServiceClass(AppointmentResourceIdService.class.getName());
-		rt.setPluginName(AppointmentPlugin.PLUGIN_NAME);
-		rt.setResourceTypeKey(AppointmentForm.RESOURCE_TYPE);
-		rt.setResourceTypeLabelKey(PROPERTY_LABEL_RESOURCE_TYPE);
+		ResourceType resourceType = new ResourceType();
+		resourceType.setResourceIdServiceClass(AppointmentResourceIdService.class.getName());
+		resourceType.setPluginName(AppointmentPlugin.PLUGIN_NAME);
+		resourceType.setResourceTypeKey(AppointmentForm.RESOURCE_TYPE);
+		resourceType.setResourceTypeLabelKey(PROPERTY_LABEL_RESOURCE_TYPE);
 
-		Permission p = new Permission();
-		p.setPermissionKey(PERMISSION_CREATE_FORM);
-		p.setPermissionTitleKey(PROPERTY_LABEL_CREATE_FORM);
-		rt.registerPermission(p);
+		Permission permission = new Permission();
+		permission.setPermissionKey(PERMISSION_CREATE_FORM);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_COPY_FORM);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_CREATE_APPOINTMENT);
-		p.setPermissionTitleKey(PROPERTY_LABEL_CREATE_APPOINTMENT);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_CREATE_APPOINTMENT);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_CREATE_APPOINTMENT);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_MODIFY_FORM);
-		p.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_FORM);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_MODIFY_FORM);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_FORM);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_MODIFY_FORM);
-		p.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_FORM);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_MODIFY_FORM);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_FORM);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_MODIFY_APPOINTMENT);
-		p.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_APPOINTMENT);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_MODIFY_APPOINTMENT);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_APPOINTMENT);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_MODIFY_ADVANCED_SETTING_FORM);
-		p.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_MODIFY_ADVANCED_SETTING_FORM);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_ADVANCED_SETTINGS_FORM);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_CHANGE_STATE);
-		p.setPermissionTitleKey(PROPERTY_LABEL_CHANGE_STATE);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_CHANGE_STATE);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_CHANGE_STATE);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_VIEW_FORM);
-		p.setPermissionTitleKey(PROPERTY_LABEL_VIEW_FORM);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_VIEW_FORM);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_VIEW_FORM);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_VIEW_APPOINTMENT);
-		p.setPermissionTitleKey(PROPERTY_LABEL_VIEW_APPOINTMENT);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_VIEW_APPOINTMENT);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_VIEW_APPOINTMENT);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_DELETE_FORM);
-		p.setPermissionTitleKey(PROPERTY_LABEL_DELETE_FORM);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_DELETE_FORM);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_DELETE_FORM);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_DELETE_APPOINTMENT);
-		p.setPermissionTitleKey(PROPERTY_LABEL_DELETE_APPOINTMENT);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_DELETE_APPOINTMENT);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_DELETE_APPOINTMENT);
+		resourceType.registerPermission(permission);
 
-		p = new Permission();
-		p.setPermissionKey(PERMISSION_CHANGE_APPOINTMENT_STATUS);
-		p.setPermissionTitleKey(PROPERTY_LABEL_CHANGE_APPOINTMENT_STATUS);
-		rt.registerPermission(p);
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_CHANGE_APPOINTMENT_STATUS);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_CHANGE_APPOINTMENT_STATUS);
+		resourceType.registerPermission(permission);
 
-		ResourceTypeManager.registerResourceType(rt);
+		ResourceTypeManager.registerResourceType(resourceType);
+		
+		ResourceType resourceTypeCreate = new ResourceType();
+		resourceTypeCreate.setResourceIdServiceClass(AppointmentResourceIdService.class.getName());
+		resourceTypeCreate.setPluginName(AppointmentPlugin.PLUGIN_NAME);
+		resourceType.setResourceTypeKey(AppointmentForm.RESOURCE_TYPE_CREATE);
+		resourceType.setResourceTypeLabelKey(PROPERTY_LABEL_RESOURCE_TYPE_CREATE);
+		
+		permission = new Permission();
+		permission.setPermissionKey(PERMISSION_CREATE_FORM);
+		permission.setPermissionTitleKey(PROPERTY_LABEL_CREATE_FORM);
+		resourceType.registerPermission(permission);
+		
+		resourceType.registerPermission(permission);
+		
+		ResourceTypeManager.registerResourceType(resourceTypeCreate);
 	}
 
 	/**
