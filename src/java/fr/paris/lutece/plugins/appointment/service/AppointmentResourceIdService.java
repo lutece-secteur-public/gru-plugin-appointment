@@ -191,7 +191,7 @@ public class AppointmentResourceIdService extends ResourceIdService {
 		ResourceType resourceTypeCreate = new ResourceType();
 		resourceTypeCreate.setResourceIdServiceClass(AppointmentResourceIdService.class.getName());
 		resourceTypeCreate.setPluginName(AppointmentPlugin.PLUGIN_NAME);
-		resourceTypeCreate.setResourceTypeKey(AppointmentForm.RESOURCE_TYPE);
+		resourceTypeCreate.setResourceTypeKey(AppointmentForm.RESOURCE_TYPE_CREATE);
 		resourceTypeCreate.setResourceTypeLabelKey(PROPERTY_LABEL_RESOURCE_TYPE_CREATE);
 
 		permission = new Permission();
