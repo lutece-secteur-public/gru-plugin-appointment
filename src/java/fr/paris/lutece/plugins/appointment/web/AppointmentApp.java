@@ -343,7 +343,7 @@ public class AppointmentApp extends MVCApplication
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            //checkMyLuteceAuthentification(form,request);
+            checkMyLuteceAuthentification(form,request);
 
             AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity( );
 
@@ -653,7 +653,7 @@ public class AppointmentApp extends MVCApplication
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            checkMyLuteceAuthentification( form, request );
+           // checkMyLuteceAuthentification( form, request );
             
             if ( !listAppointmentSlotDisponiblity.isEmpty( ) )
             {
