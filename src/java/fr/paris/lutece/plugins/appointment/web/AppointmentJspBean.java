@@ -729,6 +729,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		HttpSession session = request.getSession();
 		clearUploadFilesIfNeeded(session);
 		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
+		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdAppointment,
+				AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser())) {
+			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT);
+		}
 		int nIdAppointment = Integer.parseInt(strIdAppointment);
 		AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment(nIdAppointment);
 		appointmentDTO.setListResponse(AppointmentResponseService.findAndBuildListResponse(nIdAppointment, request));
@@ -895,7 +899,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 		int nIdForm = Integer.parseInt(strIdForm);
 		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdForm,
-				AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, getUser())) {
+				AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser())) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT);
 		}
 		AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession()
