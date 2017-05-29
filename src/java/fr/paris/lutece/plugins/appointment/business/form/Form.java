@@ -56,7 +56,7 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	/**
 	 * Category of the form
 	 */
-	private int _nIdCategory;
+	private Integer _nIdCategory;
 
 	/**
 	 * Starting validity date of the form
@@ -164,7 +164,7 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	 * 
 	 * @return the category id of the form
 	 */
-	public int getIdCategory() {
+	public Integer getIdCategory() {
 		return _nIdCategory;
 	}
 
@@ -174,7 +174,7 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	 * @param nIdCategory
 	 *            the category id to set
 	 */
-	public void setIdCategory(int nIdCategory) {
+	public void setIdCategory(Integer nIdCategory) {
 		this._nIdCategory = nIdCategory;
 	}
 

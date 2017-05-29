@@ -162,7 +162,11 @@ public class FormDAO implements IFormDAO {
 		daoUtil.setString(nIndex++, form.getTitle());
 		daoUtil.setString(nIndex++, form.getDescription());
 		daoUtil.setString(nIndex++, form.getReference());
-		daoUtil.setInt(nIndex++, form.getIdCategory());
+		if (form.getIdCategory() == null){
+			daoUtil.setIntNull(nIndex++);
+		} else {
+			daoUtil.setInt(nIndex++, form.getIdCategory());
+		}		
 		daoUtil.setDate(nIndex++, form.getStartingValiditySqlDate());
 		daoUtil.setDate(nIndex++, form.getEndingValiditySqlDate());
 		daoUtil.setBoolean(nIndex++, form.isActive());
