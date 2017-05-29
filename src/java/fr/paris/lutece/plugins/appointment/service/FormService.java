@@ -174,7 +174,7 @@ public class FormService {
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setIsActive(form.isActive());
 		appointmentForm.setIdWorkflow(form.getIdWorkflow());
-		if (form.getIdCategory() == null) {
+		if (form.getIdCategory() == null || form.getIdCategory() == 0) {
 			appointmentForm.setIdCategory(-1);
 		} else {
 			appointmentForm.setIdCategory(form.getIdCategory());
@@ -314,7 +314,7 @@ public class FormService {
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setDescription(form.getDescription());
 		appointmentForm.setReference(form.getReference());
-		if (form.getIdCategory() == null) {
+		if (form.getIdCategory() == null || form.getIdCategory() == 0) {
 			appointmentForm.setIdCategory(-1);
 		} else {
 			appointmentForm.setIdCategory(form.getIdCategory());
