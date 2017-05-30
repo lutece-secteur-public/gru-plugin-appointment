@@ -78,6 +78,7 @@
 					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>				
 				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelActiveAuthentication' inputName='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
 				<#if listWorkflows??>
 					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
 				</#if>	

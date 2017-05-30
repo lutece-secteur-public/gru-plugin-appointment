@@ -885,7 +885,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	}
 
 	/**
-	 * Return to the display recap view withthe new date slected on the calendar
+	 * Return to the display recap view with the new date selected on the calendar
 	 * 
 	 * @param request
 	 *            the request

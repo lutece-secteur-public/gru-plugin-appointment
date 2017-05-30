@@ -366,13 +366,18 @@ public class AppointmentApp extends MVCApplication {
 	 * @param request
 	 *            the request
 	 * @return the xpage
+	 * @throws UserNotSignedException 
 	 */
 	@SuppressWarnings("unchecked")
 	@View(VIEW_APPOINTMENT_FORM)
-	public XPage getViewAppointmentForm(HttpServletRequest request) {
-		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
+	public XPage getViewAppointmentForm(HttpServletRequest request) throws UserNotSignedException {
+		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);		
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 		int nIdForm = Integer.parseInt(strIdForm);
+		if (form == null){
+			form = FormService.buildAppointmentForm(nIdForm, 0, 0);
+		}
+		checkMyLuteceAuthentication( form, request );
 		// Get the not validated appointment in session if it exists
 		AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession()
 				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
@@ -472,6 +477,7 @@ public class AppointmentApp extends MVCApplication {
 		AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession()
 				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
+		checkMyLuteceAuthentication( form, request );
 		int nIdForm = Integer.parseInt(strIdForm);
 		List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>();
 		Locale locale = request.getLocale();
@@ -542,6 +548,7 @@ public class AppointmentApp extends MVCApplication {
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, appointment.getIdForm());
 		}
 		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
+		checkMyLuteceAuthentication( form, request );
 		if (form.getEnableCaptcha() && getCaptchaService().isAvailable()) {
 			if (!getCaptchaService().validate(request)) {
 				addError(ERROR_MESSAGE_CAPTCHA, getLocale(request));
@@ -847,5 +854,44 @@ public class AppointmentApp extends MVCApplication {
 		urlItem.addParameter(MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT);
 		urlItem.addParameter(PARAMETER_REF_APPOINTMENT, appointment.getReference());
 		return urlItem.getUrl();
+	}
+
+	/**
+	 * check if authentication
+	 * 
+	 * @param form
+	 *            Form
+	 * @param request
+	 *            HttpServletRequest
+	 * @throws UserNotSignedException
+	 *             exception if the form requires an authentication and the
+	 *             user is not logged
+	 */
+	private void checkMyLuteceAuthentication(AppointmentForm form, HttpServletRequest request)
+			throws UserNotSignedException {		
+		// Try to register the user in case of external authentication
+		if (SecurityService.isAuthenticationEnable()) {
+			if (SecurityService.getInstance().isExternalAuthentication()) {
+				// The authentication is external
+				// Should register the user if it's not already done
+				if (SecurityService.getInstance().getRegisteredUser(request) == null) {
+					if ((SecurityService.getInstance().getRemoteUser(request) == null)
+							&& (form.getActiveAuthentication())) {
+						// Authentication is required to access to the portal
+						throw new UserNotSignedException();
+					}
+				}
+			} else {
+				// If portal authentication is enabled and user is null and the
+				// requested URL
+				// is not the login URL, user cannot access to Portal
+				if ((form.getActiveAuthentication())
+						&& (SecurityService.getInstance().getRegisteredUser(request) == null)
+						&& !SecurityService.getInstance().isLoginUrl(request)) {
+					// Authentication is required to access to the portal
+					throw new UserNotSignedException();
+				}
+			}
+		}
 	}
 }

@@ -56,12 +56,12 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	/**
 	 * Name of the resource type of Appointment Forms
 	 */
-	public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";	
-	
+	public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+
 	/**
 	 * Name of the resource type of Appointment Forms
 	 */
-	public static final String RESOURCE_TYPE_CREATE = "APPOINTMENT_FORM_CREATE";	
+	public static final String RESOURCE_TYPE_CREATE = "APPOINTMENT_FORM_CREATE";
 
 	/**
 	 * Serial version UID
@@ -176,6 +176,11 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 * Number of weeks to display the form to the user
 	 */
 	private int _nNbWeeksToDisplay;
+
+	/**
+	 * True if the authentication is required
+	 */
+	private boolean _bActiveAuthentication;
 
 	/**
 	 * The maximum capacity per slot
@@ -822,6 +827,25 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 */
 	public void setMaxPeoplePerAppointment(int nMaxPeoplePerAppointment) {
 		this._nMaxPeoplePerAppointment = nMaxPeoplePerAppointment;
+	}
+
+	/**
+	 * Get the authentication
+	 * 
+	 * @return true if the authentication is required
+	 */
+	public boolean getActiveAuthentication() {
+		return _bActiveAuthentication;
+	}
+
+	/**
+	 * Set the authentication of the form
+	 * 
+	 * @param _bActiveAuthentication
+	 *            the boolean value for the authentication
+	 */
+	public void setActiveAuthentication(boolean bActiveAuthentication) {
+		this._bActiveAuthentication = bActiveAuthentication;
 	}
 
 	/**

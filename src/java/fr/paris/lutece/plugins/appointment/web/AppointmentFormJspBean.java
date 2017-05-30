@@ -831,6 +831,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		appointmentForm.setDisplayTitleFo(appointmentFormTmp.getDisplayTitleFo());
 		appointmentForm.setEnableCaptcha(appointmentFormTmp.getEnableCaptcha());
 		appointmentForm.setEnableMandatoryEmail(appointmentFormTmp.getEnableMandatoryEmail());
+		appointmentForm.setActiveAuthentication(appointmentFormTmp.getActiveAuthentication());
 	}
 
 	/**

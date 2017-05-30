@@ -31,6 +31,11 @@ public class FormRule implements Serializable {
 	private boolean _bIsMandatoryEmailEnabled;
 
 	/**
+	 * True if the authentication is required
+	 */
+	private boolean _bIsActiveAuthentication;
+
+	/**
 	 * Nb Days before the user can take another appointment
 	 */
 	private int _nNbDaysBeforeNewAppointment;
@@ -100,6 +105,25 @@ public class FormRule implements Serializable {
 	 */
 	public void setIsMandatoryEmailEnabled(boolean bIsMandatoryEmailEnabled) {
 		this._bIsMandatoryEmailEnabled = bIsMandatoryEmailEnabled;
+	}
+
+	/**
+	 * Indicate whether the authentication is required or not
+	 * 
+	 * @return true if the authentication is required
+	 */
+	public boolean isActiveAuthentication() {
+		return _bIsActiveAuthentication;
+	}
+
+	/**
+	 * Set the boolean value for the authentication
+	 * 
+	 * @param bIsActiveAuthentication
+	 *            the boolean value for the authentication
+	 */
+	public void setIsActiveAuthentication(boolean bIsActiveAuthentication) {
+		this._bIsActiveAuthentication = bIsActiveAuthentication;
 	}
 
 	/**

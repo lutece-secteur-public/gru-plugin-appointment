@@ -17,7 +17,6 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
-import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -124,7 +123,7 @@ public class AppointmentService {
 		// Create or update the user
 		User user = UserService.saveUser(appointmentDTO);
 		// Create or update the appointment
-		Appointment appointment = buildAppointment(appointmentDTO, user, slot);
+		Appointment appointment = buildAndCreateAppointment(appointmentDTO, user, slot);
 		String strEmailOrLastNamePlusFirstName = StringUtils.EMPTY;
 		if (StringUtils.isEmpty(user.getEmail())) {
 			strEmailOrLastNamePlusFirstName = user.getLastName() + user.getFirstName();
@@ -150,14 +149,10 @@ public class AppointmentService {
 		}
 		Form form = FormService.findFormLightByPrimaryKey(slot.getIdForm());
 		if (form.getIdWorkflow() > 0) {
-			State state = WorkflowService.getInstance().getState(appointment.getIdAppointment(),
+			WorkflowService.getInstance().getState(appointment.getIdAppointment(),
 					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
-			WorkflowService.getInstance().doRemoveWorkFlowResource(appointment.getIdAppointment(), Appointment.APPOINTMENT_RESOURCE_TYPE);
 			WorkflowService.getInstance().executeActionAutomatic(appointment.getIdAppointment(),
 					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
-			State state2 = WorkflowService.getInstance().getState(appointment.getIdAppointment(),
-					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
-			String strState2 = state2.getName();
 		}
 		return appointment.getIdAppointment();
 	}
@@ -173,7 +168,7 @@ public class AppointmentService {
 	 *            the slot
 	 * @return the appointment created
 	 */
-	private static Appointment buildAppointment(AppointmentDTO appointmentDTO, User user, Slot slot) {
+	private static Appointment buildAndCreateAppointment(AppointmentDTO appointmentDTO, User user, Slot slot) {
 		Appointment appointment = new Appointment();
 		if (appointmentDTO.getIdAppointment() != 0) {
 			appointment = AppointmentService.findAppointmentById(appointmentDTO.getIdAppointment());

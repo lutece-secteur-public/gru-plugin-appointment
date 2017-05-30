@@ -159,8 +159,8 @@ public class FormService {
 	public static AppointmentForm buildAppointmentFormLight(int nIdForm) {
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
 		return buildAppointmentFormLight(form);
-	}
-
+	}	
+	
 	/**
 	 * Fill the appointmentForm DTO with the values of the form object
 	 * 
@@ -297,6 +297,7 @@ public class FormService {
 	private static void fillAppointmentFormWithFormRulePart(AppointmentForm appointmentForm, FormRule formRule) {
 		appointmentForm.setEnableCaptcha(formRule.isCaptchaEnabled());
 		appointmentForm.setEnableMandatoryEmail(formRule.isMandatoryEmailEnabled());
+		appointmentForm.setActiveAuthentication(formRule.isActiveAuthentication());
 		appointmentForm.setNbDaysBeforeNewAppointment(formRule.getNbDaysBeforeNewAppointment());
 		appointmentForm.setMinTimeBeforeAppointment(formRule.getMinTimeBeforeAppointment());
 	}

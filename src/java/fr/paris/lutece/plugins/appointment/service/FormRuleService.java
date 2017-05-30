@@ -25,6 +25,7 @@ public class FormRuleService {
 	public static void fillInFormRule(FormRule formRule, AppointmentForm appointmentForm, int nIdForm) {
 		formRule.setIsCaptchaEnabled(appointmentForm.getEnableCaptcha());
 		formRule.setIsMandatoryEmailEnabled(appointmentForm.getEnableMandatoryEmail());
+		formRule.setIsActiveAuthentication(appointmentForm.getActiveAuthentication());
 		formRule.setNbDaysBeforeNewAppointment(appointmentForm.getNbDaysBeforeNewAppointment());
 		formRule.setMinTimeBeforeAppointment(appointmentForm.getMinTimeBeforeAppointment());
 		formRule.setIdForm(nIdForm);
