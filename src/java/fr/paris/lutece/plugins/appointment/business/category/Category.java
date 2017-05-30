@@ -2,20 +2,13 @@ package fr.paris.lutece.plugins.appointment.business.category;
 
 import java.io.Serializable;
 
-import fr.paris.lutece.portal.service.rbac.RBACResource;
-
 /**
  * Business class of the Category
  * 
  * @author Laurent Payen
  *
  */
-public class Category implements Serializable, RBACResource {
-
-	/**
-	 * Name of the resource type of Appointment Forms
-	 */
-	public static final String RESOURCE_TYPE = "APPOINTMENT_CATEGORY";
+public class Category implements Serializable {
 
 	/**
 	 * Serial version UID
@@ -68,16 +61,6 @@ public class Category implements Serializable, RBACResource {
 	 */
 	public void setLabel(String strLabel) {
 		this._strLabel = strLabel;
-	}
-
-	@Override
-	public String getResourceTypeCode() {
-		return RESOURCE_TYPE;
-	}
-
-	@Override
-	public String getResourceId() {
-		return Integer.toString(getIdCategory());
 	}
 
 }

@@ -39,7 +39,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.category.Category;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.portal.service.rbac.Permission;
 import fr.paris.lutece.portal.service.rbac.ResourceIdService;
@@ -61,26 +60,17 @@ public class AppointmentResourceIdService extends ResourceIdService {
 
 	public static final String PERMISSION_COPY_FORM = "COPY_FORM";
 
-	/** Permission to create categories */
-	public static final String PERMISSION_CREATE_CATEGORY = "CREATE_CATEGORY";
-
 	/** Permission to create appointments of the form */
 	public static final String PERMISSION_CREATE_APPOINTMENT = "CREATE_APPOINTMENT";
 
 	/** Permission for deleting a form */
 	public static final String PERMISSION_DELETE_FORM = "DELETE_FORM";
 
-	/** Permission for deleting a category */
-	public static final String PERMISSION_DELETE_CATEGORY = "DELETE_CATEGORY";
-
 	/** Permission for deleting appointments of the form */
 	public static final String PERMISSION_DELETE_APPOINTMENT = "DELETE_APPOINTMENT";
 
 	/** Permission for modifying a form */
 	public static final String PERMISSION_MODIFY_FORM = "MODIFY_FORM";
-
-	/** Permission for modifying a category */
-	public static final String PERMISSION_MODIFY_CATEGORY = "MODIFY_CATEGORY";
 
 	/** Permission for modifying an advanced setting form */
 	public static final String PERMISSION_MODIFY_ADVANCED_SETTING_FORM = "MODIFY_ADVANCED_SETTING_FORM";
@@ -103,11 +93,7 @@ public class AppointmentResourceIdService extends ResourceIdService {
 	// Permission labels
 	private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.permission.label.resourceType";
 	private static final String PROPERTY_LABEL_RESOURCE_TYPE_CREATE = "appointment.permission.label.resourceType.create";
-	private static final String PROPERTY_LABEL_RESOURCE_TYPE_CATEGORY = "appointment.permission.label.resourceType.category";
 	private static final String PROPERTY_LABEL_CREATE_FORM = "appointment.permission.label.createForm";
-	private static final String PROPERTY_LABEL_CREATE_CATEGORY = "appointment.permission.label.createCategory";
-	private static final String PROPERTY_LABEL_DELETE_CATEGORY = "appointment.permission.label.deleteCategory";
-	private static final String PROPERTY_LABEL_MODIFY_CATEGORY = "appointment.permission.label.modifyCategory";
 	private static final String PROPERTY_LABEL_COPY_FORM = "appointment.permission.label.copyForm";
 	private static final String PROPERTY_LABEL_CREATE_APPOINTMENT = "appointment.permission.label.createAppointment";
 	private static final String PROPERTY_LABEL_DELETE_FORM = "appointment.permission.label.deleteForm";
@@ -155,7 +141,7 @@ public class AppointmentResourceIdService extends ResourceIdService {
 		permission.setPermissionKey(PERMISSION_DELETE_FORM);
 		permission.setPermissionTitleKey(PROPERTY_LABEL_DELETE_FORM);
 		resourceType.registerPermission(permission);
-		
+
 		permission = new Permission();
 		permission.setPermissionKey(PERMISSION_COPY_FORM);
 		permission.setPermissionTitleKey(PROPERTY_LABEL_COPY_FORM);
@@ -165,12 +151,12 @@ public class AppointmentResourceIdService extends ResourceIdService {
 		permission.setPermissionKey(PERMISSION_CHANGE_STATE);
 		permission.setPermissionTitleKey(PROPERTY_LABEL_CHANGE_STATE);
 		resourceType.registerPermission(permission);
-		
+
 		permission = new Permission();
 		permission.setPermissionKey(PERMISSION_VIEW_APPOINTMENT);
 		permission.setPermissionTitleKey(PROPERTY_LABEL_VIEW_APPOINTMENT);
 		resourceType.registerPermission(permission);
-		
+
 		permission = new Permission();
 		permission.setPermissionKey(PERMISSION_CREATE_APPOINTMENT);
 		permission.setPermissionTitleKey(PROPERTY_LABEL_CREATE_APPOINTMENT);
@@ -205,30 +191,6 @@ public class AppointmentResourceIdService extends ResourceIdService {
 		resourceTypeCreate.registerPermission(permission);
 
 		ResourceTypeManager.registerResourceType(resourceTypeCreate);
-		
-		ResourceType resourceTypeCategory = new ResourceType();
-		resourceTypeCreate.setResourceIdServiceClass(AppointmentResourceIdService.class.getName());
-		resourceTypeCreate.setPluginName(AppointmentPlugin.PLUGIN_NAME);
-		resourceTypeCreate.setResourceTypeKey(Category.RESOURCE_TYPE);
-		resourceTypeCreate.setResourceTypeLabelKey(PROPERTY_LABEL_RESOURCE_TYPE_CATEGORY);
-
-		permission = new Permission();
-		permission.setPermissionKey(PERMISSION_CREATE_CATEGORY);
-		permission.setPermissionTitleKey(PROPERTY_LABEL_CREATE_CATEGORY);
-		resourceTypeCategory.registerPermission(permission);
-		
-		permission = new Permission();
-		permission.setPermissionKey(PERMISSION_MODIFY_CATEGORY);
-		permission.setPermissionTitleKey(PROPERTY_LABEL_MODIFY_CATEGORY);
-		resourceTypeCategory.registerPermission(permission);
-		
-		permission = new Permission();
-		permission.setPermissionKey(PERMISSION_DELETE_CATEGORY);
-		permission.setPermissionTitleKey(PROPERTY_LABEL_DELETE_CATEGORY);
-		resourceTypeCategory.registerPermission(permission);
-		
-		ResourceTypeManager.registerResourceType(resourceTypeCategory);
-		
 	}
 
 	/**

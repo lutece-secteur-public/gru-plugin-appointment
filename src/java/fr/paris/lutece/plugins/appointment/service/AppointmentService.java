@@ -17,6 +17,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -149,10 +150,14 @@ public class AppointmentService {
 		}
 		Form form = FormService.findFormLightByPrimaryKey(slot.getIdForm());
 		if (form.getIdWorkflow() > 0) {
-			WorkflowService.getInstance().getState(appointment.getIdAppointment(),
+			State state = WorkflowService.getInstance().getState(appointment.getIdAppointment(),
 					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
+			WorkflowService.getInstance().doRemoveWorkFlowResource(appointment.getIdAppointment(), Appointment.APPOINTMENT_RESOURCE_TYPE);
 			WorkflowService.getInstance().executeActionAutomatic(appointment.getIdAppointment(),
 					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
+			State state2 = WorkflowService.getInstance().getState(appointment.getIdAppointment(),
+					Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow(), form.getIdForm());
+			String strState2 = state2.getName();
 		}
 		return appointment.getIdAppointment();
 	}

@@ -39,15 +39,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.category.Category;
-import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
@@ -159,14 +155,10 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 *             If the user is not authorized
 	 */
 	@Action(ACTION_CONFIRM_REMOVE_CATEGORY)
-	public String getConfirmRemoveAppointmentForm(HttpServletRequest request) throws AccessDeniedException {
+	public String getConfirmRemoveAppointmentForm(HttpServletRequest request) {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
 		if (StringUtils.isEmpty(strIdCategory)) {
 			return redirectView(request, VIEW_MANAGE_CATEGORY);
-		}
-		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, strIdCategory,
-				AppointmentResourceIdService.PERMISSION_DELETE_CATEGORY, AdminUserService.getAdminUser(request))) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_DELETE_CATEGORY);
 		}
 		int nIdCategory = Integer.parseInt(strIdCategory);
 		UrlItem url = new UrlItem(getActionUrl(ACTION_REMOVE_CATEGORY));
@@ -186,14 +178,10 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 *             If the user is not authorized
 	 */
 	@Action(ACTION_REMOVE_CATEGORY)
-	public String doRemoveCategory(HttpServletRequest request) throws AccessDeniedException {
+	public String doRemoveCategory(HttpServletRequest request) {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
 		if (StringUtils.isEmpty(strIdCategory)) {
 			return redirectView(request, VIEW_MANAGE_CATEGORY);
-		}
-		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, request.getParameter(PARAMETER_ID_CATEGORY),
-				AppointmentResourceIdService.PERMISSION_DELETE_CATEGORY, AdminUserService.getAdminUser(request))) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_DELETE_CATEGORY);
 		}
 		int nIdCategory = Integer.parseInt(strIdCategory);
 		CategoryService.removeCategory(nIdCategory);
@@ -211,11 +199,7 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 *             If the user is not authorized
 	 */
 	@View(VIEW_CREATE_CATEGORY)
-	public String getCreateCategory(HttpServletRequest request) throws AccessDeniedException {
-		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, "0",
-				AppointmentResourceIdService.PERMISSION_CREATE_CATEGORY, AdminUserService.getAdminUser(request))) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_CREATE_CATEGORY);
-		}
+	public String getCreateCategory(HttpServletRequest request) {
 		Map<String, Object> model = getModel();
 		model.put(MARK_CATEGORY, new Category());
 		return getPage(PROPERTY_PAGE_TITLE_CREATE_CATEGORY, TEMPLATE_CREATE_CATEGORY, model);
@@ -231,11 +215,7 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 *             If the user is not authorized
 	 */
 	@Action(ACTION_CREATE_CATEGORY)
-	public String doCreateCategory(HttpServletRequest request) throws AccessDeniedException {
-		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, "0",
-				AppointmentResourceIdService.PERMISSION_CREATE_CATEGORY, AdminUserService.getAdminUser(request))) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_CREATE_CATEGORY);
-		}
+	public String doCreateCategory(HttpServletRequest request) {
 		Category category = new Category();
 		populate(category, request);
 		CategoryService.createCategory(category);
@@ -253,12 +233,8 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 *             If the user is not authorized
 	 */
 	@View(VIEW_MODIFY_CATEGORY)
-	public String getModifyCategory(HttpServletRequest request) throws AccessDeniedException {
+	public String getModifyCategory(HttpServletRequest request) {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
-		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, strIdCategory,
-				AppointmentResourceIdService.PERMISSION_MODIFY_CATEGORY, AdminUserService.getAdminUser(request))) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_CATEGORY);
-		}
 		int nIdCategory = Integer.parseInt(strIdCategory);
 		Category category = CategoryService.findCategoryById(nIdCategory);
 		Map<String, Object> model = getModel();
@@ -276,12 +252,8 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 	 *             If the user is not authorized
 	 */
 	@Action(ACTION_MODIFY_CATEGORY)
-	public String doModifyCategory(HttpServletRequest request) throws AccessDeniedException {
+	public String doModifyCategory(HttpServletRequest request) {
 		String strIdCategory = request.getParameter(PARAMETER_ID_CATEGORY);
-		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, strIdCategory,
-				AppointmentResourceIdService.PERMISSION_MODIFY_CATEGORY, AdminUserService.getAdminUser(request))) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_CATEGORY);
-		}
 		int nIdCategory = Integer.parseInt(strIdCategory);
 		Category category = new Category();
 		category.setIdCategory(nIdCategory);
