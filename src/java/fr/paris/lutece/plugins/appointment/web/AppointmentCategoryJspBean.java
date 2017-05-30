@@ -164,9 +164,9 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean {
 		if (StringUtils.isEmpty(strIdCategory)) {
 			return redirectView(request, VIEW_MANAGE_CATEGORY);
 		}
-		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE, strIdCategory,
-				AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser(request))) {
-			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_DELETE_FORM);
+		if (!RBACService.isAuthorized(Category.RESOURCE_TYPE, strIdCategory,
+				AppointmentResourceIdService.PERMISSION_DELETE_CATEGORY, AdminUserService.getAdminUser(request))) {
+			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_DELETE_CATEGORY);
 		}
 		int nIdCategory = Integer.parseInt(strIdCategory);
 		UrlItem url = new UrlItem(getActionUrl(ACTION_REMOVE_CATEGORY));
