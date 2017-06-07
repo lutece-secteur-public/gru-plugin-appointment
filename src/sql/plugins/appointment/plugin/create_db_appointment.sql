@@ -1,7 +1,25 @@
+DROP TABLE IF EXISTS appointment_reservation_rule ;
+DROP TABLE IF EXISTS appointment_appointment_response ;
+DROP TABLE IF EXISTS appointment_form_message ;
+DROP TABLE IF EXISTS appointment_form_portlet ;
+DROP TABLE IF EXISTS appointment_time_slot ;
+DROP TABLE IF EXISTS appointment_working_day ;
+DROP TABLE IF EXISTS appointment_week_definition ;
+DROP TABLE IF EXISTS appointment_closing_day ;
+DROP TABLE IF EXISTS appointment_form_rule ;
+DROP TABLE IF EXISTS appointment_display ;
+DROP TABLE IF EXISTS appointment_localization ;
+DROP TABLE IF EXISTS appointment_calendar_template ;
+DROP TABLE IF EXISTS appointment_appointment ;
+DROP TABLE IF EXISTS appointment_user ;
+DROP TABLE IF EXISTS appointment_slot ;
+DROP TABLE IF EXISTS appointment_form ;
+DROP TABLE IF EXISTS appointment_category ;
+
 -- -----------------------------------------------------
 -- Table appointment_category
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_category ;
+
 CREATE TABLE appointment_category (
   id_category INT NOT NULL,
   label VARCHAR(255) NOT NULL,
@@ -12,7 +30,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table appointment_user
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_user ;
 
 CREATE TABLE IF NOT EXISTS appointment_user (
   id_user INT NOT NULL,
@@ -30,7 +47,6 @@ CREATE INDEX email_idx ON appointment_user (email ASC);
 -- -----------------------------------------------------
 -- Table appointment_form
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_form ;
 
 CREATE TABLE IF NOT EXISTS appointment_form (
   id_form INT NOT NULL,
@@ -59,7 +75,6 @@ CREATE INDEX fk_appointment_form_appointment_category_idx ON appointment_form (i
 -- -----------------------------------------------------
 -- Table appointment_slot
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_slot ;
 
 CREATE TABLE IF NOT EXISTS appointment_slot (
   id_slot INT NOT NULL,
@@ -88,7 +103,6 @@ CREATE INDEX ending_date_time_idx ON appointment_slot (ending_date_time ASC);
 -- -----------------------------------------------------
 -- Table appointment_appointment
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_appointment ;
 
 CREATE TABLE IF NOT EXISTS appointment_appointment (
   id_appointment INT NOT NULL,
@@ -121,7 +135,6 @@ CREATE INDEX reference_idx ON appointment_appointment (reference ASC);
 -- -----------------------------------------------------
 -- Table appointment_appointment_response
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_appointment_response ;
 
 CREATE TABLE IF NOT EXISTS appointment_appointment_response (
   id_appointment_response INT NOT NULL,
@@ -143,7 +156,6 @@ CREATE INDEX fk_appointment_appointment_response_appointment_appointment_idx ON 
 -- -----------------------------------------------------
 -- Table appointment_calendar_template
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_calendar_template ;
 
 CREATE TABLE IF NOT EXISTS appointment_calendar_template (
   id_calendar_template INT NOT NULL,
@@ -158,7 +170,6 @@ COLLATE = utf8_unicode_ci;
 -- -----------------------------------------------------
 -- Table appointment_form_message
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_form_message ;
 
 CREATE TABLE IF NOT EXISTS appointment_form_message (
   id_form_message INT NOT NULL,
@@ -196,7 +207,6 @@ CREATE INDEX fk_appointment_form_message_appointment_form_idx ON appointment_for
 -- -----------------------------------------------------
 -- Table appointment_form_portlet
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_form_portlet ;
 
 CREATE TABLE IF NOT EXISTS appointment_form_portlet (
   id_portlet INT NOT NULL,
@@ -217,7 +227,6 @@ CREATE INDEX fk_appointment_form_portlet_appointment_form_idx ON appointment_for
 -- -----------------------------------------------------
 -- Table appointment_week_definition
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_week_definition ;
 
 CREATE TABLE IF NOT EXISTS appointment_week_definition (
   id_week_definition INT NOT NULL,
@@ -240,7 +249,6 @@ CREATE INDEX date_of_apply_idx ON appointment_week_definition (date_of_apply ASC
 -- -----------------------------------------------------
 -- Table appointment_working_day
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_working_day ;
 
 CREATE TABLE IF NOT EXISTS appointment_working_day (
   id_working_day INT NOT NULL,
@@ -261,7 +269,6 @@ CREATE INDEX fk_appointment_working_day_appointment_week_definition_idx ON appoi
 -- -----------------------------------------------------
 -- Table appointment_time_slot
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_time_slot ;
 
 CREATE TABLE IF NOT EXISTS appointment_time_slot (
   id_time_slot INT NOT NULL,
@@ -290,7 +297,6 @@ CREATE INDEX ending_time_idx ON appointment_time_slot (ending_time ASC);
 -- -----------------------------------------------------
 -- Table appointment_localization
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_localization ;
 
 CREATE TABLE IF NOT EXISTS appointment_localization (
   id_localization INT NOT NULL,
@@ -312,7 +318,6 @@ CREATE INDEX fk_appointment_localization_appointment_form_idx ON appointment_loc
 -- -----------------------------------------------------
 -- Table appointment_display
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_display ;
 
 CREATE TABLE IF NOT EXISTS appointment_display (
   id_display INT NOT NULL,
@@ -344,7 +349,6 @@ CREATE INDEX fk_appointment_display_appointment_form_idx ON appointment_display 
 -- -----------------------------------------------------
 -- Table appointment_form_rule
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_form_rule ;
 
 CREATE TABLE IF NOT EXISTS appointment_form_rule (
   id_form_rule INT NOT NULL,
@@ -369,7 +373,6 @@ CREATE INDEX fk_appointment_form_rule_appointment_form_idx ON appointment_form_r
 -- -----------------------------------------------------
 -- Table appointment_closing_day
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_closing_day ;
 
 CREATE TABLE IF NOT EXISTS appointment_closing_day (
   id_closing_day INT NOT NULL,
@@ -392,7 +395,6 @@ CREATE INDEX date_of_closing_day ON appointment_closing_day (date_of_closing_day
 -- -----------------------------------------------------
 -- Table appointment_reservation_rule
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS appointment_reservation_rule ;
 
 CREATE TABLE IF NOT EXISTS appointment_reservation_rule (
   id_reservation_rule INT NOT NULL,
