@@ -106,7 +106,8 @@ public class AppointmentService {
 			int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces();
 			oldSlot.setNbRemainingPlaces(oldNbRemainingPlaces + appointmentDTO.getNbBookedSeats());
 			SlotService.updateSlot(oldSlot);
-			// Need to remove the workflow resource to reload again the workflow at the first step
+			// Need to remove the workflow resource to reload again the workflow
+			// at the first step
 			WorkflowService.getInstance().doRemoveWorkFlowResource(appointmentDTO.getIdAppointment(),
 					Appointment.APPOINTMENT_RESOURCE_TYPE);
 		}
@@ -125,19 +126,14 @@ public class AppointmentService {
 		slot = SlotService.saveSlot(slot);
 		// Create or update the user
 		User user = UserService.saveUser(appointmentDTO);
-		// Check if the date of the appointment has changed
-		boolean dateOfTheAppointmentHasChanged = false;
-		if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
-			dateOfTheAppointmentHasChanged = true;
-		}
 		// Create or update the appointment
-		Appointment appointment = buildAndCreateAppointment(appointmentDTO, user, slot, dateOfTheAppointmentHasChanged);
+		Appointment appointment = buildAndCreateAppointment(appointmentDTO, user, slot);
 		String strEmailOrLastNamePlusFirstName = StringUtils.EMPTY;
 		if (StringUtils.isEmpty(user.getEmail())) {
 			strEmailOrLastNamePlusFirstName = user.getLastName() + user.getFirstName();
 		}
 		// Create a unique reference for a new appointment
-		if (appointmentDTO.getIdAppointment() == 0 || dateOfTheAppointmentHasChanged) {
+		if (appointmentDTO.getIdAppointment() == 0) {
 			String strReference = appointment.getIdAppointment()
 					+ CryptoService
 							.encrypt(appointment.getIdAppointment() + strEmailOrLastNamePlusFirstName,
@@ -176,19 +172,10 @@ public class AppointmentService {
 	 *            the slot
 	 * @return the appointment created
 	 */
-	private static Appointment buildAndCreateAppointment(AppointmentDTO appointmentDTO, User user, Slot slot,
-			boolean dateChanged) {
+	private static Appointment buildAndCreateAppointment(AppointmentDTO appointmentDTO, User user, Slot slot) {
 		Appointment appointment = new Appointment();
 		if (appointmentDTO.getIdAppointment() != 0) {
 			appointment = AppointmentService.findAppointmentById(appointmentDTO.getIdAppointment());
-			if (dateChanged) {
-				// If the date of the appointment has changed, we delete the old
-				// appointment and create a new appointment
-				// Nedeed for the workflow, so that the workflow of the
-				// appointment start again on the first node
-				AppointmentHome.delete(appointment.getIdAppointment());
-				appointment = new Appointment();
-			}
 		}
 		appointment.setNbPlaces(appointmentDTO.getNbBookedSeats());
 		appointment.setIdSlot(slot.getIdSlot());

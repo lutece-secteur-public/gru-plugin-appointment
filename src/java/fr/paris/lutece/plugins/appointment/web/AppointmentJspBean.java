@@ -163,7 +163,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_ID_APPOINTMENT = "id_appointment";
 	private static final String PARAMETER_ID_ACTION = "id_action";
 	private static final String PARAMETER_ID_FORM = "id_form";
-	private static final String PARAMETER_COME_FROM_CALENDAR = "comeFromCalendar";	
+	private static final String PARAMETER_COME_FROM_CALENDAR = "comeFromCalendar";
 	private static final String PARAMETER_EMAIL = "email";
 	private static final String PARAMETER_EMAIL_CONFIRMATION = "emailConfirm";
 	private static final String PARAMETER_FIRST_NAME = "firstname";
@@ -885,7 +885,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	}
 
 	/**
-	 * Return to the display recap view with the new date selected on the calendar
+	 * Return to the display recap view with the new date selected on the
+	 * calendar
 	 * 
 	 * @param request
 	 *            the request
@@ -931,7 +932,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
 		Map<String, String> additionalParameters = new HashMap<>();
 		additionalParameters.put(PARAMETER_ID_FORM, Integer.toString(form.getIdForm()));
-		additionalParameters.put(PARAMETER_COME_FROM_CALENDAR, Boolean.TRUE.toString());		
+		additionalParameters.put(PARAMETER_COME_FROM_CALENDAR, Boolean.TRUE.toString());
 		return redirect(request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters);
 	}
 
@@ -953,7 +954,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		if (StringUtils.isNotEmpty(strComeFromCalendar)) {
 			model.put(PARAMETER_COME_FROM_CALENDAR, strComeFromCalendar);
 			model.put(PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot().getDate());
-		}		
+		}
 		model.put(MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm(appointmentDTO.getIdForm()));
 		fillCommons(model);
 		model.put(MARK_APPOINTMENT, appointmentDTO);
@@ -1007,19 +1008,17 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		// if the reservation is on the same slot, if not, the check has been
 		// already done before
 		if (appointmentDTO.getIdAppointment() != 0) {
-			Appointment oldAppointment = AppointmentService.findAppointmentById(appointmentDTO.getIdAppointment());						
+			Appointment oldAppointment = AppointmentService.findAppointmentById(appointmentDTO.getIdAppointment());
 			if (oldAppointment.getIdSlot() == appointmentDTO.getSlot().getIdSlot() && appointmentDTO
 					.getNbBookedSeats() > (slot.getNbRemainingPlaces() + oldAppointment.getNbPlaces())) {
 				addError(ERROR_MESSAGE_SLOT_FULL, getLocale());
 				return redirect(request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM,
 						appointmentDTO.getIdForm());
 			}
-			// Check if we have changed the date of the appointment
-			
 		} else if (appointmentDTO.getNbBookedSeats() > slot.getNbRemainingPlaces()) {
 			addError(ERROR_MESSAGE_SLOT_FULL, getLocale());
 			return redirect(request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm());
-		}		
+		}
 		AppointmentService.saveAppointment(appointmentDTO);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		addInfo(INFO_APPOINTMENT_CREATED, getLocale());
