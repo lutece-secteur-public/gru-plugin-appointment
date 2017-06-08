@@ -177,7 +177,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_DELETE_AND_BACK = "eraseAll";
 	private static final String PARAMETER_SEARCH = "Search";
 	private static final String PARAMETER_RESET = "reset";
-	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "numberPlacesReserved";
+	private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "nbBookedSeats";
 	private static final String PARAMETER_STATUS_CANCELLED = "status_cancelled";
 
 	// Markers
