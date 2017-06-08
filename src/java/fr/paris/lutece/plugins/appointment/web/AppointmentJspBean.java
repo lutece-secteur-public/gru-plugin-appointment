@@ -78,6 +78,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -1018,6 +1019,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		} else if (appointmentDTO.getNbBookedSeats() > slot.getNbRemainingPlaces()) {
 			addError(ERROR_MESSAGE_SLOT_FULL, getLocale());
 			return redirect(request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm());
+		}
+		// If it's a modification of the date of the appointment
+		if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
+			List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged(
+					appointmentDTO.getIdAppointment(), appointmentDTO.getIdSlot(), getLocale());
+			for (String strMessage : listMessages) {
+				addInfo(strMessage);
+			}
 		}
 		AppointmentService.saveAppointment(appointmentDTO);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);

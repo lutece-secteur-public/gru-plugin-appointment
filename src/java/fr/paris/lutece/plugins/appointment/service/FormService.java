@@ -18,6 +18,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 
 /**
  * Service class for a form
@@ -159,8 +160,8 @@ public class FormService {
 	public static AppointmentForm buildAppointmentFormLight(int nIdForm) {
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
 		return buildAppointmentFormLight(form);
-	}	
-	
+	}
+
 	/**
 	 * Fill the appointmentForm DTO with the values of the form object
 	 * 
@@ -404,7 +405,7 @@ public class FormService {
 		form.setTitle(appointmentForm.getTitle());
 		form.setDescription(appointmentForm.getDescription());
 		form.setReference(appointmentForm.getReference());
-		if (appointmentForm.getIdCategory() == -1 ){
+		if (appointmentForm.getIdCategory() == -1) {
 			form.setIdCategory(null);
 		} else {
 			form.setIdCategory(appointmentForm.getIdCategory());
@@ -423,6 +424,7 @@ public class FormService {
 	 *            the form id to remove
 	 */
 	public static void removeForm(int nIdForm) {
+		AppointmentListenerManager.notifyListenersAppointmentFormRemoval(nIdForm);
 		FormHome.delete(nIdForm);
 	}
 

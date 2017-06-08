@@ -15,6 +15,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -100,7 +101,7 @@ public class AppointmentService {
 	 */
 	public static int saveAppointment(AppointmentDTO appointmentDTO) {
 		// if it's an update for modification of the date of the appointment
-		if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
+		if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {	           
 			// Need to update the old slot
 			Slot oldSlot = SlotService.findSlotById(appointmentDTO.getIdSlot());
 			int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces();
@@ -262,6 +263,7 @@ public class AppointmentService {
 	 *            the id of the appointment to delete
 	 */
 	public static void deleteAppointment(int nIdAppointment, AdminUser user) throws AccessDeniedException {
+		AppointmentListenerManager.notifyListenersAppointmentRemoval(nIdAppointment);
 		Appointment appointmentToDelete = AppointmentHome.findByPrimaryKey(nIdAppointment);
 		Slot slotOfTheAppointmentToDelete = SlotService.findSlotById(appointmentToDelete.getIdSlot());
 		if (!RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
