@@ -101,7 +101,8 @@ public class AppointmentService {
 	 */
 	public static int saveAppointment(AppointmentDTO appointmentDTO) {
 		// if it's an update for modification of the date of the appointment
-		if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {	           
+		if (appointmentDTO.getIdAppointment() != 0
+				&& appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
 			// Need to update the old slot
 			Slot oldSlot = SlotService.findSlotById(appointmentDTO.getIdSlot());
 			int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces();

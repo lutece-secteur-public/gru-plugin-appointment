@@ -1009,6 +1009,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		// if the reservation is on the same slot, if not, the check has been
 		// already done before
 		if (appointmentDTO.getIdAppointment() != 0) {
+			// If it's a modification of the date of the appointment
+			if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
+				List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged(
+						appointmentDTO.getIdAppointment(), appointmentDTO.getIdSlot(), getLocale());
+				for (String strMessage : listMessages) {
+					addInfo(strMessage);
+				}
+			}
 			Appointment oldAppointment = AppointmentService.findAppointmentById(appointmentDTO.getIdAppointment());
 			if (oldAppointment.getIdSlot() == appointmentDTO.getSlot().getIdSlot() && appointmentDTO
 					.getNbBookedSeats() > (slot.getNbRemainingPlaces() + oldAppointment.getNbPlaces())) {
@@ -1019,15 +1027,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		} else if (appointmentDTO.getNbBookedSeats() > slot.getNbRemainingPlaces()) {
 			addError(ERROR_MESSAGE_SLOT_FULL, getLocale());
 			return redirect(request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm());
-		}
-		// If it's a modification of the date of the appointment
-		if (appointmentDTO.getSlot().getIdSlot() != appointmentDTO.getIdSlot()) {
-			List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged(
-					appointmentDTO.getIdAppointment(), appointmentDTO.getIdSlot(), getLocale());
-			for (String strMessage : listMessages) {
-				addInfo(strMessage);
-			}
-		}
+		}		
 		AppointmentService.saveAppointment(appointmentDTO);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		addInfo(INFO_APPOINTMENT_CREATED, getLocale());
