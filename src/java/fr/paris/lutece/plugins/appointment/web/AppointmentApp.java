@@ -444,11 +444,12 @@ public class AppointmentApp extends MVCApplication
 
             // Validator MaxAppointments per WeeksLimits config
             int nMaxAppointments = form.getMaxAppointments( );
-            int nWeeksLimits = getMaxWeek( form.getWeeksLimits( ), form );
+            int nWeeksLimits =  form.getWeeksLimits( );
             AppointmentSlot appointmentSlot = null;
             AppointmentFilter filterEmail = new AppointmentFilter( );
             filterEmail.setEmail( strEmail );
             filterEmail.setIdForm( nIdForm );
+            filterEmail.setStatus(Appointment.Status.STATUS_RESERVED.getValeur( ));
 
             if ( ( appointmentFromSession != null ) && ( appointmentFromSession.getIdSlot( ) != 0 ) )
             {
@@ -457,7 +458,7 @@ public class AppointmentApp extends MVCApplication
                 AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay( ) );
                 Date dDateAppointement = (Date) day.getDate( ).clone( );
                 long nNbmilisecond = dDateAppointement.getTime( );
-                Date dDateMax = new Date( nNbmilisecond );
+                Date dDateMax = new Date( nNbmilisecond + ( nWeeksLimits * lConversionDayMilisecond ));
                 Date dDateMin = new Date( nNbmilisecond - ( nWeeksLimits * lConversionDayMilisecond ) );
                 filterEmail.setDateAppointmentMax( dDateMax );
                 filterEmail.setDateAppointmentMin( dDateMin );

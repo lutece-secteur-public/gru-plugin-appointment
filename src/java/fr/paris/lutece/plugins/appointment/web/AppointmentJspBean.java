@@ -1836,7 +1836,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     listFormErrors.add( genAttError );
                 }
             }
-            else
+            
+         /*   else
             {
                 if ( !StringUtils.isEmpty( appointment.getEmail( ) ) && strIdSlot != null && !strIdSlot.equals( "0" ) )
                 {
@@ -1864,7 +1865,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                         }
                     }
                 }
-            }
+            }*/
 
             for ( Entry entry : listEntryFirstLevel )
             {
