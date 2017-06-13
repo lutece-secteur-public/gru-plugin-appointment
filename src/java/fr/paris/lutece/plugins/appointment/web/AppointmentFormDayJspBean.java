@@ -582,12 +582,13 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
             }
         }
-        
+        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm( ) );
+        List<String> listErrors = populateDay( day, form, request );
         // If there were modification on the day, then we check that the day is not associated with any appointment
         // The only attributes that can freely be changed are the opening attribute and the people per appointment attribute
         if ( ( day.getOpeningHour( ) != dayFromDb.getOpeningHour( ) ) || ( day.getOpeningMinutes( ) != dayFromDb.getOpeningMinutes( ) )
                 || ( day.getClosingHour( ) != dayFromDb.getClosingHour( ) ) || ( day.getClosingMinutes( ) != dayFromDb.getClosingMinutes( ) )
-                || ( day.getAppointmentDuration( ) != dayFromDb.getAppointmentDuration( ) ) )
+                || ( day.getAppointmentDuration( ) != dayFromDb.getAppointmentDuration( ) ) || day.getIsOpen( ) != dayFromDb.getIsOpen( ))
         {
             int nNbAppointment = AppointmentHome.getNbAppointmentByIdDay( day.getDate( ), day.getIdForm( ) );
 
@@ -599,8 +600,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
             }                      
         }
 
-        AppointmentForm form = AppointmentFormHome.findByPrimaryKey( day.getIdForm( ) );
-        List<String> listErrors = populateDay( day, form, request );
+       
         if ( ( listErrors != null ) && ( listErrors.size( ) > 0 ) )
         {
             for ( String strError : listErrors )
