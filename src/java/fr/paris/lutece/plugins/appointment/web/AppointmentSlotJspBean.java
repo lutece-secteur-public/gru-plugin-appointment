@@ -344,7 +344,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean {
 				boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
 				int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
 				slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
-						bIsOpen);
+						nMaxCapacity, bIsOpen);
 			} else {
 				slot = SlotService.findSlotById(nIdSlot);
 			}

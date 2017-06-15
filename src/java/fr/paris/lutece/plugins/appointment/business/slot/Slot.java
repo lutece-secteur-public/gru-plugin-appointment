@@ -65,6 +65,10 @@ public class Slot implements Serializable {
 	private int _nNbRemainingPlaces;
 
 	/**
+	 * 
+	 */
+	private int _nNbPotentialRemainingPlaces;
+	/**
 	 * Form Id the slot belongs to (foreign key)
 	 */
 	private int _nIdForm;
@@ -269,6 +273,16 @@ public class Slot implements Serializable {
 	 */
 	public void setNbRemainingPlaces(int nNbRemainingPlaces) {
 		this._nNbRemainingPlaces = nNbRemainingPlaces;
+	}
+
+	
+	
+	public int getNbPotentialRemainingPlaces() {
+		return _nNbPotentialRemainingPlaces;
+	}
+
+	public void setNbPotentialRemainingPlaces(int nNbPotentialRemainingPlaces) {
+		this._nNbPotentialRemainingPlaces = nNbPotentialRemainingPlaces;
 	}
 
 	public int getMaxCapacity() {

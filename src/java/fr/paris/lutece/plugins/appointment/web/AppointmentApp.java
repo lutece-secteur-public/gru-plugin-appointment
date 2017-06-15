@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -229,7 +230,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
 	private static final String SESSION_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.validatedAppointment";
 	private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
-
+	
 	// Messages
 	private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancel_appointment.pageTitle";
 	private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.my_appointments.pageTitle";
@@ -366,18 +367,18 @@ public class AppointmentApp extends MVCApplication {
 	 * @param request
 	 *            the request
 	 * @return the xpage
-	 * @throws UserNotSignedException 
+	 * @throws UserNotSignedException
 	 */
 	@SuppressWarnings("unchecked")
 	@View(VIEW_APPOINTMENT_FORM)
 	public XPage getViewAppointmentForm(HttpServletRequest request) throws UserNotSignedException {
-		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);		
+		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		String strIdForm = request.getParameter(PARAMETER_ID_FORM);
 		int nIdForm = Integer.parseInt(strIdForm);
-		if (form == null){
+		if (form == null) {
 			form = FormService.buildAppointmentForm(nIdForm, 0, 0);
 		}
-		checkMyLuteceAuthentication( form, request );
+		checkMyLuteceAuthentication(form, request);
 		// Get the not validated appointment in session if it exists
 		AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession()
 				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
@@ -399,14 +400,21 @@ public class AppointmentApp extends MVCApplication {
 							.parse(request.getParameter(PARAMETER_STARTING_DATE_TIME));
 					LocalDateTime endingDateTime = LocalDateTime
 							.parse(request.getParameter(PARAMETER_ENDING_DATE_TIME));
-					boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
-					int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
-					slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
-							bIsOpen);
+					// Need to check if the slot has not been already created
+					HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.findSlotsByIdFormAndDateRange(nIdForm,
+							startingDateTime, endingDateTime);
+					if (!slotInDbMap.isEmpty()) {
+						slot = slotInDbMap.get(startingDateTime);
+					} else {
+						boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
+						int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
+						slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity,
+								nMaxCapacity, nMaxCapacity, bIsOpen);
+						slot = SlotService.saveSlot(slot);
+					}
 				} else {
 					slot = SlotService.findSlotById(nIdSlot);
 				}
-
 				appointmentDTO.setSlot(slot);
 				appointmentDTO.setDateOfTheAppointment(slot.getDate().format(Utilities.formatter));
 				appointmentDTO.setIdForm(nIdForm);
@@ -425,6 +433,9 @@ public class AppointmentApp extends MVCApplication {
 				form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 						weekDefinition.getIdWeekDefinition());
 				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
+
+				Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO, form.getMaxPeoplePerAppointment());
+				request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
 			}
 		}
 		Locale locale = getLocale(request);
@@ -441,7 +452,7 @@ public class AppointmentApp extends MVCApplication {
 		model.put(MARK_FORM_MESSAGES, formMessages);
 		model.put(MARK_STR_ENTRY, strBuffer.toString());
 		model.put(MARK_LOCALE, locale);
-		model.put(MARK_PLACES, form.getMaxPeoplePerAppointment());
+		model.put(MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats());
 		List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession()
 				.getAttribute(SESSION_APPOINTMENT_FORM_ERRORS);
 		model.put(MARK_FORM_ERRORS, listErrors);
@@ -477,7 +488,7 @@ public class AppointmentApp extends MVCApplication {
 		AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession()
 				.getAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
-		checkMyLuteceAuthentication( form, request );
+		checkMyLuteceAuthentication(form, request);
 		int nIdForm = Integer.parseInt(strIdForm);
 		List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>();
 		Locale locale = request.getLocale();
@@ -548,7 +559,7 @@ public class AppointmentApp extends MVCApplication {
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, appointment.getIdForm());
 		}
 		AppointmentForm form = (AppointmentForm) request.getSession().getAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
-		checkMyLuteceAuthentication( form, request );
+		checkMyLuteceAuthentication(form, request);
 		if (form.getEnableCaptcha() && getCaptchaService().isAvailable()) {
 			if (!getCaptchaService().validate(request)) {
 				addError(ERROR_MESSAGE_CAPTCHA, getLocale(request));
@@ -575,6 +586,7 @@ public class AppointmentApp extends MVCApplication {
 			return redirect(request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm());
 		}
 		int nIdAppointment = AppointmentService.saveAppointment(appointment);
+		AppointmentUtilities.killTimer(request);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());
 		return redirect(request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointment.getIdForm(),
@@ -837,7 +849,7 @@ public class AppointmentApp extends MVCApplication {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		request.getSession().removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
-	}
+	}	
 
 	/**
 	 * Get the URL
@@ -864,11 +876,11 @@ public class AppointmentApp extends MVCApplication {
 	 * @param request
 	 *            HttpServletRequest
 	 * @throws UserNotSignedException
-	 *             exception if the form requires an authentication and the
-	 *             user is not logged
+	 *             exception if the form requires an authentication and the user
+	 *             is not logged
 	 */
 	private void checkMyLuteceAuthentication(AppointmentForm form, HttpServletRequest request)
-			throws UserNotSignedException {		
+			throws UserNotSignedException {
 		// Try to register the user in case of external authentication
 		if (SecurityService.isAuthenticationEnable()) {
 			if (SecurityService.getInstance().isExternalAuthentication()) {

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +39,7 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
+import fr.paris.lutece.plugins.appointment.service.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.UserService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
@@ -54,6 +57,7 @@ import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
 /**
@@ -86,6 +90,10 @@ public class AppointmentUtilities {
 	private static final String CONSTANT_COMMA = ",";
 	private static final String EXCEL_FILE_EXTENSION = ".xlsx";
 	private static final String EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+	public static final String SESSION_TIMER_SLOT = "appointment.session.timer.slot";
+
+	private static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
 	/**
 	 * Check that the email is correct and matches the confirm email
@@ -256,7 +264,7 @@ public class AppointmentUtilities {
 		appointmentDTO.setEmail(strEmail);
 		appointmentDTO.setFirstName(strFirstName);
 		appointmentDTO.setLastName(strLastName);
-		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();		
+		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();
 		if (mapResponses != null && !mapResponses.isEmpty()) {
 			List<Response> listResponse = new ArrayList<Response>();
 			for (List<Response> listResponseByEntry : mapResponses.values()) {
@@ -513,4 +521,46 @@ public class AppointmentUtilities {
 		}
 		list.set(i - 1, response);
 	}
+
+	/**
+	 * Kill the lock timer on a slot
+	 * 
+	 * @param request
+	 *            the request
+	 */
+	public static void killTimer(HttpServletRequest request) {
+		Timer timer = (Timer) request.getSession().getAttribute(SESSION_TIMER_SLOT);
+		if (timer != null) {
+			timer.cancel();
+			request.getSession().removeAttribute(SESSION_TIMER_SLOT);
+		}
+	}
+
+	/**
+	 * Create a timer on a slot
+	 * 
+	 * @param slot
+	 *            the slot
+	 * @param appointmentDTO
+	 *            the appointment
+	 * @param maxPeoplePerAppointment
+	 *            the max people per appointment
+	 * @return the timer
+	 */
+	public static Timer getTimerOnSlot(Slot slot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment) {
+		SlotEditTask slotEditTask = new SlotEditTask();
+		int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces();
+		int nbPotentialPlacesTaken = Math.min(nbPotentialRemainingPlaces, maxPeoplePerAppointment);
+		appointmentDTO.setNbMaxPotentialBookedSeats(nbPotentialPlacesTaken);
+		slot.setNbPotentialRemainingPlaces(nbPotentialRemainingPlaces - nbPotentialPlacesTaken);
+		SlotService.updateSlot(slot);
+		slotEditTask.setNbPlacesTaken(nbPotentialPlacesTaken);
+		slotEditTask.setnIdSlot(slot.getIdSlot());
+		Timer timer = new Timer();
+		long delay = TimeUnit.MINUTES
+				.toMillis(AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1));
+		timer.schedule(slotEditTask, delay);
+		return timer;
+	}
+
 }

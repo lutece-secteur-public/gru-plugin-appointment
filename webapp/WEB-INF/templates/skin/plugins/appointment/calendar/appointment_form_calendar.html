@@ -58,8 +58,11 @@
 		<#if events??>								   
 			<#list events as event>
 				{
-					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'${formMessages.calendarReserveLabel}' + ' \n ' + '${event.nbRemainingPlaces} place(s) restante(s)'
-							<#elseif event.isOpen>'${formMessages.calendarFullLabel}'<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,		
+					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>'${formMessages.calendarReserveLabel}' + ' \n ' + '${event.nbRemainingPlaces} place(s) restante(s)'
+							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>'#i18n{appointment.manageCalendarSlots.labelEdit}' + ' \n ' + '${event.nbPotentialRemainingPlaces} place(s) restante(s)'							
+							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
+							<#elseif event.isOpen>'${formMessages.calendarFullLabel}'
+							<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,		
 					className : <#if event.isOpen & (event.nbRemainingPlaces > 0) >''
 								<#elseif event.isOpen>'slot-full'<#else>'slot-closed'</#if>,
 					start : '${event.startingDateTime}',
@@ -124,7 +127,8 @@
 				dow: dow
 			},
 			eventClick: function(event) {
-				if (event.title == '${formMessages.calendarFullLabel}' || event.title == '#i18n{appointment.manageCalendarSlots.labelClosed}') {
+				if (event.title == '${formMessages.calendarFullLabel}' || event.title == '#i18n{appointment.manageCalendarSlots.labelClosed}'
+						|| event.title == '#i18n{appointment.manageCalendarSlots.labelEditFull}') {
 					return false;
 				} else {
 					location.href = event.url;							

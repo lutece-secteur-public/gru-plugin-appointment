@@ -107,6 +107,8 @@ public class AppointmentService {
 			Slot oldSlot = SlotService.findSlotById(appointmentDTO.getIdSlot());
 			int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces();
 			oldSlot.setNbRemainingPlaces(oldNbRemainingPlaces + appointmentDTO.getNbBookedSeats());
+			int oldNbPotentialRemainingPlaces = oldSlot.getNbPotentialRemainingPlaces();
+			oldSlot.setNbPotentialRemainingPlaces(oldNbPotentialRemainingPlaces + appointmentDTO.getNbBookedSeats());
 			SlotService.updateSlot(oldSlot);
 			// Need to remove the workflow resource to reload again the workflow
 			// at the first step
@@ -125,6 +127,13 @@ public class AppointmentService {
 			newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats() + appointment.getNbPlaces();
 		}
 		slot.setNbRemainingPlaces(newNbRemainingPlaces);
+		
+		int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats();
+		int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces();
+		int effectiveBookedSeats = appointmentDTO.getNbBookedSeats();
+		int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+		slot.setNbPotentialRemainingPlaces(newPotentialRemaningPlaces);		
+		
 		slot = SlotService.saveSlot(slot);
 		// Create or update the user
 		User user = UserService.saveUser(appointmentDTO);

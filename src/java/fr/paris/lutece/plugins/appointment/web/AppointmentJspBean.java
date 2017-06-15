@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -796,7 +797,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 					boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
 					int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
 					slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
-							bIsOpen);
+							nMaxCapacity, bIsOpen);
+					slot = SlotService.saveSlot(slot);
 				} else {
 					slot = SlotService.findSlotById(nIdSlot);
 				}
@@ -818,6 +820,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 						weekDefinition.getIdWeekDefinition());
 				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
+
+				Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO,
+						form.getMaxPeoplePerAppointment());
+				request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
 			}
 		}
 		Locale locale = getLocale();
@@ -916,7 +922,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			boolean bIsOpen = Boolean.parseBoolean(request.getParameter(PARAMETER_IS_OPEN));
 			int nMaxCapacity = Integer.parseInt(request.getParameter(PARAMETER_MAX_CAPACITY));
 			slot = SlotService.buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
-					bIsOpen);
+					nMaxCapacity, bIsOpen);
+			slot = SlotService.saveSlot(slot);
 		} else {
 			slot = SlotService.findSlotById(nIdSlot);
 		}
@@ -931,6 +938,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		AppointmentForm form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 				weekDefinition.getIdWeekDefinition());
 		request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
+		Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO, form.getMaxPeoplePerAppointment());
+		request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
 		Map<String, String> additionalParameters = new HashMap<>();
 		additionalParameters.put(PARAMETER_ID_FORM, Integer.toString(form.getIdForm()));
 		additionalParameters.put(PARAMETER_COME_FROM_CALENDAR, Boolean.TRUE.toString());
@@ -1027,8 +1036,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		} else if (appointmentDTO.getNbBookedSeats() > slot.getNbRemainingPlaces()) {
 			addError(ERROR_MESSAGE_SLOT_FULL, getLocale());
 			return redirect(request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm());
-		}		
+		}
 		AppointmentService.saveAppointment(appointmentDTO);
+		AppointmentUtilities.killTimer(request);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		addInfo(INFO_APPOINTMENT_CREATED, getLocale());
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());

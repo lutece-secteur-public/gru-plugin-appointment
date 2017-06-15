@@ -24,7 +24,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
  * @author Laurent Payen
  *
  */
-public class SlotService {
+public class SlotService {	
 
 	/**
 	 * Find slots of a form on a given period of time
@@ -90,7 +90,8 @@ public class SlotService {
 			LocalDate startingDate, int nNbWeeksToDisplay) {
 		List<Slot> listSlot = new ArrayList<>();
 		// Get all the reservation rules
-		final HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule(nIdForm);		
+		final HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService
+				.findAllReservationRule(nIdForm);
 		final List<LocalDate> listDateWeekDefinition = new ArrayList<>(mapWeekDefinition.keySet());
 		final List<LocalDate> listDateReservationTule = new ArrayList<>(mapReservationRule.keySet());
 		LocalDate closestDateWeekDefinition;
@@ -148,8 +149,9 @@ public class SlotService {
 				maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay(workingDay);
 				// Check if this day is a closing day
 				if (listDateOfClosingDay.contains(dateTemp)) {
-					listSlot.add(buildSlot(nIdForm, dateTemp.atTime(minTimeForThisDay),
-							dateTemp.atTime(maxTimeForThisDay), nMaxCapacity, nMaxCapacity, Boolean.FALSE));
+					listSlot.add(
+							buildSlot(nIdForm, dateTemp.atTime(minTimeForThisDay), dateTemp.atTime(maxTimeForThisDay),
+									nMaxCapacity, nMaxCapacity, nMaxCapacity, Boolean.FALSE));
 				} else {
 					timeTemp = minTimeForThisDay;
 					// For each slot of this day
@@ -168,7 +170,7 @@ public class SlotService {
 							if (timeSlot != null) {
 								timeTemp = timeSlot.getEndingTime();
 								slotToAdd = buildSlot(nIdForm, dateTimeTemp, dateTemp.atTime(timeTemp), nMaxCapacity,
-										nMaxCapacity, timeSlot.getIsOpen());
+										nMaxCapacity, nMaxCapacity, timeSlot.getIsOpen());
 								listSlot.add(slotToAdd);
 							} else {
 								break;
@@ -200,7 +202,7 @@ public class SlotService {
 	 * @return the slot built
 	 */
 	public static Slot buildSlot(int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime,
-			int nMaxCapacity, int nNbRemainingPlaces, boolean bIsOpen) {
+			int nMaxCapacity, int nNbRemainingPlaces, int nNbPotentialRemainingPlaces, boolean bIsOpen) {
 		Slot slot = new Slot();
 		slot.setIdSlot(0);
 		slot.setIdForm(nIdForm);
@@ -208,6 +210,7 @@ public class SlotService {
 		slot.setEndingDateTime(endingDateTime);
 		slot.setMaxCapacity(nMaxCapacity);
 		slot.setNbRemainingPlaces(nNbRemainingPlaces);
+		slot.setNbPotentialRemainingPlaces(nNbPotentialRemainingPlaces);
 		slot.setIsOpen(bIsOpen);
 		addDateAndTimeToSlot(slot);
 		return slot;
@@ -261,7 +264,7 @@ public class SlotService {
 				// Need to create a slot between these two dateTime
 				if (!slot.getEndingDateTime().isEqual(nextStartingDateTime)) {
 					Slot slotToCreate = buildSlot(slot.getIdForm(), slot.getEndingDateTime(), nextStartingDateTime,
-							slot.getMaxCapacity(), slot.getMaxCapacity(), Boolean.FALSE);
+							slot.getMaxCapacity(), slot.getMaxCapacity(), slot.getMaxCapacity(), Boolean.FALSE);
 					listSlotToCreate.add(slotToCreate);
 				}
 			} else {
@@ -331,7 +334,7 @@ public class SlotService {
 		int nIdForm = slot.getIdForm();
 		while (!endingDateTime.isAfter(endingDateTimeOfTheDay)) {
 			Slot slotToCreate = buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
-					Boolean.TRUE);
+					nMaxCapacity, Boolean.TRUE);
 			startingDateTime = endingDateTime;
 			endingDateTime = startingDateTime.plus(nDurationSlot, ChronoUnit.MINUTES);
 			listSlotToCreate.add(slotToCreate);

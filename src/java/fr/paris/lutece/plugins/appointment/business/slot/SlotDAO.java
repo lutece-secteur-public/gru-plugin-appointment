@@ -18,10 +18,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class SlotDAO implements ISlotDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_slot) FROM appointment_slot";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, max_capacity, nb_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, max_capacity = ?, nb_remaining_places = ?, id_form = ? WHERE id_slot = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, id_form = ? WHERE id_slot = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, max_capacity, nb_remaining_places, id_form FROM appointment_slot";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form FROM appointment_slot";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS
 			+ " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ?";
@@ -168,6 +168,7 @@ public class SlotDAO implements ISlotDAO {
 		slot.setIsOpen(daoUtil.getBoolean(nIndex++));
 		slot.setMaxCapacity(daoUtil.getInt(nIndex++));
 		slot.setNbRemainingPlaces(daoUtil.getInt(nIndex++));
+		slot.setNbPotentialRemainingPlaces(daoUtil.getInt(nIndex++));
 		slot.setIdForm(daoUtil.getInt(nIndex));
 		return slot;
 	}
@@ -198,6 +199,7 @@ public class SlotDAO implements ISlotDAO {
 		daoUtil.setBoolean(nIndex++, slot.getIsOpen());
 		daoUtil.setInt(nIndex++, slot.getMaxCapacity());
 		daoUtil.setInt(nIndex++, slot.getNbRemainingPlaces());
+		daoUtil.setInt(nIndex++, slot.getNbPotentialRemainingPlaces());
 		daoUtil.setInt(nIndex++, slot.getIdForm());
 		if (!isInsert) {
 			daoUtil.setInt(nIndex, slot.getIdSlot());

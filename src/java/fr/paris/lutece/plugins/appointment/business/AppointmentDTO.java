@@ -126,6 +126,11 @@ public class AppointmentDTO implements Serializable {
 	private int _nNbBookedSeats;
 
 	/**
+	 * The maximum number of seats the user can book
+	 */
+	private int _nNbMaxPotentialBookedSeats;
+
+	/**
 	 * The slot of the appointment
 	 */
 	private Slot _slot;
@@ -452,6 +457,25 @@ public class AppointmentDTO implements Serializable {
 	 */
 	public void setNbBookedSeats(int nNumberOfPlacesReserved) {
 		this._nNbBookedSeats = nNumberOfPlacesReserved;
+	}
+
+	/**
+	 * Get the maximum number of booked seats the user can take
+	 * 
+	 * @return the max number of booked seats
+	 */
+	public int getNbMaxPotentialBookedSeats() {
+		return _nNbMaxPotentialBookedSeats;
+	}
+
+	/**
+	 * Set the maximum number of booked seats the user can take
+	 * 
+	 * @param nNbMaxPotentialBookedSeats
+	 *            the maximum number to set
+	 */
+	public void setNbMaxPotentialBookedSeats(int nNbMaxPotentialBookedSeats) {
+		this._nNbMaxPotentialBookedSeats = nNbMaxPotentialBookedSeats;
 	}
 
 	/**

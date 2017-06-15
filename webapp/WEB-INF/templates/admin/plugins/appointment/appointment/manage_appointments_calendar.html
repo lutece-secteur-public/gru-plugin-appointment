@@ -49,13 +49,20 @@
 			<#list events as event>				
 				<#assign nbAppointments = event.maxCapacity - event.nbRemainingPlaces>
 				{					
-					title : <#if modifDateAppointment??>
+					title : <#if modifDateAppointment?? & (event.nbPotentialRemainingPlaces > 0)>
 								'#i18n{appointment.manageCalendarSlots.chooseThisSlot}'
-							<#elseif event.isOpen & (event.nbRemainingPlaces > 0)>
+							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
 								'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
 								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 								+ '<a href=' + eventUrl + 'createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}'+'><i class="glyphicon icon-plus-sign"></i></a>'
+							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
+								'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
+								+ '&nbsp;&nbsp;'
+								+ '#i18n{appointment.manageCalendarSlots.labelEdit}'
+								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+								+ '<a href=' + eventUrl + 'createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}'+'><i class="glyphicon icon-plus-sign"></i></a>'								
+							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'								
 							<#elseif event.isOpen>
 								'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
 							<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,							
@@ -64,10 +71,11 @@
 					id : '${event.idSlot}',
 					color : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'default'
 								<#elseif event.isOpen>'red'<#else>'red'</#if>,
-					url : <#if modifDateAppointment??>
-							eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}'
-							<#else>
-							eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}'</#if>,					
+					url : <#if modifDateAppointment?? & (event.nbPotentialRemainingPlaces > 0)>
+								eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}'
+							<#elseif (event.nbPotentialRemainingPlaces > 0)>
+								eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}'
+							</#if>,					
 				},								
 			</#list>
 		</#if>
