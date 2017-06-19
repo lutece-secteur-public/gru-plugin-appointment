@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,6 +76,7 @@ import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
+import fr.paris.lutece.plugins.appointment.service.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
@@ -363,10 +365,10 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			model.put(MARK_FORM_CALENDAR_ERRORS, bError);
 		}
 		// If we change the date of an appointment
-		// filter the list of slot with only the ones that have enough places
+		// filter the list of slot with only the ones that have enough places at the moment of the edition
 		if (appointmentDTO != null) {
 			int nbBookedSeats = appointmentDTO.getNbBookedSeats();
-			listSlot = listSlot.stream().filter(s -> s.getNbRemainingPlaces() >= nbBookedSeats && s.getIsOpen())
+			listSlot = listSlot.stream().filter(s -> s.getNbPotentialRemainingPlaces() >= nbBookedSeats && s.getIsOpen())
 					.collect(Collectors.toList());
 			request.getSession().setAttribute(SESSION_VALIDATED_APPOINTMENT, appointmentDTO);
 			model.put(MARK_MODIFICATION_DATE_APPOINTMENT, Boolean.TRUE.toString());
@@ -738,8 +740,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		int nIdAppointment = Integer.parseInt(strIdAppointment);
 		AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment(nIdAppointment);
 		appointmentDTO.setListResponse(AppointmentResponseService.findAndBuildListResponse(nIdAppointment, request));
-		session.removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
-		session.setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO);
+		session.removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);		
 		Slot slot = appointmentDTO.getSlot();
 		int nIdForm = slot.getIdForm();
 		LocalDate dateOfSlot = slot.getDate();
@@ -750,6 +751,27 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		AppointmentForm form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 				weekDefinition.getIdWeekDefinition());
 		request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
+
+		int nbAlreadyBookedSeats = appointmentDTO.getNbBookedSeats();
+		int nbMaxPeoplePerAppointment = form.getMaxPeoplePerAppointment();
+		if ((nbAlreadyBookedSeats < nbMaxPeoplePerAppointment) && (slot.getNbPotentialRemainingPlaces() > 0)) {
+			SlotEditTask slotEditTask = new SlotEditTask();
+			int nbPotentialPlacesToTake = form.getMaxPeoplePerAppointment() - nbAlreadyBookedSeats;
+			int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces();			
+			appointmentDTO.setNbMaxPotentialBookedSeats(nbAlreadyBookedSeats + nbPotentialPlacesToTake);
+			slot.setNbPotentialRemainingPlaces(nbPotentialRemainingPlaces - nbPotentialPlacesToTake);
+			SlotService.updateSlot(slot);
+			slotEditTask.setNbPlacesTaken(nbPotentialPlacesToTake);
+			slotEditTask.setnIdSlot(slot.getIdSlot());
+			Timer timer = new Timer();
+			long delay = TimeUnit.MINUTES.toMillis(AppPropertiesService
+					.getPropertyInt(AppointmentUtilities.PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1));
+			timer.schedule(slotEditTask, delay);
+			request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
+		} else {
+			appointmentDTO.setNbMaxPotentialBookedSeats(nbAlreadyBookedSeats);
+		}
+		session.setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO);
 		return getViewCreateAppointment(request);
 	}
 
@@ -802,7 +824,6 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				} else {
 					slot = SlotService.findSlotById(nIdSlot);
 				}
-
 				appointmentDTO.setSlot(slot);
 				appointmentDTO.setIdForm(nIdForm);
 				LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
@@ -820,7 +841,6 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 						weekDefinition.getIdWeekDefinition());
 				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
-
 				Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO,
 						form.getMaxPeoplePerAppointment());
 				request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
@@ -840,7 +860,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		model.put(MARK_FORM_MESSAGES, formMessages);
 		model.put(MARK_STR_ENTRY, strBuffer.toString());
 		model.put(MARK_LOCALE, locale);
-		model.put(MARK_PLACES, form.getMaxPeoplePerAppointment());
+		model.put(MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats());
 		List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession()
 				.getAttribute(SESSION_APPOINTMENT_FORM_ERRORS);
 		model.put(MARK_FORM_ERRORS, listErrors);
@@ -1013,6 +1033,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				slot = appointmentDTO.getSlot();
 			}
 		}
+		appointmentDTO.setSlot(slot);
 		SlotService.addDateAndTimeToSlot(slot);
 		// If it's a modification need to get the old number of booked seats
 		// if the reservation is on the same slot, if not, the check has been
@@ -1281,6 +1302,11 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			if (appointment.getIsCancelled() != bStatusCancelled) {
 				appointment.setIsCancelled(bStatusCancelled);
 				AppointmentService.updateAppointment(appointment);
+				if (bStatusCancelled) {
+					slot.setNbRemainingPlaces(slot.getNbRemainingPlaces() + appointment.getNbPlaces());
+					slot.setNbPotentialRemainingPlaces(slot.getNbPotentialRemainingPlaces() + appointment.getNbPlaces());
+					SlotService.updateSlot(slot);
+				}
 			}
 			return redirect(request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, slot.getIdForm());
 		}

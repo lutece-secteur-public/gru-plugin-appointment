@@ -230,7 +230,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
 	private static final String SESSION_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.validatedAppointment";
 	private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
-	
+
 	// Messages
 	private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancel_appointment.pageTitle";
 	private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.my_appointments.pageTitle";
@@ -434,7 +434,8 @@ public class AppointmentApp extends MVCApplication {
 						weekDefinition.getIdWeekDefinition());
 				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
 
-				Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO, form.getMaxPeoplePerAppointment());
+				Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO,
+						form.getMaxPeoplePerAppointment());
 				request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
 			}
 		}
@@ -581,6 +582,7 @@ public class AppointmentApp extends MVCApplication {
 				slot = appointment.getSlot();
 			}
 		}
+		appointment.setSlot(slot);
 		if (appointment.getNbBookedSeats() > slot.getNbRemainingPlaces()) {
 			addError(ERROR_MESSAGE_SLOT_FULL, getLocale(request));
 			return redirect(request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm());
@@ -695,6 +697,9 @@ public class AppointmentApp extends MVCApplication {
 				appointment.setIsCancelled(Boolean.TRUE);
 				AppointmentService.updateAppointment(appointment);
 			}
+			slot.setNbRemainingPlaces(slot.getNbRemainingPlaces() + appointment.getNbPlaces());
+			slot.setNbPotentialRemainingPlaces(slot.getNbPotentialRemainingPlaces() + appointment.getNbPlaces());
+			SlotService.updateSlot(slot);
 			Map<String, String> mapParameters = new HashMap<String, String>();
 			if (StringUtils.isNotEmpty(request.getParameter(PARAMETER_FROM_MY_APPOINTMENTS))) {
 				String strReferer = request.getHeader(PARAMETER_REFERER);
@@ -849,7 +854,7 @@ public class AppointmentApp extends MVCApplication {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		request.getSession().removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
-	}	
+	}
 
 	/**
 	 * Get the URL

@@ -93,7 +93,7 @@ public class AppointmentUtilities {
 
 	public static final String SESSION_TIMER_SLOT = "appointment.session.timer.slot";
 
-	private static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
+	public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
 	/**
 	 * Check that the email is correct and matches the confirm email

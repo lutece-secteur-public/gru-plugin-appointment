@@ -286,8 +286,10 @@ public class AppointmentService {
 					Appointment.APPOINTMENT_RESOURCE_TYPE);
 		}
 		int nbRemainingPlaces = slotOfTheAppointmentToDelete.getNbRemainingPlaces();
+		int nbPotentialRemaningPlaces = slotOfTheAppointmentToDelete.getNbPotentialRemainingPlaces();
 		int nbNewRemainingPlaces = nbRemainingPlaces + appointmentToDelete.getNbPlaces();
 		slotOfTheAppointmentToDelete.setNbRemainingPlaces(nbNewRemainingPlaces);
+		slotOfTheAppointmentToDelete.setNbPotentialRemainingPlaces(nbPotentialRemaningPlaces + appointmentToDelete.getNbPlaces());
 		SlotService.updateSlot(slotOfTheAppointmentToDelete);
 		AppointmentHome.delete(nIdAppointment);
 	}
