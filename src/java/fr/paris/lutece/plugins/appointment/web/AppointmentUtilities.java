@@ -172,7 +172,9 @@ public class AppointmentUtilities {
 						// table, it's too big and not efficient
 						List<Slot> listSlot = new ArrayList<>();
 						for (Appointment appointment : listAppointment) {
-							listSlot.add(SlotService.findSlotById(appointment.getIdSlot()));
+							if (!appointment.getIsCancelled()) {
+								listSlot.add(SlotService.findSlotById(appointment.getIdSlot()));
+							}
 						}
 						// Get the last appointment date for this form
 						LocalDate dateOfTheLastAppointment = listSlot.stream()
