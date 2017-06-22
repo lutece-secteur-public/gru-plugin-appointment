@@ -446,6 +446,9 @@ public class AppointmentApp extends MVCApplication
             int nMaxAppointments = form.getMaxAppointments( );
             int nWeeksLimits =  form.getWeeksLimits( );
             AppointmentSlot appointmentSlot = null;
+            Date dDateMin=new Date(1L);
+            Date dDateMax=new Date(1L);
+            
             AppointmentFilter filterEmail = new AppointmentFilter( );
             filterEmail.setEmail( strEmail );
             filterEmail.setIdForm( nIdForm );
@@ -458,15 +461,29 @@ public class AppointmentApp extends MVCApplication
                 AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay( ) );
                 Date dDateAppointement = (Date) day.getDate( ).clone( );
                 long nNbmilisecond = dDateAppointement.getTime( );
-                Date dDateMax = new Date( nNbmilisecond + ( nWeeksLimits * lConversionDayMilisecond ));
-                Date dDateMin = new Date( nNbmilisecond - ( nWeeksLimits * lConversionDayMilisecond ) );
+                dDateMax = new Date( nNbmilisecond + ( nWeeksLimits * lConversionDayMilisecond ));
+                dDateMin = new Date( nNbmilisecond - ( nWeeksLimits * lConversionDayMilisecond ) );
                 filterEmail.setDateAppointmentMax( dDateMax );
                 filterEmail.setDateAppointmentMin( dDateMin );
             }
-
+            
             List<Appointment> listAppointmentForEmail = AppointmentHome.getAppointmentListByFilter( filterEmail );
-            int nAppointments = listAppointmentForEmail.size( );
-
+            int nAppointments = 0;
+            
+            for(Appointment appt:listAppointmentForEmail ){
+            	
+            	
+            	Long dDateLimit = appt.getDateAppointment().getTime() + ( nWeeksLimits * lConversionDayMilisecond );
+            	for(Appointment ap:listAppointmentForEmail){
+	            	if( dDateLimit >= ap.getDateAppointment().getTime() && (dDateMin.getTime( )<= dDateLimit && dDateLimit <= dDateMax.getTime( )) ){
+	            		nAppointments ++;
+	            		if((nAppointments >= nMaxAppointments)) break;
+	            	}
+            	}
+            	
+            	if((nAppointments >= nMaxAppointments)) break;
+            }
+            
             if ( ( nMaxAppointments != 0 ) && ( nWeeksLimits != 0 ) )
             {
                 if ( nAppointments >= nMaxAppointments )
