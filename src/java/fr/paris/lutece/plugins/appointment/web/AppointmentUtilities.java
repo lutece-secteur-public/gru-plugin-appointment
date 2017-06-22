@@ -28,6 +28,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.joda.time.Days;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
@@ -182,11 +183,9 @@ public class AppointmentUtilities {
 								.max(LocalDateTime::compareTo).get().toLocalDate();
 						// Check the number of days between this appointment and
 						// the last appointment the user has taken
-						LocalDate dateOfTheAppointment = appointmentDTO.getSlot().getStartingDateTime().toLocalDate();
-						if ((dateOfTheLastAppointment.isBefore(dateOfTheAppointment)
-								|| dateOfTheLastAppointment.equals(dateOfTheAppointment))
-								&& dateOfTheLastAppointment.until(dateOfTheAppointment,
-										ChronoUnit.DAYS) <= nbDaysBetweenTwoAppointments) {
+						LocalDate dateOfTheAppointment = appointmentDTO.getSlot().getStartingDateTime().toLocalDate();						
+						if (Math.abs(dateOfTheLastAppointment.until(dateOfTheAppointment,
+								ChronoUnit.DAYS)) <= nbDaysBetweenTwoAppointments) {
 							bCheckPassed = false;
 						}
 					}

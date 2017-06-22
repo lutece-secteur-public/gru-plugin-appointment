@@ -496,11 +496,6 @@ public class AppointmentApp extends MVCApplication {
 		String strEmail = request.getParameter(PARAMETER_EMAIL);
 		AppointmentUtilities.checkEmail(strEmail, request.getParameter(PARAMETER_EMAIL_CONFIRMATION), form, locale,
 				listFormErrors);
-		if (!AppointmentUtilities.checkUserAndAppointment(appointmentDTO, strEmail, form)) {
-			addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
-			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
-					appointmentDTO.getSlot().getIdSlot());
-		}
 		int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats(
 				request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS), form, appointmentDTO, locale, listFormErrors);
 		AppointmentUtilities.fillAppointmentDTO(appointmentDTO, nbBookedSeats, strEmail,
@@ -510,7 +505,12 @@ public class AppointmentApp extends MVCApplication {
 			request.getSession().setAttribute(SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors);
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
-		}
+		}		
+		if (!AppointmentUtilities.checkUserAndAppointment(appointmentDTO, strEmail, form)) {
+			addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
+			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
+					appointmentDTO.getSlot().getIdSlot());
+		}		
 		request.getSession().removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		request.getSession().setAttribute(SESSION_VALIDATED_APPOINTMENT, appointmentDTO);
 		return redirectView(request, VIEW_DISPLAY_RECAP_APPOINTMENT);
