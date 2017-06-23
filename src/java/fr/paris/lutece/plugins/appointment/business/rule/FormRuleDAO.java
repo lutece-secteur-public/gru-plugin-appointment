@@ -12,10 +12,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public class FormRuleDAO implements IFormRuleDAO {
 
 	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form_rule) FROM appointment_form_rule";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule (id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, id_form) VALUES (?, ?, ?, ?, ?, ?, ?)";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, is_active_authentication = ?, nb_days_before_new_appointment = ?, min_time_before_appointment = ?, id_form = ? WHERE id_form_rule = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule (id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, is_active_authentication = ?, nb_days_before_new_appointment = ?, min_time_before_appointment = ?, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, id_form = ? WHERE id_form_rule = ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_rule WHERE id_form_rule = ?";
-	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, id_form FROM appointment_form_rule";
+	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, id_form FROM appointment_form_rule";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_rule = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
@@ -111,6 +111,8 @@ public class FormRuleDAO implements IFormRuleDAO {
 		formRule.setIsActiveAuthentication(daoUtil.getBoolean(nIndex++));
 		formRule.setNbDaysBeforeNewAppointment(daoUtil.getInt(nIndex++));
 		formRule.setMinTimeBeforeAppointment(daoUtil.getInt(nIndex++));
+		formRule.setNbMaxAppointmentsPerUser(daoUtil.getInt(nIndex++));
+		formRule.setNbDaysForMaxAppointmentsPerUser(daoUtil.getInt(nIndex++));
 		formRule.setIdForm(daoUtil.getInt(nIndex));
 		return formRule;
 	}
@@ -141,6 +143,8 @@ public class FormRuleDAO implements IFormRuleDAO {
 		daoUtil.setBoolean(nIndex++, formRule.isActiveAuthentication());
 		daoUtil.setInt(nIndex++, formRule.getNbDaysBeforeNewAppointment());
 		daoUtil.setInt(nIndex++, formRule.getMinTimeBeforeAppointment());
+		daoUtil.setInt(nIndex++, formRule.getNbMaxAppointmentsPerUser());
+		daoUtil.setInt(nIndex++, formRule.getNbDaysForMaxAppointmentsPerUser());
 		daoUtil.setInt(nIndex++, formRule.getIdForm());
 		if (!isInsert) {
 			daoUtil.setInt(nIndex, formRule.getIdFormRule());

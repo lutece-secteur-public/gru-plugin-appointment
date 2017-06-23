@@ -46,6 +46,16 @@ public class FormRule implements Serializable {
 	private int _nMinTimeBeforeAppointment;
 
 	/**
+	 * Maximum number of appointments for a same user on a given period
+	 */
+	private int _nNbMaxAppointmentsPerUser;
+
+	/**
+	 * The period for the maximum number of appointments per user
+	 */
+	private int _nNbDaysForMaxAppointmentsPerUser;
+
+	/**
 	 * Form id (foreign key)
 	 */
 	private int _nIdForm;
@@ -164,6 +174,46 @@ public class FormRule implements Serializable {
 	 */
 	public void setMinTimeBeforeAppointment(int nMinTimeBeforeAppointment) {
 		this._nMinTimeBeforeAppointment = nMinTimeBeforeAppointment;
+	}
+
+	/**
+	 * Get the maximum number of appointments per user
+	 * 
+	 * @return the maximum number of appointments per user on a given period
+	 */
+	public int getNbMaxAppointmentsPerUser() {
+		return _nNbMaxAppointmentsPerUser;
+	}
+
+	/**
+	 * Set the maximum number of appointments authorized
+	 * 
+	 * @param _nNbMaxAppointmentsPerUser
+	 *            the maximum number of appointments authorized
+	 */
+	public void setNbMaxAppointmentsPerUser(int nNbMaxAppointmentsPerUser) {
+		this._nNbMaxAppointmentsPerUser = nNbMaxAppointmentsPerUser;
+	}
+
+	/**
+	 * Get the number of days for the period of the maximum number of
+	 * appointments authorized per user
+	 * 
+	 * @return the number of days of the period
+	 */
+	public int getNbDaysForMaxAppointmentsPerUser() {
+		return _nNbDaysForMaxAppointmentsPerUser;
+	}
+
+	/**
+	 * Set the number of days of the period for the maximum number of
+	 * appointments authorized
+	 * 
+	 * @param _nNbDaysForMaxAppointmentsPerUser
+	 *            the number of days to set
+	 */
+	public void setNbDaysForMaxAppointmentsPerUser(int nNbDaysForMaxAppointmentsPerUser) {
+		this._nNbDaysForMaxAppointmentsPerUser = nNbDaysForMaxAppointmentsPerUser;
 	}
 
 	/**

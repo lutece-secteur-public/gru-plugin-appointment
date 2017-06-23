@@ -236,7 +236,7 @@ public class SlotService {
 				// Need to get all the slots until the new end of this slot
 				List<Slot> listSlotToDelete = new ArrayList<>(SlotService
 						.findSlotsByIdFormAndDateRange(slot.getIdForm(),
-								slot.getStartingDateTime().plus(1, ChronoUnit.MINUTES), slot.getEndingDateTime())
+								slot.getStartingDateTime().plusMinutes(1), slot.getEndingDateTime())
 						.values());
 				deleteListSlot(listSlotToDelete);
 				// Get the list of slot after the modified slot
@@ -330,13 +330,13 @@ public class SlotService {
 		LocalDateTime endingDateTimeOfTheDay = endingTimeOfTheDay.atDate(dateOfSlot);
 		int nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay(workingDay);
 		LocalDateTime startingDateTime = slot.getEndingDateTime();
-		LocalDateTime endingDateTime = startingDateTime.plus(nDurationSlot, ChronoUnit.MINUTES);
+		LocalDateTime endingDateTime = startingDateTime.plusMinutes(nDurationSlot);
 		int nIdForm = slot.getIdForm();
 		while (!endingDateTime.isAfter(endingDateTimeOfTheDay)) {
 			Slot slotToCreate = buildSlot(nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity,
 					nMaxCapacity, Boolean.TRUE);
 			startingDateTime = endingDateTime;
-			endingDateTime = startingDateTime.plus(nDurationSlot, ChronoUnit.MINUTES);
+			endingDateTime = startingDateTime.plusMinutes(nDurationSlot);
 			listSlotToCreate.add(slotToCreate);
 		}
 		return listSlotToCreate;
@@ -442,7 +442,7 @@ public class SlotService {
 					}
 				}
 			}
-			currentDateOfSearch = currentDateOfSearch.plus(1, ChronoUnit.DAYS);
+			currentDateOfSearch = currentDateOfSearch.plusDays(1);
 		}
 		return localDateFound;
 	}

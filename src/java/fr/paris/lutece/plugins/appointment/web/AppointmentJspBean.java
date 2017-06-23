@@ -322,7 +322,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
 		// Calculate the ending date of display with the nb weeks to display
 		// since today
-		LocalDate endingDateOfDisplay = startingDateOfDisplay.plus(nNbWeeksToDisplay, ChronoUnit.WEEKS);
+		LocalDate endingDateOfDisplay = startingDateOfDisplay.plusWeeks(nNbWeeksToDisplay);
 		// if the ending date of display is after the ending validity date of
 		// the form
 		// assign the ending date of display with the ending validity date of

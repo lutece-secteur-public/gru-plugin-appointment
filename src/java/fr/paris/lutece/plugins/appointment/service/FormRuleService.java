@@ -28,6 +28,8 @@ public class FormRuleService {
 		formRule.setIsActiveAuthentication(appointmentForm.getActiveAuthentication());
 		formRule.setNbDaysBeforeNewAppointment(appointmentForm.getNbDaysBeforeNewAppointment());
 		formRule.setMinTimeBeforeAppointment(appointmentForm.getMinTimeBeforeAppointment());
+		formRule.setNbMaxAppointmentsPerUser(appointmentForm.getNbMaxAppointmentsPerUser());
+		formRule.setNbDaysForMaxAppointmentsPerUser(appointmentForm.getNbDaysForMaxAppointmentsPerUser());
 		formRule.setIdForm(nIdForm);
 	}
 

@@ -41,12 +41,12 @@ public class TimeSlotService {
 			int nDuration, int nMaxCapacity) {
 		List<TimeSlot> listTimeSlot = new ArrayList<>();
 		LocalTime tempStartingTime = startingTime;
-		LocalTime tempEndingTime = startingTime.plus(nDuration, ChronoUnit.MINUTES);
+		LocalTime tempEndingTime = startingTime.plusMinutes(nDuration);
 		while (!tempEndingTime.isAfter(endingTime)) {
 			listTimeSlot.add(generateTimeSlot(nIdWorkingDay, tempStartingTime, tempEndingTime,
 					Boolean.TRUE.booleanValue(), nMaxCapacity));
 			tempStartingTime = tempEndingTime;
-			tempEndingTime = tempEndingTime.plus(nDuration, ChronoUnit.MINUTES);
+			tempEndingTime = tempEndingTime.plusMinutes(nDuration);
 		}
 		return listTimeSlot;
 	}

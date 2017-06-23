@@ -242,6 +242,16 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	private int _nNbDaysBeforeNewAppointment;
 
 	/**
+	 * Maximum appointments for a user on a given period
+	 */
+	private int _nNbMaxAppointmentsPerUser;
+
+	/**
+	 * Number of days for the period for the the maximum appointments for a user
+	 */
+	private int _nNbDaysForMaxAppointmentsPerUser;
+
+	/**
 	 * Returns the IdForm
 	 * 
 	 * @return The IdForm
@@ -258,6 +268,46 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 */
 	public void setIdForm(int nIdForm) {
 		_nIdForm = nIdForm;
+	}
+
+	/**
+	 * Get the maximum number of appointments authorized for a same user
+	 * 
+	 * @return the maximum number
+	 */
+	public int getNbMaxAppointmentsPerUser() {
+		return _nNbMaxAppointmentsPerUser;
+	}
+
+	/**
+	 * Set the maximum number of appointments authorized for a same user
+	 * 
+	 * @param nNbMaxAppointmentsPerUser
+	 *            the maximum number of appointments to set
+	 */
+	public void setNbMaxAppointmentsPerUser(int nNbMaxAppointmentsPerUser) {
+		this._nNbMaxAppointmentsPerUser = nNbMaxAppointmentsPerUser;
+	}
+
+	/**
+	 * Get the number of days for the period of the maximum number of
+	 * appointments authorized for a same user
+	 * 
+	 * @return the number of days of the period
+	 */
+	public int getNbDaysForMaxAppointmentsPerUser() {
+		return _nNbDaysForMaxAppointmentsPerUser;
+	}
+
+	/**
+	 * Set the number of days of the period for the maximum number of
+	 * appointments authorized for a same user
+	 * 
+	 * @param nNbDaysForMaxAppointmentsPerUser
+	 *            the number of days to set
+	 */
+	public void setNbDaysForMaxAppointmentsPerUser(int nNbDaysForMaxAppointmentsPerUser) {
+		this._nNbDaysForMaxAppointmentsPerUser = nNbDaysForMaxAppointmentsPerUser;
 	}
 
 	/**

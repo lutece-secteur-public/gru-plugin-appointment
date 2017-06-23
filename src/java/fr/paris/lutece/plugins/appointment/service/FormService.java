@@ -299,8 +299,10 @@ public class FormService {
 		appointmentForm.setEnableCaptcha(formRule.isCaptchaEnabled());
 		appointmentForm.setEnableMandatoryEmail(formRule.isMandatoryEmailEnabled());
 		appointmentForm.setActiveAuthentication(formRule.isActiveAuthentication());
-		appointmentForm.setNbDaysBeforeNewAppointment(formRule.getNbDaysBeforeNewAppointment());
+		appointmentForm.setNbDaysBeforeNewAppointment(formRule.getNbDaysBeforeNewAppointment());		
 		appointmentForm.setMinTimeBeforeAppointment(formRule.getMinTimeBeforeAppointment());
+		appointmentForm.setNbMaxAppointmentsPerUser(formRule.getNbMaxAppointmentsPerUser());
+		appointmentForm.setNbDaysForMaxAppointmentsPerUser(formRule.getNbDaysForMaxAppointmentsPerUser());
 	}
 
 	/**

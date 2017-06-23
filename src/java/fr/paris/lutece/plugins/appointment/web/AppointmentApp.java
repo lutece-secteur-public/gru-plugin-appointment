@@ -273,7 +273,7 @@ public class AppointmentApp extends MVCApplication {
 		int nNbWeeksToDisplay = display.getNbWeeksToDisplay();
 		// Calculate the ending date of display with the nb weeks to display
 		// since today
-		LocalDate endingDateOfDisplay = startingDateOfDisplay.plus(nNbWeeksToDisplay, ChronoUnit.WEEKS);
+		LocalDate endingDateOfDisplay = startingDateOfDisplay.plusWeeks(nNbWeeksToDisplay);
 		// if the ending date of display is after the ending validity date of
 		// the form
 		// assign the ending date of display with the ending validity date of
@@ -321,8 +321,7 @@ public class AppointmentApp extends MVCApplication {
 			// (in hours)
 			FormRule formRule = FormRuleService.findFormRuleWithFormId(nIdForm);
 			int minTimeBeforeAppointment = formRule.getMinTimeBeforeAppointment();
-			LocalDateTime dateTimeBeforeAppointment = LocalDateTime.now().plus(minTimeBeforeAppointment,
-					ChronoUnit.HOURS);
+			LocalDateTime dateTimeBeforeAppointment = LocalDateTime.now().plusHours(minTimeBeforeAppointment);
 			// Filter the list of slots
 			listSlot = listSlot.stream().filter(s -> s.getStartingDateTime().isAfter(dateTimeBeforeAppointment))
 					.collect(Collectors.toList());
@@ -506,11 +505,16 @@ public class AppointmentApp extends MVCApplication {
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
 		}		
-		if (!AppointmentUtilities.checkUserAndAppointment(appointmentDTO, strEmail, form)) {
+		if (!AppointmentUtilities.checkNbDaysBetweenTwoAppointments(appointmentDTO, strEmail, form)) {
 			addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
-		}		
+		}	
+		if (!AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod(appointmentDTO, strEmail, form)) {
+			addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
+			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
+					appointmentDTO.getSlot().getIdSlot());
+		}	
 		request.getSession().removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		request.getSession().setAttribute(SESSION_VALIDATED_APPOINTMENT, appointmentDTO);
 		return redirectView(request, VIEW_DISPLAY_RECAP_APPOINTMENT);
