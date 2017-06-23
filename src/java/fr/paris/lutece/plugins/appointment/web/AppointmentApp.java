@@ -220,6 +220,7 @@ public class AppointmentApp extends MVCApplication {
 	private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
 	private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
 	private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
+	private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD = "appointment.validation.appointment.NbMaxAppointmentsOnAPeriod.error";
 	private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
 	private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
 	private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
@@ -511,7 +512,7 @@ public class AppointmentApp extends MVCApplication {
 					appointmentDTO.getSlot().getIdSlot());
 		}	
 		if (!AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod(appointmentDTO, strEmail, form)) {
-			addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
+			addError(ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale);
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
 		}	
