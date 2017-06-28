@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS appointment_slot (
   is_open BOOLEAN NOT NULL DEFAULT TRUE,
   max_capacity INT NOT NULL DEFAULT 0,
   nb_remaining_places INT NOT NULL DEFAULT 0,
+  nb_potential_remaining_places INT NOT NULL DEFAULT 0,
   id_form INT NOT NULL,
   PRIMARY KEY (id_slot, id_form),
   UNIQUE KEY unique_index_starting_date_time (id_form,starting_date_time),
