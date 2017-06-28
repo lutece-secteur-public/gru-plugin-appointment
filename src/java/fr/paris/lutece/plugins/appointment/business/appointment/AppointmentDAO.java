@@ -45,7 +45,7 @@ public final class AppointmentDAO implements IAppointmentDAO {
 	private static final String SQL_FILTER_EMAIL = "user.email LIKE ?";
 	private static final String SQL_FILTER_REFERENCE = "app.reference LIKE ?";
 	private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = "slot.starting_date_time >= ?";
-	private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time <= ?";
+	private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
 
 	private static final String CONSTANT_AND = " AND ";
 	private static final String CONSTANT_PERCENT = "%";
