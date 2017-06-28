@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -236,7 +237,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		request.getSession().removeAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM);
 		UrlItem url = new UrlItem(JSP_MANAGE_APPOINTMENTFORMS);
 		String strUrl = url.getUrl();
-		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight().stream()
+				.sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle())).collect(Collectors.toList());
 		LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>(listAppointmentForm,
 				nItemsPerPage, strUrl, PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale());
 		Map<String, Object> model = getModel();
@@ -597,7 +599,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	 * @param request
 	 *            the request
 	 * @return the JSP URL to display the form to manage appointment forms
-	 * @throws AccessDeniedException 
+	 * @throws AccessDeniedException
 	 */
 	@Action(ACTION_DO_COPY_FORM)
 	public String doCopyAppointmentForm(HttpServletRequest request) throws AccessDeniedException {
@@ -984,4 +986,5 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 		}
 		return bError;
 	}
+
 }

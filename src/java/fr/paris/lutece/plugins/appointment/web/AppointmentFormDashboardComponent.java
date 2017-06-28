@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.web;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -73,7 +74,8 @@ public class AppointmentFormDashboardComponent extends DashboardComponent {
 	 */
 	@Override
 	public String getDashboardData(AdminUser user, HttpServletRequest request) {
-		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight().stream()
+				.sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle())).collect(Collectors.toList());;
 		Map<String, Object> model = new HashMap<String, Object>();
 		Plugin plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 		model.put(MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection(listAppointmentForm,
