@@ -92,6 +92,7 @@ public class AppointmentUtilities {
 	private static final String EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 	public static final String SESSION_TIMER_SLOT = "appointment.session.timer.slot";
+	public static final String SESSION_SLOT_EDIT_TASK = "appointment.session.slot.edit.task";
 
 	public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
@@ -625,7 +626,12 @@ public class AppointmentUtilities {
 		Timer timer = (Timer) request.getSession().getAttribute(SESSION_TIMER_SLOT);
 		if (timer != null) {
 			timer.cancel();
-			request.getSession().removeAttribute(SESSION_TIMER_SLOT);
+		}
+		SlotEditTask slotEditTask = (SlotEditTask) request.getSession().getAttribute(SESSION_SLOT_EDIT_TASK);
+		if (slotEditTask != null) {
+			Slot slot = SlotService.findSlotById(slotEditTask.getnIdSlot());
+			slot.setNbPotentialRemainingPlaces(slot.getNbPotentialRemainingPlaces()+slotEditTask.getNbPlacesTaken());
+			SlotService.updateSlot(slot);
 		}
 	}
 
@@ -640,7 +646,8 @@ public class AppointmentUtilities {
 	 *            the max people per appointment
 	 * @return the timer
 	 */
-	public static Timer getTimerOnSlot(Slot slot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment) {
+	public static Timer putTimerInSession(HttpServletRequest request, Slot slot, AppointmentDTO appointmentDTO,
+			int maxPeoplePerAppointment) {
 		SlotEditTask slotEditTask = new SlotEditTask();
 		int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces();
 		int nbPotentialPlacesTaken = Math.min(nbPotentialRemainingPlaces, maxPeoplePerAppointment);
@@ -653,6 +660,8 @@ public class AppointmentUtilities {
 		long delay = TimeUnit.MINUTES
 				.toMillis(AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1));
 		timer.schedule(slotEditTask, delay);
+		request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
+		request.getSession().setAttribute(AppointmentUtilities.SESSION_SLOT_EDIT_TASK, slotEditTask);
 		return timer;
 	}
 

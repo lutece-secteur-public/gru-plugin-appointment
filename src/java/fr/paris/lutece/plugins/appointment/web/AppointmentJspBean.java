@@ -290,6 +290,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 	@View(value = VIEW_CALENDAR_MANAGE_APPOINTMENTS, defaultView = true)
 	public String getViewCalendarManageAppointments(HttpServletRequest request) {
 		cleanSession(request.getSession());
+		AppointmentUtilities.killTimer(request);
 		String strIdAppointment = request.getParameter(PARAMETER_ID_APPOINTMENT);
 		AppointmentDTO appointmentDTO = null;
 		if (StringUtils.isNotEmpty(strIdAppointment)) {
@@ -841,9 +842,9 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 						weekDefinition.getIdWeekDefinition());
 				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
-				Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO,
+				AppointmentUtilities.putTimerInSession(request, slot, appointmentDTO,
 						form.getMaxPeoplePerAppointment());
-				request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
+				
 			}
 		}
 		Locale locale = getLocale();
@@ -958,8 +959,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 		AppointmentForm form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 				weekDefinition.getIdWeekDefinition());
 		request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
-		Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO, form.getMaxPeoplePerAppointment());
-		request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
+		AppointmentUtilities.putTimerInSession(request, slot, appointmentDTO, form.getMaxPeoplePerAppointment());		
 		Map<String, String> additionalParameters = new HashMap<>();
 		additionalParameters.put(PARAMETER_ID_FORM, Integer.toString(form.getIdForm()));
 		additionalParameters.put(PARAMETER_COME_FROM_CALENDAR, Boolean.TRUE.toString());
@@ -1059,7 +1059,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			return redirect(request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm());
 		}
 		AppointmentService.saveAppointment(appointmentDTO);
-		AppointmentUtilities.killTimer(request);
+		request.getSession().removeAttribute(AppointmentUtilities.SESSION_SLOT_EDIT_TASK);
+		AppointmentUtilities.killTimer(request);		
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		addInfo(INFO_APPOINTMENT_CREATED, getLocale());
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());

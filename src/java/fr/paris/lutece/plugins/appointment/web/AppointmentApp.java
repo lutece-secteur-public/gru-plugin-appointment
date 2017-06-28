@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Timer;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -249,6 +248,7 @@ public class AppointmentApp extends MVCApplication {
 	@View(VIEW_APPOINTMENT_CALENDAR)
 	public XPage getViewAppointmentCalendar(HttpServletRequest request) {
 		clearSession(request);
+		AppointmentUtilities.killTimer(request);
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		Map<String, Object> model = getModel();
 		Form form = FormService.findFormLightByPrimaryKey(nIdForm);
@@ -433,10 +433,8 @@ public class AppointmentApp extends MVCApplication {
 				form = FormService.buildAppointmentForm(nIdForm, reservationRule.getIdReservationRule(),
 						weekDefinition.getIdWeekDefinition());
 				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
-
-				Timer timer = AppointmentUtilities.getTimerOnSlot(slot, appointmentDTO,
-						form.getMaxPeoplePerAppointment());
-				request.getSession().setAttribute(AppointmentUtilities.SESSION_TIMER_SLOT, timer);
+				AppointmentUtilities.putTimerInSession(request, slot, appointmentDTO,
+						form.getMaxPeoplePerAppointment());							
 			}
 		}
 		Locale locale = getLocale(request);
@@ -593,6 +591,7 @@ public class AppointmentApp extends MVCApplication {
 			return redirect(request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm());
 		}
 		int nIdAppointment = AppointmentService.saveAppointment(appointment);
+		request.getSession().removeAttribute(AppointmentUtilities.SESSION_SLOT_EDIT_TASK);
 		AppointmentUtilities.killTimer(request);
 		request.getSession().removeAttribute(SESSION_VALIDATED_APPOINTMENT);
 		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(request.getSession().getId());
