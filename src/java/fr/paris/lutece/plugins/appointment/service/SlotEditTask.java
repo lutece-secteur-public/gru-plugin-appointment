@@ -25,11 +25,11 @@ public class SlotEditTask extends TimerTask {
 		this.nbPlacesTaken = nbPlacesTaken;
 	}
 
-	public int getnIdSlot() {
+	public int getIdSlot() {
 		return nIdSlot;
 	}
 
-	public void setnIdSlot(int nIdSlot) {
+	public void setIdSlot(int nIdSlot) {
 		this.nIdSlot = nIdSlot;
 	}
 	

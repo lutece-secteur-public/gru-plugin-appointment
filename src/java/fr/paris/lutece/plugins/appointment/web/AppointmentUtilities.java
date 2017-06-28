@@ -629,9 +629,12 @@ public class AppointmentUtilities {
 		}
 		SlotEditTask slotEditTask = (SlotEditTask) request.getSession().getAttribute(SESSION_SLOT_EDIT_TASK);
 		if (slotEditTask != null) {
-			Slot slot = SlotService.findSlotById(slotEditTask.getnIdSlot());
-			slot.setNbPotentialRemainingPlaces(slot.getNbPotentialRemainingPlaces()+slotEditTask.getNbPlacesTaken());
-			SlotService.updateSlot(slot);
+			Slot slot = SlotService.findSlotById(slotEditTask.getIdSlot());
+			if (slot != null) {
+				slot.setNbPotentialRemainingPlaces(
+						slot.getNbPotentialRemainingPlaces() + slotEditTask.getNbPlacesTaken());
+				SlotService.updateSlot(slot);
+			}
 		}
 	}
 
@@ -655,7 +658,7 @@ public class AppointmentUtilities {
 		slot.setNbPotentialRemainingPlaces(nbPotentialRemainingPlaces - nbPotentialPlacesTaken);
 		SlotService.updateSlot(slot);
 		slotEditTask.setNbPlacesTaken(nbPotentialPlacesTaken);
-		slotEditTask.setnIdSlot(slot.getIdSlot());
+		slotEditTask.setIdSlot(slot.getIdSlot());
 		Timer timer = new Timer();
 		long delay = TimeUnit.MINUTES
 				.toMillis(AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1));

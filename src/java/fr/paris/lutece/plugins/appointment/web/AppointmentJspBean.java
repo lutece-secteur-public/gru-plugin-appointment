@@ -763,7 +763,7 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 			slot.setNbPotentialRemainingPlaces(nbPotentialRemainingPlaces - nbPotentialPlacesToTake);
 			SlotService.updateSlot(slot);
 			slotEditTask.setNbPlacesTaken(nbPotentialPlacesToTake);
-			slotEditTask.setnIdSlot(slot.getIdSlot());
+			slotEditTask.setIdSlot(slot.getIdSlot());
 			Timer timer = new Timer();
 			long delay = TimeUnit.MINUTES.toMillis(AppPropertiesService
 					.getPropertyInt(AppointmentUtilities.PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1));
