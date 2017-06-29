@@ -847,14 +847,14 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				
 			}
 		}
+		Map<String, Object> model = getModel();
 		Locale locale = getLocale();
 		StringBuffer strBuffer = new StringBuffer();
 		List<Entry> listEntryFirstLevel = EntryService.getFilter(form.getIdForm(), true);
 		for (Entry entry : listEntryFirstLevel) {
-			EntryService.getHtmlEntry(entry.getIdEntry(), strBuffer, locale, true, request);
+			EntryService.getHtmlEntry(model, entry.getIdEntry(), strBuffer, locale, true, request);
 		}
-		FormMessage formMessages = FormMessageService.findFormMessageByIdForm(nIdForm);
-		Map<String, Object> model = getModel();
+		FormMessage formMessages = FormMessageService.findFormMessageByIdForm(nIdForm);		
 		model.put(MARK_APPOINTMENT, appointmentDTO);
 		model.put(PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot().getDate());
 		model.put(MARK_FORM, form);
@@ -901,7 +901,8 @@ public class AppointmentJspBean extends MVCAdminJspBean {
 				request.getParameter(PARAMETER_NUMBER_OF_BOOKED_SEATS), form, appointmentDTO, locale, listFormErrors);
 		AppointmentUtilities.fillAppointmentDTO(appointmentDTO, nbBookedSeats, strEmail,
 				request.getParameter(PARAMETER_FIRST_NAME), request.getParameter(PARAMETER_LAST_NAME));
-		AppointmentUtilities.validateFormAndEntries(appointmentDTO, request, listFormErrors);
+		AppointmentUtilities.validateFormAndEntries(appointmentDTO, request, listFormErrors);	
+		AppointmentUtilities.fillInListResponseWithMapResponse(appointmentDTO);
 		if (CollectionUtils.isNotEmpty(listFormErrors)) {
 			request.getSession().setAttribute(SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors);
 			return redirect(request, VIEW_CREATE_APPOINTMENT, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,

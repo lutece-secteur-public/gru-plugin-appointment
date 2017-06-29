@@ -357,16 +357,7 @@ public class AppointmentUtilities {
 		appointmentDTO.setNbBookedSeats(nbBookedSeats);
 		appointmentDTO.setEmail(strEmail);
 		appointmentDTO.setFirstName(strFirstName);
-		appointmentDTO.setLastName(strLastName);
-		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();
-		if (mapResponses != null && !mapResponses.isEmpty()) {
-			List<Response> listResponse = new ArrayList<Response>();
-			for (List<Response> listResponseByEntry : mapResponses.values()) {
-				listResponse.addAll(listResponseByEntry);
-			}
-			appointmentDTO.clearMapResponsesByIdEntry();
-			appointmentDTO.setListResponse(listResponse);
-		}
+		appointmentDTO.setLastName(strLastName);			
 	}
 
 	/**
@@ -396,6 +387,18 @@ public class AppointmentUtilities {
 		for (Entry entry : listEntryFirstLevel) {
 			listFormErrors.addAll(
 					EntryService.getResponseEntry(request, entry.getIdEntry(), request.getLocale(), appointmentDTO));
+		}		
+	}
+	
+	public static void fillInListResponseWithMapResponse(AppointmentDTO appointmentDTO){
+		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();
+		if (mapResponses != null && !mapResponses.isEmpty()) {
+			List<Response> listResponse = new ArrayList<Response>();
+			for (List<Response> listResponseByEntry : mapResponses.values()) {
+				listResponse.addAll(listResponseByEntry);
+			}
+			//appointmentDTO.clearMapResponsesByIdEntry();
+			appointmentDTO.setListResponse(listResponse);
 		}
 	}
 

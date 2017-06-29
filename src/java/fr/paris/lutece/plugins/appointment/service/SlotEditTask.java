@@ -7,11 +7,11 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 public class SlotEditTask extends TimerTask {
 
 	private int nbPlacesTaken;	
-	private int nIdSlot;
+	private int idSlot;
 	
 	@Override
 	public void run() {
-		Slot slot = SlotService.findSlotById(nIdSlot);
+		Slot slot = SlotService.findSlotById(idSlot);
 		int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces();
 		slot.setNbPotentialRemainingPlaces(nbPotentialRemainingPlaces + nbPlacesTaken);
 		SlotService.updateSlot(slot);
@@ -26,11 +26,11 @@ public class SlotEditTask extends TimerTask {
 	}
 
 	public int getIdSlot() {
-		return nIdSlot;
+		return idSlot;
 	}
 
 	public void setIdSlot(int nIdSlot) {
-		this.nIdSlot = nIdSlot;
+		this.idSlot = nIdSlot;
 	}
 	
 	

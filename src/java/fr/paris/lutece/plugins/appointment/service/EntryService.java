@@ -439,16 +439,15 @@ public class EntryService extends RemovalListenerService implements Serializable
 	 * @param bDisplayFront
 	 * @param request
 	 */
-	public static void getHtmlEntry(int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
-			HttpServletRequest request) {
-		Map<String, Object> model = new HashMap<String, Object>();
+	public static void getHtmlEntry(Map<String, Object> model, int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
+			HttpServletRequest request) {		
 		StringBuffer strConditionalQuestionStringBuffer = null;
 		HtmlTemplate template;
 		Entry entry = EntryHome.findByPrimaryKey(nIdEntry);
 		if (entry.getEntryType().getGroup()) {
 			StringBuffer strGroupStringBuffer = new StringBuffer();
 			for (Entry entryChild : entry.getChildren()) {
-				getHtmlEntry(entryChild.getIdEntry(), strGroupStringBuffer, locale, bDisplayFront, request);
+				getHtmlEntry(model, entryChild.getIdEntry(), strGroupStringBuffer, locale, bDisplayFront, request);
 			}
 			model.put(MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString());
 		} else {
@@ -465,7 +464,7 @@ public class EntryService extends RemovalListenerService implements Serializable
 				if (CollectionUtils.isNotEmpty(field.getConditionalQuestions())) {
 					StringBuffer strGroupStringBuffer = new StringBuffer();
 					for (Entry entryConditional : field.getConditionalQuestions()) {
-						getHtmlEntry(entryConditional.getIdEntry(), strGroupStringBuffer, locale, bDisplayFront,
+						getHtmlEntry(model, entryConditional.getIdEntry(), strGroupStringBuffer, locale, bDisplayFront,
 								request);
 					}
 					model.put(MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString());

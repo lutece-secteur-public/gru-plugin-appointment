@@ -14,17 +14,38 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public class AppointmentResponseDAO implements IAppointmentResponseDAO {
 
-	private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment, id_response) VALUES (?,?)";
+	private static final String SQL_QUERY_NEW_PK = "SELECT max(id_appointment_response) FROM appointment_appointment_response";
+	private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment_response, id_appointment, id_response) VALUES (?,?,?)";
 	private static final String SQL_QUERY_REMOVE_FROM_ID_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_response = ?";
 	private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";
 
 	@Override
-	public void insertAppointmentResponse(int nIdAppointment, int nIdResponse, Plugin plugin) {
+	public int getNewPrimaryKey(Plugin plugin) {
+		DAOUtil daoUtil = null;
+		int nKey = 1;
+		try {
+			daoUtil = new DAOUtil(SQL_QUERY_NEW_PK, plugin);
+			daoUtil.executeQuery();
+			if (daoUtil.next()) {
+				nKey = daoUtil.getInt(1) + 1;
+			}
+		} finally {
+			if (daoUtil != null) {
+				daoUtil.free();
+			}
+		}
+		return nKey;
+	}
+	
+	@Override
+	public void insertAppointmentResponse(int nIdAppointment, int nIdResponse, Plugin plugin) {	
+		int nIndex = 1;
 		DAOUtil daoUtil = null;
 		try {
 			daoUtil = new DAOUtil(SQL_QUERY_INSERT_APPOINTMENT_RESPONSE, plugin);
-			daoUtil.setInt(1, nIdAppointment);
-			daoUtil.setInt(2, nIdResponse);
+			daoUtil.setInt(nIndex++, getNewPrimaryKey(plugin));
+			daoUtil.setInt(nIndex++, nIdAppointment);
+			daoUtil.setInt(nIndex++, nIdResponse);
 			daoUtil.executeUpdate();
 		} finally
 

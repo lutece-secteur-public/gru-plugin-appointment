@@ -18,6 +18,15 @@ public interface IAppointmentResponseDAO {
 	static String BEAN_NAME = "appointment.appointmentResponseDAO";
 
 	/**
+	 * Generate a new primary key
+	 * 
+	 * @param plugin
+	 *            the Plugin
+	 * @return the new primary key
+	 */
+	int getNewPrimaryKey(Plugin plugin);
+	
+	/**
 	 * Associates a response to an appointment
 	 * 
 	 * @param nIdAppointment
