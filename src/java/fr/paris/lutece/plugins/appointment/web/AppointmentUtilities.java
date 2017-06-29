@@ -629,6 +629,7 @@ public class AppointmentUtilities {
 		Timer timer = (Timer) request.getSession().getAttribute(SESSION_TIMER_SLOT);
 		if (timer != null) {
 			timer.cancel();
+			request.getSession().removeAttribute(SESSION_TIMER_SLOT);
 		}
 		SlotEditTask slotEditTask = (SlotEditTask) request.getSession().getAttribute(SESSION_SLOT_EDIT_TASK);
 		if (slotEditTask != null) {
@@ -638,6 +639,7 @@ public class AppointmentUtilities {
 						slot.getNbPotentialRemainingPlaces() + slotEditTask.getNbPlacesTaken());
 				SlotService.updateSlot(slot);
 			}
+			request.getSession().removeAttribute(SESSION_SLOT_EDIT_TASK);
 		}
 	}
 
