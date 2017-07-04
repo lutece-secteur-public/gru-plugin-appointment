@@ -69,15 +69,20 @@ public interface ICategoryDAO {
 
 	/**
 	 * Find all the categories
-	 * @param plugin the plugin
+	 * 
+	 * @param plugin
+	 *            the plugin
 	 * @return a list of all the categories
 	 */
 	List<Category> findAllCategories(Plugin plugin);
-	
+
 	/**
 	 * Find a category by its category label
-	 * @param strLabel the label
-	 * @param plugin the plugin
+	 * 
+	 * @param strLabel
+	 *            the label
+	 * @param plugin
+	 *            the plugin
 	 * @return an instance of the category
 	 */
 	Category findByLabel(String strLabel, Plugin plugin);

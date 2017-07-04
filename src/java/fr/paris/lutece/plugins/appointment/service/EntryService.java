@@ -438,8 +438,8 @@ public class EntryService extends RemovalListenerService implements Serializable
 	 * @param bDisplayFront
 	 * @param request
 	 */
-	public static void getHtmlEntry(Map<String, Object> model, int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
-			HttpServletRequest request) {		
+	public static void getHtmlEntry(Map<String, Object> model, int nIdEntry, StringBuffer stringBuffer, Locale locale,
+			boolean bDisplayFront, HttpServletRequest request) {
 		StringBuffer strConditionalQuestionStringBuffer = null;
 		HtmlTemplate template;
 		Entry entry = EntryHome.findByPrimaryKey(nIdEntry);

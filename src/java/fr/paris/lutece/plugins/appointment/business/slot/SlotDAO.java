@@ -110,7 +110,7 @@ public class SlotDAO implements ISlotDAO {
 		}
 		return mapSlot;
 	}
-		
+
 	@Override
 	public List<Slot> findOpenSlotsByIdFormAndDateRange(int nIdForm, LocalDateTime startingDateTime,
 			LocalDateTime endingDateTime, Plugin plugin) {

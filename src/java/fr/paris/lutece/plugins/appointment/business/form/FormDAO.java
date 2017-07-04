@@ -129,7 +129,7 @@ public class FormDAO implements IFormDAO {
 		form.setIdForm(daoUtil.getInt(nIndex++));
 		form.setTitle(daoUtil.getString(nIndex++));
 		form.setDescription(daoUtil.getString(nIndex++));
-		form.setReference(daoUtil.getString(nIndex++));		
+		form.setReference(daoUtil.getString(nIndex++));
 		form.setIdCategory(daoUtil.getInt(nIndex++));
 		form.setStartingValiditySqlDate(daoUtil.getDate(nIndex++));
 		form.setEndingValiditySqlDate(daoUtil.getDate(nIndex++));
@@ -162,11 +162,11 @@ public class FormDAO implements IFormDAO {
 		daoUtil.setString(nIndex++, form.getTitle());
 		daoUtil.setString(nIndex++, form.getDescription());
 		daoUtil.setString(nIndex++, form.getReference());
-		if (form.getIdCategory() == null || form.getIdCategory() == 0){
+		if (form.getIdCategory() == null || form.getIdCategory() == 0) {
 			daoUtil.setIntNull(nIndex++);
 		} else {
 			daoUtil.setInt(nIndex++, form.getIdCategory());
-		}		
+		}
 		daoUtil.setDate(nIndex++, form.getStartingValiditySqlDate());
 		daoUtil.setDate(nIndex++, form.getEndingValiditySqlDate());
 		daoUtil.setBoolean(nIndex++, form.isActive());

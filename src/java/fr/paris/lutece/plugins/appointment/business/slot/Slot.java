@@ -23,7 +23,7 @@ public class Slot implements Serializable {
 	 * Id of the slot
 	 */
 	private int _nIdSlot;
-	
+
 	/**
 	 * Date of the slot
 	 */
@@ -275,8 +275,6 @@ public class Slot implements Serializable {
 		this._nNbRemainingPlaces = nNbRemainingPlaces;
 	}
 
-	
-	
 	public int getNbPotentialRemainingPlaces() {
 		return _nNbPotentialRemainingPlaces;
 	}

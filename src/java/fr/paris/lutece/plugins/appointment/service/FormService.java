@@ -300,7 +300,7 @@ public class FormService {
 		appointmentForm.setEnableCaptcha(formRule.isCaptchaEnabled());
 		appointmentForm.setEnableMandatoryEmail(formRule.isMandatoryEmailEnabled());
 		appointmentForm.setActiveAuthentication(formRule.isActiveAuthentication());
-		appointmentForm.setNbDaysBeforeNewAppointment(formRule.getNbDaysBeforeNewAppointment());		
+		appointmentForm.setNbDaysBeforeNewAppointment(formRule.getNbDaysBeforeNewAppointment());
 		appointmentForm.setMinTimeBeforeAppointment(formRule.getMinTimeBeforeAppointment());
 		appointmentForm.setNbMaxAppointmentsPerUser(formRule.getNbMaxAppointmentsPerUser());
 		appointmentForm.setNbDaysForMaxAppointmentsPerUser(formRule.getNbDaysForMaxAppointmentsPerUser());
@@ -429,9 +429,9 @@ public class FormService {
 	public static void removeForm(int nIdForm) {
 		AppointmentListenerManager.notifyListenersAppointmentFormRemoval(nIdForm);
 		// Delete all the responses linked to all the appointments of the form
-		for (Appointment appointment : AppointmentService.findListAppointmentByIdForm(nIdForm)){
+		for (Appointment appointment : AppointmentService.findListAppointmentByIdForm(nIdForm)) {
 			AppointmentResponseService.removeResponsesByIdAppointment(appointment.getIdAppointment());
-		}		
+		}
 		FormHome.delete(nIdForm);
 	}
 

@@ -357,7 +357,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 				AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser(request))) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_DELETE_FORM);
 		}
-		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));		
+		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		FormService.removeForm(nIdForm);
 		_entryService.removeEntriesByIdAppointmentForm(nIdForm);
 		addInfo(INFO_APPOINTMENTFORM_REMOVED, getLocale());

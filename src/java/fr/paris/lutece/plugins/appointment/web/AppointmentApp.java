@@ -434,7 +434,7 @@ public class AppointmentApp extends MVCApplication {
 						weekDefinition.getIdWeekDefinition());
 				request.getSession().setAttribute(SESSION_ATTRIBUTE_APPOINTMENT_FORM, form);
 				AppointmentUtilities.putTimerInSession(request, slot, appointmentDTO,
-						form.getMaxPeoplePerAppointment());							
+						form.getMaxPeoplePerAppointment());
 			}
 		}
 		Map<String, Object> model = getModel();
@@ -444,7 +444,7 @@ public class AppointmentApp extends MVCApplication {
 		for (Entry entry : listEntryFirstLevel) {
 			EntryService.getHtmlEntry(model, entry.getIdEntry(), strBuffer, locale, true, request);
 		}
-		FormMessage formMessages = FormMessageService.findFormMessageByIdForm(nIdForm);		
+		FormMessage formMessages = FormMessageService.findFormMessageByIdForm(nIdForm);
 		model.put(MARK_APPOINTMENT, appointmentDTO);
 		model.put(PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot().getDate());
 		model.put(MARK_FORM, form);
@@ -504,17 +504,17 @@ public class AppointmentApp extends MVCApplication {
 			request.getSession().setAttribute(SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors);
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
-		}		
+		}
 		if (!AppointmentUtilities.checkNbDaysBetweenTwoAppointments(appointmentDTO, strEmail, form)) {
 			addError(ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale);
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
-		}	
+		}
 		if (!AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod(appointmentDTO, strEmail, form)) {
 			addError(ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale);
 			return redirect(request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT,
 					appointmentDTO.getSlot().getIdSlot());
-		}	
+		}
 		request.getSession().removeAttribute(SESSION_NOT_VALIDATED_APPOINTMENT);
 		request.getSession().setAttribute(SESSION_VALIDATED_APPOINTMENT, appointmentDTO);
 		return redirectView(request, VIEW_DISPLAY_RECAP_APPOINTMENT);

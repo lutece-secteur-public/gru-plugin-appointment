@@ -23,10 +23,11 @@ public class ClosingDayDAO implements IClosingDayDAO {
 	private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_closing_day, date_of_closing_day, id_form FROM appointment_closing_day";
 	private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_closing_day = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_closing_day = ?";
+	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY = SQL_QUERY_SELECT_BY_ID_FORM
+			+ " AND date_of_closing_day = ?";
 	private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_BY_ID_FORM
 			+ " AND date_of_closing_day >= ? AND date_of_closing_day <= ?";
-	
+
 	@Override
 	public int getNewPrimaryKey(Plugin plugin) {
 		DAOUtil daoUtil = null;
@@ -103,14 +104,14 @@ public class ClosingDayDAO implements IClosingDayDAO {
 		}
 		return closingDay;
 	}
-	
+
 	@Override
 	public List<ClosingDay> findByIdForm(int nIdForm, Plugin plugin) {
 		DAOUtil daoUtil = null;
 		List<ClosingDay> listClosingDay = new ArrayList<>();
 		try {
 			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM, plugin);
-			daoUtil.setInt(1, nIdForm);			
+			daoUtil.setInt(1, nIdForm);
 			daoUtil.executeQuery();
 			while (daoUtil.next()) {
 				listClosingDay.add(buildClosingDay(daoUtil));
@@ -122,14 +123,15 @@ public class ClosingDayDAO implements IClosingDayDAO {
 		}
 		return listClosingDay;
 	}
-	
+
 	@Override
-	public List<ClosingDay> findByIdFormAndDateRange(int nIdForm, LocalDate startingDate, LocalDate endingDate, Plugin plugin) {
+	public List<ClosingDay> findByIdFormAndDateRange(int nIdForm, LocalDate startingDate, LocalDate endingDate,
+			Plugin plugin) {
 		DAOUtil daoUtil = null;
 		List<ClosingDay> listClosingDay = new ArrayList<>();
 		try {
 			daoUtil = new DAOUtil(SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE, plugin);
-			daoUtil.setInt(1, nIdForm);	
+			daoUtil.setInt(1, nIdForm);
 			daoUtil.setDate(2, Date.valueOf(startingDate));
 			daoUtil.setDate(3, Date.valueOf(endingDate));
 			daoUtil.executeQuery();

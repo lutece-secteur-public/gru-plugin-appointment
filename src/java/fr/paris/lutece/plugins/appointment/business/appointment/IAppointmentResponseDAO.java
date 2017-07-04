@@ -25,7 +25,7 @@ public interface IAppointmentResponseDAO {
 	 * @return the new primary key
 	 */
 	int getNewPrimaryKey(Plugin plugin);
-	
+
 	/**
 	 * Associates a response to an appointment
 	 * 

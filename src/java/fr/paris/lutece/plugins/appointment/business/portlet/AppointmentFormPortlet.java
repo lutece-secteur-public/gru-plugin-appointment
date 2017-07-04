@@ -46,8 +46,9 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
  *
  */
 public class AppointmentFormPortlet extends PortletHtmlContent {
-	
+
 	private int _nIdAppointmentForm;
+
 	/**
 	 * Sets the identifier of the portlet type to value specified
 	 */
@@ -64,18 +65,6 @@ public class AppointmentFormPortlet extends PortletHtmlContent {
 	 */
 	@Override
 	public String getHtmlContent(HttpServletRequest request) {
-		if ((request != null) && (_nIdAppointmentForm > 0)) {
-			// TODO ???
-			// AppointmentForm form =
-			// AppointmentFormHome.findByPrimaryKey(_nIdAppointmentForm);
-
-			// if ((form != null) && form.getIsActive()) {
-			// return AppointmentApp.getHtmlFormFirstStep(request, form,
-			// _appointmentFormService,
-			// new HashMap<String, Object>(), request.getLocale());
-			// }
-		}
-
 		return StringUtils.EMPTY;
 	}
 

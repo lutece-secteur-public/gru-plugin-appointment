@@ -83,18 +83,26 @@ public interface IClosingDayDAO {
 
 	/**
 	 * Returns the closing days of a form
-	 * @param nIdForm the form Id
-	 * @param plugin the plugin
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param plugin
+	 *            the plugin
 	 * @return a list of the closing days of the form
 	 */
 	List<ClosingDay> findByIdForm(int nIdForm, Plugin plugin);
 
 	/**
 	 * Returns the closing days of the form on a period
-	 * @param nIdForm the form Id
-	 * @param startingDate the starting date
-	 * @param endingDate the ending date
-	 * @param plugin the plugin
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * @param startingDate
+	 *            the starting date
+	 * @param endingDate
+	 *            the ending date
+	 * @param plugin
+	 *            the plugin
 	 * @return the list of the closing days that matches the criteria
 	 */
 	List<ClosingDay> findByIdFormAndDateRange(int nIdForm, LocalDate startingDate, LocalDate endingDate, Plugin plugin);

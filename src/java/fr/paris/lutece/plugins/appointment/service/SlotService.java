@@ -24,7 +24,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
  * @author Laurent Payen
  *
  */
-public class SlotService {	
+public class SlotService {
 
 	/**
 	 * Find slots of a form on a given period of time
@@ -234,10 +234,9 @@ public class SlotService {
 			LocalDate dateOfSlot = slot.getDate();
 			if (!bShifSlot) {
 				// Need to get all the slots until the new end of this slot
-				List<Slot> listSlotToDelete = new ArrayList<>(SlotService
-						.findSlotsByIdFormAndDateRange(slot.getIdForm(),
-								slot.getStartingDateTime().plusMinutes(1), slot.getEndingDateTime())
-						.values());
+				List<Slot> listSlotToDelete = new ArrayList<>(
+						SlotService.findSlotsByIdFormAndDateRange(slot.getIdForm(),
+								slot.getStartingDateTime().plusMinutes(1), slot.getEndingDateTime()).values());
 				deleteListSlot(listSlotToDelete);
 				// Get the list of slot after the modified slot
 				HashMap<LocalDateTime, Slot> mapNextSlot = SlotService.findSlotsByIdFormAndDateRange(slot.getIdForm(),

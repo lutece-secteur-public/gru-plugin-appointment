@@ -36,9 +36,9 @@ public class AppointmentResponseDAO implements IAppointmentResponseDAO {
 		}
 		return nKey;
 	}
-	
+
 	@Override
-	public void insertAppointmentResponse(int nIdAppointment, int nIdResponse, Plugin plugin) {	
+	public void insertAppointmentResponse(int nIdAppointment, int nIdResponse, Plugin plugin) {
 		int nIndex = 1;
 		DAOUtil daoUtil = null;
 		try {

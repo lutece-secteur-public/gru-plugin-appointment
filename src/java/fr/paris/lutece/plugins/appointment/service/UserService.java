@@ -28,7 +28,6 @@ public class UserService {
 		if (userFromDb == null) {
 			user = UserHome.create(user);
 		} else {
-			// TODO need to update the users infos ?
 			userFromDb.setFirstName(appointment.getFirstName());
 			userFromDb.setLastName(appointment.getLastName());
 			user = UserHome.update(userFromDb);

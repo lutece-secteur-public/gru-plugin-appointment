@@ -76,19 +76,19 @@ public class UserHome {
 	public static User findByPrimaryKey(int nKey) {
 		return _dao.select(nKey, _plugin);
 	}
-	
+
 	/**
 	 * Return a user by its email
 	 * 
-	 * @param strUser The User Email
+	 * @param strUser
+	 *            The User Email
 	 * 
 	 * @return the user if it exists
-	 *  
+	 * 
 	 */
 	public static User findByEmail(String strEmail) {
 		return _dao.findByEmail(strEmail, _plugin);
 	}
-	
 
 	/**
 	 * Return the list of the appointments of the User
