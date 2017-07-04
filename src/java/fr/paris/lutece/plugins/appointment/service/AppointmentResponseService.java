@@ -1,7 +1,9 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,22 +30,24 @@ public class AppointmentResponseService {
 
 	/**
 	 * Associate a response to an appointment
-	 * @param nIdAppointment the appointment
-	 * @param nIdResponse the response
+	 * 
+	 * @param nIdAppointment
+	 *            the appointment
+	 * @param nIdResponse
+	 *            the response
 	 */
-	public static void insertAppointmentResponse( int nIdAppointment, int nIdResponse )
-    {
-        AppointmentResponseHome.insertAppointmentResponse(nIdAppointment, nIdResponse);
-    }
-	
+	public static void insertAppointmentResponse(int nIdAppointment, int nIdResponse) {
+		AppointmentResponseHome.insertAppointmentResponse(nIdAppointment, nIdResponse);
+	}
+
 	/**
 	 * Remove the responses for the given entry
 	 * 
 	 * @param nIdEntry
 	 *            the entry
 	 */
-	public static void removeResponsesByIdEntry(int nIdEntry) {
-		AppointmentResponseHome.removeResponsesByIdEntry(nIdEntry);
+	public static void removeResponseById(int nIdResponse) {
+		AppointmentResponseHome.removeResponsesById(nIdResponse);
 	}
 
 	/**
@@ -101,5 +105,39 @@ public class AppointmentResponseService {
 			listResponses.add(response);
 		}
 		return listResponses;
+	}
+
+	/**
+	 * Build a map from the list response
+	 * 
+	 * @param listResponse
+	 *            the list response
+	 * @return a map with the nIdEntry as key and the list response for this
+	 *         entry as value
+	 */
+	public static Map<Integer, List<Response>> buildMapFromListResponse(List<Response> listResponse) {
+		HashMap<Integer, List<Response>> mapResponse = new HashMap<>();
+		for (Response response : listResponse) {
+			Integer nIdEntry = response.getEntry().getIdEntry();
+			if (mapResponse.get(nIdEntry) == null) {
+				mapResponse.put(nIdEntry, new ArrayList<>());
+			}
+			List<Response> listResponseForThisEntry = mapResponse.get(nIdEntry);
+			listResponseForThisEntry.add(response);
+		}
+		return mapResponse;
+	}
+
+	/**
+	 * Remove all the response of an appointment
+	 * 
+	 * @param nIdAppointment
+	 *            the id of the appointment
+	 */
+	public static void removeResponsesByIdAppointment(int nIdAppointment) {
+		List<Response> listResponse = AppointmentResponseService.findListResponse(nIdAppointment);
+		for (Response response : listResponse) {
+			AppointmentResponseService.removeResponseById(response.getEntry().getIdEntry());
+		}
 	}
 }

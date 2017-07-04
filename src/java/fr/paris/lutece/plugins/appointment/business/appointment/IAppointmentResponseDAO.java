@@ -46,7 +46,7 @@ public interface IAppointmentResponseDAO {
 	 * @param plugin
 	 *            The plugin
 	 */
-	void removeAppointmentResponsesByIdResponse(int nIdResponse, Plugin plugin);
+	void removeAppointmentResponseByIdResponse(int nIdResponse, Plugin plugin);
 
 	/**
 	 * Get the list of id of responses associated with an appointment

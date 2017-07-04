@@ -39,17 +39,21 @@
 					</div>	
 				</#if>				
 				<#list listResponseRecapDTO as response>
-					<#if response.recapValue?? && response.recapValue?has_content>
-						<div class="form-group">
-							<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
-								<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">${response.entry.title}<#assign entrySave=response.entry></label>
-							</#if>
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<input type="text" class="form-control" disabled readonly="readonly" value="${response.recapValue}">
-							</div>
-						</div>
-					</#if>
-				</#list>
+                    <#if response.recapValue?has_content>
+                        <div class="form-group">
+	                        <label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
+	                        <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+	                            <#if response.file?? >
+	                                <a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}">
+               	                         ${response.recapValue}
+	                                </a>
+	                            <#else>    
+               	                    ${response.recapValue}	                                
+	                            </#if>
+	                        </div>
+	                    </div>
+                    </#if>
+                </#list>
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

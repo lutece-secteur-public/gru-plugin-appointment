@@ -114,6 +114,17 @@ public interface IAppointmentDAO {
 	 * @return a list of the appointments
 	 */
 	List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime, Plugin plugin);
+	
+	/**
+	 * Returns a list of all the appointment of a form
+	 * 
+	 * @param nIdForm
+	 *            the form id
+	 * @param plugin
+	 *            the plugin
+	 * @return a list of the appointments
+	 */
+	List<Appointment> findByIdForm(int nIdForm, Plugin plugin);
 
 	/**
 	 * Returns a list of appointments matching the filter

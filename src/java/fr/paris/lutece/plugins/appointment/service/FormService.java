@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
@@ -427,6 +428,10 @@ public class FormService {
 	 */
 	public static void removeForm(int nIdForm) {
 		AppointmentListenerManager.notifyListenersAppointmentFormRemoval(nIdForm);
+		// Delete all the responses linked to all the appointments of the form
+		for (Appointment appointment : AppointmentService.findListAppointmentByIdForm(nIdForm)){
+			AppointmentResponseService.removeResponsesByIdAppointment(appointment.getIdAppointment());
+		}		
 		FormHome.delete(nIdForm);
 	}
 

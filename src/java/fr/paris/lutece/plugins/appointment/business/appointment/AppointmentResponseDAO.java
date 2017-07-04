@@ -57,7 +57,7 @@ public class AppointmentResponseDAO implements IAppointmentResponseDAO {
 	}
 
 	@Override
-	public void removeAppointmentResponsesByIdResponse(int nIdResponse, Plugin plugin) {
+	public void removeAppointmentResponseByIdResponse(int nIdResponse, Plugin plugin) {
 		DAOUtil daoUtil = null;
 		try {
 			daoUtil = new DAOUtil(SQL_QUERY_REMOVE_FROM_ID_RESPONSE, plugin);

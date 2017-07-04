@@ -5,7 +5,6 @@ import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -41,14 +40,9 @@ public class AppointmentResponseHome {
 	 * @param nIdEntry
 	 *            The id of the entry
 	 */
-	public static void removeResponsesByIdEntry(int nIdEntry) {
-		ResponseFilter filter = new ResponseFilter();
-		filter.setIdEntry(nIdEntry);
-		List<Response> listResponses = ResponseHome.getResponseList(filter);
-		for (Response response : listResponses) {
-			_dao.removeAppointmentResponsesByIdResponse(response.getIdResponse(), _plugin);
-			ResponseHome.remove(response.getIdResponse());
-		}
+	public static void removeResponsesById(int nIdResponse) {
+		_dao.removeAppointmentResponseByIdResponse(nIdResponse, _plugin);
+		ResponseHome.remove(nIdResponse);
 	}
 
 	/**

@@ -106,4 +106,14 @@ public class FormMessageService {
 		return FormMessageHome.findByIdForm(nIdForm);
 	}
 
+	/**
+	 * Update a form message
+	 * 
+	 * @param formMessage
+	 *            the formMessage updated
+	 */
+	public static void updateFormMessage(FormMessage formMessage) {
+		FormMessageHome.update(formMessage);
+	}
+
 }

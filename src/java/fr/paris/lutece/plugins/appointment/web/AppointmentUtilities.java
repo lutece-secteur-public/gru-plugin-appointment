@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.web;
 
+import static java.lang.Math.toIntExact;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Date;
@@ -17,7 +19,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import static java.lang.Math.toIntExact;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
@@ -357,7 +359,7 @@ public class AppointmentUtilities {
 		appointmentDTO.setNbBookedSeats(nbBookedSeats);
 		appointmentDTO.setEmail(strEmail);
 		appointmentDTO.setFirstName(strFirstName);
-		appointmentDTO.setLastName(strLastName);			
+		appointmentDTO.setLastName(strLastName);
 	}
 
 	/**
@@ -387,17 +389,17 @@ public class AppointmentUtilities {
 		for (Entry entry : listEntryFirstLevel) {
 			listFormErrors.addAll(
 					EntryService.getResponseEntry(request, entry.getIdEntry(), request.getLocale(), appointmentDTO));
-		}		
+		}
 	}
-	
-	public static void fillInListResponseWithMapResponse(AppointmentDTO appointmentDTO){
+
+	public static void fillInListResponseWithMapResponse(AppointmentDTO appointmentDTO) {
 		Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry();
 		if (mapResponses != null && !mapResponses.isEmpty()) {
 			List<Response> listResponse = new ArrayList<Response>();
 			for (List<Response> listResponseByEntry : mapResponses.values()) {
 				listResponse.addAll(listResponseByEntry);
 			}
-			//appointmentDTO.clearMapResponsesByIdEntry();
+			// appointmentDTO.clearMapResponsesByIdEntry();
 			appointmentDTO.setListResponse(listResponse);
 		}
 	}
@@ -416,16 +418,24 @@ public class AppointmentUtilities {
 	public static List<ResponseRecapDTO> buildListResponse(AppointmentDTO appointment, HttpServletRequest request,
 			Locale locale) {
 		List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>();
+		HashMap<Integer, List<ResponseRecapDTO>> mapResponse = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(appointment.getListResponse())) {
 			listResponseRecapDTO = new ArrayList<ResponseRecapDTO>(appointment.getListResponse().size());
 			for (Response response : appointment.getListResponse()) {
 				int nIndex = response.getEntry().getPosition();
 				IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService(response.getEntry());
-				AppointmentUtilities.addInPosition(
-						nIndex, new ResponseRecapDTO(response, entryTypeService
-								.getResponseValueForRecap(response.getEntry(), request, response, locale)),
-						listResponseRecapDTO);
+				ResponseRecapDTO responseRecapDTO = new ResponseRecapDTO(response,
+						entryTypeService.getResponseValueForRecap(response.getEntry(), request, response, locale));
+				List<ResponseRecapDTO> listResponse = mapResponse.get(nIndex);
+				if (listResponse == null) {
+					listResponse = new ArrayList<>();
+					mapResponse.put(nIndex, listResponse);
+				}
+				listResponse.add(responseRecapDTO);
 			}
+		}
+		for (List<ResponseRecapDTO> listResponse : mapResponse.values()) {
+			listResponseRecapDTO.addAll(listResponse);
 		}
 		return listResponseRecapDTO;
 	}
@@ -600,23 +610,6 @@ public class AppointmentUtilities {
 		} catch (IOException e) {
 			AppLogService.error(e);
 		}
-	}
-
-	/**
-	 * add an object in a collection list
-	 * 
-	 * @param int
-	 *            the index
-	 * @param ResponseRecapDTO
-	 *            the object
-	 * @param List
-	 *            <ResponseRecapDTO> the collection
-	 */
-	public static void addInPosition(int i, ResponseRecapDTO response, List<ResponseRecapDTO> list) {
-		while (list.size() < i) {
-			list.add(list.size(), null);
-		}
-		list.set(i - 1, response);
 	}
 
 	/**

@@ -123,6 +123,17 @@ public class AppointmentHome {
 	public static List<Appointment> findByIdFormAndAfterADateTime(int nIdForm, LocalDateTime startingDateTime) {
 		return _dao.findByIdFormAndAfterADateTime(nIdForm, startingDateTime, _plugin);
 	}
+	
+	/**
+	 * Return a list of appointment of a form
+	 * 
+	 * @param nIdForm
+	 *            the form id	 
+	 * @return the list of the appointments
+	 */
+	public static List<Appointment> findByIdForm(int nIdForm) {
+		return _dao.findByIdForm(nIdForm, _plugin);
+	}
 
 	/**
 	 * Returns a list of appointment matching the filter

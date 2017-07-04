@@ -67,6 +67,7 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
+import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
@@ -356,9 +357,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 				AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser(request))) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_DELETE_FORM);
 		}
-		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
-		_entryService.removeEntriesByIdAppointmentForm(nIdForm);
+		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));		
 		FormService.removeForm(nIdForm);
+		_entryService.removeEntriesByIdAppointmentForm(nIdForm);
 		addInfo(INFO_APPOINTMENTFORM_REMOVED, getLocale());
 		return redirectView(request, VIEW_MANAGE_APPOINTMENTFORMS);
 	}
@@ -690,7 +691,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			int nIdForm = Integer.parseInt(strIdForm);
 			UrlItem url = new UrlItem(getViewFullUrl(VIEW_MODIFY_FORM_MESSAGES));
 			url.addParameter(PARAMETER_ID_FORM, nIdForm);
-			FormMessage formMessage = FormMessageHome.findByIdForm(nIdForm);
+			FormMessage formMessage = FormMessageService.findFormMessageByIdForm(nIdForm);
 			populate(formMessage, request);
 			FormMessageHome.update(formMessage);
 			addInfo(INFO_APPOINTMENTFORM_MESSAGES_MODIFIED, getLocale());

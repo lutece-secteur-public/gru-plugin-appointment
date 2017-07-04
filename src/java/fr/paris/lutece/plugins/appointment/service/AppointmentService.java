@@ -93,6 +93,18 @@ public class AppointmentService {
 	}
 
 	/**
+	 * Find the appointments by form
+	 * 
+	 * @param nIdForm
+	 *            the form Id
+	 * 
+	 * @return the appointments that matches the criteria
+	 */
+	public static List<Appointment> findListAppointmentByIdForm(int nIdForm) {
+		return AppointmentHome.findByIdForm(nIdForm);
+	}
+
+	/**
 	 * Save an appointment in database
 	 * 
 	 * @param appointmentDTO
@@ -127,13 +139,14 @@ public class AppointmentService {
 			newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats() + appointment.getNbPlaces();
 		}
 		slot.setNbRemainingPlaces(newNbRemainingPlaces);
-		
+
 		int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats();
 		int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces();
 		int effectiveBookedSeats = appointmentDTO.getNbBookedSeats();
-		int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
-		slot.setNbPotentialRemainingPlaces(newPotentialRemaningPlaces);		
-		
+		int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats
+				- effectiveBookedSeats;
+		slot.setNbPotentialRemainingPlaces(newPotentialRemaningPlaces);
+
 		slot = SlotService.saveSlot(slot);
 		// Create or update the user
 		User user = UserService.saveUser(appointmentDTO);
@@ -154,12 +167,14 @@ public class AppointmentService {
 									CONSTANT_REF_SIZE_RANDOM_PART));
 			appointment.setReference(strReference);
 			AppointmentHome.update(appointment);
-			if (CollectionUtils.isNotEmpty(appointmentDTO.getListResponse())) {
-				for (Response response : appointmentDTO.getListResponse()) {
-					ResponseHome.create(response);
-					AppointmentResponseService.insertAppointmentResponse(appointment.getIdAppointment(),
-							response.getIdResponse());
-				}
+		} else {
+			AppointmentResponseService.removeResponsesByIdAppointment(appointment.getIdAppointment());
+		}
+		if (CollectionUtils.isNotEmpty(appointmentDTO.getListResponse())) {
+			for (Response response : appointmentDTO.getListResponse()) {
+				ResponseHome.create(response);
+				AppointmentResponseService.insertAppointmentResponse(appointment.getIdAppointment(),
+						response.getIdResponse());
 			}
 		}
 		Form form = FormService.findFormLightByPrimaryKey(slot.getIdForm());
@@ -289,8 +304,11 @@ public class AppointmentService {
 		int nbPotentialRemaningPlaces = slotOfTheAppointmentToDelete.getNbPotentialRemainingPlaces();
 		int nbNewRemainingPlaces = nbRemainingPlaces + appointmentToDelete.getNbPlaces();
 		slotOfTheAppointmentToDelete.setNbRemainingPlaces(nbNewRemainingPlaces);
-		slotOfTheAppointmentToDelete.setNbPotentialRemainingPlaces(nbPotentialRemaningPlaces + appointmentToDelete.getNbPlaces());
+		slotOfTheAppointmentToDelete
+				.setNbPotentialRemainingPlaces(nbPotentialRemaningPlaces + appointmentToDelete.getNbPlaces());
 		SlotService.updateSlot(slotOfTheAppointmentToDelete);
+		// Need to delete also the responses linked to this appointment
+		AppointmentResponseService.removeResponsesByIdAppointment(nIdAppointment);
 		AppointmentHome.delete(nIdAppointment);
 	}
 
