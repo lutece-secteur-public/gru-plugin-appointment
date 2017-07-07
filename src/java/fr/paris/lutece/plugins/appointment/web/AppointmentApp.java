@@ -420,11 +420,10 @@ public class AppointmentApp extends MVCApplication {
 				appointmentDTO.setDateOfTheAppointment(slot.getDate().format(Utilities.formatter));
 				appointmentDTO.setIdForm(nIdForm);
 				LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
-				if (user != null) {
-					Map<String, String> map = user.getUserInfos();
-					appointmentDTO.setEmail(map.get("ids.email"));
-					appointmentDTO.setFirstName(map.get("ids.family_name"));
-					appointmentDTO.setLastName(map.get("ids.first_name"));
+				if (user != null) {					
+					appointmentDTO.setEmail(user.getUserInfo("user.business-info.online.email"));												
+					appointmentDTO.setFirstName(user.getUserInfo("user.name.given"));
+					appointmentDTO.setLastName(user.getUserInfo("user.name.family"));
 				}
 				request.getSession().setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO);
 				ReservationRule reservationRule = ReservationRuleService
