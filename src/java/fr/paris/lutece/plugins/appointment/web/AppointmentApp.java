@@ -422,9 +422,9 @@ public class AppointmentApp extends MVCApplication {
 				LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
 				if (user != null) {
 					Map<String, String> map = user.getUserInfos();
-					appointmentDTO.setEmail(map.get("user.business-info.online.email"));
-					appointmentDTO.setFirstName(map.get("user.name.given"));
-					appointmentDTO.setLastName(map.get("user.name.family"));
+					appointmentDTO.setEmail(map.get("ids.email"));
+					appointmentDTO.setFirstName(map.get("ids.family_name"));
+					appointmentDTO.setLastName(map.get("ids.first_name"));
 				}
 				request.getSession().setAttribute(SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO);
 				ReservationRule reservationRule = ReservationRuleService
