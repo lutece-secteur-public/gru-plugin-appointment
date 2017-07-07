@@ -89,6 +89,7 @@ import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -420,7 +421,10 @@ public class AppointmentApp extends MVCApplication {
 				appointmentDTO.setDateOfTheAppointment(slot.getDate().format(Utilities.formatter));
 				appointmentDTO.setIdForm(nIdForm);
 				LuteceUser user = SecurityService.getInstance().getRegisteredUser(request);
-				if (user != null) {					
+				if (user != null) {	
+					AppLogService.info("user email :" + user.getUserInfo("user.business-info.online.email"));
+					AppLogService.info("user first name :" + user.getUserInfo("user.name.given"));
+					AppLogService.info("user last name :" + user.getUserInfo("user.name.family"));
 					appointmentDTO.setEmail(user.getUserInfo("user.business-info.online.email"));												
 					appointmentDTO.setFirstName(user.getUserInfo("user.name.given"));
 					appointmentDTO.setLastName(user.getUserInfo("user.name.family"));
