@@ -122,6 +122,7 @@
 					<#if listWorkflows??>
 						<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" />
 					</#if>
+					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />
 					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 					<#if isCaptchaEnabled>
 						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />

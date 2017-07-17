@@ -47,9 +47,7 @@ public class AppointmentResponseDAO implements IAppointmentResponseDAO {
 			daoUtil.setInt(nIndex++, nIdAppointment);
 			daoUtil.setInt(nIndex++, nIdResponse);
 			daoUtil.executeUpdate();
-		} finally
-
-		{
+		} finally {
 			if (daoUtil != null) {
 				daoUtil.free();
 			}
@@ -78,7 +76,6 @@ public class AppointmentResponseDAO implements IAppointmentResponseDAO {
 			daoUtil = new DAOUtil(SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST, plugin);
 			daoUtil.setInt(1, nIdAppointment);
 			daoUtil.executeQuery();
-
 			while (daoUtil.next()) {
 				listIdResponse.add(daoUtil.getInt(1));
 			}

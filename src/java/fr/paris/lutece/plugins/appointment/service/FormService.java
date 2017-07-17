@@ -176,6 +176,7 @@ public class FormService {
 		appointmentForm.setTitle(form.getTitle());
 		appointmentForm.setIsActive(form.isActive());
 		appointmentForm.setIdWorkflow(form.getIdWorkflow());
+		appointmentForm.setWorkgroup(form.getWorkgroup());
 		if (form.getIdCategory() == null || form.getIdCategory() == 0) {
 			appointmentForm.setIdCategory(-1);
 		} else {
@@ -327,6 +328,7 @@ public class FormService {
 		appointmentForm.setDateStartValidity(form.getStartingValiditySqlDate());
 		appointmentForm.setDateEndValidity(form.getEndingValiditySqlDate());
 		appointmentForm.setIdWorkflow(form.getIdWorkflow());
+		appointmentForm.setWorkgroup(form.getWorkgroup());
 		appointmentForm.setIsActive(form.isActive());
 	}
 
@@ -417,6 +419,7 @@ public class FormService {
 		form.setEndingValiditySqlDate(appointmentForm.getDateEndValidity());
 		form.setIsActive(appointmentForm.getIsActive());
 		form.setIdWorkflow(appointmentForm.getIdWorkflow());
+		form.setWorkgroup(appointmentForm.getWorkgroup());
 		return form;
 	}
 

@@ -45,6 +45,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
 /**
  * This is the DTO class for the object AppointmentForm
@@ -52,7 +53,7 @@ import fr.paris.lutece.portal.service.util.AppLogService;
  * @author Laurent Payen
  *
  */
-public class AppointmentForm implements RBACResource, Cloneable, Serializable {
+public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable {
 	/**
 	 * Name of the resource type of Appointment Forms
 	 */
@@ -250,6 +251,11 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 	 * Number of days for the period for the the maximum appointments for a user
 	 */
 	private int _nNbDaysForMaxAppointmentsPerUser;
+
+	/**
+	 * Workgroup of the form
+	 */
+	private String _strWorkgroup;
 
 	/**
 	 * Returns the IdForm
@@ -926,6 +932,21 @@ public class AppointmentForm implements RBACResource, Cloneable, Serializable {
 
 			return null;
 		}
+	}
+
+	@Override
+	public String getWorkgroup() {
+		return _strWorkgroup;
+	}
+
+	/**
+	 * set the work group associate to the form
+	 * 
+	 * @param workGroup
+	 *            the work group associate to the form
+	 */
+	public void setWorkgroup(String workGroup) {
+		_strWorkgroup = workGroup;
 	}
 
 }

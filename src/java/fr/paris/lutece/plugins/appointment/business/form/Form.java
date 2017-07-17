@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
 /**
  * Business class of the Form
@@ -18,7 +19,7 @@ import fr.paris.lutece.portal.service.rbac.RBACResource;
  * @author Laurent Payen
  *
  */
-public class Form implements RBACResource, Cloneable, Serializable {
+public class Form implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable {
 
 	/**
 	 * Serial version UID
@@ -77,6 +78,11 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	 * Workflow Id
 	 */
 	private int _nIdWorkflow;
+	
+	/**
+	 * Workgroup
+	 */
+	private String _strWorkgroup;
 
 	/**
 	 * List of the week definitions of the form
@@ -316,7 +322,7 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	public List<WeekDefinition> getListWeekDefinition() {
 		return _listWeekDefinition;
 	}
-
+	
 	/**
 	 * Set all the week definitions of the form
 	 * 
@@ -328,6 +334,19 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	}
 
 	@Override
+	public String getWorkgroup() {
+		return _strWorkgroup;
+	}
+	
+	/**
+	 * Set the workgroup
+	 * @param strWorkgroup the workgroup
+	 */
+	public void setWorkgroup(String strWorkgroup) {
+		this._strWorkgroup = strWorkgroup;
+	}
+
+	@Override
 	public String getResourceTypeCode() {
 		return RESOURCE_TYPE;
 	}
@@ -335,6 +354,6 @@ public class Form implements RBACResource, Cloneable, Serializable {
 	@Override
 	public String getResourceId() {
 		return Integer.toString(getIdForm());
-	}
+	}	
 
 }

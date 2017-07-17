@@ -51,6 +51,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
@@ -74,9 +75,11 @@ public class AppointmentFormDashboardComponent extends DashboardComponent {
 	 */
 	@Override
 	public String getDashboardData(AdminUser user, HttpServletRequest request) {
-		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight().stream()
-				.sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle())).collect(Collectors.toList());
-		;
+		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();
+		listAppointmentForm = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection(listAppointmentForm,
+				user);
+		listAppointmentForm = listAppointmentForm.stream().sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle()))
+				.collect(Collectors.toList());
 		Map<String, Object> model = new HashMap<String, Object>();
 		Plugin plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
 		model.put(MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection(listAppointmentForm,

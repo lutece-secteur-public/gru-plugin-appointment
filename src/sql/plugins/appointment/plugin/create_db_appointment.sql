@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   ending_validity_date DATE NULL,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   id_workflow INT NULL,
+  workgroup varchar(255) NULL,
   PRIMARY KEY (id_form),
    CONSTRAINT fk_appointment_form_appointment_category
     FOREIGN KEY (id_category)

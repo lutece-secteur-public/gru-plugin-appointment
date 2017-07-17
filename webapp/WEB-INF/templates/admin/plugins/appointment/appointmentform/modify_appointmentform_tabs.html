@@ -96,6 +96,7 @@
 				<#if listWorkflows??>
 					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
 				</#if>	
+				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />				
 				<#assign icon= appointmentform.getIcon()>
 				<#if icon.mimeType?? >
 					<@fieldInputCheckBox i18nLabelKey='appointment.modify_appointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
