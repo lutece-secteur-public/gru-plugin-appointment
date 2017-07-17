@@ -258,6 +258,21 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
 	private String _strWorkgroup;
 
 	/**
+	 * Longitude
+	 */
+	private Double _dLongitude;
+
+	/**
+	 * Latitude
+	 */
+	private Double _dLatitude;
+
+	/**
+	 * Address
+	 */
+	private String _strAddress;
+
+	/**
 	 * Returns the IdForm
 	 * 
 	 * @return The IdForm
@@ -902,6 +917,63 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
 	 */
 	public void setActiveAuthentication(boolean bActiveAuthentication) {
 		this._bActiveAuthentication = bActiveAuthentication;
+	}
+
+	/**
+	 * Get latitude
+	 * 
+	 * @return latitude
+	 */
+	public Double getLatitude() {
+		return _dLatitude;
+	}
+
+	/**
+	 * Set latitude
+	 * 
+	 * @param dLatitude
+	 *            latitude
+	 */
+	public void setLatitude(Double dLatitude) {
+		this._dLatitude = dLatitude;
+	}
+
+	/**
+	 * Get longitude
+	 * 
+	 * @return longitude
+	 */
+	public Double getLongitude() {
+		return _dLongitude;
+	}
+
+	/**
+	 * Set longitude
+	 * 
+	 * @param dLongitude
+	 *            longitude
+	 */
+	public void setLongitude(Double dLongitude) {
+		this._dLongitude = dLongitude;
+	}
+
+	/**
+	 * Get address
+	 * 
+	 * @return address
+	 */
+	public String getAddress() {
+		return _strAddress;
+	}
+
+	/**
+	 * Set address
+	 * 
+	 * @param strAddress
+	 *            address
+	 */
+	public void setAddress(String strAddress) {
+		this._strAddress = strAddress;
 	}
 
 	/**

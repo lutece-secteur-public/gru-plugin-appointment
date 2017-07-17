@@ -13,6 +13,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
+import fr.paris.lutece.plugins.appointment.business.localization.Localization;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
@@ -60,6 +61,7 @@ public class FormService {
 		FormMessageService.createFormMessageWithDefaultValues(nIdForm);
 		LocalDate dateNow = LocalDate.now();
 		DisplayService.createDisplay(appointmentForm, nIdForm);
+		LocalizationService.createLocalization(appointmentForm, nIdForm);
 		FormRuleService.createFormRule(appointmentForm, nIdForm);
 		ReservationRule reservationRule = ReservationRuleService.createReservationRule(appointmentForm, nIdForm,
 				dateNow);
@@ -88,6 +90,7 @@ public class FormService {
 		Form form = FormService.updateForm(appointmentForm);
 		int nIdForm = form.getIdForm();
 		DisplayService.updateDisplay(appointmentForm, nIdForm);
+		LocalizationService.updateLocalization(appointmentForm, nIdForm);
 		FormRuleService.updateFormRule(appointmentForm, nIdForm);
 		if (dateOfModification != null) {
 			ReservationRule reservationRule = ReservationRuleService.updateReservationRule(appointmentForm, nIdForm,
@@ -201,6 +204,8 @@ public class FormService {
 		fillAppointmentFormWithFormPart(appointmentForm, form);
 		Display display = DisplayService.findDisplayWithFormId(nIdForm);
 		fillAppointmentFormWithDisplayPart(appointmentForm, display);
+		Localization localization = LocalizationService.findLocalizationWithFormId(nIdForm);
+		fillAppointmentFormWithLocalizationPart(appointmentForm, localization);
 		FormRule formRule = FormRuleService.findFormRuleWithFormId(nIdForm);
 		fillAppointmentFormWithFormRulePart(appointmentForm, formRule);
 		ReservationRule reservationRule = null;
@@ -345,6 +350,20 @@ public class FormService {
 		appointmentForm.setIcon(display.getIcon());
 		appointmentForm.setNbWeeksToDisplay(display.getNbWeeksToDisplay());
 		appointmentForm.setCalendarTemplateId(display.getIdCalendarTemplate());
+	}
+	
+	/**
+	 * Fill the appointmentForm DTO with the localization
+	 * 
+	 * @param appointmentForm
+	 *            the appointmentForm DTO
+	 * @param localization
+	 *            the localization
+	 */
+	private static void fillAppointmentFormWithLocalizationPart(AppointmentForm appointmentForm, Localization localization) {
+		appointmentForm.setLongitude(localization.getLongitude());
+		appointmentForm.setLatitude(localization.getLatitude());
+		appointmentForm.setAddress(localization.getAddress());		
 	}
 
 	/**

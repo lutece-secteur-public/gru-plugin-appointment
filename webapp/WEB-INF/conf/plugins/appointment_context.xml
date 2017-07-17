@@ -10,6 +10,7 @@
 	<bean id="appointment.formDAO"  class="fr.paris.lutece.plugins.appointment.business.form.FormDAO" />
 	<bean id="appointment.formMessageDAO"  class="fr.paris.lutece.plugins.appointment.business.message.FormMessageDAO" />	
 	<bean id="appointment.formRuleDAO"  class="fr.paris.lutece.plugins.appointment.business.rule.FormRuleDAO" />
+	<bean id="appointment.localizationDAO"  class="fr.paris.lutece.plugins.appointment.business.localization.LocalizationDAO" />
 	<bean id="appointment.reservationRuleDAO"  class="fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleDAO" />
 	<bean id="appointment.slotDAO"  class="fr.paris.lutece.plugins.appointment.business.slot.SlotDAO" />
 	<bean id="appointment.timeSlotDAO"  class="fr.paris.lutece.plugins.appointment.business.planning.TimeSlotDAO" />

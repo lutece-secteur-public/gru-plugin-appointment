@@ -133,6 +133,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
 	private static final String PARAMETER_ICON_RESSOURCE = "image_resource";
 	private static final String PARAMETER_DELETE_ICON = "deleteIcon";
+	private static final String PARAMETER_GEOLOC_ADDRESS = "geoloc_address";
+	private static final String PARAMETER_GEOLOC_LATITUDE = "geoloc_latitude";
+	private static final String PARAMETER_GEOLOC_LONGITUDE = "geoloc_longitude";
 
 	// Properties for page titles
 	private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage_appointmentforms.pageTitle";
@@ -211,8 +214,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 	private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.appointmentForm.currentPageIndex";
 	private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.appointmentForm.itemsPerPage";
 	private static final String DEFAULT_CURRENT_PAGE = "1";
-
-	private static String _strWorkGroup = AdminWorkgroupService.ALL_GROUPS;
 
 	/**
 	 * Default constructor
@@ -308,6 +309,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			appointmentForm = new AppointmentForm();
 		}
 		populate(appointmentForm, request);
+		populateAddress(appointmentForm, request);
 		if (!validateBean(appointmentForm, VALIDATION_ATTRIBUTES_PREFIX) || !checkConstraints(appointmentForm)) {
 			return redirect(request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm());
 		}
@@ -459,6 +461,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			appointmentForm = FormService.buildAppointmentFormLight(nIdForm);
 		}
 		populate(appointmentForm, request);
+		populateAddress(appointmentForm, request);
 		AppointmentForm appointmentFormDb = FormService.buildAppointmentForm(nIdForm, 0, 0);
 		String strDeleteIcon = (request.getParameter(PARAMETER_DELETE_ICON) == null) ? MARK_FALSE
 				: request.getParameter(PARAMETER_DELETE_ICON);
@@ -995,6 +998,28 @@ public class AppointmentFormJspBean extends MVCAdminJspBean {
 			}
 		}
 		return bError;
+	}
+
+	private void populateAddress(AppointmentForm appointmentForm, HttpServletRequest request) {
+		String strGeolocAddress = request.getParameter(PARAMETER_GEOLOC_ADDRESS);
+		String strGeolocLatitude = request.getParameter(PARAMETER_GEOLOC_LATITUDE);
+		String strGeolocLongitude = request.getParameter(PARAMETER_GEOLOC_LONGITUDE);
+
+		// If missing from the form, don't do anything (like populate does)
+		if (strGeolocAddress == null || strGeolocAddress == null || strGeolocLongitude == null) {
+			return;
+		}
+
+		if (StringUtils.isNotBlank(strGeolocAddress) && StringUtils.isNotBlank(strGeolocLatitude)
+				&& StringUtils.isNotBlank(strGeolocLongitude)) {
+			appointmentForm.setAddress(strGeolocAddress);
+			appointmentForm.setLatitude(Double.valueOf(strGeolocLatitude));
+			appointmentForm.setLongitude(Double.valueOf(strGeolocLongitude));
+		} else {
+			appointmentForm.setAddress(null);
+			appointmentForm.setLatitude(null);
+			appointmentForm.setLongitude(null);
+		}
 	}
 
 }
