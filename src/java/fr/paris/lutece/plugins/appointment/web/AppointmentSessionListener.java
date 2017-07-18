@@ -43,21 +43,24 @@ import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronou
  * 
  * // TODO Verify if this class is used
  */
-public class AppointmentSessionListener implements HttpSessionListener {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void sessionCreated(HttpSessionEvent se) {
-		// nothing to do
-	}
+public class AppointmentSessionListener implements HttpSessionListener
+{
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sessionCreated( HttpSessionEvent se )
+    {
+        // nothing to do
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void sessionDestroyed(HttpSessionEvent se) {
-		String strSessionId = se.getSession().getId();
-		AppointmentAsynchronousUploadHandler.getHandler().removeSessionFiles(strSessionId);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sessionDestroyed( HttpSessionEvent se )
+    {
+        String strSessionId = se.getSession( ).getId( );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( strSessionId );
+    }
 }

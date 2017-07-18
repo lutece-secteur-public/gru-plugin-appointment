@@ -36,12 +36,13 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
 /**
  * IAppointmentCreationListener Interface
  */
-public interface IAppointmentCreationListener {
-	/**
-	 * Called when an appointment is created
-	 * 
-	 * @param nSlotId
-	 *            The slot id
-	 */
-	void onAppointmentCreated(int nSlotId);
+public interface IAppointmentCreationListener
+{
+    /**
+     * Called when an appointment is created
+     * 
+     * @param nSlotId
+     *            The slot id
+     */
+    void onAppointmentCreated( int nSlotId );
 }

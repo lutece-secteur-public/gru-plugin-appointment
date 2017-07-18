@@ -43,69 +43,70 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  * @author Laurent Payen
  *
  */
-public interface ICalendarTemplateDAO {
-	/**
-	 * The name of the bean of the DAO
-	 */
-	String BEAN_NAME = "appointment.calendarTemplateDAO";
+public interface ICalendarTemplateDAO
+{
+    /**
+     * The name of the bean of the DAO
+     */
+    String BEAN_NAME = "appointment.calendarTemplateDAO";
 
-	/**
-	 * Generate a new primary key
-	 * 
-	 * @param plugin
-	 *            the Plugin
-	 * @return the new primary key
-	 */
-	int getNewPrimaryKey(Plugin plugin);
+    /**
+     * Generate a new primary key
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return the new primary key
+     */
+    int getNewPrimaryKey( Plugin plugin );
 
-	/**
-	 * Insert a new record int the table
-	 * 
-	 * @param template
-	 *            instance of the template object to insert
-	 * @param plugin
-	 *            The plugin
-	 */
-	void insert(CalendarTemplate template, Plugin plugin);
+    /**
+     * Insert a new record int the table
+     * 
+     * @param template
+     *            instance of the template object to insert
+     * @param plugin
+     *            The plugin
+     */
+    void insert( CalendarTemplate template, Plugin plugin );
 
-	/**
-	 * Update the record in the table
-	 * 
-	 * @param template
-	 *            the reference of the template
-	 * @param plugin
-	 *            The plugin
-	 */
-	void update(CalendarTemplate template, Plugin plugin);
+    /**
+     * Update the record in the table
+     * 
+     * @param template
+     *            the reference of the template
+     * @param plugin
+     *            The plugin
+     */
+    void update( CalendarTemplate template, Plugin plugin );
 
-	/**
-	 * Delete a record from the table
-	 * 
-	 * @param nId
-	 *            int identifier of the template to delete
-	 * @param plugin
-	 *            The plugin
-	 */
-	void delete(int nId, Plugin plugin);
+    /**
+     * Delete a record from the table
+     * 
+     * @param nId
+     *            int identifier of the template to delete
+     * @param plugin
+     *            The plugin
+     */
+    void delete( int nId, Plugin plugin );
 
-	/**
-	 * Load the data from the table
-	 * 
-	 * @param nId
-	 *            The id of the template
-	 * @param plugin
-	 *            The plugin
-	 * @return The instance of the template
-	 */
-	CalendarTemplate select(int nId, Plugin plugin);
+    /**
+     * Load the data from the table
+     * 
+     * @param nId
+     *            The id of the template
+     * @param plugin
+     *            The plugin
+     * @return The instance of the template
+     */
+    CalendarTemplate select( int nId, Plugin plugin );
 
-	/**
-	 * Get all the calendar templates
-	 * 
-	 * @param plugin
-	 *            The plugin
-	 * @return The list of calendar templates
-	 */
-	List<CalendarTemplate> selectAll(Plugin plugin);
+    /**
+     * Get all the calendar templates
+     * 
+     * @param plugin
+     *            The plugin
+     * @return The list of calendar templates
+     */
+    List<CalendarTemplate> selectAll( Plugin plugin );
 
 }

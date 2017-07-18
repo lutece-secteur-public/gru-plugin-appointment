@@ -54,61 +54,67 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public class EntryTypeImage extends EntryTypeFile {
-	/**
-	 * Name of the bean of this service
-	 */
-	public static final String BEAN_NAME = "appointment.entryTypeImage";
-	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_image.html";
-	private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_image.html";
-	private static final String TEMPLATE_FILE_IMAGE = "skin/plugins/appointment/entries/recap_entry_type_image.html";
-	private static final String MARK_FILE_NAME = "file_name";
-	private static final String MARK_IMG_URL = "img_url";
+public class EntryTypeImage extends EntryTypeFile
+{
+    /**
+     * Name of the bean of this service
+     */
+    public static final String BEAN_NAME = "appointment.entryTypeImage";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_image.html";
+    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_image.html";
+    private static final String TEMPLATE_FILE_IMAGE = "skin/plugins/appointment/entries/recap_entry_type_image.html";
+    private static final String MARK_FILE_NAME = "file_name";
+    private static final String MARK_IMG_URL = "img_url";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTemplateHtmlForm(Entry entry, boolean bDisplayFront) {
-		return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
+    {
+        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean checkForImages() {
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean checkForImages( )
+    {
+        return true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getUrlDownloadFile(int nResponseId, String strBaseUrl) {
-		return getUrlDownloadImage(nResponseId, strBaseUrl);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getUrlDownloadFile( int nResponseId, String strBaseUrl )
+    {
+        return getUrlDownloadImage( nResponseId, strBaseUrl );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getResponseValueForRecap(Entry entry, HttpServletRequest request, Response response, Locale locale) {
-		if ((response.getFile() != null) && StringUtils.isNotBlank(response.getFile().getTitle())) {
-			if (response.getIdResponse() > 0) {
-				Map<String, Object> model = new HashMap<String, Object>();
-				model.put(MARK_FILE_NAME, response.getFile().getTitle());
-				model.put(MARK_IMG_URL,
-						getUrlDownloadFile(response.getIdResponse(), AppPathService.getBaseUrl(request)));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResponseValueForRecap( Entry entry, HttpServletRequest request, Response response, Locale locale )
+    {
+        if ( ( response.getFile( ) != null ) && StringUtils.isNotBlank( response.getFile( ).getTitle( ) ) )
+        {
+            if ( response.getIdResponse( ) > 0 )
+            {
+                Map<String, Object> model = new HashMap<String, Object>( );
+                model.put( MARK_FILE_NAME, response.getFile( ).getTitle( ) );
+                model.put( MARK_IMG_URL, getUrlDownloadFile( response.getIdResponse( ), AppPathService.getBaseUrl( request ) ) );
 
-				HtmlTemplate template = AppTemplateService.getTemplate(TEMPLATE_FILE_IMAGE, locale, model);
+                HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_FILE_IMAGE, locale, model );
 
-				return template.getHtml();
-			}
+                return template.getHtml( );
+            }
 
-			return response.getFile().getTitle();
-		}
+            return response.getFile( ).getTitle( );
+        }
 
-		return StringUtils.EMPTY;
-	}
+        return StringUtils.EMPTY;
+    }
 }

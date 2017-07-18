@@ -41,6 +41,7 @@ import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
  * @author Laurent Payen
  *
  */
-public interface IAppointmentFormPortletDAO extends IPortletInterfaceDAO {
-	// No new method
+public interface IAppointmentFormPortletDAO extends IPortletInterfaceDAO
+{
+    // No new method
 }

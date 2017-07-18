@@ -19,106 +19,113 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  *
  */
-public class FormHome {
+public class FormHome
+{
 
-	// Static variable pointed at the DAO instance
-	private static IFormDAO _dao = SpringContextService.getBean(IFormDAO.BEAN_NAME);
-	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
+    // Static variable pointed at the DAO instance
+    private static IFormDAO _dao = SpringContextService.getBean( IFormDAO.BEAN_NAME );
+    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
-	/**
-	 * Private constructor - this class does not need to be instantiated
-	 */
-	private FormHome() {
-	}
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private FormHome( )
+    {
+    }
 
-	/**
-	 * Create an instance of the Form class
-	 * 
-	 * @param form
-	 *            The instance of the Form which contains the informations to
-	 *            store
-	 * @return The instance of the Form which has been created with its primary
-	 *         key.
-	 */
-	public static Form create(Form form) {
-		_dao.insert(form, _plugin);
+    /**
+     * Create an instance of the Form class
+     * 
+     * @param form
+     *            The instance of the Form which contains the informations to store
+     * @return The instance of the Form which has been created with its primary key.
+     */
+    public static Form create( Form form )
+    {
+        _dao.insert( form, _plugin );
 
-		return form;
-	}
+        return form;
+    }
 
-	/**
-	 * Update of the Form which is specified in parameter
-	 * 
-	 * @param form
-	 *            The instance of the Form which contains the data to store
-	 * @return The instance of the Form which has been updated
-	 */
-	public static Form update(Form form) {
-		_dao.update(form, _plugin);
+    /**
+     * Update of the Form which is specified in parameter
+     * 
+     * @param form
+     *            The instance of the Form which contains the data to store
+     * @return The instance of the Form which has been updated
+     */
+    public static Form update( Form form )
+    {
+        _dao.update( form, _plugin );
 
-		return form;
-	}
+        return form;
+    }
 
-	/**
-	 * Delete the Form whose identifier is specified in parameter
-	 * 
-	 * @param nKey
-	 *            The Form Id
-	 */
-	public static void delete(int nKey) {
-		_dao.delete(nKey, _plugin);
-	}
+    /**
+     * Delete the Form whose identifier is specified in parameter
+     * 
+     * @param nKey
+     *            The Form Id
+     */
+    public static void delete( int nKey )
+    {
+        _dao.delete( nKey, _plugin );
+    }
 
-	/**
-	 * Returns an instance of the Form whose identifier is specified in
-	 * parameter
-	 * 
-	 * @param nKey
-	 *            The Form primary key
-	 * @return an instance of the Form
-	 */
-	public static Form findByPrimaryKey(int nKey) {
-		return _dao.select(nKey, _plugin);
-	}
+    /**
+     * Returns an instance of the Form whose identifier is specified in parameter
+     * 
+     * @param nKey
+     *            The Form primary key
+     * @return an instance of the Form
+     */
+    public static Form findByPrimaryKey( int nKey )
+    {
+        return _dao.select( nKey, _plugin );
+    }
 
-	/**
-	 * Returns all the active forms
-	 * 
-	 * @return a list of all the active forms
-	 */
-	public static List<Form> findActiveForms() {
-		return _dao.findActiveForms(_plugin);
+    /**
+     * Returns all the active forms
+     * 
+     * @return a list of all the active forms
+     */
+    public static List<Form> findActiveForms( )
+    {
+        return _dao.findActiveForms( _plugin );
 
-	}
+    }
 
-	/**
-	 * Returns all the forms
-	 * 
-	 * @return a list of all the forms
-	 */
-	public static List<Form> findAllForms() {
-		return _dao.findAllForms(_plugin);
+    /**
+     * Returns all the forms
+     * 
+     * @return a list of all the forms
+     */
+    public static List<Form> findAllForms( )
+    {
+        return _dao.findAllForms( _plugin );
 
-	}
+    }
 
-	/**
-	 * Get all the week definitions of the form
-	 * 
-	 * @param nIdForm
-	 *            the FOrm Id
-	 * @return the list of all the week definitions of the form
-	 */
-	public static List<WeekDefinition> getListWeekDefinition(int nIdForm) {
-		List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm(nIdForm);
-		for (WeekDefinition weekDefinition : listWeekDefinition) {
-			List<WorkingDay> listWorkingDay = WorkingDayHome
-					.findByIdWeekDefinition(weekDefinition.getIdWeekDefinition());
-			for (WorkingDay workingDay : listWorkingDay) {
-				List<TimeSlot> listTimeSlot = TimeSlotHome.findByIdWorkingDay(workingDay.getIdWorkingDay());
-				workingDay.setListTimeSlot(listTimeSlot);
-			}
-			weekDefinition.setListWorkingDay(listWorkingDay);
-		}
-		return listWeekDefinition;
-	}
+    /**
+     * Get all the week definitions of the form
+     * 
+     * @param nIdForm
+     *            the FOrm Id
+     * @return the list of all the week definitions of the form
+     */
+    public static List<WeekDefinition> getListWeekDefinition( int nIdForm )
+    {
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
+        for ( WeekDefinition weekDefinition : listWeekDefinition )
+        {
+            List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
+            for ( WorkingDay workingDay : listWorkingDay )
+            {
+                List<TimeSlot> listTimeSlot = TimeSlotHome.findByIdWorkingDay( workingDay.getIdWorkingDay( ) );
+                workingDay.setListTimeSlot( listTimeSlot );
+            }
+            weekDefinition.setListWorkingDay( listWorkingDay );
+        }
+        return listWeekDefinition;
+    }
 }

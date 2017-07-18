@@ -39,57 +39,63 @@ import fr.paris.lutece.portal.business.portlet.PortletTypeHome;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
- * This class provides instances management methods for AppointmentPortlet
- * objects
+ * This class provides instances management methods for AppointmentPortlet objects
  * 
  * @author Laurent Payen
  *
  */
-public class AppointmentPortletHome extends PortletHome {
-	// Static variable pointed at the DAO instance
-	private static IAppointmentPortletDAO _dao = SpringContextService.getBean("appointment.appointmentPortletDAO");
+public class AppointmentPortletHome extends PortletHome
+{
+    // Static variable pointed at the DAO instance
+    private static IAppointmentPortletDAO _dao = SpringContextService.getBean( "appointment.appointmentPortletDAO" );
 
-	/* This class implements the Singleton design pattern. */
-	private static volatile AppointmentPortletHome _singleton;
+    /* This class implements the Singleton design pattern. */
+    private static volatile AppointmentPortletHome _singleton;
 
-	/**
-	 * Constructor
-	 */
-	public AppointmentPortletHome() {
-		if (_singleton == null) {
-			_singleton = this;
-		}
-	}
+    /**
+     * Constructor
+     */
+    public AppointmentPortletHome( )
+    {
+        if ( _singleton == null )
+        {
+            _singleton = this;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPortletTypeId() {
-		String strCurrentClassName = this.getClass().getName();
-		String strPortletTypeId = PortletTypeHome.getPortletTypeId(strCurrentClassName);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getPortletTypeId( )
+    {
+        String strCurrentClassName = this.getClass( ).getName( );
+        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
 
-		return strPortletTypeId;
-	}
+        return strPortletTypeId;
+    }
 
-	/**
-	 * Returns the instance of AppointmentPortlet Portlet
-	 *
-	 * @return the AppointmentPortlet Portlet instance
-	 */
-	public static PortletHome getInstance() {
-		if (_singleton == null) {
-			_singleton = new AppointmentPortletHome();
-		}
+    /**
+     * Returns the instance of AppointmentPortlet Portlet
+     *
+     * @return the AppointmentPortlet Portlet instance
+     */
+    public static PortletHome getInstance( )
+    {
+        if ( _singleton == null )
+        {
+            _singleton = new AppointmentPortletHome( );
+        }
 
-		return _singleton;
-	}
+        return _singleton;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public IPortletInterfaceDAO getDAO() {
-		return _dao;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IPortletInterfaceDAO getDAO( )
+    {
+        return _dao;
+    }
 }

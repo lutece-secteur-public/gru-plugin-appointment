@@ -8,59 +8,64 @@ import java.io.Serializable;
  * @author Laurent Payen
  *
  */
-public class Category implements Serializable {
+public class Category implements Serializable
+{
 
-	/**
-	 * Serial version UID
-	 */
-	private static final long serialVersionUID = 7889020298488911210L;
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 7889020298488911210L;
 
-	/**
-	 * Category Id
-	 */
-	private int _nIdCategory;
+    /**
+     * Category Id
+     */
+    private int _nIdCategory;
 
-	/**
-	 * Label of the category
-	 */
-	private String _strLabel;
+    /**
+     * Label of the category
+     */
+    private String _strLabel;
 
-	/**
-	 * Get the id of the category
-	 * 
-	 * @return the id
-	 */
-	public int getIdCategory() {
-		return _nIdCategory;
-	}
+    /**
+     * Get the id of the category
+     * 
+     * @return the id
+     */
+    public int getIdCategory( )
+    {
+        return _nIdCategory;
+    }
 
-	/**
-	 * Set the id of the category
-	 * 
-	 * @param nIdCategory
-	 *            the id to set
-	 */
-	public void setIdCategory(int nIdCategory) {
-		this._nIdCategory = nIdCategory;
-	}
+    /**
+     * Set the id of the category
+     * 
+     * @param nIdCategory
+     *            the id to set
+     */
+    public void setIdCategory( int nIdCategory )
+    {
+        this._nIdCategory = nIdCategory;
+    }
 
-	/**
-	 * Get the label of the category
-	 * 
-	 * @return the label
-	 */
-	public String getLabel() {
-		return _strLabel;
-	}
+    /**
+     * Get the label of the category
+     * 
+     * @return the label
+     */
+    public String getLabel( )
+    {
+        return _strLabel;
+    }
 
-	/**
-	 * Set the label of the category
-	 * 
-	 * @param strLabel
-	 *            the label to set
-	 */
-	public void setLabel(String strLabel) {
-		this._strLabel = strLabel;
-	}
+    /**
+     * Set the label of the category
+     * 
+     * @param strLabel
+     *            the label to set
+     */
+    public void setLabel( String strLabel )
+    {
+        this._strLabel = strLabel;
+    }
 
 }

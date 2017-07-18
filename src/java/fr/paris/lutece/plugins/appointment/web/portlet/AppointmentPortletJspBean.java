@@ -47,85 +47,92 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public class AppointmentPortletJspBean extends PortletJspBean {
-	/**
-	 * Serial version UID
-	 */
-	private static final long serialVersionUID = -7457066042840152130L;
+public class AppointmentPortletJspBean extends PortletJspBean
+{
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = -7457066042840152130L;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getCreate(HttpServletRequest request) {
-		String strPageId = request.getParameter(PARAMETER_PAGE_ID);
-		String strPortletTypeId = request.getParameter(PARAMETER_PORTLET_TYPE_ID);
-		HtmlTemplate template = getCreateTemplate(strPageId, strPortletTypeId);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCreate( HttpServletRequest request )
+    {
+        String strPageId = request.getParameter( PARAMETER_PAGE_ID );
+        String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
+        HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId );
 
-		return template.getHtml();
-	}
+        return template.getHtml( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getModify(HttpServletRequest request) {
-		String strPortletId = request.getParameter(PARAMETER_PORTLET_ID);
-		int nPortletId = Integer.parseInt(strPortletId);
-		AppointmentPortlet portlet = (AppointmentPortlet) PortletHome.findByPrimaryKey(nPortletId);
-		HtmlTemplate template = getModifyTemplate(portlet);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getModify( HttpServletRequest request )
+    {
+        String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
+        int nPortletId = Integer.parseInt( strPortletId );
+        AppointmentPortlet portlet = (AppointmentPortlet) PortletHome.findByPrimaryKey( nPortletId );
+        HtmlTemplate template = getModifyTemplate( portlet );
 
-		return template.getHtml();
-	}
+        return template.getHtml( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String doCreate(HttpServletRequest request) {
-		AppointmentPortlet portlet = new AppointmentPortlet();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String doCreate( HttpServletRequest request )
+    {
+        AppointmentPortlet portlet = new AppointmentPortlet( );
 
-		// recovers portlet specific attributes
-		String strPageId = request.getParameter(PARAMETER_PAGE_ID);
-		int nPageId = Integer.parseInt(strPageId);
+        // recovers portlet specific attributes
+        String strPageId = request.getParameter( PARAMETER_PAGE_ID );
+        int nPageId = Integer.parseInt( strPageId );
 
-		// get portlet common attributes
-		String strErrorUrl = setPortletCommonData(request, portlet);
+        // get portlet common attributes
+        String strErrorUrl = setPortletCommonData( request, portlet );
 
-		if (strErrorUrl != null) {
-			return strErrorUrl;
-		}
+        if ( strErrorUrl != null )
+        {
+            return strErrorUrl;
+        }
 
-		portlet.setPageId(nPageId);
+        portlet.setPageId( nPageId );
 
-		// Creates the portlet
-		AppointmentPortletHome.getInstance().create(portlet);
+        // Creates the portlet
+        AppointmentPortletHome.getInstance( ).create( portlet );
 
-		// Displays the page with the new Portlet
-		return getPageUrl(nPageId);
-	}
+        // Displays the page with the new Portlet
+        return getPageUrl( nPageId );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String doModify(HttpServletRequest request) {
-		// fetches portlet attributes
-		String strPortletId = request.getParameter(PARAMETER_PORTLET_ID);
-		int nPortletId = Integer.parseInt(strPortletId);
-		AppointmentPortlet portlet = (AppointmentPortlet) PortletHome.findByPrimaryKey(nPortletId);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String doModify( HttpServletRequest request )
+    {
+        // fetches portlet attributes
+        String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
+        int nPortletId = Integer.parseInt( strPortletId );
+        AppointmentPortlet portlet = (AppointmentPortlet) PortletHome.findByPrimaryKey( nPortletId );
 
-		// retrieve portlet common attributes
-		String strErrorUrl = setPortletCommonData(request, portlet);
+        // retrieve portlet common attributes
+        String strErrorUrl = setPortletCommonData( request, portlet );
 
-		if (strErrorUrl != null) {
-			return strErrorUrl;
-		}
+        if ( strErrorUrl != null )
+        {
+            return strErrorUrl;
+        }
 
-		// updates the portlet
-		portlet.update();
+        // updates the portlet
+        portlet.update( );
 
-		// displays the page with the updated portlet
-		return getPageUrl(portlet.getPageId());
-	}
+        // displays the page with the updated portlet
+        return getPageUrl( portlet.getPageId( ) );
+    }
 }

@@ -44,126 +44,140 @@ import fr.paris.lutece.portal.business.file.File;
  * @author Laurent Payen
  *
  */
-public class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO> {
-	/**
-	 * Serial version UID
-	 */
-	private static final long serialVersionUID = -248405445729375667L;
+public class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO>
+{
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = -248405445729375667L;
 
-	/**
-	 * The recap value
-	 */
-	private String _strRecapValue;
+    /**
+     * The recap value
+     */
+    private String _strRecapValue;
 
-	/**
-	 * The response
-	 */
-	private Response _response;
+    /**
+     * The response
+     */
+    private Response _response;
 
-	/**
-	 * Creates a new response DTO for recap from a response
-	 * 
-	 * @param response
-	 *            The response
-	 */
-	public ResponseRecapDTO(Response response) {
-		this._response = response;
-	}
+    /**
+     * Creates a new response DTO for recap from a response
+     * 
+     * @param response
+     *            The response
+     */
+    public ResponseRecapDTO( Response response )
+    {
+        this._response = response;
+    }
 
-	/**
-	 * Creates a new response DTO for recap from a response
-	 * 
-	 * @param response
-	 *            The response
-	 * @param strRecapValue
-	 *            The recap value
-	 */
-	public ResponseRecapDTO(Response response, String strRecapValue) {
-		this._response = response;
-		this._strRecapValue = strRecapValue;
-	}
+    /**
+     * Creates a new response DTO for recap from a response
+     * 
+     * @param response
+     *            The response
+     * @param strRecapValue
+     *            The recap value
+     */
+    public ResponseRecapDTO( Response response, String strRecapValue )
+    {
+        this._response = response;
+        this._strRecapValue = strRecapValue;
+    }
 
-	/**
-	 * Get the recap value of this response
-	 * 
-	 * @return The recap value of this response
-	 */
-	public String getRecapValue() {
-		return this._strRecapValue;
-	}
+    /**
+     * Get the recap value of this response
+     * 
+     * @return The recap value of this response
+     */
+    public String getRecapValue( )
+    {
+        return this._strRecapValue;
+    }
 
-	/**
-	 * Set the recap value of this response
-	 * 
-	 * @param strRecapValue
-	 *            The recap value of this response
-	 */
-	public void setRecapValue(String strRecapValue) {
-		this._strRecapValue = strRecapValue;
-	}
+    /**
+     * Set the recap value of this response
+     * 
+     * @param strRecapValue
+     *            The recap value of this response
+     */
+    public void setRecapValue( String strRecapValue )
+    {
+        this._strRecapValue = strRecapValue;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Entry getEntry() {
-		return _response.getEntry();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Entry getEntry( )
+    {
+        return _response.getEntry( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getIdResponse() {
-		return _response.getIdResponse();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getIdResponse( )
+    {
+        return _response.getIdResponse( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Field getField() {
-		return _response.getField();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Field getField( )
+    {
+        return _response.getField( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getToStringValueResponse() {
-		return _response.getToStringValueResponse();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getToStringValueResponse( )
+    {
+        return _response.getToStringValueResponse( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getResponseValue() {
-		return _response.getResponseValue();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getResponseValue( )
+    {
+        return _response.getResponseValue( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getStatus() {
-		return _response.getStatus();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getStatus( )
+    {
+        return _response.getStatus( );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public File getFile() {
-		return _response.getFile();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public File getFile( )
+    {
+        return _response.getFile( );
+    }
 
-	@Override
-	public int compareTo(ResponseRecapDTO o) {
+    @Override
+    public int compareTo( ResponseRecapDTO o )
+    {
 
-		if (this._response.getEntry() != null && o._response.getEntry() != null) {
-			return (this._response.getEntry().getPosition() - o._response.getEntry().getPosition());
-		}
-		return 0;
-	}
+        if ( this._response.getEntry( ) != null && o._response.getEntry( ) != null )
+        {
+            return ( this._response.getEntry( ).getPosition( ) - o._response.getEntry( ).getPosition( ) );
+        }
+        return 0;
+    }
 }

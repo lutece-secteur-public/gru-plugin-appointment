@@ -42,86 +42,93 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
- * This class provides instances management methods for Calendar Template
- * objects
+ * This class provides instances management methods for Calendar Template objects
  * 
  * @author Laurent Payen
  *
  */
-public final class CalendarTemplateHome {
-	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
-	private static ICalendarTemplateDAO _dao = SpringContextService.getBean(ICalendarTemplateDAO.BEAN_NAME);
+public final class CalendarTemplateHome
+{
+    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+    private static ICalendarTemplateDAO _dao = SpringContextService.getBean( ICalendarTemplateDAO.BEAN_NAME );
 
-	/**
-	 * Default constructor
-	 */
-	private CalendarTemplateHome() {
-		// Private constructor
-	}
+    /**
+     * Default constructor
+     */
+    private CalendarTemplateHome( )
+    {
+        // Private constructor
+    }
 
-	/**
-	 * Create a new calendar template
-	 * 
-	 * @param template
-	 *            The template to create
-	 */
-	public static void create(CalendarTemplate template) {
-		_dao.insert(template, _plugin);
-	}
+    /**
+     * Create a new calendar template
+     * 
+     * @param template
+     *            The template to create
+     */
+    public static void create( CalendarTemplate template )
+    {
+        _dao.insert( template, _plugin );
+    }
 
-	/**
-	 * Update an existing template
-	 * 
-	 * @param template
-	 *            The template
-	 */
-	public static void update(CalendarTemplate template) {
-		_dao.update(template, _plugin);
-	}
+    /**
+     * Update an existing template
+     * 
+     * @param template
+     *            The template
+     */
+    public static void update( CalendarTemplate template )
+    {
+        _dao.update( template, _plugin );
+    }
 
-	/**
-	 * Delete a template from its primary key
-	 * 
-	 * @param nId
-	 *            The id of the template to remove
-	 */
-	public static void delete(int nId) {
-		_dao.delete(nId, _plugin);
-	}
+    /**
+     * Delete a template from its primary key
+     * 
+     * @param nId
+     *            The id of the template to remove
+     */
+    public static void delete( int nId )
+    {
+        _dao.delete( nId, _plugin );
+    }
 
-	/**
-	 * Find a template by its primary key
-	 * 
-	 * @param nId
-	 *            The id of the template
-	 * @return The calendar template found, or null if no calendar template has
-	 *         the given primary key
-	 */
-	public static CalendarTemplate findByPrimaryKey(int nId) {
-		return _dao.select(nId, _plugin);
-	}
+    /**
+     * Find a template by its primary key
+     * 
+     * @param nId
+     *            The id of the template
+     * @return The calendar template found, or null if no calendar template has the given primary key
+     */
+    public static CalendarTemplate findByPrimaryKey( int nId )
+    {
+        return _dao.select( nId, _plugin );
+    }
 
-	/**
-	 * Get the list of calendar templates
-	 * 
-	 * @return The list of calendar templates
-	 */
-	public static List<CalendarTemplate> findAll() {
-		return _dao.selectAll(_plugin);
-	}
+    /**
+     * Get the list of calendar templates
+     * 
+     * @return The list of calendar templates
+     */
+    public static List<CalendarTemplate> findAll( )
+    {
+        return _dao.selectAll( _plugin );
+    }
 
-	/**
-	 * Get the list of calendar templates in a reference list
-	 * 
-	 * @return The list of calendar templates in a reference list
-	 */
-	public static ReferenceList findAllInReferenceList() {
-		List<CalendarTemplate> listCalendarTemplates = findAll();
-		ReferenceList refListTemplates = new ReferenceList(listCalendarTemplates.size());
-		for (CalendarTemplate template : listCalendarTemplates) {
-			refListTemplates.addItem(template.getIdCalendarTemplate(), template.getTitle());
-		}
-		return refListTemplates;
-	}
+    /**
+     * Get the list of calendar templates in a reference list
+     * 
+     * @return The list of calendar templates in a reference list
+     */
+    public static ReferenceList findAllInReferenceList( )
+    {
+        List<CalendarTemplate> listCalendarTemplates = findAll( );
+        ReferenceList refListTemplates = new ReferenceList( listCalendarTemplates.size( ) );
+        for ( CalendarTemplate template : listCalendarTemplates )
+        {
+            refListTemplates.addItem( template.getIdCalendarTemplate( ), template.getTitle( ) );
+        }
+        return refListTemplates;
+    }
 
 }

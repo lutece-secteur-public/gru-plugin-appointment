@@ -46,38 +46,44 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormListPortlet extends PortletHtmlContent {
-	/**
-	 * Sets the identifier of the portlet type to value specified
-	 */
-	public AppointmentFormListPortlet() {
-		setPortletTypeId(AppointmentFormListPortletHome.getInstance().getPortletTypeId());
-	}
+public class AppointmentFormListPortlet extends PortletHtmlContent
+{
+    /**
+     * Sets the identifier of the portlet type to value specified
+     */
+    public AppointmentFormListPortlet( )
+    {
+        setPortletTypeId( AppointmentFormListPortletHome.getInstance( ).getPortletTypeId( ) );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getHtmlContent(HttpServletRequest request) {
-		if (request != null) {
-			return AppointmentApp.getFormListHtml(request, request.getLocale());
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getHtmlContent( HttpServletRequest request )
+    {
+        if ( request != null )
+        {
+            return AppointmentApp.getFormListHtml( request, request.getLocale( ) );
+        }
 
-		return StringUtils.EMPTY;
-	}
+        return StringUtils.EMPTY;
+    }
 
-	/**
-	 * Updates the current instance of the AppointmentFormListPortlet object
-	 */
-	public void update() {
-		AppointmentFormListPortletHome.getInstance().update(this);
-	}
+    /**
+     * Updates the current instance of the AppointmentFormListPortlet object
+     */
+    public void update( )
+    {
+        AppointmentFormListPortletHome.getInstance( ).update( this );
+    }
 
-	/**
-	 * Removes the current instance of the AppointmentFormListPortlet object
-	 */
-	@Override
-	public void remove() {
-		AppointmentFormListPortletHome.getInstance().remove(this);
-	}
+    /**
+     * Removes the current instance of the AppointmentFormListPortlet object
+     */
+    @Override
+    public void remove( )
+    {
+        AppointmentFormListPortletHome.getInstance( ).remove( this );
+    }
 }

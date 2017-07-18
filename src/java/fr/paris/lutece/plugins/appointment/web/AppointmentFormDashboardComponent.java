@@ -60,62 +60,65 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormDashboardComponent extends DashboardComponent {
-	// MARKS
-	private static final String MARK_URL = "url";
-	private static final String MARK_ICON = "icon";
-	private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
-	private static final String VIEW_PERMISSIONS_FORM = "permissions";
+public class AppointmentFormDashboardComponent extends DashboardComponent
+{
+    // MARKS
+    private static final String MARK_URL = "url";
+    private static final String MARK_ICON = "icon";
+    private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
+    private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
-	// TEMPLATES
-	private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
+    // TEMPLATES
+    private static final String TEMPLATE_DASHBOARD = "/admin/plugins/appointment/appointment_form_dashboard.html";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDashboardData(AdminUser user, HttpServletRequest request) {
-		List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight();
-		listAppointmentForm = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection(listAppointmentForm,
-				user);
-		listAppointmentForm = listAppointmentForm.stream().sorted((a1, a2) -> a1.getTitle().compareTo(a2.getTitle()))
-				.collect(Collectors.toList());
-		Map<String, Object> model = new HashMap<String, Object>();
-		Plugin plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
-		model.put(MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection(listAppointmentForm,
-				AppointmentResourceIdService.PERMISSION_VIEW_FORM, AdminUserService.getAdminUser(request)));
-		model.put(MARK_ICON, plugin.getIconUrl());
-		model.put(MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms(request));
-		model.put(VIEW_PERMISSIONS_FORM, getPermissions(listAppointmentForm, AdminUserService.getAdminUser(request)));
-		HtmlTemplate template = AppTemplateService.getTemplate(TEMPLATE_DASHBOARD, AdminUserService.getLocale(request),
-				model);
-		return template.getHtml();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDashboardData( AdminUser user, HttpServletRequest request )
+    {
+        List<AppointmentForm> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
+        listAppointmentForm = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, user );
+        listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
+        Map<String, Object> model = new HashMap<String, Object>( );
+        Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+        model.put(
+                MARK_APPOINTMENTFORM_LIST,
+                RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
+                        AdminUserService.getAdminUser( request ) ) );
+        model.put( MARK_ICON, plugin.getIconUrl( ) );
+        model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        model.put( VIEW_PERMISSIONS_FORM, getPermissions( listAppointmentForm, AdminUserService.getAdminUser( request ) ) );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, AdminUserService.getLocale( request ), model );
+        return template.getHtml( );
+    }
 
-	/**
-	 * Get Form Permissions
-	 * 
-	 * @param listForms
-	 * @param request
-	 * @return
-	 */
-	private static String[][] getPermissions(List<AppointmentForm> listForms, AdminUser user) {
-		String[][] retour = new String[listForms.size()][4];
-		int nI = 0;
+    /**
+     * Get Form Permissions
+     * 
+     * @param listForms
+     * @param request
+     * @return
+     */
+    private static String [ ][ ] getPermissions( List<AppointmentForm> listForms, AdminUser user )
+    {
+        String [ ][ ] retour = new String [ listForms.size( )] [ 4];
+        int nI = 0;
 
-		for (AppointmentForm tmpForm : listForms) {
-			String[] strRetour = new String[4];
-			strRetour[0] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
-					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_CREATE_FORM, user));
-			strRetour[1] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
-					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user));
-			strRetour[2] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
-					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user));
-			strRetour[3] = String.valueOf(RBACService.isAuthorized(AppointmentForm.RESOURCE_TYPE,
-					String.valueOf(tmpForm.getIdForm()), AppointmentResourceIdService.PERMISSION_DELETE_FORM, user));
-			retour[nI++] = strRetour;
-		}
+        for ( AppointmentForm tmpForm : listForms )
+        {
+            String [ ] strRetour = new String [ 4];
+            strRetour [0] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) );
+            strRetour [1] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
+            strRetour [2] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
+            strRetour [3] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+                    AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
+            retour [nI++] = strRetour;
+        }
 
-		return retour;
-	}
+        return retour;
+    }
 }

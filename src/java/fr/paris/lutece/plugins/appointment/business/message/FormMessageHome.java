@@ -11,68 +11,74 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  *
  */
-public final class FormMessageHome {
+public final class FormMessageHome
+{
 
-	// Static variable pointed at the DAO instance
-	private static IFormMessageDAO _dao = SpringContextService.getBean(IFormMessageDAO.BEAN_NAME);
-	private static Plugin _plugin = PluginService.getPlugin(AppointmentPlugin.PLUGIN_NAME);
+    // Static variable pointed at the DAO instance
+    private static IFormMessageDAO _dao = SpringContextService.getBean( IFormMessageDAO.BEAN_NAME );
+    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
-	/**
-	 * Private constructor - this class need not be instantiated
-	 */
-	private FormMessageHome() {
-	}
+    /**
+     * Private constructor - this class need not be instantiated
+     */
+    private FormMessageHome( )
+    {
+    }
 
-	/**
-	 * Create a form message
-	 * 
-	 * @param formMessage
-	 *            The instance of the form message to create
-	 */
-	public static void create(FormMessage formMessage) {
-		_dao.insert(formMessage, _plugin);
-	}
+    /**
+     * Create a form message
+     * 
+     * @param formMessage
+     *            The instance of the form message to create
+     */
+    public static void create( FormMessage formMessage )
+    {
+        _dao.insert( formMessage, _plugin );
+    }
 
-	/**
-	 * Update a form message
-	 * 
-	 * @param formMessage
-	 *            The form message to update
-	 */
-	public static void update(FormMessage formMessage) {
-		_dao.update(formMessage, _plugin);
-	}
+    /**
+     * Update a form message
+     * 
+     * @param formMessage
+     *            The form message to update
+     */
+    public static void update( FormMessage formMessage )
+    {
+        _dao.update( formMessage, _plugin );
+    }
 
-	/**
-	 * Delete a form message from its primary key
-	 * 
-	 * @param nFormMessageId
-	 *            The id of the form message
-	 */
-	public static void delete(int nFormMessageId) {
-		_dao.delete(nFormMessageId, _plugin);
-	}
+    /**
+     * Delete a form message from its primary key
+     * 
+     * @param nFormMessageId
+     *            The id of the form message
+     */
+    public static void delete( int nFormMessageId )
+    {
+        _dao.delete( nFormMessageId, _plugin );
+    }
 
-	/**
-	 * Get a form message from its primary key
-	 * 
-	 * @param nFormMessageId
-	 *            The id of the form message
-	 * @return The form message, or null if no form message has the given
-	 *         primary key
-	 */
-	public static FormMessage findByPrimaryKey(int nFormMessageId) {
-		return _dao.select(nFormMessageId, _plugin);
-	}
+    /**
+     * Get a form message from its primary key
+     * 
+     * @param nFormMessageId
+     *            The id of the form message
+     * @return The form message, or null if no form message has the given primary key
+     */
+    public static FormMessage findByPrimaryKey( int nFormMessageId )
+    {
+        return _dao.select( nFormMessageId, _plugin );
+    }
 
-	/**
-	 * Returns the formMessage of the form
-	 * 
-	 * @param nIdForm
-	 *            the form id
-	 * @return the formMessage of the form
-	 */
-	public static FormMessage findByIdForm(int nIdForm) {
-		return _dao.findByIdForm(nIdForm, _plugin);
-	}
+    /**
+     * Returns the formMessage of the form
+     * 
+     * @param nIdForm
+     *            the form id
+     * @return the formMessage of the form
+     */
+    public static FormMessage findByIdForm( int nIdForm )
+    {
+        return _dao.findByIdForm( nIdForm, _plugin );
+    }
 }

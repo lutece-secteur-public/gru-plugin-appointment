@@ -43,33 +43,37 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  * @author Laurent Payen
  *
  */
-public class EntryTypeSelect extends AbstractEntryTypeSelect {
-	private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_select.html";
-	private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_select.html";
-	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_select.html";
-	private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_select.html";
+public class EntryTypeSelect extends AbstractEntryTypeSelect
+{
+    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_select.html";
+    private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_select.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_select.html";
+    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_select.html";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTemplateHtmlForm(Entry entry, boolean bDisplayFront) {
-		return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
+    {
+        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTemplateCreate(Entry entry, boolean bDisplayFront) {
-		return TEMPLATE_CREATE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTemplateCreate( Entry entry, boolean bDisplayFront )
+    {
+        return TEMPLATE_CREATE;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTemplateModify(Entry entry, boolean bDisplayFront) {
-		return TEMPLATE_MODIFY;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTemplateModify( Entry entry, boolean bDisplayFront )
+    {
+        return TEMPLATE_MODIFY;
+    }
 }

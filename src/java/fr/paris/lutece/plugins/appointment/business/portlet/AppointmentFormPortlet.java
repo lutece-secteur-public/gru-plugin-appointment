@@ -45,60 +45,67 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormPortlet extends PortletHtmlContent {
+public class AppointmentFormPortlet extends PortletHtmlContent
+{
 
-	private int _nIdAppointmentForm;
+    private int _nIdAppointmentForm;
 
-	/**
-	 * Sets the identifier of the portlet type to value specified
-	 */
-	public AppointmentFormPortlet() {
-		setPortletTypeId(AppointmentFormPortletHome.getInstance().getPortletTypeId());
-	}
+    /**
+     * Sets the identifier of the portlet type to value specified
+     */
+    public AppointmentFormPortlet( )
+    {
+        setPortletTypeId( AppointmentFormPortletHome.getInstance( ).getPortletTypeId( ) );
+    }
 
-	/**
-	 * Returns the HTML code of the AppointmentPortlet portlet
-	 * 
-	 * @param request
-	 *            The HTTP servlet request
-	 * @return The HTML code of the AppointmentPortlet portlet
-	 */
-	@Override
-	public String getHtmlContent(HttpServletRequest request) {
-		return StringUtils.EMPTY;
-	}
+    /**
+     * Returns the HTML code of the AppointmentPortlet portlet
+     * 
+     * @param request
+     *            The HTTP servlet request
+     * @return The HTML code of the AppointmentPortlet portlet
+     */
+    @Override
+    public String getHtmlContent( HttpServletRequest request )
+    {
+        return StringUtils.EMPTY;
+    }
 
-	/**
-	 * Updates the current instance of the AppointmentPortlet object
-	 */
-	public void update() {
-		AppointmentFormPortletHome.getInstance().update(this);
-	}
+    /**
+     * Updates the current instance of the AppointmentPortlet object
+     */
+    public void update( )
+    {
+        AppointmentFormPortletHome.getInstance( ).update( this );
+    }
 
-	/**
-	 * Removes the current instance of the AppointmentPortlet object
-	 */
-	@Override
-	public void remove() {
-		AppointmentFormPortletHome.getInstance().remove(this);
-	}
+    /**
+     * Removes the current instance of the AppointmentPortlet object
+     */
+    @Override
+    public void remove( )
+    {
+        AppointmentFormPortletHome.getInstance( ).remove( this );
+    }
 
-	/**
-	 * Get the id of the appointment form to display
-	 * 
-	 * @return The id of the appointment form to display
-	 */
-	public int getIdAppointmentForm() {
-		return _nIdAppointmentForm;
-	}
+    /**
+     * Get the id of the appointment form to display
+     * 
+     * @return The id of the appointment form to display
+     */
+    public int getIdAppointmentForm( )
+    {
+        return _nIdAppointmentForm;
+    }
 
-	/**
-	 * Set the id of the appointment form to display
-	 * 
-	 * @param nIdAppointmentForm
-	 *            The id of the appointment form to display
-	 */
-	public void setIdAppointmentForm(int nIdAppointmentForm) {
-		this._nIdAppointmentForm = nIdAppointmentForm;
-	}
+    /**
+     * Set the id of the appointment form to display
+     * 
+     * @param nIdAppointmentForm
+     *            The id of the appointment form to display
+     */
+    public void setIdAppointmentForm( int nIdAppointmentForm )
+    {
+        this._nIdAppointmentForm = nIdAppointmentForm;
+    }
 }

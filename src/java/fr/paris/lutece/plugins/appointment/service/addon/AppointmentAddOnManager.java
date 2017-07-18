@@ -38,38 +38,40 @@ import java.util.Locale;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
- * Manager service for add-ons of appointments Add-ons are additional content of
- * appointments provided by appointment modules. Add-ons should only be
- * displayed to admin users.
+ * Manager service for add-ons of appointments Add-ons are additional content of appointments provided by appointment modules. Add-ons should only be displayed
+ * to admin users.
  * 
  * @author Laurent Payen
  *
  */
-public final class AppointmentAddOnManager {
-	/**
-	 * Private constructor
-	 */
-	private AppointmentAddOnManager() {
-		// Default constructor
-	}
+public final class AppointmentAddOnManager
+{
+    /**
+     * Private constructor
+     */
+    private AppointmentAddOnManager( )
+    {
+        // Default constructor
+    }
 
-	/**
-	 * Get the HTML code of add-ons of a given appointment.
-	 * 
-	 * @param nIdAppointment
-	 *            The id of the appointment
-	 * @param locale
-	 *            The locale to use
-	 * @return The HTML content of the add-on
-	 */
-	public static String getAppointmentAddOn(int nIdAppointment, Locale locale) {
-		StringBuilder sbAddOn = new StringBuilder();
+    /**
+     * Get the HTML code of add-ons of a given appointment.
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     * @param locale
+     *            The locale to use
+     * @return The HTML content of the add-on
+     */
+    public static String getAppointmentAddOn( int nIdAppointment, Locale locale )
+    {
+        StringBuilder sbAddOn = new StringBuilder( );
 
-		for (IAppointmentAddonService addonService : SpringContextService
-				.getBeansOfType(IAppointmentAddonService.class)) {
-			sbAddOn.append(addonService.getAppointmentAddOn(nIdAppointment, locale));
-		}
+        for ( IAppointmentAddonService addonService : SpringContextService.getBeansOfType( IAppointmentAddonService.class ) )
+        {
+            sbAddOn.append( addonService.getAppointmentAddOn( nIdAppointment, locale ) );
+        }
 
-		return sbAddOn.toString();
-	}
+        return sbAddOn.toString( );
+    }
 }
