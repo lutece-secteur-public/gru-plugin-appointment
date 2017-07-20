@@ -616,21 +616,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String [ ] tabIdAppointmentToDelete = (String [ ]) request.getSession( ).getAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
         request.getSession( ).removeAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
         Integer idForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        ArrayList<String> listStringIdAppointment = new ArrayList<>();
         if ( tabIdAppointmentToDelete != null )
         {
             for ( String strIdAppointment : tabIdAppointmentToDelete )
             {
-                AppointmentService.deleteAppointment( new Integer( strIdAppointment ), getUser( ) );
+                AppointmentService.deleteAppointment( Integer.valueOf( strIdAppointment ), getUser( ) );
             }
             addInfo( INFO_APPOINTMENT_MASSREMOVED, getLocale( ) );
+            listStringIdAppointment.addAll(Arrays.asList( tabIdAppointmentToDelete ) ) ; 
         }
         // Need to update the list of the appointments in session
-        List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );
-        ArrayList<String> listStringIdAppointment = new ArrayList<>( Arrays.asList( tabIdAppointmentToDelete ) );
+        List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );        
         if ( listAppointmentsDTO != null )
         {
             listAppointmentsDTO = listAppointmentsDTO.stream( )
-                    .filter( a -> !listStringIdAppointment.contains( new Integer( a.getIdAppointment( ) ).toString( ) ) ).collect( Collectors.toList( ) );
+                    .filter( a -> !listStringIdAppointment.contains( Integer.toString( a.getIdAppointment( ) ) ) ).collect( Collectors.toList( ) );
             request.getSession( ).setAttribute( SESSION_LIST_APPOINTMENTS, listAppointmentsDTO );
         }
         return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, idForm );
