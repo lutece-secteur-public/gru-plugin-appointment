@@ -14,7 +14,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  *
  */
-public class ClosingDayHome
+public final class ClosingDayHome
 {
 
     // Static variable pointed at the DAO instance

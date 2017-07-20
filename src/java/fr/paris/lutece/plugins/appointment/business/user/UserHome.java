@@ -15,7 +15,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  *
  */
-public class UserHome
+public final class UserHome
 {
 
     // Static variable pointed at the DAO instance
