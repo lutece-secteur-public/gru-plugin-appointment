@@ -260,7 +260,7 @@ public class AppointmentService
      *            the filter
      * @return a list of appointments
      */
-    public static List<AppointmentDTO> findListAppointmentsByFilter( AppointmentFilter appointmentFilter )
+    public static List<AppointmentDTO> findListAppointmentsDTOByFilter( AppointmentFilter appointmentFilter )
     {
         List<AppointmentDTO> listAppointmentsDTO = new ArrayList<>( );
         for ( Appointment appointment : AppointmentHome.findByFilter( appointmentFilter ) )
@@ -268,6 +268,11 @@ public class AppointmentService
             listAppointmentsDTO.add( buildAppointmentDTO( appointment ) );
         }
         return listAppointmentsDTO;
+    }
+
+    public static List<Appointment> findListAppointmentsByFilter( AppointmentFilter appointmentFilter )
+    {
+        return AppointmentHome.findByFilter( appointmentFilter );
     }
 
     /**

@@ -458,7 +458,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             // Populate the filter
             populate( filter, request );
-            listAppointmentsDTO = AppointmentService.findListAppointmentsByFilter( filter ).stream( )
+            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter ).stream( )
                     .sorted( ( a1, a2 ) -> Integer.compare( a1.getIdAppointment( ), a2.getIdAppointment( ) ) ).collect( Collectors.toList( ) );
         }
         // If it is an order by
@@ -491,7 +491,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strUrl = url.getUrl( );
         if ( listAppointmentsDTO == null )
         {
-            listAppointmentsDTO = AppointmentService.findListAppointmentsByFilter( filter ).stream( )
+            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter ).stream( )
                     .sorted( ( a1, a2 ) -> Integer.compare( a1.getIdAppointment( ), a2.getIdAppointment( ) ) ).collect( Collectors.toList( ) );
         }
         request.getSession( ).setAttribute( SESSION_LIST_APPOINTMENTS, listAppointmentsDTO );
