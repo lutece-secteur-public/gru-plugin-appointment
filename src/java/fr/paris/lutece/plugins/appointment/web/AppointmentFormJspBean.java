@@ -1088,13 +1088,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         String strGeolocAddress = request.getParameter( PARAMETER_GEOLOC_ADDRESS );
         String strGeolocLatitude = request.getParameter( PARAMETER_GEOLOC_LATITUDE );
         String strGeolocLongitude = request.getParameter( PARAMETER_GEOLOC_LONGITUDE );
-
-        // If missing from the form, don't do anything (like populate does)
-        if ( strGeolocAddress == null || strGeolocAddress == null || strGeolocLongitude == null )
-        {
-            return;
-        }
-
         if ( StringUtils.isNotBlank( strGeolocAddress ) && StringUtils.isNotBlank( strGeolocLatitude ) && StringUtils.isNotBlank( strGeolocLongitude ) )
         {
             appointmentForm.setAddress( strGeolocAddress );

@@ -291,7 +291,7 @@ public class WorkingDayService
         HashSet<String> setDayOfWeek = new HashSet<>( );
         for ( WorkingDay workingDay : listWorkingDay )
         {
-            setDayOfWeek.add( new Integer( workingDay.getDayOfWeek( ) ).toString( ) );
+            setDayOfWeek.add( Integer.toString( workingDay.getDayOfWeek( ) ) );
         }
         return setDayOfWeek;
     }

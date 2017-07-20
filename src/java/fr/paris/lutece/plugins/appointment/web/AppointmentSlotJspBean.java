@@ -422,7 +422,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
         Map<String, String> additionalParameters = new HashMap<>( );
-        additionalParameters.put( PARAMETER_ID_FORM, new Integer( slotFromSessionOrFromDb.getIdForm( ) ).toString( ) );
+        additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( slotFromSessionOrFromDb.getIdForm( ) ) );
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, slotFromSessionOrFromDb.getDate( ).toString( ) );
         return redirect( request, VIEW_MANAGE_SPECIFIC_WEEK, additionalParameters );
     }

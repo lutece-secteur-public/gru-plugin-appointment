@@ -169,8 +169,14 @@ public class ClosingDayService
             }
             finally
             {
-                fis.close( );
-                workbook.close( );
+                if ( fis != null )
+                {
+                    fis.close( );
+                }
+                if ( workbook != null )
+                {
+                    workbook.close( );
+                }
             }
         }
         return new ArrayList<LocalDate>( listDays );

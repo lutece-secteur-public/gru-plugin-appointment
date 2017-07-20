@@ -166,14 +166,14 @@ public class EntryService extends RemovalListenerService implements Serializable
             {
                 for ( int i = 0; i < orderFirstLevel.size( ); i++ )
                 {
-                    if ( ( orderFirstLevel.get( i ) == entry.getPosition( ) ) && ( entry.getPosition( ) > entryToChangeOrder.getPosition( ) )
-                            && ( entry.getPosition( ) <= nOrderToSet ) )
+                    if ( ( orderFirstLevel.get( i ).equals( Integer.valueOf( entry.getPosition( ) ) ) )
+                            && ( entry.getPosition( ) > entryToChangeOrder.getPosition( ) ) && ( entry.getPosition( ) <= nOrderToSet ) )
                     {
                         if ( nNbChild == 0 )
                         {
                             nNewOrder = orderFirstLevel.get( i - 1 );
 
-                            if ( orderFirstLevel.get( i - 1 ) != entryToChangeOrder.getPosition( ) )
+                            if ( !orderFirstLevel.get( i - 1 ).equals( Integer.valueOf( entryToChangeOrder.getPosition( ) ) ) )
                             {
                                 nNewOrder -= nbChildEntryToChangeOrder;
                             }

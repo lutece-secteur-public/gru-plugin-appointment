@@ -148,7 +148,10 @@ public class CalendarTemplateDAO implements ICalendarTemplateDAO
         }
         finally
         {
-            daoUtil.free( );
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
         }
         return listTemplates;
     }

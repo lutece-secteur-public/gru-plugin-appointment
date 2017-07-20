@@ -574,7 +574,7 @@ public class AppointmentUtilities
                 for ( Entry e : listEntry )
                 {
                     Integer key = e.getIdEntry( );
-                    String strValue = StringUtils.EMPTY;
+                    StringBuffer strValue = new StringBuffer( StringUtils.EMPTY );
                     String strPrefix = StringUtils.EMPTY;
                     for ( Response resp : listResponses )
                     {
@@ -599,17 +599,17 @@ public class AppointmentUtilities
                         }
                         if ( ( strRes != null ) && !strRes.isEmpty( ) )
                         {
-                            strValue += ( strPrefix + strRes );
+                            strValue.append( strPrefix + strRes );
                             strPrefix = CONSTANT_COMMA;
                         }
                     }
-                    if ( strValue.isEmpty( ) && mapDefaultValueGenAttBackOffice.containsKey( key ) )
+                    if ( strValue.toString( ).isEmpty( ) && mapDefaultValueGenAttBackOffice.containsKey( key ) )
                     {
-                        strValue = mapDefaultValueGenAttBackOffice.get( key );
+                        strValue.append( mapDefaultValueGenAttBackOffice.get( key ) );
                     }
-                    if ( !strValue.isEmpty( ) )
+                    if ( !strValue.toString( ).isEmpty( ) )
                     {
-                        strWriter [9 + nIndex] = strValue;
+                        strWriter [9 + nIndex] = strValue.toString( );
                     }
                     nIndex++;
                 }
