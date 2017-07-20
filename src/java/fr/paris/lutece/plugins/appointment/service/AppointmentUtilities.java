@@ -77,7 +77,7 @@ public class AppointmentUtilities
     private static final String KEY_TIME_START = "appointment.model.entity.appointmentform.attribute.timeStart";
     private static final String KEY_TIME_END = "appointment.model.entity.appointmentform.attribute.timeEnd";
     private static final String KEY_COLUMN_STATUS = "appointment.manage_appointments.columnStatus";
-    private static final String KEY_COLUM_LOGIN = "appointment.manage_appointments.columnLogin";
+    private static final String KEY_COLUM_LOGIN = "appointment.manage_appointments.columnName";
     private static final String KEY_COLUMN_STATE = "appointment.manage_appointments.columnState";
     private static final String KEY_COLUMN_NB_BOOKED_SEATS = "appointment.manage_appointments.columnNumberOfBookedseatsPerAppointment";
 
