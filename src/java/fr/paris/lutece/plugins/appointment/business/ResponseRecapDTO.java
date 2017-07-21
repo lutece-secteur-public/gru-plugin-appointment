@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import org.apache.tools.ant.types.resources.selectors.InstanceOf;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -179,5 +181,17 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
             return ( this._response.getEntry( ).getPosition( ) - o._response.getEntry( ).getPosition( ) );
         }
         return 0;
+    }
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        boolean resultComparison = false;
+        if ( obj instanceof ResponseRecapDTO )
+        {
+            ResponseRecapDTO responseToCompare = (ResponseRecapDTO) obj;
+            resultComparison = this._response.equals( responseToCompare );
+        }
+        return resultComparison;
     }
 }
