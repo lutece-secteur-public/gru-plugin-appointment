@@ -371,7 +371,7 @@ public final class AppointmentUtilities
      */
     public static void fillAppointmentDTO( AppointmentDTO appointmentDTO, int nbBookedSeats, String strEmail, String strFirstName, String strLastName )
     {
-        appointmentDTO.setDateOfTheAppointment( appointmentDTO.getSlot( ).getDate( ).format( Utilities.formatter ) );
+        appointmentDTO.setDateOfTheAppointment( appointmentDTO.getSlot( ).getDate( ).format( Utilities.getFormatter( ) ) );
         appointmentDTO.setNbBookedSeats( nbBookedSeats );
         appointmentDTO.setEmail( strEmail );
         appointmentDTO.setFirstName( strFirstName );

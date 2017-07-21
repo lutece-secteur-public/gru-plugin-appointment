@@ -146,7 +146,7 @@ public final class ReservationRuleService
         List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         for ( ReservationRule reservationRule : listReservationRule )
         {
-            listDate.addItem( reservationRule.getIdReservationRule( ), reservationRule.getDateOfApply( ).format( Utilities.formatter ) );
+            listDate.addItem( reservationRule.getIdReservationRule( ), reservationRule.getDateOfApply( ).format( Utilities.getFormatter( ) ) );
         }
         return listDate;
     }

@@ -11,11 +11,39 @@ import java.util.List;
  * @author Laurent Payen
  *
  */
-public class Utilities
+public final class Utilities
 {
 
     public static final String FORMAT_DATE = "dd/MM/yyyy";
-    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern( FORMAT_DATE );
+    private static DateTimeFormatter _formatter = DateTimeFormatter.ofPattern( FORMAT_DATE );
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private Utilities( )
+    {
+    }
+
+    /**
+     * Getter for the formatter
+     * 
+     * @return the formatter
+     */
+    public static DateTimeFormatter getFormatter( )
+    {
+        return _formatter;
+    }
+
+    /**
+     * Setter for the formatter
+     * 
+     * @param formatter
+     *            the formatter to set
+     */
+    public static void setFormatter( DateTimeFormatter formatter )
+    {
+        _formatter = formatter;
+    }
 
     /**
      * Return the closest date in past a list of date with the given date

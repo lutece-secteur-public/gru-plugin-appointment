@@ -10,8 +10,15 @@ import fr.paris.lutece.plugins.appointment.business.user.UserHome;
  * @author Laurent Payen
  *
  */
-public class UserService
+public final class UserService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private UserService( )
+    {
+    }
 
     /**
      * Save a user in database / A user is defined by its email (unique)

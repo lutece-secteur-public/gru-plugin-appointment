@@ -20,8 +20,15 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
  * @author Laurent Payen
  *
  */
-public class WorkingDayService
+public final class WorkingDayService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private WorkingDayService( )
+    {
+    }
 
     /**
      * Create in database a working day object with the given parameters

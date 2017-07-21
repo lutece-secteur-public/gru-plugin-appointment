@@ -435,7 +435,7 @@ public class AppointmentApp extends MVCApplication
                     slot = SlotService.findSlotById( nIdSlot );
                 }
                 appointmentDTO.setSlot( slot );
-                appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.formatter ) );
+                appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
                 appointmentDTO.setIdForm( nIdForm );
                 LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
                 if ( user != null )
@@ -657,7 +657,7 @@ public class AppointmentApp extends MVCApplication
         }
         strReference += appointment.getReference( );
         formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replaceAll( MARK_REF, strReference )
-                .replaceAll( MARK_DATE_APP, slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.formatter ) )
+                .replaceAll( MARK_DATE_APP, slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) )
                 .replaceAll( MARK_TIME_BEGIN, strTimeBegin ).replaceAll( MARK_TIME_END, strTimeEnd ) );
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_FORM, form );
@@ -705,7 +705,7 @@ public class AppointmentApp extends MVCApplication
         if ( appointment != null )
         {
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-            model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.formatter ) );
+            model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
         }

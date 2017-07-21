@@ -19,8 +19,15 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
  * @author Laurent Payen
  *
  */
-public class TimeSlotService
+public final class TimeSlotService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private TimeSlotService( )
+    {
+    }
 
     /**
      * Build a list of timeSlot Object from a starting time to an endingTime

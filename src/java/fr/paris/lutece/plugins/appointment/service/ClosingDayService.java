@@ -161,11 +161,11 @@ public final class ClosingDayService
                                     {
                                         Instant instant = cell.getDateCellValue( ).toInstant( );
                                         LocalDate localDate = instant.atZone( ZoneId.systemDefault( ) ).toLocalDate( );
-                                        strdate = localDate.format( Utilities.formatter );
+                                        strdate = localDate.format( Utilities.getFormatter( ) );
                                     }
                                     if ( StringUtils.isNotEmpty( strdate ) && strdate.matches( MARK_FORMAT_DATE_REGEX ) )
                                     {
-                                        LocalDate date = LocalDate.parse( strdate, Utilities.formatter );
+                                        LocalDate date = LocalDate.parse( strdate, Utilities.getFormatter( ) );
                                         listDays.add( date );
                                     }
                                 }

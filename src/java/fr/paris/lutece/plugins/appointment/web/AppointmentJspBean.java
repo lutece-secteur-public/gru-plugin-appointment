@@ -981,7 +981,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             slot = SlotService.findSlotById( nIdSlot );
         }
         appointmentDTO.setSlot( slot );
-        appointmentDTO.setDateOfTheAppointment( slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.formatter ) );
+        appointmentDTO.setDateOfTheAppointment( slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
         LocalDate dateOfSlot = slot.getDate( );
         ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfSlot );

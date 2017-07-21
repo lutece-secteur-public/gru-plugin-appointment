@@ -31,7 +31,7 @@ import fr.paris.lutece.portal.service.workflow.WorkflowService;
  * @author Laurent Payen
  *
  */
-public class AppointmentService
+public final class AppointmentService
 {
 
     private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
@@ -41,6 +41,13 @@ public class AppointmentService
      * Get the number of characters of the random part of appointment reference
      */
     private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private AppointmentService( )
+    {
+    }
 
     /**
      * Find all the appointments of the slots given in parameter
@@ -294,7 +301,7 @@ public class AppointmentService
         appointmentDTO.setEmail( appointment.getUser( ).getEmail( ) );
         LocalDateTime startingDateTime = appointment.getSlot( ).getStartingDateTime( );
         appointmentDTO.setStartingDateTime( startingDateTime );
-        appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.formatter ) );
+        appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getFormatter( ) ) );
         appointmentDTO.setStartingTime( startingDateTime.toLocalTime( ) );
         appointmentDTO.setEndingTime( appointment.getSlot( ).getEndingDateTime( ).toLocalTime( ) );
         appointmentDTO.setIsCancelled( appointment.getIsCancelled( ) );

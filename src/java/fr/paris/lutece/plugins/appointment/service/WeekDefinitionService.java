@@ -17,8 +17,15 @@ import fr.paris.lutece.util.ReferenceList;
  * @author Laurent Payen
  *
  */
-public class WeekDefinitionService
+public final class WeekDefinitionService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private WeekDefinitionService( )
+    {
+    }
 
     /**
      * Create a week definition in database
@@ -178,7 +185,7 @@ public class WeekDefinitionService
         List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
-            listDate.addItem( weekDefinition.getIdWeekDefinition( ), weekDefinition.getDateOfApply( ).format( Utilities.formatter ) );
+            listDate.addItem( weekDefinition.getIdWeekDefinition( ), weekDefinition.getDateOfApply( ).format( Utilities.getFormatter( ) ) );
         }
         return listDate;
     }
