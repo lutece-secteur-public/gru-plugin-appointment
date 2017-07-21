@@ -147,7 +147,14 @@ public class AppointmentFilter implements Serializable
      */
     public Date getStartingDateOfSearch( )
     {
-        return (Date) _startingDateOfSearch.clone( );
+        if ( _startingDateOfSearch != null )
+        {
+            return (Date) _startingDateOfSearch.clone( );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
@@ -158,7 +165,14 @@ public class AppointmentFilter implements Serializable
      */
     public void setStartingDateOfSearch( Date startingDateOfSearch )
     {
-        this._startingDateOfSearch = (Date) startingDateOfSearch.clone( );
+        if ( startingDateOfSearch != null )
+        {
+            this._startingDateOfSearch = (Date) startingDateOfSearch.clone( );
+        }
+        else
+        {
+            this._startingDateOfSearch = null;
+        }
     }
 
     /**
@@ -168,7 +182,15 @@ public class AppointmentFilter implements Serializable
      */
     public Date getEndingDateOfSearch( )
     {
-        return (Date) _endingDateOfSearch.clone( );
+        if ( _endingDateOfSearch != null )
+        {
+            return (Date) _endingDateOfSearch.clone( );
+        }
+        else
+        {
+            return null;
+        }
+
     }
 
     /**
@@ -179,7 +201,14 @@ public class AppointmentFilter implements Serializable
      */
     public void setEndingDateOfSearch( Date endingDateOfSearch )
     {
-        this._endingDateOfSearch = (Date) endingDateOfSearch.clone( );
+        if ( endingDateOfSearch != null )
+        {
+            this._endingDateOfSearch = (Date) endingDateOfSearch.clone( );
+        }
+        else
+        {
+            this._endingDateOfSearch = null;
+        }
     }
 
     /**

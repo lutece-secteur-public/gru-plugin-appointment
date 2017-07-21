@@ -363,7 +363,14 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public Date getDateOfModification( )
     {
-        return (Date) _dateOfModification.clone( );
+        if ( _dateOfModification != null )
+        {
+            return (Date) _dateOfModification.clone( );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
@@ -374,7 +381,14 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public void setDateOfModification( Date dateOfModification )
     {
-        this._dateOfModification = (Date) dateOfModification.clone( );
+        if ( dateOfModification != null )
+        {
+            this._dateOfModification = (Date) dateOfModification.clone( );
+        }
+        else
+        {
+            this._dateOfModification = null;
+        }
     }
 
     /**
@@ -652,18 +666,32 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public Date getDateStartValidity( )
     {
-        return (Date) _dateStartValidity.clone( );
+        if ( _dateStartValidity != null )
+        {
+            return (Date) _dateStartValidity.clone( );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
      * Sets the starting validity date of the form
      * 
-     * @param dateDateStartValidity
+     * @param dateStartValidity
      *            The starting validity date
      */
-    public void setDateStartValidity( Date dateDateStartValidity )
+    public void setDateStartValidity( Date dateStartValidity )
     {
-        _dateStartValidity = (Date) dateDateStartValidity.clone( );
+        if ( dateStartValidity != null )
+        {
+            this._dateStartValidity = (Date) dateStartValidity.clone( );
+        }
+        else
+        {
+            this._dateStartValidity = null;
+        }
     }
 
     /**
@@ -673,18 +701,32 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public Date getDateEndValidity( )
     {
-        return (Date) _dateEndValidity.clone( );
+        if ( _dateEndValidity != null )
+        {
+            return (Date) _dateEndValidity.clone( );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
      * Sets the ending validity date of the form
      * 
-     * @param dateDateEndValidity
+     * @param dateEndValidity
      *            the ending validity date to set
      */
-    public void setDateEndValidity( Date dateDateEndValidity )
+    public void setDateEndValidity( Date dateEndValidity )
     {
-        _dateEndValidity = (Date) dateDateEndValidity.clone( );
+        if ( dateEndValidity != null )
+        {
+            this._dateEndValidity = (Date) dateEndValidity.clone( );
+        }
+        else
+        {
+            this._dateEndValidity = null;
+        }
     }
 
     /**

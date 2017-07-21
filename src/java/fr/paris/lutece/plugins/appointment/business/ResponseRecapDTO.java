@@ -35,8 +35,6 @@ package fr.paris.lutece.plugins.appointment.business;
 
 import java.util.Objects;
 
-import org.apache.tools.ant.types.resources.selectors.InstanceOf;
-
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
