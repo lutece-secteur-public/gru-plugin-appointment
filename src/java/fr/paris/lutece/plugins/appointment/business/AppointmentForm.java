@@ -157,7 +157,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     /**
      * Ending validity date of the form
      */
-    private Date _DateEndValidity;
+    private Date _dateEndValidity;
 
     /**
      * Date of modification of the form
@@ -194,7 +194,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      * The maximum number of people authorized for an appointment
      */
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nMaxPeoplePerAppointment = 0;
+    private int _nMaxPeoplePerAppointment;
 
     /**
      * The workflow Id
@@ -363,7 +363,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public Date getDateOfModification( )
     {
-        return _dateOfModification;
+        return (Date) _dateOfModification.clone( );
     }
 
     /**
@@ -374,7 +374,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public void setDateOfModification( Date dateOfModification )
     {
-        this._dateOfModification = dateOfModification;
+        this._dateOfModification = (Date) dateOfModification.clone( );
     }
 
     /**
@@ -652,7 +652,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public Date getDateStartValidity( )
     {
-        return _dateStartValidity;
+        return (Date) _dateStartValidity.clone( );
     }
 
     /**
@@ -663,7 +663,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public void setDateStartValidity( Date dateDateStartValidity )
     {
-        _dateStartValidity = dateDateStartValidity;
+        _dateStartValidity = (Date) dateDateStartValidity.clone( );
     }
 
     /**
@@ -673,7 +673,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public Date getDateEndValidity( )
     {
-        return _DateEndValidity;
+        return (Date) _dateEndValidity.clone( );
     }
 
     /**
@@ -684,7 +684,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public void setDateEndValidity( Date dateDateEndValidity )
     {
-        _DateEndValidity = dateDateEndValidity;
+        _dateEndValidity = (Date) dateDateEndValidity.clone( );
     }
 
     /**

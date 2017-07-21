@@ -28,11 +28,18 @@ import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
  * @author Laurent Payen
  *
  */
-public class ClosingDayService
+public final class ClosingDayService
 {
 
     private static final String MARK_EXCEL_EXTENSION_XLSX = "xlsx";
     private static final String MARK_FORMAT_DATE_REGEX = "([0-9]{2})/([0-9]{2})/([0-9]{4})";
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private ClosingDayService( )
+    {
+    }
 
     /**
      * Find all the closing dates of the form on a given period

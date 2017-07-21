@@ -51,7 +51,7 @@ public class Appointment implements Serializable
     /**
      * The rank for the notification (0 : no notification)
      */
-    private int notification;
+    private int _notification;
 
     /**
      * User id
@@ -149,12 +149,12 @@ public class Appointment implements Serializable
     /**
      * Set the id for the cancelled action
      * 
-     * @param _nIdActionCancelled
+     * @param nIdActionCancelled
      *            the id to set
      */
-    public void setIdActionCancelled( int _nIdActionCancelled )
+    public void setIdActionCancelled( int nIdActionCancelled )
     {
-        this._nIdActionCancelled = _nIdActionCancelled;
+        this._nIdActionCancelled = nIdActionCancelled;
     }
 
     /**
@@ -164,7 +164,7 @@ public class Appointment implements Serializable
      */
     public int getNotification( )
     {
-        return notification;
+        return _notification;
     }
 
     /**
@@ -175,7 +175,7 @@ public class Appointment implements Serializable
      */
     public void setNotification( int notification )
     {
-        this.notification = notification;
+        this._notification = notification;
     }
 
     /**

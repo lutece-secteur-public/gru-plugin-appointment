@@ -15,8 +15,15 @@ import fr.paris.lutece.util.ReferenceList;
  * @author Laurent Payen
  *
  */
-public class ReservationRuleService
+public final class ReservationRuleService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private ReservationRuleService( )
+    {
+    }
 
     /**
      * Create in database a reservation rule object from an appointmentForm DTO

@@ -189,7 +189,9 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
     public boolean equals( Object o )
     {
         if ( o == this )
+        {
             return true;
+        }
         if ( !( o instanceof ResponseRecapDTO ) )
         {
             return false;

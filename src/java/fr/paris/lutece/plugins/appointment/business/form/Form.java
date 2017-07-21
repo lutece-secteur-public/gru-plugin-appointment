@@ -19,7 +19,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
-public class Form implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
+public class Form implements RBACResource, AdminWorkgroupResource, Serializable
 {
 
     /**

@@ -16,19 +16,19 @@ public class SlotEditTask extends TimerTask
     /**
      * Potentially number of places taken
      */
-    private int nbPlacesTaken;
+    private int _nbPlacesTaken;
 
     /**
      * Id of the slot on which the user is taking an appointment
      */
-    private int idSlot;
+    private int _idSlot;
 
     @Override
     public void run( )
     {
-        Slot slot = SlotService.findSlotById( idSlot );
+        Slot slot = SlotService.findSlotById( _idSlot );
         int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces + nbPlacesTaken );
+        slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces + _nbPlacesTaken );
         SlotService.updateSlot( slot );
     }
 
@@ -39,7 +39,7 @@ public class SlotEditTask extends TimerTask
      */
     public int getNbPlacesTaken( )
     {
-        return nbPlacesTaken;
+        return _nbPlacesTaken;
     }
 
     /**
@@ -49,7 +49,7 @@ public class SlotEditTask extends TimerTask
      */
     public void setNbPlacesTaken( int nbPlacesTaken )
     {
-        this.nbPlacesTaken = nbPlacesTaken;
+        this._nbPlacesTaken = nbPlacesTaken;
     }
 
     /**
@@ -59,7 +59,7 @@ public class SlotEditTask extends TimerTask
      */
     public int getIdSlot( )
     {
-        return idSlot;
+        return _idSlot;
     }
 
     /**
@@ -70,7 +70,7 @@ public class SlotEditTask extends TimerTask
      */
     public void setIdSlot( int nIdSlot )
     {
-        this.idSlot = nIdSlot;
+        this._idSlot = nIdSlot;
     }
 
 }

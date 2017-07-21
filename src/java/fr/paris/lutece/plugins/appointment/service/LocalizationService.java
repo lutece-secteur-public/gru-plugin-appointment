@@ -10,8 +10,15 @@ import fr.paris.lutece.plugins.appointment.business.localization.LocalizationHom
  * @author Laurent Payen
  *
  */
-public class LocalizationService
+public final class LocalizationService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private LocalizationService( )
+    {
+    }
 
     /**
      * Fill a localization object with the appointment form DTO

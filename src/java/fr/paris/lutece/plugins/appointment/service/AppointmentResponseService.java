@@ -26,8 +26,15 @@ import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
  * @author Laurent Payen
  *
  */
-public class AppointmentResponseService
+public final class AppointmentResponseService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private AppointmentResponseService( )
+    {
+    }
 
     /**
      * Associate a response to an appointment

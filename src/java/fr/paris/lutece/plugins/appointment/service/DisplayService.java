@@ -10,8 +10,15 @@ import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
  * @author Laurent Payen
  *
  */
-public class DisplayService
+public final class DisplayService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private DisplayService( )
+    {
+    }
 
     /**
      * Fill a display object with the appointment form DTO

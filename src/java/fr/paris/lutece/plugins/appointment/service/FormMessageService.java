@@ -12,8 +12,15 @@ import fr.paris.lutece.portal.service.util.AppPropertiesService;
  * @author Laurent Payen
  *
  */
-public class FormMessageService
+public final class FormMessageService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private FormMessageService( )
+    {
+    }
 
     /**
      * Name of the bean of the service

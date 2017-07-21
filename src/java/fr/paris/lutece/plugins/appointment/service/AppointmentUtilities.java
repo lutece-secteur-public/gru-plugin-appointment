@@ -60,7 +60,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
  * @author Laurent Payen
  *
  */
-public class AppointmentUtilities
+public final class AppointmentUtilities
 {
 
     private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
@@ -89,6 +89,13 @@ public class AppointmentUtilities
     public static final String SESSION_SLOT_EDIT_TASK = "appointment.session.slot.edit.task";
 
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private AppointmentUtilities( )
+    {
+    }
 
     /**
      * Check that the email is correct and matches the confirm email
@@ -466,11 +473,11 @@ public class AppointmentUtilities
      *            the local
      * @param listAppointmentsDTO
      *            the list of the appointments to input in the excel file
-     * @param _stateService
+     * @param stateService
      *            the state service
      */
     public static void buildExcelFileWithAppointments( String strIdForm, HttpServletResponse response, Locale locale, List<AppointmentDTO> listAppointmentsDTO,
-            StateService _stateService )
+            StateService stateService )
     {
         AppointmentForm tmpForm = FormService.buildAppointmentFormLight( Integer.parseInt( strIdForm ) );
         XSSFWorkbook workbook = new XSSFWorkbook( );
@@ -550,7 +557,7 @@ public class AppointmentUtilities
                 }
                 strWriter [6] = status;
                 strWriter [7] = Integer.toString( appointmentDTO.getIdUser( ) );
-                State stateAppointment = _stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         tmpForm.getIdWorkflow( ) );
                 String strState = StringUtils.EMPTY;
                 if ( stateAppointment != null )

@@ -24,8 +24,15 @@ import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
  * @author Laurent Payen
  *
  */
-public class SlotService
+public final class SlotService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private SlotService( )
+    {
+    }
 
     /**
      * Find slots of a form on a given period of time
@@ -110,17 +117,18 @@ public class SlotService
         LocalDate dateToCompare;
         // Need to check if this date is not before the form date creation
         final LocalDate firstDateOfReservationRule = new ArrayList<>( mapReservationRule.keySet( ) ).stream( ).sorted( ).findFirst( ).orElse( null );
+        LocalDate startingDateToUse = startingDate;
         if ( startingDate.isBefore( firstDateOfReservationRule ) )
         {
-            startingDate = firstDateOfReservationRule;
+            startingDateToUse = firstDateOfReservationRule;
         }
         // Add the nb weeks to display to have the ending date (and get the last
         // day of the week : Sunday)
-        LocalDate endingDateToDisplay = startingDate.plusWeeks( nNbWeeksToDisplay ).with( DayOfWeek.SUNDAY );
+        LocalDate endingDateToDisplay = startingDateToUse.plusWeeks( nNbWeeksToDisplay ).with( DayOfWeek.SUNDAY );
         // Get all the closing day of this period
-        List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange( nIdForm, startingDate, endingDateToDisplay );
+        List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange( nIdForm, startingDateToUse, endingDateToDisplay );
         // Get all the slot between these two dates
-        HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange( nIdForm, startingDate.atStartOfDay( ),
+        HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange( nIdForm, startingDateToUse.atStartOfDay( ),
                 endingDateToDisplay.atTime( LocalTime.MAX ) );
 
         // Get or build all the event for the period

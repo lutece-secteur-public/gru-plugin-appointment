@@ -28,8 +28,15 @@ import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListener
  * @author Laurent Payen
  *
  */
-public class FormService
+public final class FormService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private FormService( )
+    {
+    }
 
     /**
      * Make a copy of form, with all its values

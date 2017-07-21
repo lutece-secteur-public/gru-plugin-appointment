@@ -190,12 +190,12 @@ public class AppointmentDTO implements Serializable
     /**
      * Set the starting date time of the appointment
      * 
-     * @param _startingDateTime
+     * @param startingDateTime
      *            the starting date time
      */
-    public void setStartingDateTime( LocalDateTime _startingDateTime )
+    public void setStartingDateTime( LocalDateTime startingDateTime )
     {
-        this._startingDateTime = _startingDateTime;
+        this._startingDateTime = startingDateTime;
     }
 
     /**
@@ -536,11 +536,11 @@ public class AppointmentDTO implements Serializable
     /**
      * Set the available actions of the workflow for this appointment
      * 
-     * @param _listWorkflowActions
+     * @param listWorkflowActions
      */
-    public void setListWorkflowActions( Collection<Action> _listWorkflowActions )
+    public void setListWorkflowActions( Collection<Action> listWorkflowActions )
     {
-        this._listWorkflowActions = _listWorkflowActions;
+        this._listWorkflowActions = listWorkflowActions;
     }
 
     /**

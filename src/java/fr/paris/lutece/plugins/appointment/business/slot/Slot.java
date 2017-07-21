@@ -31,7 +31,7 @@ public class Slot implements Serializable
     private LocalDate _date;
 
     /**
-     * Starting Time of The SLot
+     * Starting Time of The Slot
      */
     private LocalTime _startingTime;
 
@@ -97,12 +97,12 @@ public class Slot implements Serializable
     /**
      * Set the date of the slot
      * 
-     * @param _date
+     * @param date
      *            the date to set
      */
-    public void setDate( LocalDate _date )
+    public void setDate( LocalDate date )
     {
-        this._date = _date;
+        this._date = date;
     }
 
     /**

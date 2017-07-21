@@ -106,12 +106,12 @@ public class Display implements Serializable
     /**
      * Set the form icon
      * 
-     * @param _icon
+     * @param icon
      *            the icon to set
      */
-    public void setIcon( ImageResource _icon )
+    public void setIcon( ImageResource icon )
     {
-        this._icon = _icon;
+        this._icon = icon;
     }
 
     /**

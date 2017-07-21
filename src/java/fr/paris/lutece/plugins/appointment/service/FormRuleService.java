@@ -10,8 +10,15 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
  * @author Laurent Payen
  *
  */
-public class FormRuleService
+public final class FormRuleService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private FormRuleService( )
+    {
+    }
 
     /**
      * Fill the form rule part with the appointment DTO

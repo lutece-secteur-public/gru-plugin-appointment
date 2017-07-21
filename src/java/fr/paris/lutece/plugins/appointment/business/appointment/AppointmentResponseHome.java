@@ -16,12 +16,19 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  *
  */
-public class AppointmentResponseHome
+public final class AppointmentResponseHome
 {
 
     // Static variable pointed at the DAO instance
     private static IAppointmentResponseDAO _dao = SpringContextService.getBean( IAppointmentResponseDAO.BEAN_NAME );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private AppointmentResponseHome( )
+    {
+    }
 
     /**
      * Associate a response to an appointment

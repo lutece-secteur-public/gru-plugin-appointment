@@ -14,8 +14,15 @@ import fr.paris.lutece.util.ReferenceList;
  * @author Laurent Payen
  *
  */
-public class CategoryService
+public final class CategoryService
 {
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private CategoryService( )
+    {
+    }
 
     /**
      * Find all the categories
