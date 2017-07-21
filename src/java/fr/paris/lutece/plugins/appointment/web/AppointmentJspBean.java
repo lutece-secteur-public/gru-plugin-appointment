@@ -77,12 +77,13 @@ import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
-import fr.paris.lutece.plugins.appointment.service.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
+import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
+import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -792,7 +793,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             SlotService.updateSlot( slot );
             slotEditTask.setNbPlacesTaken( nbPotentialPlacesToTake );
             slotEditTask.setIdSlot( slot.getIdSlot( ) );
-            Timer timer = new Timer( );
+            TimerForLockOnSlot timer = new TimerForLockOnSlot( );
             long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService
                     .getPropertyInt( AppointmentUtilities.PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
             timer.schedule( slotEditTask, delay );

@@ -1,8 +1,10 @@
-package fr.paris.lutece.plugins.appointment.service;
+package fr.paris.lutece.plugins.appointment.service.lock;
 
+import java.io.Serializable;
 import java.util.TimerTask;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.service.SlotService;
 
 /**
  * Timer Task for a slot (Manage a lock the time the user fill the form
@@ -10,8 +12,13 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
  * @author Laurent Payen
  *
  */
-public class SlotEditTask extends TimerTask
+public class SlotEditTask extends TimerTask implements Serializable
 {
+
+    /**
+     * UID
+     */
+    private static final long serialVersionUID = 2397343851302139337L;
 
     /**
      * Potentially number of places taken

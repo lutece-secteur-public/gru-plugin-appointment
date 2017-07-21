@@ -37,6 +37,8 @@ import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
+import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -720,7 +722,7 @@ public final class AppointmentUtilities
         SlotService.updateSlot( slot );
         slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
         slotEditTask.setIdSlot( slot.getIdSlot( ) );
-        Timer timer = new Timer( );
+        TimerForLockOnSlot timer = new TimerForLockOnSlot( );
         long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
         timer.schedule( slotEditTask, delay );
         request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT, timer );
