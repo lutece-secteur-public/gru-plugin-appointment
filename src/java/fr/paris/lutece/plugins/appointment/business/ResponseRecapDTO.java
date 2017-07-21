@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import java.util.Objects;
+
 import org.apache.tools.ant.types.resources.selectors.InstanceOf;
 
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -184,14 +186,22 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
     }
 
     @Override
-    public boolean equals( Object obj )
+    public boolean equals( Object o )
     {
-        boolean resultComparison = false;
-        if ( obj instanceof ResponseRecapDTO )
+        if ( o == this )
+            return true;
+        if ( !( o instanceof ResponseRecapDTO ) )
         {
-            ResponseRecapDTO responseToCompare = (ResponseRecapDTO) obj;
-            resultComparison = this._response.equals( responseToCompare );
+            return false;
         }
-        return resultComparison;
+        ResponseRecapDTO responseToCompare = (ResponseRecapDTO) o;
+        return Objects.equals( _strRecapValue, responseToCompare._strRecapValue ) && Objects.equals( _response, responseToCompare._response );
     }
+
+    @Override
+    public int hashCode( )
+    {
+        return Objects.hash( _strRecapValue, _response );
+    }
+
 }
