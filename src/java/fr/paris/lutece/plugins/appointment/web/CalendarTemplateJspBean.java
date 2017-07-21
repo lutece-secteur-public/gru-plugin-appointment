@@ -108,8 +108,8 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
     private static final String PARAMETER_TEMPLACE_PATH = "templatePath";
 
     // Messages
-    private static final String MESSAGE_COLUMN_TITLE_TITLE = "appointment.manageCalendarTemplates.labelTitle";
-    private static final String MESSAGE_COLUMN_TITLE_DESCRIPTION = "appointment.manageCalendarTemplates.labelDescription";
+    private static final String MESSAGE_COLUMN_TITLE_TITLE = "appointment.labelTitle";
+    private static final String MESSAGE_COLUMN_TITLE_DESCRIPTION = "appointment.labelDescription";
     private static final String MESSAGE_COLUMN_TITLE_TEMPLATE_PATH = "appointment.manageCalendarTemplates.labelTemplatePath";
     private static final String MESSAGE_COLUMN_TITLE_ACTIONS = "portal.util.labelActions";
     private static final String MESSAGE_DEFAULT_PAGE_TITLE = "appointment.manageCalendarTemplates.pageTitleManageCalendarTemplates";

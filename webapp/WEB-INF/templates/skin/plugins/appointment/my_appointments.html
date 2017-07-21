@@ -19,7 +19,7 @@
 							${appointment.dateOfTheAppointment}
 						</td>
 						<td>
-							#i18n{appointment.manage_appointment_calendar.labelFrom} ${appointment.startingTime} #i18n{appointment.manage_appointment_calendar.labelTo} ${appointment.endingTime}							
+							#i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}							
 						</td>
 						<td>
 							<#if appointment.isCancelled>
@@ -34,7 +34,7 @@
 						</td>
 						<td>
 							<#if !appointment.isCancelled>
-								<a class="btn btn-danger btn-small" title="#i18n{appointment.my_appointments.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&refAppointment=${appointment.refAppointment}&fromMyappointments=true">
+								<a class="btn btn-danger btn-small" title="#i18n{appointment.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&refAppointment=${appointment.refAppointment}&fromMyappointments=true">
 									<i class="glyphicon glyphicon-remove">&nbsp;</i>
 								</a>
 							</#if>

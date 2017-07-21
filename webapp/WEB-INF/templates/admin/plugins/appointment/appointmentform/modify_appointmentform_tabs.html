@@ -47,7 +47,7 @@
 				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>				
 				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.create_appointmentform.labelTitle' maxlength=255 /> 
 				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>				 
-				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDescription'/>								
+				<@fieldTextArea i18nLabelKey='appointment.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.labelDescription'/>								
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment} * :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -57,12 +57,12 @@
 				</div>	
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='form-control input-sm' />
 				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='form-control input-sm' />						
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />				
+				<@fieldInputCheckBox i18nLabelKey='appointment.label.displayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.label.displayTitleFo.help' />				
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} * :</label>
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.label.nbWeeksToDisplay} * :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
-						<p class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</p>
+						<p class="help-block">#i18n{appointment.label.nbWeeksToDisplay.help}</p>
 					</div>
 				</div>	
 				<div class="form-group">
@@ -134,22 +134,22 @@
 					</div>
 				</div>	
 				<div class="form-group">
-                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="geoloc_address">#i18n{appointment.modify_appointmentform.labelAddress} &nbsp;:</label>
+                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="geoloc_address">#i18n{appointment.label.formAddress} &nbsp;:</label>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <input type="text" class="form-control input-sm" name="geoloc_address" id="geoloc_address" value="${(appointmentform.address?html)!}"/>
                         <input type="text" class="form-control input-sm" name="geoloc_longitude" id="geoloc_longitude" value="${(appointmentform.longitude?c)!}"/>
                         <input type="text" class="form-control input-sm" name="geoloc_latitude" id="geoloc_latitude" value="${(appointmentform.latitude?c)!}"/>
-                        <p class="help-block" id="help_address">#i18n{appointment.modify_appointmentform.helpAddress}</p>
+                        <p class="help-block" id="help_address">#i18n{appointment.help.formAddress}</p>
                         <!-- used to keep state if the user presses back button -->
                         <input type="hidden" id="hidden_address"/>
-                        <p class="help-block">#i18n{appointment.modify_appointmentform.descriptionAddress}</p>
+                        <p class="help-block">#i18n{appointment.label.addressDescription}</p>
                     </div>
                     <script type='text/javascript'>
                         $('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
                         $('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
                         $('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
 
-                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.modify_appointmentform.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
+                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
 
                         $('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
 

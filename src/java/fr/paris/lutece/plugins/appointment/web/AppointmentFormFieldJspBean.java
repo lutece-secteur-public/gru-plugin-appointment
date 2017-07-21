@@ -110,7 +110,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     private static final String PARAMETER_DEFAULT_VALUE = "default_value";
     private static final String PARAMETER_NO_DISPLAY_TITLE = "no_display_title";
     private static final String PARAMETER_COMMENT = "comment";
-    private static final String FIELD_TITLE_FIELD = "appointment.createField.labelTitle";
+    private static final String FIELD_TITLE_FIELD = "appointment.labelTitle";
     private static final String FIELD_VALUE_FIELD = "appointment.createField.labelValue";
 
     // Templates

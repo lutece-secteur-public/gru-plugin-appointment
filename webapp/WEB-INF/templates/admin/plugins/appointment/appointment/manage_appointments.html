@@ -63,7 +63,7 @@
 											<input class="form-control" id="startingDateOfSearch" name="startingDateOfSearch" type="text" value="${filter.startingDateOfSearch!}" >
 										</div>																					
 									</div>
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingTimeOfSearch">#i18n{appointment.manage_appointment_calendar.labelTo}</label>
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingTimeOfSearch">#i18n{appointment.labelTo}</label>
 									<div id="startingTimeOfSearch" class="col-xs-12 col-sm-9 col-md-6 input-append">
 										<input id="startingTimeOfSearch" name="startingTimeOfSearch" data-format="hh:mm" type="text" value="${filter.startingTimeOfSearch!''}"></input>
 										<span id="timestart" class="add-on">
@@ -80,7 +80,7 @@
 											<input class="form-control" id="endingDateOfSearch" name="endingDateOfSearch" type="text" value="${filter.endingDateOfSearch!}" >
 										</div>											
 									</div>
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingTimeOfSearch">#i18n{appointment.manage_appointment_calendar.labelTo}</label>
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingTimeOfSearch">#i18n{appointment.labelTo}</label>
 									<div id="endingTimeOfSearch" class="col-xs-12 col-sm-9 col-md-6 input-append">
 										<input id="endingTimeOfSearch" name="endingTimeOfSearch" data-format="hh:mm" type="text" value="${filter.endingTimeOfSearch!''}"></input>
 										<span id="timeend" class="add-on">
@@ -179,7 +179,7 @@
 											<td>${appointment.lastName}</td>
 											<td>${appointment.firstName}</td>								
 											<td>${appointment.email}</td>											
-											<td>${appointment.dateOfTheAppointment} #i18n{appointment.manage_appointment_calendar.labelFrom} ${appointment.startingTime} #i18n{appointment.manage_appointment_calendar.labelTo} ${appointment.endingTime}</td>								
+											<td>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</td>								
 											<td>
 												<#if appointment.isCancelled>
 													<span class="label label-important">#i18n{appointment.message.labelStatusUnreserved}</span>													
@@ -223,7 +223,7 @@
 															</a>
 														</#if> 
 														<#if !appointment.isCancelled> 
-															<a class="btn btn-xs btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true" title="#i18n{appointment.manage_appointments.labelRejectAppointment}">
+															<a class="btn btn-xs btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true" title="#i18n{appointment.labelCancelAppointment}">
 																<i class="glyphicon glyphicon-remove"></i>
 															</a> 
 														</#if> 

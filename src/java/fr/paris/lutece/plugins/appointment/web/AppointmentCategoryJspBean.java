@@ -78,8 +78,8 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_CATEGORY = "appointment.manage_category.pageTitle";
-    private static final String PROPERTY_PAGE_TITLE_CREATE_CATEGORY = "appointment.create_category.pageTitle";
-    private static final String PROPERTY_PAGE_TITLE_MODIFY_CATEGORY = "appointment.modify_category.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_CREATE_CATEGORY = "appointment.create.category.title";
+    private static final String PROPERTY_PAGE_TITLE_MODIFY_CATEGORY = "appointment.modify.category.title";
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
     private static final String PROPERTY_ID = "idCategory";
     private static final String PROPERTY_LABEL = "label";
