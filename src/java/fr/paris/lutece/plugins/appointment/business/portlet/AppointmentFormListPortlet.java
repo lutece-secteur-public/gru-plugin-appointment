@@ -46,7 +46,7 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormListPortlet extends PortletHtmlContent
+public final class AppointmentFormListPortlet extends PortletHtmlContent
 {
     /**
      * Sets the identifier of the portlet type to value specified

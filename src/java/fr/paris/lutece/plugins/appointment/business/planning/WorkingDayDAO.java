@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.appointment.business.planning;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -12,7 +13,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class WorkingDayDAO implements IWorkingDayDAO
+public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_working_day) FROM appointment_working_day";
@@ -21,36 +22,12 @@ public class WorkingDayDAO implements IWorkingDayDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_working_day WHERE id_working_day = ? ";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_working_day, day_of_week, id_week_definition FROM appointment_working_day";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";    
 
     @Override
     public synchronized void insert( WorkingDay workingDay, Plugin plugin )
     {
-        workingDay.setIdWorkingDay( getNewPrimaryKey( plugin ) );
+        workingDay.setIdWorkingDay( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, workingDay, plugin, true );
         executeUpdate( daoUtil );
     }

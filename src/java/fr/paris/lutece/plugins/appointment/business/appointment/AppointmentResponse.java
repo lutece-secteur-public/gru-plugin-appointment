@@ -8,7 +8,7 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
  * @author Laurent Payen
  *
  */
-public class AppointmentResponse
+public final class AppointmentResponse
 {
 
 }

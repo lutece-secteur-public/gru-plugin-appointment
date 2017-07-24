@@ -41,9 +41,8 @@ import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronou
 /**
  * Will remove fileItems uploaded
  * 
- * // TODO Verify if this class is used
  */
-public class AppointmentSessionListener implements HttpSessionListener
+public final class AppointmentSessionListener implements HttpSessionListener
 {
     /**
      * {@inheritDoc}

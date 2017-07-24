@@ -1,9 +1,10 @@
 package fr.paris.lutece.plugins.appointment.business.localization;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
-public class LocalizationDAO implements ILocalizationDAO
+public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_localization) FROM appointment_localization";
@@ -12,36 +13,12 @@ public class LocalizationDAO implements ILocalizationDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_localization WHERE id_localization = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_localization, longitude, latitude, address, id_form FROM appointment_localization";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_localization = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";   
 
     @Override
     public synchronized void insert( Localization localization, Plugin plugin )
     {
-        localization.setIdLocalization( getNewPrimaryKey( plugin ) );
+        localization.setIdLocalization( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, localization, plugin, true );
         executeUpdate( daoUtil );
     }

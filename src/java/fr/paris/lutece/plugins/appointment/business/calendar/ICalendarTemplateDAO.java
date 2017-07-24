@@ -48,16 +48,7 @@ public interface ICalendarTemplateDAO
     /**
      * The name of the bean of the DAO
      */
-    String BEAN_NAME = "appointment.calendarTemplateDAO";
-
-    /**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey( Plugin plugin );
+    String BEAN_NAME = "appointment.calendarTemplateDAO";    
 
     /**
      * Insert a new record int the table

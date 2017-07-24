@@ -74,7 +74,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
  *
  */
 @Controller( controllerJsp = AppointmentSlotJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentSlotJspBean extends MVCAdminJspBean
+public final class AppointmentSlotJspBean extends MVCAdminJspBean
 {
     /**
      * JSP of this JSP Bean

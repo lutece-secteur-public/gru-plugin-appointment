@@ -73,7 +73,7 @@ public final class AppointmentUtilities
     private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 
-    private static final String KEY_RESOURCE_TYPE = "appointment.permission.label.resourceType";
+    private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
     private static final String KEY_COLUMN_LAST_NAME = "appointment.manageAppointments.columnLastName";
     private static final String KEY_COLUMN_FISRT_NAME = "appointment.manageAppointments.columnFirstName";
     private static final String KEY_COLUMN_EMAIL = "appointment.manageAppointments.columnEmail";

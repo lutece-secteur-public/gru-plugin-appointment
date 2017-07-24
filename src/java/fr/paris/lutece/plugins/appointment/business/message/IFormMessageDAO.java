@@ -46,16 +46,7 @@ public interface IFormMessageDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.formMessageDAO";
-
-    /**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey( Plugin plugin );
+    static String BEAN_NAME = "appointment.formMessageDAO";    
 
     /**
      * Create a form message

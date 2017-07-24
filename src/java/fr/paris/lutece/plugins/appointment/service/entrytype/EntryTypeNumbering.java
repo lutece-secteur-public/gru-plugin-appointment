@@ -42,7 +42,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  * @author Laurent Payen
  * 
  */
-public class EntryTypeNumbering extends AbstractEntryTypeNumbering
+public final class EntryTypeNumbering extends AbstractEntryTypeNumbering
 {
     // TEMPLATES
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_numbering.html";

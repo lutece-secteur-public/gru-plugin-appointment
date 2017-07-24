@@ -18,7 +18,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class AppointmentTest extends LuteceTestCase
+public final class AppointmentTest extends LuteceTestCase
 {
 
     /**

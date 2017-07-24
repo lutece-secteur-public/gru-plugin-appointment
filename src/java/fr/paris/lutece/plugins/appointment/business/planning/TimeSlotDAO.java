@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.appointment.business.planning;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -12,7 +13,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class TimeSlotDAO implements ITimeSlotDAO
+public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_time_slot) FROM appointment_time_slot";
@@ -21,36 +22,12 @@ public class TimeSlotDAO implements ITimeSlotDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_time_slot WHERE id_time_slot = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_time_slot, starting_time, ending_time, is_open, max_capacity, id_working_day FROM appointment_time_slot";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_time_slot = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";    
 
     @Override
     public synchronized void insert( TimeSlot timeSlot, Plugin plugin )
     {
-        timeSlot.setIdTimeSlot( getNewPrimaryKey( plugin ) );
+        timeSlot.setIdTimeSlot( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, timeSlot, plugin, true );
         executeUpdate( daoUtil );
     }

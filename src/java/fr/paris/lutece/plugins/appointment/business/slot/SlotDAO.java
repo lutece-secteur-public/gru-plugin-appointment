@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -15,7 +16,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class SlotDAO implements ISlotDAO
+public final class SlotDAO extends UtilDAO implements ISlotDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_slot) FROM appointment_slot";
@@ -28,36 +29,12 @@ public class SlotDAO implements ISlotDAO
             + " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ?";
     private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS
             + " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ? AND is_open = 1";
-    private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ? AND is_open = 1";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ? AND is_open = 1";   
 
     @Override
     public synchronized void insert( Slot slot, Plugin plugin )
     {
-        slot.setIdSlot( getNewPrimaryKey( plugin ) );
+        slot.setIdSlot( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, slot, plugin, true );
         executeUpdate( daoUtil );
     }

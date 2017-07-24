@@ -42,7 +42,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  * @author Laurent Payen
  *
  */
-public class EntryTypeComment extends AbstractEntryTypeComment
+public final class EntryTypeComment extends AbstractEntryTypeComment
 {
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_comment.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_comment.html";

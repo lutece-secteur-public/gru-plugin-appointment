@@ -19,7 +19,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class FormTest extends LuteceTestCase
+public final class FormTest extends LuteceTestCase
 {
 
     public final static String TITLE_FORM_1 = "TitreForm1";

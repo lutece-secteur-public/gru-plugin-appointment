@@ -67,7 +67,7 @@ import fr.paris.lutece.util.url.UrlItem;
  *
  */
 @Controller( controllerJsp = CalendarTemplateJspBean.CONTROLLER_JSP, controllerPath = CalendarTemplateJspBean.CONTROLLER_PATH, right = CalendarTemplateJspBean.RIGHT_MANAGE_CALENDAR_TEMPLATES )
-public class CalendarTemplateJspBean extends MVCAdminJspBean
+public final class CalendarTemplateJspBean extends MVCAdminJspBean
 {
     /**
      * Right to manage appointment calendar templates

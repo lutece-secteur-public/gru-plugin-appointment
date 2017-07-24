@@ -11,7 +11,7 @@ import java.time.LocalTime;
  * @author Laurent Payen
  *
  */
-public class TimeSlot implements Serializable
+public final class TimeSlot implements Serializable
 {
 
     /**

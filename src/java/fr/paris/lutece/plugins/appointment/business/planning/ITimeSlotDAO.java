@@ -16,16 +16,7 @@ public interface ITimeSlotDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.timeSlotDAO";
-
-    /**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey( Plugin plugin );
+    static String BEAN_NAME = "appointment.timeSlotDAO";    
 
     /**
      * Insert a new record in the table

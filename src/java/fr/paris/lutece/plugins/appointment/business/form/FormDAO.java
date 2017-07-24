@@ -3,6 +3,7 @@ package fr.paris.lutece.plugins.appointment.business.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -12,7 +13,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class FormDAO implements IFormDAO
+public final class FormDAO extends UtilDAO implements IFormDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form) FROM appointment_form";
@@ -22,36 +23,12 @@ public class FormDAO implements IFormDAO
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup FROM appointment_form";
     private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";    
 
     @Override
     public synchronized void insert( Form form, Plugin plugin )
     {
-        form.setIdForm( getNewPrimaryKey( plugin ) );
+        form.setIdForm( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, form, plugin, true );
         executeUpdate( daoUtil );
     }

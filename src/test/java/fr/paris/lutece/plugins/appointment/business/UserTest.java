@@ -10,7 +10,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class UserTest extends LuteceTestCase
+public final class UserTest extends LuteceTestCase
 {
 
     public final static int ID_LUTECE_USER_1 = 1;

@@ -3,7 +3,7 @@ package fr.paris.lutece.plugins.appointment.business;
 import java.io.Serializable;
 import java.sql.Date;
 
-public class AppointmentFilter implements Serializable
+public final class AppointmentFilter implements Serializable
 {
 
     /**

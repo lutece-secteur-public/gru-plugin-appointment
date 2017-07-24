@@ -73,7 +73,7 @@ import fr.paris.lutece.util.url.UrlItem;
  * @author Laurent Payen
  *
  */
-public class EntryService extends RemovalListenerService implements Serializable
+public final class EntryService extends RemovalListenerService implements Serializable
 {
     /**
      * Name of the bean of this service

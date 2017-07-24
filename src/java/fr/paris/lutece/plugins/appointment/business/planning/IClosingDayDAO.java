@@ -17,16 +17,7 @@ public interface IClosingDayDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.closingDayDAO";
-
-    /**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey( Plugin plugin );
+    static String BEAN_NAME = "appointment.closingDayDAO";   
 
     /**
      * Insert a new record in the table.

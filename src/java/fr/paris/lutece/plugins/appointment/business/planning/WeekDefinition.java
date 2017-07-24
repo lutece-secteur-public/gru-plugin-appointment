@@ -11,7 +11,7 @@ import java.util.List;
  * @author Laurent Payen
  *
  */
-public class WeekDefinition implements Serializable
+public final class WeekDefinition implements Serializable
 {
 
     /**

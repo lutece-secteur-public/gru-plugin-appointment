@@ -15,7 +15,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class WeekDefinitionTest extends LuteceTestCase
+public final class WeekDefinitionTest extends LuteceTestCase
 {
 
     public final static LocalDate DATE_OF_APPLY_1 = LocalDate.parse( "2017-01-26" );

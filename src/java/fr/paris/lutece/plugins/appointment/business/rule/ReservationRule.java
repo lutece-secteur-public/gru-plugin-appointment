@@ -12,7 +12,7 @@ import javax.validation.constraints.Min;
  * @author Laurent Payen
  *
  */
-public class ReservationRule implements Serializable
+public final class ReservationRule implements Serializable
 {
 
     /**

@@ -12,7 +12,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
  * @author Laurent Payen
  *
  */
-public class SlotEditTask extends TimerTask implements Serializable
+public final class SlotEditTask extends TimerTask implements Serializable
 {
 
     /**

@@ -1,5 +1,6 @@
 package fr.paris.lutece.plugins.appointment.business.user;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -9,7 +10,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class UserDAO implements IUserDAO
+public final class UserDAO extends UtilDAO implements IUserDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_user) FROM appointment_user";
@@ -18,36 +19,12 @@ public class UserDAO implements IUserDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_user WHERE id_user = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_user, id_lutece_user, first_name, last_name, email, phone_number FROM appointment_user";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
-    private static final String SQL_QUERY_SELECT_BY_EMAIL = SQL_QUERY_SELECT_COLUMNS + " WHERE email = ?";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String SQL_QUERY_SELECT_BY_EMAIL = SQL_QUERY_SELECT_COLUMNS + " WHERE email = ?";    
 
     @Override
     public synchronized void insert( User user, Plugin plugin )
     {
-        user.setIdUser( getNewPrimaryKey( plugin ) );
+        user.setIdUser( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, user, plugin, true );
         executeUpdate( daoUtil );
     }

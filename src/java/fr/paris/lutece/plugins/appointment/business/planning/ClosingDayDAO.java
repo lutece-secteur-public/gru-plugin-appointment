@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -14,7 +15,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class ClosingDayDAO implements IClosingDayDAO
+public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_closing_day) FROM appointment_closing_day";
@@ -26,36 +27,12 @@ public class ClosingDayDAO implements IClosingDayDAO
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_closing_day = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_BY_ID_FORM
-            + " AND date_of_closing_day >= ? AND date_of_closing_day <= ?";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+            + " AND date_of_closing_day >= ? AND date_of_closing_day <= ?";    
 
     @Override
     public synchronized void insert( ClosingDay closingDay, Plugin plugin )
     {
-        closingDay.setIdClosingDay( getNewPrimaryKey( plugin ) );
+        closingDay.setIdClosingDay( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, closingDay, plugin, true );
         executeUpdate( daoUtil );
     }

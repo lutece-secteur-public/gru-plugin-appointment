@@ -54,7 +54,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public class EntryTypeImage extends EntryTypeFile
+public final class EntryTypeImage extends EntryTypeFile
 {
     /**
      * Name of the bean of this service

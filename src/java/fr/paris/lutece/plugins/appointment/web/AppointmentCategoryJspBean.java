@@ -59,7 +59,7 @@ import fr.paris.lutece.util.url.UrlItem;
  * 
  */
 @Controller( controllerJsp = "ManageAppointmentCategory.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentCategoryJspBean.RIGHT_MANAGECATEGORY )
-public class AppointmentCategoryJspBean extends MVCAdminJspBean
+public final class AppointmentCategoryJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = 5438468406405679511L;
 

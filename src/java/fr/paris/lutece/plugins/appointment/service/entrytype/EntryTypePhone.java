@@ -39,7 +39,7 @@ package fr.paris.lutece.plugins.appointment.service.entrytype;
  * @author Laurent Payen
  * 
  */
-public class EntryTypePhone extends EntryTypeText
+public final class EntryTypePhone extends EntryTypeText
 {
     // private static final String TEMPLATE_CREATE =
     // "admin/plugins/appointment/entries/create_entry_type_text.html";

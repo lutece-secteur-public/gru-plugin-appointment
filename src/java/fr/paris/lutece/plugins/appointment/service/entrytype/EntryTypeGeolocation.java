@@ -42,7 +42,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  * @author Laurent Payen
  * 
  */
-public class EntryTypeGeolocation extends AbstractEntryTypeGeolocation
+public final class EntryTypeGeolocation extends AbstractEntryTypeGeolocation
 {
     /** The Constant CONSTANT_ID_ADDRESS. */
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_geolocation.html";

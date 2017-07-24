@@ -21,15 +21,6 @@ public interface IAppointmentDAO
     static String BEAN_NAME = "appointment.appointmentDAO";
 
     /**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey( Plugin plugin );
-
-    /**
      * Insert a new record in the table
      * 
      * @param appointment

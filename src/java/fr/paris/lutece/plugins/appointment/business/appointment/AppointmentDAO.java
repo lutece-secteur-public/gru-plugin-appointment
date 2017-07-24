@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -20,7 +21,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class AppointmentDAO implements IAppointmentDAO
+public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_appointment) FROM appointment_appointment";
@@ -50,36 +51,12 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
 
     private static final String CONSTANT_AND = " AND ";
-    private static final String CONSTANT_PERCENT = "%";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String CONSTANT_PERCENT = "%";    
 
     @Override
     public synchronized void insert( Appointment appointment, Plugin plugin )
     {
-        appointment.setIdAppointment( getNewPrimaryKey( plugin ) );
+        appointment.setIdAppointment( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, appointment, plugin, true );
         executeUpdate( daoUtil );
     }

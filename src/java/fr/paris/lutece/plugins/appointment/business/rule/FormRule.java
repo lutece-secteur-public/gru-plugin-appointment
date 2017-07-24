@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Laurent Payen
  *
  */
-public class FormRule implements Serializable
+public final class FormRule implements Serializable
 {
 
     /**

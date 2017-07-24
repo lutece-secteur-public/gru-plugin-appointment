@@ -9,7 +9,7 @@ import java.util.List;
  * @author Laurent Payen
  *
  */
-public class WorkingDay implements Serializable
+public final class WorkingDay implements Serializable
 {
 
     /**

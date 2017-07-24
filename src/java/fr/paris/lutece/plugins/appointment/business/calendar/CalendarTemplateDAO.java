@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.business.calendar;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -45,49 +46,19 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class CalendarTemplateDAO implements ICalendarTemplateDAO
+public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTemplateDAO
 {
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_calendar_template) FROM appointment_calendar_template";
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_calendar_template (id_calendar_template, title, description, template_path) VALUES (?,?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_calendar_template SET title = ?, description = ?, template_path = ? WHERE id_calendar_template = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_calendar_template WHERE id_calendar_template = ?";
     private static final String SQL_QUERY_SELECT = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template WHERE id_calendar_template = ?";
-    private static final String SQL_QUERY_SELECT_ALL = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template";
-
-    /**
-     * Get a new primary key
-     * 
-     * @param plugin
-     *            The plugin
-     * @return The new value of the primary key
-     */
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+    private static final String SQL_QUERY_SELECT_ALL = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template";    
 
     @Override
     public synchronized void insert( CalendarTemplate calendarTemplate, Plugin plugin )
     {
-        calendarTemplate.setIdCalendarTemplate( getNewPrimaryKey( plugin ) );
+        calendarTemplate.setIdCalendarTemplate( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, calendarTemplate, plugin, true );
         executeUpdate( daoUtil );
     }

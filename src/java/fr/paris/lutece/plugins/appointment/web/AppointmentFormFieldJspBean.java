@@ -65,7 +65,7 @@ import fr.paris.lutece.util.url.UrlItem;
  *
  */
 @Controller( controllerJsp = "ManageAppointmentFormFields.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentFormFieldJspBean extends MVCAdminJspBean
+public final class AppointmentFormFieldJspBean extends MVCAdminJspBean
 {
     private static final long serialVersionUID = -1505164256619633838L;
 

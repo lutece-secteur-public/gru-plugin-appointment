@@ -15,7 +15,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class WeekDefinitionDAO implements IWeekDefinitionDAO 
+public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionDAO 
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_week_definition) FROM appointment_week_definition";
@@ -32,7 +32,7 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO
     @Override
     public synchronized void insert( WeekDefinition weekDefinition, Plugin plugin )
     {
-        weekDefinition.setIdWeekDefinition( UtilDAO.getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
+        weekDefinition.setIdWeekDefinition( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, weekDefinition, plugin, true );
         executeUpdate( daoUtil );
     }

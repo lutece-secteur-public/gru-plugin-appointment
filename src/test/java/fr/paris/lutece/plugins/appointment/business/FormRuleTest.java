@@ -12,7 +12,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class FormRuleTest extends LuteceTestCase
+public final class FormRuleTest extends LuteceTestCase
 {
 
     public static final boolean IS_CAPTCHA_ENABLED_1 = true;

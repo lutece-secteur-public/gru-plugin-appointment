@@ -54,7 +54,7 @@ import fr.paris.lutece.util.ReferenceList;
  * @author Laurent Payen
  *
  */
-public class AppointmentResourceIdService extends ResourceIdService
+public final class AppointmentResourceIdService extends ResourceIdService
 {
     /** Permission to create appointments */
     public static final String PERMISSION_CREATE_FORM = "CREATE_FORM";
@@ -92,8 +92,8 @@ public class AppointmentResourceIdService extends ResourceIdService
     public static final String PERMISSION_CHANGE_APPOINTMENT_STATUS = "CHANGE_APPOINTMENT_STATUS";
 
     // Permission labels
-    private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.permission.label.resourceType";
-    private static final String PROPERTY_LABEL_RESOURCE_TYPE_CREATE = "appointment.permission.label.resourceType.create";
+    private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.appointment.name";
+    private static final String PROPERTY_LABEL_RESOURCE_TYPE_CREATE = "appointment.appointment.name.create";
     private static final String PROPERTY_LABEL_CREATE_FORM = "appointment.permission.label.createForm";
     private static final String PROPERTY_LABEL_COPY_FORM = "appointment.permission.label.copyForm";
     private static final String PROPERTY_LABEL_CREATE_APPOINTMENT = "appointment.permission.label.createAppointment";

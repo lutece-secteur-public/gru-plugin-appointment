@@ -45,7 +45,7 @@ import org.hibernate.validator.constraints.NotBlank;
  * @author Laurent Payen
  *
  */
-public class CalendarTemplate implements Serializable
+public final class CalendarTemplate implements Serializable
 {
 
     /**

@@ -47,7 +47,7 @@ import fr.paris.lutece.portal.service.security.UserNotSignedException;
  * @author Laurent Payen
  *
  */
-public class AppointmentPortlet extends PortletHtmlContent
+public final class AppointmentPortlet extends PortletHtmlContent
 {
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants

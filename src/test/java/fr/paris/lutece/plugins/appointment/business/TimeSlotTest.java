@@ -19,7 +19,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class TimeSlotTest extends LuteceTestCase
+public final class TimeSlotTest extends LuteceTestCase
 {
 
     public final static LocalTime STARTING_TIME_1 = LocalTime.parse( "09:00" );

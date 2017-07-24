@@ -125,7 +125,7 @@ import fr.paris.lutece.util.url.UrlItem;
  * 
  */
 @Controller( controllerJsp = "ManageAppointments.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentJspBean extends MVCAdminJspBean
+public final class AppointmentJspBean extends MVCAdminJspBean
 {
     /**
      * Serial version UID
@@ -274,8 +274,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String STATUS = "status";
 
     // services
-    private final StateService _stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
-    private final ITaskService _taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
+    private final transient StateService _stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+    private final transient ITaskService _taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
 
     // Session variable to store working values
     private int _nDefaultItemsPerPage;

@@ -16,7 +16,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class SlotTest extends LuteceTestCase
+public final class SlotTest extends LuteceTestCase
 {
 
     public final static LocalDateTime STARTING_DATE_1 = LocalDateTime.parse( "2017-01-27T09:00" );

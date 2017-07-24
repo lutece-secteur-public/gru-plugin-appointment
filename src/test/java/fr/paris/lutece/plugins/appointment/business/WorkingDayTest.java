@@ -16,7 +16,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class WorkingDayTest extends LuteceTestCase
+public final class WorkingDayTest extends LuteceTestCase
 {
 
     public final static int DAY_OF_WEEK_1 = 1;

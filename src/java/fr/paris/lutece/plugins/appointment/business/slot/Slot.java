@@ -12,7 +12,7 @@ import java.time.LocalTime;
  * @author Laurent Payen
  *
  */
-public class Slot implements Serializable
+public final class Slot implements Serializable
 {
 
     /**

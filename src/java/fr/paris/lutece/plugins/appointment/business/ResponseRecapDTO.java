@@ -46,7 +46,7 @@ import fr.paris.lutece.portal.business.file.File;
  * @author Laurent Payen
  *
  */
-public class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO>
+public final class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO>
 {
     /**
      * Serial version UID

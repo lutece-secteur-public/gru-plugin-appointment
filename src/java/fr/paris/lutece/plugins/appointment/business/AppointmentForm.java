@@ -53,7 +53,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
-public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
+public final class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
 {
     /**
      * Name of the resource type of Appointment Forms

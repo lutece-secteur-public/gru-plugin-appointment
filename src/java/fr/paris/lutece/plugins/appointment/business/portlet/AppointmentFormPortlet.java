@@ -45,7 +45,7 @@ import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormPortlet extends PortletHtmlContent
+public final class AppointmentFormPortlet extends PortletHtmlContent
 {
 
     private int _nIdAppointmentForm;

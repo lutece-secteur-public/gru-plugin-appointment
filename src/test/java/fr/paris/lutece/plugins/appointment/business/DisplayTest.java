@@ -15,7 +15,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class DisplayTest extends LuteceTestCase
+public final class DisplayTest extends LuteceTestCase
 {
 
     public static final boolean DISPLAY_TITLE_FO_1 = true;

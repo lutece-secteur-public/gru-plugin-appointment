@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Laurent Payen
  *
  */
-public class Localization implements Serializable
+public final class Localization implements Serializable
 {
 
     /**

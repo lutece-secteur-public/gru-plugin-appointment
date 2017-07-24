@@ -10,7 +10,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class CategoryTest extends LuteceTestCase
+public final class CategoryTest extends LuteceTestCase
 {
 
     public static final String LABEL_1 = "Catégorie 1";

@@ -41,7 +41,7 @@ import java.io.Serializable;
  * @author Laurent Payen
  *
  */
-public class FormMessage implements Serializable
+public final class FormMessage implements Serializable
 {
 
     /**

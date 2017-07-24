@@ -3,7 +3,7 @@ package fr.paris.lutece.plugins.appointment.service.lock;
 import java.io.Serializable;
 import java.util.Timer;
 
-public class TimerForLockOnSlot extends Timer implements Serializable
+public final class TimerForLockOnSlot extends Timer implements Serializable
 {
 
     /**

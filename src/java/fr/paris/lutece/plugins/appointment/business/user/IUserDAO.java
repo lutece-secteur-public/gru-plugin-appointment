@@ -14,16 +14,7 @@ public interface IUserDAO
     /**
      * The name of the bean of the DAO
      */
-    String BEAN_NAME = "appointment.userDAO";
-
-    /**
-     * Generate a new primary key
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return the new primary key
-     */
-    int getNewPrimaryKey( Plugin plugin );
+    String BEAN_NAME = "appointment.userDAO";    
 
     /**
      * Insert a new record in the table.

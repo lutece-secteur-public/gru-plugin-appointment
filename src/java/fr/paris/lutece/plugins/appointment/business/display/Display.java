@@ -12,7 +12,7 @@ import fr.paris.lutece.portal.service.image.ImageResource;
  * @author Laurent Payen
  *
  */
-public class Display implements Serializable
+public final class Display implements Serializable
 {
 
     /**

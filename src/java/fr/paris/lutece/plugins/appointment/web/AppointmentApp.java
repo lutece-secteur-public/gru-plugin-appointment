@@ -110,13 +110,13 @@ import fr.paris.lutece.util.url.UrlItem;
  *
  */
 @Controller( xpageName = AppointmentApp.XPAGE_NAME, pageTitleI18nKey = AppointmentApp.MESSAGE_DEFAULT_PAGE_TITLE, pagePathI18nKey = AppointmentApp.MESSAGE_DEFAULT_PATH )
-public class AppointmentApp extends MVCApplication
+public final class AppointmentApp extends MVCApplication
 {
 
     /**
      * Default page of XPages of this app
      */
-    public static final String MESSAGE_DEFAULT_PATH = "appointment.appointmentApp.defaultPath";
+    public static final String MESSAGE_DEFAULT_PATH = "appointment.appointment.name";
 
     /**
      * Default page title of XPages of this app

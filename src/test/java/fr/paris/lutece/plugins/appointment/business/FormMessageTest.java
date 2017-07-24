@@ -12,7 +12,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class FormMessageTest extends LuteceTestCase
+public final class FormMessageTest extends LuteceTestCase
 {
 
     public static final String CALENDAR_TITLE_1 = "CalendarTitle1";

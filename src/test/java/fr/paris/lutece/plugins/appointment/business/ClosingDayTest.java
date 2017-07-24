@@ -14,7 +14,7 @@ import fr.paris.lutece.test.LuteceTestCase;
  * @author Laurent Payen
  *
  */
-public class ClosingDayTest extends LuteceTestCase
+public final class ClosingDayTest extends LuteceTestCase
 {
 
     public static final LocalDate DATE_OF_CLOSING_DAY_1 = LocalDate.parse( "2017-01-26" );

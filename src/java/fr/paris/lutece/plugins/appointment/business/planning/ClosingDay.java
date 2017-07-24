@@ -10,7 +10,7 @@ import java.time.LocalDate;
  * @author Laurent Payen
  *
  */
-public class ClosingDay implements Serializable
+public final class ClosingDay implements Serializable
 {
 
     /**

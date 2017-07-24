@@ -42,7 +42,7 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  * @author Laurent Payen
  *
  */
-public class EntryTypeDate extends AbstractEntryTypeDate
+public final class EntryTypeDate extends AbstractEntryTypeDate
 {
     private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_date.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_date.html";

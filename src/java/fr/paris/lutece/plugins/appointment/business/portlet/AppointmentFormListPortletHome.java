@@ -44,7 +44,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormListPortletHome extends PortletHome
+public final class AppointmentFormListPortletHome extends PortletHome
 {
     // Static variable pointed at the DAO instance
     private static IAppointmentFormListPortletDAO _dao = SpringContextService.getBean( "appointment.appointmentFormListPortletDAO" );
