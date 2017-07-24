@@ -138,9 +138,9 @@ public class AppointmentApp extends MVCApplication
     private static final String TEMPLATE_APPOINTMENT_FORM = "/skin/plugins/appointment/appointment_form.html";
     private static final String TEMPLATE_APPOINTMENT_FORM_RECAP = "/skin/plugins/appointment/appointment_form_recap.html";
     private static final String TEMPLATE_APPOINTMENT_CREATED = "skin/plugins/appointment/appointment_created.html";
-    private static final String TEMPLATE_CANCEL_APPOINTMENT = "skin/plugins/appointment/cancelAppointment.html";
+    private static final String TEMPLATE_CANCEL_APPOINTMENT = "skin/plugins/appointment/cancel_appointment.html";
     private static final String TEMPLATE_APPOINTMENT_CANCELED = "skin/plugins/appointment/appointment_canceled.html";
-    private static final String TEMPLATE_MY_APPOINTMENTS = "skin/plugins/appointment/myAppointments.html";
+    private static final String TEMPLATE_MY_APPOINTMENTS = "skin/plugins/appointment/my_appointments.html";
     private static final String TEMPLATE_HTML_CODE_FORM = "skin/plugins/appointment/html_code_form.html";
 
     // Views

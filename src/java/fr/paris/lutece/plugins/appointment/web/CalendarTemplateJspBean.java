@@ -221,7 +221,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
         {
             if ( calendarTemplatesFolder.isDirectory( ) )
             {
-                if ( calendarTemplatesFolder.listFiles( ) != null )
+                if ( calendarTemplatesFolder != null && calendarTemplatesFolder.listFiles( ) != null )
                 {
                     for ( File file : calendarTemplatesFolder.listFiles( ) )
                     {

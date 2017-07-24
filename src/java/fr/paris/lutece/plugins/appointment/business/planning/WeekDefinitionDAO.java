@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -14,7 +15,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public class WeekDefinitionDAO implements IWeekDefinitionDAO
+public class WeekDefinitionDAO implements IWeekDefinitionDAO 
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_week_definition) FROM appointment_week_definition";
@@ -26,36 +27,12 @@ public class WeekDefinitionDAO implements IWeekDefinitionDAO
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_CLOSEST_TO_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM
-            + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";
-
-    @Override
-    public int getNewPrimaryKey( Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        int nKey = 1;
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-            daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
-            {
-                nKey = daoUtil.getInt( 1 ) + 1;
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return nKey;
-    }
+            + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";    
 
     @Override
     public synchronized void insert( WeekDefinition weekDefinition, Plugin plugin )
     {
-        weekDefinition.setIdWeekDefinition( getNewPrimaryKey( plugin ) );
+        weekDefinition.setIdWeekDefinition( UtilDAO.getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, weekDefinition, plugin, true );
         executeUpdate( daoUtil );
     }

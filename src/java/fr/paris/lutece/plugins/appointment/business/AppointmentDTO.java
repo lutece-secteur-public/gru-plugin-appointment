@@ -83,7 +83,7 @@ public class AppointmentDTO implements Serializable
     /**
      * The state of the appointment
      */
-    private State _state;
+    private SerializableState _state;
 
     /**
      * The Form Id
@@ -174,7 +174,7 @@ public class AppointmentDTO implements Serializable
      */
     public void setState( State state )
     {
-        this._state = state;
+        this._state = (SerializableState) state;
     }
 
     /**
