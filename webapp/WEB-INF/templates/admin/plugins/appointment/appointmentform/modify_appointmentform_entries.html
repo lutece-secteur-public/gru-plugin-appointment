@@ -38,7 +38,7 @@
 						<!-- List all entry of type group  -->
 						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"form-control input-sm\"" items=entry_group_list />
 						<span class="input-group-btn">
-						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modifyAppointmentForm.move}" name="add_to_group" value="#i18n{appointment.modifyAppointmentForm.moveAll}">
+						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.move.name}" name="add_to_group" value="#i18n{appointment.moveAll.name}">
 							<i class="glyphicon glyphicon-resize-vertical"></i>
 						</button>
 						</span>
@@ -108,7 +108,7 @@
 									<td>
 										<blockquote>
 											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=entry.parent.idEntry />
-											<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modifyAppointmentForm.move}" value="${entry.idEntry}">
+											<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.move.name}" value="${entry.idEntry}">
 												<i class="glyphicon glyphicon-ok"></i>
 											</button>
 										</blockquote>
@@ -118,7 +118,7 @@
 										<div class="input-group">
 											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
 											<div class="input-group-btn">
-												<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modifyAppointmentForm.move}" value="${entry.idEntry}">
+												<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.move.name}" value="${entry.idEntry}">
 													<i class="glyphicon glyphicon-ok"></i>
 												</button>
 											</div>

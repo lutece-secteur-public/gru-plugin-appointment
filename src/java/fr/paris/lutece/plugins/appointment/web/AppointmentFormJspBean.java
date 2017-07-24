@@ -205,7 +205,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String INFO_APPOINTMENTFORM_CREATED = "appointment.info.appointmentform.created";
     private static final String INFO_APPOINTMENTFORM_UPDATED = "appointment.info.appointmentform.updated";
     private static final String INFO_APPOINTMENTFORM_REMOVED = "appointment.info.appointmentform.removed";
-    private static final String INFO_APPOINTMENTFORM_MESSAGES_MODIFIED = "appointment.info.appointmentform_messages.updated";
+    private static final String INFO_APPOINTMENTFORM_MESSAGES_MODIFIED = "appointment.info.appointmentFormMessages.updated";
     private static final String ERROR_APPOINTMENTFORM_NO_STARTING_VALIDITY_DATE = "appointment.error.appointmentform.noStartingValidityDate";
     private static final String ERROR_APPOINTMENTFORM_ENDING_VALIDITY_DATE_BEFORE_NOW = "appointment.error.appointmentform.endingValidityDateBeforeNow";
 

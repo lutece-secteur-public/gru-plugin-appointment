@@ -84,7 +84,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_FIELD = "appointment.message.confirmRemoveField";
     private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
-    private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.field_value_field";
+    private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.fieldValue";
 
     // Views
     private static final String VIEW_GET_CREATE_FIELD = "getCreateField";
