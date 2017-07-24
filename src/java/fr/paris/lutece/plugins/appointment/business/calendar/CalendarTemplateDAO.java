@@ -53,7 +53,7 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_calendar_template SET title = ?, description = ?, template_path = ? WHERE id_calendar_template = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_calendar_template WHERE id_calendar_template = ?";
     private static final String SQL_QUERY_SELECT = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template WHERE id_calendar_template = ?";
-    private static final String SQL_QUERY_SELECT_ALL = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template";    
+    private static final String SQL_QUERY_SELECT_ALL = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template";
 
     @Override
     public synchronized void insert( CalendarTemplate calendarTemplate, Plugin plugin )

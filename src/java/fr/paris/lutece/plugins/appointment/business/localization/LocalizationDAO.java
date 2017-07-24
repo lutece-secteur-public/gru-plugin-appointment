@@ -13,7 +13,7 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_localization WHERE id_localization = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_localization, longitude, latitude, address, id_form FROM appointment_localization";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_localization = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";   
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
     @Override
     public synchronized void insert( Localization localization, Plugin plugin )

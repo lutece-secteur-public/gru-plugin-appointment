@@ -19,7 +19,7 @@ public final class UserDAO extends UtilDAO implements IUserDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_user WHERE id_user = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_user, id_lutece_user, first_name, last_name, email, phone_number FROM appointment_user";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
-    private static final String SQL_QUERY_SELECT_BY_EMAIL = SQL_QUERY_SELECT_COLUMNS + " WHERE email = ?";    
+    private static final String SQL_QUERY_SELECT_BY_EMAIL = SQL_QUERY_SELECT_COLUMNS + " WHERE email = ?";
 
     @Override
     public synchronized void insert( User user, Plugin plugin )

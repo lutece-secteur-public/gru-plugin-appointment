@@ -23,7 +23,7 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup FROM appointment_form";
     private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";    
+    private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
 
     @Override
     public synchronized void insert( Form form, Plugin plugin )

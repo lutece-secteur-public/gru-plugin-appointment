@@ -731,7 +731,7 @@ public final class AppointmentUtilities
         request.getSession( ).setAttribute( AppointmentUtilities.SESSION_SLOT_EDIT_TASK, slotEditTask );
         return timer;
     }
-    
+
     /**
      * Get Form Permissions
      * 
@@ -759,6 +759,6 @@ public final class AppointmentUtilities
         }
 
         return retour;
-    } 
+    }
 
 }

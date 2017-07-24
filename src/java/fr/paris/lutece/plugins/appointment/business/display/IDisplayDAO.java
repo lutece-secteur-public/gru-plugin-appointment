@@ -14,7 +14,7 @@ public interface IDisplayDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.displayDAO";    
+    static String BEAN_NAME = "appointment.displayDAO";
 
     /**
      * Insert a new record in the table.

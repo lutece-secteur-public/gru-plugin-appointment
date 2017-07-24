@@ -16,7 +16,7 @@ public interface ICategoryDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.categoryDAO";    
+    static String BEAN_NAME = "appointment.categoryDAO";
 
     /**
      * Insert a new record in the table.

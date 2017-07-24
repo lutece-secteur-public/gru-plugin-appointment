@@ -46,7 +46,7 @@ public interface IFormMessageDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.formMessageDAO";    
+    static String BEAN_NAME = "appointment.formMessageDAO";
 
     /**
      * Create a form message

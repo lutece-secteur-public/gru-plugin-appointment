@@ -51,7 +51,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
 
     private static final String CONSTANT_AND = " AND ";
-    private static final String CONSTANT_PERCENT = "%";    
+    private static final String CONSTANT_PERCENT = "%";
 
     @Override
     public synchronized void insert( Appointment appointment, Plugin plugin )

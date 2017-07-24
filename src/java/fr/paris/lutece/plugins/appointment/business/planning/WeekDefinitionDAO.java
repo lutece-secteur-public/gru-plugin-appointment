@@ -15,7 +15,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionDAO 
+public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_week_definition) FROM appointment_week_definition";
@@ -27,7 +27,7 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_CLOSEST_TO_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM
-            + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";    
+            + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";
 
     @Override
     public synchronized void insert( WeekDefinition weekDefinition, Plugin plugin )

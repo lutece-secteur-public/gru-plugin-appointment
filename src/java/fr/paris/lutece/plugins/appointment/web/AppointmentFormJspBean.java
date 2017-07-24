@@ -802,7 +802,7 @@ public final class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_CATEGORIES, CategoryService.findAllInReferenceList( ) );
         model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-    }    
+    }
 
     /**
      * Get an integer attribute from the session

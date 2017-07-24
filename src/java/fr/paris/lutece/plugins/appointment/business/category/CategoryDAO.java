@@ -23,7 +23,7 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_category, label FROM appointment_category";
     private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_category = ?";
-    private static final String SQL_QUERY_SELECT_BY_LABEL = SQL_QUERY_SELECT_COLUMNS + " WHERE label = ?";    
+    private static final String SQL_QUERY_SELECT_BY_LABEL = SQL_QUERY_SELECT_COLUMNS + " WHERE label = ?";
 
     @Override
     public synchronized void insert( Category category, Plugin plugin )

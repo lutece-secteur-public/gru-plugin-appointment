@@ -17,7 +17,7 @@ public interface IReservationRuleDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.reservationRuleDAO";   
+    static String BEAN_NAME = "appointment.reservationRuleDAO";
 
     /**
      * Insert a new record in the table

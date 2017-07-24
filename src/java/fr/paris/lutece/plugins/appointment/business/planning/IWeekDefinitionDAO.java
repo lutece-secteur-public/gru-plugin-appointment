@@ -17,7 +17,7 @@ public interface IWeekDefinitionDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.weekDefinitionDAO";    
+    static String BEAN_NAME = "appointment.weekDefinitionDAO";
 
     /**
      * Insert a new record in the table

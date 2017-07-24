@@ -19,7 +19,7 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_rule WHERE id_form_rule = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, id_form FROM appointment_form_rule";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_rule = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";    
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
     @Override
     public synchronized void insert( FormRule formRule, Plugin plugin )

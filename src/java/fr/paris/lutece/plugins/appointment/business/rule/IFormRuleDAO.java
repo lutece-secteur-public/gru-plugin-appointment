@@ -14,7 +14,7 @@ public interface IFormRuleDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.formRuleDAO";    
+    static String BEAN_NAME = "appointment.formRuleDAO";
 
     /**
      * Insert a new record in the table

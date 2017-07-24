@@ -48,7 +48,7 @@ public interface ICalendarTemplateDAO
     /**
      * The name of the bean of the DAO
      */
-    String BEAN_NAME = "appointment.calendarTemplateDAO";    
+    String BEAN_NAME = "appointment.calendarTemplateDAO";
 
     /**
      * Insert a new record int the table

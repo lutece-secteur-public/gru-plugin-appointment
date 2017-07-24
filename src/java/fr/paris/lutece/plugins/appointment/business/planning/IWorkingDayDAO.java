@@ -16,7 +16,7 @@ public interface IWorkingDayDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.workingDayDAO";   
+    static String BEAN_NAME = "appointment.workingDayDAO";
 
     /**
      * Insert a new record in the table

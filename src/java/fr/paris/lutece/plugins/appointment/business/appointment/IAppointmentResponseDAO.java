@@ -16,7 +16,7 @@ public interface IAppointmentResponseDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.appointmentResponseDAO";    
+    static String BEAN_NAME = "appointment.appointmentResponseDAO";
 
     /**
      * Associates a response to an appointment

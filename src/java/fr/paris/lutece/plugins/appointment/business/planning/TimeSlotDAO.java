@@ -22,7 +22,7 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_time_slot WHERE id_time_slot = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_time_slot, starting_time, ending_time, is_open, max_capacity, id_working_day FROM appointment_time_slot";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_time_slot = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";    
+    private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
 
     @Override
     public synchronized void insert( TimeSlot timeSlot, Plugin plugin )

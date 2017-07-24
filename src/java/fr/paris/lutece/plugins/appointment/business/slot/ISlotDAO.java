@@ -18,7 +18,7 @@ public interface ISlotDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.slotDAO";    
+    static String BEAN_NAME = "appointment.slotDAO";
 
     /**
      * Insert a new record in the table

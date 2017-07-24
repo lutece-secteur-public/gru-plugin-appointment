@@ -52,7 +52,7 @@ public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_message WHERE id_form_message = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_message, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help,field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form FROM appointment_form_message";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_message = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";    
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
     @Override
     public synchronized void insert( FormMessage formMessage, Plugin plugin )

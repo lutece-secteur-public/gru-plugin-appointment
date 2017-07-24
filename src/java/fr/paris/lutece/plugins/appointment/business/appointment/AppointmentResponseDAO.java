@@ -19,7 +19,7 @@ public final class AppointmentResponseDAO extends UtilDAO implements IAppointmen
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_appointment_response) FROM appointment_appointment_response";
     private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment_response, id_appointment, id_response) VALUES (?,?,?)";
     private static final String SQL_QUERY_REMOVE_FROM_ID_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_response = ?";
-    private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";    
+    private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";
 
     @Override
     public void insertAppointmentResponse( int nIdAppointment, int nIdResponse, Plugin plugin )

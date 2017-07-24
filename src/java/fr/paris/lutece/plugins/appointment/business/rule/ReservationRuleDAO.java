@@ -27,7 +27,7 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_CLOSEST_TO_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM
-            + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";   
+            + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";
 
     @Override
     public synchronized void insert( ReservationRule reservationRule, Plugin plugin )

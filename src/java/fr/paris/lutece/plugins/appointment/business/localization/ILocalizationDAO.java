@@ -14,7 +14,7 @@ public interface ILocalizationDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.localizationDAO";    
+    static String BEAN_NAME = "appointment.localizationDAO";
 
     /**
      * Insert a new record in the table.

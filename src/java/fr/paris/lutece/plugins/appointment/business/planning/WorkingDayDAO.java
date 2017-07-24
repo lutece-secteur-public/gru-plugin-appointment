@@ -22,7 +22,7 @@ public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_working_day WHERE id_working_day = ? ";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_working_day, day_of_week, id_week_definition FROM appointment_working_day";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";    
+    private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
 
     @Override
     public synchronized void insert( WorkingDay workingDay, Plugin plugin )

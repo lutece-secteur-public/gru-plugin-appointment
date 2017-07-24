@@ -94,5 +94,4 @@ public final class AppointmentFormDashboardComponent extends DashboardComponent
         return template.getHtml( );
     }
 
-    
 }

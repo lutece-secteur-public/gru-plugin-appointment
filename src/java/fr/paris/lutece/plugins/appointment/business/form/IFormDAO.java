@@ -16,7 +16,7 @@ public interface IFormDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.formDAO";    
+    static String BEAN_NAME = "appointment.formDAO";
 
     /**
      * 
