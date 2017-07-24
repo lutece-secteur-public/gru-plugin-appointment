@@ -61,7 +61,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public final class AppointmentFormDashboardComponent extends DashboardComponent
+public class AppointmentFormDashboardComponent extends DashboardComponent
 {
     // MARKS
     private static final String MARK_URL = "url";

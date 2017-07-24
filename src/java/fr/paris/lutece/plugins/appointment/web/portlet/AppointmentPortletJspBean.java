@@ -47,7 +47,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public final class AppointmentPortletJspBean extends PortletJspBean
+public class AppointmentPortletJspBean extends PortletJspBean
 {
     /**
      * Serial version UID

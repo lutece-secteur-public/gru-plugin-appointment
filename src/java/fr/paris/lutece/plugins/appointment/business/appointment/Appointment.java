@@ -11,7 +11,7 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
  * @author Laurent Payen
  *
  */
-public final class Appointment implements Serializable
+public class Appointment implements Serializable
 {
 
     /**

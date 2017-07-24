@@ -15,8 +15,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
@@ -28,7 +27,7 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
  * @author Laurent Payen
  *
  */
-public final class AppointmentDTO implements Serializable
+public final class AppointmentDTO extends Appointment implements Serializable
 {
 
     private static final String PROPERTY_EMPTY_FIELD_FIRST_NAME = "appointment.validation.appointment.FirstName.notEmpty";
@@ -49,11 +48,6 @@ public final class AppointmentDTO implements Serializable
      * Serial version UID
      */
     private static final long serialVersionUID = 703930649594406505L;
-
-    /**
-     * The Appointment Id
-     */
-    private int _nIdAppointment;
 
     /**
      * The Date of the appointment in string format
@@ -88,17 +82,7 @@ public final class AppointmentDTO implements Serializable
     /**
      * The Form Id
      */
-    private int _nIdForm;
-
-    /**
-     * The User Id
-     */
-    private int _nIdUser;
-
-    /**
-     * The SLot Id
-     */
-    private int _nIdSlot;
+    private int _nIdForm;    
 
     /**
      * The First Name of the User
@@ -129,17 +113,7 @@ public final class AppointmentDTO implements Serializable
     /**
      * The maximum number of seats the user can book
      */
-    private int _nNbMaxPotentialBookedSeats;
-
-    /**
-     * The slot of the appointment
-     */
-    private Slot _slot;
-
-    /**
-     * The user of the appointment
-     */
-    private User _user;
+    private int _nNbMaxPotentialBookedSeats;    
 
     /**
      * The Map of the responses for the additional entries of the form
@@ -259,28 +233,7 @@ public final class AppointmentDTO implements Serializable
     public void setIsCancelled( boolean isCancelled )
     {
         this._isCancelled = isCancelled;
-    }
-
-    /**
-     * Get the user of the appointment
-     * 
-     * @return the user
-     */
-    public User getUser( )
-    {
-        return _user;
-    }
-
-    /**
-     * Set the user of the appointment
-     * 
-     * @param user
-     *            the user to set
-     */
-    public void setUser( User user )
-    {
-        this._user = user;
-    }
+    }    
 
     /**
      * Get the date of the appointment
@@ -343,70 +296,7 @@ public final class AppointmentDTO implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }
-
-    /**
-     * Get the appointment Id
-     * 
-     * @return the appointment Id
-     */
-    public int getIdAppointment( )
-    {
-        return _nIdAppointment;
-    }
-
-    /**
-     * Set the appointment Id
-     * 
-     * @param nIdAppointment
-     *            the appointment Id to set
-     */
-    public void setIdAppointment( int nIdAppointment )
-    {
-        this._nIdAppointment = nIdAppointment;
-    }
-
-    /**
-     * Get the User Id of the appointment
-     * 
-     * @return the User Id
-     */
-    public int getIdUser( )
-    {
-        return _nIdUser;
-    }
-
-    /**
-     * Set the User Id of the Appointment
-     * 
-     * @param nIdUser
-     *            the user Id to set
-     */
-    public void setIdUser( int nIdUser )
-    {
-        this._nIdUser = nIdUser;
-    }
-
-    /**
-     * Get the slot id
-     * 
-     * @return the slot id
-     */
-    public int getIdSlot( )
-    {
-        return _nIdSlot;
-    }
-
-    /**
-     * Set the slot id
-     * 
-     * @param nIdSlot
-     *            the slot id to set
-     */
-    public void setIdSlot( int nIdSlot )
-    {
-        this._nIdSlot = nIdSlot;
-    }
+    }   
 
     /**
      * Get the first name of the user
@@ -512,17 +402,7 @@ public final class AppointmentDTO implements Serializable
     {
         this._nNbMaxPotentialBookedSeats = nNbMaxPotentialBookedSeats;
     }
-
-    /**
-     * Get the slot of the appointment
-     * 
-     * @return the slot of the appointment
-     */
-    public Slot getSlot( )
-    {
-        return _slot;
-    }
-
+   
     /**
      * Get the available actions of the workflow for this appointment
      * 
@@ -541,18 +421,7 @@ public final class AppointmentDTO implements Serializable
     public void setListWorkflowActions( Collection<Action> listWorkflowActions )
     {
         this._listWorkflowActions = listWorkflowActions;
-    }
-
-    /**
-     * Set the slot of the appointment
-     * 
-     * @param slot
-     *            the slot to set
-     */
-    public void setSlot( Slot slot )
-    {
-        this._slot = slot;
-    }
+    }    
 
     /**
      * Get the map of the responses of the additional entries of the form

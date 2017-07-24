@@ -45,7 +45,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  * 
  */
-public final class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
+public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
 {
     private static final String UPLOAD_SUBMIT_PREFIX = "_appointment_upload_submit_";
     private static final String UPLOAD_DELETE_PREFIX = "_appointment_upload_delete_";

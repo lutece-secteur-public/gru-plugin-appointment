@@ -44,7 +44,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 /**
  * Manager form appointment removal listeners
  */
-public final class AppointmentListenerManager
+public class AppointmentListenerManager
 {
     /**
      * Private default constructor
