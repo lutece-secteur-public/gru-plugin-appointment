@@ -44,7 +44,7 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * @author Laurent Payen
  *
  */
-public class AppointmentAddOnManager
+public final class AppointmentAddOnManager
 {
     /**
      * Private constructor
