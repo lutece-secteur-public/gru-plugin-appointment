@@ -25,16 +25,16 @@
 		</admin-feature>
 		<admin-feature>
             <feature-id>APPOINTMENT_CALENDAR_TEMPLATE</feature-id>
-            <feature-title>appointment.adminFeature.manageCalendarTemplates.name</feature-title>
-            <feature-description>appointment.adminFeature.manageCalendarTemplates.description</feature-description>
+            <feature-title>appointment.manageCalendarTemplates.title</feature-title>
+            <feature-description>appointment.manageCalendarTemplates.title</feature-description>
             <feature-level>0</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp</feature-url>
             <feature-icon-url/>
 		</admin-feature>
 		<admin-feature>
             <feature-id>APPOINTMENT_CATEGORY_MANAGEMENT</feature-id>
-            <feature-title>appointment.adminFeature.ManageAppointmentCategory.name</feature-title>
-            <feature-description>appointment.adminFeature.ManageAppointmentCategory.description</feature-description>
+            <feature-title>appointment.manageCategories.title</feature-title>
+            <feature-description>appointment.manageCategories.title</feature-description>
             <feature-level>2</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp</feature-url>
             <feature-icon-url/>
