@@ -134,9 +134,9 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String MARK_ENTRY_TYPE_SERVICE = "entryTypeService";
     private static final String MARK_APPOINTMENT_FORM = "appointmentform";
 
-    private static final String PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES = "appointment.modify_appointmentform_entries.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES = "appointment.modifyAppointmentFormEntries.pageTitle";
 
-    private static final String TEMPLATE_MODIFY_APPOINTMENT_FORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform_entries.html";
+    private static final String TEMPLATE_MODIFY_APPOINTMENT_FORM = "/admin/plugins/appointment/appointmentform/modifyAppointmentFormEntries.html";
 
     // Local variables
     private EntryService _entryService = EntryService.getService( );

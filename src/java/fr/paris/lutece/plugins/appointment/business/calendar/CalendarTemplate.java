@@ -62,7 +62,7 @@ public class CalendarTemplate implements Serializable
      * Calendar Title
      */
     @NotBlank( message = "#i18n{appointment.calendarTemplate.labelTitleBlank}" )
-    @Size( max = 255, message = "#i18n{appointment.calendarTemplate.labelTitleSize}" )
+    @Size( max = 255, message = "#i18n{appointment.labelTemplatePathSize}" )
     private String _strTitle;
 
     /**
@@ -76,7 +76,7 @@ public class CalendarTemplate implements Serializable
      * Path for the template
      */
     @NotBlank( message = "#i18n{appointment.calendarTemplate.labelTemplatePathBlank}" )
-    @Size( max = 255, message = "#i18n{appointment.calendarTemplate.labelTemplatePathSize}" )
+    @Size( max = 255, message = "#i18n{appointment.labelTemplatePathSize}" )
     private String _strTemplatePath;
 
     /**

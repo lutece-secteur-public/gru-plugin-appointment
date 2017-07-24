@@ -135,7 +135,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String TEMPLATE_MANAGE_SPECIFIC_WEEK = "admin/plugins/appointment/slots/manage_specific_week.html";
     private static final String TEMPLATE_MANAGE_TYPICAL_WEEK = "admin/plugins/appointment/slots/manage_typical_week.html";
     private static final String TEMPLATE_MODIFY_TIME_SLOT = "admin/plugins/appointment/slots/modify_time_slot.html";
-    private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modify_slot.html";
+    private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modifySlot.html";
 
     // Session variable to store working values
     private static final String SESSION_ATTRIBUTE_TIME_SLOT = "appointment.session.timeSlot";

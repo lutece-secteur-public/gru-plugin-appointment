@@ -12,19 +12,19 @@
 					</div>
 				</div>
 			    <div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelValue} * : </label>
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.value.name} * : </label>
 			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<input type="text" name="value" id="value" size="80" value="${field.value}" class="form-control">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelComment} : </label>
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.comment.name} : </label>
 			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<textarea name="comment" id="comment" class="form-control">${field.comment!}</textarea>
 					</div>
 				</div>
 			    <div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="default_value">#i18n{appointment.createField.labelDefaultValue}</label>
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="default_value">#i18n{appointment.defaultValue.name}</label>
 			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="checkbox">
 							<label for="default_value">
@@ -60,7 +60,7 @@
 					<input name="view" value="getCreateEntry" type="hidden">
 					<input name="id_field" value="${field.idField}" type="hidden">
 					<input name="id_form" value="${field.parentEntry.idResource}" type="hidden">
-					<label for="id_type">#i18n{appointment.modify_appointmentform.labelInsertEntry} :</label>
+					<label for="id_type">#i18n{appointment.modifyAppointmentForm.labelInsertEntry} :</label>
 					<@combo name="id_type"  items=entry_type_list default_value=-1 />
 					<button class="btn btn-primary btn-xs" title="#i18n{appointment.label.insert}" type="submit" ><i class="glyphicon glyphicon-plus"></i>&nbsp;#i18n{appointment.label.insert} </button>
 				</fieldset>
@@ -71,9 +71,9 @@
 			<thead>
 				<tr> 
 					<th> #i18n{appointment.labelTitle}</th>
-	            	<th> #i18n{appointment.modifyField.manageConditionalQuestion.rowType}</th>
+	            	<th> #i18n{appointment.type.name}</th>
 	            	<th> #i18n{appointment.modifyField.manageConditionalQuestion.rowConditionalQuestion}</th>
-					<th> #i18n{appointment.modifyField.manageConditionalQuestion.rowActions}</th>
+					<th> #i18n{appointment.actions.label}</th>
 	        	</tr>
 			</thead>
 	        <tbody>

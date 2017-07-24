@@ -12,24 +12,24 @@
 					<input type="hidden" name="id_slot" value="${slot.idSlot}">						
 					<input type="hidden" name="date_of_display" value="${date_of_display}">						
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.modify_slot.labelDate} :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.modifySlot.labelDate} :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<p class="form-control-static">${slot.date}</p>
 						</div>
 					</div>					
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="is_open" >#i18n{appointment.modify_slot.labelOpen} * :</label>
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="is_open" >#i18n{appointment.labelOpen} * :</label>
 						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 							<div class="checkbox">
 								<label>
 									<input type="checkbox" id="is_open" name="is_open" value="true" <#if slot.isOpen>checked="checked"</#if> />&#160;
 								</label>
-								<span class="help-block">#i18n{appointment.modify_slot.labelOpenHelp}</span>
+								<span class="help-block">#i18n{appointment.modifySlot.labelOpenHelp}</span>
 							</div>
 						</div>
 					</div>					
 					<div class="form-group">
-						<label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.modify_slot.labelMaxCapacityForThisSlot} * :</label>
+						<label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot} * :</label>
 						<div class="col-xs-3 col-sm-9 col-md-9 col-lg-9">
 							<input type="text" name="max_capacity" value="${slot.maxCapacity}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
 						</div>
@@ -48,14 +48,14 @@
 								<i data-time-icon="icon-time" data-date-icon="icon-calendar">
 								</i>
 							</span>															
-							<span class="help-block">#i18n{appointment.modify_slot.helpModifyEndSlot} :</span>																					
+							<span class="help-block">#i18n{appointment.modifySlot.helpModifyEndSlot} :</span>																					
 						</div>							
 					</div>	
 					<div class="form-group">			
 						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="shift_slot"/></label>
 						<div id="shift_slot" class="col-xs-12 col-sm-9 col-md-9 input-append">
-						<input type= "radio" name="shift_slot" value="false" checked="checked">#i18n{appointment.modify_slot.notShiftSlot}<br>
-						<input type= "radio" name="shift_slot" value="true">#i18n{appointment.modify_slot.shiftSlot}<br>						
+						<input type= "radio" name="shift_slot" value="false" checked="checked">#i18n{appointment.modifySlot.notShiftSlot}<br>
+						<input type= "radio" name="shift_slot" value="true">#i18n{appointment.modifySlot.shiftSlot}<br>						
 						</div>	
 					</div>	
 					<div class="form-group">

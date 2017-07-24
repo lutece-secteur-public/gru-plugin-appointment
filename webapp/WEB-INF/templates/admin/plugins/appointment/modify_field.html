@@ -11,19 +11,19 @@
 				</div>
 			</div>
 	    	<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelValue} * : </label>
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.value.name} * : </label>
 	    		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 					<input type="text" name="value" id="value" size="80" class="form-control" value="${field.value}">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.createField.labelComment} : </label>
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.comment.name} : </label>
 		    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 					<textarea name="comment" id="comment" class="form-control">${field.comment!}</textarea>
 				</div>
 			</div>
 	    	<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="default_value">#i18n{appointment.createField.labelDefaultValue}</label>
+				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="default_value">#i18n{appointment.defaultValue.name}</label>
 		    	<#if field.defaultValue>
 		    		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 						<div class="checkbox">

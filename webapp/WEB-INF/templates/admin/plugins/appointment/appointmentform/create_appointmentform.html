@@ -7,54 +7,54 @@
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<h3 class="box-title">#i18n{appointment.create_appointmentform.title}</h3>
+					<h3 class="box-title">#i18n{appointment.createAppointmentForm.title}</h3>
 				</div>
 				<div class="box-body">			
 					<fieldset>
-					<legend class="hidden">#i18n{appointment.create_appointmentform.title}</legend>
+					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
-					<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />									
-					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>
+					<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' maxlength=255 />									
+					<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>
 					<@fieldTextArea i18nLabelKey='appointment.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' />
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_start">#i18n{appointment.create_appointmentform.labelTimeStart}&nbsp;*&nbsp;:</label>
+						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_start">#i18n{appointment.createAppointmentForm.labelTimeStart}&nbsp;*&nbsp;:</label>
 						<div id="time_start" class="col-xs-12 col-sm-9 col-md-9 input-append">
 							<input id="time_start" name="time_start" data-format="hh:mm" type="text" value="${appointmentform.timeStart!''}"></input>
 							<span class="add-on">
 								<i data-time-icon="icon-time" data-date-icon="icon-calendar">
 								</i>
 							</span>
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelTimeStart.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeStart.help}</p>
 						</div>
 					</div>					
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.create_appointmentform.labelTimeEnd}&nbsp;*&nbsp;:</label>
+						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.createAppointmentForm.labelTimeEnd}&nbsp;*&nbsp;:</label>
 						<div id="time_end" class="col-xs-12 col-sm-9 col-md-9 input-append">
 							<input id="time_end" name="time_end" data-format="hh:mm" type="text" value="${appointmentform.timeEnd!''}"></input>
 							<span id="timeend" class="add-on">
 								<i data-time-icon="icon-time" data-date-icon="icon-calendar">
 								</i>
 							</span>
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelTimeEnd.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeEnd.help}</p>
 						</div>
 					</div>	
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelDurationAppointments} * :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelDurationAppointments} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<input type="text" name="duration_appointments" value="${appointmentform.durationAppointments!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelDurationAppointments.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}</p>
 						</div>
 					</div>	
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment} * :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<input type="text" name="min_time_before_appointment" value="${appointmentform.minTimeBeforeAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}</p>
 						</div>
 					</div>					
-					<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='form-control input-sm' />
-					<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='form-control input-sm' />					
+					<@fieldInputCalendar i18nLabelKey='appointment.createAppointmentForm.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelDateStartValidity.help' cssClass='form-control input-sm' />
+					<@fieldInputCalendar i18nLabelKey='appointment.createAppointmentForm.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelDateEndValidity.help' cssClass='form-control input-sm' />					
 					<@fieldInputCheckBox i18nLabelKey='appointment.label.displayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.label.displayTitleFo.help' />
 					<div class="form-group">
 						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.label.nbWeeksToDisplay} * :</label>
@@ -64,41 +64,41 @@
 						</div>
 					</div>	
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbDaysBeforeNewAppointment} * :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<input type="text" name="nb_days_before_new_appointment" value="${appointmentform.nbDaysBeforeNewAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysBeforeNewAppointment.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}</p>
 						</div>
 					</div>	
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbMaxAppointments} * :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<input type="text" name="nb_max_appointments_per_user" value="${appointmentform.nbMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelNbMaxAppointments.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}</p>
 						</div>
 					</div>	
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbDaysForMaxAppointments} * :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<input type="text" name="nb_days_for_max_appointments_per_user" value="${appointmentform.nbDaysForMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysForMaxAppointments.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}</p>
 						</div>
 					</div>	
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMaxCapacityPerSlot} * :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<input type="text" name="max_capacity_per_slot" value="${appointmentform.maxCapacityPerSlot!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelMaxCapacityPerSlot.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}</p>
 						</div>
 					</div>						
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMaxPeoplePerAppointment} * :</label>
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 							<input type="text" name="max_people_per_appointment" value="${appointmentform.maxPeoplePerAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
-							<p class="help-block">#i18n{appointment.create_appointmentform.labelMaxPeoplePerAppointment.help}</p>
+							<p class="help-block">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}</p>
 						</div>
 					</div>					
-					<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />									
+					<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.createAppointmentForm.labelReference.help' />									
 					</fieldset>
 				</div>
 			</div>
@@ -106,12 +106,12 @@
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">	
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<h3 class="box-title">#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</h3>
+					<h3 class="box-title">#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}</h3>
 				</div>
 				<div class="box-body">
 					<fieldset>						
-						<legend class="hidden">#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</legend>				
-						<h4>#i18n{appointment.create_appointmentform.labelTitleDaysOpen}</h4>
+						<legend class="hidden">#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}</legend>				
+						<h4>#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</h4>
 						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenMonday' inputName='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
 						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenTuesday' inputName='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
 						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenWednesday' inputName='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false />
@@ -120,22 +120,22 @@
 						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenSaturday' inputName='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
 						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />							
 						<#if listWorkflows??>
-							<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" />
+							<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" />
 						</#if>
-						<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />
-						<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
+						<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />
+						<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 						<#if isCaptchaEnabled>
-							<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+							<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 						</#if>				
-						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />								
-						<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelActiveAuthentication' inputName='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
+						<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />								
+						<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelActiveAuthentication' inputName='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
 						<div class="form-group" style="clear:both;">
-							<label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
+							<label class="control-label col-xs-12 col-sm-3 col-md-3 col-lg-3" for="icon">#i18n{appointment.createAppointmentForm.labelIconForm} &nbsp;:</label>
 							<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
 								<div class="input-group">
 									<input id="image_resource" type="file" name="image_resource" accept="image/*"/> 
 								</div>
-								<p class="help-block">#i18n{appointment.modify_appointmentForm.helpFormatIcon}</p>
+								<p class="help-block">#i18n{appointment.modifyAppointmentForm.helpFormatIcon}</p>
 							</div>
 		
 							<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
@@ -144,7 +144,7 @@
 										<i class="fa fa-times-circle" aria-hidden="true"></i> Effacer
 									</a>
 								</div>
-								<p class="help-block">#i18n{appointment.modify_appointmentForm.helpCancelUploadIcon}</p>
+								<p class="help-block">#i18n{appointment.modifyAppointmentForm.helpCancelUploadIcon}</p>
 							</div>
 						</div>
 						<div class="form-group">

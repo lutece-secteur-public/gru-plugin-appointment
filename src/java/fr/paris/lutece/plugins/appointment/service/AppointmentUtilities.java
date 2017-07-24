@@ -72,16 +72,16 @@ public final class AppointmentUtilities
     private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 
     private static final String KEY_RESOURCE_TYPE = "appointment.permission.label.resourceType";
-    private static final String KEY_COLUMN_LAST_NAME = "appointment.manage_appointments.columnLastName";
-    private static final String KEY_COLUMN_FISRT_NAME = "appointment.manage_appointments.columnFirstName";
-    private static final String KEY_COLUMN_EMAIL = "appointment.manage_appointments.columnEmail";
+    private static final String KEY_COLUMN_LAST_NAME = "appointment.manageAppointments.columnLastName";
+    private static final String KEY_COLUMN_FISRT_NAME = "appointment.manageAppointments.columnFirstName";
+    private static final String KEY_COLUMN_EMAIL = "appointment.manageAppointments.columnEmail";
     private static final String KEY_COLUMN_DATE_APPOINTMENT = "appointment.dateAppointment.title";
     private static final String KEY_TIME_START = "appointment.model.entity.appointmentform.attribute.timeStart";
     private static final String KEY_TIME_END = "appointment.model.entity.appointmentform.attribute.timeEnd";
     private static final String KEY_COLUMN_STATUS = "appointment.labelStatus";
-    private static final String KEY_COLUM_LOGIN = "appointment.manage_appointments.columnName";
-    private static final String KEY_COLUMN_STATE = "appointment.manage_appointments.columnState";
-    private static final String KEY_COLUMN_NB_BOOKED_SEATS = "appointment.manage_appointments.columnNumberOfBookedseatsPerAppointment";
+    private static final String KEY_COLUM_LOGIN = "appointment.manageAppointments.columnName";
+    private static final String KEY_COLUMN_STATE = "appointment.manageAppointments.columnState";
+    private static final String KEY_COLUMN_NB_BOOKED_SEATS = "appointment.manageAppointments.columnNumberOfBookedseatsPerAppointment";
 
     private static final String CONSTANT_COMMA = ",";
     private static final String EXCEL_FILE_EXTENSION = ".xlsx";

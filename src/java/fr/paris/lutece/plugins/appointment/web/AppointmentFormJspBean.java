@@ -119,10 +119,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private int _nDefaultItemsPerPage;
 
     // templates
-    private static final String TEMPLATE_MANAGE_APPOINTMENTFORMS = "/admin/plugins/appointment/appointmentform/manage_appointmentforms.html";
-    private static final String TEMPLATE_CREATE_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/create_appointmentform.html";
-    private static final String TEMPLATE_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform.html";
-    private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES = "/admin/plugins/appointment/appointmentform/modify_appointmentform_messages.html";
+    private static final String TEMPLATE_MANAGE_APPOINTMENTFORMS = "/admin/plugins/appointment/appointmentform/manageAppointmentForms.html";
+    private static final String TEMPLATE_CREATE_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/createAppointmentForm.html";
+    private static final String TEMPLATE_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modifyAppointmentForm.html";
+    private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES = "/admin/plugins/appointment/appointmentform/modifyAppointmentFormMessages.html";
     private static final String TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_advanced_appointmentform.html";
 
     // Parameters
@@ -139,10 +139,10 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage.appointmentforms.title";
-    private static final String PROPERTY_PAGE_TITLE_GENERAL_SETTINGS = "appointment.modify_appointmentForm.titleAlterablesParameters";
-    private static final String PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS = "appointment.modify_appointmentForm.titleStructuralsParameters";
+    private static final String PROPERTY_PAGE_TITLE_GENERAL_SETTINGS = "appointment.modifyAppointmentForm.titleAlterablesParameters";
+    private static final String PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS = "appointment.modifyAppointmentForm.titleStructuralsParameters";
     private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.manage.appointmentforms.title";
-    private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modify_appointmentform_messages.pageTitle";
+    private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modifyAppointmentFormMessages.pageTitle";
 
     // Markers
     private static final String MARK_WEBAPP_URL = "webapp_url";
@@ -177,7 +177,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     private static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
     private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
-    private static final String PROPERTY_COPY_OF_FORM = "appointment.manage_appointmentforms.Copy";
+    private static final String PROPERTY_COPY_OF_FORM = "appointment.manageAppointmentForms.Copy";
     private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
     private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
     private static final String MESSAGE_ERROR_OPEN_SLOTS = "appointment.message.error.openSlots";

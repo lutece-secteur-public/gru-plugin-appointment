@@ -17,7 +17,7 @@
 			<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
 				<#if listDateOfModification??>					
 					<div class="form-group">
-							<label class="col-xs-12 col-sm-3 control-label" for="id_week_definition">#i18n{appointment.modify_appointmentform.listDateOfModification}:</label>
+							<label class="col-xs-12 col-sm-3 control-label" for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification}:</label>
 							<div class="col-xs-12 col-sm-9">							
 								<select id="id_week_definition" name="id_week_definition" class="form-control" onchange="refresh()">
 									<#list listDateOfModification as item>
@@ -57,7 +57,7 @@
 		<#if events??>								   
 			<#list events as event>
 				{
-					title : <#if event.isOpen>'#i18n{appointment.manageCalendarSlots.labelOpened}',<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}',</#if>
+					title : <#if event.isOpen>'#i18n{appointment.labelOpen}',<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}',</#if>
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idTimeSlot}',

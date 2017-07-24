@@ -5,7 +5,7 @@
 	<@messages infos=infos errors=errors />
 		<div class="box box-primary">
 			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.modify_appointmentform.title} : ${appointmentform.title}</h3>				
+				<h3 class="box-title">#i18n{appointment.modifyAppointmentForm.title} : ${appointmentform.title}</h3>				
 			</div>
 		</div>
 	</div>
@@ -15,17 +15,17 @@
     <ul class="nav nav-tabs">
     	<li <#if tab="entries">class="active"</#if>>
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
-				#i18n{appointment.modify_appointmentform_entries.pageTitle}
+				#i18n{appointment.modifyAppointmentFormEntries.pageTitle}
 			</a>
         </li>     	
  		<li <#if tab="params">class="active"</#if>>
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
-				#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}
+				#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}
 			</a>
         </li>
 		<li <#if tab="advancedParams">class="active"</#if>>
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}">
-				#i18n{appointment.modify_appointmentForm.titleStructuralsParameters}
+				#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}
 			</a>
         </li>              
         <li <#if tab="typicalWeek">class="active"</#if>>
@@ -45,18 +45,18 @@
 		<fieldset>    			   
 			<form method="post" class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data" >	     
 				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>				
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.create_appointmentform.labelTitle' maxlength=255 /> 
-				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>				 
+				<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelTitle' maxlength=255 /> 
+				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>				 
 				<@fieldTextArea i18nLabelKey='appointment.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.labelDescription'/>								
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment} * :</label>
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment} * :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" name="min_time_before_appointment" value="${appointmentform.minTimeBeforeAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-						<p class="help-block">#i18n{appointment.create_appointmentform.labelMinTimeBeforeAppointment.help}</p>
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}</p>
 					</div>
 				</div>	
-				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateStartValidity.help' cssClass='form-control input-sm' />
-				<@fieldInputCalendar i18nLabelKey='appointment.create_appointmentform.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDateEndValidity.help' cssClass='form-control input-sm' />						
+				<@fieldInputCalendar i18nLabelKey='appointment.createAppointmentForm.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelDateStartValidity.help' cssClass='form-control input-sm' />
+				<@fieldInputCalendar i18nLabelKey='appointment.createAppointmentForm.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelDateEndValidity.help' cssClass='form-control input-sm' />						
 				<@fieldInputCheckBox i18nLabelKey='appointment.label.displayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.label.displayTitleFo.help' />				
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.label.nbWeeksToDisplay} * :</label>
@@ -66,48 +66,48 @@
 					</div>
 				</div>	
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbDaysBeforeNewAppointment} * :</label>
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment} * :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" name="nb_days_before_new_appointment" value="${appointmentform.nbDaysBeforeNewAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-						<p class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysBeforeNewAppointment.help}</p>
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}</p>
 					</div>
 				</div>	
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbMaxAppointments} * :</label>
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments} * :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" name="nb_max_appointments_per_user" value="${appointmentform.nbMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-						<p class="help-block">#i18n{appointment.create_appointmentform.labelNbMaxAppointments.help}</p>
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}</p>
 					</div>
 				</div>	
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNbDaysForMaxAppointments} * :</label>
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments} * :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
 						<input type="text" name="nb_days_for_max_appointments_per_user" value="${appointmentform.nbDaysForMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
-						<p class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysForMaxAppointments.help}</p>
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}</p>
 					</div>
 				</div>			
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />												
-				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
+				<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.createAppointmentForm.labelReference.help' />												
+				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
-					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+					<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 				</#if>				
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelActiveAuthentication' inputName='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelActiveAuthentication' inputName='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
 				<#if listWorkflows??>
-					<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
+					<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
 				</#if>	
-				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />				
+				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />				
 				<#assign icon= appointmentform.getIcon()>
 				<#if icon.mimeType?? >
-					<@fieldInputCheckBox i18nLabelKey='appointment.modify_appointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
+					<@fieldInputCheckBox i18nLabelKey='appointment.modifyAppointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
 				</#if>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
+					<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="icon">#i18n{appointment.createAppointmentForm.labelIconForm} &nbsp;:</label>
 					<div class="col-xs-12 col-sm-3 col-md-3">
 						<div class="input-group">	
 							<input id="image_resource" type="file" name="image_resource" accept="image/*"/> 
 						</div>
-						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpFormatIcon}</p>
+						<p class="help-block">#i18n{appointment.modifyAppointmentForm.helpFormatIcon}</p>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-6">
 						<div class="input-group">

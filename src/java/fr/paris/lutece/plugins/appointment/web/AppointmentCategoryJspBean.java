@@ -69,8 +69,8 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     public static final String RIGHT_MANAGECATEGORY = "APPOINTMENT_CATEGORY_MANAGEMENT";
 
     // templates
-    private static final String TEMPLATE_MANAGE_CATEGORY = "/admin/plugins/appointment/category/manage_category.html";
-    private static final String TEMPLATE_CREATE_CATEGORY = "/admin/plugins/appointment/category/create_category.html";
+    private static final String TEMPLATE_MANAGE_CATEGORY = "/admin/plugins/appointment/category/manageCategory.html";
+    private static final String TEMPLATE_CREATE_CATEGORY = "/admin/plugins/appointment/category/createCategory.html";
     private static final String TEMPLATE_MODIFY_CATEGORY = "/admin/plugins/appointment/category/modify_category.html";
 
     // Parameters
@@ -90,8 +90,8 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
 
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_CATEGORY = "appointment.message.confirmRemoveCategory";
-    private static final String MESSAGE_COLUMN_TITLE_ID = "appointment.manage_category.columnId";
-    private static final String MESSAGE_COLUMN_TITLE_LABEL = "appointment.manage_category.columnLabel";
+    private static final String MESSAGE_COLUMN_TITLE_ID = "appointment.manageCategory.columnId";
+    private static final String MESSAGE_COLUMN_TITLE_LABEL = "appointment.manageCategory.columnLabel";
     private static final String MESSAGE_COLUMN_TITLE_ACTIONS = "portal.util.labelActions";
 
     // Views

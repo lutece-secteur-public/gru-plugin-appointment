@@ -20,7 +20,7 @@
 			<form method="get" class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
 				<input type="hidden" value="getCreateEntry" name="view">
 				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
-				<label for="id_type">#i18n{appointment.modify_appointmentform.labelInsertEntry} :&#160;&#160;</label>
+				<label for="id_type">#i18n{appointment.modifyAppointmentForm.labelInsertEntry} :&#160;&#160;</label>
 				<div class="input-group">
 				<@comboWithParams name="id_type" items=entry_type_list default_value="-1" additionalParameters="class='form-control input-sm'"/>
 				<span class="input-group-btn">
@@ -38,7 +38,7 @@
 						<!-- List all entry of type group  -->
 						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"form-control input-sm\"" items=entry_group_list />
 						<span class="input-group-btn">
-						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modify_appointmentform.move}" name="add_to_group" value="#i18n{appointment.modify_appointmentform.moveAll}">
+						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.modifyAppointmentForm.move}" name="add_to_group" value="#i18n{appointment.modifyAppointmentForm.moveAll}">
 							<i class="glyphicon glyphicon-resize-vertical"></i>
 						</button>
 						</span>
@@ -48,10 +48,10 @@
 					<thead>
 						<tr>
 							<th>
-								<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modify_appointmentform.selectAll}">
+								<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modifyAppointmentForm.selectAll}">
 							</th>
 							<th>
-								#i18n{appointment.labelTitle} #i18n{appointment.modifyField.manageConditionalQuestion.rowType}
+								#i18n{appointment.labelTitle} #i18n{appointment.type.name}
 							</th>
 							<th>
 								<i class="glyphicon glyphicon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>
@@ -60,7 +60,7 @@
 								#i18n{appointment.createEntry.manageField.rowOrder}
 							</th>
 							<th>
-								#i18n{appointment.createEntry.manageField.rowActions}&nbsp;
+								#i18n{appointment.actions.label}&nbsp;
 							</th>
 						</tr>
 					</thead>
@@ -73,7 +73,7 @@
 								<td>
 									<!--  add checkbox if entry isn't a group --> 
 									<#if !entry.entryType.group>
-										<input type="checkbox" name="entry_id_move" value="${entry.idEntry!}" title="#i18n{appointment.modify_appointmentform.select}">
+										<input type="checkbox" name="entry_id_move" value="${entry.idEntry!}" title="#i18n{appointment.modifyAppointmentForm.select}">
 									</#if>
 								</td>
 								<td>
@@ -108,7 +108,7 @@
 									<td>
 										<blockquote>
 											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=entry.parent.idEntry />
-											<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+											<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modifyAppointmentForm.move}" value="${entry.idEntry}">
 												<i class="glyphicon glyphicon-ok"></i>
 											</button>
 										</blockquote>
@@ -118,7 +118,7 @@
 										<div class="input-group">
 											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
 											<div class="input-group-btn">
-												<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modify_appointmentform.move}" value="${entry.idEntry}">
+												<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.modifyAppointmentForm.move}" value="${entry.idEntry}">
 													<i class="glyphicon glyphicon-ok"></i>
 												</button>
 											</div>
@@ -141,7 +141,7 @@
 											<i class="glyphicon glyphicon-plus-sign"></i>
 										</a>
 									</#if>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleDelete}" class="btn btn-danger btn-sm">
+									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.delete.title}" class="btn btn-danger btn-sm">
 										<i class="glyphicon glyphicon-trash"></i>
 									</a>
 								</td>
