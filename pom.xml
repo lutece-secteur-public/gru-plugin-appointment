@@ -55,7 +55,7 @@
            </configuration>
 	    </plugin>
      </plugins>
-  <build>    
+  </build>    
   <scm>
      <connection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</connection>
      <developerConnection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</developerConnection>
