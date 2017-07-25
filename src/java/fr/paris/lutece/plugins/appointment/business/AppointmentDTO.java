@@ -77,7 +77,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * The Form Id
      */
-    private int _nIdForm;    
+    private int _nIdForm;
 
     /**
      * the number of booked seats for this appointment
@@ -270,7 +270,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }    
+    }
 
     /**
      * Get the number of booked seats for the appointment
