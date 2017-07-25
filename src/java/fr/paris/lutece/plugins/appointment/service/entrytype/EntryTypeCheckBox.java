@@ -44,20 +44,11 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  */
 public final class EntryTypeCheckBox extends AbstractEntryTypeCheckBox
 {
-	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_check_box.html";
-    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_check_box.html";
+	private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_check_box.html";
+	private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_check_box.html";
+	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_check_box.html";    
 	private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_check_box.html";
-    private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_check_box.html";    
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
-    {
-        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
-    }
-    
+           
     /**
      * {@inheritDoc}
      */
@@ -76,4 +67,13 @@ public final class EntryTypeCheckBox extends AbstractEntryTypeCheckBox
         return TEMPLATE_CREATE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
+    {
+        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
+    }
+    
 }
