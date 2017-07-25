@@ -1,10 +1,10 @@
 package fr.paris.lutece.plugins.appointment.business.rule;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.time.LocalDate;
 
 import javax.validation.constraints.Min;
+
+import fr.paris.lutece.plugins.appointment.business.AbstractDateConversion;
 
 /**
  * Business class of the rules of the reservation
@@ -12,7 +12,7 @@ import javax.validation.constraints.Min;
  * @author Laurent Payen
  *
  */
-public final class ReservationRule implements Serializable
+public final class ReservationRule extends AbstractDateConversion implements Serializable
 {
 
     /**
@@ -24,11 +24,6 @@ public final class ReservationRule implements Serializable
      * Id of the reservation rule.
      */
     private int _nIdReservationRule;
-
-    /**
-     * Date from which the rule has to be applied
-     */
-    private LocalDate _dateOfApply;
 
     /**
      * Maximum capacity for a slot
@@ -66,60 +61,6 @@ public final class ReservationRule implements Serializable
     public void setIdReservationRule( int nIdReservationRule )
     {
         this._nIdReservationRule = nIdReservationRule;
-    }
-
-    /**
-     * Get the date from which the rule has to be applied
-     * 
-     * @return the date from which the rule has to be applied
-     */
-    public LocalDate getDateOfApply( )
-    {
-        return _dateOfApply;
-    }
-
-    /**
-     * Get the date from which the rule has to be applied
-     * 
-     * @return the date in Sql format
-     */
-    public Date getSqlDateOfApply( )
-    {
-        Date date = null;
-        if ( this._dateOfApply != null )
-        {
-            date = Date.valueOf( _dateOfApply );
-        }
-        return date;
-    }
-
-    /**
-     * Set the date from which the rule has to be applied
-     * 
-     * @param dateOfApply
-     *            the date to set
-     */
-    public void setDateOfApply( LocalDate dateOfApply )
-    {
-        this._dateOfApply = dateOfApply;
-    }
-
-    /**
-     * Set the date from which the rule has to be applied
-     * 
-     * @param dateOfApply
-     *            the date to set (in Sql Date format)
-     */
-    public void setDateOfApply( Date dateOfApply )
-    {
-        if ( dateOfApply != null )
-        {
-            this._dateOfApply = dateOfApply.toLocalDate( );
-        }
-        else
-        {
-            this._dateOfApply = null;
-        }
     }
 
     /**
