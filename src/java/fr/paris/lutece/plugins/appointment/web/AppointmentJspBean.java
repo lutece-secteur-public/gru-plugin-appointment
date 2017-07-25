@@ -319,35 +319,27 @@ public class AppointmentJspBean extends MVCAdminJspBean
             bError = true;
         }
         LocalDate startingDateOfDisplay = LocalDate.now( );
+        Display display = DisplayService.findDisplayWithFormId( nIdForm );        
+        int nNbWeeksToDisplay = display.getNbWeeksToDisplay( );
         if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
         {
             startingDateOfDisplay = startingValidityDate;
-        }
-        Display display = DisplayService.findDisplayWithFormId( nIdForm );
-        // Get the nb weeks to display
-        int nNbWeeksToDisplay = display.getNbWeeksToDisplay( );
-        // Calculate the ending date of display with the nb weeks to display
-        // since today
+        }        
         LocalDate endingDateOfDisplay = startingDateOfDisplay.plusWeeks( nNbWeeksToDisplay );
-        // if the ending date of display is after the ending validity date of
-        // the form
-        // assign the ending date of display with the ending validity date of
-        // the form
         LocalDate endingValidityDate = form.getEndingValidityDate( );
         if ( endingValidityDate != null )
         {
-            if ( endingDateOfDisplay.isAfter( endingValidityDate ) )
-            {
-                endingDateOfDisplay = endingValidityDate;
-                nNbWeeksToDisplay = Math.toIntExact( startingDateOfDisplay.until( endingDateOfDisplay, ChronoUnit.WEEKS ) );
-            }
-            if ( startingDateOfDisplay.isAfter( endingDateOfDisplay ) )
+        	if ( startingDateOfDisplay.isAfter( endingDateOfDisplay ) )
             {
                 addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale( ) );
                 bError = true;
             }
+        	if ( endingDateOfDisplay.isAfter( endingValidityDate ) )
+            {
+                endingDateOfDisplay = endingValidityDate;
+                nNbWeeksToDisplay = Math.toIntExact( startingDateOfDisplay.until( endingDateOfDisplay, ChronoUnit.WEEKS ) );
+            }            
         }
-        // Get the current date of display of the calendar, if it exists
         String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
         LocalDate dateOfDisplay = startingDateOfDisplay;
         if ( StringUtils.isNotEmpty( strDateOfDisplay ) )
