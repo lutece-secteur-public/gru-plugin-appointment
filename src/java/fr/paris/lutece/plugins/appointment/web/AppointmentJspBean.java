@@ -807,35 +807,31 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         clearUploadFilesIfNeeded( request.getSession( ) );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        int nIdForm = Integer.parseInt( strIdForm );
+        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );        
         // Get the not validated appointment in session if it exists
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         if ( appointmentDTO == null )
         {
-            // Try to get the validated appointment in session
-            // (in case the user click on back button in the recap view
             appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
             if ( appointmentDTO != null )
             {
-                request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
-                request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
+            	request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
+                request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );                
             }
             else
             {
-                appointmentDTO = new AppointmentDTO( );
-                int nIdSlot = Integer.parseInt( request.getParameter( PARAMETER_ID_SLOT ) );
-                Slot slot = null;
-                // If nIdSlot == 0, the slot has not been created yet
+            	Slot slot = null;
+            	int nIdSlot = Integer.parseInt( request.getParameter( PARAMETER_ID_SLOT ) );
+            	appointmentDTO = new AppointmentDTO( );                                
                 if ( nIdSlot == 0 )
                 {
-                    // Need to get all the informations to create the slot
-                    LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
                     LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+                	LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
                     boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
                     int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
                     slot = SlotService.buildSlot( nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity, nMaxCapacity, bIsOpen );
