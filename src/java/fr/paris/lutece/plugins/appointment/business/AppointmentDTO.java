@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.business.action.Action;
@@ -82,28 +77,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * The Form Id
      */
-    private int _nIdForm;
-
-    /**
-     * The First Name of the User
-     */
-    @NotBlank( message = "appointment.validation.appointment.FirstName.notEmpty" )
-    @Size( max = 255, message = "appointment.validation.appointment.FirstName.size" )
-    private String _strFirstName;
-
-    /**
-     * The Last Name of the user
-     */
-    @NotBlank( message = "appointment.validation.appointment.LastName.notEmpty" )
-    @Size( max = 255, message = "appointment.validation.appointment.LastName.size" )
-    private String _strLastName;
-
-    /**
-     * The email of the user
-     */
-    @Size( max = 255, message = "appointment.validation.appointment.Email.size" )
-    @Email( message = "appointment.validation.appointment.Email.email" )
-    private String _strEmail;
+    private int _nIdForm;    
 
     /**
      * the number of booked seats for this appointment
@@ -296,70 +270,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }
-
-    /**
-     * Get the first name of the user
-     * 
-     * @return the first name of the user
-     */
-    public String getFirstName( )
-    {
-        return _strFirstName;
-    }
-
-    /**
-     * Set the first name of the user
-     * 
-     * @param strFirstName
-     *            the first name of the user
-     */
-    public void setFirstName( String strFirstName )
-    {
-        this._strFirstName = strFirstName;
-    }
-
-    /**
-     * Get the last name of the user
-     * 
-     * @return the last name of the user
-     */
-    public String getLastName( )
-    {
-        return _strLastName;
-    }
-
-    /**
-     * Set the last name of the user
-     * 
-     * @param strLastName
-     *            the last name to set
-     */
-    public void setLastName( String strLastName )
-    {
-        this._strLastName = strLastName;
-    }
-
-    /**
-     * Get the email of the user
-     * 
-     * @return the email of the user
-     */
-    public String getEmail( )
-    {
-        return _strEmail;
-    }
-
-    /**
-     * Set the email of the user
-     * 
-     * @param strEmail
-     *            the email to set
-     */
-    public void setEmail( String strEmail )
-    {
-        this._strEmail = strEmail;
-    }
+    }    
 
     /**
      * Get the number of booked seats for the appointment
