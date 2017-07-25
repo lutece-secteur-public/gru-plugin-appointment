@@ -82,7 +82,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * The Form Id
      */
-    private int _nIdForm;    
+    private int _nIdForm;
 
     /**
      * The First Name of the User
@@ -113,7 +113,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * The maximum number of seats the user can book
      */
-    private int _nNbMaxPotentialBookedSeats;    
+    private int _nNbMaxPotentialBookedSeats;
 
     /**
      * The Map of the responses for the additional entries of the form
@@ -233,7 +233,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     public void setIsCancelled( boolean isCancelled )
     {
         this._isCancelled = isCancelled;
-    }    
+    }
 
     /**
      * Get the date of the appointment
@@ -296,7 +296,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }   
+    }
 
     /**
      * Get the first name of the user
@@ -402,7 +402,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     {
         this._nNbMaxPotentialBookedSeats = nNbMaxPotentialBookedSeats;
     }
-   
+
     /**
      * Get the available actions of the workflow for this appointment
      * 
@@ -421,7 +421,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     public void setListWorkflowActions( Collection<Action> listWorkflowActions )
     {
         this._listWorkflowActions = listWorkflowActions;
-    }    
+    }
 
     /**
      * Get the map of the responses of the additional entries of the form

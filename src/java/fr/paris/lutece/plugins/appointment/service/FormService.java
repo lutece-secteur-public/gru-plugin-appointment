@@ -393,9 +393,22 @@ public final class FormService
      */
     private static void fillAppointmentFormWithLocalizationPart( AppointmentForm appointmentForm, Localization localization )
     {
-        appointmentForm.setLongitude( localization.getLongitude( ) );
-        appointmentForm.setLatitude( localization.getLatitude( ) );
-        appointmentForm.setAddress( localization.getAddress( ) );
+        if ( localization != null )
+        {
+            if ( localization.getLongitude( ) != null )
+            {
+                appointmentForm.setLongitude( localization.getLongitude( ) );
+            }
+            if ( localization.getLatitude( ) != null )
+            {
+                appointmentForm.setLatitude( localization.getLatitude( ) );
+            }
+            if ( localization.getAddress( ) != null )
+            {
+                appointmentForm.setAddress( localization.getAddress( ) );
+            }
+        }
+
     }
 
     /**
