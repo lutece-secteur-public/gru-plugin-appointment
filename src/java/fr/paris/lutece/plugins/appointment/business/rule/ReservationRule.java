@@ -12,7 +12,7 @@ import fr.paris.lutece.plugins.appointment.business.AbstractDateConversion;
  * @author Laurent Payen
  *
  */
-public final class ReservationRule extends AbstractDateConversion implements Serializable
+public class ReservationRule extends AbstractDateConversion implements Serializable
 {
 
     /**

@@ -3,7 +3,9 @@ package fr.paris.lutece.plugins.appointment.business;
 import java.io.Serializable;
 import java.sql.Date;
 
-public final class AppointmentFilter implements Serializable
+import fr.paris.lutece.plugins.appointment.business.user.User;
+
+public final class AppointmentFilter extends User implements Serializable
 {
 
     /**
@@ -15,21 +17,6 @@ public final class AppointmentFilter implements Serializable
      * The form Id
      */
     private int _nIdForm;
-
-    /**
-     * The first name
-     */
-    private String _strFirstName;
-
-    /**
-     * The last name
-     */
-    private String _strLastName;
-
-    /**
-     * The email
-     */
-    private String _strEmail;
 
     /**
      * The starting date for the search
@@ -75,69 +62,6 @@ public final class AppointmentFilter implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }
-
-    /**
-     * Get the first name entered in the filter
-     * 
-     * @return
-     */
-    public String getFirstName( )
-    {
-        return _strFirstName;
-    }
-
-    /**
-     * Set the first name in the filter
-     * 
-     * @param strFirstName
-     *            the first name
-     */
-    public void setFirstName( String strFirstName )
-    {
-        this._strFirstName = strFirstName;
-    }
-
-    /**
-     * Get the last name entered in the filter
-     * 
-     * @return the last name
-     */
-    public String getLastName( )
-    {
-        return _strLastName;
-    }
-
-    /**
-     * Set the last name in the filter
-     * 
-     * @param strLastName
-     *            the last name to set
-     */
-    public void setLastName( String strLastName )
-    {
-        this._strLastName = strLastName;
-    }
-
-    /**
-     * Get the email entered in the filter
-     * 
-     * @return the email entered
-     */
-    public String getEmail( )
-    {
-        return _strEmail;
-    }
-
-    /**
-     * Set the email to the filter
-     * 
-     * @param strEmail
-     *            the email to set
-     */
-    public void setEmail( String strEmail )
-    {
-        this._strEmail = strEmail;
     }
 
     /**

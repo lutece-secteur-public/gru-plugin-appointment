@@ -42,6 +42,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -53,7 +54,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
-public final class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
+public final class AppointmentForm extends ReservationRule implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
 {
     /**
      * Name of the resource type of Appointment Forms
@@ -69,11 +70,6 @@ public final class AppointmentForm implements RBACResource, AdminWorkgroupResour
      * Serial version UID
      */
     private static final long serialVersionUID = 307685220867535209L;
-
-    /**
-     * The Form Id
-     */
-    private int _nIdForm;
 
     /**
      * The title of the form
@@ -185,18 +181,6 @@ public final class AppointmentForm implements RBACResource, AdminWorkgroupResour
     private boolean _bActiveAuthentication;
 
     /**
-     * The maximum capacity per slot
-     */
-    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nMaxCapacityPerSlot;
-
-    /**
-     * The maximum number of people authorized for an appointment
-     */
-    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nMaxPeoplePerAppointment;
-
-    /**
      * The workflow Id
      */
     private int _nIdWorkflow;
@@ -233,11 +217,6 @@ public final class AppointmentForm implements RBACResource, AdminWorkgroupResour
     private int _nIdCategory;
 
     /**
-     * The reservation rule id (Rules that need to be applied to the form)
-     */
-    private int _nIdReservationRule;
-
-    /**
      * Minimum of days between two appointments of a same user
      */
     private int _nNbDaysBeforeNewAppointment;
@@ -271,27 +250,6 @@ public final class AppointmentForm implements RBACResource, AdminWorkgroupResour
      * Address
      */
     private String _strAddress;
-
-    /**
-     * Returns the IdForm
-     * 
-     * @return The IdForm
-     */
-    public int getIdForm( )
-    {
-        return _nIdForm;
-    }
-
-    /**
-     * Sets the IdForm
-     * 
-     * @param nIdForm
-     *            The IdForm
-     */
-    public void setIdForm( int nIdForm )
-    {
-        _nIdForm = nIdForm;
-    }
 
     /**
      * Get the maximum number of appointments authorized for a same user
@@ -937,69 +895,6 @@ public final class AppointmentForm implements RBACResource, AdminWorkgroupResour
     public void setIdCategory( int nIdCategory )
     {
         _nIdCategory = nIdCategory;
-    }
-
-    /**
-     * Get the Reservation Rule Id of the form
-     * 
-     * @return the reservation rule Id
-     */
-    public int getIdReservationRule( )
-    {
-        return _nIdReservationRule;
-    }
-
-    /**
-     * Set the reservation rule Id
-     * 
-     * @param nIdReservationRule
-     *            the reservation Rule Id to set
-     */
-    public void setIdReservationRule( int nIdReservationRule )
-    {
-        this._nIdReservationRule = nIdReservationRule;
-    }
-
-    /**
-     * Get the max capacity per slot
-     * 
-     * @return the max capacity per slot
-     */
-    public int getMaxCapacityPerSlot( )
-    {
-        return _nMaxCapacityPerSlot;
-    }
-
-    /**
-     * Set the max capacity per slot
-     * 
-     * @param nMaxCapacityPerSlot
-     *            the max capacity to set
-     */
-    public void setMaxCapacityPerSlot( int nMaxCapacityPerSlot )
-    {
-        this._nMaxCapacityPerSlot = nMaxCapacityPerSlot;
-    }
-
-    /**
-     * Get the maximum of people authorized per appointment (not per slot, per slot it's _nMaxCapacityPerSlot)
-     * 
-     * @return the max people
-     */
-    public int getMaxPeoplePerAppointment( )
-    {
-        return _nMaxPeoplePerAppointment;
-    }
-
-    /**
-     * Set the maximum of people authorized per appointment (not per slot)
-     * 
-     * @param nMaxPeoplePerAppointment
-     *            the maximum people per appointment
-     */
-    public void setMaxPeoplePerAppointment( int nMaxPeoplePerAppointment )
-    {
-        this._nMaxPeoplePerAppointment = nMaxPeoplePerAppointment;
     }
 
     /**

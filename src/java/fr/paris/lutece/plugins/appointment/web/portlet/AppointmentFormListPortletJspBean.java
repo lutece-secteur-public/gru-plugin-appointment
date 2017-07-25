@@ -58,33 +58,6 @@ public class AppointmentFormListPortletJspBean extends PortletJspBean
      * {@inheritDoc}
      */
     @Override
-    public String getCreate( HttpServletRequest request )
-    {
-        String strPageId = request.getParameter( PARAMETER_PAGE_ID );
-        String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
-        HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId );
-
-        return template.getHtml( );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getModify( HttpServletRequest request )
-    {
-        String strPortletId = request.getParameter( PARAMETER_PORTLET_ID );
-        int nPortletId = Integer.parseInt( strPortletId );
-        AppointmentFormListPortlet portlet = (AppointmentFormListPortlet) PortletHome.findByPrimaryKey( nPortletId );
-        HtmlTemplate template = getModifyTemplate( portlet );
-
-        return template.getHtml( );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String doCreate( HttpServletRequest request )
     {
         AppointmentFormListPortlet portlet = new AppointmentFormListPortlet( );
