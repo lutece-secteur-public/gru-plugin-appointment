@@ -44,11 +44,20 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  */
 public final class EntryTypeDate extends AbstractEntryTypeDate
 {
-    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_date.html";
+	private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_date.html";
+	private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_date.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_date.html";
-    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_date.html";
-    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_date.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_date.html";    
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTemplateModify( Entry entry, boolean bDisplayFront )
+    {
+        return TEMPLATE_MODIFY;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -66,13 +75,5 @@ public final class EntryTypeDate extends AbstractEntryTypeDate
     {
         return TEMPLATE_CREATE;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateModify( Entry entry, boolean bDisplayFront )
-    {
-        return TEMPLATE_MODIFY;
-    }
+    
 }
