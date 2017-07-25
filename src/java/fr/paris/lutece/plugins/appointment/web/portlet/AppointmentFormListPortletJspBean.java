@@ -38,8 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortlet;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletHome;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
-import fr.paris.lutece.portal.web.portlet.PortletJspBean;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
 /**
  * This class provides the user interface to manage AppointmentPortlet features
@@ -47,7 +45,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormListPortletJspBean extends PortletJspBean
+public class AppointmentFormListPortletJspBean extends AbstractPortletJspBean
 {
     /**
      * Serial version UID

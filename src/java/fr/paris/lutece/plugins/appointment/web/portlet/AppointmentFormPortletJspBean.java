@@ -48,7 +48,6 @@ import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortl
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.web.portlet.PortletJspBean;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
@@ -58,7 +57,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
  * @author Laurent Payen
  *
  */
-public class AppointmentFormPortletJspBean extends PortletJspBean
+public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
 {
     /**
      * Serial version UID
