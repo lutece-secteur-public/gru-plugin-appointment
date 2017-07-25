@@ -464,17 +464,17 @@ public class AppointmentApp extends MVCApplication
             EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, true, request );
         }
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
+        List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+        HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
         model.put( MARK_APPOINTMENT, appointmentDTO );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).getDate( ) );
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
         model.put( MARK_LOCALE, locale );
-        model.put( MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats( ) );
-        List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+        model.put( MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats( ) );        
         model.put( MARK_FORM_ERRORS, listErrors );
-        model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
-        HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
+        model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );        
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
         if ( listErrors != null )
         {

@@ -861,21 +861,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         }
         Map<String, Object> model = getModel( );
-        Locale locale = getLocale( );
-        StringBuffer strBuffer = new StringBuffer( );
+        Locale locale = getLocale( );        
         List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), true );
+        StringBuffer strBuffer = new StringBuffer( );
         for ( Entry entry : listEntryFirstLevel )
         {
             EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, true, request );
         }
-        FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
+        model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
+        model.put( MARK_FORM, form );
         model.put( MARK_APPOINTMENT, appointmentDTO );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).getDate( ) );
-        model.put( MARK_FORM, form );
-        model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
-        model.put( MARK_LOCALE, locale );
         model.put( MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats( ) );
+        FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
+        model.put( MARK_FORM_MESSAGES, formMessages );        
+        model.put( MARK_LOCALE, locale );        
         List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
         model.put( MARK_FORM_ERRORS, listErrors );
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
@@ -903,12 +903,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String doValidateForm( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
+        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );                               
+        String strEmail = request.getParameter( PARAMETER_EMAIL );
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Locale locale = request.getLocale( );
-        String strEmail = request.getParameter( PARAMETER_EMAIL );
         AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), form, locale, listFormErrors );
         int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
                 locale, listFormErrors );
