@@ -19,15 +19,15 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_reservation_rule) FROM appointment_reservation_rule";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_reservation_rule (id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_reservation_rule SET date_of_apply = ?, max_capacity_per_slot = ?, max_people_per_appointment =?, id_form = ? WHERE id_reservation_rule = ?";
-    private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_reservation_rule WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form FROM appointment_reservation_rule";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_reservation_rule (id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_reservation_rule WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_CLOSEST_TO_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM
             + " AND date_of_apply <= ? ORDER BY date_of_apply DESC LIMIT 1";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
 
     @Override
     public synchronized void insert( ReservationRule reservationRule, Plugin plugin )

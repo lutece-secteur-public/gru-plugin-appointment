@@ -141,7 +141,7 @@ public final class AppointmentUtilities
     }
 
     /**
-     * Check that the delay between two appointments for the same use rhas been respected
+     * Check that the delay between two appointments for the same use has been respected
      * 
      * @param appointmentDTO
      *            the appointment
@@ -175,6 +175,15 @@ public final class AppointmentUtilities
         return bCheckPassed;
     }
 
+    /**
+     * Get the slot of a user appointment
+     * 
+     * @param strEmail
+     *            the user's email
+     * @param idAppointment
+     *            the id of the appointment
+     * @return the list of slots
+     */
     private static List<Slot> getSlotsByEmail( String strEmail, int idAppointment )
     {
         List<Slot> listSlots = new ArrayList<>( );
