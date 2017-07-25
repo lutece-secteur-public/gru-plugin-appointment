@@ -221,15 +221,17 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
         {
             if ( calendarTemplatesFolder.isDirectory( ) )
             {
-                if ( calendarTemplatesFolder != null && calendarTemplatesFolder.listFiles( ) != null )
+                if ( calendarTemplatesFolder != null )
                 {
-                    for ( File file : calendarTemplatesFolder.listFiles( ) )
-                    {
-                        if ( file != null )
+                    File [ ] listFiles = calendarTemplatesFolder.listFiles( );
+                    if ( listFiles != null && listFiles.length != 0 )
+                        for ( File file : listFiles )
                         {
-                            refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
+                            if ( file != null )
+                            {
+                                refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
+                            }
                         }
-                    }
                 }
             }
             else
