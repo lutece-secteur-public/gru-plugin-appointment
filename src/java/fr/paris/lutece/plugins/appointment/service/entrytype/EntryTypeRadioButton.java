@@ -45,20 +45,20 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
  */
 public final class EntryTypeRadioButton extends AbstractEntryTypeRadioButton
 {
-    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_radio_button.html";    
-    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_radio_button.html";
+	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_radio_button.html";
+    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_radio_button.html";           
+    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_radio_button.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_radio_button.html";
-    private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_radio_button.html";   
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getTemplateCreate( Entry entry, boolean bDisplayFront )
+    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
     {
-        return TEMPLATE_CREATE;
+        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -72,8 +72,9 @@ public final class EntryTypeRadioButton extends AbstractEntryTypeRadioButton
      * {@inheritDoc}
      */
     @Override
-    public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
+    public String getTemplateCreate( Entry entry, boolean bDisplayFront )
     {
-        return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
+        return TEMPLATE_CREATE;
     }
+
 }
