@@ -225,6 +225,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
                 {
                     File [ ] listFiles = calendarTemplatesFolder.listFiles( );
                     if ( listFiles != null && listFiles.length != 0 )
+                    {
                         for ( File file : listFiles )
                         {
                             if ( file != null )
@@ -232,6 +233,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
                                 refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
                             }
                         }
+                    }
                 }
             }
             else
