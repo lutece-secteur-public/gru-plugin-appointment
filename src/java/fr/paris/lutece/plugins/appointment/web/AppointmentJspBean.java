@@ -346,19 +346,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
         }
-        // Get all the week definitions
+        List<Slot> listSlot = new ArrayList<>( );
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<WeekDefinition> listWeekDefinition = new ArrayList<WeekDefinition>( mapWeekDefinition.values( ) );
-        // Get the min time of all the week definitions
-        LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
-        // Get the max time of all the week definitions
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
-        // Get the min duration of an appointment of all the week definitions
-        int nMinDuration = WeekDefinitionService.getMinDurationTimeSlotOfAListOfWeekDefinition( listWeekDefinition );
-        // Get all the working days of all the week definitions
+        LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );                
         List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );
-        // Build the slots if no errors
-        List<Slot> listSlot = new ArrayList<>( );
+        int nMinDuration = WeekDefinitionService.getMinDurationTimeSlotOfAListOfWeekDefinition( listWeekDefinition );
         if ( !bError )
         {
             listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, nNbWeeksToDisplay );
@@ -376,7 +370,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             listSlot = listSlot.stream( ).filter( s -> s.getNbPotentialRemainingPlaces( ) >= nbBookedSeats && s.getIsOpen( ) ).collect( Collectors.toList( ) );
             request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
             model.put( MARK_MODIFICATION_DATE_APPOINTMENT, Boolean.TRUE.toString( ) );
-        }
+        }        
         model.put( MARK_FORM, FormService.buildAppointmentFormLight( nIdForm ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
