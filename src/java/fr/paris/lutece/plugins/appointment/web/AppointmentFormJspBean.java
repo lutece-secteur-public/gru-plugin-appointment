@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,6 +87,7 @@ import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -322,6 +324,12 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
         appointmentForm.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
         FormService.createAppointmentForm( appointmentForm );
+        StringJoiner stjLog = new StringJoiner(" ");
+        stjLog.add(LocalDate.now().toString())
+        .add(ACTION_CREATE_APPOINTMENTFORM)        
+        .add(getUser().getFirstName())
+        .add(getUser().getLastName());        
+        AppLogService.info(stjLog.toString());
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
