@@ -6,7 +6,7 @@ import java.util.StringJoiner;
 
 import fr.paris.lutece.portal.business.user.AdminUser;
 
-public class LogService
+public final class LogUtilities
 {
     private static final String DATE = "Date :";
     private static final String HOUR = "Hour :";
@@ -17,6 +17,13 @@ public class LogService
     private static final String DASH = "-";
     private static final String STARS = "***********************************************************************************************";
     private static final String RETURN = "\n";
+
+    /**
+     * Private constructor - this class does not need to be instantiated
+     */
+    private LogUtilities( )
+    {
+    }
 
     public static String buildLog( String action, String idResource, AdminUser user )
     {

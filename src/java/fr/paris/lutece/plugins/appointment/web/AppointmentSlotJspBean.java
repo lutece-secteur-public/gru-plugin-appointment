@@ -53,7 +53,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.log.LogService;
+import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
@@ -272,7 +272,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             endingTimeHasChanged = true;
         }
         TimeSlotService.updateTimeSlot( timeSlotFromSession, endingTimeHasChanged );
-        AppLogService.info( LogService.buildLog( ACTION_DO_MODIFY_TIME_SLOT, strIdTimeSlot, getUser( ) ) );
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_TIME_SLOT, strIdTimeSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_WEEK_DEFINITION, nIdWeekDefinition );
@@ -422,7 +422,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, slotFromSessionOrFromDb.getIdForm( ) );
         }
         SlotService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, bShiftSlot );
-        AppLogService.info( LogService.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
         Map<String, String> additionalParameters = new HashMap<>( );

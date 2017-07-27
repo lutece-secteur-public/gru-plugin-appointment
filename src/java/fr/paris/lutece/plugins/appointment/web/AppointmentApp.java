@@ -64,7 +64,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.log.LogService;
+import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
@@ -626,7 +626,7 @@ public class AppointmentApp extends MVCApplication
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
         int nIdAppointment = AppointmentService.saveAppointment( appointment );
-        AppLogService.info( LogService.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         request.getSession( ).removeAttribute( AppointmentUtilities.SESSION_SLOT_EDIT_TASK );
         AppointmentUtilities.killTimer( request );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
@@ -746,7 +746,7 @@ public class AppointmentApp extends MVCApplication
             {
                 appointment.setIsCancelled( Boolean.TRUE );
                 AppointmentService.updateAppointment( appointment );
-                AppLogService.info( LogService.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
+                AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
             }
             slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
             slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );

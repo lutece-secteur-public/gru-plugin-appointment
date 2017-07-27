@@ -67,7 +67,7 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.log.LogService;
+import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
@@ -560,7 +560,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
         Integer idForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         AppointmentService.deleteAppointment( nIdAppointment, getUser( ) );
-        AppLogService.info( LogService.buildLog( ACTION_REMOVE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
+        AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         addInfo( INFO_APPOINTMENT_REMOVED, getLocale( ) );
         // Need to update the list of the appointments in session
         List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );
@@ -611,7 +611,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             for ( String strIdAppointment : tabIdAppointmentToDelete )
             {
                 AppointmentService.deleteAppointment( Integer.valueOf( strIdAppointment ), getUser( ) );
-                AppLogService.info( LogService.buildLog( ACTION_REMOVE_APPOINTMENT, strIdAppointment, getUser( ) ) );
+                AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, strIdAppointment, getUser( ) ) );
             }
             addInfo( INFO_APPOINTMENT_MASSREMOVED, getLocale( ) );
             listStringIdAppointment.addAll( Arrays.asList( tabIdAppointmentToDelete ) );
@@ -1087,7 +1087,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
             }
         int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
-        AppLogService.info( LogService.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         request.getSession( ).removeAttribute( AppointmentUtilities.SESSION_SLOT_EDIT_TASK );
         AppointmentUtilities.killTimer( request );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
@@ -1346,7 +1346,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
                 appointment.setIsCancelled( bStatusCancelled );
                 AppointmentService.updateAppointment( appointment );
-                AppLogService.info( LogService.buildLog( ACTION_DO_CHANGE_APPOINTMENT_STATUS, strIdAppointment, getUser( ) ) );
+                AppLogService.info( LogUtilities.buildLog( ACTION_DO_CHANGE_APPOINTMENT_STATUS, strIdAppointment, getUser( ) ) );
                 if ( bStatusCancelled )
                 {
                     slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
