@@ -1,5 +1,5 @@
 INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is_updatable,plugin_name,id_feature_group,icon_url,documentation_url, id_order ) VALUES 
-('APPOINTMENT_CATEGORY_MANAGEMENT','appointment.manageCategories.title',1,'jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp','appointment.manageCategories.title',0,'appointment','SYSTEM',NULL,NULL,4);
+('APPOINTMENT_CATEGORY_MANAGEMENT','appointment.adminFeature.manageCategories.name',1,'jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp','appointment.adminFeature.manageCategories.name',0,'appointment','SYSTEM',NULL,NULL,4);
 
 INSERT INTO core_user_right (id_right,id_user) VALUES ('APPOINTMENT_CATEGORY_MANAGEMENT',1);
 
