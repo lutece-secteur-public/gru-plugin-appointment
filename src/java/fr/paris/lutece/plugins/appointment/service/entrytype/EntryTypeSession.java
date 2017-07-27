@@ -48,7 +48,7 @@ public final class EntryTypeSession extends AbstractEntryTypeSession
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_session.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_session.html";
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_session.html";
-    
+
     /**
      * {@inheritDoc}
      */
@@ -66,7 +66,7 @@ public final class EntryTypeSession extends AbstractEntryTypeSession
     {
         return TEMPLATE_MODIFY;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -75,5 +75,5 @@ public final class EntryTypeSession extends AbstractEntryTypeSession
     {
         return TEMPLATE_CREATE;
     }
-    
+
 }

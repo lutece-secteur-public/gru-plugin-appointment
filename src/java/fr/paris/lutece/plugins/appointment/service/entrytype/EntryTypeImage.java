@@ -59,11 +59,11 @@ public final class EntryTypeImage extends EntryTypeFile
     /**
      * Name of the bean of this service
      */
-	private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_image.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_image.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_image.html";
     private static final String TEMPLATE_FILE_IMAGE = "skin/plugins/appointment/entries/recap_entry_type_image.html";
-    
-	public static final String BEAN_NAME = "appointment.entryTypeImage";
+
+    public static final String BEAN_NAME = "appointment.entryTypeImage";
     private static final String MARK_FILE_NAME = "file_name";
     private static final String MARK_IMG_URL = "img_url";
 

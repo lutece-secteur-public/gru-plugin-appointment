@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +62,7 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.log.LogService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
@@ -323,13 +323,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
         }
         appointmentForm.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
-        FormService.createAppointmentForm( appointmentForm );
-        StringJoiner stjLog = new StringJoiner(" ");
-        stjLog.add(LocalDate.now().toString())
-        .add(ACTION_CREATE_APPOINTMENTFORM)        
-        .add(getUser().getFirstName())
-        .add(getUser().getLastName());        
-        AppLogService.info(stjLog.toString());
+        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        AppLogService.info( LogService.buildLog( ACTION_CREATE_APPOINTMENTFORM, Integer.toString( nIdForm ), getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
@@ -389,6 +384,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         FormService.removeForm( nIdForm );
+        AppLogService.info( LogService.buildLog( ACTION_REMOVE_APPOINTMENTFORM, strIdForm, getUser( ) ) );
         _entryService.removeEntriesByIdAppointmentForm( nIdForm );
         addInfo( INFO_APPOINTMENTFORM_REMOVED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
@@ -517,6 +513,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
         appointmentForm.setIsActive( appointmentFormDb.getIsActive( ) );
         FormService.updateAppointmentForm( appointmentForm, null );
+        AppLogService.info( LogService.buildLog( ACTION_MODIFY_APPOINTMENTFORM, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
         return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
@@ -578,6 +575,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
         appointmentForm.setIsActive( appointmentFormDb.getIsActive( ) );
         FormService.updateAppointmentForm( appointmentForm, dateOfModification );
+        AppLogService.info( LogService.buildLog( ACTION_MODIFY_ADVANCED_APPOINTMENTFORM, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
         ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
@@ -647,6 +645,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             }
             form.setIsActive( !form.isActive( ) );
             FormHome.update( form );
+            AppLogService.info( LogService.buildLog( ACTION_DO_CHANGE_FORM_ACTIVATION, strIdForm, getUser( ) ) );
         }
         if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )
         {
@@ -682,6 +681,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         {
             String newNameForCopy = I18nService.getLocalizedString( PROPERTY_COPY_OF_FORM, request.getLocale( ) ) + formToCopy.getTitle( );
             FormService.copyForm( nIdForm, newNameForCopy );
+            AppLogService.info( LogService.buildLog( ACTION_DO_COPY_FORM, strIdForm, getUser( ) ) );
             EntryFilter filter = new EntryFilter( );
             filter.setIdResource( nIdForm );
             List<Entry> listEntry = EntryHome.getEntryList( filter );
@@ -766,6 +766,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
             FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
             populate( formMessage, request );
             FormMessageHome.update( formMessage );
+            AppLogService.info( LogService.buildLog( ACTION_DO_MODIFY_FORM_MESSAGES, strIdForm, getUser( ) ) );
             addInfo( INFO_APPOINTMENTFORM_MESSAGES_MODIFIED, getLocale( ) );
         }
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
