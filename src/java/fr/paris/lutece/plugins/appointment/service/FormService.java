@@ -165,7 +165,10 @@ public final class FormService
     public static AppointmentForm buildAppointmentFormLight( Form form )
     {
         AppointmentForm appointmentForm = new AppointmentForm( );
-        fillAppointmentFormLightWithFormPart( appointmentForm, form );
+        if ( form != null )
+        {
+            fillAppointmentFormLightWithFormPart( appointmentForm, form );
+        }
         return appointmentForm;
     }
 
