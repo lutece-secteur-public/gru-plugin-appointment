@@ -163,6 +163,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
     private static final String PARAMETER_ENDING_DATE_TIME = "ending_date_time";
     private static final String PARAMETER_IS_OPEN = "is_open";
+    private static final String PARAMETER_IS_SPECIFIC = "is_specific";
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
     private static final String PARAMETER_NB_WEEKS_TO_DISPLAY = "nb_weeks_to_display";
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
@@ -426,8 +427,10 @@ public class AppointmentApp extends MVCApplication
                     else
                     {
                         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+                        boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
                         int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-                        slot = SlotService.buildSlot( nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity, nMaxCapacity, bIsOpen );
+                        slot = SlotService
+                                .buildSlot( nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity, nMaxCapacity, bIsOpen, bIsSpecific );
                         slot = SlotService.saveSlot( slot );
                     }
                 }

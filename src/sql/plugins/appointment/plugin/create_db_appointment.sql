@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS appointment_slot (
   starting_date_time TIMESTAMP NULL,
   ending_date_time TIMESTAMP NULL,
   is_open BOOLEAN NOT NULL DEFAULT TRUE,
+  is_specific BOOLEAN NOT NULL DEFAULT FALSE,
   max_capacity INT NOT NULL DEFAULT 0,
   nb_remaining_places INT NOT NULL DEFAULT 0,
   nb_potential_remaining_places INT NOT NULL DEFAULT 0,

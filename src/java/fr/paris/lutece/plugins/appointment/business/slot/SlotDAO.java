@@ -20,10 +20,10 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_slot) FROM appointment_slot";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, id_form = ? WHERE id_slot = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, id_form = ? WHERE id_slot = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form FROM appointment_slot";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form FROM appointment_slot";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS
             + " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ?";
@@ -175,6 +175,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         slot.setStartingTimeStampDate( daoUtil.getTimestamp( nIndex++ ) );
         slot.setEndingTimeStampDate( daoUtil.getTimestamp( nIndex++ ) );
         slot.setIsOpen( daoUtil.getBoolean( nIndex++ ) );
+        slot.setIsSpecific( daoUtil.getBoolean( nIndex++ ) );
         slot.setMaxCapacity( daoUtil.getInt( nIndex++ ) );
         slot.setNbRemainingPlaces( daoUtil.getInt( nIndex++ ) );
         slot.setNbPotentialRemainingPlaces( daoUtil.getInt( nIndex++ ) );
@@ -207,6 +208,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         daoUtil.setTimestamp( nIndex++, slot.getStartingTimestampDate( ) );
         daoUtil.setTimestamp( nIndex++, slot.getEndingTimestampDate( ) );
         daoUtil.setBoolean( nIndex++, slot.getIsOpen( ) );
+        daoUtil.setBoolean( nIndex++, slot.getIsSpecific( ) );
         daoUtil.setInt( nIndex++, slot.getMaxCapacity( ) );
         daoUtil.setInt( nIndex++, slot.getNbRemainingPlaces( ) );
         daoUtil.setInt( nIndex++, slot.getNbPotentialRemainingPlaces( ) );

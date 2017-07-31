@@ -158,7 +158,7 @@ public final class SlotService
                 if ( listDateOfClosingDay.contains( dateTemp ) )
                 {
                     listSlot.add( buildSlot( nIdForm, dateTemp.atTime( minTimeForThisDay ), dateTemp.atTime( maxTimeForThisDay ), nMaxCapacity, nMaxCapacity,
-                            nMaxCapacity, Boolean.FALSE ) );
+                            nMaxCapacity, Boolean.FALSE, Boolean.FALSE ) );
                 }
                 else
                 {
@@ -183,7 +183,7 @@ public final class SlotService
                             {
                                 timeTemp = timeSlot.getEndingTime( );
                                 slotToAdd = buildSlot( nIdForm, dateTimeTemp, dateTemp.atTime( timeTemp ), nMaxCapacity, nMaxCapacity, nMaxCapacity,
-                                        timeSlot.getIsOpen( ) );
+                                        timeSlot.getIsOpen( ), Boolean.FALSE );
                                 listSlot.add( slotToAdd );
                             }
                             else
@@ -217,7 +217,7 @@ public final class SlotService
      * @return the slot built
      */
     public static Slot buildSlot( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, int nMaxCapacity, int nNbRemainingPlaces,
-            int nNbPotentialRemainingPlaces, boolean bIsOpen )
+            int nNbPotentialRemainingPlaces, boolean bIsOpen, boolean bIsSpecific )
     {
         Slot slot = new Slot( );
         slot.setIdSlot( 0 );
@@ -228,6 +228,7 @@ public final class SlotService
         slot.setNbRemainingPlaces( nNbRemainingPlaces );
         slot.setNbPotentialRemainingPlaces( nNbPotentialRemainingPlaces );
         slot.setIsOpen( bIsOpen );
+        slot.setIsSpecific( bIsSpecific );
         addDateAndTimeToSlot( slot );
         return slot;
     }
@@ -245,6 +246,7 @@ public final class SlotService
      */
     public static void updateSlot( Slot slot, boolean bEndingTimeHasChanged, boolean bShifSlot )
     {
+        slot.setIsSpecific( Boolean.TRUE );
         List<Slot> listSlotToCreate = new ArrayList<>( );
         if ( bEndingTimeHasChanged )
         {
@@ -281,7 +283,7 @@ public final class SlotService
                 if ( !slot.getEndingDateTime( ).isEqual( nextStartingDateTime ) )
                 {
                     Slot slotToCreate = buildSlot( slot.getIdForm( ), slot.getEndingDateTime( ), nextStartingDateTime, slot.getMaxCapacity( ),
-                            slot.getMaxCapacity( ), slot.getMaxCapacity( ), Boolean.FALSE );
+                            slot.getMaxCapacity( ), slot.getMaxCapacity( ), Boolean.FALSE, Boolean.TRUE );
                     listSlotToCreate.add( slotToCreate );
                 }
             }
@@ -293,6 +295,22 @@ public final class SlotService
                 deleteListSlot( listSlotToDelete );
                 // Generated the new slots at the end of the modified slot
                 listSlotToCreate.addAll( generateListSlotToCreateAfterASlot( slot ) );
+            }
+        }
+        // If it's an update of an existing slot
+        if ( slot.getIdSlot( ) != 0 )
+        {
+            Slot oldSlot = SlotService.findSlotById( slot.getIdSlot( ) );
+            int nNbMaxCapacity = slot.getMaxCapacity( );
+            // If the max capacity has been modified
+            if ( nNbMaxCapacity != oldSlot.getMaxCapacity( ) )
+            {
+                // Need to update the remaining places
+                // We can update the values without keeping the old values
+                // because a check has been done before regarding the
+                // appointments on this slot
+                slot.setNbPotentialRemainingPlaces( nNbMaxCapacity );
+                slot.setNbRemainingPlaces( nNbMaxCapacity );
             }
         }
         saveSlot( slot );
@@ -354,7 +372,7 @@ public final class SlotService
         int nIdForm = slot.getIdForm( );
         while ( !endingDateTime.isAfter( endingDateTimeOfTheDay ) )
         {
-            Slot slotToCreate = buildSlot( nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity, nMaxCapacity, Boolean.TRUE );
+            Slot slotToCreate = buildSlot( nIdForm, startingDateTime, endingDateTime, nMaxCapacity, nMaxCapacity, nMaxCapacity, Boolean.TRUE, Boolean.TRUE );
             startingDateTime = endingDateTime;
             endingDateTime = startingDateTime.plusMinutes( nDurationSlot );
             listSlotToCreate.add( slotToCreate );

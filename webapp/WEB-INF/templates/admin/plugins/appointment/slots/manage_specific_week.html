@@ -41,8 +41,8 @@
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
-					color : <#if event.isOpen>'default'<#else>'red'</#if>,
-					url : eventUrl + '&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&max_capacity=${event.maxCapacity}',
+					color : <#if event.isOpen & event.isSpecific>'#065580'<#elseif event.isOpen>'default'<#else>'red'</#if>,
+					url : eventUrl + '&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}',
 				},								
 			</#list>
 		</#if>

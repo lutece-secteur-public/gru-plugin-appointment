@@ -68,7 +68,7 @@
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
-					url : eventUrl + '&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&max_capacity=${event.maxCapacity}',
+					url : eventUrl + '&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}',
 				},								
 			</#list>
 		</#if>

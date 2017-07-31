@@ -56,6 +56,11 @@ public final class Slot implements Serializable
     private boolean _bIsOpen;
 
     /**
+     * Indicate whether the slot has been created with the specific week configuration
+     */
+    private boolean _bIsSpecific;
+
+    /**
      * Max Capacity of the Slot
      */
     private int _nMaxCapacity;
@@ -277,6 +282,27 @@ public final class Slot implements Serializable
     public void setIsOpen( boolean bIsOpen )
     {
         this._bIsOpen = bIsOpen;
+    }
+
+    /**
+     * Indicate if the slot is specific or not
+     * 
+     * @return true if the slot is specific
+     */
+    public boolean getIsSpecific( )
+    {
+        return _bIsSpecific;
+    }
+
+    /**
+     * Set the boolean specific value of the slot
+     * 
+     * @param bIsSpecific
+     *            the boolean open value to set
+     */
+    public void setIsSpecific( boolean bIsSpecific )
+    {
+        this._bIsSpecific = bIsSpecific;
     }
 
     /**
