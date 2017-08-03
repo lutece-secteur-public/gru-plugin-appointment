@@ -451,7 +451,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     }
 
     /**
-     * Find all the entries of a form
+     * Find all the entries (with its fields) of a form
      * 
      * @param nIdForm
      *            the form Id
@@ -459,10 +459,19 @@ public final class EntryService extends RemovalListenerService implements Serial
      */
     public static List<Entry> findListEntry( int nIdForm )
     {
+        List<Entry> listEntries = new ArrayList<>( );
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( nIdForm );
         entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
-        return EntryHome.getEntryList( entryFilter );
+        List<Entry> listEntriesLight = EntryHome.getEntryList( entryFilter );
+        if ( CollectionUtils.isNotEmpty( listEntriesLight ) )
+        {
+            for ( Entry entryLight : listEntriesLight )
+            {
+                listEntries.add( EntryHome.findByPrimaryKey( entryLight.getIdEntry( ) ) );
+            }
+        }
+        return listEntries;
     }
 
     /**

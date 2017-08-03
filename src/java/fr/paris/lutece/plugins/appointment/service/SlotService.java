@@ -402,9 +402,15 @@ public final class SlotService
      */
     public static void addDateAndTimeToSlot( Slot slot )
     {
-        slot.setDate( slot.getStartingDateTime( ).toLocalDate( ) );
-        slot.setStartingTime( slot.getStartingDateTime( ).toLocalTime( ) );
-        slot.setEndingTime( slot.getEndingDateTime( ).toLocalTime( ) );
+        if ( slot.getStartingDateTime( ) != null )
+        {
+            slot.setDate( slot.getStartingDateTime( ).toLocalDate( ) );
+            slot.setStartingTime( slot.getStartingDateTime( ).toLocalTime( ) );
+        }
+        if ( slot.getEndingDateTime( ) != null )
+        {
+            slot.setEndingTime( slot.getEndingDateTime( ).toLocalTime( ) );
+        }
     }
 
     /**
@@ -415,9 +421,12 @@ public final class SlotService
      */
     private static void createListSlot( List<Slot> listSlotToCreate )
     {
-        for ( Slot slotTemp : listSlotToCreate )
+        if ( CollectionUtils.isNotEmpty( listSlotToCreate ) )
         {
-            SlotHome.create( slotTemp );
+            for ( Slot slotTemp : listSlotToCreate )
+            {
+                SlotHome.create( slotTemp );
+            }
         }
     }
 
