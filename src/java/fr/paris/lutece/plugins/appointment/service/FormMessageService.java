@@ -57,13 +57,16 @@ public final class FormMessageService
         formMessage.setIdForm( nIdForm );
         FormMessageHome.create( formMessage );
     }
-    
+
     /**
      * Save a form message
-     * @param formMessage the form message to save
+     * 
+     * @param formMessage
+     *            the form message to save
      */
-    public static void saveFormMessage(FormMessage formMessage){
-    	FormMessageHome.create(formMessage);
+    public static void saveFormMessage( FormMessage formMessage )
+    {
+        FormMessageHome.create( formMessage );
     }
 
     /**

@@ -485,7 +485,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM_ERRORS, listErrors );
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
-        model.put( MARK_FORM_HTML, templateForm.getHtml( ) );        
+        model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, getLocale( request ), model );
         XPage page = new XPage( );
         page.setContent( template.getHtml( ) );

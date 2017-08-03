@@ -50,12 +50,16 @@ public final class WorkingDayService
 
     /**
      * Save a working day
-     * @param workingDay the working day to save
+     * 
+     * @param workingDay
+     *            the working day to save
      * @return the working day saved
      */
-    public static WorkingDay saveWorkingDay(WorkingDay workingDay){
-    	return WorkingDayHome.create(workingDay);
+    public static WorkingDay saveWorkingDay( WorkingDay workingDay )
+    {
+        return WorkingDayHome.create( workingDay );
     }
+
     /**
      * Create in database a working day and its time slots
      * 

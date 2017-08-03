@@ -46,11 +46,15 @@ public final class ReservationRuleService
 
     /**
      * save a reservation rule
-     * @param reservationRule the reservation rule to save
+     * 
+     * @param reservationRule
+     *            the reservation rule to save
      */
-    public static void saveReservationRule(ReservationRule reservationRule){
-    	ReservationRuleHome.create(reservationRule);
+    public static void saveReservationRule( ReservationRule reservationRule )
+    {
+        ReservationRuleHome.create( reservationRule );
     }
+
     /**
      * Update in database a reservation rule with the values of an appointmentForm DTO
      * 
@@ -175,14 +179,17 @@ public final class ReservationRuleService
         }
         return mapReservationRule;
     }
-    
+
     /**
-     * Returns a list of the reservation rules of a form 
-     * @param nIdForm the form id
+     * Returns a list of the reservation rules of a form
+     * 
+     * @param nIdForm
+     *            the form id
      * @return a list of reservation rules of the form
      */
-    public static List<ReservationRule> findListReservationRule(int nIdForm){
-    	return ReservationRuleHome.findByIdForm(nIdForm);
+    public static List<ReservationRule> findListReservationRule( int nIdForm )
+    {
+        return ReservationRuleHome.findByIdForm( nIdForm );
     }
 
 }

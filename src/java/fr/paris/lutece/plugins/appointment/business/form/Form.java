@@ -22,7 +22,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties( ignoreUnknown = true )
 public final class Form implements RBACResource, AdminWorkgroupResource, Serializable
 {
 
@@ -67,7 +67,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
 
     /**
      * Starting validity date of the form
-     */      
+     */
     private LocalDate _startingValidityDate;
 
     /**
@@ -205,7 +205,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Get the starting validity date of the form (in LocalDate format)
      * 
      * @return the starting validity date of the form
-     */    
+     */
     public LocalDate getStartingValidityDate( )
     {
         return _startingValidityDate;
@@ -259,7 +259,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Get the end date of the validity of the form
      * 
      * @return the end validity date of the form
-     */    
+     */
     public LocalDate getEndingValidityDate( )
     {
         return _endingValidityDate;

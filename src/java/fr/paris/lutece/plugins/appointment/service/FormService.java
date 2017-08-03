@@ -59,12 +59,16 @@ public final class FormService
 
     /**
      * Save a form in database
-     * @param form the form to save
+     * 
+     * @param form
+     *            the form to save
      * @return the form saved (with its id)
      */
-    public static Form saveForm(Form form){
-    	return FormHome.create(form);
+    public static Form saveForm( Form form )
+    {
+        return FormHome.create( form );
     }
+
     /**
      * Create a form from an appointmentForm DTO
      * 

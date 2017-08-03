@@ -60,13 +60,16 @@ public final class TimeSlotService
 
     /**
      * Save a time slot
-     * @param timeSlot the time slot to save
+     * 
+     * @param timeSlot
+     *            the time slot to save
      * @return the time slot saved
      */
-    public static TimeSlot saveTimeSlot(TimeSlot timeSlot){
-    	return TimeSlotHome.create(timeSlot);
+    public static TimeSlot saveTimeSlot( TimeSlot timeSlot )
+    {
+        return TimeSlotHome.create( timeSlot );
     }
-    
+
     /**
      * Build a timeSlot with all its values
      * 

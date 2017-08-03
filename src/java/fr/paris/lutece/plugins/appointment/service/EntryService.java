@@ -451,6 +451,21 @@ public final class EntryService extends RemovalListenerService implements Serial
     }
 
     /**
+     * Find all the entries of a form
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @return a list of all the entries
+     */
+    public static List<Entry> findListEntry( int nIdForm )
+    {
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( nIdForm );
+        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        return EntryHome.getEntryList( entryFilter );
+    }
+
+    /**
      * Get the reference list of groups
      * 
      * @param nIdForm

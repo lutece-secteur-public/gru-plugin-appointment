@@ -46,12 +46,16 @@ public final class WeekDefinitionService
 
     /**
      * Save a week definition
-     * @param weekDefinition the week definition to save
+     * 
+     * @param weekDefinition
+     *            the week definition to save
      * @return the week definition saved
      */
-    public static WeekDefinition saveWeekDefinition(WeekDefinition weekDefinition){
-    	return WeekDefinitionHome.create(weekDefinition);
+    public static WeekDefinition saveWeekDefinition( WeekDefinition weekDefinition )
+    {
+        return WeekDefinitionHome.create( weekDefinition );
     }
+
     /**
      * Update in database a week definition
      * 

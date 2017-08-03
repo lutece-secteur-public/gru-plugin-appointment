@@ -56,7 +56,7 @@ public final class CategoryService
         Category categoryInDb = CategoryHome.findByLabel( category.getLabel( ) );
         if ( categoryInDb == null )
         {
-        	categoryInDb = CategoryHome.create( category );
+            categoryInDb = CategoryHome.create( category );
         }
         return categoryInDb;
     }

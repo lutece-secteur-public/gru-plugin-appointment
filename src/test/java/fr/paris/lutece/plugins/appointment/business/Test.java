@@ -11,24 +11,26 @@ import net.sf.json.JSONObject;
 
 public final class Test
 {
-	@JsonFormat(pattern = "dd::MM::yyyy")
-	static LocalDate date = LocalDate.now();
-	
-    public static LocalDate getDate() {
-		return date;
-	}
+    @JsonFormat( pattern = "dd::MM::yyyy" )
+    static LocalDate date = LocalDate.now( );
 
-	public void setDate(LocalDate date) {
-		Test.date = date;
-	}
-
-	public static void main( String [ ] args ) throws JsonProcessingException
+    public static LocalDate getDate( )
     {
-    	
-    	ObjectMapper mapper = new ObjectMapper();
-    	mapper.registerModule(new JavaTimeModule());
-    	String strDate = mapper.writeValueAsString(date);
-    	System.out.println(strDate);
-    	
+        return date;
+    }
+
+    public void setDate( LocalDate date )
+    {
+        Test.date = date;
+    }
+
+    public static void main( String [ ] args ) throws JsonProcessingException
+    {
+
+        ObjectMapper mapper = new ObjectMapper( );
+        mapper.registerModule( new JavaTimeModule( ) );
+        String strDate = mapper.writeValueAsString( date );
+        System.out.println( strDate );
+
     }
 }
