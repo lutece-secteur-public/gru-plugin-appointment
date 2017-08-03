@@ -96,7 +96,7 @@ public final class ClosingDay implements Serializable
      * @param dateOfClosingDay
      *            the date to set (in sql date format)
      */
-    public void setDateOfClosingDay( Date dateOfClosingDay )
+    public void setSqlDateOfClosingDay( Date dateOfClosingDay )
     {
         if ( dateOfClosingDay != null )
         {

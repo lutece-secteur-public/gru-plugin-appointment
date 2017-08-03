@@ -6,12 +6,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The business class of the slot
  * 
  * @author Laurent Payen
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public final class Slot implements Serializable
 {
 

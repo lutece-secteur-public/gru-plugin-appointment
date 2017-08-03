@@ -52,6 +52,15 @@ public final class SlotService
     }
 
     /**
+     * Fins all the slots of a form
+     * @param nIdForm the form id
+     * @return a list of all the slots of a form
+     */
+    public static List<Slot> findListSlot(int nIdForm) {
+    	return SlotHome.findByIdForm(nIdForm);
+    }
+    
+    /**
      * Find the open slots of a form on a given period of time
      * 
      * @param nIdForm

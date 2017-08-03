@@ -109,8 +109,8 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
         int nIndex = 1;
         TimeSlot timeSlot = new TimeSlot( );
         timeSlot.setIdTimeSlot( daoUtil.getInt( nIndex++ ) );
-        timeSlot.setStartingTime( daoUtil.getTime( nIndex++ ) );
-        timeSlot.setEndingTime( daoUtil.getTime( nIndex++ ) );
+        timeSlot.setSqlStartingTime( daoUtil.getTime( nIndex++ ) );
+        timeSlot.setSqlEndingTime( daoUtil.getTime( nIndex++ ) );
         timeSlot.setIsOpen( daoUtil.getBoolean( nIndex++ ) );
         timeSlot.setMaxCapacity( daoUtil.getInt( nIndex++ ) );
         timeSlot.setIdWorkingDay( daoUtil.getInt( nIndex ) );

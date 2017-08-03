@@ -53,6 +53,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
@@ -73,6 +75,7 @@ import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
+import fr.paris.lutece.plugins.appointment.service.TradeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -101,6 +104,7 @@ import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
+import net.sf.json.JSONObject;
 
 /**
  * This class provides the user interface to manage AppointmentForm features ( manage, create, modify, copy, remove )
@@ -278,6 +282,21 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     @View( VIEW_CREATE_APPOINTMENTFORM )
     public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
+//    	JSONObject jsonForm = null;
+//    	try {
+//    		jsonForm = TradeService.exportForm(1);
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//    	
+//    	try {
+//			TradeService.importForm(jsonForm);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+    	
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {
@@ -609,7 +628,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         if ( form != null )
         {
-            if ( !form.isActive( ) )
+            if ( !form.getIsActive( ) )
             {
                 if ( form.getStartingValidityDate( ) == null )
                 {
@@ -643,7 +662,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                     form.setStartingValidityDate( null );
                 }
             }
-            form.setIsActive( !form.isActive( ) );
+            form.setIsActive( !form.getIsActive( ) );
             FormHome.update( form );
             AppLogService.info( LogUtilities.buildLog( ACTION_DO_CHANGE_FORM_ACTIVATION, strIdForm, getUser( ) ) );
         }

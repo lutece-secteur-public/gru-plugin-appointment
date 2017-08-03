@@ -57,6 +57,14 @@ public final class FormMessageService
         formMessage.setIdForm( nIdForm );
         FormMessageHome.create( formMessage );
     }
+    
+    /**
+     * Save a form message
+     * @param formMessage the form message to save
+     */
+    public static void saveFormMessage(FormMessage formMessage){
+    	FormMessageHome.create(formMessage);
+    }
 
     /**
      * Get the default form message with values loaded from properties.

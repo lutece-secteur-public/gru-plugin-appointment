@@ -58,6 +58,13 @@ public final class LocalizationService
     }
 
     /**
+     * Save a localization of a form
+     * @param localization the localization to save
+     */
+    public static void saveLocalization(Localization localization){
+    	LocalizationHome.create(localization);
+    }
+    /**
      * Update a localization object with the values of an appointment form DTO
      * 
      * @param appointmentForm

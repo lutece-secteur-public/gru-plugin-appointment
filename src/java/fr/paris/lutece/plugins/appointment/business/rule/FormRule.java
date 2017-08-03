@@ -87,7 +87,7 @@ public final class FormRule implements Serializable
      * 
      * @return true if the captcha is enabled
      */
-    public boolean isCaptchaEnabled( )
+    public boolean getIsCaptchaEnabled( )
     {
         return _bIsCaptchaEnabled;
     }
@@ -108,7 +108,7 @@ public final class FormRule implements Serializable
      * 
      * @return true if the email is mandatory
      */
-    public boolean isMandatoryEmailEnabled( )
+    public boolean getIsMandatoryEmailEnabled( )
     {
         return _bIsMandatoryEmailEnabled;
     }
@@ -129,7 +129,7 @@ public final class FormRule implements Serializable
      * 
      * @return true if the authentication is required
      */
-    public boolean isActiveAuthentication( )
+    public boolean getIsActiveAuthentication( )
     {
         return _bIsActiveAuthentication;
     }

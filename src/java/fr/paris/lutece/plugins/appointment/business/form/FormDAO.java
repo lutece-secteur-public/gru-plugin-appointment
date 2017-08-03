@@ -180,7 +180,7 @@ public final class FormDAO extends UtilDAO implements IFormDAO
         }
         daoUtil.setDate( nIndex++, form.getStartingValiditySqlDate( ) );
         daoUtil.setDate( nIndex++, form.getEndingValiditySqlDate( ) );
-        daoUtil.setBoolean( nIndex++, form.isActive( ) );
+        daoUtil.setBoolean( nIndex++, form.getIsActive( ) );
         daoUtil.setInt( nIndex++, form.getIdWorkflow( ) );
         daoUtil.setString( nIndex++, form.getWorkgroup( ) );
         if ( !isInsert )

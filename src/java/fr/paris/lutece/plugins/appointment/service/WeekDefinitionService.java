@@ -45,6 +45,14 @@ public final class WeekDefinitionService
     }
 
     /**
+     * Save a week definition
+     * @param weekDefinition the week definition to save
+     * @return the week definition saved
+     */
+    public static WeekDefinition saveWeekDefinition(WeekDefinition weekDefinition){
+    	return WeekDefinitionHome.create(weekDefinition);
+    }
+    /**
      * Update in database a week definition
      * 
      * @param nIdForm
@@ -91,7 +99,7 @@ public final class WeekDefinitionService
      *            the form Id
      * @return the list of all the week definition of the form
      */
-    public static List<WeekDefinition> findWeekDefinitionByIdForm( int nIdForm )
+    public static List<WeekDefinition> findListWeekDefinition( int nIdForm )
     {
         List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
         fillInListWeekDefinition( listWeekDefinition );

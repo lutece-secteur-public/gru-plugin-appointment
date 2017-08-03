@@ -59,6 +59,14 @@ public final class DisplayService
     }
 
     /**
+     * Save a display of a form
+     * @param display the display to save
+     */
+    public static void saveDisplay(Display display){
+    	DisplayHome.create(display);
+    }
+    
+    /**
      * Update a display object with the values of an appointment form DTO
      * 
      * @param appointmentForm

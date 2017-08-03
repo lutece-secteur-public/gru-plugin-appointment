@@ -225,7 +225,7 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     {
         Category category = new Category( );
         populate( category, request );
-        CategoryService.createCategory( category );
+        CategoryService.saveCategory( category );
         addInfo( INFO_CATEGORY_CREATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_CATEGORY );
     }

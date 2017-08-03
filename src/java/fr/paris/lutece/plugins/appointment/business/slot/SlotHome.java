@@ -95,6 +95,16 @@ public final class SlotHome
     {
         return _dao.findByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
     }
+    
+    /**
+     * Returns a list of slots of a form
+     * @param nIdForm the form id
+     * @return a list of all the slots of the form
+     */
+    public static List<Slot> findByIdForm( int nIdForm )
+    {
+        return _dao.findByIdForm( nIdForm, _plugin );
+    }
 
     /**
      * Returns a list of open slots for a date range

@@ -9,6 +9,9 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
@@ -19,6 +22,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public final class Form implements RBACResource, AdminWorkgroupResource, Serializable
 {
 
@@ -30,6 +34,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * Name of the resource type of Appointment Forms
      */
+    @JsonIgnore
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
 
     /**
@@ -62,7 +67,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
 
     /**
      * Starting validity date of the form
-     */
+     */      
     private LocalDate _startingValidityDate;
 
     /**
@@ -88,6 +93,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * List of the week definitions of the form
      */
+    @JsonIgnore
     private List<WeekDefinition> _listWeekDefinition;
 
     /**
@@ -199,7 +205,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Get the starting validity date of the form (in LocalDate format)
      * 
      * @return the starting validity date of the form
-     */
+     */    
     public LocalDate getStartingValidityDate( )
     {
         return _startingValidityDate;
@@ -253,7 +259,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Get the end date of the validity of the form
      * 
      * @return the end validity date of the form
-     */
+     */    
     public LocalDate getEndingValidityDate( )
     {
         return _endingValidityDate;
@@ -308,7 +314,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * 
      * @return The IsActive
      */
-    public boolean isActive( )
+    public boolean getIsActive( )
     {
         return _bIsActive;
     }

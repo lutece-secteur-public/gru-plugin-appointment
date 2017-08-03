@@ -60,6 +60,14 @@ public final class FormRuleService
     }
 
     /**
+     * Save a form rule
+     * @param formRule the form rule to save
+     */
+    public static void saveFormRule(FormRule formRule){
+    	FormRuleHome.create(formRule);
+    }
+    
+    /**
      * Update a form rule object with the values of an appointmentForm DTO
      * 
      * @param appointmentForm

@@ -126,8 +126,8 @@ public final class FormRuleTest extends LuteceTestCase
      */
     public void checkAsserts( FormRule formRuleStored, FormRule formRule )
     {
-        assertEquals( formRuleStored.isCaptchaEnabled( ), formRule.isCaptchaEnabled( ) );
-        assertEquals( formRuleStored.isMandatoryEmailEnabled( ), formRule.isMandatoryEmailEnabled( ) );
+        assertEquals( formRuleStored.getIsCaptchaEnabled( ), formRule.getIsCaptchaEnabled( ) );
+        assertEquals( formRuleStored.getIsMandatoryEmailEnabled( ), formRule.getIsMandatoryEmailEnabled( ) );
         assertEquals( formRuleStored.getIdForm( ), formRule.getIdForm( ) );
     }
 

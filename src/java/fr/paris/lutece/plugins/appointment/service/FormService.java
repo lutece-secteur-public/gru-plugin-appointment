@@ -58,6 +58,14 @@ public final class FormService
     }
 
     /**
+     * Save a form in database
+     * @param form the form to save
+     * @return the form saved (with its id)
+     */
+    public static Form saveForm(Form form){
+    	return FormHome.create(form);
+    }
+    /**
      * Create a form from an appointmentForm DTO
      * 
      * @param appointmentForm
@@ -197,7 +205,7 @@ public final class FormService
     {
         appointmentForm.setIdForm( form.getIdForm( ) );
         appointmentForm.setTitle( form.getTitle( ) );
-        appointmentForm.setIsActive( form.isActive( ) );
+        appointmentForm.setIsActive( form.getIsActive( ) );
         appointmentForm.setIdWorkflow( form.getIdWorkflow( ) );
         appointmentForm.setWorkgroup( form.getWorkgroup( ) );
         if ( form.getIdCategory( ) == null || form.getIdCategory( ) == 0 )
@@ -332,9 +340,9 @@ public final class FormService
      */
     private static void fillAppointmentFormWithFormRulePart( AppointmentForm appointmentForm, FormRule formRule )
     {
-        appointmentForm.setEnableCaptcha( formRule.isCaptchaEnabled( ) );
-        appointmentForm.setEnableMandatoryEmail( formRule.isMandatoryEmailEnabled( ) );
-        appointmentForm.setActiveAuthentication( formRule.isActiveAuthentication( ) );
+        appointmentForm.setEnableCaptcha( formRule.getIsCaptchaEnabled( ) );
+        appointmentForm.setEnableMandatoryEmail( formRule.getIsMandatoryEmailEnabled( ) );
+        appointmentForm.setActiveAuthentication( formRule.getIsActiveAuthentication( ) );
         appointmentForm.setNbDaysBeforeNewAppointment( formRule.getNbDaysBeforeNewAppointment( ) );
         appointmentForm.setMinTimeBeforeAppointment( formRule.getMinTimeBeforeAppointment( ) );
         appointmentForm.setNbMaxAppointmentsPerUser( formRule.getNbMaxAppointmentsPerUser( ) );
@@ -367,7 +375,7 @@ public final class FormService
         appointmentForm.setDateEndValidity( form.getEndingValiditySqlDate( ) );
         appointmentForm.setIdWorkflow( form.getIdWorkflow( ) );
         appointmentForm.setWorkgroup( form.getWorkgroup( ) );
-        appointmentForm.setIsActive( form.isActive( ) );
+        appointmentForm.setIsActive( form.getIsActive( ) );
     }
 
     /**
@@ -423,7 +431,7 @@ public final class FormService
     private static void checkValidityDate( Form form )
     {
         LocalDate dateNow = LocalDate.now( );
-        if ( form.getStartingValidityDate( ) != null && !form.isActive( ) && ( form.getStartingValidityDate( ).isBefore( dateNow ) )
+        if ( form.getStartingValidityDate( ) != null && !form.getIsActive( ) && ( form.getStartingValidityDate( ).isBefore( dateNow ) )
                 && ( form.getEndingValidityDate( ) == null || form.getEndingValidityDate( ).isAfter( dateNow ) ) )
         {
             form.setIsActive( true );
@@ -431,7 +439,7 @@ public final class FormService
 
         }
         else
-            if ( form.getEndingValidityDate( ) != null && form.isActive( ) && form.getEndingValidityDate( ).isBefore( dateNow ) )
+            if ( form.getEndingValidityDate( ) != null && form.getIsActive( ) && form.getEndingValidityDate( ).isBefore( dateNow ) )
             {
                 form.setIsActive( false );
                 FormHome.update( form );

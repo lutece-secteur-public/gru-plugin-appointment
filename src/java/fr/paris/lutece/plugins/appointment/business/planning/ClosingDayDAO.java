@@ -167,7 +167,7 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
         int nIndex = 1;
         ClosingDay closingDay = new ClosingDay( );
         closingDay.setIdClosingDay( daoUtil.getInt( nIndex++ ) );
-        closingDay.setDateOfClosingDay( daoUtil.getDate( nIndex++ ) );
+        closingDay.setSqlDateOfClosingDay( daoUtil.getDate( nIndex++ ) );
         closingDay.setIdForm( daoUtil.getInt( nIndex ) );
         return closingDay;
     }

@@ -51,13 +51,14 @@ public final class CategoryService
      * @param category
      *            the category to store
      */
-    public static void createCategory( Category category )
+    public static Category saveCategory( Category category )
     {
         Category categoryInDb = CategoryHome.findByLabel( category.getLabel( ) );
         if ( categoryInDb == null )
         {
-            CategoryHome.create( category );
+        	categoryInDb = CategoryHome.create( category );
         }
+        return categoryInDb;
     }
 
     /**

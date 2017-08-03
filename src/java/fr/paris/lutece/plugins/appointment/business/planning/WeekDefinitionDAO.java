@@ -166,7 +166,7 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
         int nIndex = 1;
         WeekDefinition weekDefinition = new WeekDefinition( );
         weekDefinition.setIdWeekDefinition( daoUtil.getInt( nIndex++ ) );
-        weekDefinition.setDateOfApply( daoUtil.getDate( nIndex++ ) );
+        weekDefinition.setSqlDateOfApply( daoUtil.getDate( nIndex++ ) );
         weekDefinition.setIdForm( daoUtil.getInt( nIndex ) );
         return weekDefinition;
     }

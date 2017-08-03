@@ -5,12 +5,15 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Business class of the time slot
  * 
  * @author Laurent Payen
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public final class TimeSlot implements Serializable
 {
 
@@ -121,7 +124,7 @@ public final class TimeSlot implements Serializable
      * @param startingTime
      *            the starting time (in sql time)
      */
-    public void setStartingTime( Time startingTime )
+    public void setSqlStartingTime( Time startingTime )
     {
         if ( startingTime != null )
         {
@@ -171,7 +174,7 @@ public final class TimeSlot implements Serializable
      * @param endingTime
      *            the ending time (in sql time format)
      */
-    public void setEndingTime( Time endingTime )
+    public void setSqlEndingTime( Time endingTime )
     {
         if ( endingTime != null )
         {

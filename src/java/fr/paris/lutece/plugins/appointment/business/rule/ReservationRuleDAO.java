@@ -166,7 +166,7 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
         int nIndex = 1;
         ReservationRule reservationRule = new ReservationRule( );
         reservationRule.setIdReservationRule( daoUtil.getInt( nIndex++ ) );
-        reservationRule.setDateOfApply( daoUtil.getDate( nIndex++ ) );
+        reservationRule.setSqlDateOfApply( daoUtil.getDate( nIndex++ ) );
         reservationRule.setMaxCapacityPerSlot( daoUtil.getInt( nIndex++ ) );
         reservationRule.setMaxPeoplePerAppointment( daoUtil.getInt( nIndex++ ) );
         reservationRule.setIdForm( daoUtil.getInt( nIndex ) );

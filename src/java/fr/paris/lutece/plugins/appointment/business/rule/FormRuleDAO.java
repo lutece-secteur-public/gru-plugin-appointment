@@ -139,9 +139,9 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
         {
             daoUtil.setInt( nIndex++, formRule.getIdFormRule( ) );
         }
-        daoUtil.setBoolean( nIndex++, formRule.isCaptchaEnabled( ) );
-        daoUtil.setBoolean( nIndex++, formRule.isMandatoryEmailEnabled( ) );
-        daoUtil.setBoolean( nIndex++, formRule.isActiveAuthentication( ) );
+        daoUtil.setBoolean( nIndex++, formRule.getIsCaptchaEnabled( ) );
+        daoUtil.setBoolean( nIndex++, formRule.getIsMandatoryEmailEnabled( ) );
+        daoUtil.setBoolean( nIndex++, formRule.getIsActiveAuthentication( ) );
         daoUtil.setInt( nIndex++, formRule.getNbDaysBeforeNewAppointment( ) );
         daoUtil.setInt( nIndex++, formRule.getMinTimeBeforeAppointment( ) );
         daoUtil.setInt( nIndex++, formRule.getNbMaxAppointmentsPerUser( ) );

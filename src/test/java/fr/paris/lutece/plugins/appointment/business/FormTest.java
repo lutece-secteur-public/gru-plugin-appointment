@@ -208,7 +208,7 @@ public final class FormTest extends LuteceTestCase
         assertEquals( formStored.getIdCategory( ), form.getIdCategory( ) );
         assertEquals( formStored.getStartingValidityDate( ), form.getStartingValidityDate( ) );
         assertEquals( formStored.getEndingValidityDate( ), form.getEndingValidityDate( ) );
-        assertEquals( formStored.isActive( ), form.isActive( ) );
+        assertEquals( formStored.getIsActive( ), form.getIsActive( ) );
         assertEquals( formStored.getIdWorkflow( ), form.getIdWorkflow( ) );
     }
 

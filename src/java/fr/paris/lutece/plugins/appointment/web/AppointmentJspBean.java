@@ -308,7 +308,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         Map<String, Object> model = getModel( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         boolean bError = false;
-        if ( !form.isActive( ) )
+        if ( !form.getIsActive( ) )
         {
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( ) );
             bError = true;

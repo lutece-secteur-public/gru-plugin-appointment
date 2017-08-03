@@ -259,7 +259,7 @@ public class AppointmentApp extends MVCApplication
         Map<String, Object> model = getModel( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         boolean bError = false;
-        if ( !form.isActive( ) )
+        if ( !form.getIsActive( ) )
         {
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
             bError = true;
@@ -470,7 +470,11 @@ public class AppointmentApp extends MVCApplication
         }
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-        HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
+        if ( listErrors != null )
+        {
+            model.put( MARK_FORM_ERRORS, listErrors );
+            request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
+        }
         model.put( MARK_APPOINTMENT, appointmentDTO );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).getDate( ) );
         model.put( MARK_FORM, form );
@@ -480,12 +484,8 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats( ) );
         model.put( MARK_FORM_ERRORS, listErrors );
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
-        model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
-        if ( listErrors != null )
-        {
-            model.put( MARK_FORM_ERRORS, listErrors );
-            request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-        }
+        HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
+        model.put( MARK_FORM_HTML, templateForm.getHtml( ) );        
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, getLocale( request ), model );
         XPage page = new XPage( );
         page.setContent( template.getHtml( ) );

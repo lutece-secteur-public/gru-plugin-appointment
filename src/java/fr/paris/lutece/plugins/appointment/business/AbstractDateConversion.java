@@ -53,7 +53,7 @@ public class AbstractDateConversion
      * @param dateOfApply
      *            the date to set (in Sql Date format)
      */
-    public void setDateOfApply( Date dateOfApply )
+    public void setSqlDateOfApply( Date dateOfApply )
     {
         if ( dateOfApply != null )
         {
