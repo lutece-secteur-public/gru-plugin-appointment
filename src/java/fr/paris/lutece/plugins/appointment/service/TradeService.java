@@ -1,6 +1,7 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +31,17 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
+import fr.paris.lutece.plugins.regularexpression.business.RegularExpressionHome;
+import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.regularexpression.RegularExpressionService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * Import/Export Forms
+ * Import/Export Forms from Json
  * 
  * @author Laurent Payen
  *
@@ -42,118 +49,148 @@ import net.sf.json.JSONObject;
 public class TradeService
 {
 
+    // PROPERTIES
+    private static final String CATEGORY = "category";
     private static final String CLOSING_DAYS = "closing_days";
-    private static final String WEEK_DEFINITIONS = "week_definitions";
-    private static final String RESERVATION_RULES = "reservation_rules";
-    private static final String WORKING_DAYS = "working_days";
-    private static final String TIME_SLOTS = "time_slots";
-    private static final String SLOTS = "slots";
+    private static final String DISPLAY = "display";
     private static final String ENTRIES = "entries";
     private static final String FIELDS = "fields";
-    private static final String CATEGORY = "category";
-    private static final String FORM_RULE = "form_rule";
-    private static final String DISPLAY = "display";
-    private static final String LOCALIZATION = "localization";
-    private static final String FORM_MESSAGE = "form_message";
     private static final String FORM = "form";
+    private static final String FORM_MESSAGE = "form_message";
+    private static final String FORM_RULE = "form_rule";
     private static final String IMPORT = "Import";
+    private static final String LOCALIZATION = "localization";
+    private static final String RESERVATION_RULES = "reservation_rules";
+    private static final String SLOTS = "slots";
+    private static final String WEEK_DEFINITIONS = "week_definitions";
 
-    private static ObjectMapper mapper;
+    /**
+     * The mapper (need to add the javaTime module for Java 8 date compatibility)l
+     */
+    private static ObjectMapper _mapper = new ObjectMapper( ).registerModule( new JavaTimeModule( ) );
 
-    public TradeService( )
+    private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
+
+    /**
+     * Private constructor
+     */
+    private TradeService( )
     {
-        mapper = new ObjectMapper( );
-        mapper.registerModule( new JavaTimeModule( ) );
     }
 
-    public static void importForm( JSONObject jsonObject ) throws JsonParseException, JsonMappingException, IOException
+    /**
+     * Import a form in database from a json
+     * 
+     * @param jsonObject
+     *            the json object
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    public static void importForm( JSONObject jsonObject )
     {
-        ObjectMapper mapper = new ObjectMapper( );
-        mapper.registerModule( new JavaTimeModule( ) );
-        Object objectCategory = jsonObject.get( CATEGORY );
-        Category category = null;
-        if ( objectCategory != null )
-        {
-            category = mapper.readValue( objectCategory.toString( ), Category.class );
-            if ( category != null )
-            {
-                category = CategoryService.saveCategory( category );
-            }
-        }
-        Object objectForm = jsonObject.get( FORM );
         Form form = null;
-        if ( objectForm != null )
+        Category category = null;
+        Object objectCategory = jsonObject.get( CATEGORY );
+        try
         {
-            form = mapper.readValue( objectForm.toString( ), Form.class );
-        }
-        if ( form != null )
-        {
-            form.setTitle( IMPORT + StringUtils.SPACE + form.getTitle( ) );
-            if ( category != null )
+            if ( objectCategory != null )
             {
-                form.setIdCategory( category.getIdCategory( ) );
+                category = _mapper.readValue( objectCategory.toString( ), Category.class );
+                if ( category != null )
+                {
+                    category = CategoryService.saveCategory( category );
+                }
             }
-            form = FormService.saveForm( form );
-            int nIdForm = form.getIdForm( );
-            importFormRule( jsonObject, nIdForm );
-            importDisplay( jsonObject, nIdForm );
-            importLocalization( jsonObject, nIdForm );
-            importFormMessage( jsonObject, nIdForm );
-            importReservationRules( jsonObject, nIdForm );
-            importClosingDays( jsonObject, nIdForm );
-            importWeekDefinitions( jsonObject, nIdForm );
-            importSlots( jsonObject, nIdForm );
-            importEntries( jsonObject, nIdForm );
+            Object objectForm = jsonObject.get( FORM );
+            if ( objectForm != null )
+            {
+                form = _mapper.readValue( objectForm.toString( ), Form.class );
+            }
+            if ( form != null )
+            {
+                form.setTitle( IMPORT + StringUtils.SPACE + form.getTitle( ) );
+                if ( category != null )
+                {
+                    form.setIdCategory( category.getIdCategory( ) );
+                }
+                form = FormService.saveForm( form );
+                int nIdForm = form.getIdForm( );
+                importFormRule( jsonObject, nIdForm );
+                importDisplay( jsonObject, nIdForm );
+                importLocalization( jsonObject, nIdForm );
+                importFormMessage( jsonObject, nIdForm );
+                importReservationRules( jsonObject, nIdForm );
+                importClosingDays( jsonObject, nIdForm );
+                importWeekDefinitions( jsonObject, nIdForm );
+                importSlots( jsonObject, nIdForm );
+                importEntries( jsonObject, nIdForm );
+            }
+        }
+        catch( IOException e )
+        {
+            AppLogService.error( "Error during import of the json", e );
         }
     }
 
-    public static JSONObject exportForm( int nIdForm ) throws JsonProcessingException
+    /**
+     * Export a form in a json object
+     * 
+     * @param nIdForm
+     *            the form id
+     * @return a json object of the form
+     * @throws JsonProcessingException
+     */
+    public static JSONObject exportForm( int nIdForm )
     {
         JSONObject jsObj = new JSONObject( );
-        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
-        if ( form != null )
+        try
         {
-            jsObj.put( FORM, mapper.writeValueAsString( form ) );
-            Category category = CategoryService.findCategoryById( form.getIdCategory( ) );
-            if ( category != null )
+            Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+            if ( form != null )
             {
-                jsObj.put( CATEGORY, mapper.writeValueAsString( category ) );
+                jsObj.put( FORM, _mapper.writeValueAsString( form ) );
+                Category category = CategoryService.findCategoryById( form.getIdCategory( ) );
+                if ( category != null )
+                {
+                    jsObj.put( CATEGORY, _mapper.writeValueAsString( category ) );
+                }
             }
+            exportFormRule( jsObj, nIdForm );
+            exportDisplay( jsObj, nIdForm );
+            exportLocalization( jsObj, nIdForm );
+            exportFormMessage( jsObj, nIdForm );
+            exportReservationRules( jsObj, nIdForm );
+            exportClosingDays( jsObj, nIdForm );
+            exportWeekDefinitions( jsObj, nIdForm );
+            exportSlots( jsObj, nIdForm );
+            exportEntries( jsObj, nIdForm );
         }
-        exportFormRule( jsObj, nIdForm );
-        exportDisplay( jsObj, nIdForm );
-        exportLocalization( jsObj, nIdForm );
-        exportFormMessage( jsObj, nIdForm );
-        exportReservationRules( jsObj, nIdForm );
-        exportClosingDays( jsObj, nIdForm );
-        exportWeekDefinitions( jsObj, nIdForm );
-        exportSlots( jsObj, nIdForm );
-        exportEntries( jsObj, nIdForm );
+        catch( JsonProcessingException e )
+        {
+            AppLogService.error( "Error during export of the form into json object", e );
+        }
         return jsObj;
     }
 
-    private static void importDisplay( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
-    {
-        Object objectDisplay = jsonObject.get( DISPLAY );
-        Display display = null;
-        if ( objectDisplay != null )
-        {
-            display = mapper.readValue( objectDisplay.toString( ), Display.class );
-        }
-        if ( display != null )
-        {
-            display.setIdForm( nIdForm );
-            DisplayService.saveDisplay( display );
-        }
-    }
-
+    /**
+     * Import the form rule part of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
     private static void importFormRule( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
     {
-        Object objectFormRule = jsonObject.get( FORM_RULE );
         FormRule formRule = null;
+        Object objectFormRule = jsonObject.get( FORM_RULE );
         if ( objectFormRule != null )
         {
-            formRule = mapper.readValue( objectFormRule.toString( ), FormRule.class );
+            formRule = _mapper.readValue( objectFormRule.toString( ), FormRule.class );
         }
         if ( formRule != null )
         {
@@ -162,13 +199,50 @@ public class TradeService
         }
     }
 
+    /**
+     * Import the display part of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    private static void importDisplay( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
+    {
+        Display display = null;
+        Object objectDisplay = jsonObject.get( DISPLAY );
+        if ( objectDisplay != null )
+        {
+            display = _mapper.readValue( objectDisplay.toString( ), Display.class );
+        }
+        if ( display != null )
+        {
+            display.setIdForm( nIdForm );
+            DisplayService.saveDisplay( display );
+        }
+    }
+
+    /**
+     * Import the localization part of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
     private static void importLocalization( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
     {
-        Object objectLocalization = jsonObject.get( LOCALIZATION );
         Localization localization = null;
+        Object objectLocalization = jsonObject.get( LOCALIZATION );
         if ( objectLocalization != null )
         {
-            localization = mapper.readValue( objectLocalization.toString( ), Localization.class );
+            localization = _mapper.readValue( objectLocalization.toString( ), Localization.class );
         }
         if ( localization != null )
         {
@@ -177,13 +251,24 @@ public class TradeService
         }
     }
 
+    /**
+     * Import the form message part of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
     private static void importFormMessage( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
     {
-        Object objectFormMessage = jsonObject.get( FORM_MESSAGE );
         FormMessage formMessage = null;
+        Object objectFormMessage = jsonObject.get( FORM_MESSAGE );
         if ( objectFormMessage != null )
         {
-            formMessage = mapper.readValue( objectFormMessage.toString( ), FormMessage.class );
+            formMessage = _mapper.readValue( objectFormMessage.toString( ), FormMessage.class );
         }
         if ( formMessage != null )
         {
@@ -192,285 +277,326 @@ public class TradeService
         }
     }
 
+    /**
+     * Import the reservation rule part of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
     private static void importReservationRules( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
     {
-        JSONArray jsArrayReservationRules = jsonObject.getJSONArray( RESERVATION_RULES );
+        List<ReservationRule> listReservationRules = new ArrayList<>( );
+        JSONArray jsArrayReservationRules = null;
+        if ( jsonObject.containsKey( RESERVATION_RULES ) )
+        {
+            jsArrayReservationRules = jsonObject.getJSONArray( RESERVATION_RULES );
+        }
         if ( CollectionUtils.isNotEmpty( jsArrayReservationRules ) )
         {
-            List<ReservationRule> listReservationRules = Arrays.asList( mapper.readValue( jsArrayReservationRules.toString( ), ReservationRule [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listReservationRules ) )
-            {
-                for ( ReservationRule reservationRule : listReservationRules )
-                {
-                    if ( reservationRule != null )
-                    {
-                        reservationRule.setIdForm( nIdForm );
-                        ReservationRuleService.saveReservationRule( reservationRule );
-                    }
-                }
-            }
+            listReservationRules = Arrays.asList( _mapper.readValue( jsArrayReservationRules.toString( ), ReservationRule [ ].class ) );
+        }
+        for ( ReservationRule reservationRule : listReservationRules )
+        {
+            reservationRule.setIdForm( nIdForm );
+            ReservationRuleService.saveReservationRule( reservationRule );
         }
     }
 
+    /**
+     * Import the closing days of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
     private static void importClosingDays( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
     {
-        JSONArray jsArrayClosingDays = jsonObject.getJSONArray( CLOSING_DAYS );
+        List<ClosingDay> listClosingDays = new ArrayList<>( );
+        JSONArray jsArrayClosingDays = null;
+        if ( jsonObject.containsKey( CLOSING_DAYS ) )
+        {
+            jsArrayClosingDays = jsonObject.getJSONArray( CLOSING_DAYS );
+        }
         if ( CollectionUtils.isNotEmpty( jsArrayClosingDays ) )
         {
-            List<ClosingDay> listClosingDays = Arrays.asList( mapper.readValue( jsArrayClosingDays.toString( ), ClosingDay [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listClosingDays ) )
-            {
-                for ( ClosingDay closingDay : listClosingDays )
-                {
-                    if ( closingDay != null )
-                    {
-                        closingDay.setIdForm( nIdForm );
-                        ClosingDayService.saveClosingDay( closingDay );
-                    }
-                }
-            }
+            listClosingDays = Arrays.asList( _mapper.readValue( jsArrayClosingDays.toString( ), ClosingDay [ ].class ) );
+        }
+        for ( ClosingDay closingDay : listClosingDays )
+        {
+            closingDay.setIdForm( nIdForm );
+            ClosingDayService.saveClosingDay( closingDay );
         }
     }
 
-    private static void importSlots( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
-    {
-        JSONArray jsArraySlots = jsonObject.getJSONArray( SLOTS );
-        if ( CollectionUtils.isNotEmpty( jsArraySlots ) )
-        {
-            List<Slot> listSlots = Arrays.asList( mapper.readValue( jsArraySlots.toString( ), Slot [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listSlots ) )
-            {
-                for ( Slot slot : listSlots )
-                {
-                    if ( slot != null )
-                    {
-                        slot.setIdForm( nIdForm );
-                        slot.setIdSlot( 0 );
-                        SlotService.saveSlot( slot );
-                    }
-                }
-            }
-        }
-    }
-
-    private static void importEntries( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
-    {
-        HashMap<Integer, Integer> mapIdEntry = new HashMap<>( );
-        JSONArray jsArrayEntries = jsonObject.getJSONArray( ENTRIES );
-        if ( CollectionUtils.isNotEmpty( jsArrayEntries ) )
-        {
-            List<Entry> listEntries = Arrays.asList( mapper.readValue( jsArrayEntries.toString( ), Entry [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listEntries ) )
-            {
-                int nOldIdEntry;
-                int nNewIdEntry;
-                for ( Entry entry : listEntries )
-                {
-                    if ( entry != null )
-                    {
-                        nOldIdEntry = entry.getIdEntry( );
-                        entry.setIdResource( nIdForm );
-                        nNewIdEntry = EntryHome.create( entry );
-                        mapIdEntry.put( nOldIdEntry, nNewIdEntry );
-                    }
-                }
-            }
-        }
-        JSONArray jsArrayFields = jsonObject.getJSONArray( FIELDS );
-        if ( CollectionUtils.isNotEmpty( jsArrayFields ) )
-        {
-            List<Field> listFields = Arrays.asList( mapper.readValue( jsArrayFields.toString( ), Field [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listFields ) )
-            {
-                int nNewIdEntry;
-                for ( Field field : listFields )
-                {
-                    if ( field != null )
-                    {
-                        nNewIdEntry = 0;
-                        if ( field.getParentEntry( ) != null && mapIdEntry.containsKey( field.getParentEntry( ).getIdEntry( ) ) )
-                        {
-                            nNewIdEntry = mapIdEntry.get( field.getParentEntry( ).getIdEntry( ) );
-                        }
-                        field.setParentEntry( EntryHome.findByPrimaryKey( nNewIdEntry ) );
-                        FieldHome.create( field );
-                    }
-                }
-            }
-        }
-    }
-
+    /**
+     * Import the week definition of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
     private static void importWeekDefinitions( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
     {
+        List<WeekDefinition> listWeekDefinitions = new ArrayList<>( );
         HashMap<Integer, Integer> mapIdWeekDefinition = new HashMap<>( );
-        JSONArray jsArrayWeekDefinitions = jsonObject.getJSONArray( WEEK_DEFINITIONS );
+        HashMap<Integer, Integer> mapIdWorkingDay = new HashMap<>( );
+        JSONArray jsArrayWeekDefinitions = null;
+        int nOldIdWeekDefinition;
+        int nNewIdWeekDefinition;
+        int nOldIdWorkingDay;
+        int nNewIdWorkingDay;
+        if ( jsonObject.containsKey( WEEK_DEFINITIONS ) )
+        {
+            jsArrayWeekDefinitions = jsonObject.getJSONArray( WEEK_DEFINITIONS );
+        }
         if ( CollectionUtils.isNotEmpty( jsArrayWeekDefinitions ) )
         {
-            List<WeekDefinition> listWeekDefinitions = Arrays.asList( mapper.readValue( jsArrayWeekDefinitions.toString( ), WeekDefinition [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listWeekDefinitions ) )
-            {
-                int nOldIdWeekDefinition;
-                for ( WeekDefinition weekDefinition : listWeekDefinitions )
-                {
-                    if ( weekDefinition != null )
-                    {
-                        nOldIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
-                        weekDefinition.setIdForm( nIdForm );
-                        weekDefinition = WeekDefinitionService.saveWeekDefinition( weekDefinition );
-                        mapIdWeekDefinition.put( nOldIdWeekDefinition, weekDefinition.getIdWeekDefinition( ) );
-                    }
-                }
-            }
+            listWeekDefinitions = Arrays.asList( _mapper.readValue( jsArrayWeekDefinitions.toString( ), WeekDefinition [ ].class ) );
         }
-        HashMap<Integer, Integer> mapIdWorkingDay = new HashMap<>( );
-        JSONArray jsArrayWorkingDays = jsonObject.getJSONArray( WORKING_DAYS );
-        if ( CollectionUtils.isNotEmpty( jsArrayWorkingDays ) )
+        for ( WeekDefinition weekDefinition : listWeekDefinitions )
         {
-            List<WorkingDay> listWorkingDays = Arrays.asList( mapper.readValue( jsArrayWorkingDays.toString( ), WorkingDay [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listWorkingDays ) )
+            nOldIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
+            weekDefinition.setIdForm( nIdForm );
+            weekDefinition = WeekDefinitionService.saveWeekDefinition( weekDefinition );
+            mapIdWeekDefinition.put( nOldIdWeekDefinition, weekDefinition.getIdWeekDefinition( ) );
+            for ( WorkingDay workingDay : weekDefinition.getListWorkingDay( ) )
             {
-                int nOldIdWorkingDay;
-                int nNewIdWeekDefinition;
-                for ( WorkingDay workingDay : listWorkingDays )
+                nOldIdWorkingDay = workingDay.getIdWorkingDay( );
+                nNewIdWeekDefinition = 0;
+                if ( mapIdWeekDefinition.containsKey( workingDay.getIdWeekDefinition( ) ) )
                 {
-                    if ( workingDay != null )
-                    {
-                        nOldIdWorkingDay = workingDay.getIdWorkingDay( );
-                        nNewIdWeekDefinition = 0;
-                        if ( mapIdWeekDefinition.containsKey( workingDay.getIdWeekDefinition( ) ) )
-                        {
-                            nNewIdWeekDefinition = mapIdWeekDefinition.get( workingDay.getIdWeekDefinition( ) );
-                        }
-                        workingDay.setIdWeekDefinition( nNewIdWeekDefinition );
-                        workingDay = WorkingDayService.saveWorkingDay( workingDay );
-                        mapIdWorkingDay.put( nOldIdWorkingDay, workingDay.getIdWorkingDay( ) );
-                    }
+                    nNewIdWeekDefinition = mapIdWeekDefinition.get( workingDay.getIdWeekDefinition( ) );
                 }
-            }
-        }
-        JSONArray jsArrayTimeSlots = jsonObject.getJSONArray( TIME_SLOTS );
-        if ( CollectionUtils.isNotEmpty( jsArrayTimeSlots ) )
-        {
-            List<TimeSlot> listTimeSlots = Arrays.asList( mapper.readValue( jsArrayTimeSlots.toString( ), TimeSlot [ ].class ) );
-            if ( CollectionUtils.isNotEmpty( listTimeSlots ) )
-            {
-                int nNewIdWorkingDay;
-                for ( TimeSlot timeSlot : listTimeSlots )
+                workingDay.setIdWeekDefinition( nNewIdWeekDefinition );
+                workingDay = WorkingDayService.saveWorkingDay( workingDay );
+                mapIdWorkingDay.put( nOldIdWorkingDay, workingDay.getIdWorkingDay( ) );
+                for ( TimeSlot timeSlot : workingDay.getListTimeSlot( ) )
                 {
-                    if ( timeSlot != null )
+                    nNewIdWorkingDay = 0;
+                    if ( mapIdWorkingDay.containsKey( timeSlot.getIdWorkingDay( ) ) )
                     {
-                        nNewIdWorkingDay = 0;
-                        if ( mapIdWorkingDay.containsKey( timeSlot.getIdWorkingDay( ) ) )
-                        {
-                            nNewIdWorkingDay = mapIdWorkingDay.get( timeSlot.getIdWorkingDay( ) );
-                        }
-                        timeSlot.setIdWorkingDay( nNewIdWorkingDay );
-                        TimeSlotService.saveTimeSlot( timeSlot );
+                        nNewIdWorkingDay = mapIdWorkingDay.get( timeSlot.getIdWorkingDay( ) );
                     }
+                    timeSlot.setIdWorkingDay( nNewIdWorkingDay );
+                    TimeSlotService.saveTimeSlot( timeSlot );
                 }
             }
         }
     }
 
-    private static void exportWeekDefinitions( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
+    /**
+     * import the slots of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    private static void importSlots( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
     {
-        JSONArray jsWeekDefinitions = new JSONArray( );
-        JSONArray jsWorkingDays = new JSONArray( );
-        JSONArray jsTimeSlots = new JSONArray( );
-        List<WeekDefinition> listWeekDefinitions = WeekDefinitionService.findListWeekDefinition( nIdForm );
-        if ( CollectionUtils.isNotEmpty( listWeekDefinitions ) )
+        List<Slot> listSlots = new ArrayList<>( );
+        JSONArray jsArraySlots = null;
+        if ( jsonObject.containsKey( SLOTS ) )
         {
-            for ( WeekDefinition weekDefinition : listWeekDefinitions )
-            {
-                if ( weekDefinition != null )
-                {
-                    jsWeekDefinitions.add( mapper.writeValueAsString( weekDefinition ) );
-                    if ( CollectionUtils.isNotEmpty( weekDefinition.getListWorkingDay( ) ) )
-                    {
-                        for ( WorkingDay workingDay : weekDefinition.getListWorkingDay( ) )
-                        {
-                            if ( workingDay != null )
-                            {
-                                jsWorkingDays.add( mapper.writeValueAsString( workingDay ) );
-                                if ( CollectionUtils.isNotEmpty( workingDay.getListTimeSlot( ) ) )
-                                {
-                                    for ( TimeSlot timeSlot : workingDay.getListTimeSlot( ) )
-                                    {
-                                        if ( timeSlot != null )
-                                        {
-                                            jsTimeSlots.add( mapper.writeValueAsString( timeSlot ) );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            jsArraySlots = jsonObject.getJSONArray( SLOTS );
         }
-        if ( CollectionUtils.isNotEmpty( jsWeekDefinitions ) )
+        if ( CollectionUtils.isNotEmpty( jsArraySlots ) )
         {
-            jsObj.put( WEEK_DEFINITIONS, jsWeekDefinitions );
+            listSlots = Arrays.asList( _mapper.readValue( jsArraySlots.toString( ), Slot [ ].class ) );
         }
-        if ( CollectionUtils.isNotEmpty( jsWorkingDays ) )
+        for ( Slot slot : listSlots )
         {
-            jsObj.put( WORKING_DAYS, jsWorkingDays );
-        }
-        if ( CollectionUtils.isNotEmpty( jsTimeSlots ) )
-        {
-            jsObj.put( TIME_SLOTS, jsTimeSlots );
+            slot.setIdForm( nIdForm );
+            slot.setIdSlot( 0 );
+            SlotService.saveSlot( slot );
         }
     }
 
+    /**
+     * Import the generic attributes of a form from a json object
+     * 
+     * @param jsonObject
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+    private static void importEntries( JSONObject jsonObject, int nIdForm ) throws JsonParseException, JsonMappingException, IOException
+    {
+        List<Entry> listEntries = new ArrayList<>( );
+        List<Field> listFields = new ArrayList<>( );
+        HashMap<Integer, Integer> mapIdEntry = new HashMap<>( );
+        JSONArray jsArrayEntries = null;
+        JSONArray jsArrayFields = null;
+        int nOldIdEntry;
+        int nNewIdEntry;
+        int nNewIdField;
+        if ( jsonObject.containsKey( ENTRIES ) )
+        {
+            jsArrayEntries = jsonObject.getJSONArray( ENTRIES );
+        }
+        if ( jsonObject.containsKey( FIELDS ) )
+        {
+            jsArrayFields = jsonObject.getJSONArray( FIELDS );
+        }
+        if ( CollectionUtils.isNotEmpty( jsArrayEntries ) )
+        {
+            listEntries = Arrays.asList( _mapper.readValue( jsArrayEntries.toString( ), Entry [ ].class ) );
+        }
+        for ( Entry entry : listEntries )
+        {
+            nOldIdEntry = entry.getIdEntry( );
+            entry.setIdResource( nIdForm );
+            nNewIdEntry = EntryHome.create( entry );
+            mapIdEntry.put( nOldIdEntry, nNewIdEntry );
+
+        }
+        if ( CollectionUtils.isNotEmpty( jsArrayFields ) )
+        {
+            listFields = Arrays.asList( _mapper.readValue( jsArrayFields.toString( ), Field [ ].class ) );
+        }
+
+        HashMap<String, RegularExpression> mapRegularExpression = new HashMap<>( );
+        List<RegularExpression> listRegularExpressionsInDB = RegularExpressionService.getInstance( ).getAllRegularExpression( );
+        for ( RegularExpression regularExpression : listRegularExpressionsInDB )
+        {
+            if ( !mapRegularExpression.containsKey( regularExpression.getTitle( ) ) )
+            {
+                mapRegularExpression.put( regularExpression.getTitle( ), regularExpression );
+            }
+        }
+        for ( Field field : listFields )
+        {
+            nNewIdEntry = 0;
+            if ( field.getParentEntry( ) != null && mapIdEntry.containsKey( field.getParentEntry( ).getIdEntry( ) ) )
+            {
+                nNewIdEntry = mapIdEntry.get( field.getParentEntry( ).getIdEntry( ) );
+            }
+            field.setParentEntry( EntryHome.findByPrimaryKey( nNewIdEntry ) );
+            nNewIdField = FieldHome.create( field );
+            List<RegularExpression> listRegularExpressionsToImport = field.getRegularExpressionList( );
+            int nIdExpressionToGet;
+            for ( RegularExpression regularExpression : listRegularExpressionsToImport )
+            {
+                if ( mapRegularExpression.containsKey( regularExpression.getTitle( ) ) )
+                {
+                    nIdExpressionToGet = mapRegularExpression.get( regularExpression.getTitle( ) ).getIdExpression( );
+                }
+                else
+                {
+                    RegularExpressionHome.create( regularExpression, _plugin );
+                    nIdExpressionToGet = regularExpression.getIdExpression( );
+                }
+                FieldHome.createVerifyBy( nNewIdField, nIdExpressionToGet );
+            }
+        }
+    }
+
+    /**
+     * Export and save in database the form rule of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportFormRule( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
         if ( formRule != null )
         {
-            jsObj.put( FORM_RULE, mapper.writeValueAsString( formRule ) );
+            jsObj.put( FORM_RULE, _mapper.writeValueAsString( formRule ) );
         }
     }
 
+    /**
+     * Export and save in database the display of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportDisplay( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         if ( display != null )
         {
-            jsObj.put( DISPLAY, mapper.writeValueAsString( display ) );
+            jsObj.put( DISPLAY, _mapper.writeValueAsString( display ) );
         }
     }
 
+    /**
+     * Export and save in database the localization of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportLocalization( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         Localization localization = LocalizationService.findLocalizationWithFormId( nIdForm );
         if ( localization != null )
         {
-            jsObj.put( LOCALIZATION, mapper.writeValueAsString( localization ) );
+            jsObj.put( LOCALIZATION, _mapper.writeValueAsString( localization ) );
         }
     }
 
+    /**
+     * Export and save in database the form message of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportFormMessage( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         if ( formMessage != null )
         {
-            jsObj.put( FORM_MESSAGE, mapper.writeValueAsString( formMessage ) );
+            jsObj.put( FORM_MESSAGE, _mapper.writeValueAsString( formMessage ) );
         }
     }
 
+    /**
+     * Export and save in database the reservation rules of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportReservationRules( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         JSONArray jsReservationRules = new JSONArray( );
-        List<ReservationRule> listReservationRules = ReservationRuleService.findListReservationRule( nIdForm );
-        if ( CollectionUtils.isNotEmpty( listReservationRules ) )
+        for ( ReservationRule reservationRule : ReservationRuleService.findListReservationRule( nIdForm ) )
         {
-            for ( ReservationRule reservationRule : listReservationRules )
-            {
-                if ( reservationRule != null )
-                {
-                    jsReservationRules.add( mapper.writeValueAsString( reservationRule ) );
-                }
-            }
+            jsReservationRules.add( _mapper.writeValueAsString( reservationRule ) );
         }
         if ( CollectionUtils.isNotEmpty( jsReservationRules ) )
         {
@@ -478,19 +604,22 @@ public class TradeService
         }
     }
 
+    /**
+     * Export and save in database the closing days of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportClosingDays( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         JSONArray jsClosingDays = new JSONArray( );
-        List<ClosingDay> listClosingDays = ClosingDayService.findListClosingDay( nIdForm );
-        if ( CollectionUtils.isNotEmpty( listClosingDays ) )
+        for ( ClosingDay closingDay : ClosingDayService.findListClosingDay( nIdForm ) )
         {
-            for ( ClosingDay closingDay : listClosingDays )
-            {
-                if ( closingDay != null )
-                {
-                    jsClosingDays.add( mapper.writeValueAsString( closingDay ) );
-                }
-            }
+
+            jsClosingDays.add( _mapper.writeValueAsString( closingDay ) );
         }
         if ( CollectionUtils.isNotEmpty( jsClosingDays ) )
         {
@@ -498,19 +627,44 @@ public class TradeService
         }
     }
 
+    /**
+     * Export and save in database the week definition of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
+    private static void exportWeekDefinitions( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
+    {
+        JSONArray jsWeekDefinitions = new JSONArray( );
+        for ( WeekDefinition weekDefinition : WeekDefinitionService.findListWeekDefinition( nIdForm ) )
+        {
+            jsWeekDefinitions.add( _mapper.writeValueAsString( weekDefinition ) );
+        }
+        if ( CollectionUtils.isNotEmpty( jsWeekDefinitions ) )
+        {
+            jsObj.put( WEEK_DEFINITIONS, jsWeekDefinitions );
+        }
+    }
+
+    /**
+     * Export and save in database the slots of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportSlots( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         JSONArray jsSlots = new JSONArray( );
-        List<Slot> listSlots = SlotService.findListSlot( nIdForm );
-        if ( CollectionUtils.isNotEmpty( listSlots ) )
+        for ( Slot slot : SlotService.findListSlot( nIdForm ) )
         {
-            for ( Slot slot : listSlots )
-            {
-                if ( slot != null )
-                {
-                    jsSlots.add( mapper.writeValueAsString( slot ) );
-                }
-            }
+
+            jsSlots.add( _mapper.writeValueAsString( slot ) );
         }
         if ( CollectionUtils.isNotEmpty( jsSlots ) )
         {
@@ -518,29 +672,26 @@ public class TradeService
         }
     }
 
+    /**
+     * Export and save in database the generic attributes of a form from a json object
+     * 
+     * @param jsObj
+     *            the json object
+     * @param nIdForm
+     *            the form id
+     * @throws JsonProcessingException
+     */
     private static void exportEntries( JSONObject jsObj, int nIdForm ) throws JsonProcessingException
     {
         JSONArray jsEntries = new JSONArray( );
         JSONArray jsFields = new JSONArray( );
-        List<Entry> listEntries = EntryService.findListEntry( nIdForm );
-        if ( CollectionUtils.isNotEmpty( listEntries ) )
+        for ( Entry entry : EntryService.findListEntry( nIdForm ) )
         {
-            for ( Entry entry : listEntries )
+            jsEntries.add( _mapper.writeValueAsString( entry ) );
+            for ( Field fieldLight : entry.getFields( ) )
             {
-                if ( entry != null )
-                {
-                    jsEntries.add( mapper.writeValueAsString( entry ) );
-                    if ( CollectionUtils.isNotEmpty( entry.getFields( ) ) )
-                    {
-                        for ( Field field : entry.getFields( ) )
-                        {
-                            if ( field != null )
-                            {
-                                jsFields.add( mapper.writeValueAsString( field ) );
-                            }
-                        }
-                    }
-                }
+                Field fullField = FieldHome.findByPrimaryKey( fieldLight.getIdField( ) );
+                jsFields.add( _mapper.writeValueAsString( fullField ) );
             }
         }
         if ( CollectionUtils.isNotEmpty( jsEntries ) )

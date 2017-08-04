@@ -53,8 +53,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
@@ -282,21 +280,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     @View( VIEW_CREATE_APPOINTMENTFORM )
     public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-        // JSONObject jsonForm = null;
-        // try {
-        // jsonForm = TradeService.exportForm(1);
-        // } catch (JsonProcessingException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        //
-        // try {
-        // TradeService.importForm(jsonForm);
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-
+//        JSONObject jsonForm = null;
+//        jsonForm = TradeService.exportForm( 1 );
+//        TradeService.importForm( jsonForm );
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {

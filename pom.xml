@@ -51,7 +51,13 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
       <version>2.9.0</version>
-    </dependency>    
+    </dependency>   
+    <dependency>
+      <groupId>fr.paris.lutece.plugins</groupId>
+      <artifactId>plugin-regularexpression</artifactId>
+      <version>3.0.3</version>
+      <type>lutece-plugin</type>
+    </dependency>     
   </dependencies>
   <properties>
     <componentName>appointment</componentName>
