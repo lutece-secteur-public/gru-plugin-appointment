@@ -46,7 +46,7 @@ import net.sf.json.JSONObject;
  * @author Laurent Payen
  *
  */
-public class TradeService
+public final class TradeService
 {
 
     // PROPERTIES
