@@ -467,13 +467,11 @@ public class TradeService
             entry.setIdResource( nIdForm );
             nNewIdEntry = EntryHome.create( entry );
             mapIdEntry.put( nOldIdEntry, nNewIdEntry );
-
         }
         if ( CollectionUtils.isNotEmpty( jsArrayFields ) )
         {
             listFields = Arrays.asList( _mapper.readValue( jsArrayFields.toString( ), Field [ ].class ) );
         }
-
         HashMap<String, RegularExpression> mapRegularExpression = new HashMap<>( );
         List<RegularExpression> listRegularExpressionsInDB = RegularExpressionService.getInstance( ).getAllRegularExpression( );
         for ( RegularExpression regularExpression : listRegularExpressionsInDB )

@@ -280,9 +280,9 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     @View( VIEW_CREATE_APPOINTMENTFORM )
     public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-//        JSONObject jsonForm = null;
-//        jsonForm = TradeService.exportForm( 1 );
-//        TradeService.importForm( jsonForm );
+        JSONObject jsonForm = null;
+        jsonForm = TradeService.exportForm( 1 );
+        TradeService.importForm( jsonForm );
         if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {
