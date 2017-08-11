@@ -42,7 +42,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class AppointmentFormPortletDAO extends AbstractAppointmentPortletDAO
+public final class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO
 {
     // //////////////////////////////////////////////////////////////////////////
     // Constants

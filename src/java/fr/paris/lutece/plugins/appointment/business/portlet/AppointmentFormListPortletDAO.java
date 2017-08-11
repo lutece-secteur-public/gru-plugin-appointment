@@ -41,7 +41,7 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
  * @author Laurent Payen
  *
  */
-public final class AppointmentFormListPortletDAO extends AbstractAppointmentPortletDAO
+public final class AppointmentFormListPortletDAO implements IAppointmentFormListPortletDAO
 {
     /**
      * {@inheritDoc}
@@ -54,4 +54,22 @@ public final class AppointmentFormListPortletDAO extends AbstractAppointmentPort
 
         return portlet;
     }
+
+	@Override
+	public void delete(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void insert(Portlet arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void store(Portlet arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }
