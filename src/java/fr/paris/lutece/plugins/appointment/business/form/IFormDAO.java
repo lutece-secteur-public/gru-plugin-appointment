@@ -70,6 +70,17 @@ public interface IFormDAO
     List<Form> findActiveForms( Plugin plugin );
 
     /**
+     * Get all the forms with a given title
+     * 
+     * @param strTitle
+     *            the Title of the form
+     * @param plugin
+     *            the plugin
+     * @return all the forms with this title
+     */
+    List<Form> findByTitle( String strTitle, Plugin plugin );
+
+    /**
      * Get all the forms
      * 
      * @param plugin

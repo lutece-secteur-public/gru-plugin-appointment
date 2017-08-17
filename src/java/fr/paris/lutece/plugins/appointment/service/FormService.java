@@ -21,6 +21,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
+import fr.paris.lutece.util.ReferenceList;
 
 /**
  * Service class for a form
@@ -150,6 +151,22 @@ public final class FormService
             listAppointmentFormLight.add( buildAppointmentFormLight( form ) );
         }
         return listAppointmentFormLight;
+    }
+
+    /**
+     * Build a list of all the forms (id, title)
+     * 
+     * @return the reference list
+     */
+    public static ReferenceList findAllInReferenceList( )
+    {
+        List<Form> listForm = findAllForms( );
+        ReferenceList refListForms = new ReferenceList( listForm.size( ) );
+        for ( Form form : listForm )
+        {
+            refListForms.addItem( form.getIdForm( ), form.getTitle( ) );
+        }
+        return refListForms;
     }
 
     /**
@@ -549,14 +566,27 @@ public final class FormService
     }
 
     /**
-     * Find a form by its primary key
+     * find a form by its primary key
      * 
      * @param nIdForm
-     *            the form id
+     *            the form Id
+     * @return the Form
      */
     public static Form findFormLightByPrimaryKey( int nIdForm )
     {
         return FormHome.findByPrimaryKey( nIdForm );
+    }
+
+    /**
+     * Find forms by the title
+     * 
+     * @param strTitle
+     *            the form title
+     * @return the Forms with this title
+     */
+    public static List<Form> findFormsByTitle( String strTitle )
+    {
+        return FormHome.findByTitle( strTitle );
     }
 
 }

@@ -9,7 +9,7 @@
 	<bean id="appointment.displayDAO"  class="fr.paris.lutece.plugins.appointment.business.display.DisplayDAO" />
 	<bean id="appointment.formDAO"  class="fr.paris.lutece.plugins.appointment.business.form.FormDAO" />
 	<bean id="appointment.formMessageDAO"  class="fr.paris.lutece.plugins.appointment.business.message.FormMessageDAO" />	
-	<bean id="appointment.formRuleDAO"  class="fr.paris.lutece.plugins.appointment.business.rule.FormRuleDAO" />
+	<bean id="appointment.formRuleDAO"  class="fr.paris.lutece.plugins.appointment.business.rule.FormRuleDAO" />	
 	<bean id="appointment.localizationDAO"  class="fr.paris.lutece.plugins.appointment.business.localization.LocalizationDAO" />
 	<bean id="appointment.reservationRuleDAO"  class="fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleDAO" />
 	<bean id="appointment.slotDAO"  class="fr.paris.lutece.plugins.appointment.business.slot.SlotDAO" />
@@ -23,6 +23,8 @@
     <bean id="appointment.appointmentFormListPortletDAO"  class="fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormListPortletDAO" />       	   	             
     
     <bean id="appointment.appointmentAsynchronousUploadHandler" class="fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler" />
+    
+    <bean id="appointment.formRest"  class="fr.paris.lutece.plugins.appointment.web.rs.FormRest" />
     
     <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />    
     <bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />

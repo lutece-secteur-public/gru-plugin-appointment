@@ -3,7 +3,6 @@ package fr.paris.lutece.plugins.appointment.business.form;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.validation.constraints.Size;
 
@@ -12,7 +11,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
@@ -89,12 +87,6 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Workgroup
      */
     private String _strWorkgroup;
-
-    /**
-     * List of the week definitions of the form
-     */
-    @JsonIgnore
-    private List<WeekDefinition> _listWeekDefinition;
 
     /**
      * Get the form Id
@@ -349,27 +341,6 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     public void setIdWorkflow( int nIdWorkflow )
     {
         this._nIdWorkflow = nIdWorkflow;
-    }
-
-    /**
-     * Get all the week definition of the form
-     * 
-     * @return a list of the week definitions
-     */
-    public List<WeekDefinition> getListWeekDefinition( )
-    {
-        return _listWeekDefinition;
-    }
-
-    /**
-     * Set all the week definitions of the form
-     * 
-     * @param listWeekDefinitions
-     *            the list to set
-     */
-    public void setListWeekDefinition( List<WeekDefinition> listWeekDefinition )
-    {
-        this._listWeekDefinition = listWeekDefinition;
     }
 
     @Override

@@ -85,6 +85,18 @@ public final class FormHome
     }
 
     /**
+     * Returns an instance of the Form by its title
+     * 
+     * @param strTitle
+     *            The Form title
+     * @return a list of the forms with this title
+     */
+    public static List<Form> findByTitle( String strTitle )
+    {
+        return _dao.findByTitle( strTitle, _plugin );
+    }
+
+    /**
      * Returns all the active forms
      * 
      * @return a list of all the active forms

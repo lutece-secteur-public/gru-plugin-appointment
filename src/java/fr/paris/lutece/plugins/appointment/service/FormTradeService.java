@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,6 +34,7 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.regularexpression.business.RegularExpressionHome;
+import fr.paris.lutece.plugins.workflow.service.WorkflowTradeService;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -46,7 +49,7 @@ import net.sf.json.JSONObject;
  * @author Laurent Payen
  *
  */
-public final class TradeService
+public final class FormTradeService
 {
 
     // PROPERTIES
@@ -63,18 +66,19 @@ public final class TradeService
     private static final String RESERVATION_RULES = "reservation_rules";
     private static final String SLOTS = "slots";
     private static final String WEEK_DEFINITIONS = "week_definitions";
+    private static final String WORKFLOW = "workflow";
 
     /**
      * The mapper (need to add the javaTime module for Java 8 date compatibility)l
      */
-    private static ObjectMapper _mapper = new ObjectMapper( ).registerModule( new JavaTimeModule( ) );
+    private static ObjectMapper _mapper = new ObjectMapper( ).registerModule( new JavaTimeModule( ) ).setSerializationInclusion( Include.NON_NULL );
 
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
      * Private constructor
      */
-    private TradeService( )
+    private FormTradeService( )
     {
     }
 
@@ -87,11 +91,13 @@ public final class TradeService
      * @throws JsonMappingException
      * @throws IOException
      */
-    public static void importForm( JSONObject jsonObject )
+    public static void importFormFromJson( JSONObject jsonObject ) throws IOException
     {
         Form form = null;
         Category category = null;
+        int nIdWorkflow = 0;
         Object objectCategory = jsonObject.get( CATEGORY );
+        Object objectWorkflow = jsonObject.get( WORKFLOW );
         try
         {
             if ( objectCategory != null )
@@ -102,6 +108,10 @@ public final class TradeService
                     category = CategoryService.saveCategory( category );
                 }
             }
+            if ( objectWorkflow != null )
+            {
+                nIdWorkflow = WorkflowTradeService.importWorkflowFromJson( JSONObject.fromObject( objectWorkflow ) );
+            }
             Object objectForm = jsonObject.get( FORM );
             if ( objectForm != null )
             {
@@ -109,10 +119,18 @@ public final class TradeService
             }
             if ( form != null )
             {
-                form.setTitle( IMPORT + StringUtils.SPACE + form.getTitle( ) );
+                // To avoid multiple forms with same name
+                if ( CollectionUtils.isNotEmpty( FormService.findFormsByTitle( form.getTitle( ) ) ) )
+                {
+                    form.setTitle( IMPORT + StringUtils.SPACE + form.getTitle( ) );
+                }
                 if ( category != null )
                 {
                     form.setIdCategory( category.getIdCategory( ) );
+                }
+                if ( nIdWorkflow != 0 )
+                {
+                    form.setIdWorkflow( nIdWorkflow );
                 }
                 form = FormService.saveForm( form );
                 int nIdForm = form.getIdForm( );
@@ -130,6 +148,7 @@ public final class TradeService
         catch( IOException e )
         {
             AppLogService.error( "Error during import of the json", e );
+            throw e;
         }
     }
 
@@ -141,7 +160,7 @@ public final class TradeService
      * @return a json object of the form
      * @throws JsonProcessingException
      */
-    public static JSONObject exportForm( int nIdForm )
+    public static JSONObject exportFormToJson( int nIdForm )
     {
         JSONObject jsObj = new JSONObject( );
         try
@@ -154,6 +173,11 @@ public final class TradeService
                 if ( category != null )
                 {
                     jsObj.put( CATEGORY, _mapper.writeValueAsString( category ) );
+                }
+                int nIdWorkflow = form.getIdWorkflow( );
+                if ( nIdWorkflow > 0 )
+                {
+                    jsObj.put( WORKFLOW, WorkflowTradeService.exportWorkflowToJson( nIdWorkflow, Locale.getDefault( ) ) );
                 }
             }
             exportFormRule( jsObj, nIdForm );

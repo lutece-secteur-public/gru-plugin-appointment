@@ -55,21 +55,24 @@ public final class AppointmentPortletDAO implements IAppointmentPortletDAO
         return portlet;
     }
 
-	@Override
-	public void delete(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void insert( Portlet arg0 )
+    {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void insert(Portlet arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void store(Portlet arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void delete( int arg0 )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void store( Portlet arg0 )
+    {
+        // TODO Auto-generated method stub
+
+    }
 }

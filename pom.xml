@@ -10,6 +10,19 @@
   <packaging>lutece-plugin</packaging>
   <version>2.0.0-SNAPSHOT</version>
   <name>Lutece appointment plugin</name>
+  <properties>  
+    <componentName>appointment</componentName>
+    <core.version>6.0.1</core.version>    
+    <genericattributes.version>1.2.1</genericattributes.version>
+    <jackson.version>2.8.4</jackson.version>
+    <java.version>1.8</java.version>
+    <jiraComponentId>12273</jiraComponentId>
+    <jiraProjectName>RENDEZVOUS</jiraProjectName>
+    <maven.version>3.5.1</maven.version>    
+    <regularexpression.version>3.0.3</regularexpression.version>
+    <rest.version>3.1.0</rest.version>                 
+    <workflow.version>4.3.5-SNAPSHOT</workflow.version>    
+  </properties>
   <repositories>
     <repository>
       <id>lutece</id>
@@ -22,57 +35,58 @@
     <dependency>
       <groupId>fr.paris.lutece</groupId>
       <artifactId>lutece-core</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>${core.version}</version>
       <type>lutece-core</type>
     </dependency>
     <dependency>
       <groupId>fr.paris.lutece.plugins</groupId>
       <artifactId>plugin-genericattributes</artifactId>
-      <version>[1.1.2-SNAPSHOT,)</version>
+      <version>${genericattributes.version}</version>
       <type>lutece-plugin</type>
     </dependency>
     <dependency>
       <groupId>fr.paris.lutece.plugins</groupId>
       <artifactId>plugin-workflow</artifactId>
-      <version>[4.2.3,)</version>
+      <version>${workflow.version}</version>
       <type>lutece-plugin</type>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-parameter-names</artifactId>
-      <version>2.9.0</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jdk8</artifactId>
-      <version>2.9.0</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.9.0</version>
+      <version>${jackson.version}</version>
     </dependency>   
     <dependency>
       <groupId>fr.paris.lutece.plugins</groupId>
       <artifactId>plugin-regularexpression</artifactId>
-      <version>3.0.3</version>
+      <version>${regularexpression.version}</version>
       <type>lutece-plugin</type>
-    </dependency>     
+    </dependency>  
+    <dependency>
+      <groupId>fr.paris.lutece.plugins</groupId>
+      <artifactId>plugin-rest</artifactId>
+      <version>${rest.version}</version>
+      <type>lutece-plugin</type>
+    </dependency>   
   </dependencies>
-  <properties>
-    <componentName>appointment</componentName>
-    <jiraProjectName>RENDEZVOUS</jiraProjectName>
-    <jiraComponentId>12273</jiraComponentId>        
-  </properties>
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>${maven.version}</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
         </configuration>
       </plugin>
     </plugins>
@@ -80,7 +94,6 @@
   <scm>
     <connection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</connection>
     <developerConnection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</developerConnection>
-    <url>https://github.com/lutece-secteur-public/gru-plugin-appointment.git</url>
-    <tag>gru-plugin-appointment-1.1.2-RC-03</tag>
+    <url>https://github.com/lutece-secteur-public/gru-plugin-appointment.git</url>    
   </scm> 
 </project>
