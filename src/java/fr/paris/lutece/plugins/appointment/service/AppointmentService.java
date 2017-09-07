@@ -649,20 +649,22 @@ public class AppointmentService
     {
         // Date date = getDateLastMonday( );
         // Date date = new Date( System.currentTimeMillis( ) );
-       /*  Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE );
-        calendarFrom.setTime( date );
-        calendarFrom.add( Calendar.HOUR, form.getMinDaysBeforeAppointment( ) );
-       */ 
-       /* Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE );
-        List<AppointmentDay> listDays = getListDays( form, new MutableInt( 0 ), calendarFrom );
-        calendarFrom = calculateNextSlotOpen( listDays, form, new MutableInt( 0 ) );
-        calendarFrom.add( Calendar.HOUR, form.getMinDaysBeforeAppointment( ) );*/
-         Date DateForm= new Date( System.currentTimeMillis( ) );
-         
-         List<AppointmentDay> listeDay=getDayListForCalendar( form, new MutableInt( 0 ), true, false );
-         if(listeDay != null && listeDay.size() > 0){
-        	 DateForm= listeDay.get(0).getDate();
-         }
+        /*
+         * Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE ); calendarFrom.setTime( date ); calendarFrom.add( Calendar.HOUR,
+         * form.getMinDaysBeforeAppointment( ) );
+         */
+        /*
+         * Calendar calendarFrom = GregorianCalendar.getInstance( Locale.FRANCE ); List<AppointmentDay> listDays = getListDays( form, new MutableInt( 0 ),
+         * calendarFrom ); calendarFrom = calculateNextSlotOpen( listDays, form, new MutableInt( 0 ) ); calendarFrom.add( Calendar.HOUR,
+         * form.getMinDaysBeforeAppointment( ) );
+         */
+        Date DateForm = new Date( System.currentTimeMillis( ) );
+
+        List<AppointmentDay> listeDay = getDayListForCalendar( form, new MutableInt( 0 ), true, false );
+        if ( listeDay != null && listeDay.size( ) > 0 )
+        {
+            DateForm = listeDay.get( 0 ).getDate( );
+        }
 
         Calendar calendarTo = GregorianCalendar.getInstance( Locale.FRANCE );
         calendarTo.setTime( getDateLastMonday( ) );
@@ -1188,7 +1190,7 @@ public class AppointmentService
      * @return The unique reference of an appointment
      */
     public String computeRefAppointment( Appointment appointment )
-    {    	
+    {
         return appointment.getIdAppointment( )
                 + CryptoService.encrypt( appointment.getIdAppointment( ) + appointment.getEmail( ),
                         AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) ).substring( 0, getRefSizeRandomPart( ) );

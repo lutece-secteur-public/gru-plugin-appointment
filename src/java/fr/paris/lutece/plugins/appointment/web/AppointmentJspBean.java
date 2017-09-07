@@ -480,7 +480,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 strInfos [10] = I18nService.getLocalizedString( "appointment.manage_appointments.columnNumberOfBookedseatsPerAppointment", getLocale( ) );
                 nIndex = 1;
             }
-            
+
             if ( listEntry.size( ) > 0 )
             {
 
@@ -549,7 +549,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                 for ( Entry e : listEntry )
                 {
-                	Integer key = e.getIdEntry( );
+                    Integer key = e.getIdEntry( );
                     String strValue = StringUtils.EMPTY;
                     String strPrefix = StringUtils.EMPTY;
 
@@ -1836,36 +1836,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     listFormErrors.add( genAttError );
                 }
             }
-            
-         /*   else
-            {
-                if ( !StringUtils.isEmpty( appointment.getEmail( ) ) && strIdSlot != null && !strIdSlot.equals( "0" ) )
-                {
-                    if ( StringUtils.isNumeric( strIdSlot ) )
-                    {
-                        AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( Integer.valueOf( strIdSlot ) );
-                        AppointmentDay day = AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
 
-                        List<Date> unvailableSlots = AppointmentFormHome.getLimitedByMail( day.getDate( ), null, nIdForm, appointment.getEmail( ) );
-                        boolean bErr = false;
-
-                        for ( Date myDate : unvailableSlots )
-                        {
-                            if ( getNumbersDay( day.getDate( ), myDate ) == 0 )
-                            {
-                                bErr = true;
-                            }
-                        }
-
-                        if ( bErr )
-                        {
-                            GenericAttributeError genAttError = new GenericAttributeError( );
-                            genAttError.setErrorMessage( I18nService.getLocalizedString( INFO_APPOINTMENT_EMAIL_ERROR, request.getLocale( ) ) );
-                            listFormErrors.add( genAttError );
-                        }
-                    }
-                }
-            }*/
+            /*
+             * else { if ( !StringUtils.isEmpty( appointment.getEmail( ) ) && strIdSlot != null && !strIdSlot.equals( "0" ) ) { if ( StringUtils.isNumeric(
+             * strIdSlot ) ) { AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKey( Integer.valueOf( strIdSlot ) ); AppointmentDay day =
+             * AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) );
+             * 
+             * List<Date> unvailableSlots = AppointmentFormHome.getLimitedByMail( day.getDate( ), null, nIdForm, appointment.getEmail( ) ); boolean bErr =
+             * false;
+             * 
+             * for ( Date myDate : unvailableSlots ) { if ( getNumbersDay( day.getDate( ), myDate ) == 0 ) { bErr = true; } }
+             * 
+             * if ( bErr ) { GenericAttributeError genAttError = new GenericAttributeError( ); genAttError.setErrorMessage( I18nService.getLocalizedString(
+             * INFO_APPOINTMENT_EMAIL_ERROR, request.getLocale( ) ) ); listFormErrors.add( genAttError ); } } } }
+             */
 
             for ( Entry entry : listEntryFirstLevel )
             {
@@ -2313,16 +2297,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 Locale locale = getLocale( );
 
                 List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( ).size( ) );
-                
+
                 for ( Response response : appointment.getListResponse( ) )
                 {
-                	int nIndex = response.getEntry().getPosition() ;
+                    int nIndex = response.getEntry( ).getPosition( );
                     IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-                    
-                    addInPosition(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ), listResponseRecapDTO);
-                    
-                    //listResponseRecapDTO.add(new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ) );
-           
+
+                    addInPosition( nIndex,
+                            new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ),
+                            listResponseRecapDTO );
+
+                    // listResponseRecapDTO.add(new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+                    // response, locale ) ) );
+
                 }
 
                 model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
@@ -2335,18 +2322,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
-    
+
     /**
-     * add  an object in a collection list 
+     * add an object in a collection list
      * 
      * @param int the index
-     * @param ResponseRecapDTO the object
-     * @param List<ResponseRecapDTO> the collection
+     * @param ResponseRecapDTO
+     *            the object
+     * @param List
+     *            <ResponseRecapDTO> the collection
      */
-    public void addInPosition( int i, ResponseRecapDTO response, List<ResponseRecapDTO> list)
+    public void addInPosition( int i, ResponseRecapDTO response, List<ResponseRecapDTO> list )
     {
-    	while(list.size() < i) {
-            list.add(list.size(), null);
+        while ( list.size( ) < i )
+        {
+            list.add( list.size( ), null );
         }
         list.set( i - 1, response );
     }
@@ -2511,8 +2501,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
                 response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
             }
-            
-            if ( response.getEntry() != null )
+
+            if ( response.getEntry( ) != null )
             {
                 response.setEntry( EntryHome.findByPrimaryKey( response.getEntry( ).getIdEntry( ) ) );
             }
@@ -2566,10 +2556,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         for ( Response response : appointment.getListResponse( ) )
         {
-        	int nIndex = response.getEntry().getPosition() ;
+            int nIndex = response.getEntry( ).getPosition( );
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            //listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,locale ) ) );
-            addInPosition(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,locale ) ), listResponseRecapDTO);
+            // listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+            // response,locale ) ) );
+            addInPosition( nIndex,
+                    new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ),
+                    listResponseRecapDTO );
         }
 
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );
@@ -2984,7 +2977,5 @@ public class AppointmentJspBean extends MVCAdminJspBean
             AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
         }
     }
-    
-    
 
 }

@@ -60,8 +60,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET first_name = ?, last_name = ?, email = ?, id_user = ?, authentication_service = ?, localization = ?, date_appointment = ?, id_slot = ?, status = ?, id_action_cancel = ?, id_admin_user = ? , has_notify = ? , nb_place_reserved = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_COUNT_APPOINTMENTS_BY_ID_FORM = "SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE slot.id_form = ? AND app.date_appointment >= ? ";
     private static final String SQL_QUERY_SELECT_BY_LIST_ID = SQL_QUERY_SELECTALL + " WHERE id_appointment IN (";
-    private static final String SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM = " SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE date_appointment = ? AND slot.id_form = ? ";     
-    
+    private static final String SQL_QUERY_COUNT_APPOINTMENT_BY_DATE_AND_FORM = " SELECT COUNT(app.id_appointment) FROM appointment_appointment app INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot WHERE date_appointment = ? AND slot.id_form = ? ";
+
     // SQL commands to manage appointment responses
     private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment, id_response) VALUES (?,?)";
     private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";

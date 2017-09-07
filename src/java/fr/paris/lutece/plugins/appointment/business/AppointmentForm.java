@@ -535,7 +535,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     {
         _bIsActive = bIsActive;
     }
-    
+
     /**
      * Returns the IsActiveAuthentification
      * 
@@ -554,7 +554,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      */
     public void setIsActiveAuthentification( boolean bIsActiveAuthentification )
     {
-    	_bIsActiveAuthentification = bIsActiveAuthentification;
+        _bIsActiveAuthentification = bIsActiveAuthentification;
     }
 
     /**
@@ -938,6 +938,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     {
         this._bEnableMandatoryEmail = bEnableMandatoryEmail;
     }
+
     /**
      * {@inheritDoc}
      */

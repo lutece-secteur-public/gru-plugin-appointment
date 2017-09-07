@@ -76,7 +76,6 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
         List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
         listAppointmentForms = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForms, user );
 
-
         Map<String, Object> model = new HashMap<String, Object>( );
 
         Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );

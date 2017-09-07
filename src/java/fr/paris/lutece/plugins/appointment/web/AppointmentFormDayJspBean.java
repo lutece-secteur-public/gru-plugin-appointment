@@ -588,7 +588,7 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
         // The only attributes that can freely be changed are the opening attribute and the people per appointment attribute
         if ( ( day.getOpeningHour( ) != dayFromDb.getOpeningHour( ) ) || ( day.getOpeningMinutes( ) != dayFromDb.getOpeningMinutes( ) )
                 || ( day.getClosingHour( ) != dayFromDb.getClosingHour( ) ) || ( day.getClosingMinutes( ) != dayFromDb.getClosingMinutes( ) )
-                || ( day.getAppointmentDuration( ) != dayFromDb.getAppointmentDuration( ) ) || day.getIsOpen( ) != dayFromDb.getIsOpen( ))
+                || ( day.getAppointmentDuration( ) != dayFromDb.getAppointmentDuration( ) ) || day.getIsOpen( ) != dayFromDb.getIsOpen( ) )
         {
             int nNbAppointment = AppointmentHome.getNbAppointmentByIdDay( day.getDate( ), day.getIdForm( ) );
 
@@ -597,10 +597,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
                 addError( MESSAGE_ERROR_DAY_HAS_APPOINTMENT, getLocale( ) );
 
                 return redirect( request, VIEW_GET_MODIFY_DAY, PARAMETER_ID_DAY, day.getIdDay( ) );
-            }                      
+            }
         }
 
-       
         if ( ( listErrors != null ) && ( listErrors.size( ) > 0 ) )
         {
             for ( String strError : listErrors )
@@ -615,10 +614,9 @@ public class AppointmentFormDayJspBean extends MVCAdminJspBean
 
         // An update of the day with the new values is sufficient. Why updating the day with the id day 0 ?
         /**
-        if ( day.getPeoplePerAppointment( ) != dayFromDb.getPeoplePerAppointment( ) )
-        {
-            AppointmentDayHome.resetDayPlaces( day, day.getIdForm( ), getDayOfWeek( day.getDate( ) ) );
-        }*/
+         * if ( day.getPeoplePerAppointment( ) != dayFromDb.getPeoplePerAppointment( ) ) { AppointmentDayHome.resetDayPlaces( day, day.getIdForm( ),
+         * getDayOfWeek( day.getDate( ) ) ); }
+         */
 
         AppointmentDayHome.update( day );
 

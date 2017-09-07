@@ -323,7 +323,7 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The XPage to display
-     * @throws UserNotSignedException 
+     * @throws UserNotSignedException
      */
 
     // @View( VIEW_GET_FORM )
@@ -343,7 +343,7 @@ public class AppointmentApp extends MVCApplication
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            checkMyLuteceAuthentification(form,request);
+            checkMyLuteceAuthentification( form, request );
 
             AppointmentSlotDisponiblity appointmentSlotDisponiblity = new AppointmentSlotDisponiblity( );
 
@@ -409,7 +409,7 @@ public class AppointmentApp extends MVCApplication
      *            The request
      * @return The next URL to redirect to
      * @throws SiteMessageException
-     * @throws UserNotSignedException 
+     * @throws UserNotSignedException
      */
     @Action( ACTION_DO_VALIDATE_FORM )
     public XPage doValidateForm( HttpServletRequest request ) throws SiteMessageException, UserNotSignedException
@@ -430,7 +430,7 @@ public class AppointmentApp extends MVCApplication
 
             List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-            checkMyLuteceAuthentification(form,request);
+            checkMyLuteceAuthentification( form, request );
             AppointmentDTO appointmentFromSession = _appointmentFormService.getAppointmentFromSession( request.getSession( ) );
             _appointmentFormService.removeAppointmentFromSession( request.getSession( ) );
 
@@ -444,15 +444,15 @@ public class AppointmentApp extends MVCApplication
 
             // Validator MaxAppointments per WeeksLimits config
             int nMaxAppointments = form.getMaxAppointments( );
-            int nWeeksLimits =  form.getWeeksLimits( );
+            int nWeeksLimits = form.getWeeksLimits( );
             AppointmentSlot appointmentSlot = null;
-            Date dDateMin=new Date(1L);
-            Date dDateMax=new Date(1L);
-            
+            Date dDateMin = new Date( 1L );
+            Date dDateMax = new Date( 1L );
+
             AppointmentFilter filterEmail = new AppointmentFilter( );
             filterEmail.setEmail( strEmail );
             filterEmail.setIdForm( nIdForm );
-            filterEmail.setStatus(Appointment.Status.STATUS_RESERVED.getValeur( ));
+            filterEmail.setStatus( Appointment.Status.STATUS_RESERVED.getValeur( ) );
 
             if ( ( appointmentFromSession != null ) && ( appointmentFromSession.getIdSlot( ) != 0 ) )
             {
@@ -461,29 +461,33 @@ public class AppointmentApp extends MVCApplication
                 AppointmentDay day = AppointmentDayHome.findByPrimaryKey( appointmentSlot.getIdDay( ) );
                 Date dDateAppointement = (Date) day.getDate( ).clone( );
                 long nNbmilisecond = dDateAppointement.getTime( );
-                dDateMax = new Date( nNbmilisecond + ( nWeeksLimits * lConversionDayMilisecond ));
+                dDateMax = new Date( nNbmilisecond + ( nWeeksLimits * lConversionDayMilisecond ) );
                 dDateMin = new Date( nNbmilisecond - ( nWeeksLimits * lConversionDayMilisecond ) );
                 filterEmail.setDateAppointmentMax( dDateMax );
                 filterEmail.setDateAppointmentMin( dDateMin );
             }
-            
+
             List<Appointment> listAppointmentForEmail = AppointmentHome.getAppointmentListByFilter( filterEmail );
             int nAppointments = 0;
-            
-            for(Appointment appt:listAppointmentForEmail ){
-            	
-            	
-            	Long dDateLimit = appt.getDateAppointment().getTime() + ( nWeeksLimits * lConversionDayMilisecond );
-            	for(Appointment ap:listAppointmentForEmail){
-	            	if( dDateLimit >= ap.getDateAppointment().getTime() && (dDateMin.getTime( )<= dDateLimit && dDateLimit <= dDateMax.getTime( )) ){
-	            		nAppointments ++;
-	            		if((nAppointments >= nMaxAppointments)) break;
-	            	}
-            	}
-            	
-            	if((nAppointments >= nMaxAppointments)) break;
+
+            for ( Appointment appt : listAppointmentForEmail )
+            {
+
+                Long dDateLimit = appt.getDateAppointment( ).getTime( ) + ( nWeeksLimits * lConversionDayMilisecond );
+                for ( Appointment ap : listAppointmentForEmail )
+                {
+                    if ( dDateLimit >= ap.getDateAppointment( ).getTime( ) && ( dDateMin.getTime( ) <= dDateLimit && dDateLimit <= dDateMax.getTime( ) ) )
+                    {
+                        nAppointments++;
+                        if ( ( nAppointments >= nMaxAppointments ) )
+                            break;
+                    }
+                }
+
+                if ( ( nAppointments >= nMaxAppointments ) )
+                    break;
             }
-            
+
             if ( ( nMaxAppointments != 0 ) && ( nWeeksLimits != 0 ) )
             {
                 if ( nAppointments >= nMaxAppointments )
@@ -651,7 +655,7 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The XPage to display
-     * @throws UserNotSignedException 
+     * @throws UserNotSignedException
      */
     public XPage getAppointmentCalendar( HttpServletRequest request ) throws UserNotSignedException
     {
@@ -671,8 +675,8 @@ public class AppointmentApp extends MVCApplication
             }
 
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( nIdForm );
-           // checkMyLuteceAuthentification( form, request );
-            
+            // checkMyLuteceAuthentification( form, request );
+
             if ( !listAppointmentSlotDisponiblity.isEmpty( ) )
             {
 
@@ -779,7 +783,7 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The HTML content to display or the next URL to redirect to
-     * @throws UserNotSignedException 
+     * @throws UserNotSignedException
      */
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException
@@ -810,7 +814,7 @@ public class AppointmentApp extends MVCApplication
 
         AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm( ) );
         checkMyLuteceAuthentification( form, request );
-        
+
         if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
         {
             model.put( MARK_CAPTCHA, getCaptchaService( ).getHtmlCode( ) );
@@ -846,7 +850,7 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The XPage to display
-     * @throws UserNotSignedException 
+     * @throws UserNotSignedException
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
     public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
@@ -858,7 +862,7 @@ public class AppointmentApp extends MVCApplication
             AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot( ), appointment.getDateAppointment( ) );
             AppointmentForm form = AppointmentFormHome.findByPrimaryKey( appointmentSlot.getIdForm( ) );
             checkMyLuteceAuthentification( form, request );
-            
+
             if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
             {
                 return redirect( request, VIEW_APPOINTMENT_FORM_SECOND_STEP, PARAMETER_ID_FORM, appointmentSlot.getIdForm( ) );
@@ -997,9 +1001,9 @@ public class AppointmentApp extends MVCApplication
 
         if ( appointment != null )
         {
-            model.put( MARK_DATE_APPOINTMENT, appointment.getDateAppointment( ) );            
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm"); 
-            String currentTime = simpleDateFormat.format(appointment.getStartAppointment());            
+            model.put( MARK_DATE_APPOINTMENT, appointment.getDateAppointment( ) );
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "HH:mm" );
+            String currentTime = simpleDateFormat.format( appointment.getStartAppointment( ) );
             model.put( MARK_TIME_APPOINTMENT, currentTime );
         }
         else
@@ -1164,7 +1168,7 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The first step of the form
-     * @throws UserNotSignedException 
+     * @throws UserNotSignedException
      */
     @View( VIEW_APPOINTMENT_FORM_FIRST_STEP )
     public XPage getAppointmentFormFirstStep( HttpServletRequest request ) throws UserNotSignedException
@@ -1190,7 +1194,7 @@ public class AppointmentApp extends MVCApplication
      * @param request
      *            The request
      * @return The second step of the form
-     * @throws UserNotSignedException 
+     * @throws UserNotSignedException
      */
     @View( VIEW_APPOINTMENT_FORM_SECOND_STEP )
     public XPage getAppointmentFormSecondStep( HttpServletRequest request ) throws UserNotSignedException
@@ -1787,7 +1791,7 @@ public class AppointmentApp extends MVCApplication
 
         }
     }
-    
+
     /**
      * check if authentification
      * 

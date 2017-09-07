@@ -258,8 +258,8 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
     @View( value = VIEW_MANAGE_APPOINTMENTFORMS, defaultView = true )
     public String getManageAppointmentForms( HttpServletRequest request )
     {
-    	AdminUser adminUser = getUser( );
-        
+        AdminUser adminUser = getUser( );
+
         String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
                 (String) request.getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
 
@@ -280,7 +280,6 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         String strUrl = url.getUrl( );
         List<AppointmentForm> listAppointmentForms = AppointmentFormHome.getAppointmentFormsList( );
         listAppointmentForms = (List<AppointmentForm>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForms, adminUser );
-
 
         // PAGINATOR
         LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForms, nItemsPerPage, strUrl,
@@ -868,19 +867,18 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         }
 
         // Check constraints
-        
-         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) ) 
-         { 
-        	 if ( strForm.equals( PARAMETER_FIRST_FORM ) ) 
-        	 { 
-        		 return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); 
-        	 } 
-        	 else 
-        	 { 
-        		 return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) ); 
-        	 } 
-         }
-         
+
+        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) )
+        {
+            if ( strForm.equals( PARAMETER_FIRST_FORM ) )
+            {
+                return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
+            }
+            else
+            {
+                return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
+            }
+        }
 
         // Check Constraint better
         try
@@ -1073,7 +1071,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
                 }
             }
         }
-        
+
         return bReturn;
     }
 
@@ -1400,7 +1398,7 @@ public class AppointmentFormJspBean extends MVCAdminJspBean
         model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
         model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
         model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
-        
+
         Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
         model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );

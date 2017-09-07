@@ -139,7 +139,6 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setDate( nIndex++, appointmentForm.getDateLimit( ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats( ) );
 
-
         daoUtil.setString( nIndex++, appointmentForm.getAddress( ) );
         if ( appointmentForm.getLongitude( ) != null )
         {
@@ -159,8 +158,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         }
 
         daoUtil.setString( nIndex++, appointmentForm.getCategory( ) );
-        daoUtil.setString( nIndex++, appointmentForm.getWorkgroup( ));
-
+        daoUtil.setString( nIndex++, appointmentForm.getWorkgroup( ) );
 
         daoUtil.executeUpdate( );
         daoUtil.free( );
@@ -244,8 +242,6 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         daoUtil.setInt( nIndex++, appointmentForm.getSeizureDuration( ) );
         daoUtil.setDate( nIndex++, appointmentForm.getDateLimit( ) );
         daoUtil.setInt( nIndex++, appointmentForm.getMaximumNumberOfBookedSeats( ) );
-        
-        
 
         daoUtil.setString( nIndex++, appointmentForm.getAddress( ) );
         if ( appointmentForm.getLongitude( ) != null )
@@ -266,9 +262,8 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
         }
         daoUtil.setString( nIndex++, appointmentForm.getCategory( ) );
         daoUtil.setBoolean( nIndex++, appointmentForm.getIsActiveAuthentification( ) );
-        daoUtil.setString( nIndex++, appointmentForm.getWorkgroup( ));
+        daoUtil.setString( nIndex++, appointmentForm.getWorkgroup( ) );
 
-        
         daoUtil.setInt( nIndex, appointmentForm.getIdForm( ) );
 
         daoUtil.executeUpdate( );
@@ -377,7 +372,7 @@ public final class AppointmentFormDAO implements IAppointmentFormDAO
             appointmentForm.setLatitude( fLatitude.doubleValue( ) );
         }
         appointmentForm.setCategory( daoUtil.getString( nIndex++ ) );
-        appointmentForm.setIsActiveAuthentification( daoUtil.getBoolean( nIndex++ ));
+        appointmentForm.setIsActiveAuthentification( daoUtil.getBoolean( nIndex++ ) );
         appointmentForm.setWorkgroup( daoUtil.getString( nIndex++ ) );
         return appointmentForm;
     }

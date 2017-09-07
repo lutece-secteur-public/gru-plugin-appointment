@@ -172,7 +172,6 @@ public class AppointmentFormService implements Serializable
     private static final String PROPERTY_MAX_APPOINTMENT_PERIODE = "appointment.message.error.MaxAppointmentPeriode";
     private static final String PROPERTY_MAX_APPOINTMENT_PERIODE_BACK = "appointment.info.appointment.emailerror";
 
-
     private transient volatile Boolean _bIsFormFirstStep;
 
     /**
@@ -405,8 +404,8 @@ public class AppointmentFormService implements Serializable
         {
             AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlace( getAppointmentFromSession( request.getSession( ) ).getIdSlot( ) );
             model.put( MARK_PLACES, Math.min( slot.getNbFreePlaces( ), form.getMaximumNumberOfBookedSeats( ) ) );
-            model.put(MARK_SLOT, slot);
-            model.put(MARK_APPOINTMENT_DAY, AppointmentDayHome.findByPrimaryKey(slot.getIdDay( )));
+            model.put( MARK_SLOT, slot );
+            model.put( MARK_APPOINTMENT_DAY, AppointmentDayHome.findByPrimaryKey( slot.getIdDay( ) ) );
         }
         else
         {
@@ -453,7 +452,6 @@ public class AppointmentFormService implements Serializable
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MAX_APPOINTMENT_PERIODE, request.getLocale( ) ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_MAX_APPOINTMENT_PERIODE_BACK, request.getLocale( ) ) );
 
-        
         return listAllErrors;
     }
 
@@ -932,7 +930,7 @@ public class AppointmentFormService implements Serializable
     {
         AppointmentSlot slot = AppointmentSlotHome.findByPrimaryKeyWithFreePlaces( appointment.getIdSlot( ), appointment.getDateAppointment( ) );
 
-        if ( ( slot == null ) || ( slot.getNbFreePlaces() <= 0 ) )
+        if ( ( slot == null ) || ( slot.getNbFreePlaces( ) <= 0 ) )
         {
             return false;
         }

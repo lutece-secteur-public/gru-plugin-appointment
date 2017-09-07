@@ -157,7 +157,7 @@ public interface IAppointmentDAO
      * @return the number of appointments, or 0 if no appointment was found
      */
     int getNbAppointmentByIdDay( Date dateAppointment, int nIdForm, Plugin plugin );
-    
+
     // ----------------------------------------
     // Appointment response management
     // ----------------------------------------
