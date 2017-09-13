@@ -21,7 +21,7 @@
         <maven.version>3.5.1</maven.version>    
         <regularexpression.version>3.0.3</regularexpression.version>
         <rest.version>3.1.0</rest.version>                 
-        <workflow.version>4.3.5-SNAPSHOT</workflow.version>    
+        <workflow.version>4.3.6-SNAPSHOT</workflow.version>    
     </properties>
     <repositories>
         <repository>
