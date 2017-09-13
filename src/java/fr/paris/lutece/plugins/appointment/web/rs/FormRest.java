@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 
 import com.sun.jersey.api.client.ClientResponse.Status;
 
-import fr.paris.lutece.plugins.appointment.service.FormTradeService;
+import fr.paris.lutece.plugins.appointment.service.FormTraderService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
 import net.sf.json.JSONObject;
 
@@ -37,7 +37,7 @@ public class FormRest
         Response response = Response.ok( ).build( );
         try
         {
-            FormTradeService.importFormFromJson( JSONObject.fromObject( strInputJson ) );
+            FormTraderService.importFormFromJson( JSONObject.fromObject( strInputJson ) );
         }
         catch( IOException e )
         {
