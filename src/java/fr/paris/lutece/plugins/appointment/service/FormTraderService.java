@@ -34,7 +34,7 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.regularexpression.business.RegularExpressionHome;
-import fr.paris.lutece.plugins.workflow.service.WorkflowTraderService;
+
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -110,7 +110,7 @@ public final class FormTraderService
             }
             if ( objectWorkflow != null )
             {
-                nIdWorkflow = WorkflowTraderService.importWorkflowFromJson( JSONObject.fromObject( objectWorkflow ) );
+                //nIdWorkflow = WorkflowTraderService.importWorkflowFromJson( JSONObject.fromObject( objectWorkflow ) );
             }
             Object objectForm = jsonObject.get( FORM );
             if ( objectForm != null )
@@ -177,7 +177,7 @@ public final class FormTraderService
                 int nIdWorkflow = form.getIdWorkflow( );
                 if ( nIdWorkflow > 0 )
                 {
-                    jsObj.put( WORKFLOW, WorkflowTraderService.exportWorkflowToJson( nIdWorkflow, Locale.getDefault( ) ) );
+                    //jsObj.put( WORKFLOW, WorkflowTraderService.exportWorkflowToJson( nIdWorkflow, Locale.getDefault( ) ) );
                 }
             }
             exportFormRule( jsObj, nIdForm );
