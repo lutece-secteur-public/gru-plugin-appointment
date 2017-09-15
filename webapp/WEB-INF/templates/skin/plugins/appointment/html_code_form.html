@@ -115,7 +115,7 @@
 								${formGroupError}
 							<#else>
 								<#if formMessages.fieldFirstNameHelp?? && formMessages.fieldFirstNameHelp != ''>
-									<span class="help-block">${formMessages.fieldLastNameHelp}</span>
+									<span class="help-block">${formMessages.fieldFirstNameHelp}</span>
 								</#if>
 							</#if>
 						</div>
@@ -168,7 +168,7 @@
 						</#if>
 					</#if>
 					<div class="form-group <#if formGroupError!=''>has-error</#if>">
-						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
+						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="emailConfirm">${formMessages.fieldConfirmationEmail!} <#if form.enableMandatoryEmail>*</#if></label>
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<input type="text" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
 							<#if formGroupError!=''>
@@ -217,10 +217,7 @@
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 							<button class="btn btn-primary btn-sm" type="submit" name="save" >
 								<i class="glyphicon glyphicon-ok"></i><span class="hidden-xs">&nbsp;#i18n{appointment.displayAppointmentForm.labelValidate}</span>
-							</button>
-							<button type="reset" name="reset" class="btn btn-primary btn-sm">
-								<i class="glyphicon glyphicon-refresh"></i><span class="hidden-xs">&nbsp;#i18n{appointment.displayAppointmentForm.labelReset}</span>
-							</button>
+							</button>							
 							<a class="btn btn-primary btn-sm" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}&date_of_display=${date_of_display}">
 								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
 							</a>														

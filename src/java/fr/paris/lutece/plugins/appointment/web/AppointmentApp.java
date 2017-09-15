@@ -66,6 +66,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
+import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
@@ -75,6 +76,7 @@ import fr.paris.lutece.plugins.appointment.service.FormRuleService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
+import fr.paris.lutece.plugins.appointment.service.UserService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
@@ -189,7 +191,8 @@ public class AppointmentApp extends MVCApplication
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
-    private static final String MARK_FORM = "form";
+    private static final String MARK_FORM = "form";    
+    private static final String MARK_USER = "user";
     private static final String MARK_FORM_MESSAGES = "formMessages";
     private static final String MARK_STR_ENTRY = "str_entry";
     private static final String MARK_APPOINTMENT = "appointment";
@@ -354,6 +357,7 @@ public class AppointmentApp extends MVCApplication
             MVCMessage message = new MVCMessage( formMessages.getCalendarDescription( ) );
             listInfos.add( message );
         }
+        model.put( MARK_FORM, form );
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay );
@@ -666,6 +670,15 @@ public class AppointmentApp extends MVCApplication
                 .replaceAll( MARK_DATE_APP, slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) )
                 .replaceAll( MARK_TIME_BEGIN, strTimeBegin ).replaceAll( MARK_TIME_END, strTimeEnd ) );
         Map<String, Object> model = new HashMap<String, Object>( );
+        AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
+        appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
+        appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
+        model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request,  getLocale( request )));
+        model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
+        model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
+        model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
+        model.put( MARK_USER, UserService.findUserById(appointment.getIdUser()));
+        model.put( MARK_PLACES, appointment.getNbPlaces());        
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         return getXPage( TEMPLATE_APPOINTMENT_CREATED, getLocale( request ), model );
@@ -710,10 +723,18 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
         if ( appointment != null )
         {
+        	int nIdAppointment = appointment.getIdAppointment();
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
             model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
+            model.put( MARK_PLACES, appointment.getNbPlaces()); 
+            model.put(MARK_FORM, FormService.findFormLightByPrimaryKey(slot.getIdForm()));
+            AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
+            appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
+            appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
+            model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request,  getLocale( request )));
+            model.put( MARK_USER, UserService.findUserById(appointment.getIdUser()));
         }
         else
         {
