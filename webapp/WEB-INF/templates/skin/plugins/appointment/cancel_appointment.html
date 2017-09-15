@@ -1,5 +1,132 @@
-<div class="row">
-	<div class="col-md-12">
+<div class="row nextStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2 class="stepTitle next">
+				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
+				${form.title}
+			</h2>
+		</div>
+	</div>
+</div>
+<div class="row steps">
+	<div class="col-xs-12">
+		<div class="container recap">
+			<div class="row">
+				<div class="col-xs-12 col-sm-9 col-md-9">
+					<p class="alert alert-danger">${form.description!}</p>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row nextStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2 class="stepTitle next">
+				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
+				Choix de la date
+			</h2>
+		</div>
+	</div>
+</div>
+<div class="row steps">
+	<div class="col-xs-12">
+		<div class="container recap">
+			<div class="row">
+				<div class="col-xs-12 col-sm-9 col-md-9">
+					<p class="alert alert-danger">${dateAppointment} ${startingTimeAppointment} ${endingTimeAppointment}</p>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row nextStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2 class="stepTitle next">
+				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
+				Saisie des informations
+			</h2>
+		</div>
+	</div>
+</div>
+<div class="row steps">
+	<div class="col-xs-12">
+		<div class="container recap">
+			<div class="row">
+				<div class="col-xs-12 col-sm-9 col-md-9">
+					{form.description!}
+					
+					<div class="row">
+						<div class="col-sm-6">
+							<ul class="recap-step-list">
+								<li>{formMessages.fieldLastNameTitle!}</li>
+								<ul>
+									<li>${user.lastName}</li>
+								</ul>
+							</ul>
+						</div>
+						<div class="col-sm-6">
+							<ul class="recap-step-list">
+								<li>{formMessages.fieldFirstNameTitle!}</li>
+								<ul>
+									<li>${user.firstName}</li>
+								</ul>
+							</ul>
+						</div>
+						<div class="col-xs-12">
+							<ul class="recap-step-list">
+								<li>{formMessages.fieldEmailTitle!}</li>
+								<ul>
+									<li>${user.email}</li>
+								</ul>
+							</ul>
+						</div>
+						<div class="col-xs-12">
+							<p class="alert alert-danger">${nbplaces}</li>
+							<p class="alert alert-danger">${listResponseRecapDTO}</li>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row nextStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2 class="stepTitle next">
+				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
+				Validation de la saisie
+			</h2>
+		</div>
+	</div>
+</div>
+<div class="row currentStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2 class="current stepTitle">
+				<span class="current stepTitleNumber">5</span>
+				Confirmation
+			</h2>
+		</div>
+	</div>
+</div>
+
+<div class="row currentStepContentRow">
+	<div class="col-xs-12">
+		<div class="container" id="current_step">
+			<div class="row">
+				<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
+				</div>
+				<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
+					<div class="formGroupContainer">
 		<form class="form-horizontal" role="form" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">		
 			<fieldset>
 				<legend>#i18n{appointment.cancelAppointment.pageTitle}</legend>
@@ -36,5 +163,11 @@
 				</div>
 			</fieldset>
 		</form>
+		</div>
+				<div class="col-xs-12 text-center" style="margin:20px 0;">
+					<a class="btn btn-primary btn-lg" href="{formMessages.urlRedirectAfterCreation}">{formMessages.labelButtonRedirection} <i class="fa fa-check"></i></a>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
