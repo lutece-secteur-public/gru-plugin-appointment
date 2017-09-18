@@ -13,7 +13,7 @@
 		<div class="container recap">
 			<div class="row">
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p>${form.description!} {form.description}</p>
+					<p class="alert alert-info">${form.description!}</p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
 				</div>
@@ -62,7 +62,7 @@
 		<div class="container recap">
 			<div class="row">
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p>${form.description!} {form.description}</p>
+					<p class="alert alert-info">${form.description!}</p>
 					
 					<div class="row">
 						<div class="col-sm-6">
@@ -166,12 +166,13 @@
 							<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
 								<div class="formGroupContainer">
 									<legend>
-										#i18n{appointment.appointmentApp.recap.title} - 
+										<p class="alert alert-info">#i18n{appointment.appointmentApp.recap.title} - 
 										<#if form.displayTitleFo && form.title != "" >
 											${form.title}
 										<#else>
 											#i18n{appointment.appointmentApp.defaultTitle}
 										</#if>
+										</p>
 									</legend>
 									<p>TEXTE D'INVITATION A LA VALIDATION DU FORMULAIRE</p>
 									<@messages errors=errors />

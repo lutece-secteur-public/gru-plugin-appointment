@@ -13,7 +13,7 @@
 		<div class="container recap">
 			<div class="row">
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p>{${form.description!}}</p>
+					<p class="alert alert-info">${form.description!}</p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
 					<a class="btn btn-primary btn-lg" href="">
@@ -75,7 +75,7 @@
 					</div>
 					<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
 						<div class="col-xs-12 formGroupContainer">
-							${form.description!} form.description
+							<p class="alert alert-info">${form.description!}</p>
 							<#if infos?? || errors??>
 								<@messages infos=infos errors=errors />			
 							</#if>
@@ -83,9 +83,9 @@
 							<fieldset>
 								<legend>
 									<#if form.displayTitleFo && form.title != "" >
-										${form.title} form_title
+										<p class="alert alert-info">${form.title}</p>
 									<#else>
-										#i18n{appointment.appointmentApp.defaultTitle} appointment.appointmentApp.defaultTitle
+										<p class="alert alert-info">#i18n{appointment.appointmentApp.defaultTitle}</p>
 									</#if>
 								</legend>
 								<br>				
