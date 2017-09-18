@@ -191,7 +191,7 @@ public class AppointmentApp extends MVCApplication
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
-    private static final String MARK_FORM = "form";    
+    private static final String MARK_FORM = "form";
     private static final String MARK_USER = "user";
     private static final String MARK_FORM_MESSAGES = "formMessages";
     private static final String MARK_STR_ENTRY = "str_entry";
@@ -673,12 +673,12 @@ public class AppointmentApp extends MVCApplication
         AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
         appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
         appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
-        model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request,  getLocale( request )));
+        model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, getLocale( request ) ) );
         model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
         model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
         model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
-        model.put( MARK_USER, UserService.findUserById(appointment.getIdUser()));
-        model.put( MARK_PLACES, appointment.getNbPlaces());        
+        model.put( MARK_USER, UserService.findUserById( appointment.getIdUser( ) ) );
+        model.put( MARK_PLACES, appointment.getNbPlaces( ) );
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         return getXPage( TEMPLATE_APPOINTMENT_CREATED, getLocale( request ), model );
@@ -723,18 +723,19 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
         if ( appointment != null )
         {
-        	int nIdAppointment = appointment.getIdAppointment();
+            int nIdAppointment = appointment.getIdAppointment( );
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
             model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
-            model.put( MARK_PLACES, appointment.getNbPlaces()); 
-            model.put(MARK_FORM, FormService.findFormLightByPrimaryKey(slot.getIdForm()));
+            model.put( MARK_PLACES, appointment.getNbPlaces( ) );
+            model.put( MARK_FORM, FormService.findFormLightByPrimaryKey( slot.getIdForm( ) ) );
+            model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( slot.getIdForm( ) ) );
             AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
             appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
             appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
-            model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request,  getLocale( request )));
-            model.put( MARK_USER, UserService.findUserById(appointment.getIdUser()));
+            model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, getLocale( request ) ) );
+            model.put( MARK_USER, UserService.findUserById( appointment.getIdUser( ) ) );
         }
         else
         {

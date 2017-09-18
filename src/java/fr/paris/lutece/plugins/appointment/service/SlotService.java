@@ -89,7 +89,10 @@ public final class SlotService
     public static Slot findSlotById( int nIdSlot )
     {
         Slot slot = SlotHome.findByPrimaryKey( nIdSlot );
-        SlotService.addDateAndTimeToSlot( slot );
+        if ( slot != null )
+        {
+            SlotService.addDateAndTimeToSlot( slot );
+        }
         return slot;
     }
 
@@ -196,12 +199,12 @@ public final class SlotService
                             {
                                 timeTemp = timeSlot.getEndingTime( );
                                 int nMaxCapacityToPut = nMaxCapacity;
-                                if (timeSlot.getMaxCapacity() != 0)
+                                if ( timeSlot.getMaxCapacity( ) != 0 )
                                 {
-                                	nMaxCapacityToPut = timeSlot.getMaxCapacity();
+                                    nMaxCapacityToPut = timeSlot.getMaxCapacity( );
                                 }
                                 slotToAdd = buildSlot( nIdForm, new Period( dateTimeTemp, dateTemp.atTime( timeTemp ) ), nMaxCapacityToPut, nMaxCapacityToPut,
-                                		nMaxCapacityToPut, timeSlot.getIsOpen( ), Boolean.FALSE );
+                                        nMaxCapacityToPut, timeSlot.getIsOpen( ), Boolean.FALSE );
                                 listSlot.add( slotToAdd );
                             }
                             else
