@@ -80,9 +80,8 @@ td.fc-axis.ui-widget-content {
 
 .fc-event {
 	border-radius: inherit;
-	border: none !important;
+	border: 1px solid rgba(255,255,255,0.6);
     background-color: rgba(32, 37, 57, 0.5)!important;
-    height: 45px;
     padding: 5px;
 	font-size: 0.70em;
 }
@@ -122,7 +121,6 @@ button.fc-today-button:hover, button.fc-today-button:active, button.fc-today-but
 
 .fc-view-container *, .fc-view-container *:before, .fc-view-container *:after {
 	max-width: 1230px;
-    margin: 0 auto;
 }
 
 .fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
@@ -162,4 +160,12 @@ a.fc-event.slot-full:hover {
 td.fc-day.ui-widget-content.fc-today.ui-state-highlight {
 	background: none !important;
 	border: 1px solid #d7d7d7 !important;
+}
+
+.fc-time-grid .fc-content-skeleton {
+	position: absolute;
+	z-index: 3;
+	top: -5px;
+	left: 0;
+	right: 0;
 }

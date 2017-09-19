@@ -4,6 +4,7 @@
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 <script src='js/plugins/appointment/locale-all.js' ></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
+<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
 <link rel='stylesheet' href='css/plugins/appointment/jquery-ui.min.css' />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
@@ -97,7 +98,8 @@
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
 						$("#hiddenDate").datepicker({
-							showOn: "button",							
+							showOn: "button",
+							language:'fr',
 							autoclose: true,
 							startDate: "today",
 							endDate: '+' + nbMaxWeeks + 'w',

@@ -7,17 +7,15 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import com.sun.jersey.api.client.ClientResponse.Status;
+import javax.ws.rs.core.Response.Status;
 
 import fr.paris.lutece.plugins.appointment.service.FormTraderService;
-import fr.paris.lutece.plugins.rest.service.RestConstants;
 import net.sf.json.JSONObject;
 
 /**
  * REST service for import form
  */
-@Path( RestConstants.BASE_PATH + Constants.PLUGIN_PATH + Constants.FORM_PATH )
+@Path( Constants.BASE_REST_PATH + Constants.PLUGIN_PATH + Constants.FORM_PATH )
 public class FormRest
 {
 
