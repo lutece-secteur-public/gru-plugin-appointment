@@ -13,7 +13,7 @@
 		<div class="container recap">
 			<div class="row">
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p class="alert alert-info">${form.description!} {form.description}</p>
+					<p class="alert alert-info">${form.description!}</p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
 				</div>
@@ -59,14 +59,14 @@
 		<div class="container recap">
 			<div class="row">
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					${form.description!}
+					<p class="alert alert-info">${form.description!}</p>
 					
 					<div class="row">
 						<div class="col-sm-6">
 							<ul class="recap-step-list">
 								<li>${formMessages.fieldLastNameTitle!}</li>
 								<ul>
-									<li class="alert alert-danger">${user.lastName}</li>
+									<li>${user.lastName}</li>
 								</ul>
 							</ul>
 						</div>
@@ -74,7 +74,7 @@
 							<ul class="recap-step-list">
 								<li>${formMessages.fieldFirstNameTitle!}</li>
 								<ul>
-									<li class="alert alert-danger">${user.firstName}</li>
+									<li>${user.firstName}</li>
 								</ul>
 							</ul>
 						</div>
@@ -82,14 +82,36 @@
 							<ul class="recap-step-list">
 								<li>${formMessages.fieldEmailTitle!}</li>
 								<ul>
-									<li class="alert alert-danger">${user.email}</li>
+									<li>${user.email}</li>
 								</ul>
 							</ul>
 						</div>
+						<#if nbplaces &gt; 1>
 						<div class="col-xs-12">
-							<p class="alert alert-danger">${nbplaces}</li>
-							<p class="alert alert-danger">${listResponseRecapDTO}</li>
+							<ul class="recap-step-list">
+								<li>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}</li>
+								<ul>
+									<li>${nbplaces}</li>
+								</ul>
+							</ul>
 						</div>
+						</#if>
+							
+						<#list listResponseRecapDTO as response>
+							<#if response.recapValue?? && response.recapValue?has_content>
+								<div class="col-xs-12">
+									<ul class="recap-step-list">
+									<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
+										<li>${response.entry.title}<#assign entrySave=response.entry></li>
+									</#if>
+										<ul>
+											<li>${response.recapValue}</li>
+										</ul>
+									</ul>
+								</div>
+							</#if>
+						</#list>
+
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
