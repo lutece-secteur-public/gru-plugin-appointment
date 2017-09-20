@@ -1317,7 +1317,7 @@ public class AppointmentApp extends MVCApplication
      *            the locale
      * @return The HTML code to display, or an empty string if the form is null or not active
      */
-    private static String getAppointmentFormHtml( HttpServletRequest request, AppointmentForm form, AppointmentFormService appointmentFormService,
+    private  static String getAppointmentFormHtml( HttpServletRequest request, AppointmentForm form, AppointmentFormService appointmentFormService,
             Map<String, Object> model, Locale locale )
     {
         LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
@@ -1333,11 +1333,8 @@ public class AppointmentApp extends MVCApplication
 
         if ( user != null )
         {
-            Map<String, String> map = user.getUserInfos( );
             AppointmentDTO appointmentDTO = new AppointmentDTO( );
-            appointmentDTO.setEmail( map.get( "user.business-info.online.email" ) ); // METTRE EN CONSTANTES
-            appointmentDTO.setFirstName( map.get( "user.name.given" ) );
-            appointmentDTO.setLastName( map.get( "user.name.family" ) );
+            appointmentFormService.setUserInfo(request, appointmentDTO);
             appointmentDTO.setIdSlot( idSlot );
             appointmentFormService.saveAppointmentInSession( request.getSession( ), appointmentDTO );
         }
