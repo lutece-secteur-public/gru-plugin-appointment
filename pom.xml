@@ -19,8 +19,7 @@
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
         <maven.version>3.5.1</maven.version>    
-        <regularexpression.version>3.0.3</regularexpression.version>
-        <rest.version>3.1.0</rest.version>                 
+        <regularexpression.version>3.0.3</regularexpression.version>                        
         <workflow.version>4.3.6-SNAPSHOT</workflow.version>    
     </properties>
     <repositories>
@@ -49,6 +48,17 @@
             <artifactId>plugin-workflow</artifactId>
             <version>${workflow.version}</version>
             <type>lutece-plugin</type>
+        </dependency>           
+        <dependency>
+            <groupId>fr.paris.lutece.plugins</groupId>
+            <artifactId>plugin-regularexpression</artifactId>
+            <version>${regularexpression.version}</version>
+            <type>lutece-plugin</type>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
@@ -61,22 +71,10 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>   
-        <dependency>
-            <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>plugin-regularexpression</artifactId>
-            <version>${regularexpression.version}</version>
-            <type>lutece-plugin</type>
-        </dependency>  
-        <dependency>
-            <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>plugin-rest</artifactId>
-            <version>${rest.version}</version>
-            <type>lutece-plugin</type>
-        </dependency>   
+    		<groupId>org.jboss.resteasy</groupId>
+    		<artifactId>resteasy-jaxrs</artifactId>
+    		<version>3.1.4.Final</version>
+		</dependency>        
     </dependencies>
     <build>
         <plugins>
