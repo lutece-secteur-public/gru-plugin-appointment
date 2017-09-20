@@ -39,6 +39,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -2296,19 +2297,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                 Locale locale = getLocale( );
 
-                List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( ).size( ) );
+                List<ResponseRecapDTO> listResponseRecapDTO = Arrays.asList(new ResponseRecapDTO[appointment.getListResponse( ).size( )]);
 
                 for ( Response response : appointment.getListResponse( ) )
                 {
                     int nIndex = response.getEntry( ).getPosition( );
-                    IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-
-                    addInPosition( nIndex,
-                            new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ),
-                            listResponseRecapDTO );
-
-                    // listResponseRecapDTO.add(new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
-                    // response, locale ) ) );
+                    IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );                
+                    listResponseRecapDTO.set(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+                     response, locale ) ) );
 
                 }
 
@@ -2323,23 +2319,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
 
-    /**
-     * add an object in a collection list
-     * 
-     * @param int the index
-     * @param ResponseRecapDTO
-     *            the object
-     * @param List
-     *            <ResponseRecapDTO> the collection
-     */
-    public void addInPosition( int i, ResponseRecapDTO response, List<ResponseRecapDTO> list )
-    {
-        while ( list.size( ) < i )
-        {
-            list.add( list.size( ), null );
-        }
-        list.set( i - 1, response );
-    }
+   
 
     /**
      * Do save an appointment into the database if it is valid
@@ -2552,17 +2532,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         Locale locale = getLocale( );
 
-        List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( ).size( ) );
+        List<ResponseRecapDTO> listResponseRecapDTO = Arrays.asList(new ResponseRecapDTO[appointment.getListResponse( ).size( )]);
 
         for ( Response response : appointment.getListResponse( ) )
         {
             int nIndex = response.getEntry( ).getPosition( );
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            // listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
-            // response,locale ) ) );
-            addInPosition( nIndex,
-                    new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) ),
-                    listResponseRecapDTO );
+            listResponseRecapDTO.set(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+            response,locale ) ) );
+           
         }
 
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, listResponseRecapDTO );

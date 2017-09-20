@@ -103,6 +103,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -788,10 +789,6 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
-        // String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
-
-        // if ( StringUtils.isNotEmpty( strIdSlot ) && StringUtils.isNumeric( strIdSlot ) )
-        // {
         Appointment appointment = _appointmentFormService.getValidatedAppointmentFromSession( request.getSession( ) );
 
         if ( appointment == null || appointment.getIdSlot( ) == 0 )
@@ -799,15 +796,8 @@ public class AppointmentApp extends MVCApplication
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
 
-        // int nIdSlot = Integer.parseInt( strIdSlot );
         AppointmentSlot appointmentSlot = AppointmentSlotHome.findByPrimaryKey( appointment.getIdSlot( ) );
 
-        // We check that the appointment is not null and that the form associated with the validated appointment in session
-        // is the form associated with the selected slot
-        // if ( ( ( appointment.getListResponse( ) == null ) || ( appointment.getListResponse( ).size( ) == 0 ) || ( appointment
-        // .getListResponse( ).get( 0 ).getEntry( ).getIdResource( ) == appointmentSlot.getIdForm( ) ) ) )
-        // {
-        // appointment.setIdSlot( nIdSlot );
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_APPOINTMENT, appointment );
         model.put( MARK_SLOT, appointmentSlot );
@@ -829,12 +819,12 @@ public class AppointmentApp extends MVCApplication
 
         Locale locale = getLocale( request );
 
-        List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( ).size( ) );
-
+        List<ResponseRecapDTO> listResponseRecapDTO = Arrays.asList(new ResponseRecapDTO[appointment.getListResponse( ).size( )]);
+        
         for ( Response response : appointment.getListResponse( ) )
         {
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            listResponseRecapDTO.add( new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,
+            listResponseRecapDTO.set( response.getEntry().getPosition() -1 ,new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,
                     locale ) ) );
         }
 
