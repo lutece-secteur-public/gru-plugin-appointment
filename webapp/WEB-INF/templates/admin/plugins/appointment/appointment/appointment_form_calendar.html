@@ -79,6 +79,7 @@
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
 						$("#hiddenDate").datepicker({
+							language:'fr',
 							showOn: "button",
 							dateFormat:"yy-mm-dd",
 							autoclose: true,                  
@@ -91,7 +92,7 @@
 						$btnDatepicker.remove();
 						$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
 						$("#hiddenDate").change(function () {
-							$('#calendar').fullCalendar('gotoDate', $("#hiddenDate").val());
+							$('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
 						});
 					}
 				}			

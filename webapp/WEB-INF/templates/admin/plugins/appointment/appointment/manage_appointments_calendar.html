@@ -113,7 +113,7 @@
 						$btnDatepicker.remove();
 						$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
 						$("#hiddenDate").change(function () {
-							$('#calendar').fullCalendar('gotoDate', $("#hiddenDate").val());
+							$('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
 						});
 					}
 				}
