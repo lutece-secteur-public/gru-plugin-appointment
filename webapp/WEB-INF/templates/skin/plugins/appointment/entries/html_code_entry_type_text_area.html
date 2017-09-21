@@ -8,8 +8,8 @@
 </#macro>
 
 <div class="form-group">
-<label class="control-label col-xs-12 col-sm-12 col-md-3 col-lg-3" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-<div class=" col-xs-12 col-sm-12 col-md-6 col-lg-6">
+<label class="control-label col-xs-12 col-sm-12" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
+<div class=" col-xs-12 col-sm-12">
 	<#list entry.fields as field>
 		<#if list_responses??>
 			<#list list_responses as response>
