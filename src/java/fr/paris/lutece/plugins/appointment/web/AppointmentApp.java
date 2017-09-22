@@ -95,6 +95,7 @@ import fr.paris.lutece.portal.service.security.UserNotSignedException;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -245,6 +246,12 @@ public class AppointmentApp extends MVCApplication
 
     // Local variables
     private transient CaptchaSecurityService _captchaSecurityService;
+
+    // Properties
+    private static final String PROPERTY_USER_ATTRIBUTE_FIRST_NAME = "appointment.userAttribute.firstName";
+    private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
+    private static final String PROPERTY_USER_ATTRIBUTE_PREFERED_NAME = "appointment.userAttribute.preferred_username";
+    private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
 
     /**
      * Get the calendar view
@@ -449,12 +456,7 @@ public class AppointmentApp extends MVCApplication
                 LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
                 if ( user != null )
                 {
-                    AppLogService.info( "user email :" + user.getUserInfo( "user.business-info.online.email" ) );
-                    AppLogService.info( "user first name :" + user.getUserInfo( "user.name.given" ) );
-                    AppLogService.info( "user last name :" + user.getUserInfo( "user.name.family" ) );
-                    appointmentDTO.setEmail( user.getUserInfo( "user.business-info.online.email" ) );
-                    appointmentDTO.setFirstName( user.getUserInfo( "user.name.given" ) );
-                    appointmentDTO.setLastName( user.getUserInfo( "user.name.family" ) );
+                    setUserInfo( request, appointmentDTO );
                 }
                 request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
                 ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
@@ -983,6 +985,26 @@ public class AppointmentApp extends MVCApplication
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_GET_VIEW_CANCEL_APPOINTMENT );
         urlItem.addParameter( PARAMETER_REF_APPOINTMENT, appointment.getReference( ) );
         return urlItem.getUrl( );
+    }
+
+    public void setUserInfo( HttpServletRequest request, AppointmentDTO appointment )
+    {
+        if ( SecurityService.isAuthenticationEnable( ) && ( appointment != null ) )
+        {
+            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+
+            if ( user != null )
+            {
+                appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
+                appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
+                String lastName = user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_PREFERED_NAME, StringUtils.EMPTY ) );
+                if ( ( lastName == null ) || lastName.isEmpty( ) )
+                {
+                    lastName = user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_LAST_NAME, StringUtils.EMPTY ) );
+                }
+                appointment.setLastName( lastName );
+            }
+        }
     }
 
     /**
