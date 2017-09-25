@@ -35,21 +35,21 @@
 					</#if>
 				</td>
 				<td>
-					
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{portal.util.labelModify}">
+                        <a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelManageAppointments}">
+							<i class="fa fa-calendar"></i>
+						</a>
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelPlanning}">
 							<i class="glyphicon glyphicon-edit"></i>
 						</a>
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelCopy}">
-								<i class="fa fa-plus-circle"></i>
-					    </a>						
+						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelConfig}">
+							<i class="glyphicon glyphicon-edit"></i>
+						</a>
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelModifyMessages}">
 							<i class="fa fa-comment"></i>
 						</a>
-						
-						<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelManageAppointments}">
-							<i class="fa fa-calendar"></i>
-						</a>
-						
+                        <a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelCopy}">
+								<i class="fa fa-plus-circle"></i>
+					    </a>
 						<#if appointmentform.isActive>
 							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{appointment.manageAppointmentForms.labelDisable}">
 								<i class="glyphicon glyphicon-stop"></i>
@@ -58,12 +58,10 @@
 							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-success btn-xs" title="#i18n{appointment.manageAppointmentForms.labelEnable}">
 								<i class="glyphicon glyphicon-ok"></i>
 							</a>
-						</#if>
-						
+						</#if>						
 						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
 							<i class="glyphicon glyphicon-trash"></i>
 						</a>
-						
 				</td>
 			</tr>
 		</#list>

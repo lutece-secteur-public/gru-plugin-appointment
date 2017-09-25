@@ -1,4 +1,4 @@
-<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
+<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
@@ -8,7 +8,7 @@
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
-
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     	<@tabs tab="typicalWeek" appointmentform=appointmentform />
@@ -16,29 +16,132 @@
 		<fieldset>			
 			<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
 				<#if listDateOfModification??>					
-					<div class="form-group">
-							<label class="col-xs-12 col-sm-3 control-label" for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification}:</label>
-							<div class="col-xs-12 col-sm-9">							
-								<select id="id_week_definition" name="id_week_definition" class="form-control" onchange="refresh()">
-									<#list listDateOfModification as item>
-										<#if "${id_week_definition}"="${item.code}">
-											<option selected="selected" value="${item.code}" >${item.name}</option>
-										<#else>
-											<option value="${item.code}" >${item.name}</option>
-										</#if>
-									</#list>	
-								</select>
-							</div>
-						</div>					
+					<div class="form-inline">                    
+						<label class="col-xs-12 col-sm-3 control-label" for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification}:</label>
+						<div class="col-xs-12 col-sm-1">							
+							<select id="id_week_definition" name="id_week_definition" class="form-control" >
+								<#list listDateOfModification as item>
+									<#if "${id_week_definition}"="${item.code}">
+										<option selected="selected" value="${item.code}" >${item.name}</option>
+									<#else>
+										<option value="${item.code}" >${item.name}</option>
+									</#if>
+								</#list>	
+							</select>
+						</div>						                        
+                        <button class="btn btn-primary btn-sm" type="button" onclick="refresh()" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelDisplay}</button>                        
+                    </div>
 				</#if>					
-			</form>			
+			</form>
+            </br>
+            <div class="box box-default box-solid <#if !error_modification??>collapsed-box</#if>">
+				<div class="box-header with-border">
+					<h3 class="box-title">
+                        #i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}
+					</h3>
+					<div class="box-tools pull-right">
+                        <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa <#if !error_modification??>fa-plus<#else>fa-minus</#if>"></i></button>
+					</div>
+				</div>
+                <div class="box-body">
+                    <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp" enctype="multipart/form-data" class="form-horizontal">
+                    	<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_start">#i18n{appointment.createAppointmentForm.labelTimeStart}&nbsp;*&nbsp;:</label>
+							<div id="time_start" class="col-xs-12 col-sm-9 col-md-9 input-append">
+								<input id="time_start" name="time_start" data-format="hh:mm" type="text" value="${appointmentform.timeStart!''}"></input>
+								<span class="add-on">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+									</i>
+								</span>
+								<p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeStart.help}</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.createAppointmentForm.labelTimeEnd}&nbsp;*&nbsp;:</label>
+							<div id="time_end" class="col-xs-12 col-sm-9 col-md-9 input-append">
+								<input id="time_end" name="time_end" data-format="hh:mm" type="text" value="${appointmentform.timeEnd!''}"></input>
+								<span id="timeend" class="add-on">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
+									</i>
+								</span>
+								<p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeEnd.help}</p>
+							</div>
+						</div>	
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelDurationAppointments} * :</label>
+							<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+								<input type="text" name="duration_appointments" value="${appointmentform.durationAppointments!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
+								<p class="help-block">#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}</p>
+							</div>
+						</div>
+                    	<div class="form-group">
+							<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot} * :</label>
+							<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+								<input type="text" name="max_capacity_per_slot" value="${appointmentform.maxCapacityPerSlot!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
+								<p class="help-block">#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}</p>
+							</div>
+						</div>						
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment} * :</label>
+							<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+								<input type="text" name="max_people_per_appointment" value="${appointmentform.maxPeoplePerAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
+								<p class="help-block">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}</p>
+							</div>
+						</div>
+                    
+                   
+                        <legend> &nbsp;&nbsp;#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</legend>                        
+						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenMonday' inputName='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />                        
+						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenTuesday' inputName='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
+						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenWednesday' inputName='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false />
+						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenThursday' inputName='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
+						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenFriday' inputName='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
+						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenSaturday' inputName='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
+						<@fieldInputCheckBox i18nLabelKey='appointment.label.OpenSunday' inputName='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />	                        
+                    
+                        <legend> &nbsp;&nbsp;#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>			
+						<@fieldInputCalendar i18nLabelKey='appointment.modifyAppointmentForm.startDate' inputName='date_of_modification' mandatory=true value=appointmentform.dateOfModification!'' i18nHelpBlockKey='appointment.modifyAppointmentForm.helpDateMin' cssClass='form-control input-sm' />
+						<div class="form-group">
+							<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
+								<button name="action_modifyAdvancedParameters" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
+									<i class="fa fa-check" aria-hidden="true"></i> #i18n{portal.util.labelModify}
+								</button>
+								<button name="view_manageAppointmentForms" class="btn btn-default btn-sm" type="submit" >
+									<i class="fa fa-times" aria-hidden="true"></i> #i18n{portal.util.labelCancel}
+								</button>	
+							</div>
+						</div>	
+                    </form>
+                </div>
+            </div>
 			<hr color="black">
 			<div id="calendar"></div>	
 		</fieldset>				
 	</div>
 </div>
-<script type="text/javascript">	
-	function refresh() {
+<script type="text/javascript">
+    $('#time_start').datetimepicker({
+	      pickDate: false,
+		  pickSeconds: false
+	});
+	$('#time_end').datetimepicker({
+		pickDate: false,
+	  	pickSeconds: false
+	});
+    function validateQty(event) {
+		var key = window.event ? event.keyCode : event.which;
+	
+	if (event.keyCode == 8 || event.keyCode == 46
+	 || event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	}
+	else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
+	};
+    function refresh() {
 		document.getElementById("listOfDates").submit();
 	}
 	var slotDuration = '${min_duration}';

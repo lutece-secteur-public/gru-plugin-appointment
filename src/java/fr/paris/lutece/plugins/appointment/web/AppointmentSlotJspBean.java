@@ -52,20 +52,23 @@ import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
+import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
+import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
@@ -77,7 +80,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
  *
  */
 @Controller( controllerJsp = AppointmentSlotJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentSlotJspBean extends MVCAdminJspBean
+public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     /**
      * JSP of this JSP Bean
@@ -99,10 +102,14 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     private static final String MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM = "appointment.message.error.slotCanNotEndAfterDayOrForm";
     private static final String MESSAGE_ERROR_APPOINTMENT_ON_SLOT = "appointment.message.error.appointmentOnSlot";
     private static final String MESSAGE_INFO_SLOT_UPDATED = "appointment.modifyCalendarSlots.messageSlotUpdated";
+    private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
+    private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
+    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
 
     // Parameters
     private static final String PARAMETER_NB_WEEKS_TO_DISPLAY = "nb_weeks_to_display";
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
+    private static final String PARAMETER_ERROR_MODIFICATION = "error_modification";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_SLOT = "id_slot";
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
@@ -134,6 +141,7 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
     // Actions
     private static final String ACTION_DO_MODIFY_TIME_SLOT = "doModifyTimeSlot";
     private static final String ACTION_DO_MODIFY_SLOT = "doModifySlot";
+    private static final String ACTION_MODIFY_ADVANCED_PARAMETERS = "modifyAdvancedParameters";
 
     // Templates
     private static final String TEMPLATE_MANAGE_SPECIFIC_WEEK = "admin/plugins/appointment/slots/manage_specific_week.html";
@@ -148,6 +156,9 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
 
     // Porperties
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
+
+    // Infos
+    private static final String INFO_ADVANCED_PARAMTERS_UPDATED = "appointment.info.appointmentform.updated";
 
     /**
      * Get the view of the typical week
@@ -178,18 +189,24 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         {
             weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
         }
+        Map<String, Object> model = getModel( );
+        AppointmentForm appointmentForm = null;
+        if ( request.getParameter( PARAMETER_ERROR_MODIFICATION ) != null )
+        {
+            appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+            model.put( PARAMETER_ERROR_MODIFICATION, Boolean.TRUE );
+        }
+        if ( appointmentForm == null )
+        {
+            appointmentForm = FormService.buildAppointmentForm( nIdForm, weekDefinition.getIdWeekDefinition( ), weekDefinition.getIdWeekDefinition( ) );
+        }
         List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay( );
         List<String> listDayOfWeek = new ArrayList<>( WorkingDayService.getSetDayOfWeekOfAListOfWorkingDay( listWorkingDay ) );
         List<TimeSlot> listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay( listWorkingDay, dateOfApply );
         LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
         LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
         int nMinDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay );
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
-        {
-            appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
-        }
-        Map<String, Object> model = getModel( );
+
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listTimeSlot );
         model.put( PARAMETER_MIN_TIME, minStartingTime );
@@ -199,6 +216,56 @@ public class AppointmentSlotJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_DATE_OF_MODIFICATION, WeekDefinitionService.findAllDateOfWeekDefinition( nIdForm ) );
         AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model );
+    }
+
+    /**
+     * Do modify a form (advanced parameters part)
+     * 
+     * @param request
+     *            the request
+     * @return the JSP URL to display the form to modify appointment forms
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_MODIFY_ADVANCED_PARAMETERS )
+    public String doModifyAdvancedParameters( HttpServletRequest request ) throws AccessDeniedException
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
+        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        populate( appointmentForm, request );
+        if ( appointmentForm.getDateOfModification( ) == null )
+        {
+            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+            addError( MESSAGE_ERROR_START_DATE_EMPTY, getLocale( ) );
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
+        }
+        LocalDate dateOfModification = appointmentForm.getDateOfModification( ).toLocalDate( );
+        // Check if there are appointments after the date of modification of the
+        // form
+        List<Appointment> listAppointment = AppointmentService
+                .findListAppointmentByIdFormAndAfterADateTime( nIdForm, dateOfModification.atTime( LocalTime.MIN ) );
+        if ( CollectionUtils.isNotEmpty( listAppointment ) )
+        {
+            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+            addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
+        }
+        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
+        {
+            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
+        }
+        FormService.updateAppointmentForm( appointmentForm, dateOfModification );
+        AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
+        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        addInfo( INFO_ADVANCED_PARAMTERS_UPDATED, getLocale( ) );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
+        return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_WEEK_DEFINITION, reservationRule.getIdReservationRule( ) );
     }
 
     /**
