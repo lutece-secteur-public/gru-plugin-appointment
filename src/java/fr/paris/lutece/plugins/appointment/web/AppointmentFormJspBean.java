@@ -52,17 +52,14 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
-import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
-import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
@@ -170,9 +167,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENTFORM = "appointment.message.confirmRemoveAppointmentForm";
     public static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
-
-    private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
-    private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
+    
     private static final String PROPERTY_COPY_OF_FORM = "appointment.manageAppointmentForms.Copy";
     private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
     private static final String MESSAGE_ERROR_OPEN_SLOTS = "appointment.message.error.openSlots";
@@ -189,7 +184,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     // Actions
     private static final String ACTION_CREATE_APPOINTMENTFORM = "createAppointmentForm";
     private static final String ACTION_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
-    private static final String ACTION_MODIFY_ADVANCED_APPOINTMENTFORM = "modifyAdvancedAppointmentForm";
     private static final String ACTION_REMOVE_APPOINTMENTFORM = "removeAppointmentForm";
     private static final String ACTION_CONFIRM_REMOVE_APPOINTMENTFORM = "confirmRemoveAppointmentForm";
     private static final String ACTION_DO_CHANGE_FORM_ACTIVATION = "doChangeFormActivation";
@@ -509,71 +503,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
         return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
-    }
-
-    /**
-     * Do modify a form (advanced parameters part)
-     * 
-     * @param request
-     *            the request
-     * @return the JSP URL to display the form to modify appointment forms
-     * @throws AccessDeniedException
-     */
-    @Action( ACTION_MODIFY_ADVANCED_APPOINTMENTFORM )
-    public String doModifyAdvancedAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
-    {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        int nIdForm = Integer.parseInt( strIdForm );
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                getUser( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
-        }
-        int nIdReservationRule = 0;
-        String strIdReservationRule = request.getParameter( PARAMETER_ID_RESERVATION_RULE );
-        if ( StringUtils.isNotEmpty( strIdReservationRule ) && StringUtils.isNumeric( strIdReservationRule ) )
-        {
-            nIdReservationRule = Integer.parseInt( strIdReservationRule );
-        }
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
-        {
-            appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule, 0 );
-        }
-        populate( appointmentForm, request );
-        AppointmentForm appointmentFormDb = FormService.buildAppointmentForm( nIdForm, nIdReservationRule, 0 );
-        setAlterablesParameters( appointmentForm, appointmentFormDb );
-        if ( appointmentForm.getDateOfModification( ) == null )
-        {
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-            addError( MESSAGE_ERROR_START_DATE_EMPTY, getLocale( ) );
-            return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
-        }
-        LocalDate dateOfModification = appointmentForm.getDateOfModification( ).toLocalDate( );
-        // Check if there are appointments after the date of modification of the
-        // form
-        List<Appointment> listAppointment = AppointmentService
-                .findListAppointmentByIdFormAndAfterADateTime( nIdForm, dateOfModification.atTime( LocalTime.MIN ) );
-        if ( CollectionUtils.isNotEmpty( listAppointment ) )
-        {
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-            addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
-            return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
-        }
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
-        {
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-            return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
-        }
-        appointmentForm.setIsActive( appointmentFormDb.getIsActive( ) );
-        FormService.updateAppointmentForm( appointmentForm, dateOfModification );
-        AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_APPOINTMENTFORM, strIdForm, getUser( ) ) );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
-        return redirect( request, VIEW_ADVANCED_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RESERVATION_RULE,
-                reservationRule.getIdReservationRule( ) );
-    }
+    }    
 
     /**
      * Change the enabling of an appointment form
@@ -864,22 +794,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         appointmentForm.setIsOpenFriday( appointmentFormTmp.getIsOpenFriday( ) );
         appointmentForm.setIsOpenSaturday( appointmentFormTmp.getIsOpenSaturday( ) );
         appointmentForm.setIsOpenSunday( appointmentFormTmp.getIsOpenSunday( ) );
-    }
-
-    /**
-     * Set the alterables parameters to the appointmentForm DTO
-     * 
-     * @param appointmentForm
-     *            the appointmentForm DTO
-     * @param appointmentFormTmp
-     *            the appointmentForm temp DTO
-     */
-    private void setAlterablesParameters( AppointmentForm appointmentForm, AppointmentForm appointmentFormTmp )
-    {
-        appointmentForm.setDisplayTitleFo( appointmentFormTmp.getDisplayTitleFo( ) );
-        appointmentForm.setEnableCaptcha( appointmentFormTmp.getEnableCaptcha( ) );
-        appointmentForm.setEnableMandatoryEmail( appointmentFormTmp.getEnableMandatoryEmail( ) );
-        appointmentForm.setActiveAuthentication( appointmentFormTmp.getActiveAuthentication( ) );
     }
 
     /**
