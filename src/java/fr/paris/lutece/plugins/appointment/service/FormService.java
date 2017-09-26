@@ -452,8 +452,11 @@ public final class FormService
     private static void checkValidityDate( Form form )
     {
         LocalDate dateNow = LocalDate.now( );
-        if ( form.getStartingValidityDate( ) != null && !form.getIsActive( ) && ( form.getStartingValidityDate( ).isBefore( dateNow ) )
-                && ( form.getEndingValidityDate( ) == null || form.getEndingValidityDate( ).isAfter( dateNow ) ) )
+        if ( form.getStartingValidityDate( ) != null
+                && !form.getIsActive( )
+                && ( form.getStartingValidityDate( ).isBefore( dateNow ) || form.getStartingValidityDate( ).isEqual( dateNow ) )
+                && ( form.getEndingValidityDate( ) == null || form.getEndingValidityDate( ).isAfter( dateNow ) || form.getEndingValidityDate( ).isEqual(
+                        dateNow ) ) )
         {
             form.setIsActive( true );
             FormHome.update( form );
@@ -465,7 +468,6 @@ public final class FormService
                 form.setIsActive( false );
                 FormHome.update( form );
             }
-
     }
 
     /**
