@@ -44,6 +44,7 @@
 	];
     var nbMaxWeeks = '${nb_weeks_to_display}';
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';    
+    var idForm = '${id_form}';
     var columnFormat = 'dddd DD/MM/YYYY';	
     var events = [
 		<#if events??>								   
@@ -84,6 +85,10 @@
 	var defaultDate = '${date_of_display}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
+			navLinks: true,
+            navLinkDayClick: function(date, jsEvent) {
+                location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
+            },
 			defaultDate: defaultDate,
 			defaultView: 'agendaWeek',
 			height: 'auto',			
