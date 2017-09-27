@@ -2303,7 +2303,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 {
                     int nIndex = response.getEntry( ).getPosition( );
                     IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );                
-                    listResponseRecapDTO.set(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+                    listResponseRecapDTO.set(nIndex - 1, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
                      response, locale ) ) );
 
                 }
@@ -2538,7 +2538,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             int nIndex = response.getEntry( ).getPosition( );
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            listResponseRecapDTO.set(nIndex, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+            listResponseRecapDTO.set(nIndex - 1, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
             response,locale ) ) );
            
         }
