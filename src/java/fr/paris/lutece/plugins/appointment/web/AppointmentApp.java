@@ -112,6 +112,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -821,10 +822,24 @@ public class AppointmentApp extends MVCApplication
 
         List<ResponseRecapDTO> listResponseRecapDTO = Arrays.asList(new ResponseRecapDTO[appointment.getListResponse( ).size( )]);
         
+        Set<Integer> position= new TreeSet<Integer>();
+        
         for ( Response response : appointment.getListResponse( ) )
         {
+        	position.add(response.getEntry().getPosition( ));
+        }
+        for ( Response response : appointment.getListResponse( ) )
+        {      	
+        	int nIndex= 0;
+        	for(Integer p:position){
+        		if(p == response.getEntry().getPosition( )){
+        			break;
+        		}
+        		nIndex++;
+        			
+        	}
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            listResponseRecapDTO.set( response.getEntry().getPosition() -1 ,new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,
+            listResponseRecapDTO.set( nIndex  ,new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response,
                     locale ) ) );
         }
 
