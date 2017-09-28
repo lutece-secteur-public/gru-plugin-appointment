@@ -323,7 +323,7 @@ public class AppointmentSlotJspBean extends AbstratcAppointmentFormAndSlotJspBea
 				AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, getUser())) {
 			throw new AccessDeniedException(AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM);
 		}
-		int nIdWeekDefinition = Integer.parseInt(strIdForm);
+		int nIdWeekDefinition = Integer.parseInt(request.getParameter(PARAMETER_ID_WEEK_DEFINITION));
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		WeekDefinition weekDefinitionToRemove = WeekDefinitionService.findWeekDefinitionById(nIdWeekDefinition);
 		// Check if there are other week definitions
