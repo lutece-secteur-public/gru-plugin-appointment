@@ -103,7 +103,7 @@ import fr.paris.lutece.util.url.UrlItem;
  * 
  */
 @Controller( controllerJsp = "ManageAppointmentForms.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBean
+public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBean
 {
 
     /**
@@ -167,7 +167,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENTFORM = "appointment.message.confirmRemoveAppointmentForm";
     public static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
-    
+
     private static final String PROPERTY_COPY_OF_FORM = "appointment.manageAppointmentForms.Copy";
     private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
     private static final String MESSAGE_ERROR_OPEN_SLOTS = "appointment.message.error.openSlots";
@@ -503,7 +503,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
         return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
-    }    
+    }
 
     /**
      * Change the enabling of an appointment form

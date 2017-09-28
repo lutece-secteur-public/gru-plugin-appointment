@@ -14,7 +14,8 @@
     	<@tabs tab="typicalWeek" appointmentform=appointmentform />
 		<div class="tab-content">
 		<fieldset>			
-			<form id="listOfDates" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
+			<form method="post" id="listOfDates" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek" enctype="multipart/form-data" class="form-horizontal">
+                <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
 				<#if listDateOfModification??>					
 					<div class="form-inline">                    
 						<label class="col-xs-12 col-sm-3 control-label" for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification}:</label>
@@ -28,8 +29,14 @@
 									</#if>
 								</#list>	
 							</select>
-						</div>						                        
-                        <button class="btn btn-primary btn-sm" type="button" onclick="refresh()" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelDisplay}</button>                        
+						</div>
+                        &nbsp;
+                        <button name="view_manageTypicalWeek" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
+							<i class="fa"></i>#i18n{appointment.labelDisplay}
+						</button>
+                        <button name="action_confirmRemoveParameter" class="btn btn-primary btn-sm" type="submit" tabindex="18" >
+							<i class="fa fa-trash-o"></i>&nbsp;#i18n{portal.util.labelDelete}
+						</button>
                     </div>
 				</#if>					
 			</form>
@@ -141,9 +148,6 @@
 	}
 	else return true;
 	};
-    function refresh() {
-		document.getElementById("listOfDates").submit();
-	}
 	var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';

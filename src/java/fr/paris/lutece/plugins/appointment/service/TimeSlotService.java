@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
@@ -44,7 +46,8 @@ public final class TimeSlotService
      *            the maximum capacity of the slot
      * @return the list of TimeSlot built
      */
-    public static List<TimeSlot> generateListTimeSlot( int nIdWorkingDay, LocalTime startingTime, LocalTime endingTime, int nDuration, int nMaxCapacity )
+    public static List<TimeSlot> generateListTimeSlot( int nIdWorkingDay, LocalTime startingTime, LocalTime endingTime, int nDuration, int nMaxCapacity,
+            boolean forceTimeSlotCreationWithMinTime )
     {
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         LocalTime tempStartingTime = startingTime;
@@ -54,6 +57,14 @@ public final class TimeSlotService
             listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingTime, tempEndingTime, Boolean.TRUE.booleanValue( ), nMaxCapacity ) );
             tempStartingTime = tempEndingTime;
             tempEndingTime = tempEndingTime.plusMinutes( nDuration );
+        }
+        if ( forceTimeSlotCreationWithMinTime )
+        {
+            tempStartingTime = tempEndingTime.minusMinutes( nDuration );
+            if ( tempStartingTime.isBefore( endingTime ) )
+            {
+                listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingTime, endingTime, Boolean.FALSE, nMaxCapacity ) );
+            }
         }
         return listTimeSlot;
     }
@@ -136,16 +147,41 @@ public final class TimeSlotService
             WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
             int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
             LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
-            // Need to delete all the time slot after this one
-            deleteListTimeSlot( findListTimeSlotAfterThisTimeSlot( timeSlot ) );
-            // and to regenerate time slots after this one, with the good rules
+            // Find all the time slot after the starting time of the new time
+            // slot
+            List<TimeSlot> listAllTimeSlotsAfterThisTimeSlot = findListTimeSlotAfterThisTimeSlot( timeSlot );
+            // Need to delete all the time slots impacted (the ones with the
+            // starting time before the ending time of the new time slot)
+            List<TimeSlot> listAllTimeSlotsToDelete = listAllTimeSlotsAfterThisTimeSlot.stream( )
+                    .filter( x -> x.getStartingTime( ).isBefore( timeSlot.getEndingTime( ) ) ).collect( Collectors.toList( ) );
+            deleteListTimeSlot( listAllTimeSlotsToDelete );
+            TimeSlotHome.update( timeSlot );
+            // Need to find the next time slot (the one with the closest
+            // starting time of the ending time of the new time slot)
+            listAllTimeSlotsAfterThisTimeSlot.removeAll( listAllTimeSlotsToDelete );
+            TimeSlot nextTimeSlot = null;
+            if ( CollectionUtils.isNotEmpty( listAllTimeSlotsAfterThisTimeSlot ) )
+            {
+                nextTimeSlot = listAllTimeSlotsAfterThisTimeSlot.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
+            }
+            if ( nextTimeSlot != null )
+            {
+                maxEndingTime = nextTimeSlot.getStartingTime( );
+            }
+            // and to regenerate time slots between this two ones, with the good
+            // rules
             // for the slot capacity
             WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionLightById( workingDay.getIdWeekDefinition( ) );
             ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( weekDefinition.getIdForm( ),
                     weekDefinition.getDateOfApply( ) );
-            generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration, reservationRule.getMaxCapacityPerSlot( ) );
+
+            generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration, reservationRule.getMaxCapacityPerSlot( ),
+                    Boolean.TRUE );
         }
-        TimeSlotHome.update( timeSlot );
+        else
+        {
+            TimeSlotHome.update( timeSlot );
+        }
     }
 
     /**
@@ -209,10 +245,9 @@ public final class TimeSlotService
      *            the time
      * @return the list ordered and filtered
      */
-    public static List<TimeSlot> getSortedListTimeSlotAfterALocalTime( List<TimeSlot> listTimeSlot, LocalTime time )
+    public static List<TimeSlot> getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( List<TimeSlot> listTimeSlot, LocalTime time )
     {
-        return listTimeSlot.stream( ).filter( x -> x.getStartingTime( ).isAfter( time ) || x.getStartingTime( ).equals( time ) )
-                .sorted( ( e1, e2 ) -> e1.getStartingTime( ).compareTo( e2.getStartingTime( ) ) ).collect( Collectors.toList( ) );
+        return listTimeSlot.stream( ).filter( x -> x.getStartingTime( ).isAfter( time ) || x.getStartingTime( ).equals( time ) ).collect( Collectors.toList( ) );
     }
 
     /**

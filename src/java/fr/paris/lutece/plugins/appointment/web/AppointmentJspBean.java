@@ -360,6 +360,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( !bError )
         {
             listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, nNbWeeksToDisplay );
+            // Filter the list of slots (we remove all the slots of the day with
+            // a passed ending date
+            listSlot = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isAfter( LocalDateTime.now( ) ) ).collect( Collectors.toList( ) );
         }
         if ( bError )
         {
@@ -430,13 +433,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 filter.setStartingTimeOfSearch( startingDateTime.toLocalTime( ).toString( ) );
                 filter.setEndingDateOfSearch( Date.valueOf( endingDateTime.toLocalDate( ) ) );
                 filter.setEndingTimeOfSearch( endingDateTime.toLocalTime( ).toString( ) );
-            }
-            else
-            {
-                // Build it with the current date
-                Date dateNow = Date.valueOf( LocalDate.now( ) );
-                filter.setStartingDateOfSearch( dateNow );
-                filter.setEndingDateOfSearch( dateNow );
             }
             request.getSession( ).setAttribute( SESSION_APPOINTMENT_FILTER, filter );
         }

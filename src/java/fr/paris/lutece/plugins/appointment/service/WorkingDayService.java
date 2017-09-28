@@ -80,7 +80,7 @@ public final class WorkingDayService
             int nDuration, int nMaxCapacity )
     {
         WorkingDay workingDay = generateWorkingDay( nIdWeekDefinition, dayOfWeek );
-        TimeSlotService.generateListTimeSlot( workingDay.getIdWorkingDay( ), startingTime, endingTime, nDuration, nMaxCapacity );
+        TimeSlotService.generateListTimeSlot( workingDay.getIdWorkingDay( ), startingTime, endingTime, nDuration, nMaxCapacity, Boolean.FALSE );
     }
 
     /**

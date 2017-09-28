@@ -45,6 +45,13 @@ public final class ReservationRuleService
     }
 
     /**
+     * Delete a reservation rule by its id
+     * @param nIdReservationRule the id of the reservation rule to delete
+     */
+    public static void removeReservationRule(int nIdReservationRule){
+    	ReservationRuleHome.delete(nIdReservationRule);
+    }
+    /**
      * save a reservation rule
      * 
      * @param reservationRule

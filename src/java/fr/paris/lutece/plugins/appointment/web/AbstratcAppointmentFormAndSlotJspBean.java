@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 
-public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspBean
+public abstract class AbstratcAppointmentFormAndSlotJspBean extends MVCAdminJspBean
 {
 
     /**

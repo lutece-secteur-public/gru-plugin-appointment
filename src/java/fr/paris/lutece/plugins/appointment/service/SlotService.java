@@ -295,13 +295,20 @@ public final class SlotService
                     // time slot
                     WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
                     WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
-                    List<TimeSlot> sortedListTimeSlotAfterThisSlot = TimeSlotService.getSortedListTimeSlotAfterALocalTime( workingDay.getListTimeSlot( ),
+                    List<TimeSlot> nextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( workingDay.getListTimeSlot( ),
                             slot.getEndingTime( ) );
-                    TimeSlot nextTimeSlot = sortedListTimeSlotAfterThisSlot.get( 0 );
-                    nextStartingDateTime = nextTimeSlot.getStartingTime( ).atDate( dateOfSlot );
+                    TimeSlot nextTimeSlot = null;
+                    if ( CollectionUtils.isNotEmpty( nextTimeSlots ) )
+                    {
+                        nextTimeSlot = nextTimeSlots.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
+                    }
+                    if ( nextTimeSlot != null )
+                    {
+                        nextStartingDateTime = nextTimeSlot.getStartingTime( ).atDate( dateOfSlot );
+                    }
                 }
                 // Need to create a slot between these two dateTime
-                if ( !slot.getEndingDateTime( ).isEqual( nextStartingDateTime ) )
+                if ( nextStartingDateTime != null && !slot.getEndingDateTime( ).isEqual( nextStartingDateTime ) )
                 {
                     Slot slotToCreate = buildSlot( slot.getIdForm( ), new Period( slot.getEndingDateTime( ), nextStartingDateTime ), slot.getMaxCapacity( ),
                             slot.getMaxCapacity( ), slot.getMaxCapacity( ), Boolean.FALSE, Boolean.TRUE );
