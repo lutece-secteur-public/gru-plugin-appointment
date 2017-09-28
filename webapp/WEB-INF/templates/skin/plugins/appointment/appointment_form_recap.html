@@ -56,7 +56,7 @@
 				</div>
 				</#if>
 				<#list listResponseRecapDTO as response>
-					<#if response.recapValue?? && response.recapValue?has_content>
+					<#if response?? && response.recapValue?? && response.recapValue?has_content>
 				<div class="form-group">
 					<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry><label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">${response.entry.title}<#assign entrySave=response.entry></label></#if>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
