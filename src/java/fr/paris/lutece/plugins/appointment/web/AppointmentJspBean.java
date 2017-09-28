@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
@@ -2299,11 +2300,25 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                 List<ResponseRecapDTO> listResponseRecapDTO = Arrays.asList(new ResponseRecapDTO[appointment.getListResponse( ).size( )]);
 
+                Set<Integer> position= new TreeSet<Integer>();
+                
                 for ( Response response : appointment.getListResponse( ) )
                 {
-                    int nIndex = response.getEntry( ).getPosition( );
+                	position.add(response.getEntry().getPosition( ));
+                }
+                for ( Response response : appointment.getListResponse( ) )
+                {      	
+                	int nIndex= 0;
+                	for(Integer p:position){
+                		if(p == response.getEntry().getPosition( )){
+                			break;
+                		}
+                		nIndex++;
+                			
+                	}
+                  
                     IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );                
-                    listResponseRecapDTO.set(nIndex - 1, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+                    listResponseRecapDTO.set(nIndex , new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
                      response, locale ) ) );
 
                 }
@@ -2534,11 +2549,24 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         List<ResponseRecapDTO> listResponseRecapDTO = Arrays.asList(new ResponseRecapDTO[appointment.getListResponse( ).size( )]);
 
+       
+        Set<Integer> position= new TreeSet<Integer>();
         for ( Response response : appointment.getListResponse( ) )
         {
-            int nIndex = response.getEntry( ).getPosition( );
+        	position.add(response.getEntry().getPosition( ));
+        }
+        for ( Response response : appointment.getListResponse( ) )
+        {      	
+            int nIndex= 0;
+        	for(Integer p:position){
+        		if(p == response.getEntry().getPosition( )){
+        			break;
+        		}
+        		nIndex++;
+        			
+        	}
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-            listResponseRecapDTO.set(nIndex - 1, new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
+            listResponseRecapDTO.set(nIndex , new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
             response,locale ) ) );
            
         }
