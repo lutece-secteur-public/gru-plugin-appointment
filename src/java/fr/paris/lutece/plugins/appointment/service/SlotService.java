@@ -159,13 +159,19 @@ public final class SlotService
             // date
             closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
             reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
-            nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot( );
+            nMaxCapacity = 0;
+            if ( reservationRuleToApply != null )
+            {
+                nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot( );
+            }
             // Get the day of week of the date
             dayOfWeek = dateTemp.getDayOfWeek( );
             // Get the working day of this day of week
-            workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinitionToApply.getListWorkingDay( ), dayOfWeek );
-            // if there is no working day, it's because it is not a working day,
-            // so nothing to add in the list of slots
+            workingDay = null;
+            if ( weekDefinitionToApply != null )
+            {
+                workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinitionToApply.getListWorkingDay( ), dayOfWeek );
+            }
             if ( workingDay != null )
             {
                 minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAWorkingDay( workingDay );
@@ -215,9 +221,49 @@ public final class SlotService
                     }
                 }
             }
+            else
+            {
+                // This is not a working day
+                // We build all the slots closed for this day
+                if ( reservationRuleToApply != null && weekDefinitionToApply != null )
+                {
+                    minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( weekDefinitionToApply.getListWorkingDay( ) );
+                    maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( weekDefinitionToApply.getListWorkingDay( ) );
+                    int nDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( weekDefinitionToApply.getListWorkingDay( ) );
+                    if ( minTimeForThisDay != null && maxTimeForThisDay != null )
+                    {
+                        timeTemp = minTimeForThisDay;
+                        // For each slot of this day
+                        while ( timeTemp.isBefore( maxTimeForThisDay ) || !timeTemp.equals( maxTimeForThisDay ) )
+                        {
+                            // Get the LocalDateTime
+                            dateTimeTemp = dateTemp.atTime( timeTemp );
+                            // Search if there is a slot for this datetime
+                            if ( mapSlot.containsKey( dateTimeTemp ) )
+                            {
+                                slotToAdd = mapSlot.get( dateTimeTemp );
+                                timeTemp = slotToAdd.getEndingDateTime( ).toLocalTime( );
+                                listSlot.add( slotToAdd );
+                            }
+                            else
+                            {
+                                timeTemp = timeTemp.plusMinutes( new Long( nDuration ) );
+                                if ( timeTemp.isAfter( maxTimeForThisDay ) )
+                                {
+                                    timeTemp = maxTimeForThisDay;
+                                }
+                                slotToAdd = buildSlot( nIdForm, new Period( dateTimeTemp, dateTemp.atTime( timeTemp ) ), nMaxCapacity, nMaxCapacity,
+                                        nMaxCapacity, Boolean.FALSE, Boolean.TRUE );
+                                listSlot.add( slotToAdd );
+                            }
+                        }
+                    }
+                }
+            }
             dateTemp = dateTemp.plusDays( 1 );
         }
         return listSlot;
+
     }
 
     /**
@@ -295,16 +341,26 @@ public final class SlotService
                     // time slot
                     WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
                     WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
-                    List<TimeSlot> nextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( workingDay.getListTimeSlot( ),
-                            slot.getEndingTime( ) );
-                    TimeSlot nextTimeSlot = null;
-                    if ( CollectionUtils.isNotEmpty( nextTimeSlots ) )
+                    if ( workingDay != null )
                     {
-                        nextTimeSlot = nextTimeSlots.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
+                        List<TimeSlot> nextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( workingDay.getListTimeSlot( ),
+                                slot.getEndingTime( ) );
+                        TimeSlot nextTimeSlot = null;
+                        if ( CollectionUtils.isNotEmpty( nextTimeSlots ) )
+                        {
+                            nextTimeSlot = nextTimeSlots.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
+                        }
+                        if ( nextTimeSlot != null )
+                        {
+                            nextStartingDateTime = nextTimeSlot.getStartingTime( ).atDate( dateOfSlot );
+                        }
                     }
-                    if ( nextTimeSlot != null )
+                    else
                     {
-                        nextStartingDateTime = nextTimeSlot.getStartingTime( ).atDate( dateOfSlot );
+                        // This is not a working day
+                        // Generated the new slots at the end of the modified
+                        // slot
+                        listSlotToCreate.addAll( generateListSlotToCreateAfterATime( slot.getEndingDateTime( ), slot.getIdForm( ) ) );
                     }
                 }
                 // Need to create a slot between these two dateTime
@@ -322,7 +378,7 @@ public final class SlotService
                         slot.getStartingDateTime( ).plus( 1, ChronoUnit.MINUTES ), slot.getDate( ).atTime( LocalTime.MAX ) ).values( ) );
                 deleteListSlot( listSlotToDelete );
                 // Generated the new slots at the end of the modified slot
-                listSlotToCreate.addAll( generateListSlotToCreateAfterASlot( slot ) );
+                listSlotToCreate.addAll( generateListSlotToCreateAfterATime( slot.getEndingDateTime( ), slot.getIdForm( ) ) );
             }
         }
         // If it's an update of an existing slot
@@ -384,26 +440,42 @@ public final class SlotService
      *            the slot
      * @return the list of next slots
      */
-    private static List<Slot> generateListSlotToCreateAfterASlot( Slot slot )
+    private static List<Slot> generateListSlotToCreateAfterATime( LocalDateTime dateTimeToStartCreation, int nIdForm )
     {
         List<Slot> listSlotToCreate = new ArrayList<>( );
-        LocalDate dateOfSlot = slot.getDate( );
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+        LocalDate dateOfCreation = dateTimeToStartCreation.toLocalDate( );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfCreation );
         int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
-        WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
-        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
-        LocalTime endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
-        LocalDateTime endingDateTimeOfTheDay = endingTimeOfTheDay.atDate( dateOfSlot );
-        int nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
-        LocalDateTime startingDateTime = slot.getEndingDateTime( );
+        WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfCreation );
+        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfCreation.getDayOfWeek( ) );
+        LocalTime endingTimeOfTheDay = null;
+        int nDurationSlot = 0;
+        if ( workingDay != null )
+        {
+            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
+            nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
+        }
+        else
+        {
+            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+            nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+        }
+        LocalDateTime endingDateTimeOfTheDay = endingTimeOfTheDay.atDate( dateOfCreation );
+
+        LocalDateTime startingDateTime = dateTimeToStartCreation;
         LocalDateTime endingDateTime = startingDateTime.plusMinutes( nDurationSlot );
-        int nIdForm = slot.getIdForm( );
         while ( !endingDateTime.isAfter( endingDateTimeOfTheDay ) )
         {
-            Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, Boolean.TRUE,
+            Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, Boolean.FALSE,
                     Boolean.TRUE );
             startingDateTime = endingDateTime;
             endingDateTime = startingDateTime.plusMinutes( nDurationSlot );
+            listSlotToCreate.add( slotToCreate );
+        }
+        if ( startingDateTime.isBefore( endingDateTimeOfTheDay ) && endingDateTime.isAfter( endingDateTimeOfTheDay ) )
+        {
+            Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTimeOfTheDay ), nMaxCapacity, nMaxCapacity, nMaxCapacity,
+                    Boolean.FALSE, Boolean.TRUE );
             listSlotToCreate.add( slotToCreate );
         }
         return listSlotToCreate;
