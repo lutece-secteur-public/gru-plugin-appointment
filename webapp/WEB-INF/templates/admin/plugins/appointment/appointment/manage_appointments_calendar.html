@@ -51,9 +51,8 @@
 			<#list events as event>				
 				<#assign nbAppointments = event.maxCapacity - event.nbRemainingPlaces>
 				{					
-					title : <#if modifDateAppointment?? >
-								'#i18n{appointment.manageCalendarSlots.chooseThisSlot}'
-							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+					title : <#if modifDateAppointment?? >'#i18n{appointment.manageCalendarSlots.chooseThisSlot}'+ '&nbsp;&nbsp;'<#else>''</#if>+
+							<#if event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
 								'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
 								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 								+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
@@ -67,7 +66,7 @@
 							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'								
 							<#elseif event.isOpen>
 								'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
-							<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,							
+							<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
