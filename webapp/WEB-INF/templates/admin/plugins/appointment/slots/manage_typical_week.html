@@ -128,6 +128,14 @@
 	</div>
 </div>
 <script type="text/javascript">
+	$('#date_of_modification').datepicker({
+    	language:		"${language}",
+    	startDate: 		new Date(),
+    	weekStart: 1,
+    	todayBtn: true,
+    	todayHighLight: true,
+    	autoclose: true
+	});
     $('#time_start').datetimepicker({
 	      pickDate: false,
 		  pickSeconds: false
