@@ -116,8 +116,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
   notification INT NOT NULL DEFAULT 0,
   id_user INT NOT NULL,
   id_slot INT NOT NULL,
-  PRIMARY KEY (id_appointment, id_user, id_slot),
-  UNIQUE KEY unique_index (id_user,id_slot),
+  PRIMARY KEY (id_appointment, id_user, id_slot),  
   CONSTRAINT fk_appointment_appointment_appointment_user
     FOREIGN KEY (id_user)
     REFERENCES appointment_user (id_user)
