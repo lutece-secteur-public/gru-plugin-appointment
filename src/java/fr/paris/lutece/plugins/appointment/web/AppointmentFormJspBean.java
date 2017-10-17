@@ -124,6 +124,7 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
 
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
+    private static final String PARAMETER_ERROR = "error";
     private static final String PARAMETER_ID_RESERVATION_RULE = "id_reservation_rule";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
@@ -268,8 +269,12 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
                 AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
-        }
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        }        
+        AppointmentForm appointmentForm = null;
+        String strError = request.getParameter( PARAMETER_ERROR );
+        if (StringUtils.isNotEmpty(strError)) {
+        	appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        }        
         if ( appointmentForm == null )
         {
             appointmentForm = new AppointmentForm( );
@@ -306,7 +311,8 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
         populateAddress( appointmentForm, request );
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
-            return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ) );
+        	
+            return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1);
         }
         appointmentForm.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
