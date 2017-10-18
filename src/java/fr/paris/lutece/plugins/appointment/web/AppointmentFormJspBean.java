@@ -196,7 +196,6 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
     private static final String INFO_APPOINTMENTFORM_UPDATED = "appointment.info.appointmentform.updated";
     private static final String INFO_APPOINTMENTFORM_REMOVED = "appointment.info.appointmentform.removed";
     private static final String INFO_APPOINTMENTFORM_MESSAGES_MODIFIED = "appointment.info.appointmentFormMessages.updated";
-    private static final String ERROR_APPOINTMENTFORM_NO_STARTING_VALIDITY_DATE = "appointment.error.appointmentform.noStartingValidityDate";
     private static final String ERROR_APPOINTMENTFORM_ENDING_VALIDITY_DATE_BEFORE_NOW = "appointment.error.appointmentform.endingValidityDateBeforeNow";
 
     // Session variable to store working values
@@ -269,12 +268,13 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
                 AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
-        }        
+        }
         AppointmentForm appointmentForm = null;
         String strError = request.getParameter( PARAMETER_ERROR );
-        if (StringUtils.isNotEmpty(strError)) {
-        	appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        }        
+        if ( StringUtils.isNotEmpty( strError ) )
+        {
+            appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        }
         if ( appointmentForm == null )
         {
             appointmentForm = new AppointmentForm( );
@@ -311,8 +311,8 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
         populateAddress( appointmentForm, request );
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
-        	
-            return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1);
+
+            return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1 );
         }
         appointmentForm.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
@@ -541,15 +541,7 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
             {
                 if ( form.getStartingValidityDate( ) == null )
                 {
-                    addError( ERROR_APPOINTMENTFORM_NO_STARTING_VALIDITY_DATE, getLocale( ) );
-                    if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )
-                    {
-                        return redirect( request, AppPathService.getBaseUrl( request ) + AppPathService.getAdminMenuUrl( ) );
-                    }
-                    else
-                    {
-                        return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
-                    }
+                    form.setStartingValidityDate( LocalDate.now( ) );
                 }
                 if ( ( form.getEndingValidityDate( ) != null ) && ( form.getEndingValidityDate( ).isBefore( LocalDate.now( ) ) ) )
                 {
@@ -566,10 +558,7 @@ public class AppointmentFormJspBean extends AbstratcAppointmentFormAndSlotJspBea
             }
             else
             {
-                if ( ( form.getStartingValidityDate( ) != null ) && ( form.getStartingValidityDate( ).isBefore( LocalDate.now( ) ) ) )
-                {
-                    form.setStartingValidityDate( null );
-                }
+                form.setStartingValidityDate( null );
             }
             form.setIsActive( !form.getIsActive( ) );
             FormHome.update( form );
