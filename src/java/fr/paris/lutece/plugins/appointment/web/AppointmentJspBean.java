@@ -304,8 +304,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nIdAppointment = Integer.parseInt( strIdAppointment );
             appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
         }
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        Map<String, Object> model = getModel( );
+        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );        
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         boolean bError = false;
         if ( !form.getIsActive( ) )
@@ -364,6 +363,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             // a passed ending date
             listSlot = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isAfter( LocalDateTime.now( ) ) ).collect( Collectors.toList( ) );
         }
+        Map<String, Object> model = getModel( );
         if ( bError )
         {
             model.put( MARK_FORM_CALENDAR_ERRORS, bError );

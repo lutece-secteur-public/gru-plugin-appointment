@@ -19,10 +19,8 @@
 		<@tabs tab="calendar" form=form />
 		<@messages errors=errors infos=infos />
 		<#if formCalendarErrors??>
-			<div class="layout-wrapper">
-				<@messages errors=errors />					
-			</div>
-		<#else>
+			<div class="layout-wrapper"></div>
+		#else>
 			<div class="tab-content">
 				<fieldset>									
 					<div id="calendar"></div>	
