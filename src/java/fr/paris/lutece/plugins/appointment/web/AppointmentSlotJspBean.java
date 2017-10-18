@@ -84,7 +84,7 @@ import fr.paris.lutece.util.url.UrlItem;
  *
  */
 @Controller( controllerJsp = AppointmentSlotJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentSlotJspBean extends AbstratcAppointmentFormAndSlotJspBean
+public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     /**
      * JSP of this JSP Bean
