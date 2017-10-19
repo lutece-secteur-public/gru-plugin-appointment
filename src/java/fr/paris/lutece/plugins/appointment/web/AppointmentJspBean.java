@@ -304,7 +304,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nIdAppointment = Integer.parseInt( strIdAppointment );
             appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
         }
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );        
+        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         boolean bError = false;
         if ( !form.getIsActive( ) )
