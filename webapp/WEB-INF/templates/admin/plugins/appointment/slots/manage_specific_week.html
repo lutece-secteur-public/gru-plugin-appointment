@@ -38,7 +38,7 @@
 			<#list events as event>
 				{
 					title : <#if event.isOpen>'#i18n{appointment.labelOpen}' + ' / ' + 'Capacit\u00e9 max : ' + '${event.maxCapacity}' + <#if event.isSpecific>' (*)'<#else>''</#if>
-							<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if> 
+							<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'+ <#if event.isSpecific>' (*)'<#else>''</#if></#if> 
 								,
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
