@@ -71,6 +71,7 @@ public final class AppointmentUtilities
     private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
     private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
+    private static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 
     private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
@@ -324,7 +325,13 @@ public final class AppointmentUtilities
         }
         if ( StringUtils.isNotEmpty( strNbBookedSeats ) )
         {
+        	try {
             nbBookedSeats = Integer.parseInt( strNbBookedSeats );
+        	} catch (NumberFormatException | NullPointerException  e) {
+        		GenericAttributeError genAttError = new GenericAttributeError( );
+                genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT, locale ) );
+                listFormErrors.add( genAttError );
+        	}
         }
         // if it's a new appointment, need to check if the number of booked
         // seats is under or equal to the number of remaining places
