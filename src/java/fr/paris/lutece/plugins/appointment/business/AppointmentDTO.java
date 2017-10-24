@@ -82,7 +82,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * the number of booked seats for this appointment
      */
-    private int _nNbBookedSeats;
+    private int _nNbBookedSeats = 1;
 
     /**
      * The maximum number of seats the user can book

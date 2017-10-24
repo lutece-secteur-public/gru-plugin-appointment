@@ -225,6 +225,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
+    private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTS = "manageAppointments";
@@ -321,9 +322,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
             addError( ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, getLocale( ) );
             bError = true;
         }
-        LocalDate startingDateOfDisplay = LocalDate.now( );
-        Display display = DisplayService.findDisplayWithFormId( nIdForm );
-        int nNbWeeksToDisplay = display.getNbWeeksToDisplay( );
+        Display display = DisplayService.findDisplayWithFormId( nIdForm );               
+        int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
+        LocalDate startingDateOfDisplay = LocalDate.now( ).minusWeeks(nNbWeeksToDisplay);
         if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
         {
             startingDateOfDisplay = startingValidityDate;
@@ -359,9 +360,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( !bError )
         {
             listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, nNbWeeksToDisplay );
-            // Filter the list of slots (we remove all the slots of the day with
-            // a passed ending date
-            listSlot = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isAfter( LocalDateTime.now( ) ) ).collect( Collectors.toList( ) );
+            // Tag as passed the slots passed
+            List<Slot> listSlotsPassed = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) ).collect( Collectors.toList( ) );
+            for (Slot slotPassed : listSlotsPassed){
+            	slotPassed.setIsPassed(Boolean.TRUE);
+            }
         }
         Map<String, Object> model = getModel( );
         if ( bError )

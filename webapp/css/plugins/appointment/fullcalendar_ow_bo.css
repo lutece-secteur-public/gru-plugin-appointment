@@ -1,0 +1,45 @@
+td.fc-axis.fc-time.ui-widget-content {
+    width: 80px ;
+    height: 45px ;
+    padding: 8px;
+    text-align: center;
+    line-height: 1.42857143;
+    width: 130px;
+    margin: 0;
+    border-top: 0px solid transparent;    
+}
+
+th.fc-day-header.ui-widget-header {    
+    height: 40px ;
+    padding: 15px 20px;
+    text-align: center;
+    line-height: 1.42857143;
+    margin: 0;
+    border-top: 0px solid transparent;
+	font-weight: normal;
+	vertical-align: middle;
+}
+
+.fc-view-container {
+    background-color: rgba(255,255,255,0.6);
+	padding-bottom: 190px;
+}
+
+th.fc-axis.ui-widget-header {
+    width: 100px ;
+	background: none;
+}
+
+td.fc-axis.ui-widget-content {
+    width: 100px ;
+}
+
+.fc-event {
+	border-radius: inherit;
+	border: 1px solid rgba(255,255,255,0.6);
+    padding: 5px;
+}
+
+.fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
+    text-align: center;
+}

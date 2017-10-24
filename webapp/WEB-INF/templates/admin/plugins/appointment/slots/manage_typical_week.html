@@ -1,6 +1,7 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
+<link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 <script src='js/plugins/appointment/locale-all.js' ></script>
@@ -177,7 +178,8 @@
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idTimeSlot}',
-					color : <#if event.isOpen>'default'<#else>'red'</#if>,
+					color : <#if event.isOpen>'transparent'<#else>'grey'</#if>,
+                    textColor: '#2c2c2d',
 				},								
 			</#list>
 		</#if>

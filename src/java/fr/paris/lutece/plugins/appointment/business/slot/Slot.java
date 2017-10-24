@@ -64,6 +64,11 @@ public final class Slot implements Serializable
     private boolean _bIsSpecific;
 
     /**
+     * Indicate whether the slot is passed or not
+     */
+    private boolean _bIsPassed = Boolean.FALSE;
+    
+    /**
      * Max Capacity of the Slot
      */
     private int _nMaxCapacity;
@@ -308,6 +313,28 @@ public final class Slot implements Serializable
         this._bIsSpecific = bIsSpecific;
     }
 
+    /**
+     * Indicate if the slot is passed or not
+     * 
+     * @return true if the slot is specific
+     */
+    public boolean getIsPassed( )
+    {
+        return _bIsPassed;
+    }
+
+    /**
+     * Set the boolean passed value of the slot
+     * 
+     * @param bIsSpecific
+     *            the boolean open value to set
+     */
+    public void setIsPassed( boolean bIsPassed )
+    {
+        this._bIsPassed = bIsPassed;
+    }
+    
+    
     /**
      * Get number of remaining places of the slot
      * 
