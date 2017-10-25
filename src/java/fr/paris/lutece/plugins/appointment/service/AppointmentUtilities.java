@@ -325,13 +325,16 @@ public final class AppointmentUtilities
         }
         if ( StringUtils.isNotEmpty( strNbBookedSeats ) )
         {
-        	try {
-            nbBookedSeats = Integer.parseInt( strNbBookedSeats );
-        	} catch (NumberFormatException | NullPointerException  e) {
-        		GenericAttributeError genAttError = new GenericAttributeError( );
+            try
+            {
+                nbBookedSeats = Integer.parseInt( strNbBookedSeats );
+            }
+            catch( NumberFormatException | NullPointerException e )
+            {
+                GenericAttributeError genAttError = new GenericAttributeError( );
                 genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT, locale ) );
                 listFormErrors.add( genAttError );
-        	}
+            }
         }
         // if it's a new appointment, need to check if the number of booked
         // seats is under or equal to the number of remaining places

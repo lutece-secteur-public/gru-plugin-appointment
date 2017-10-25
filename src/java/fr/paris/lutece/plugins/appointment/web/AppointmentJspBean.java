@@ -322,9 +322,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
             addError( ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, getLocale( ) );
             bError = true;
         }
-        Display display = DisplayService.findDisplayWithFormId( nIdForm );               
+        Display display = DisplayService.findDisplayWithFormId( nIdForm );
         int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
-        LocalDate startingDateOfDisplay = LocalDate.now( ).minusWeeks(nNbWeeksToDisplay);
+        LocalDate startingDateOfDisplay = LocalDate.now( ).minusWeeks( nNbWeeksToDisplay );
         if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
         {
             startingDateOfDisplay = startingValidityDate;
@@ -361,9 +361,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, nNbWeeksToDisplay );
             // Tag as passed the slots passed
-            List<Slot> listSlotsPassed = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) ).collect( Collectors.toList( ) );
-            for (Slot slotPassed : listSlotsPassed){
-            	slotPassed.setIsPassed(Boolean.TRUE);
+            List<Slot> listSlotsPassed = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
+                    .collect( Collectors.toList( ) );
+            for ( Slot slotPassed : listSlotsPassed )
+            {
+                slotPassed.setIsPassed( Boolean.TRUE );
             }
         }
         Map<String, Object> model = getModel( );
@@ -916,7 +918,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strEmail = request.getParameter( PARAMETER_EMAIL );
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Locale locale = request.getLocale( );
-        AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), form, locale, listFormErrors );        
+        AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), form, locale, listFormErrors );
         int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
                 locale, listFormErrors );
         AppointmentUtilities.fillAppointmentDTO( appointmentDTO, nbBookedSeats, strEmail, request.getParameter( PARAMETER_FIRST_NAME ),

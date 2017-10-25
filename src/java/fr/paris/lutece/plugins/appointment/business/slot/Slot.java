@@ -67,7 +67,7 @@ public final class Slot implements Serializable
      * Indicate whether the slot is passed or not
      */
     private boolean _bIsPassed = Boolean.FALSE;
-    
+
     /**
      * Max Capacity of the Slot
      */
@@ -333,8 +333,7 @@ public final class Slot implements Serializable
     {
         this._bIsPassed = bIsPassed;
     }
-    
-    
+
     /**
      * Get number of remaining places of the slot
      * 
