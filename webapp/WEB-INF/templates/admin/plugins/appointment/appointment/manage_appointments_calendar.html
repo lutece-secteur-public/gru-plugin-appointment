@@ -39,7 +39,10 @@
 			</#list>
 		</#if>				
 	];
-    var nbMaxWeeks = '${nb_weeks_to_display}';
+    var startingDateOfDisplay = '${starting_date_of_display}';
+    var endingDateOfDisplay = '${ending_date_of_display}'
+    var strStartingDateOfDisplay = '${str_starting_date_of_display}';
+    var strEndingDateOfDisplay = '${str_ending_date_of_display}'
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';    
     var idForm = '${id_form}';
     var columnFormat = 'dddd DD/MM/YYYY';	
@@ -108,8 +111,8 @@
 							showOn: "button",
 							language:'fr',
 							autoclose: true,
-							startDate: "today",
-							endDate: '+' + nbMaxWeeks + 'w',
+							startDate: strStartingDateOfDisplay,
+							endDate: strEndingDateOfDisplay,
 							orientation: "bottom"
 						});
 						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
@@ -152,8 +155,8 @@
 			},			
 			events: events,
 			viewRender: function(view, element) {
-				var minDate = moment();
-				var maxDate = moment().add(nbMaxWeeks, 'weeks');
+				var minDate = moment(startingDateOfDisplay);
+				var maxDate = moment(endingDateOfDisplay);
 				// Past
 				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
 					$(".fc-prev-button").prop('disabled', true); 

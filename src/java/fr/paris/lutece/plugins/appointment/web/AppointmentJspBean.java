@@ -37,7 +37,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -162,7 +161,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
     private static final String PARAMETER_ENDING_DATE_TIME = "ending_date_time";
-    private static final String PARAMETER_NB_WEEKS_TO_DISPLAY = "nb_weeks_to_display";
+    private static final String PARAMETER_STARTING_DATE_OF_DISPLAY = "starting_date_of_display";
+    private static final String PARAMETER_STR_STARTING_DATE_OF_DISPLAY = "str_starting_date_of_display";
+    private static final String PARAMETER_ENDING_DATE_OF_DISPLAY = "ending_date_of_display";
+    private static final String PARAMETER_STR_ENDING_DATE_OF_DISPLAY = "str_ending_date_of_display";
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
     private static final String PARAMETER_DAY_OF_WEEK = "dow";
     private static final String PARAMETER_EVENTS = "events";
@@ -329,7 +331,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             startingDateOfDisplay = startingValidityDate;
         }
-        LocalDate endingDateOfDisplay = startingDateOfDisplay.plusWeeks( nNbWeeksToDisplay );
+        LocalDate endingDateOfDisplay = LocalDate.now().plusWeeks( nNbWeeksToDisplay );
         LocalDate endingValidityDate = form.getEndingValidityDate( );
         if ( endingValidityDate != null )
         {
@@ -341,7 +343,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( endingDateOfDisplay.isAfter( endingValidityDate ) )
             {
                 endingDateOfDisplay = endingValidityDate;
-                nNbWeeksToDisplay = Math.toIntExact( startingDateOfDisplay.until( endingDateOfDisplay, ChronoUnit.WEEKS ) );
             }
         }
         String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
@@ -386,7 +387,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_FORM, FormService.buildAppointmentFormLight( nIdForm ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay );
+        model.put( PARAMETER_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay );
+        model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format(Utilities.getFormatter()) );
+        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
+        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format(Utilities.getFormatter()) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listSlot );
