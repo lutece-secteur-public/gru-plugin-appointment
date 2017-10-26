@@ -128,6 +128,10 @@
 	var defaultDate = '${date_of_display}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
+            buttonText : {
+                prev : '#i18n{appointment.appointmentApp.previousWeek}',
+                next : '#i18n{appointment.appointmentApp.nextWeek}',
+            },
 			defaultDate: defaultDate,
 			defaultView: 'agendaWeek',
 			height: 'auto',
@@ -137,7 +141,6 @@
 			customButtons: {
 				datePicker: {                    
 					text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',                    
-					themeIcon:'circle-triangle-s',
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
@@ -226,9 +229,6 @@
 						$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
 			        }
 			},
-		});  		
-		$('.fc-next-button').html("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>" + $('.fc-next-button').html());
-		$('.fc-prev-button').html($('.fc-prev-button').html() + "<span class='spanPrevButton' style='margin-left: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
-		$('.fc-datePicker-button').html($('.fc-datePicker-button').html() + "<span style='margin-left: 5px;'>#i18n{appointment.appointmentCalendar.labelChooseDate}</span>");
+		});
 	});      
 </script>

@@ -1,17 +1,15 @@
+<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
+<script src="js/plugins/appointment/moment.min.js" ></script>
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 <script src='js/plugins/appointment/locale-all.js' ></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
 <script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
-<link rel='stylesheet' href='css/plugins/appointment/jquery-ui.min.css' />
+<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
-<link href="css/plugins/appointment/appointment.css" rel="stylesheet" >
-
-<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<legend>
@@ -69,14 +67,15 @@
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
-					color : <#if event.isOpen & (event.nbRemainingPlaces > 0) >'transparent'
-								<#elseif event.isOpen>'red'<#else>'grey'</#if>,                    
+                   
                     textColor: '#2c2c2d',
 					url : <#if modifDateAppointment?? >
 								eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}'
 							<#else>
 								eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}'							
 							</#if>,
+                    backgroundColor : <#if event.isOpen & !event.isPassed>'white'<#elseif event.isOpen & event.isPassed>'#f3f3f3'<#else>'grey'</#if>,
+                    borderColor : 'grey',
 				},								
 			</#list>
 		</#if>
@@ -84,6 +83,11 @@
 	var defaultDate = '${date_of_display}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
+            buttonText : {
+                prev : '#i18n{appointment.appointmentApp.previousWeek}',
+                next : '#i18n{appointment.appointmentApp.nextWeek}',
+            },
+            theme: true,
 			navLinks: true,
             navLinkDayClick: function(date, jsEvent) {
                 location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
@@ -97,7 +101,6 @@
 			customButtons: {
 				datePicker: {
 					text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
-					themeIcon:'circle-triangle-s',
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
@@ -124,7 +127,7 @@
 			},
 			// header
 			header: {
-				left: 'prev',
+				left: 'prev myCustomButton',
 				center: 'today, datePicker, title',
 				right: 'next'
 			},
@@ -189,10 +192,7 @@
 			eventRender: function( event, element, view ) {				
 				var $title = element.find( '.fc-title' );
 				$title.html( $title.text() );
-			}			
-		});  		
-		$('.fc-next-button').html("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>" + $('.fc-next-button').html());
-		$('.fc-prev-button').html($('.fc-prev-button').html() + "<span class='spanPrevButton' style='margin-left: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
-		$('.fc-datePicker-button').html($('.fc-datePicker-button').html() + "<span style='margin-left: 5px;'>#i18n{appointment.appointmentCalendar.labelChooseDate}</span>");
-	});      
+			}
+		});
+	});
 </script>

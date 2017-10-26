@@ -345,7 +345,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         }
         String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
-        LocalDate dateOfDisplay = startingDateOfDisplay;
+        LocalDate dateOfDisplay = LocalDate.now( );
         if ( StringUtils.isNotEmpty( strDateOfDisplay ) )
         {
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );

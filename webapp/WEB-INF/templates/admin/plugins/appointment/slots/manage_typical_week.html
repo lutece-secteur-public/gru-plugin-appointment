@@ -6,9 +6,10 @@
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 <script src='js/plugins/appointment/locale-all.js' ></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
+<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
 <script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -180,6 +181,8 @@
 					id : '${event.idTimeSlot}',
 					color : <#if event.isOpen>'transparent'<#else>'grey'</#if>,
                     textColor: '#2c2c2d',
+                    backgroundColor : <#if event.isOpen>'white'<#else>'grey'</#if>,
+                    borderColor : 'grey',
 				},								
 			</#list>
 		</#if>

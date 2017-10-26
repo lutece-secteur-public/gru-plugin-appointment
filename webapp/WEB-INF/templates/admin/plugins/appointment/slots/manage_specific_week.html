@@ -7,7 +7,6 @@
 <script src='js/plugins/appointment/locale-all.js' ></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
 <script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
 
@@ -44,9 +43,11 @@
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
-					color : <#if event.isOpen & event.isSpecific>'#065580'<#elseif event.isOpen>'transparent'<#else>'grey'</#if>,
+					color : <#if event.isOpen>'transparent'<#else>'grey'</#if>,
                     textColor: '#2c2c2d',
 					url : eventUrl + '&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}',                    
+                    backgroundColor : <#if event.isOpen & !event.isPassed>'white'<#else>'grey'</#if>,
+                    borderColor : 'grey',
 				},								
 			</#list>
 		</#if>
@@ -54,6 +55,10 @@
 	var defaultDate = '${date_of_display}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
+            buttonText : {
+                prev : '#i18n{appointment.appointmentApp.previousWeek}',
+                next : '#i18n{appointment.appointmentApp.nextWeek}',
+            },
 			defaultDate: defaultDate,
 			defaultView: 'agendaWeek',
 			height: 'auto',
@@ -62,7 +67,8 @@
 			editable: false,
 			customButtons: {
 				datePicker: {
-					themeIcon:'circle-triangle-s',
+                    text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
+					
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
@@ -70,7 +76,8 @@
 							language:'fr',
 							showOn: "button",
 							dateFormat:"yy-mm-dd",
-							autoclose: true,                  
+							autoclose: true,
+                            orientation: "bottom"
 						});
 						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
 						//Below are required for manipulating dynamically created datepicker on custom button click
@@ -87,9 +94,9 @@
 			},
 			// header
 			header: {
-				left: 'prev,next datePicker today',
-				center: 'title',
-				right: ''
+				left: 'prev',
+				center: 'today, datePicker, title',
+				right: 'next'
 			},
 			columnFormat: columnFormat,
 			slotLabelFormat: 'H:mm',
@@ -129,7 +136,22 @@
 			},
 			eventAfterAllRender: function(view) {							
 				$('.fc-event').css('cursor', 'pointer');
+                $('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
+				$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
+				$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
+				$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
 			},
-		});        
-	});          
+            windowResize: function(view) {
+			    if ($(window).width() < 1050){
+			        $('#calendar').fullCalendar( 'changeView', 'agendaDay' );	
+					$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
+					$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
+			    } else {
+			        $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );						
+					$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
+					$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
+			    }
+			},
+		});
+	});
 </script>
