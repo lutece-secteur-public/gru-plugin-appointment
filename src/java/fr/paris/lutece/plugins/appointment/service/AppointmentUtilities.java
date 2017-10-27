@@ -81,6 +81,7 @@ public final class AppointmentUtilities
     private static final String KEY_COLUMN_DATE_APPOINTMENT = "appointment.dateAppointment.title";
     private static final String KEY_TIME_START = "appointment.model.entity.appointmentform.attribute.timeStart";
     private static final String KEY_TIME_END = "appointment.model.entity.appointmentform.attribute.timeEnd";
+    private static final String KEY_COLUMN_ADMIN = "appointment.manageAppointments.columnAdmin";
     private static final String KEY_COLUMN_STATUS = "appointment.labelStatus";
     private static final String KEY_COLUMN_STATE = "appointment.manageAppointments.columnState";
     private static final String KEY_COLUMN_NB_BOOKED_SEATS = "appointment.manageAppointments.columnNumberOfBookedseatsPerAppointment";
@@ -513,7 +514,7 @@ public final class AppointmentUtilities
                     }
             }
         }
-        int nTaille = 9 + ( listEntry.size( ) + 1 );
+        int nTaille = 10 + ( listEntry.size( ) + 1 );
         if ( tmpForm != null )
         {
             int nIndex = 0;
@@ -527,15 +528,16 @@ public final class AppointmentUtilities
             strInfos [3] = I18nService.getLocalizedString( KEY_COLUMN_DATE_APPOINTMENT, locale );
             strInfos [4] = I18nService.getLocalizedString( KEY_TIME_START, locale );
             strInfos [5] = I18nService.getLocalizedString( KEY_TIME_END, locale );
-            strInfos [6] = I18nService.getLocalizedString( KEY_COLUMN_STATUS, locale );
-            strInfos [7] = I18nService.getLocalizedString( KEY_COLUMN_STATE, locale );
-            strInfos [8] = I18nService.getLocalizedString( KEY_COLUMN_NB_BOOKED_SEATS, locale );
+            strInfos [6] = I18nService.getLocalizedString( KEY_COLUMN_ADMIN, locale );
+            strInfos [7] = I18nService.getLocalizedString( KEY_COLUMN_STATUS, locale );
+            strInfos [8] = I18nService.getLocalizedString( KEY_COLUMN_STATE, locale );
+            strInfos [9] = I18nService.getLocalizedString( KEY_COLUMN_NB_BOOKED_SEATS, locale );
             nIndex = 1;
             if ( listEntry.size( ) > 0 )
             {
                 for ( Entry e : listEntry )
                 {
-                    strInfos [9 + nIndex] = e.getTitle( );
+                    strInfos [10 + nIndex] = e.getTitle( );
                     nIndex++;
                 }
             }
@@ -553,12 +555,13 @@ public final class AppointmentUtilities
                 strWriter [3] = appointmentDTO.getDateOfTheAppointment( );
                 strWriter [4] = appointmentDTO.getStartingTime( ).toString( );
                 strWriter [5] = appointmentDTO.getEndingTime( ).toString( );
+                strWriter [6] = appointmentDTO.getAdminUser( );
                 String status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_RESERVED, locale );
                 if ( appointmentDTO.getIsCancelled( ) )
                 {
                     status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_UNRESERVED, locale );
                 }
-                strWriter [6] = status;
+                strWriter [7] = status;
                 State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         tmpForm.getIdWorkflow( ) );
                 String strState = StringUtils.EMPTY;
@@ -567,9 +570,9 @@ public final class AppointmentUtilities
                     appointmentDTO.setState( stateAppointment );
                     strState = stateAppointment.getName( );
                 }
-                strWriter [7] = strState;
+                strWriter [8] = strState;
                 nIndex = 1;
-                strWriter [8] = Integer.toString( appointmentDTO.getNbBookedSeats( ) );
+                strWriter [9] = Integer.toString( appointmentDTO.getNbBookedSeats( ) );
                 List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse( appointmentDTO.getIdAppointment( ) );
                 List<Response> listResponses = new ArrayList<Response>( );
                 for ( int nIdResponse : listIdResponse )
@@ -618,7 +621,7 @@ public final class AppointmentUtilities
                     }
                     if ( !strValue.toString( ).isEmpty( ) )
                     {
-                        strWriter [9 + nIndex] = strValue.toString( );
+                        strWriter [10 + nIndex] = strValue.toString( );
                     }
                     nIndex++;
                 }

@@ -54,6 +54,11 @@ public class Appointment extends User implements Serializable
     private int _notification;
 
     /**
+     * The Admin User Id
+     */
+    private int _nIdAdminUser;
+
+    /**
      * User id
      */
     private int _nIdUser;
@@ -218,6 +223,16 @@ public class Appointment extends User implements Serializable
     public void setIdUser( int nIdUser )
     {
         this._nIdUser = nIdUser;
+    }
+
+    public int getIdAdminUser( )
+    {
+        return _nIdAdminUser;
+    }
+
+    public void setIdAdminUser( int nIdAdminUser )
+    {
+        this._nIdAdminUser = nIdAdminUser;
     }
 
     /**

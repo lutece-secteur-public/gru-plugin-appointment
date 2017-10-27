@@ -50,6 +50,11 @@ public final class AppointmentDTO extends Appointment implements Serializable
     private String _strDateOfTheAppointment;
 
     /**
+     * The name of the admin user
+     */
+    private String _strAdminUser;
+
+    /**
      * The starting date in LocalDateTime
      */
     private LocalDateTime _startingDateTime;
@@ -103,6 +108,27 @@ public final class AppointmentDTO extends Appointment implements Serializable
      * List of the available action of the workflow for this appointment
      */
     private transient Collection<Action> _listWorkflowActions;
+
+    /**
+     * Get the name of the admin user
+     * 
+     * @return the admin user name
+     */
+    public String getAdminUser( )
+    {
+        return _strAdminUser;
+    }
+
+    /**
+     * Set the name of the admin user
+     * 
+     * @param _strAdminUser
+     *            the admin user name to set
+     */
+    public void setAdminUser( String strAdminUser )
+    {
+        this._strAdminUser = strAdminUser;
+    }
 
     /**
      * Get the state of the appointment

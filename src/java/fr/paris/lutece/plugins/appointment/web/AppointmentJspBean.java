@@ -278,6 +278,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String FIRST_NAME = "first_name";
     private static final String EMAIL = "email";
     private static final String DATE_APPOINTMENT = "date_appointment";
+    private static final String ADMIN = "admin";
     private static final String STATUS = "status";
 
     // services
@@ -331,7 +332,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             startingDateOfDisplay = startingValidityDate;
         }
-        LocalDate endingDateOfDisplay = LocalDate.now().plusWeeks( nNbWeeksToDisplay );
+        LocalDate endingDateOfDisplay = LocalDate.now( ).plusWeeks( nNbWeeksToDisplay );
         LocalDate endingValidityDate = form.getEndingValidityDate( );
         if ( endingValidityDate != null )
         {
@@ -388,9 +389,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay );
-        model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format(Utilities.getFormatter()) );
+        model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format( Utilities.getFormatter( ) ) );
         model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
-        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format(Utilities.getFormatter()) );
+        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listSlot );
@@ -1045,6 +1046,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
+        appointmentDTO.setIdAdminUser( getUser( ).getUserId( ) );
         Slot slot = null;
         // Reload the slot from the database
         // The slot could have been taken since the beginning of the entry of
@@ -1199,6 +1201,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     break;
                 case DATE_APPOINTMENT:
                     stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getStartingDateTime( ).compareTo( a2.getStartingDateTime( ) ) );
+                    break;
+                case ADMIN:
+                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getAdminUser( ).compareTo( a2.getAdminUser( ) ) );
                     break;
                 case STATUS:
                     stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Boolean.compare( a1.getIsCancelled( ), a2.getIsCancelled( ) ) );

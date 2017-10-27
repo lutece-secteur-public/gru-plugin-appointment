@@ -19,6 +19,7 @@ import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListener
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -222,6 +223,10 @@ public final class AppointmentService
         {
             appointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
         }
+        if ( appointmentDTO.getIdAdminUser( ) != 0 )
+        {
+            appointment.setIdAdminUser( appointmentDTO.getIdAdminUser( ) );
+        }
         appointment.setNbPlaces( appointmentDTO.getNbBookedSeats( ) );
         appointment.setIdSlot( slot.getIdSlot( ) );
         appointment.setIdUser( user.getIdUser( ) );
@@ -309,6 +314,19 @@ public final class AppointmentService
         SlotService.addDateAndTimeToSlot( appointment.getSlot( ) );
         appointmentDTO.setSlot( appointment.getSlot( ) );
         appointmentDTO.setUser( appointment.getUser( ) );
+        if ( appointment.getIdAdminUser( ) != 0 )
+        {
+            AdminUser adminUser = AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser( ) );
+            if ( adminUser != null )
+            {
+                appointmentDTO.setAdminUser( new StringBuilder( adminUser.getFirstName( ) + org.apache.commons.lang3.StringUtils.SPACE
+                        + adminUser.getLastName( ) ).toString( ) );
+            }
+        }
+        else
+        {
+            appointmentDTO.setAdminUser( StringUtils.EMPTY );
+        }
         return appointmentDTO;
     }
 
