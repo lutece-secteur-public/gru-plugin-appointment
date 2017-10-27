@@ -82,8 +82,8 @@
 								eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}'							
 							</#if>,
                     backgroundColor : <#if event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>'white'
-                                      <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'red'
-                                      <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>'red'
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'red'
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>'red'
                                       <#elseif event.isOpen & event.isPassed>'#d2d2d2'
                                       <#else>'grey'
                                       </#if>,
