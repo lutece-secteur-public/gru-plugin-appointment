@@ -21,8 +21,10 @@ public final class SlotTest extends LuteceTestCase
 
     public final static LocalDateTime STARTING_DATE_1 = LocalDateTime.parse( "2017-01-27T09:00" );
     public final static LocalDateTime STARTING_DATE_2 = LocalDateTime.parse( "2017-01-28T09:30" );
+    public final static LocalDateTime STARTING_DATE_3 = LocalDateTime.parse( "2017-01-29T09:30" );
     public final static LocalDateTime ENDING_DATE_1 = LocalDateTime.parse( "2017-01-27T09:30" );
     public final static LocalDateTime ENDING_DATE_2 = LocalDateTime.parse( "2017-01-28T10:00" );
+    public final static LocalDateTime ENDING_DATE_3 = LocalDateTime.parse( "2017-01-29T10:00" );
     public final static boolean IS_OPEN_1 = true;
     public final static boolean IS_OPEN_2 = false;
     public final static int NB_REMAINING_PLACES_1 = 1;
@@ -219,8 +221,8 @@ public final class SlotTest extends LuteceTestCase
     public static Slot buildClosedSlot( )
     {
         Slot slot = new Slot( );
-        slot.setStartingDateTime( STARTING_DATE_2 );
-        slot.setEndingDateTime( ENDING_DATE_2 );
+        slot.setStartingDateTime( STARTING_DATE_3 );
+        slot.setEndingDateTime( ENDING_DATE_3 );
         slot.setIsOpen( IS_OPEN_2 );
         slot.setNbRemainingPlaces( NB_REMAINING_PLACES_2 );
         return slot;

@@ -13,8 +13,8 @@ import fr.paris.lutece.test.LuteceTestCase;
 public final class CategoryTest extends LuteceTestCase
 {
 
-    public static final String LABEL_1 = "CatÃ©gorie 1";
-    public static final String LABEL_2 = "CatÃ©gorie 2";
+    public static final String LABEL_1 = "Catégorie 1";
+    public static final String LABEL_2 = "Catégorie 2";
 
     /**
      * Test method for the Category (CRUD)
@@ -22,7 +22,7 @@ public final class CategoryTest extends LuteceTestCase
     public void testCategory( )
     {
         // Initialize a Category
-        Category category = buildCategory( );
+        Category category = buildCategory(LABEL_1 );
         // Create the Display in database
         CategoryHome.create( category );
         // Find the Category created in database
@@ -52,10 +52,10 @@ public final class CategoryTest extends LuteceTestCase
      * 
      * @return the category
      */
-    public Category buildCategory( )
+    public static Category buildCategory(String strLabel )
     {
         Category category = new Category( );
-        category.setLabel( LABEL_1 );
+        category.setLabel( strLabel );
         return category;
     }
 
