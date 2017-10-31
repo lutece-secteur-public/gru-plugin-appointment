@@ -85,7 +85,7 @@ public final class FormRuleHome
      */
     public static FormRule findByIdForm( int nIdForm )
     {
-        return _dao.select( nIdForm, _plugin );
+        return _dao.findByIdForm( nIdForm, _plugin );
     }
 
 }
