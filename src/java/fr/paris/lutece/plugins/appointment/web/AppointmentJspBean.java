@@ -155,6 +155,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT = "appointment.appointmentApp.recap.title";
     private static final String PROPERTY_PAGE_TITLE_TASKS_FORM_WORKFLOW = "appointment.taskFormWorkflow.pageTitle";
 
+    // Connected User
+    private static final String PROPERTY_USER_EMAIL = "user.business-info.online.email";
+    private static final String PROPERTY_USER_FIRST_NAME = "user.name.given";
+    private static final String PROPERTY_USER_LAST_NAME = "user.name.family";
+
     // Parameters
     private static final String PARAMETER_IS_OPEN = "is_open";
     private static final String PARAMETER_IS_SPECIFIC = "is_specific";
@@ -861,9 +866,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 if ( user != null )
                 {
                     Map<String, String> map = user.getUserInfos( );
-                    appointmentDTO.setEmail( map.get( "user.business-info.online.email" ) );
-                    appointmentDTO.setFirstName( map.get( "user.name.given" ) );
-                    appointmentDTO.setLastName( map.get( "user.name.family" ) );
+                    appointmentDTO.setEmail( map.get( PROPERTY_USER_EMAIL ) );
+                    appointmentDTO.setFirstName( map.get( PROPERTY_USER_FIRST_NAME ) );
+                    appointmentDTO.setLastName( map.get( PROPERTY_USER_LAST_NAME ) );
                 }
                 request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
                 ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
