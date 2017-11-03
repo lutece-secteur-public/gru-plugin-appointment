@@ -12,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
+import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -44,6 +45,7 @@ public final class WeekDefinitionService
         WeekDefinition weekDefinition = new WeekDefinition( );
         fillInWeekDefinition( weekDefinition, nIdForm, dateOfApply );
         WeekDefinitionHome.create( weekDefinition );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionCreation( weekDefinition.getIdWeekDefinition( ) );
         return weekDefinition;
     }
 
@@ -55,6 +57,7 @@ public final class WeekDefinitionService
      */
     public static void removeWeekDefinition( int nIdWeekDefinition )
     {
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionRemoval( nIdWeekDefinition );
         WeekDefinitionHome.delete( nIdWeekDefinition );
     }
 
@@ -90,6 +93,7 @@ public final class WeekDefinitionService
         {
             fillInWeekDefinition( weekDefinition, nIdForm, dateOfApply );
             WeekDefinitionHome.update( weekDefinition );
+            WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( weekDefinition.getIdWeekDefinition( ) );
         }
         return weekDefinition;
     }

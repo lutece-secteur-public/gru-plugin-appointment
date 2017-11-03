@@ -39,7 +39,7 @@ public final class FormTest extends LuteceTestCase
      * Test method for the Form (CRUD)
      */
     public void testForm( )
-    {    	
+    {
         // Initialize a Form
         Form form = buildForm( );
         // Create the Form in database
@@ -51,7 +51,7 @@ public final class FormTest extends LuteceTestCase
 
         // Update the form
         form.setTitle( TITLE_FORM_2 );
-        form.setDescription( DESCRIPTION_FORM_2 );        
+        form.setDescription( DESCRIPTION_FORM_2 );
         form.setStartingValidityDate( STARTING_VALIDITY_DATE_2 );
         form.setEndingValidityDate( ENDING_VALIDITY_DATE_2 );
         form.setIsActive( IS_ACTIVE2 );
@@ -181,7 +181,7 @@ public final class FormTest extends LuteceTestCase
     {
         Form form = new Form( );
         form.setTitle( TITLE_FORM_1 );
-        form.setDescription( DESCRIPTION_FORM_1 );     
+        form.setDescription( DESCRIPTION_FORM_1 );
         form.setStartingValidityDate( STARTING_VALIDITY_DATE_1 );
         form.setEndingValidityDate( ENDING_VALIDITY_DATE_1 );
         form.setIsActive( IS_ACTIVE1 );
@@ -200,7 +200,7 @@ public final class FormTest extends LuteceTestCase
     public void checkAsserts( Form formStored, Form form )
     {
         assertEquals( formStored.getTitle( ), form.getTitle( ) );
-        assertEquals( formStored.getDescription( ), form.getDescription( ) );        
+        assertEquals( formStored.getDescription( ), form.getDescription( ) );
         assertEquals( formStored.getStartingValidityDate( ), form.getStartingValidityDate( ) );
         assertEquals( formStored.getEndingValidityDate( ), form.getEndingValidityDate( ) );
         assertEquals( formStored.getIsActive( ), form.getIsActive( ) );

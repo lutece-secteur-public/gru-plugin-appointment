@@ -42,7 +42,7 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 /**
- * Manager form appointment removal listeners
+ * Manager for appointment listeners
  */
 public final class AppointmentListenerManager
 {
@@ -96,17 +96,4 @@ public final class AppointmentListenerManager
         return listMessages;
     }
 
-    /**
-     * Notify users that an appointment form has been removed
-     * 
-     * @param nIdAppointmentForm
-     *            the id of the removed appointment form
-     */
-    public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
-    {
-        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
-        }
-    }
 }

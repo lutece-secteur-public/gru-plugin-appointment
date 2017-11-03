@@ -54,7 +54,6 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
-import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
@@ -561,7 +560,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                 form.setStartingValidityDate( null );
             }
             form.setIsActive( !form.getIsActive( ) );
-            FormHome.update( form );
+            FormService.updateForm( form );
             AppLogService.info( LogUtilities.buildLog( ACTION_DO_CHANGE_FORM_ACTIVATION, strIdForm, getUser( ) ) );
         }
         if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )

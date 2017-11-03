@@ -14,6 +14,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 
 /**
  * Service class for the time slot
@@ -142,9 +143,9 @@ public final class TimeSlotService
      */
     public static void updateTimeSlot( TimeSlot timeSlot, boolean bEndingTimeHasChanged )
     {
+        WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
         if ( bEndingTimeHasChanged )
         {
-            WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
             int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
             LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
             // Find all the time slot after the starting time of the new time
@@ -182,6 +183,7 @@ public final class TimeSlotService
         {
             TimeSlotHome.update( timeSlot );
         }
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( workingDay.getIdWeekDefinition( ) );
     }
 
     /**

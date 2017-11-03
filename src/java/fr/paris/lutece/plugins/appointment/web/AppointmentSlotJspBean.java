@@ -364,7 +364,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_WEEK_DEFINITION, nIdWeekDefinition );
         }
         ReservationRule reservationRuleToRemove = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply( nIdForm, beginDateOfApply );
-        ReservationRuleService.removeReservationRule( reservationRuleToRemove.getIdReservationRule( ) );
+        ReservationRuleService.removeReservationRule( reservationRuleToRemove );
         WeekDefinitionService.removeWeekDefinition( nIdWeekDefinition );
         addInfo( INFO_PARAMETER_REMOVED, getLocale( ) );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm );

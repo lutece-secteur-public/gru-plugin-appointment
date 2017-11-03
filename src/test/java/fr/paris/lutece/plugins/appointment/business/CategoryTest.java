@@ -22,7 +22,7 @@ public final class CategoryTest extends LuteceTestCase
     public void testCategory( )
     {
         // Initialize a Category
-        Category category = buildCategory(LABEL_1 );
+        Category category = buildCategory( LABEL_1 );
         // Create the Display in database
         CategoryHome.create( category );
         // Find the Category created in database
@@ -52,7 +52,7 @@ public final class CategoryTest extends LuteceTestCase
      * 
      * @return the category
      */
-    public static Category buildCategory(String strLabel )
+    public static Category buildCategory( String strLabel )
     {
         Category category = new Category( );
         category.setLabel( strLabel );

@@ -19,6 +19,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
+import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
 
 /**
  * Service class of a slot
@@ -472,11 +473,11 @@ public final class SlotService
         Slot slotSaved = null;
         if ( slot.getIdSlot( ) == 0 )
         {
-            slotSaved = SlotHome.create( slot );
+            slotSaved = SlotService.createSlot( slot );
         }
         else
         {
-            slotSaved = SlotHome.update( slot );
+            slotSaved = SlotService.updateSlot( slot );
         }
         return slotSaved;
     }
@@ -487,9 +488,10 @@ public final class SlotService
      * @param slot
      *            the slot updated
      */
-    public static void updateSlot( Slot slot )
+    public static Slot updateSlot( Slot slot )
     {
-        SlotHome.update( slot );
+        SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
+        return SlotHome.update( slot );
     }
 
     /**
@@ -574,9 +576,16 @@ public final class SlotService
         {
             for ( Slot slotTemp : listSlotToCreate )
             {
-                SlotHome.create( slotTemp );
+                SlotService.createSlot( slotTemp );
             }
         }
+    }
+
+    public static Slot createSlot( Slot slot )
+    {
+        Slot slotCreated = SlotHome.create( slot );
+        SlotListenerManager.notifyListenersSlotCreation( slot.getIdSlot( ) );
+        return slotCreated;
     }
 
     /**
@@ -589,8 +598,20 @@ public final class SlotService
     {
         for ( Slot slotToDelete : listSlotToDelete )
         {
-            SlotHome.delete( slotToDelete.getIdSlot( ) );
+            SlotService.deleteSlot( slotToDelete );
         }
+    }
+
+    /**
+     * Delete a slot
+     * 
+     * @param slot
+     *            the slot to delete
+     */
+    public static void deleteSlot( Slot slot )
+    {
+        SlotListenerManager.notifyListenersSlotRemoval( slot.getIdSlot( ) );
+        SlotHome.delete( slot.getIdSlot( ) );
     }
 
     /**

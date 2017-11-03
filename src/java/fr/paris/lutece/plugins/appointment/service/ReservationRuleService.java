@@ -7,6 +7,7 @@ import java.util.List;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
+import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -47,12 +48,13 @@ public final class ReservationRuleService
     /**
      * Delete a reservation rule by its id
      * 
-     * @param nIdReservationRule
-     *            the id of the reservation rule to delete
+     * @param reservationRule
+     *            the reservation rule to delete
      */
-    public static void removeReservationRule( int nIdReservationRule )
+    public static void removeReservationRule( ReservationRule reservationRule )
     {
-        ReservationRuleHome.delete( nIdReservationRule );
+        FormListenerManager.notifyListenersFormChange( reservationRule.getIdForm( ) );
+        ReservationRuleHome.delete( reservationRule.getIdReservationRule( ) );
     }
 
     /**

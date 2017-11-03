@@ -20,7 +20,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
+import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -465,14 +465,14 @@ public final class FormService
                         dateNow ) ) )
         {
             form.setIsActive( true );
-            FormHome.update( form );
+            FormService.updateForm( form );
 
         }
         else
             if ( form.getEndingValidityDate( ) != null && form.getIsActive( ) && form.getEndingValidityDate( ).isBefore( dateNow ) )
             {
                 form.setIsActive( false );
-                FormHome.update( form );
+                FormService.updateForm( form );
             }
     }
 
@@ -488,6 +488,7 @@ public final class FormService
         Form form = new Form( );
         form = fillInFormWithAppointmentForm( form, appointmentForm );
         FormHome.create( form );
+        FormListenerManager.notifyListenersFormCreation( form.getIdForm( ) );
         return form;
     }
 
@@ -502,8 +503,21 @@ public final class FormService
     {
         Form form = FormService.findFormLightByPrimaryKey( appointmentForm.getIdForm( ) );
         form = fillInFormWithAppointmentForm( form, appointmentForm );
-        FormHome.update( form );
+        FormService.updateForm( form );
         return form;
+    }
+
+    /**
+     * Update a form
+     * 
+     * @param form
+     *            the form
+     * @return the form updated
+     */
+    public static Form updateForm( Form form )
+    {
+        FormListenerManager.notifyListenersFormChange( form.getIdForm( ) );
+        return FormHome.update( form );
     }
 
     /**
@@ -544,7 +558,7 @@ public final class FormService
      */
     public static void removeForm( int nIdForm )
     {
-        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
+        FormListenerManager.notifyListenersFormRemoval( nIdForm );
         // Delete all the responses linked to all the appointments of the form
         for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
         {
