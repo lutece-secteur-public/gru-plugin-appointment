@@ -355,21 +355,43 @@ public final class Slot implements Serializable
         this._nNbRemainingPlaces = nNbRemainingPlaces;
     }
 
+    /**
+     * Get the potential remaining places on the slot
+     * 
+     * @return the number of potential ramaining places
+     */
     public int getNbPotentialRemainingPlaces( )
     {
         return _nNbPotentialRemainingPlaces;
     }
 
+    /**
+     * Set the potential number of remaining places on the slot
+     * 
+     * @param nNbPotentialRemainingPlaces
+     *            the number to set
+     */
     public void setNbPotentialRemainingPlaces( int nNbPotentialRemainingPlaces )
     {
         this._nNbPotentialRemainingPlaces = nNbPotentialRemainingPlaces;
     }
 
+    /**
+     * Get the maximum capacity of the slot
+     * 
+     * @return the maximum capacity
+     */
     public int getMaxCapacity( )
     {
         return _nMaxCapacity;
     }
 
+    /**
+     * Set the maximum capacity of the slot
+     * 
+     * @param nMaxCapacity
+     *            the maximum capacity to set
+     */
     public void setMaxCapacity( int nMaxCapacity )
     {
         this._nMaxCapacity = nMaxCapacity;
