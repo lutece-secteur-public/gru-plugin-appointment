@@ -197,6 +197,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         else
         {
             weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
+            if ( weekDefinition != null )
+            {
+                nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
+            }
         }
         Map<String, Object> model = getModel( );
         AppointmentForm appointmentForm = null;
@@ -204,7 +208,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
             model.put( PARAMETER_ERROR_MODIFICATION, Boolean.TRUE );
-        }        
+        }
         List<String> listDayOfWeek = new ArrayList<>( );
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         LocalTime minStartingTime = LocalTime.MIN;
@@ -240,7 +244,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( PARAMETER_MIN_TIME, minStartingTime );
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( nMinDuration ) );
-        model.put( PARAMETER_ID_WEEK_DEFINITION, weekDefinition.getIdWeekDefinition( ) );
+        model.put( PARAMETER_ID_WEEK_DEFINITION, nIdWeekDefinition );
         model.put( MARK_LIST_DATE_OF_MODIFICATION, WeekDefinitionService.findAllDateOfWeekDefinition( nIdForm ) );
         AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model );
