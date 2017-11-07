@@ -204,8 +204,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
             model.put( PARAMETER_ERROR_MODIFICATION, Boolean.TRUE );
-        }
-        List<WorkingDay> listWorkingDay = new ArrayList<>( );
+        }        
         List<String> listDayOfWeek = new ArrayList<>( );
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         LocalTime minStartingTime = LocalTime.MIN;
@@ -228,7 +227,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 }
                 appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule, nIdWeekDefinition );
             }
-            listWorkingDay = weekDefinition.getListWorkingDay( );
+            List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay( );
             listDayOfWeek = new ArrayList<>( WorkingDayService.getSetDayOfWeekOfAListOfWorkingDay( listWorkingDay ) );
             listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay( listWorkingDay, dateOfApply );
             minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
