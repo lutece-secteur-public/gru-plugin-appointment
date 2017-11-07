@@ -18,12 +18,13 @@ ${entry.CSSClass!}
 					</#if>
 					<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
 						onclick="doCheckboxEffect(this.checked,${field.idField});"
-					</#if>>
+					</#if>
+					/>
 				<#if !field.noDisplayTitle>
 					${field.title}
 				</#if>
 				</label>
-			</div>	
+			<#if !entry.fieldInLine></div></#if>
 		</#list>
 		<#if list_responses??>
 			<#list list_responses as response>

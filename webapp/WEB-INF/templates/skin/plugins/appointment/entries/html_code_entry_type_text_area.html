@@ -1,5 +1,5 @@
 <#macro getTextAreaContent responseContent has_error entry field>
-	<!#-- 	fieldInLine means use rich text -->
+	<#-- 	fieldInLine means use rich text -->
 	<#if has_error>
 		<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field.width}" rows="${field.height}" class="alert alert-error alert-danger<#if entry.fieldInLine> richtext</#if>">${responseContent}</textarea>
 	<#else>

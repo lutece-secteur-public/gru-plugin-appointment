@@ -39,7 +39,7 @@
 					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm&id_form=${appointment.idForm}">
+					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}">
 						<i class="fa fa-pencil"></i> #i18n{portal.util.labelModify}
 					</a>
 				</div>
@@ -132,8 +132,7 @@
 		<div class="container">
 			<h2 class="current stepTitle">
 				<span class="current stepTitleNumber">4</span>
-				#i18n{appointment.appointmentApp.validation}
-			</h2>
+				#i18n{appointment.appointmentApp.validation.title}			</h2>
 		</div>
 	</div>
 </div>
@@ -163,7 +162,7 @@
 							</div>
 							<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
 								<div class="formGroupContainer">
-									<legend>
+									<legend class="sr-only">
 										<p class="alert alert-info">#i18n{appointment.appointmentApp.recap.title} - 
 										<#if form.displayTitleFo && form.title != "" >
 											${form.title}
@@ -172,7 +171,7 @@
 										</#if>
 										</p>
 									</legend>
-									<p>TEXTE D'INVITATION A LA VALIDATION DU FORMULAIRE</p>
+									<p>#i18n{appointment.appointmentApp.appointmentApp.validationText}</p>
 									<@messages errors=errors />
 									<#if captcha??>
 										${captcha!}
