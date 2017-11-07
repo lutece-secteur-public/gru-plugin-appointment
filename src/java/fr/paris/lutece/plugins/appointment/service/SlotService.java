@@ -249,7 +249,7 @@ public final class SlotService
                             }
                             else
                             {
-                                timeTemp = timeTemp.plusMinutes( new Long( nDuration ) );
+                                timeTemp = timeTemp.plusMinutes( Long.valueOf( nDuration ) );
                                 if ( timeTemp.isAfter( maxTimeForThisDay ) )
                                 {
                                     timeTemp = maxTimeForThisDay;
