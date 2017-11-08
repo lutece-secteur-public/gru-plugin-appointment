@@ -79,11 +79,15 @@ td.fc-axis.ui-widget-content {
 }
 
 .fc-event {
-	border-radius: inherit;
+	border-radius: 5px;
 	border: 1px solid rgba(255,255,255,0.6);
-    background-color: rgba(32, 37, 57, 0.5);
-    padding: 5px;
+	background-color: rgba(125,201,253, 0.5);
+	padding: 5px;
 	font-size: 0.70em;
+}
+
+a.fc-event.slot-closed:hover {
+	background-color:rgba(215,215,215,1)!important;
 }
 
 .ui-widget td.fc-axis {
@@ -128,7 +132,7 @@ button.fc-today-button:hover, button.fc-today-button:active, button.fc-today-but
 }
 
 .fc-nonbusiness.fc-bgevent {
-    background: #d7d7d7;
+    /*background: #d7d7d7;*/
 }
 
 .fc-toolbar {
@@ -136,8 +140,8 @@ button.fc-today-button:hover, button.fc-today-button:active, button.fc-today-but
 }
 
 a.fc-event.slot-closed {
-    background: #d7d7d7 ;
-	opacity: 0.3;
+    background-color: rgba(215,215,215,1);
+		opacity: 0.3;
     color: black;
 }
 

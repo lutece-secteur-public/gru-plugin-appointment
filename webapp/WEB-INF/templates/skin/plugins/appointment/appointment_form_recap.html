@@ -39,7 +39,7 @@
 					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}">
+					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}#step2">
 						<i class="fa fa-pencil"></i> #i18n{portal.util.labelModify}
 					</a>
 				</div>
@@ -117,6 +117,7 @@
 					<form class="form-horizontal" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
 						<input name="page" value="appointment" type="hidden">
 						<input name="action" value="doMakeAppointment" type="hidden">
+						<input name="anchor" value="step3" type="hidden">
 						<button name="back" class="btn btn-primary btn-sm" value="back">
 							<i class="fa fa-pencil"></i>
 							#i18n{portal.util.labelModify}
@@ -132,7 +133,8 @@
 		<div class="container">
 			<h2 class="current stepTitle">
 				<span class="current stepTitleNumber">4</span>
-				#i18n{appointment.appointmentApp.validation.title}			</h2>
+				#i18n{appointment.appointmentApp.validation.title}
+			</h2>
 		</div>
 	</div>
 </div>
@@ -145,6 +147,7 @@
 					<input name="lastname" value="${appointment.lastName}" type="hidden">
 					<input name="firstname" value="${appointment.firstName}" type="hidden">
 					<input name="email" value="${appointment.email}" type="hidden">
+					<input name="anchor" value="step5" type="hidden">
 					<#if form.maxPeoplePerAppointment &gt; 1>
 						<input name="nbSeat" value="${appointment.nbBookedSeats}" type="hidden" />
 					</#if>
@@ -171,7 +174,7 @@
 										</#if>
 										</p>
 									</legend>
-									<p>#i18n{appointment.appointmentApp.appointmentApp.validationText}</p>
+									<p>#i18n{appointment.appointmentApp.validationText}</p>
 									<@messages errors=errors />
 									<#if captcha??>
 										${captcha!}
@@ -191,6 +194,16 @@
 						</div>
 					</fieldset>
 				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row nextStepTitleRow">
+		<div class="col-xs-12">
+			<div class="container">
+				<h2 class="stepTitle next">
+					<span class="stepTitleNumber next">5</span>
+					#i18n{appointment.appointmentApp.confirmation}
+				</h2>
 			</div>
 		</div>
 	</div>

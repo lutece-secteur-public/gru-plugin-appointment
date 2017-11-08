@@ -37,10 +37,10 @@
 <div class="row currentStepTitleRow">
 	<div class="col-xs-12">
 		<div class="container">
-			<h2 class="current stepTitle">
+			<h2 class="current stepTitle" id="step2">
 				<span class="current stepTitleNumber">2</span>
 				<#if formMessages.calendarTitle?? && formMessages.calendarTitle != ''>
-				${formMessages.calendarTitle}
+					${formMessages.calendarTitle}
 				</#if>
 			</h2>
 		</div>
@@ -96,7 +96,7 @@
 	var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
-    var strEndingDateOfDisplay = '${str_ending_date_of_display}';
+		var strEndingDateOfDisplay = '${str_ending_date_of_display}';
     var endingDateOfDisplay = '${ending_date_of_display}';
     var dow = [
 		<#if dow??>								   

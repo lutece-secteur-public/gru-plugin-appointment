@@ -4,9 +4,9 @@
 			<h2 class="stepTitle next">
 				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
 				<#if form.displayTitleFo && form.title != "" >
-					<p>${form.title}</p>
+					${form.title}
 				<#else>
-					<p>#i18n{appointment.appointmentApp.defaultTitle}</p>
+					#i18n{appointment.appointmentApp.defaultTitle}
 				</#if>
 			</h2>
 		</div>
@@ -43,7 +43,7 @@
 					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}&date_of_display=${date_of_display}">
+					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}&date_of_display=${date_of_display}#step2">
 						<i class="fa fa-pencil"></i> #i18n{portal.util.labelModify}
 					</a>
 				</div>
@@ -54,7 +54,7 @@
 <div class="row currentStepTitleRow">
 	<div class="col-xs-12">
 		<div class="container">
-			<h2 class="current stepTitle">
+			<h2 class="current stepTitle" id="step3">
 				<span class="current stepTitleNumber">3</span>
 				#i18n{appointment.appointmentApp.enteringInformation}
 			</h2>
@@ -70,6 +70,7 @@
 				<input name="id_form" value="${form.idForm}" type="hidden">
 				<input type="hidden" name="date_of_display" value="${date_of_display}">
 				<input name="session" value="session" type="hidden">
+				<input name="anchor" value="step4" type="hidden">
 				
 				<div class="row">
 					<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
@@ -124,7 +125,7 @@
 								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
-											<label class="col-xs-12" for="lastname">${formMessages.fieldLastNameTitle!} *</label>
+											<label class="col-xs-12 control-label" for="lastname">${formMessages.fieldLastNameTitle!} *</label>
 											<div class="col-xs-12">
 												<input type="text" class="form-control" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
 												<#if formGroupError!=''>
@@ -157,7 +158,7 @@
 								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
-											<label class="col-xs-12" for="firstname">${formMessages.fieldFirstNameTitle!} *</label>
+											<label class="col-xs-12 control-label" for="firstname">${formMessages.fieldFirstNameTitle!} *</label>
 											<div class="col-xs-12">
 												<input type="text" class="form-control" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
 												<#if formGroupError!=''>
@@ -193,8 +194,8 @@
 								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
-											<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="email">${formMessages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if></label>
-											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<label class="col-xs-12 control-label" for="email">${formMessages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if></label>
+											<div class="col-xs-12">
 												<input type="text" class="form-control" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
 												<#if formGroupError!=''>
 													${formGroupError}
@@ -225,8 +226,8 @@
 								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
-											<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
-											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<label class="col-xs-12 control-label" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
+											<div class="col-xs-12">
 												<input type="text" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
 												<#if formGroupError!=''>
 													${formGroupError}
@@ -257,8 +258,8 @@
 										</#if>
 									</#if>
 									<div class="form-group <#if formGroupError!=''>has-error</#if>">
-										<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										<label class="col-xs-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
+										<div class="col-xs-12">
 											<input type="text"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" onchange="this.value = minmax(this.value, 1, ${nbplaces})" onkeypress='return validateQty(event);'>
 											<#if formGroupError!=''>
 												${formGroupError}
@@ -278,7 +279,7 @@
 					</div>
 					<div class="col-xs-12 text-center" style="margin:20px 0;">
 						<div class="form-group">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<div class="col-xs-12">
 								<button type="reset" name="reset" class="btn btn-primary btn-sm">
 									<i class="fa fa-refresh"></i>
 									<span class="hidden-xs">&nbsp;#i18n{appointment.displayAppointmentForm.labelReset}</span>
