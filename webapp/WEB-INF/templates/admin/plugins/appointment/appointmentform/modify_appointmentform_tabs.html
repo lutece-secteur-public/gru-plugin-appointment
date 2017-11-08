@@ -149,11 +149,13 @@
                             loadresource = document.createElement('script');
                             loadresource.setAttribute("type", "text/javascript");
                             loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
+                            loadresource.async = false;
                             document.getElementsByTagName("head")[0].appendChild(loadresource);
 
                             loadresource = document.createElement('script');
                             loadresource.setAttribute("type", "text/javascript");
                             loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
+                            loadresource.async = false;
                             document.getElementsByTagName("head")[0].appendChild(loadresource);
 
                             loadresource = document.createElement('script');
