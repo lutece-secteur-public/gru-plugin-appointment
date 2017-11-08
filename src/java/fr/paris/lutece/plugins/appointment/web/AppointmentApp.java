@@ -368,7 +368,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM, form );
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay);
+        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
         model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
