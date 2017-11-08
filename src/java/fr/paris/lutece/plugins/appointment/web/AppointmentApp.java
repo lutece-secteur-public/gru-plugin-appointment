@@ -169,7 +169,8 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_IS_OPEN = "is_open";
     private static final String PARAMETER_IS_SPECIFIC = "is_specific";
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
-    private static final String PARAMETER_NB_WEEKS_TO_DISPLAY = "nb_weeks_to_display";
+    private static final String PARAMETER_ENDING_DATE_OF_DISPLAY = "ending_date_of_display";
+    private static final String PARAMETER_STR_ENDING_DATE_OF_DISPLAY = "str_ending_date_of_display";
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
     private static final String PARAMETER_DAY_OF_WEEK = "dow";
     private static final String PARAMETER_ID_FORM = "id_form";
@@ -340,7 +341,7 @@ public class AppointmentApp extends MVCApplication
         List<Slot> listSlot = new ArrayList<>( );
         if ( !bError )
         {
-            listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, nNbWeeksToDisplay );
+            listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
             // Get the min time from now before a user can take an appointment
             // (in hours)
             FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
@@ -367,7 +368,8 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM, form );
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
-        model.put( PARAMETER_NB_WEEKS_TO_DISPLAY, nNbWeeksToDisplay );
+        model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay);
+        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listSlot );

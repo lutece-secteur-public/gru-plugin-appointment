@@ -111,7 +111,7 @@ public final class SlotService
      *            the number of weeks to build
      * @return a list of all the slots built
      */
-    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, int nNbWeeksToDisplay )
+    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
     {
         List<Slot> listSlot = new ArrayList<>( );
         // Get all the reservation rules
@@ -140,17 +140,14 @@ public final class SlotService
         {
             startingDateToUse = firstDateOfReservationRule;
         }
-        // Add the nb weeks to display to have the ending date (and get the last
-        // day of the week : Sunday)
-        LocalDate endingDateToDisplay = startingDateToUse.plusWeeks( nNbWeeksToDisplay ).with( DayOfWeek.SUNDAY );
         // Get all the closing day of this period
-        List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange( nIdForm, startingDateToUse, endingDateToDisplay );
+        List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange( nIdForm, startingDateToUse, endingDate );
         // Get all the slot between these two dates
         HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange( nIdForm, startingDateToUse.atStartOfDay( ),
-                endingDateToDisplay.atTime( LocalTime.MAX ) );
+        		endingDate.atTime( LocalTime.MAX ) );
 
         // Get or build all the event for the period
-        while ( dateTemp.isBefore( endingDateToDisplay ) && !dateTemp.isAfter( endingDateToDisplay ) )
+        while ( !dateTemp.isAfter( endingDate ) )
         {
             dateToCompare = dateTemp;
             // Find the closest date of apply of week definition with the given

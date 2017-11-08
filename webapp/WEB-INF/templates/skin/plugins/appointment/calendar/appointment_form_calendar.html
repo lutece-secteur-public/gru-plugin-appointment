@@ -96,6 +96,8 @@
 	var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
+    var strEndingDateOfDisplay = '${str_ending_date_of_display}';
+    var endingDateOfDisplay = '${ending_date_of_display}';
     var dow = [
 		<#if dow??>								   
 			<#list dow as day>
@@ -103,7 +105,6 @@
 			</#list>
 		</#if>				
 	];
-    var nbMaxWeeks = '${nb_weeks_to_display}';
     var eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';    
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
@@ -149,7 +150,7 @@
 							autoclose: true,
                             language:'fr',
 							startDate: "today",
-							endDate: '+' + nbMaxWeeks + 'w'
+							endDate: strEndingDateOfDisplay
 						});
 						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
 						//Below are required for manipulating dynamically created datepicker on custom button click
@@ -193,7 +194,7 @@
 			events: events,
 			viewRender: function(view, element) {
 				var minDate = moment();
-				var maxDate = moment().add(nbMaxWeeks, 'weeks');
+				var maxDate = moment(endingDateOfDisplay);
 				// Past
 				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
 					$(".fc-prev-button").prop('disabled', true); 
