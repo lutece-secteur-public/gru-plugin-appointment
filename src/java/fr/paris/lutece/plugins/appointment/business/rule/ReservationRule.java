@@ -29,13 +29,13 @@ public class ReservationRule extends AbstractDateConversion implements Serializa
      * Maximum capacity for a slot
      */
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nMaxCapacityPerSlot;
+    private int _nMaxCapacityPerSlot = 1;
 
     /**
      * Maximum number of people authorized for an appointment
      */
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nMaxPeoplePerAppointment;
+    private int _nMaxPeoplePerAppointment = 1;
 
     /**
      * The Form Id the Reservation Rule belongs to (foreign key)
