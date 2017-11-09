@@ -264,7 +264,7 @@ public class AppointmentApp extends MVCApplication {
 	@SuppressWarnings("unchecked")
 	@View(VIEW_APPOINTMENT_CALENDAR)
 	public XPage getViewAppointmentCalendar(HttpServletRequest request) {
-		clearSession(request);
+		// clearSession(request);
 		AppointmentUtilities.killTimer(request);
 		int nIdForm = Integer.parseInt(request.getParameter(PARAMETER_ID_FORM));
 		Map<String, Object> model = getModel();
@@ -322,13 +322,22 @@ public class AppointmentApp extends MVCApplication {
 		}
 		// Get all the week definitions
 		HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition(nIdForm);
-		List<WeekDefinition> listWeekDefinition = new ArrayList<WeekDefinition>(mapWeekDefinition.values());
+		List<WeekDefinition> listWeekDefinition = new ArrayList<>(mapWeekDefinition.values());				 
+		// Filter on the list of weekdefinition on the starting date and the ending date of display
+		if (listWeekDefinition.size() > 1) {
+			WeekDefinition weekDefinitionClosest = WeekDefinitionService
+					.findWeekDefinitionByIdFormAndClosestToDateOfApply(nIdForm, startingDateOfDisplay);
+			LocalDate dateOfClosestWeekDefinition = weekDefinitionClosest.getDateOfApply();
+			LocalDate maxEndingDateOfWeekDefinition = endingDateOfDisplay;
+			listWeekDefinition = listWeekDefinition.stream()
+					.filter(w -> (w.getDateOfApply().isEqual(dateOfClosestWeekDefinition) || w.getDateOfApply().isAfter(dateOfClosestWeekDefinition))
+							&& (w.getDateOfApply().isBefore(maxEndingDateOfWeekDefinition) || w.getDateOfApply().isEqual(maxEndingDateOfWeekDefinition)))
+					.collect(Collectors.toList());
+		}
 		// Get the min time of all the week definitions
 		LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition(listWeekDefinition);
 		// Get the max time of all the week definitions
 		LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition(listWeekDefinition);
-		// Get the min duration of an appointment of all the week definitions
-		int nMinDuration = WeekDefinitionService.getMinDurationTimeSlotOfAListOfWeekDefinition(listWeekDefinition);
 		// Get all the working days of all the week definitions
 		List<String> listDayOfWeek = new ArrayList<>(
 				WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition(listWeekDefinition));
@@ -364,11 +373,10 @@ public class AppointmentApp extends MVCApplication {
 		model.put(PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay);
 		model.put(PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format(Utilities.getFormatter()));
 		model.put(PARAMETER_DATE_OF_DISPLAY, dateOfDisplay);
-		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
-		model.put(PARAMETER_MIN_TIME, minStartingTime);
-		model.put(PARAMETER_MAX_TIME, maxEndingTime);
-		model.put(PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes(nMinDuration));
-
+		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);	
+		model.put(PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay(minStartingTime));		
+		model.put(PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay(maxEndingTime));		
+		model.put(PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes(AppointmentUtilities.THIRTY_MINUTES));
 		Locale locale = getLocale(request);
 		CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey(display.getIdCalendarTemplate());
 		List<String> listHiddenDays = new ArrayList<>();

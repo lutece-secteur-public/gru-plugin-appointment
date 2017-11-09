@@ -60,6 +60,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
@@ -495,9 +496,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Get the min time of all the week definitions
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
         // Get the max time of all the week definitions
-        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
-        // Get the min duration of an appointment of all the week definitions
-        int nMinDuration = WeekDefinitionService.getMinDurationTimeSlotOfAListOfWeekDefinition( listWeekDefinition );
+        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );        
         // Get all the working days of all the week definitions
         List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );
         // Build the slots
@@ -516,7 +515,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( PARAMETER_EVENTS, listSlot );
         model.put( PARAMETER_MIN_TIME, minStartingTime );
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( nMinDuration ) );
+        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
         AppointmentFormJspBean.addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, model );

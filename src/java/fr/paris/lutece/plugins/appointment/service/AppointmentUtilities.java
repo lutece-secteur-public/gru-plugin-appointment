@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -95,6 +96,7 @@ public final class AppointmentUtilities
 
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
+    public static final int THIRTY_MINUTES = 30;
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -774,6 +776,26 @@ public final class AppointmentUtilities
         }
 
         return retour;
+    }
+    
+    public static LocalTime getMinTimeToDisplay(LocalTime minStartingTime){
+    	LocalTime minStartingTimeToDisplay;
+    	if (minStartingTime.getMinute() < THIRTY_MINUTES) {
+			minStartingTimeToDisplay = LocalTime.of(minStartingTime.getHour(), 0);
+		} else {
+			minStartingTimeToDisplay = LocalTime.of(minStartingTime.getHour(), THIRTY_MINUTES);
+		}
+    	return minStartingTimeToDisplay;
+    }
+    
+    public static LocalTime getMaxTimeToDisplay(LocalTime maxEndingTime){
+    	LocalTime maxEndingTimeToDisplay;
+    	if (maxEndingTime.getMinute() < THIRTY_MINUTES) {
+			maxEndingTimeToDisplay = LocalTime.of(maxEndingTime.getHour(), THIRTY_MINUTES);
+		} else {
+			maxEndingTimeToDisplay = LocalTime.of(maxEndingTime.getHour() + 1, 0);
+		}
+    	return maxEndingTimeToDisplay;
     }
 
 }
