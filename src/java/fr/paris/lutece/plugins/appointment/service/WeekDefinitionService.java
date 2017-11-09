@@ -396,7 +396,7 @@ public final class WeekDefinitionService
      * Get the working days integer enum values of a list of week definitions
      * 
      * @param listWeekDefinition
-     *            the list of week deifnitions
+     *            the list of week definitions
      * @return a set of the working days (integer value in a week : 1-> Monday ...)
      */
     public static HashSet<String> getSetDayOfWeekOfAListOfWeekDefinition( List<WeekDefinition> listWeekDefinition )

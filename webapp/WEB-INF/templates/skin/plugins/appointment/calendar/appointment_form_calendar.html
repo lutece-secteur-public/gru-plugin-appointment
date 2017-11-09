@@ -96,15 +96,22 @@
 	var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
-		var strEndingDateOfDisplay = '${str_ending_date_of_display}';
+	var strEndingDateOfDisplay = '${str_ending_date_of_display}';
     var endingDateOfDisplay = '${ending_date_of_display}';
     var dow = [
 		<#if dow??>								   
 			<#list dow as day>
-				'${day}',								
+				${day},								
 			</#list>
 		</#if>				
 	];
+    var hiddenDays = [
+        <#if hidden_days??>								   
+        	<#list hidden_days as hidden_day>
+            	${hidden_day},								
+            </#list>
+         </#if>
+    ];
     var eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';    
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
@@ -129,6 +136,7 @@
 	var defaultDate = '${date_of_display}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
+			hiddenDays: hiddenDays,
             buttonText : {
                 prev : '#i18n{appointment.appointmentApp.previousWeek}',
                 next : '#i18n{appointment.appointmentApp.nextWeek}',

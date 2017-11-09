@@ -631,7 +631,7 @@ public final class SlotService
         // Get all the slot between these two dates
         HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange( nIdForm, startingDate.atStartOfDay( ),
                 endingDate.atTime( LocalTime.MAX ) );
-        while ( !bFreeSlotFound && ( currentDateOfSearch.isBefore( endingDate ) || !currentDateOfSearch.equals( endingDate ) ) )
+        while ( !bFreeSlotFound && ( currentDateOfSearch.isBefore( endingDate ) || !currentDateOfSearch.isAfter( endingDate ) ) )
         {
             if ( !listClosingDate.contains( currentDateOfSearch ) )
             {
