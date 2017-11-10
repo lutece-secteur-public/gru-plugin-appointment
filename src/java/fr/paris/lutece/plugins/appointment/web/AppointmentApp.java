@@ -271,7 +271,6 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_CALENDAR )
     public XPage getViewAppointmentCalendar( HttpServletRequest request )
     {
-    	clearSession(request);
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Map<String, Object> model = getModel( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
@@ -988,20 +987,6 @@ public class AppointmentApp extends MVCApplication
         }
 
         return _captchaSecurityService;
-    }
-
-    /**
-     * Clear the user's session
-     * 
-     * @param request
-     *            the request
-     */
-    private void clearSession( HttpServletRequest request )
-    {
-        request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
-        request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
     }
 
     /**
