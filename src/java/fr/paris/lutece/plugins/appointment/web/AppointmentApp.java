@@ -265,8 +265,7 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_CALENDAR )
     public XPage getViewAppointmentCalendar( HttpServletRequest request )
     {
-        // clearSession(request);
-        AppointmentUtilities.killTimer( request );
+    	clearSession(request);
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Map<String, Object> model = getModel( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );

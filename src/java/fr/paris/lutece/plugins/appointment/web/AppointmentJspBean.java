@@ -304,7 +304,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String getViewCalendarManageAppointments( HttpServletRequest request )
     {
         cleanSession( request.getSession( ) );
-        AppointmentUtilities.killTimer( request );
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         AppointmentDTO appointmentDTO = null;
         if ( StringUtils.isNotEmpty( strIdAppointment ) )
