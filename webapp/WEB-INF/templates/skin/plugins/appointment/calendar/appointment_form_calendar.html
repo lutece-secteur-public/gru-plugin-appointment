@@ -135,6 +135,8 @@
 		</#if>
 	];
 	var defaultDate = '${date_of_display}';
+    var dayView = '${day_view}';
+    var weekView = '${week_view}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
             themeSystem: 'jquery-ui',
@@ -146,14 +148,14 @@
             },
 			hiddenDays: hiddenDays,
 			defaultDate: defaultDate,
-			defaultView: 'agendaWeek',
+			defaultView: weekView,
 			height: 'auto',
 			locale: 'fr',
-			theme: true,                    
+			theme: true,
 			editable: false,
 			customButtons: {
-				datePicker: {                    
-					themeIcon: 'calendar',
+				datePicker: {
+                    themeIcon: 'calendar',
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
@@ -209,7 +211,7 @@
                     placement : 'top',
                     html : true,
                     trigger : 'hover',
-                    content : event.start.format('ddd Do MMM YYYY') + '</br> #i18n{appointment.labelFrom} ' + event.start.format('H:mm') + '</br> #i18n{appointment.labelTo} ' + event.end.format('H:mm')
+                    content : event.start.format('ddd Do MMM') + '</br> #i18n{appointment.labelFrom} <b>' + event.start.format('H:mm') + '</b></br> #i18n{appointment.labelTo} <b>' + event.end.format('H:mm')+'</b>'
                 });
             },
 			viewRender: function(view, element) {
@@ -241,13 +243,9 @@
 			},
 			windowResize: function(view) {
 			        if ($(window).width() < 1050){
-			            $('#calendar').fullCalendar( 'changeView', 'agendaDay' );	
-						$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
-						$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
+			            $('#calendar').fullCalendar( 'changeView', dayView );
 			        } else {
-			            $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );						
-						$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
-						$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
+			            $('#calendar').fullCalendar( 'changeView', weekView );
 			        }
 			},
 		});

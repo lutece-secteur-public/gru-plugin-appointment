@@ -1,5 +1,6 @@
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow.css' />
+<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
@@ -134,22 +135,27 @@
 		</#if>
 	];
 	var defaultDate = '${date_of_display}';
+    var dayView = '${day_view}';
+    var weekView = '${week_view}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
-			hiddenDays: hiddenDays,
-            buttonText : {
-                prev : '#i18n{appointment.appointmentApp.previousWeek}',
-                next : '#i18n{appointment.appointmentApp.nextWeek}',
+            themeSystem: 'jquery-ui',
+            themeButtonIcons: {
+                prev: 'triangle-1-w',
+                next: 'triangle-1-e',
+                prevYear: 'seek-prev',
+                nextYear: 'seek-next'
             },
+			hiddenDays: hiddenDays,
 			defaultDate: defaultDate,
-			defaultView: 'agendaWeek',
+			defaultView: weekView,
 			height: 'auto',
 			locale: 'fr',
-			theme: true,                    
+			theme: true,
 			editable: false,
 			customButtons: {
-				datePicker: {                    
-					text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',                    
+				datePicker: {
+                    themeIcon: 'calendar',
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
@@ -176,7 +182,7 @@
 			// header
 			header: {
 				left: 'prev',
-				center: 'today, datePicker, title',
+				center: 'datePicker, title',
 				right: 'next'
 			},
 			columnFormat: columnFormat,
@@ -196,10 +202,18 @@
 						|| event.title == '#i18n{appointment.manageCalendarSlots.labelEditFull}') {
 					return false;
 				} else {
-					location.href = event.url;							
+					location.href = event.url;
 				}
-			},			
+			},
 			events: events,
+            eventRender: function(event, element) {
+                $(element).popover({
+                    placement : 'top',
+                    html : true,
+                    trigger : 'hover',
+                    content : event.start.format('ddd Do MMM') + '</br> #i18n{appointment.labelFrom} <b>' + event.start.format('H:mm') + '</b></br> #i18n{appointment.labelTo} <b>' + event.end.format('H:mm')+'</b>'
+                });
+            },
 			viewRender: function(view, element) {
 				var minDate = moment();
 				var maxDate = moment(endingDateOfDisplay);
@@ -229,13 +243,9 @@
 			},
 			windowResize: function(view) {
 			        if ($(window).width() < 1050){
-			            $('#calendar').fullCalendar( 'changeView', 'agendaDay' );	
-						$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
-						$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
+			            $('#calendar').fullCalendar( 'changeView', dayView );
 			        } else {
-			            $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );						
-						$('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
-						$('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
+			            $('#calendar').fullCalendar( 'changeView', weekView );
 			        }
 			},
 		});

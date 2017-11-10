@@ -190,7 +190,9 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_REF_APPOINTMENT = "refAppointment";
     private static final String PARAMETER_FROM_MY_APPOINTMENTS = "fromMyappointments";
     private static final String PARAMETER_REFERER = "referer";
-
+    private static final String PARAMETER_WEEK_VIEW = "week_view";
+    private static final String PARAMETER_DAY_VIEW = "day_view";
+    
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
@@ -255,6 +257,10 @@ public class AppointmentApp extends MVCApplication
     private static final String PROPERTY_USER_ATTRIBUTE_PREFERED_NAME = "appointment.userAttribute.preferred_username";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
 
+    private static final String AGENDA_WEEK = "agendaWeek";
+    private static final String BASIC_WEEK = "basicWeek";
+    private static final String AGENDA_DAY = "agendaDay";
+    private static final String BASIC_DAY = "basicDay";
     /**
      * Get the calendar view
      * 
@@ -389,6 +395,8 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( display.getIdCalendarTemplate( ) );
         List<String> listHiddenDays = new ArrayList<>( );
+        String dayView = AGENDA_DAY;
+        String weekView = AGENDA_WEEK;
         for ( int i = 0; i < 7; i++ )
         {
             listHiddenDays.add( Integer.toString( i ) );
@@ -397,21 +405,31 @@ public class AppointmentApp extends MVCApplication
         {
             case CalendarTemplate.CALENDAR:
                 listHiddenDays.clear( );
+                dayView = AGENDA_DAY;
+                weekView = AGENDA_WEEK;
                 break;
             case CalendarTemplate.CALENDAR_OPEN_DAYS:
                 listHiddenDays.removeAll( listDayOfWeek );
+                dayView = AGENDA_DAY;
+                weekView = AGENDA_WEEK;
                 break;
             case CalendarTemplate.FREE_SLOTS:
                 listSlots = listSlots.stream( ).filter( s -> ( ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).collect( Collectors.toList( ) );
                 listHiddenDays.clear( );
+                dayView = BASIC_DAY;
+                weekView = BASIC_WEEK;
                 break;
             case CalendarTemplate.FREE_SLOTS_ON_OPEN_DAYS:
                 listSlots = listSlots.stream( ).filter( s -> ( ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).collect( Collectors.toList( ) );
                 listHiddenDays.removeAll( listDayOfWeek );
+                dayView = BASIC_DAY;
+                weekView = BASIC_WEEK;
                 break;
         }
         model.put( PARAMETER_EVENTS, listSlots );
         model.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );
+        model.put(PARAMETER_DAY_VIEW, dayView);
+        model.put(PARAMETER_WEEK_VIEW, weekView);        
         HtmlTemplate template = AppTemplateService.getTemplate( calendarTemplate.getTemplatePath( ), locale, model );
         XPage xpage = new XPage( );
         xpage.setContent( template.getHtml( ) );
