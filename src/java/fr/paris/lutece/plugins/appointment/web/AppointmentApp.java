@@ -619,7 +619,7 @@ public class AppointmentApp extends MVCApplication
         if ( appointment == null )
         {
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
-        }
+        }        
         AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         Map<String, Object> model = new HashMap<String, Object>( );
         if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
@@ -632,6 +632,7 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointment, request, locale ) );
         model.put( MARK_FORM, form );
+        model.put( PARAMETER_DATE_OF_DISPLAY, appointment.getSlot( ).getDate( ) );
         return getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
     }
 
