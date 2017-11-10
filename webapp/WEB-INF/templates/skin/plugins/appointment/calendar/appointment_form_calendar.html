@@ -200,10 +200,18 @@
 						|| event.title == '#i18n{appointment.manageCalendarSlots.labelEditFull}') {
 					return false;
 				} else {
-					location.href = event.url;							
+					location.href = event.url;
 				}
-			},			
+			},
 			events: events,
+            eventRender: function(event, element) {
+                $(element).popover({
+                    placement : 'top',
+                    html : true,
+                    trigger : 'hover',
+                    content : event.start.format('ddd Do MMM YYYY') + '</br> #i18n{appointment.labelFrom} ' + event.start.format('H:mm') + '</br> #i18n{appointment.labelTo} ' + event.end.format('H:mm')
+                });
+            },
 			viewRender: function(view, element) {
 				var minDate = moment();
 				var maxDate = moment(endingDateOfDisplay);
