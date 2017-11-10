@@ -115,15 +115,19 @@
     ];
     var eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';    
     var columnFormat = 'dddd DD/MM/YYYY';
+    var defaultDate = '${date_of_display}';
+    var dayView = '${day_view}';
+    var weekView = '${week_view}';
     var events = [
 		<#if events??>								   
 			<#list events as event>
 				{
-					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>'${formMessages.calendarReserveLabel}'
+					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces) & ('${day_view}' == 'agendaDay' || '${week_view}' == 'agendaWeek')>'${formMessages.calendarReserveLabel}'
 							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>'#i18n{appointment.manageCalendarSlots.labelEdit}'							
 							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
-							<#elseif event.isOpen>'${formMessages.calendarFullLabel}'
-							<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if>,		
+							<#elseif event.isOpen & (event.nbRemainingPlaces = 0)>'${formMessages.calendarFullLabel}'
+							<#elseif !event.isOpen>'#i18n{appointment.manageCalendarSlots.labelClosed}'
+                            <#else>''</#if>,		
 					className : <#if event.isOpen & (event.nbRemainingPlaces > 0) >''
 								<#elseif event.isOpen>'slot-full'<#else>'slot-closed'</#if>,
 					start : '${event.startingDateTime}',
@@ -134,11 +138,10 @@
 			</#list>
 		</#if>
 	];
-	var defaultDate = '${date_of_display}';
-    var dayView = '${day_view}';
-    var weekView = '${week_view}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
+            displayEventEnd: true,
+            timeFormat: 'H:mm',
             themeSystem: 'jquery-ui',
             themeButtonIcons: {
                 prev: 'triangle-1-w',
@@ -208,7 +211,7 @@
 			events: events,
             eventRender: function(event, element) {
                 $(element).popover({
-                    placement : 'top',
+                    placement : 'bottom',
                     html : true,
                     trigger : 'hover',
                     content : event.start.format('ddd Do MMM') + '</br> #i18n{appointment.labelFrom} <b>' + event.start.format('H:mm') + '</b></br> #i18n{appointment.labelTo} <b>' + event.end.format('H:mm')+'</b>'
