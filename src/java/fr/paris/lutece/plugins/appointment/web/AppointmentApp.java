@@ -192,7 +192,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_REFERER = "referer";
     private static final String PARAMETER_WEEK_VIEW = "week_view";
     private static final String PARAMETER_DAY_VIEW = "day_view";
-    
+
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
@@ -261,6 +261,7 @@ public class AppointmentApp extends MVCApplication
     private static final String BASIC_WEEK = "basicWeek";
     private static final String AGENDA_DAY = "agendaDay";
     private static final String BASIC_DAY = "basicDay";
+
     /**
      * Get the calendar view
      * 
@@ -427,8 +428,8 @@ public class AppointmentApp extends MVCApplication
         }
         model.put( PARAMETER_EVENTS, listSlots );
         model.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );
-        model.put(PARAMETER_DAY_VIEW, dayView);
-        model.put(PARAMETER_WEEK_VIEW, weekView);        
+        model.put( PARAMETER_DAY_VIEW, dayView );
+        model.put( PARAMETER_WEEK_VIEW, weekView );
         HtmlTemplate template = AppTemplateService.getTemplate( calendarTemplate.getTemplatePath( ), locale, model );
         XPage xpage = new XPage( );
         xpage.setContent( template.getHtml( ) );
