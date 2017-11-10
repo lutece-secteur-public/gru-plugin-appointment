@@ -97,6 +97,7 @@ public final class AppointmentUtilities
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
     public static final int THIRTY_MINUTES = 30;
+
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -777,25 +778,47 @@ public final class AppointmentUtilities
 
         return retour;
     }
-    
-    public static LocalTime getMinTimeToDisplay(LocalTime minStartingTime){
-    	LocalTime minStartingTimeToDisplay;
-    	if (minStartingTime.getMinute() < THIRTY_MINUTES) {
-			minStartingTimeToDisplay = LocalTime.of(minStartingTime.getHour(), 0);
-		} else {
-			minStartingTimeToDisplay = LocalTime.of(minStartingTime.getHour(), THIRTY_MINUTES);
-		}
-    	return minStartingTimeToDisplay;
+
+    /**
+     * Return the min starting time to display
+     * 
+     * @param minStartingTime
+     *            the min starting time
+     * @return 00 if the minstarting time is under 30, 30 otherwise
+     */
+    public static LocalTime getMinTimeToDisplay( LocalTime minStartingTime )
+    {
+        LocalTime minStartingTimeToDisplay;
+        if ( minStartingTime.getMinute( ) < THIRTY_MINUTES )
+        {
+            minStartingTimeToDisplay = LocalTime.of( minStartingTime.getHour( ), 0 );
+        }
+        else
+        {
+            minStartingTimeToDisplay = LocalTime.of( minStartingTime.getHour( ), THIRTY_MINUTES );
+        }
+        return minStartingTimeToDisplay;
     }
-    
-    public static LocalTime getMaxTimeToDisplay(LocalTime maxEndingTime){
-    	LocalTime maxEndingTimeToDisplay;
-    	if (maxEndingTime.getMinute() < THIRTY_MINUTES) {
-			maxEndingTimeToDisplay = LocalTime.of(maxEndingTime.getHour(), THIRTY_MINUTES);
-		} else {
-			maxEndingTimeToDisplay = LocalTime.of(maxEndingTime.getHour() + 1, 0);
-		}
-    	return maxEndingTimeToDisplay;
+
+    /**
+     * Return the max ending time to display
+     * 
+     * @param maxEndingTime
+     *            the max ending time
+     * @return 30 if the maxending time is under 30, otherwise the next hour
+     */
+    public static LocalTime getMaxTimeToDisplay( LocalTime maxEndingTime )
+    {
+        LocalTime maxEndingTimeToDisplay;
+        if ( maxEndingTime.getMinute( ) < THIRTY_MINUTES )
+        {
+            maxEndingTimeToDisplay = LocalTime.of( maxEndingTime.getHour( ), THIRTY_MINUTES );
+        }
+        else
+        {
+            maxEndingTimeToDisplay = LocalTime.of( maxEndingTime.getHour( ) + 1, 0 );
+        }
+        return maxEndingTimeToDisplay;
     }
 
 }

@@ -496,7 +496,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Get the min time of all the week definitions
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
         // Get the max time of all the week definitions
-        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );        
+        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
         // Get all the working days of all the week definitions
         List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );
         // Build the slots

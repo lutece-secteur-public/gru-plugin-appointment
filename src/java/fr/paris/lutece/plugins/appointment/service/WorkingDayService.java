@@ -310,11 +310,12 @@ public final class WorkingDayService
         HashSet<String> setDayOfWeek = new HashSet<>( );
         for ( WorkingDay workingDay : listWorkingDay )
         {
-        	int dow = workingDay.getDayOfWeek( ); 
-        	if ( dow == DayOfWeek.SUNDAY.getValue()){
-        		// The fullCalendar library is zero-base (Sunday=0) 
-        		dow = 0;
-        	}
+            int dow = workingDay.getDayOfWeek( );
+            if ( dow == DayOfWeek.SUNDAY.getValue( ) )
+            {
+                // The fullCalendar library is zero-base (Sunday=0)
+                dow = 0;
+            }
             setDayOfWeek.add( Integer.toString( dow ) );
         }
         return setDayOfWeek;

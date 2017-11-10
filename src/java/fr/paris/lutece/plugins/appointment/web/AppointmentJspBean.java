@@ -362,7 +362,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         List<WeekDefinition> listWeekDefinition = new ArrayList<WeekDefinition>( mapWeekDefinition.values( ) );
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
-        List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );        
+        List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );
         if ( !bError )
         {
             listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
