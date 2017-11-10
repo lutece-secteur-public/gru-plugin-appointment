@@ -1,5 +1,6 @@
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow.css' />
+<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
@@ -136,11 +137,14 @@
 	var defaultDate = '${date_of_display}';
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
-			hiddenDays: hiddenDays,
-            buttonText : {
-                prev : '#i18n{appointment.appointmentApp.previousWeek}',
-                next : '#i18n{appointment.appointmentApp.nextWeek}',
+            themeSystem: 'jquery-ui',
+            themeButtonIcons: {
+                prev: 'triangle-1-w',
+                next: 'triangle-1-e',
+                prevYear: 'seek-prev',
+                nextYear: 'seek-next'
             },
+			hiddenDays: hiddenDays,
 			defaultDate: defaultDate,
 			defaultView: 'agendaWeek',
 			height: 'auto',
@@ -149,7 +153,7 @@
 			editable: false,
 			customButtons: {
 				datePicker: {                    
-					text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',                    
+					themeIcon: 'calendar',
 					click: function () {
 						var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
 						$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
