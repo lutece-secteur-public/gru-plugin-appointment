@@ -222,8 +222,9 @@
 				var maxDate = moment(endingDateOfDisplay);
 				// Past
 				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
-					$(".fc-prev-button").prop('disabled', true); 
-					$(".fc-prev-button").addClass('fc-state-disabled'); 
+					$(".fc-prev-button").prop('disabled', true);
+					$(".fc-prev-button").addClass('fc-state-disabled');
+                    $('.fc-prev-button').popover('hide');
 				} else {
 					$(".fc-prev-button").removeClass('fc-state-disabled'); 
 					$(".fc-prev-button").prop('disabled', false); 
@@ -232,6 +233,7 @@
 				if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
 					$(".fc-next-button").prop('disabled', true); 
 					$(".fc-next-button").addClass('fc-state-disabled');  
+                    $('.fc-next-button').popover('hide');
 				} else {
 					$(".fc-next-button").removeClass('fc-state-disabled'); 
 					$(".fc-next-button").prop('disabled', false); 
@@ -241,8 +243,22 @@
 				$('.fc-event').css('cursor', 'pointer');
 				$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
 				$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
-				$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
 				$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+                $('.fc-next-button').popover({
+                    placement : 'top',
+                    trigger : 'hover',
+                    content : '#i18n{appointment.appointmentApp.next}'
+                });
+                $('.fc-prev-button').popover({
+                    placement : 'top',
+                    trigger : 'hover',
+                    content : '#i18n{appointment.appointmentApp.prev}'
+                });
+                $('.fc-datePicker-button').popover({
+                    placement : 'top',
+                    trigger : 'hover',
+                    content : '#i18n{appointment.appointmentApp.calendar}'
+                });
 			},
 			windowResize: function(view) {
 			        if ($(window).width() < 1050){
