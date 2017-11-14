@@ -1,16 +1,12 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<script src="js/plugins/appointment/moment.min.js" ></script>
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
-<script src='js/plugins/appointment/jquery.min.js' ></script>
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/plugins/appointment/moment.min.js"></script>
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 <script src='js/plugins/appointment/locale-all.js' ></script>
-<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
-<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     	<@tabs tab="typicalWeek" appointmentform=appointmentform />
@@ -56,27 +52,29 @@
                     <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp" enctype="multipart/form-data" class="form-horizontal">
                     	<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
 						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_start">#i18n{appointment.createAppointmentForm.labelTimeStart}&nbsp;*&nbsp;:</label>
-							<div id="time_start" class="col-xs-12 col-sm-9 col-md-9 input-append">
-								<input id="time_start" name="time_start" data-format="hh:mm" type="text" value="${appointmentform.timeStart!''}"></input>
-								<span class="add-on">
-									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
-									</i>
-								</span>
-								<p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeStart.help}</p>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.createAppointmentForm.labelTimeEnd}&nbsp;*&nbsp;:</label>
-							<div id="time_end" class="col-xs-12 col-sm-9 col-md-9 input-append">
-								<input id="time_end" name="time_end" data-format="hh:mm" type="text" value="${appointmentform.timeEnd!''}"></input>
-								<span id="timeend" class="add-on">
-									<i data-time-icon="icon-time" data-date-icon="icon-calendar">
-									</i>
-								</span>
-								<p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeEnd.help}</p>
-							</div>
-						</div>	
+	                        <label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_start">#i18n{appointment.createAppointmentForm.labelTimeStart}&nbsp;*&nbsp;:</label>
+	                        <div class="col-xs-12 col-sm-9 col-md-9">
+	                            <div class='col-xs-2 input-group' id='time_start'>
+	                                <input id="time_start" name="time_start" type='text' class="form-control" value="${appointmentform.timeStart!''}"/>
+	                                <span class="input-group-addon">
+	                                    <span class="glyphicon glyphicon-time"></span>
+	                                </span>
+	                            </div>
+	                            <p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeStart.help}</p>
+	                        </div>
+                    	</div>
+                    	<div class="form-group">
+	                        <label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.createAppointmentForm.labelTimeEnd}&nbsp;*&nbsp;:</label>
+	                        <div class="col-xs-12 col-sm-9 col-md-9">
+	                            <div class='col-xs-2 input-group' id='time_end'>
+	                                <input id="time_end" name="time_end" type='text' class="form-control" value="${appointmentform.timeEnd!''}"/>
+	                                <span class="input-group-addon">
+	                                    <span class="glyphicon glyphicon-time"></span>
+	                                </span>
+	                            </div>
+	                            <p class="help-block">#i18n{appointment.createAppointmentForm.labelTimeEnd.help}</p>
+	                        </div>
+                    	</div>
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelDurationAppointments} * :</label>
 							<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -129,8 +127,8 @@
 		</fieldset>				
 	</div>
 </div>
-<script type="text/javascript">
-	$('#date_of_modification').datepicker({
+<script type="text/javascript">	
+$('#date_of_modification').datepicker({
     	language:		"${language}",
     	startDate: 		new Date(),
     	weekStart: 1,
@@ -138,15 +136,21 @@
     	todayHighLight: true,
     	autoclose: true
 	});
+$(function () {
+    $('#datetimepicker').datetimepicker({
+        format: 'HH:mm',
+        stepping: 5
+    });
     $('#time_start').datetimepicker({
-	      pickDate: false,
-		  pickSeconds: false
+	    format: 'HH:mm',
+        stepping: 5
 	});
 	$('#time_end').datetimepicker({
-		pickDate: false,
-	  	pickSeconds: false
+		format: 'HH:mm',
+        stepping: 5
 	});
-    function validateQty(event) {
+});
+function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
 	
 	if (event.keyCode == 8 || event.keyCode == 46
@@ -158,7 +162,7 @@
 	}
 	else return true;
 	};
-	var slotDuration = '${min_duration}';
+    var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
     var dow = [
@@ -215,5 +219,5 @@
 				$('.fc-event').css('cursor', 'pointer');
 			},
 		});        
-    });      
+    });     
 </script>

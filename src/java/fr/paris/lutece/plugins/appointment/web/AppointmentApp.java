@@ -192,7 +192,8 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_REFERER = "referer";
     private static final String PARAMETER_WEEK_VIEW = "week_view";
     private static final String PARAMETER_DAY_VIEW = "day_view";
-
+    private static final String PARAMETER_ANCHOR = "anchor";
+    
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
@@ -226,6 +227,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_COLON = ":";
     private static final String MARK_ICONS = "icons";
     private static final String MARK_ICON_NULL = "NULL";
+    private static final String MARK_ANCHOR = "#";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -553,6 +555,7 @@ public class AppointmentApp extends MVCApplication
         {
             page.setTitle( form.getTitle( ) );
         }
+       
         return page;
     }
 
@@ -600,7 +603,15 @@ public class AppointmentApp extends MVCApplication
         }
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
-        return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
+        String anchor = request.getParameter( PARAMETER_ANCHOR );        
+        if (StringUtils.isNotEmpty(anchor)){
+        	Map<String, String> additionalParameters = new HashMap<>( );
+        	additionalParameters.put(MARK_ANCHOR, anchor);
+        	return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters  );
+        } else {
+        	return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
+        }
+        
 
     }
 
@@ -633,7 +644,9 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointment, request, locale ) );
         model.put( MARK_FORM, form );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointment.getSlot( ).getDate( ) );
-        return getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
+        XPage page = getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );  
+        
+        return page;
     }
 
     /**

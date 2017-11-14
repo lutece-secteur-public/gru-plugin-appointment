@@ -87,13 +87,13 @@ public final class AppointmentForm extends ReservationRule implements RBACResour
     /**
      * The starting time of a working day
      */
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeStart;
 
     /**
      * The ending time of a working day
      */
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeEnd;
 
     /**
