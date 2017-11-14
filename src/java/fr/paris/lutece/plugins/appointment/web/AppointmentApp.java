@@ -39,6 +39,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -193,7 +194,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_WEEK_VIEW = "week_view";
     private static final String PARAMETER_DAY_VIEW = "day_view";
     private static final String PARAMETER_ANCHOR = "anchor";
-    
+
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
@@ -337,7 +338,8 @@ public class AppointmentApp extends MVCApplication
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<WeekDefinition> listWeekDefinition = new ArrayList<>( mapWeekDefinition.values( ) );
-        // Filter on the list of weekdefinition on the starting date and the ending date of display
+        // Filter on the list of weekdefinition on the starting date and the
+        // ending date of display
         if ( listWeekDefinition.size( ) > 1 )
         {
             WeekDefinition weekDefinitionClosest = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, startingDateOfDisplay );
@@ -456,6 +458,22 @@ public class AppointmentApp extends MVCApplication
     {
         AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        // Need to manage the anchor
+        String anchor = request.getParameter( PARAMETER_ANCHOR );
+        if ( StringUtils.isNotEmpty( anchor ) )
+        {
+            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
+            additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
+            additionalParameters.put( PARAMETER_ID_SLOT, request.getParameter( PARAMETER_ID_SLOT ) );
+            additionalParameters.put( PARAMETER_STARTING_DATE_TIME, request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+            additionalParameters.put( PARAMETER_ENDING_DATE_TIME, request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+            additionalParameters.put( PARAMETER_IS_OPEN, request.getParameter( PARAMETER_IS_OPEN ) );
+            additionalParameters.put( PARAMETER_IS_SPECIFIC, request.getParameter( PARAMETER_IS_SPECIFIC ) );
+            additionalParameters.put( PARAMETER_MAX_CAPACITY, request.getParameter( PARAMETER_MAX_CAPACITY ) );
+            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
+            return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
+
+        }
         int nIdForm = Integer.parseInt( strIdForm );
         if ( form == null )
         {
@@ -548,15 +566,14 @@ public class AppointmentApp extends MVCApplication
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM, locale, model );
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM, getLocale( request ), model );
-        XPage page = new XPage( );
-        page.setContent( template.getHtml( ) );
-        page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
+        XPage xPage = new XPage( );
+        xPage.setContent( template.getHtml( ) );
+        xPage.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
         if ( form.getDisplayTitleFo( ) )
         {
-            page.setTitle( form.getTitle( ) );
+            xPage.setTitle( form.getTitle( ) );
         }
-       
-        return page;
+        return xPage;
     }
 
     /**
@@ -603,16 +620,19 @@ public class AppointmentApp extends MVCApplication
         }
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
-        String anchor = request.getParameter( PARAMETER_ANCHOR );        
-        if (StringUtils.isNotEmpty(anchor)){
-        	Map<String, String> additionalParameters = new HashMap<>( );
-        	additionalParameters.put(MARK_ANCHOR, anchor);
-        	return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters  );
-        } else {
-        	return redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
+        XPage xPage = new XPage( );
+        String anchor = request.getParameter( PARAMETER_ANCHOR );
+        if ( StringUtils.isNotEmpty( anchor ) )
+        {
+            Map<String, String> additionalParameters = new HashMap<>( );
+            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
+            xPage = redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters );
         }
-        
-
+        else
+        {
+            xPage = redirectView( request, VIEW_DISPLAY_RECAP_APPOINTMENT );
+        }
+        return xPage;
     }
 
     /**
@@ -626,11 +646,18 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
+        String anchor = request.getParameter( PARAMETER_ANCHOR );
+        if ( StringUtils.isNotEmpty( anchor ) )
+        {
+            Map<String, String> additionalParameters = new HashMap<>( );
+            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
+            return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters );
+        }
         AppointmentDTO appointment = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
         if ( appointment == null )
         {
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
-        }        
+        }
         AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         Map<String, Object> model = new HashMap<String, Object>( );
         if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
@@ -644,9 +671,12 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointment, request, locale ) );
         model.put( MARK_FORM, form );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointment.getSlot( ).getDate( ) );
-        XPage page = getXPage( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );  
-        
-        return page;
+        XPage xPage = new XPage( );
+        HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
+        xPage.setContent( t.getHtml( ) );
+        xPage.setTitle( getDefaultPageTitle( locale ) );
+        xPage.setPathLabel( getDefaultPagePath( locale ) );
+        return xPage;
     }
 
     /**
@@ -708,7 +738,21 @@ public class AppointmentApp extends MVCApplication
         AppointmentUtilities.killTimer( request );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
-        return redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointment.getIdForm( ), PARAMETER_ID_APPOINTMENT, nIdAppointment );
+        XPage xPage = new XPage( );
+        String anchor = request.getParameter( PARAMETER_ANCHOR );
+        if ( StringUtils.isNotEmpty( anchor ) )
+        {
+            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
+            additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ) );
+            additionalParameters.put( PARAMETER_ID_APPOINTMENT, String.valueOf( nIdAppointment ) );
+            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
+            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, additionalParameters );
+        }
+        else
+        {
+            xPage = redirect( request, VIEW_GET_APPOINTMENT_CREATED, PARAMETER_ID_FORM, appointment.getIdForm( ), PARAMETER_ID_APPOINTMENT, nIdAppointment );
+        }
+        return xPage;
     }
 
     /**
