@@ -145,6 +145,7 @@ public final class SlotService
         // Get all the slot between these two dates
         HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange( nIdForm, startingDateToUse.atStartOfDay( ),
                 endingDate.atTime( LocalTime.MAX ) );
+        mapSlot.values().forEach(SlotService::addDateAndTimeToSlot);
 
         // Get or build all the event for the period
         while ( !dateTemp.isAfter( endingDate ) )
