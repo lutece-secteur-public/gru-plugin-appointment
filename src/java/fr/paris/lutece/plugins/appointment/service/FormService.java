@@ -313,42 +313,45 @@ public final class FormService
     private static void fillAppointmentFormWithWeekDefinitionPart( AppointmentForm appointmentForm, WeekDefinition weekDefinition )
     {
         List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay( );
-        for ( WorkingDay workingDay : listWorkingDay )
+        if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
         {
-            DayOfWeek dayOfWeek = DayOfWeek.of( workingDay.getDayOfWeek( ) );
-            switch( dayOfWeek )
+            for ( WorkingDay workingDay : listWorkingDay )
             {
-                case MONDAY:
-                    appointmentForm.setIsOpenMonday( Boolean.TRUE );
-                    break;
-                case TUESDAY:
-                    appointmentForm.setIsOpenTuesday( Boolean.TRUE );
-                    break;
-                case WEDNESDAY:
-                    appointmentForm.setIsOpenWednesday( Boolean.TRUE );
-                    break;
-                case THURSDAY:
-                    appointmentForm.setIsOpenThursday( Boolean.TRUE );
-                    break;
-                case FRIDAY:
-                    appointmentForm.setIsOpenFriday( Boolean.TRUE );
-                    break;
-                case SATURDAY:
-                    appointmentForm.setIsOpenSaturday( Boolean.TRUE );
-                    break;
-                case SUNDAY:
-                    appointmentForm.setIsOpenSunday( Boolean.TRUE );
-                    break;
+                DayOfWeek dayOfWeek = DayOfWeek.of( workingDay.getDayOfWeek( ) );
+                switch( dayOfWeek )
+                {
+                    case MONDAY:
+                        appointmentForm.setIsOpenMonday( Boolean.TRUE );
+                        break;
+                    case TUESDAY:
+                        appointmentForm.setIsOpenTuesday( Boolean.TRUE );
+                        break;
+                    case WEDNESDAY:
+                        appointmentForm.setIsOpenWednesday( Boolean.TRUE );
+                        break;
+                    case THURSDAY:
+                        appointmentForm.setIsOpenThursday( Boolean.TRUE );
+                        break;
+                    case FRIDAY:
+                        appointmentForm.setIsOpenFriday( Boolean.TRUE );
+                        break;
+                    case SATURDAY:
+                        appointmentForm.setIsOpenSaturday( Boolean.TRUE );
+                        break;
+                    case SUNDAY:
+                        appointmentForm.setIsOpenSunday( Boolean.TRUE );
+                        break;
+                }
             }
+            // We suppose that all the days have the same opening and closing
+            // hours (it can be modified after)
+            LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
+            LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
+            int nDurationAppointment = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay );
+            appointmentForm.setTimeStart( minStartingTime.toString( ) );
+            appointmentForm.setTimeEnd( maxEndingTime.toString( ) );
+            appointmentForm.setDurationAppointments( nDurationAppointment );
         }
-        // We suppose that all the days have the same opening and closing
-        // hours (it can be modified after)
-        LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
-        LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
-        int nDurationAppointment = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay );
-        appointmentForm.setTimeStart( minStartingTime.toString( ) );
-        appointmentForm.setTimeEnd( maxEndingTime.toString( ) );
-        appointmentForm.setDurationAppointments( nDurationAppointment );
     }
 
     /**
