@@ -256,11 +256,20 @@ public final class FormService
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         fillAppointmentFormWithFormPart( appointmentForm, form );
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
-        fillAppointmentFormWithDisplayPart( appointmentForm, display );
+        if ( display != null )
+        {
+            fillAppointmentFormWithDisplayPart( appointmentForm, display );
+        }
         Localization localization = LocalizationService.findLocalizationWithFormId( nIdForm );
-        fillAppointmentFormWithLocalizationPart( appointmentForm, localization );
+        if ( localization != null )
+        {
+            fillAppointmentFormWithLocalizationPart( appointmentForm, localization );
+        }
         FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
-        fillAppointmentFormWithFormRulePart( appointmentForm, formRule );
+        if ( formRule != null )
+        {
+            fillAppointmentFormWithFormRulePart( appointmentForm, formRule );
+        }
         ReservationRule reservationRule = null;
         WeekDefinition weekDefinition = null;
         LocalDate dateOfApply = LocalDate.now( );
