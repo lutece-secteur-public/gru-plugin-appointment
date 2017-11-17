@@ -174,12 +174,18 @@ public final class WeekDefinitionService
         WeekDefinition weekDefinition = null;
         if ( closestDate == null )
         {
-            // Get the next week definition
-            weekDefinition = listWeekDefinition.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).get( );
+            if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
+            {
+                // Get the next week definition
+                weekDefinition = listWeekDefinition.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).get( );
+            }
         }
         else
         {
-            weekDefinition = listWeekDefinition.stream( ).filter( x -> closestDate.isEqual( x.getDateOfApply( ) ) ).findAny( ).orElse( null );
+            if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
+            {
+                weekDefinition = listWeekDefinition.stream( ).filter( x -> closestDate.isEqual( x.getDateOfApply( ) ) ).findAny( ).orElse( null );
+            }
         }
         if ( weekDefinition != null )
         {
