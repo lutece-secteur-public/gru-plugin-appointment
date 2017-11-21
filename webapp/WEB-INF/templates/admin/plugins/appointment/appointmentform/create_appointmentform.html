@@ -3,7 +3,7 @@
 <script src="js/plugins/appointment/moment.min.js"></script>
 <script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <div class="row" >
-	<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
+	<form id="formid" class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -305,14 +305,13 @@
 	</form>
 </div>
 <script type="text/javascript">	
-    $(document).ready(function() {
-        $(window).keydown(function(event){
-            if(event.keyCode == 13) {
-                event.preventDefault();
-                return false;
-            }
-        });
-    });
+	$('#formid').on('keyup keypress', function(e) {
+	    var keyCode = e.keyCode || e.which;
+	    if (keyCode === 13) { 
+	      e.preventDefault();
+	      return false;
+	    }
+	});
     function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
 	

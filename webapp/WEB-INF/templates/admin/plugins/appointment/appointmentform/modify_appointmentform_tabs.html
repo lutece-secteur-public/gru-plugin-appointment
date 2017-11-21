@@ -28,7 +28,7 @@
 <#macro modifyAppointmentFormLeftColumn appointmentform >
 	<div class="tab-content">
 		<fieldset>    			   
-			<form method="post" class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data" >	     
+			<form id="formid" method="post" class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data" >	     
 				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>				
 				<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelTitle' maxlength=255 /> 
 				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>				 
@@ -276,13 +276,12 @@
 <@getDatePickerBootstrap idField="date_start_validity" language=language />
 <@getDatePickerBootstrap idField="date_end_validity"   language=language />
 <script type="text/javascript">
-	$(document).ready(function() {
-	    $(window).keydown(function(event){
-	        if(event.keyCode == 13) {
-	            event.preventDefault();
-	            return false;
-	        }
-	    });
+	$('#formid').on('keyup keypress', function(e) {
+	    var keyCode = e.keyCode || e.which;
+	    if (keyCode === 13) { 
+      		e.preventDefault();
+      		return false;
+    	}
 	});
 	function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
