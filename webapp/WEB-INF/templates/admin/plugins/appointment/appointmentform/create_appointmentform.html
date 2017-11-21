@@ -150,118 +150,143 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="geoloc_address">#i18n{appointment.label.formAddress} &nbsp;:</label>
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<input type="text" class="form-control input-sm" name="geoloc_address" id="geoloc_address"/>
-								<input type="text" class="form-control input-sm" name="geoloc_longitude" id="geoloc_longitude"/>
-								<input type="text" class="form-control input-sm" name="geoloc_latitude" id="geoloc_latitude"/>
-								<p class="help-block" id="help_address">#i18n{appointment.help.formAddress}</p>
-								<!-- used to keep state if the user presses back button -->
-								<input type="hidden" id="hidden_address"/>
-								<p class="help-block">#i18n{appointment.label.addressDescription}</p>
-							</div>
-							<script type='text/javascript'>
-								$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
-								$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
-								$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
-		
-								$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
-		
-								$('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
-		
-								if (typeof(lutece_map_resources_loaded) == 'undefined') {
-									lutece_map_resources_loaded = true
-									var loadresource = document.createElement('link');
-									loadresource.setAttribute("rel", "stylesheet");
-									loadresource.setAttribute("type", "text/css");
-									loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
-		
-									loadresource = document.createElement('script');
-									loadresource.setAttribute("type", "text/javascript");
-									loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
-									loadresource.async = false;
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
-		
-									loadresource = document.createElement('script');
-									loadresource.setAttribute("type", "text/javascript");
-									loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
-									loadresource.async = false;
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
-		
-									loadresource = document.createElement('script');
-									loadresource.setAttribute("type", "text/javascript");
-									loadresource.setAttribute("src",   "js/plugins/leaflet/leaflet/leaflet.js" );
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
-								}
-		
-								$(window).load(function() {
-									var map = L.map('map_address').setView([48.85632, 2.33272], 12);
-									var markers_layer = L.featureGroup().addTo(map);
-									// create the tile layer with correct attribution
-									var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-									var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-									var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
-		
-									var jAdresse = $('#address_address');
-									jAdresse.suggestPOI();
-									jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
-		
-										var poi = event.poi;
-										if (poi) {
-											var address = poi.libelleTypo;
-		
-											markers_layer.clearLayers();
-											var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
-											map.fitBounds(markers_layer.getBounds());
-		
-											var obj= {
-												"type": "Feature",
-												"properties": {
-													"address": address
-												},
-												"geometry": {
-													"type": "Point",
-													"coordinates": [poi.x, poi.y]
-												}
-											};
-											$('#hidden_address').val(JSON.stringify(obj));
-											$('#geoloc_address').val(address);
-											$('#geoloc_latitude').val(poi.y);
-											$('#geoloc_longitude').val(poi.x);
-										}
-									});
-		
-									$("#button_delete_address").on('click', function () {
-											$('#address_address').val("");
-											$('#hidden_address').val("");
-											$('#geoloc_address').val("");
-											$('#geoloc_latitude').val("");
-											$('#geoloc_longitude').val("");
-											map.setView([48.85632, 2.33272], 12);
-											markers_layer.clearLayers();
-									});
-		
-									//Try to restore from back/forward browser history buttons
-									var prev_data = $('#hidden_address').val();
-									if (prev_data) {
-										prev_value=JSON.parse(prev_data);
-										if (prev_value) {
-											$('#address_address').val(prev_value.properties.address);
-											$('#geoloc_address').val(prev_value.properties.address);
-											$('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
-											$('#geoloc_longitude').val(prev_value.geometry.coordinates[0]);
-		
-											markers_layer.clearLayers();
-											var marker = L.marker([prev_value.geometry.coordinates[1],prev_value.geometry.coordinates[0]]).addTo(markers_layer);
-											map.fitBounds(markers_layer.getBounds());
-										}
-									}
-		
-		
-							});
+                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="geoloc_address">#i18n{appointment.label.formAddress} &nbsp;:</label>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <input type="text" class="form-control input-sm" name="geoloc_address" id="geoloc_address" value="${(appointmentform.address?html)!}"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_longitude" id="geoloc_longitude" value="${(appointmentform.longitude?c)!}"/>
+                        <input type="text" class="form-control input-sm" name="geoloc_latitude" id="geoloc_latitude" value="${(appointmentform.latitude?c)!}"/>
+                        <p class="help-block" id="help_address">#i18n{appointment.help.formAddress}</p>
+                        <!-- used to keep state if the user presses back button -->
+                        <input type="hidden" id="hidden_address"/>
+                        <p class="help-block">#i18n{appointment.label.addressDescription}</p>
+                    </div>
+                    <script type='text/javascript'>
+                        $('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
+                        $('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
+                        $('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
 
-							</script>
+                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
+
+                        $('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
+
+                        if (typeof(lutece_map_resources_loaded) == 'undefined') {
+                            lutece_map_resources_loaded = true
+                            var loadresource = document.createElement('link');
+                            loadresource.setAttribute("rel", "stylesheet");
+                            loadresource.setAttribute("type", "text/css");
+                            loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
+                            document.getElementsByTagName("head")[0].appendChild(loadresource);
+
+                            loadresource = document.createElement('script');
+                            loadresource.setAttribute("type", "text/javascript");
+                            loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
+                            loadresource.async = false;
+                            document.getElementsByTagName("head")[0].appendChild(loadresource);
+
+                            loadresource = document.createElement('script');
+                            loadresource.setAttribute("type", "text/javascript");
+                            loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
+                            loadresource.async = false;
+                            document.getElementsByTagName("head")[0].appendChild(loadresource);
+
+                            loadresource = document.createElement('script');
+                            loadresource.setAttribute("type", "text/javascript");
+                            loadresource.setAttribute("src",   "js/plugins/leaflet/leaflet/leaflet.js" );
+                            document.getElementsByTagName("head")[0].appendChild(loadresource);
+                        }
+
+                        $(window).load(function() {
+                            var map = L.map('map_address').setView([48.85632, 2.33272], 12);
+                            var markers_layer = L.featureGroup().addTo(map);
+                            // create the tile layer with correct attribution
+                            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                            var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+                            var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
+
+                            var jAdresse = $('#address_address');
+                            jAdresse.suggestPOI();
+                            jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
+
+                                var poi = event.poi;
+                                if (poi) {
+                                    var address = poi.libelleTypo;
+
+                                    markers_layer.clearLayers();
+                                    var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
+                                    map.fitBounds(markers_layer.getBounds());
+
+                                    var obj= {
+                                        "type": "Feature",
+                                        "properties": {
+                                            "address": address
+                                        },
+                                        "geometry": {
+                                            "type": "Point",
+                                            "coordinates": [poi.x, poi.y]
+                                        }
+                                    };
+                                    $('#hidden_address').val(JSON.stringify(obj));
+                                    $('#geoloc_address').val(address);
+                                    $('#geoloc_latitude').val(poi.y);
+                                    $('#geoloc_longitude').val(poi.x);
+                                }
+                            });
+
+                            $("#button_delete_address").on('click', function () {
+                                    $('#address_address').val("");
+                                    //Don't put the empty string to disambiguate with the user
+                                    //clearing the field, and then pressing the browser back button
+                                    $('#hidden_address').val("false");
+                                    $('#geoloc_address').val("");
+                                    $('#geoloc_latitude').val("");
+                                    $('#geoloc_longitude').val("");
+                                    map.setView([48.85632, 2.33272], 12);
+                                    markers_layer.clearLayers();
+                            });
+
+                            //Try to restore from back/forward browser history buttons
+                            var prev_data = $('#hidden_address').val();
+                            var prev_value;
+                            var user_cleared = false;
+                            if (prev_data) {
+                                prev_value=JSON.parse(prev_data);
+                                if (!prev_value) {
+                                    user_cleared = true;
+                                }
+                            } else {
+                                var server_address = $('#geoloc_address').val();
+                                var server_longitude = $('#geoloc_longitude').val();
+                                var server_latitude = $('#geoloc_latitude').val();
+                                if (server_address && server_longitude && server_latitude) {
+                                    prev_value = {
+                                        "type":"Feature",
+                                        "properties": {
+                                            "address": server_address
+                                         },
+                                         "geometry": {
+                                            "type":"Point",
+                                            "coordinates":[server_longitude,server_latitude]
+                                         }
+                                     };
+                                } else {
+                                    user_cleared = true;
+                                }
+                            }
+
+                            if (!user_cleared) {
+                                    $('#address_address').val(prev_value.properties.address);
+                                    $('#geoloc_address').val(prev_value.properties.address);
+                                    $('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
+                                    $('#geoloc_longitude').val(prev_value.geometry.coordinates[0]);
+
+                                    markers_layer.clearLayers();
+                                    var marker = L.marker([prev_value.geometry.coordinates[1],prev_value.geometry.coordinates[0]]).addTo(markers_layer);
+                                    map.fitBounds(markers_layer.getBounds());
+                            }
+                    });
+
+                    </script>
+                </div>		
 						</div>				
 						<div class="form-group">
 							<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
@@ -280,6 +305,14 @@
 	</form>
 </div>
 <script type="text/javascript">	
+    $(document).ready(function() {
+        $(window).keydown(function(event){
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
     function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
 	

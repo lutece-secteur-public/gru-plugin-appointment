@@ -310,7 +310,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         populateAddress( appointmentForm, request );
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
-
             return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1 );
         }
         appointmentForm.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
