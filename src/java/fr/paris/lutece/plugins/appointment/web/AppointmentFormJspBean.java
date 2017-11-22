@@ -279,7 +279,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             appointmentForm = new AppointmentForm( );
         }
         Map<String, Object> model = getModel( );
-        addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
+        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model );
     }
 
@@ -405,7 +405,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         }
         Map<String, Object> model = getModel( );
-        addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
+        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
 
@@ -445,7 +445,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         Map<String, Object> model = getModel( );
         model.put( MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule( nIdForm ) );
-        addElementsToModelForLeftColumn( request, appointmentForm, getUser( ), getLocale( ), model );
+        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS, TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM, model );
     }
 
@@ -719,7 +719,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @param model
      *            the model to add elements in
      */
-    public static void addElementsToModelForLeftColumn( HttpServletRequest request, AppointmentForm appointmentForm, AdminUser user, Locale locale,
+    public static void addElementsToModel( HttpServletRequest request, AppointmentForm appointmentForm, AdminUser user, Locale locale,
             Map<String, Object> model )
     {
         model.put( MARK_APPOINTMENT_FORM, appointmentForm );
