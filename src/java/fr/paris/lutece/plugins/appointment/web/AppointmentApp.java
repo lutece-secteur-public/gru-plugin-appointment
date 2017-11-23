@@ -1006,8 +1006,9 @@ public class AppointmentApp extends MVCApplication
             listAppointmentForm = listAppointmentForm
                     .stream( )
                     .filter(
-                            a -> a.getDateStartValidity( ).toLocalDate( ).isBefore( LocalDate.now( ) )
-                                    || a.getDateStartValidity( ).toLocalDate( ).equals( LocalDate.now( ) ) )
+                            a -> (a.getDateStartValidity() != null) 
+                            && (a.getDateStartValidity( ).toLocalDate( ).isBefore( LocalDate.now( ) )
+                                    || a.getDateStartValidity( ).toLocalDate( ).equals( LocalDate.now( ) ) ))
                     .sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
         }
         List<String> icons = new ArrayList<String>( );
