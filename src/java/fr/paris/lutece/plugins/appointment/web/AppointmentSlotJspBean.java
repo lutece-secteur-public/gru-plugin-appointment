@@ -424,6 +424,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
         int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
         LocalTime endingTime = LocalTime.parse( request.getParameter( PARAMETER_ENDING_TIME ) );
+        boolean bShiftSlot = Boolean.parseBoolean( request.getParameter( PARAMETER_SHIFT_SLOT ) );
         boolean endingTimeHasChanged = false;
         if ( bIsOpen != timeSlotFromSession.getIsOpen( ) )
         {
@@ -447,7 +448,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             }
             endingTimeHasChanged = true;
         }
-        TimeSlotService.updateTimeSlot( timeSlotFromSession, endingTimeHasChanged );
+        TimeSlotService.updateTimeSlot( timeSlotFromSession, endingTimeHasChanged, bShiftSlot );
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_TIME_SLOT, strIdTimeSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_TIME_SLOT );

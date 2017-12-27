@@ -140,49 +140,65 @@ public final class TimeSlotService
      *            the timeSlot to update
      * @param bEndingTimeHasChanged
      *            if the ending time has changed, need to regenerate and update all the next time slots
+     * @param bShifSlot
+     *            true if the user has decided to shift the next slots
      */
-    public static void updateTimeSlot( TimeSlot timeSlot, boolean bEndingTimeHasChanged )
+    public static void updateTimeSlot( TimeSlot timeSlot, boolean bEndingTimeHasChanged, boolean bShifSlot )
     {
         WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
         if ( bEndingTimeHasChanged )
         {
-            int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
-            LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
-            // Find all the time slot after the starting time of the new time
-            // slot
-            List<TimeSlot> listAllTimeSlotsAfterThisTimeSlot = findListTimeSlotAfterThisTimeSlot( timeSlot );
-            // Need to delete all the time slots impacted (the ones with the
-            // starting time before the ending time of the new time slot)
-            List<TimeSlot> listAllTimeSlotsToDelete = listAllTimeSlotsAfterThisTimeSlot.stream( )
-                    .filter( x -> x.getStartingTime( ).isBefore( timeSlot.getEndingTime( ) ) ).collect( Collectors.toList( ) );
-            deleteListTimeSlot( listAllTimeSlotsToDelete );
-            TimeSlotHome.update( timeSlot );
-            // Need to find the next time slot (the one with the closest
-            // starting time of the ending time of the new time slot)
-            listAllTimeSlotsAfterThisTimeSlot.removeAll( listAllTimeSlotsToDelete );
-            TimeSlot nextTimeSlot = null;
-            if ( CollectionUtils.isNotEmpty( listAllTimeSlotsAfterThisTimeSlot ) )
-            {
-                nextTimeSlot = listAllTimeSlotsAfterThisTimeSlot.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
-            }
-            if ( nextTimeSlot != null )
-            {
-                maxEndingTime = nextTimeSlot.getStartingTime( );
-            }
-            // and to regenerate time slots between this two ones, with the good
-            // rules
-            // for the slot capacity
             WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionLightById( workingDay.getIdWeekDefinition( ) );
             ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( weekDefinition.getIdForm( ),
                     weekDefinition.getDateOfApply( ) );
+            int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
+            if ( !bShifSlot )
+            {
+                LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
+                // Find all the time slot after the starting time of the new
+                // time
+                // slot
+                List<TimeSlot> listAllTimeSlotsAfterThisTimeSlot = findListTimeSlotAfterThisTimeSlot( timeSlot );
+                // Need to delete all the time slots impacted (the ones with the
+                // starting time before the ending time of the new time slot)
+                List<TimeSlot> listAllTimeSlotsToDelete = listAllTimeSlotsAfterThisTimeSlot.stream( )
+                        .filter( x -> x.getStartingTime( ).isBefore( timeSlot.getEndingTime( ) ) ).collect( Collectors.toList( ) );
+                deleteListTimeSlot( listAllTimeSlotsToDelete );
+                // Need to find the next time slot (the one with the closest
+                // starting time of the ending time of the new time slot)
+                listAllTimeSlotsAfterThisTimeSlot.removeAll( listAllTimeSlotsToDelete );
+                TimeSlot nextTimeSlot = null;
+                if ( CollectionUtils.isNotEmpty( listAllTimeSlotsAfterThisTimeSlot ) )
+                {
+                    nextTimeSlot = listAllTimeSlotsAfterThisTimeSlot.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) )
+                            .get( );
+                }
+                if ( nextTimeSlot != null )
+                {
+                    maxEndingTime = nextTimeSlot.getStartingTime( );
+                }
+                // and to regenerate time slots between this two ones, with the
+                // good
+                // rules
+                // for the slot capacity
+                generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration,
+                        reservationRule.getMaxCapacityPerSlot( ), Boolean.TRUE );
+            }
+            else
+            {
+                // Need to delete the Time slot until the end of the day
+                List<TimeSlot> listTimeSlotToDelete = new ArrayList<>( TimeSlotService.findListTimeSlotAfterThisTimeSlot( timeSlot ) );
+                // Get the max ending time (to get the ending hour for this day)
+                LocalTime maxEndingTime = listTimeSlotToDelete.stream( ).map( TimeSlot::getEndingTime ).max( LocalTime::compareTo ).get( );
+                deleteListTimeSlot( listTimeSlotToDelete );
+                // Generated the new time slots at the end of the modified time
+                // slot
+                generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration,
+                        reservationRule.getMaxCapacityPerSlot( ), Boolean.TRUE );
+            }
 
-            generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration, reservationRule.getMaxCapacityPerSlot( ),
-                    Boolean.TRUE );
         }
-        else
-        {
-            TimeSlotHome.update( timeSlot );
-        }
+        TimeSlotHome.update( timeSlot );
         WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( workingDay.getIdWeekDefinition( ) );
     }
 

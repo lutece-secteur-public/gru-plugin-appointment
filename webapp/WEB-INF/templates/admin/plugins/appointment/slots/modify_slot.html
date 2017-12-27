@@ -1,4 +1,6 @@
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <script src="js/jquery/jquery.min.js"></script>
+<script src="js/plugins/appointment/moment.min.js" ></script>
 <script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -39,17 +41,18 @@
 							<p class="form-control-static">${slot.startingTime}</p>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.model.entity.appointmentform.attribute.timeEnd} * : </label>
-						<div id="time_end" class="col-xs-12 col-sm-9 col-md-9 input-append">
-							<input id="ending_time" name="ending_time" data-format="hh:mm" type="text" value="${slot.endingTime!''}"></input>
-							<span id="ending_time" class="add-on">
-								<i data-time-icon="icon-time" data-date-icon="icon-calendar">
-								</i>
-							</span>															
-							<span class="help-block">#i18n{appointment.modifySlot.helpModifyEndSlot} :</span>																					
-						</div>							
-					</div>	
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.model.entity.appointmentform.attribute.timeEnd} * : </label>
+                        <div class="col-xs-12 col-sm-9 col-md-9">
+                            <div class='col-xs-2 input-group' id='ending_time'>
+                                <input id="ending_time" name="ending_time" type='text' class="form-control" value="${slot.endingTime!''}"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                            <p class="help-block">#i18n{appointment.modifySlot.helpModifyEndSlot} :</p>
+                        </div>
+                    </div>
 					<div class="form-group">			
 						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="shift_slot"/></label>
 						<div id="shift_slot" class="col-xs-12 col-sm-9 col-md-9 input-append">
@@ -85,8 +88,8 @@
 	}
 	else return true;
 	};
-	$('#time_end').datetimepicker({
-      pickDate: false,
-	  pickSeconds: false
+	$('#ending_time').datetimepicker({
+      format: 'HH:mm',
+      stepping: 5
     });
 </script>
