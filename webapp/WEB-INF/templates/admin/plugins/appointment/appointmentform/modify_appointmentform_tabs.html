@@ -59,19 +59,17 @@
 					</div>
 				</div>	
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments} * :</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+					<label class="col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments} * :</label>
+					<div class="col-lg-3">
 						<input type="text" name="nb_max_appointments_per_user" value="${appointmentform.nbMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
 						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}</p>
 					</div>
-				</div>	
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments} * :</label>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                    <label class="col-lg-1 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments} * :</label>
+                    <div class="col-lg-3">
 						<input type="text" name="nb_days_for_max_appointments_per_user" value="${appointmentform.nbDaysForMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
 						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}</p>
 					</div>
-				</div>			
+				</div>		
 				<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.createAppointmentForm.labelReference.help' />												
 				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
