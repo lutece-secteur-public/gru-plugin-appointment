@@ -4,7 +4,7 @@
 			<h3><#if title??>${title}<#else>#i18n{appointment.xpage.formList.labelFormList}</#if></h3>
 			
 			<ul>
-                <#if form_list??>
+                <#if form_list?has_content>
                     <#assign compteur=form_list?size - 1>
                     <#list 0..compteur as item>
                         <li class="col-xs-12 col-sm-6 col-md-4">
@@ -23,6 +23,8 @@
                             </div>
                         </li>
                     </#list>
+                <#else>
+                	#i18n{appointment.xpage.formList.noForm}
                 </#if>
 			</ul>
 		</div>

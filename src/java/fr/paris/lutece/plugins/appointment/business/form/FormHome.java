@@ -108,6 +108,17 @@ public final class FormHome
     }
 
     /**
+     * Returns all the active and displayd on portlet forms
+     * 
+     * @return a list of all the active and displayed on portlet forms
+     */
+    public static List<Form> findActiveAndDisplayedOnPortletForms( )
+    {
+        return _dao.findActiveAndDisplayedOnPortletForms( _plugin );
+
+    }
+
+    /**
      * Returns all the forms
      * 
      * @return a list of all the forms

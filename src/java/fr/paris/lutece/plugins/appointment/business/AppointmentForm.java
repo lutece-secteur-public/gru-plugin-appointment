@@ -171,6 +171,11 @@ public final class AppointmentForm extends ReservationRule implements RBACResour
     private boolean _bDisplayTitleFo;
 
     /**
+     * True if the form has to be displayed on the front office portlet
+     */
+    private boolean _bIsDisplayOnPortlet;
+
+    /**
      * Number of weeks to display the form to the user
      */
     private int _nNbWeeksToDisplay;
@@ -727,6 +732,27 @@ public final class AppointmentForm extends ReservationRule implements RBACResour
     public void setDisplayTitleFo( boolean bDisplayTitleFo )
     {
         _bDisplayTitleFo = bDisplayTitleFo;
+    }
+
+    /**
+     * Returns if the form has to be displayed on the front office portlet
+     * 
+     * @return true if it has to be displayed
+     */
+    public boolean getIsDisplayedOnPortlet( )
+    {
+        return _bIsDisplayOnPortlet;
+    }
+
+    /**
+     * Sets if the form has to be displayed on the front office portlet
+     * 
+     * @param bIsDisplayedOnPortlet
+     *            The boolean value
+     */
+    public void setIsDisplayedOnPortlet( boolean bIsDisplayedOnPortlet )
+    {
+        this._bIsDisplayOnPortlet = bIsDisplayedOnPortlet;
     }
 
     /**

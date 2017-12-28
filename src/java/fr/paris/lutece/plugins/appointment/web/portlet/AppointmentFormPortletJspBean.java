@@ -42,9 +42,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
-import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortlet;
 import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletHome;
+import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.portal.business.portlet.PortletHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -82,11 +82,11 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
 
-        Collection<Form> listAppointmentForm = FormHome.findActiveForms( );
+        Collection<Form> listIsActiveAndIsDisplayedOnPortletAppointmentForm = FormService.findAllActiveAndDisplayedOnPortletForms( );
 
         ReferenceList refListAppointmentForm = new ReferenceList( );
 
-        for ( Form form : listAppointmentForm )
+        for ( Form form : listIsActiveAndIsDisplayedOnPortletAppointmentForm )
         {
             refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }
@@ -109,11 +109,11 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
         int nPortletId = Integer.parseInt( strPortletId );
         AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey( nPortletId );
 
-        Collection<Form> listAppointmentForm = FormHome.findActiveForms( );
+        Collection<Form> listIsActiveAndIsDisplayedOnPortletAppointmentForm = FormService.findAllActiveAndDisplayedOnPortletForms( );
 
         ReferenceList refListAppointmentForm = new ReferenceList( );
 
-        for ( Form form : listAppointmentForm )
+        for ( Form form : listIsActiveAndIsDisplayedOnPortletAppointmentForm )
         {
             refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }

@@ -15,10 +15,10 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_display) FROM appointment_display";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display (id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, id_calendar_template, id_form) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, id_calendar_template = ?, id_form = ? WHERE id_display = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display (id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, is_displayed_on_portlet = ?, id_calendar_template = ?, id_form = ? WHERE id_display = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_display WHERE id_display = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, id_calendar_template, id_form FROM appointment_display";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form FROM appointment_display";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_display = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
@@ -110,6 +110,7 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
         display.setDisplayTitleFo( daoUtil.getBoolean( nIndex++ ) );
         display.setIcon( buildIcon( daoUtil.getBytes( nIndex++ ), daoUtil.getString( nIndex++ ) ) );
         display.setNbWeeksToDisplay( daoUtil.getInt( nIndex++ ) );
+        display.setIsDisplayedOnPortlet( daoUtil.getBoolean( nIndex++ ) );
         display.setIdCalendarTemplate( daoUtil.getInt( nIndex++ ) );
         display.setIdForm( daoUtil.getInt( nIndex ) );
         return display;
@@ -141,6 +142,7 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
         daoUtil.setBytes( nIndex++, display.getIcon( ).getImage( ) );
         daoUtil.setString( nIndex++, display.getIcon( ).getMimeType( ) );
         daoUtil.setInt( nIndex++, display.getNbWeeksToDisplay( ) );
+        daoUtil.setBoolean( nIndex++, display.isDisplayedOnPortlet( ) );
         daoUtil.setInt( nIndex++, display.getIdCalendarTemplate( ) );
         daoUtil.setInt( nIndex++, display.getIdForm( ) );
         if ( !isInsert )

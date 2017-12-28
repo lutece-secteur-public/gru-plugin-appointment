@@ -36,6 +36,7 @@ public final class DisplayService
         display.setDisplayTitleFo( appointmentForm.getDisplayTitleFo( ) );
         display.setIcon( appointmentForm.getIcon( ) );
         display.setNbWeeksToDisplay( appointmentForm.getNbWeeksToDisplay( ) );
+        display.setIsDisplayedOnPortlet( appointmentForm.getIsDisplayedOnPortlet( ) );
         display.setIdCalendarTemplate( appointmentForm.getCalendarTemplateId( ) );
         display.setIdForm( nIdForm );
         return display;

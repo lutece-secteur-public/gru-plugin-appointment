@@ -174,10 +174,10 @@ public final class FormService
      * 
      * @return a list of appointmentForm DTO
      */
-    public static List<AppointmentForm> buildAllActiveAppointmentForm( )
+    public static List<AppointmentForm> buildAllActiveAndDisplayedOnPortletAppointmentForm( )
     {
         List<AppointmentForm> listAppointmentForm = new ArrayList<>( );
-        for ( Form form : FormService.findAllActiveForms( ) )
+        for ( Form form : FormService.findAllActiveAndDisplayedOnPortletForms( ) )
         {
             listAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
         }
@@ -430,6 +430,7 @@ public final class FormService
         appointmentForm.setDisplayTitleFo( display.isDisplayTitleFo( ) );
         appointmentForm.setIcon( display.getIcon( ) );
         appointmentForm.setNbWeeksToDisplay( display.getNbWeeksToDisplay( ) );
+        appointmentForm.setIsDisplayedOnPortlet( display.isDisplayedOnPortlet( ) );
         appointmentForm.setCalendarTemplateId( display.getIdCalendarTemplate( ) );
     }
 
@@ -597,6 +598,16 @@ public final class FormService
     public static List<Form> findAllActiveForms( )
     {
         return FormHome.findActiveForms( );
+    }
+
+    /**
+     * Find all the active forms that have to be displayed on portlet in database
+     * 
+     * @return a list of all the found forms
+     */
+    public static List<Form> findAllActiveAndDisplayedOnPortletForms( )
+    {
+        return FormHome.findActiveAndDisplayedOnPortletForms( );
     }
 
     /**

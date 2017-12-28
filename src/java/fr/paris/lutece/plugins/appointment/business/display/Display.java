@@ -31,6 +31,11 @@ public final class Display implements Serializable
     private boolean _bIsDisplayTitleFo;
 
     /**
+     * Indicate whether the form is displayed on the front office portlet or not
+     */
+    private boolean _bIsDisplayedOnPortlet;
+
+    /**
      * Form Icon
      */
     private ImageResource _icon;
@@ -80,6 +85,26 @@ public final class Display implements Serializable
     public boolean isDisplayTitleFo( )
     {
         return _bIsDisplayTitleFo;
+    }
+
+    /**
+     * Get the boolean value for displayed or not the form on the portlet
+     * 
+     * @return true if the form has to be displayed on the portlet
+     */
+    public boolean isDisplayedOnPortlet( )
+    {
+        return _bIsDisplayedOnPortlet;
+    }
+
+    /**
+     * Set the boolean value to display or not the form on the portlet
+     * 
+     * @param bIsDisplayedOnPortlet
+     */
+    public void setIsDisplayedOnPortlet( boolean bIsDisplayedOnPortlet )
+    {
+        this._bIsDisplayedOnPortlet = bIsDisplayedOnPortlet;
     }
 
     /**

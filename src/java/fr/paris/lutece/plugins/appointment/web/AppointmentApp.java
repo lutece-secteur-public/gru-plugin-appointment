@@ -999,7 +999,7 @@ public class AppointmentApp extends MVCApplication
     {
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         Map<String, Object> model = new HashMap<String, Object>( );
-        List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAppointmentForm( );
+        List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );
         // We keep only the active
         if ( CollectionUtils.isNotEmpty( listAppointmentForm ) )
         {

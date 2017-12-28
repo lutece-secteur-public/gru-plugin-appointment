@@ -20,11 +20,13 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form (id_form, title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, id_category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ?, id_workflow = ?, workgroup = ? WHERE id_form = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form, title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup FROM appointment_form";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT form.id_form, form.title, form.description, form.reference, form.id_category, form.starting_validity_date, form.ending_validity_date, form.is_active, form.id_workflow, form.workgroup FROM appointment_form form";
     private static final String SQL_QUERY_SELECT_BY_TITLE = SQL_QUERY_SELECT_COLUMNS + " WHERE title = ?";
     private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
+    private static final String SQL_QUERY_SELECT_ACTIVE_AND_DISPLAYED_ON_PORTLET_FORMS = SQL_QUERY_SELECT_COLUMNS
+            + " INNER JOIN appointment_display display ON form.id_form = display.id_form WHERE form.is_active = 1 AND display.is_displayed_on_portlet = 1";
 
     @Override
     public synchronized void insert( Form form, Plugin plugin )
@@ -82,6 +84,30 @@ public final class FormDAO extends UtilDAO implements IFormDAO
         try
         {
             daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIVE_FORMS, plugin );
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
+            {
+                listForms.add( buildForm( daoUtil ) );
+            }
+        }
+        finally
+        {
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
+        }
+        return listForms;
+    }
+
+    @Override
+    public List<Form> findActiveAndDisplayedOnPortletForms( Plugin plugin )
+    {
+        DAOUtil daoUtil = null;
+        List<Form> listForms = new ArrayList<>( );
+        try
+        {
+            daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIVE_AND_DISPLAYED_ON_PORTLET_FORMS, plugin );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {

@@ -70,6 +70,15 @@ public interface IFormDAO
     List<Form> findActiveForms( Plugin plugin );
 
     /**
+     * Get all the forms that are active on displayed on portlet
+     * 
+     * @param plugin
+     *            the plugin
+     * @return all the active and displayed on portlet forms
+     */
+    List<Form> findActiveAndDisplayedOnPortletForms( Plugin plugin );
+
+    /**
      * Get all the forms with a given title
      * 
      * @param strTitle
