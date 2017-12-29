@@ -314,7 +314,6 @@ public class AppointmentApp extends MVCApplication
             if ( endingDateOfDisplay.isAfter( endingValidityDate ) )
             {
                 endingDateOfDisplay = endingValidityDate;
-                nNbWeeksToDisplay = Math.max( Math.toIntExact( startingDateOfDisplay.until( endingDateOfDisplay, ChronoUnit.WEEKS ) ), 1 );
             }
             if ( startingDateOfDisplay.isAfter( endingDateOfDisplay ) )
             {
