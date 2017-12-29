@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.web;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -428,6 +427,11 @@ public class AppointmentApp extends MVCApplication
                 dayView = BASIC_DAY;
                 weekView = BASIC_WEEK;
                 break;
+            default :
+            	listHiddenDays.clear( );
+                dayView = AGENDA_DAY;
+                weekView = AGENDA_WEEK;
+            	break;
         }
         model.put( PARAMETER_EVENTS, listSlots );
         model.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );
