@@ -427,11 +427,11 @@ public class AppointmentApp extends MVCApplication
                 dayView = BASIC_DAY;
                 weekView = BASIC_WEEK;
                 break;
-            default :
-            	listHiddenDays.clear( );
+            default:
+                listHiddenDays.clear( );
                 dayView = AGENDA_DAY;
                 weekView = AGENDA_WEEK;
-            	break;
+                break;
         }
         model.put( PARAMETER_EVENTS, listSlots );
         model.put( PARAMETER_HIDDEN_DAYS, listHiddenDays );

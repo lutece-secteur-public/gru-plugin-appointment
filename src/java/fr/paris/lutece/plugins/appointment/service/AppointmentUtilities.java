@@ -808,7 +808,7 @@ public final class AppointmentUtilities
      * 
      * @param maxEndingTime
      *            the max ending time
-     * @return 30 if the maxending time is under 30, otherwise the next hour
+     * @return 30 if the max ending time is under 30, otherwise the next hour
      */
     public static LocalTime getMaxTimeToDisplay( LocalTime maxEndingTime )
     {
