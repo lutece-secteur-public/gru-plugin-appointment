@@ -623,7 +623,7 @@ public class AppointmentApp extends MVCApplication
         }
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
-        XPage xPage = new XPage( );
+        XPage xPage = null;
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
@@ -741,7 +741,7 @@ public class AppointmentApp extends MVCApplication
         AppointmentUtilities.killTimer( request );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
-        XPage xPage = new XPage( );
+        XPage xPage = null;
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
