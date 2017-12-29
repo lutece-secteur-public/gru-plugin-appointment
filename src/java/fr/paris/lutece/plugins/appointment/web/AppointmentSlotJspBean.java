@@ -279,11 +279,12 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
         }
         LocalDate dateOfModification = appointmentForm.getDateOfModification( ).toLocalDate( );
-        // Check if there are appointments after the date of modification of the
-        // form
+        // Get all the appointments after this date
         List<Appointment> listAppointment = AppointmentService
                 .findListAppointmentByIdFormAndAfterADateTime( nIdForm, dateOfModification.atTime( LocalTime.MIN ) );
-        if ( CollectionUtils.isNotEmpty( listAppointment ) )
+        // If there are appointments
+        if ( CollectionUtils.isNotEmpty( listAppointment )
+                && !AppointmentUtilities.checkNoAppointmentsImpacted( listAppointment, nIdForm, dateOfModification, appointmentForm ) )
         {
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
             addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );

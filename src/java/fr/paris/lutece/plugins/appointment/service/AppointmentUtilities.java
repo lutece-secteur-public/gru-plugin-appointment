@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -36,6 +37,8 @@ import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
@@ -819,6 +822,78 @@ public final class AppointmentUtilities
             maxEndingTimeToDisplay = LocalTime.of( maxEndingTime.getHour( ) + 1, 0 );
         }
         return maxEndingTimeToDisplay;
+    }
+
+    /**
+     * Check if there are appointments impacted by the new week definition
+     * 
+     * @param listAppointment
+     *            the list of appointments
+     * @param nIdForm
+     *            the form Id
+     * @param dateOfModification
+     *            the date of modification (date of apply of the new week definition)
+     * @param appointmentForm
+     *            the appointment form
+     * @return true if there are appointments impacted
+     */
+    public static boolean checkNoAppointmentsImpacted( List<Appointment> listAppointment, int nIdForm, LocalDate dateOfModification,
+            AppointmentForm appointmentForm )
+    {
+        boolean bNoAppointmentsImpacted = true;
+        // Find the previous WeekDefinition
+        WeekDefinition previousWeekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
+        // Find the previous reservation rule
+        ReservationRule previousReservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
+        // Build the previous appointment form with the previous week
+        // definition and the previous reservation rule
+        AppointmentForm previousAppointmentForm = FormService.buildAppointmentForm( nIdForm, previousReservationRule.getIdReservationRule( ),
+                previousWeekDefinition.getIdWeekDefinition( ) );
+        // Need to check if the open hours or the duration of an appointment
+        // have not been changed
+        if ( appointmentForm.getDurationAppointments( ) == previousAppointmentForm.getDurationAppointments( )
+                && StringUtils.equalsIgnoreCase( appointmentForm.getTimeStart( ), previousAppointmentForm.getTimeStart( ) )
+                && StringUtils.equalsIgnoreCase( appointmentForm.getTimeEnd( ), previousAppointmentForm.getTimeEnd( ) ) )
+        {
+            // Need to check if the new definition week has more open days.
+            List<DayOfWeek> previousOpenDays = WorkingDayService.getOpenDays( previousAppointmentForm );
+            List<DayOfWeek> newOpenDays = WorkingDayService.getOpenDays( appointmentForm );
+            // If new open days
+            if ( newOpenDays.containsAll( previousOpenDays ) )
+            {
+                // Nothing to check
+            }
+            else
+            {
+                // Else we remove all the corresponding days
+                previousOpenDays.removeAll( newOpenDays );
+                // For the remaining days
+                // for each appointment, need to check if the appointment is
+                // not in the remaining open days
+                boolean bAppointmentOnOpenDays = false;
+                for ( Appointment appointment : listAppointment )
+                {
+                    Slot tempSlot = SlotService.findSlotById( appointment.getIdSlot( ) );
+                    if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
+                    {
+                        bAppointmentOnOpenDays = true;
+                        break;
+                    }
+                }
+                bNoAppointmentsImpacted = !bAppointmentOnOpenDays;
+            }
+
+        }
+        else
+        {
+            // We have change the open hours or the duration of the
+            // appointments
+            // and there are appointments after the date of the modification
+            // So appointments impacted
+            bNoAppointmentsImpacted = false;
+
+        }
+        return bNoAppointmentsImpacted;
     }
 
 }
