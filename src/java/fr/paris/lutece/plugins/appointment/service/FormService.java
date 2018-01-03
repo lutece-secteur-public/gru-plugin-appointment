@@ -135,19 +135,20 @@ public final class FormService
             }
         }
     }
-    
+
     /**
      * Build all the active forms
+     * 
      * @return the list of appointment form dto that are active
      */
     public static List<AppointmentForm> buildAllActiveAppointmentForm( )
     {
-    	List<AppointmentForm> listActiveAppointmentForm = new ArrayList<>();
-    	for ( Form form : FormHome.findActiveForms( ) )
-    	{
-    		listActiveAppointmentForm.add(buildAppointmentFormLight( form ) );
-    	}
-    	return listActiveAppointmentForm;
+        List<AppointmentForm> listActiveAppointmentForm = new ArrayList<>( );
+        for ( Form form : FormHome.findActiveForms( ) )
+        {
+            listActiveAppointmentForm.add( buildAppointmentFormLight( form ) );
+        }
+        return listActiveAppointmentForm;
     }
 
     /**
