@@ -1319,6 +1319,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                             return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_UNVAILABLE_SLOT, AdminMessage.TYPE_STOP ) );
                         }
                     }
+                    
                     WorkflowService.getInstance( ).doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, form.getIdForm( ),
                             request, getLocale( ), false );
                 }

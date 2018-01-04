@@ -67,7 +67,7 @@
 								<tr>
 									<td>
 										<#if rightModify?? && rightModify &&  !appointment.isCancelled> 
-											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}"
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}&id_form=${form.idForm}"
 													class="btn btn-primary btn-xs"
 													title="#i18n{portal.util.labelModify}">
 												<i class="glyphicon glyphicon-edit"></i>
