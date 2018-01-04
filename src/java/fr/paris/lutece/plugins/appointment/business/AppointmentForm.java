@@ -173,7 +173,7 @@ public final class AppointmentForm extends ReservationRule implements RBACResour
     /**
      * True if the form has to be displayed on the front office portlet
      */
-    private boolean _bIsDisplayOnPortlet;
+    private boolean _bIsDisplayOnPortlet = true;
 
     /**
      * Number of weeks to display the form to the user

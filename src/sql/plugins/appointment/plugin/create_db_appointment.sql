@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS appointment_display (
   icon_form_content MEDIUMBLOB NULL,
   icon_form_mime_type VARCHAR(255) NULL,
   nb_weeks_to_display INT NOT NULL DEFAULT 0,
-  is_displayed_on_portlet BOOLEAN NOT NULL DEFAULT FALSE,
+  is_displayed_on_portlet BOOLEAN NOT NULL DEFAULT TRUE,
   id_calendar_template INT(11) NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_display, id_calendar_template, id_form),
