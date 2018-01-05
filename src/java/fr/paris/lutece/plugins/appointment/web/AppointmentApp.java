@@ -283,7 +283,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
             bError = true;
         }
-        FormMessage formMessages = FormMessageHome.findByPrimaryKey( nIdForm );
+        FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         // Check if the date of display and the endDateOfDisplay are in the
         // validity date range of the form
         LocalDate startingValidityDate = form.getStartingValidityDate( );
