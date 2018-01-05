@@ -20,6 +20,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -587,6 +588,7 @@ public final class FormService
     public static void removeForm( int nIdForm )
     {
         FormListenerManager.notifyListenersFormRemoval( nIdForm );
+        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm);
         // Delete all the responses linked to all the appointments of the form
         for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
         {
