@@ -282,6 +282,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String LAST_NAME = "last_name";
     private static final String FIRST_NAME = "first_name";
     private static final String EMAIL = "email";
+    private static final String NB_BOOKED_SEATS = "nbBookedSeats";
     private static final String DATE_APPOINTMENT = "date_appointment";
     private static final String ADMIN = "admin";
     private static final String STATUS = "status";
@@ -1201,6 +1202,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     break;
                 case EMAIL:
                     stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getEmail( ).compareTo( a2.getEmail( ) ) );
+                    break;
+                case NB_BOOKED_SEATS:
+                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Integer.compare(a1.getNbBookedSeats( ), a2.getNbBookedSeats( ) ) );
                     break;
                 case DATE_APPOINTMENT:
                     stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getStartingDateTime( ).compareTo( a2.getStartingDateTime( ) ) );

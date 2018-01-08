@@ -147,6 +147,13 @@
 											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=false">
 												<i class="fa fa-chevron-down" aria-hidden="true"></i>
 											</a>
+										<th>#i18n{appointment.manageAppointments.columnNbBookedSeats} 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a>
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>	
 										<th>#i18n{appointment.dateAppointment.title} 
 											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true">
 												<i class="fa fa-chevron-up" aria-hidden="true"></i>
@@ -186,7 +193,8 @@
 											<td><input type="checkbox" name="apmt" id="apmt" value="${appointment.idAppointment}"></td>
 											<td>${appointment.lastName}</td>
 											<td>${appointment.firstName}</td>								
-											<td>${appointment.email}</td>											
+											<td>${appointment.email}</td>
+											<td>${appointment.nbBookedSeats}</td>											
 											<td>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</td>
 											<td>${appointment.adminUser}</td>								
 											<td>

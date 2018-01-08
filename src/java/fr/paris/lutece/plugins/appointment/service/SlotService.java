@@ -136,7 +136,7 @@ public final class SlotService
         // Need to check if this date is not before the form date creation
         final LocalDate firstDateOfReservationRule = new ArrayList<>( mapReservationRule.keySet( ) ).stream( ).sorted( ).findFirst( ).orElse( null );
         LocalDate startingDateToUse = startingDate;
-        if ( startingDate.isBefore( firstDateOfReservationRule ) )
+        if ( firstDateOfReservationRule != null && startingDate.isBefore( firstDateOfReservationRule ) )
         {
             startingDateToUse = firstDateOfReservationRule;
         }

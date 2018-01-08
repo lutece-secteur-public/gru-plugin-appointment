@@ -333,6 +333,10 @@ public class AppointmentApp extends MVCApplication
         {
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
         }
+        // Display the week with the first available slot
+        if (firstDateOfFreeOpenSlot.isAfter(dateOfDisplay)){
+        	dateOfDisplay = firstDateOfFreeOpenSlot;
+        }        		
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<WeekDefinition> listWeekDefinition = new ArrayList<>( mapWeekDefinition.values( ) );
