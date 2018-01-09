@@ -263,6 +263,8 @@ public class AppointmentApp extends MVCApplication
     private static final String BASIC_WEEK = "basicWeek";
     private static final String AGENDA_DAY = "agendaDay";
     private static final String BASIC_DAY = "basicDay";
+    
+    private static final String STEP_3 = "step3";
 
     /**
      * Get the calendar view
@@ -599,7 +601,6 @@ public class AppointmentApp extends MVCApplication
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
-        int nIdForm = Integer.parseInt( strIdForm );
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Locale locale = request.getLocale( );
         String strEmail = request.getParameter( PARAMETER_EMAIL );
@@ -610,21 +611,30 @@ public class AppointmentApp extends MVCApplication
                 request.getParameter( PARAMETER_LAST_NAME ) );
         AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
         AppointmentUtilities.fillInListResponseWithMapResponse( appointmentDTO );
-        if ( CollectionUtils.isNotEmpty( listFormErrors ) )
-        {
-            request.getSession( ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
-            return redirect( request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT, appointmentDTO.getSlot( ).getIdSlot( ) );
-        }
+        boolean bErrors = false;
         if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointments( appointmentDTO, strEmail, form ) )
         {
-            addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
-            return redirect( request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT, appointmentDTO.getSlot( ).getIdSlot( ) );
+        	addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
+        	bErrors = true;
         }
         if ( !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO, strEmail, form ) )
         {
-            addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
-            return redirect( request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_SLOT, appointmentDTO.getSlot( ).getIdSlot( ) );
+        	addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
+        	bErrors = true;
+        }               
+        if ( CollectionUtils.isNotEmpty( listFormErrors ))
+        {
+            request.getSession( ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
+            bErrors = true;
         }
+        if (bErrors)
+        {
+            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
+            additionalParameters.put(PARAMETER_ID_FORM, strIdForm);
+            additionalParameters.put(PARAMETER_ID_SLOT, Integer.toString(appointmentDTO.getSlot( ).getIdSlot( )));
+            additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + STEP_3 );
+            return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
+        }                 
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
         XPage xPage = null;
