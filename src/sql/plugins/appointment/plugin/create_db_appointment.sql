@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS appointment_user (
   email VARCHAR(255) NULL,
   phone_number VARCHAR(255) NULL,
   PRIMARY KEY (id_user),
-  UNIQUE KEY unique_index_email (email))
+  UNIQUE KEY unique_index_email (first_name, last_name, email))
 ENGINE = InnoDB;
 
 CREATE INDEX email_idx ON appointment_user (email ASC);
