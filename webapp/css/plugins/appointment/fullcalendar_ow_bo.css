@@ -72,24 +72,24 @@ td.fc-day.ui-widget-content.fc-today.ui-state-highlight {
 
 button.fc-today-button:hover, button.fc-today-button:active, button.fc-today-button:focus {
     border: none;
-    background : steelblue;
+
 }
 
 button.fc-datePicker-button:hover, button.fc-datePicker-button:active, button.fc-datePicker-button:focus {
     border: none;
-    background : steelblue;
+
 }
 
 button.fc-prev-button:hover, button.fc-prev-button:active, button.fc-prev-button:focus {
     border: none;
-    background : steelblue;
+
 }
 
 button.fc-next-button:hover, button.fc-next-button:active, button.fc-next-button:focus {
     border: none;
-    background : steelblue;
+
 }
 
 .ui-state-over {
-    background : steelblue;
+
 }
