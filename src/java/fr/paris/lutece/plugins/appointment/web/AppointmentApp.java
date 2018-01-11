@@ -193,6 +193,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_WEEK_VIEW = "week_view";
     private static final String PARAMETER_DAY_VIEW = "day_view";
     private static final String PARAMETER_ANCHOR = "anchor";
+    private static final String PARAMETER_MODIFICATION_FORM = "mod";
 
     // Mark
     private static final String MARK_INFOS = "infos";
@@ -263,7 +264,7 @@ public class AppointmentApp extends MVCApplication
     private static final String BASIC_WEEK = "basicWeek";
     private static final String AGENDA_DAY = "agendaDay";
     private static final String BASIC_DAY = "basicDay";
-    
+
     private static final String STEP_3 = "step3";
 
     /**
@@ -336,9 +337,10 @@ public class AppointmentApp extends MVCApplication
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
         }
         // Display the week with the first available slot
-        if (firstDateOfFreeOpenSlot.isAfter(dateOfDisplay)){
-        	dateOfDisplay = firstDateOfFreeOpenSlot;
-        }        		
+        if ( firstDateOfFreeOpenSlot.isAfter( dateOfDisplay ) )
+        {
+            dateOfDisplay = firstDateOfFreeOpenSlot;
+        }
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<WeekDefinition> listWeekDefinition = new ArrayList<>( mapWeekDefinition.values( ) );
@@ -489,63 +491,117 @@ public class AppointmentApp extends MVCApplication
             form = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         }
         checkMyLuteceAuthentication( form, request );
+        String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
+        boolean bModificationForm = false;
+        if ( strIdSlot == null )
+        {
+            bModificationForm = true;
+        }
+        Integer nIdSlot = null;
+        if ( StringUtils.isNumeric( strIdSlot ) )
+        {
+            nIdSlot = Integer.parseInt( strIdSlot );
+        }
+        AppointmentDTO oldAppointmentDTO = null;
         // Get the not validated appointment in session if it exists
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         if ( appointmentDTO == null )
         {
             // Try to get the validated appointment in session
-            // (in case the user click on back button in the recap view
+            // (in case the user click on back button in the recap view (or
+            // modification)
             appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
             if ( appointmentDTO != null )
             {
                 request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
                 request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
-            }
-            else
-            {
-                appointmentDTO = new AppointmentDTO( );
-                int nIdSlot = Integer.parseInt( request.getParameter( PARAMETER_ID_SLOT ) );
-                Slot slot = null;
-                // If nIdSlot == 0, the slot has not been created yet
-                if ( nIdSlot == 0 )
+                if ( nIdSlot != null && appointmentDTO.getIdSlot( ) != nIdSlot )
                 {
-                    // Need to get all the informations to create the slot
-                    LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-                    LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
-                    // Need to check if the slot has not been already created
-                    HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.findSlotsByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime );
-                    if ( !slotInDbMap.isEmpty( ) )
-                    {
-                        slot = slotInDbMap.get( startingDateTime );
-                    }
-                    else
-                    {
-                        boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
-                        boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
-                        int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-                        slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity,
-                                bIsOpen, bIsSpecific );
-                        slot = SlotService.saveSlot( slot );
-                    }
+                    oldAppointmentDTO = appointmentDTO;
+                }
+            }
+        }
+        else
+        {
+            // Appointment DTO not validated in session
+            // Need to verify if the slot has not changed
+            if ( nIdSlot != null && appointmentDTO.getIdSlot( ) != nIdSlot )
+            {
+                oldAppointmentDTO = appointmentDTO;
+            }
+        }
+        if ( appointmentDTO == null || oldAppointmentDTO != null )
+        {
+            // Need to get back the informations the user has entered
+            appointmentDTO = new AppointmentDTO( );
+            if ( oldAppointmentDTO != null )
+            {
+                appointmentDTO.setFirstName( oldAppointmentDTO.getFirstName( ) );
+                appointmentDTO.setLastName( oldAppointmentDTO.getLastName( ) );
+                appointmentDTO.setEmail( oldAppointmentDTO.getEmail( ) );
+                appointmentDTO.setPhoneNumber( oldAppointmentDTO.getPhoneNumber( ) );
+                appointmentDTO.setNbBookedSeats( oldAppointmentDTO.getNbBookedSeats( ) );
+                appointmentDTO.setListResponse( oldAppointmentDTO.getListResponse( ) );
+                appointmentDTO.setMapResponsesByIdEntry( oldAppointmentDTO.getMapResponsesByIdEntry( ) );
+            }
+        }
+        if ( !bModificationForm )
+        {
+            Slot slot = null;
+            // If nIdSlot == 0, the slot has not been created yet
+            if ( nIdSlot == 0 )
+            {
+                // Need to get all the informations to create the slot
+                LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+                LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+                // Need to check if the slot has not been already created
+                HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.findSlotsByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime );
+                if ( !slotInDbMap.isEmpty( ) )
+                {
+                    slot = slotInDbMap.get( startingDateTime );
                 }
                 else
                 {
-                    slot = SlotService.findSlotById( nIdSlot );
+                    boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+                    boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
+                    int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+                    slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, bIsOpen,
+                            bIsSpecific );
+                    slot = SlotService.saveSlot( slot );
                 }
-                appointmentDTO.setSlot( slot );
-                appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
-                appointmentDTO.setIdForm( nIdForm );
-                LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
-                if ( user != null )
-                {
-                    setUserInfo( request, appointmentDTO );
-                }
-                request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
-                ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-                WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-                form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
-                request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
-                AppointmentUtilities.putTimerInSession( request, slot, appointmentDTO, form.getMaxPeoplePerAppointment( ) );
+            }
+            else
+            {
+                slot = SlotService.findSlotById( nIdSlot );
+            }
+            appointmentDTO.setSlot( slot );
+            appointmentDTO.setIdSlot( slot.getIdSlot( ) );
+            appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
+            appointmentDTO.setIdForm( nIdForm );
+            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+            if ( user != null )
+            {
+                setUserInfo( request, appointmentDTO );
+            }
+            request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
+            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
+            WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
+            form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
+            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
+            AppointmentUtilities.putTimerInSession( request, slot, appointmentDTO, form.getMaxPeoplePerAppointment( ) );
+        }
+        else
+        {
+            // Modification of the Form only
+            String strModificationForm = request.getParameter( PARAMETER_MODIFICATION_FORM );
+            // Need to redirect for the anchor
+            if ( StringUtils.isEmpty( strModificationForm ) )
+            {
+                LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
+                additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
+                additionalParameters.put( PARAMETER_MODIFICATION_FORM, String.valueOf( Boolean.TRUE ) );
+                additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + STEP_3 );
+                return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
             }
         }
         Map<String, Object> model = getModel( );
@@ -614,27 +670,27 @@ public class AppointmentApp extends MVCApplication
         boolean bErrors = false;
         if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointments( appointmentDTO, strEmail, form ) )
         {
-        	addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
-        	bErrors = true;
+            addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
+            bErrors = true;
         }
         if ( !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO, strEmail, form ) )
         {
-        	addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
-        	bErrors = true;
-        }               
-        if ( CollectionUtils.isNotEmpty( listFormErrors ))
+            addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
+            bErrors = true;
+        }
+        if ( CollectionUtils.isNotEmpty( listFormErrors ) )
         {
             request.getSession( ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
             bErrors = true;
         }
-        if (bErrors)
+        if ( bErrors )
         {
             LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
-            additionalParameters.put(PARAMETER_ID_FORM, strIdForm);
-            additionalParameters.put(PARAMETER_ID_SLOT, Integer.toString(appointmentDTO.getSlot( ).getIdSlot( )));
+            additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
+            additionalParameters.put( PARAMETER_ID_SLOT, Integer.toString( appointmentDTO.getSlot( ).getIdSlot( ) ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + STEP_3 );
             return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
-        }                 
+        }
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
         XPage xPage = null;

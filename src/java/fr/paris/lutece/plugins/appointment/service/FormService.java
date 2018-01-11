@@ -588,7 +588,7 @@ public final class FormService
     public static void removeForm( int nIdForm )
     {
         FormListenerManager.notifyListenersFormRemoval( nIdForm );
-        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm);
+        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
         // Delete all the responses linked to all the appointments of the form
         for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
         {

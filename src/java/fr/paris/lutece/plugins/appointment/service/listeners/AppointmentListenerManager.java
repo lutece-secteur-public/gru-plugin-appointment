@@ -95,7 +95,7 @@ public final class AppointmentListenerManager
 
         return listMessages;
     }
-    
+
     /**
      * Notify users that an appointment form has been removed
      * 

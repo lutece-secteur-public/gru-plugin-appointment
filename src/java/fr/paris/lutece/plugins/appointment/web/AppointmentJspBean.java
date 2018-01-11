@@ -1204,7 +1204,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getEmail( ).compareTo( a2.getEmail( ) ) );
                     break;
                 case NB_BOOKED_SEATS:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Integer.compare(a1.getNbBookedSeats( ), a2.getNbBookedSeats( ) ) );
+                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Integer.compare( a1.getNbBookedSeats( ), a2.getNbBookedSeats( ) ) );
                     break;
                 case DATE_APPOINTMENT:
                     stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getStartingDateTime( ).compareTo( a2.getStartingDateTime( ) ) );
@@ -1323,7 +1323,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                             return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_UNVAILABLE_SLOT, AdminMessage.TYPE_STOP ) );
                         }
                     }
-                    
+
                     WorkflowService.getInstance( ).doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, form.getIdForm( ),
                             request, getLocale( ), false );
                 }
