@@ -197,8 +197,8 @@ public final class AppointmentService
         Form form = FormService.findFormLightByPrimaryKey( slot.getIdForm( ) );
         if ( form.getIdWorkflow( ) > 0 )
         {
-            WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
-                    form.getIdForm( ) );
+            //WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
+            //        form.getIdForm( ) );
             WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                     form.getIdWorkflow( ), form.getIdForm( ) );
         }
