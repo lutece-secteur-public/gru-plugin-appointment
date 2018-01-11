@@ -650,7 +650,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
         int nIdForm = Integer.parseInt( strIdForm );
-        FormMessage formMessage = FormMessageHome.findByIdForm( nIdForm );
+        FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_FORM_MESSAGE, formMessage );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );

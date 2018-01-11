@@ -54,7 +54,7 @@ public final class FormService
         appointmentForm.setTitle( newNameForCopy );
         appointmentForm.setIsActive( Boolean.FALSE );
         int nIdNewForm = createAppointmentForm( appointmentForm );
-        FormMessage formMessage = FormMessageHome.findByPrimaryKey( nIdForm );
+        FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         formMessage.setIdForm( nIdNewForm );
         FormMessageHome.create( formMessage );
     }

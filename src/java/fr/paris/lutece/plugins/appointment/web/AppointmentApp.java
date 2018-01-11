@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.impl.Log4JLogger;
 import org.bouncycastle.util.Strings;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
@@ -840,8 +841,9 @@ public class AppointmentApp extends MVCApplication
     {
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
+        AppLogService.debug("n Id Appointment :"+ nIdAppointment);
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
-        FormMessage formMessages = FormMessageHome.findByPrimaryKey( nIdForm );
+        FormMessage formMessages = FormMessageService.findFormMessageByIdForm(nIdForm);
         Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         String strTimeBegin = slot.getStartingDateTime( ).toLocalTime( ).toString( );
@@ -994,7 +996,7 @@ public class AppointmentApp extends MVCApplication
         {
             int nIdForm = Integer.parseInt( strIdForm );
             Map<String, Object> model = new HashMap<String, Object>( );
-            model.put( MARK_FORM_MESSAGES, FormMessageHome.findByPrimaryKey( nIdForm ) );
+            model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( nIdForm ) );
             if ( Boolean.parseBoolean( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
             {
                 String strFromUrl = request.getParameter( MARK_FROM_URL );
