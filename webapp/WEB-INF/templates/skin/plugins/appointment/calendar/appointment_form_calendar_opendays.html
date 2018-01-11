@@ -138,6 +138,11 @@
 			</#list>
 		</#if>
 	];
+    var eventTitleResult = <#if formMessages?? && formMessages.calendarFullLabel??>
+	'${formMessages.calendarFullLabel}'
+	<#else>
+	'nothing'
+	</#if>;
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
             displayEventEnd: true,
@@ -201,7 +206,7 @@
 				dow: dow
 			},
 			eventClick: function(event) {
-				if (event.title == '${formMessages.calendarFullLabel}' || event.title == '#i18n{appointment.manageCalendarSlots.labelClosed}'
+				if (event.title == eventTitleResult || event.title == '#i18n{appointment.manageCalendarSlots.labelClosed}'
 						|| event.title == '#i18n{appointment.manageCalendarSlots.labelEditFull}') {
 					return false;
 				} else {
