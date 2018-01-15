@@ -88,16 +88,12 @@
                                       <#else>'#dedede'
                                       </#if>,
                     borderColor : 'grey',
+                    nbAppointments:${nbAppointments}
 				},								
 			</#list>
 		</#if>
 	];
 	var defaultDate = '${date_of_display}';
-	var eventTitleResult = <#if formMessages?? && formMessages.calendarFullLabel??>
-    							'${formMessages.calendarFullLabel}'
- 							<#else>
-    							'nothing'
- 							</#if>;
     $(document).ready(function() {
 		$('#calendar').fullCalendar({
 			displayEventTime: false,
@@ -162,7 +158,7 @@
 				dow: dow
 			},
 			eventClick: function(event) {
-				if (event.title == eventTitleResult || event.title == '#i18n{appointment.manageCalendarSlots.labelClosed}') {
+				if (event.nbAppointments == '0') {
 					return false;
 				} else {
 					location.href = event.url;							
