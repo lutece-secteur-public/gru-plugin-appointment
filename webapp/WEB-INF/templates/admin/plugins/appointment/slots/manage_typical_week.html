@@ -178,14 +178,13 @@ function validateQty(event) {
 		<#if events??>								   
 			<#list events as event>
 				{
-					title : <#if event.isOpen>'#i18n{appointment.labelOpen}'<#else>'#i18n{appointment.manageCalendarSlots.labelClosed}'</#if> 
-									+ ' / ' + 'Capacit\u00e9 max : ' + '${event.maxCapacity}',									
+					title : 'Capacit\u00e9 max : ' + '${event.maxCapacity}',									
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idTimeSlot}',
-					color : <#if event.isOpen>'transparent'<#else>'grey'</#if>,
+					color : <#if event.isOpen>'transparent'<#else>'#dedede'</#if>,
                     textColor: '#2c2c2d',
-                    backgroundColor : <#if event.isOpen>'white'<#else>'grey'</#if>,
+                    backgroundColor : <#if event.isOpen>'white'<#else>'#dedede'</#if>,
                     borderColor : 'grey',
 				},								
 			</#list>
