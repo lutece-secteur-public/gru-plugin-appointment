@@ -40,13 +40,11 @@
 			</form>
             </br>
             <div class="box box-default box-solid <#if !error_modification??>collapsed-box</#if>">
-				<div class="box-header with-border">
+				<div class="box-header with-border" data-widget="collapse">
+					<i class="fa <#if !error_modification??>fa-plus<#else>fa-minus</#if>"></i>
 					<h3 class="box-title">
                         #i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}
-					</h3>
-					<div class="box-tools pull-right">
-                        <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa <#if !error_modification??>fa-plus<#else>fa-minus</#if>"></i></button>
-					</div>
+					</h3>					
 				</div>
                 <div class="box-body">
                     <form method="post" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp" enctype="multipart/form-data" class="form-horizontal">
