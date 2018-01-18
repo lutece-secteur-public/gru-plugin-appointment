@@ -212,7 +212,7 @@ public final class FormService
         AppointmentForm appointmentForm = new AppointmentForm( );
         if ( form != null )
         {
-            fillAppointmentFormLightWithFormPart( appointmentForm, form );
+            fillAppointmentFormWithFormPart( appointmentForm, form );
         }
         return appointmentForm;
     }
@@ -228,32 +228,7 @@ public final class FormService
     {
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         return buildAppointmentFormLight( form );
-    }
-
-    /**
-     * Fill the appointmentForm DTO with the values of the form object
-     * 
-     * @param appointmentForm
-     *            the appointmentForm DTO
-     * @param form
-     *            the form Object
-     */
-    private static void fillAppointmentFormLightWithFormPart( AppointmentForm appointmentForm, Form form )
-    {
-        appointmentForm.setIdForm( form.getIdForm( ) );
-        appointmentForm.setTitle( form.getTitle( ) );
-        appointmentForm.setIsActive( form.getIsActive( ) );
-        appointmentForm.setIdWorkflow( form.getIdWorkflow( ) );
-        appointmentForm.setWorkgroup( form.getWorkgroup( ) );
-        if ( form.getIdCategory( ) == null || form.getIdCategory( ) == 0 )
-        {
-            appointmentForm.setIdCategory( -1 );
-        }
-        else
-        {
-            appointmentForm.setIdCategory( form.getIdCategory( ) );
-        }
-    }
+    }    
 
     /**
      * Build an appointmentForm DTO
