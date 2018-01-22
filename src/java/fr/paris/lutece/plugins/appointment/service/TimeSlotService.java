@@ -105,7 +105,6 @@ public final class TimeSlotService
         timeSlot.setStartingTime( startingTime );
         timeSlot.setEndingTime( endingTime );
         timeSlot.setMaxCapacity( nMaxCapacity );
-        TimeSlotHome.create( timeSlot );
         return timeSlot;
     }
 
@@ -145,7 +144,8 @@ public final class TimeSlotService
      */
     public static void updateTimeSlot( TimeSlot timeSlot, boolean bEndingTimeHasChanged, boolean bShifSlot )
     {
-        WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
+        List<TimeSlot> listTimeSlotToCreate = new ArrayList<>();
+    	WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
         if ( bEndingTimeHasChanged )
         {
             WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionLightById( workingDay.getIdWeekDefinition( ) );
@@ -181,8 +181,8 @@ public final class TimeSlotService
                 // good
                 // rules
                 // for the slot capacity
-                generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration,
-                        reservationRule.getMaxCapacityPerSlot( ), Boolean.TRUE );
+                listTimeSlotToCreate.addAll(generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration,
+                        reservationRule.getMaxCapacityPerSlot( ), Boolean.TRUE ));
             }
             else
             {
@@ -193,15 +193,30 @@ public final class TimeSlotService
                 deleteListTimeSlot( listTimeSlotToDelete );
                 // Generated the new time slots at the end of the modified time
                 // slot
-                generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration,
-                        reservationRule.getMaxCapacityPerSlot( ), Boolean.TRUE );
+                listTimeSlotToCreate.addAll(generateListTimeSlot( timeSlot.getIdWorkingDay( ), timeSlot.getEndingTime( ), maxEndingTime, nDuration,
+                        reservationRule.getMaxCapacityPerSlot( ), Boolean.TRUE ));
             }
 
         }
         TimeSlotHome.update( timeSlot );
+        createListTimeSlot(listTimeSlotToCreate);
         WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( workingDay.getIdWeekDefinition( ) );
     }
 
+    /**
+	 * Create in database the slots given
+	 * 
+	 * @param listSlotToCreate
+	 *            the list of slots to create in database
+	 */
+	public static void createListTimeSlot(List<TimeSlot> listTimeSlotToCreate) {
+		if (CollectionUtils.isNotEmpty(listTimeSlotToCreate)) {
+			for (TimeSlot timeSlotTemp : listTimeSlotToCreate) {
+				TimeSlotHome.create( timeSlotTemp );
+			}
+		}
+	}	
+	
     /**
      * Find the next time slots of a given time slot
      * 
