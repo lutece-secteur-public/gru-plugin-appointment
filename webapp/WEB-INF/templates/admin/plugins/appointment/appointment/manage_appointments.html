@@ -1,6 +1,8 @@
-<link href="css/datepicker.css" rel="stylesheet">
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
+<link href="css/datepicker.css" rel="stylesheet">
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+<script src="js/plugins/appointment/moment.min.js"></script>
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="box box-primary">
@@ -60,15 +62,14 @@
 											<input class="form-control" id="startingDateOfSearch" name="startingDateOfSearch" type="text" value="${filter.startingDateOfSearch!}" >
 										</div>																					
 									</div>
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingTimeOfSearch">#i18n{appointment.labelTo}</label>
-									<div id="startingTimeOfSearch" class="col-xs-12 col-sm-9 col-md-6 input-append">
-										<input id="startingTimeOfSearch" name="startingTimeOfSearch" data-format="hh:mm" type="text" value="${filter.startingTimeOfSearch!''}"></input>
-										<span id="timestart" class="add-on">
-											<i data-time-icon="icon-time" data-date-icon="icon-calendar">
-											</i>
-										</span>										
-									</div>
-								</div>								
+                                    <label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingTimeOfSearch">#i18n{appointment.labelTo}</label>
+                                    <div id='startingTimeOfSearch' class='col-xs-3 col-sm-3 col-md-3 input-group'>
+                                        <input id="startingTimeOfSearch" name="startingTimeOfSearch" type='text' class="form-control" value="${filter.startingTimeOfSearch!''}"/>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                    </div>
+								</div>
 								<div class="form-group">
 									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingDateOfSearch">#i18n{appointment.manageAppointments.endingDateOfSearch}</label>
 									<div class="col-xs-6 col-sm-9 col-md-6 col-lg-4">
@@ -77,14 +78,13 @@
 											<input class="form-control" id="endingDateOfSearch" name="endingDateOfSearch" type="text" value="${filter.endingDateOfSearch!}" >
 										</div>											
 									</div>
-									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingTimeOfSearch">#i18n{appointment.labelTo}</label>
-									<div id="endingTimeOfSearch" class="col-xs-12 col-sm-9 col-md-6 input-append">
-										<input id="endingTimeOfSearch" name="endingTimeOfSearch" data-format="hh:mm" type="text" value="${filter.endingTimeOfSearch!''}"></input>
-										<span id="timeend" class="add-on">
-											<i data-time-icon="icon-time" data-date-icon="icon-calendar">
-											</i>
-										</span>									
-									</div>
+                                    <label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingTimeOfSearch">#i18n{appointment.labelTo}</label>
+                                    <div id='endingTimeOfSearch' class='col-xs-3 col-sm-3 col-md-3 input-group'>
+                                        <input id="endingTimeOfSearch" name="endingTimeOfSearch" type='text' class="form-control" value="${filter.endingTimeOfSearch!''}"/>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                    </div>
 								</div>															
 							</div>	
 							<br/>
@@ -273,7 +273,17 @@
 </div>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="dateAppointment" language=language />
-<script type="text/javascript">		
+<script type="text/javascript">
+    $(function () {
+        $('#startingTimeOfSearch').datetimepicker({
+            format: 'HH:mm',
+            stepping: 5
+        });
+        $('#endingTimeOfSearch').datetimepicker({
+            format: 'HH:mm',
+            stepping: 5
+        });
+    });
 	$('#allCheck').click(function() {
 		var etat = this.checked;
 		$("input[name='apmt']").each(function() {
@@ -303,12 +313,4 @@
 		todayHighLight : true,
 		autoclose : true
 	});	
-	$('#startingTimeOfSearch').datetimepicker({
-      pickDate: false,
-	  pickSeconds: false
-    });
-	$('#endingTimeOfSearch').datetimepicker({
-      pickDate: false,
-	  pickSeconds: false
-    });
 </script>
