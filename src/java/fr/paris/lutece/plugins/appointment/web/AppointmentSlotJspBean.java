@@ -208,8 +208,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 		List<String> listDayOfWeek = new ArrayList<>();
 		List<TimeSlot> listTimeSlot = new ArrayList<>();
 		LocalTime minStartingTime = LocalTime.MIN;
-		LocalTime maxEndingTime = LocalTime.MAX;
-		int nMinDuration = 1;
+		LocalTime maxEndingTime = LocalTime.MAX;		
 		if (weekDefinition == null) {
 			appointmentForm = FormService.buildAppointmentForm(nIdForm, 0, 0);
 
@@ -227,14 +226,13 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 			listDayOfWeek = new ArrayList<>(WorkingDayService.getSetDayOfWeekOfAListOfWorkingDay(listWorkingDay));
 			listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay(listWorkingDay, dateOfApply);
 			minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay(listWorkingDay);
-			maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(listWorkingDay);
-			nMinDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay(listWorkingDay);
+			maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay(listWorkingDay);			
 		}
 		model.put(PARAMETER_DAY_OF_WEEK, listDayOfWeek);
 		model.put(PARAMETER_EVENTS, listTimeSlot);
 		model.put(PARAMETER_MIN_TIME, minStartingTime);
 		model.put(PARAMETER_MAX_TIME, maxEndingTime);
-		model.put(PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes(nMinDuration));
+		model.put(PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes(AppointmentUtilities.THIRTY_MINUTES));
 		model.put(PARAMETER_ID_WEEK_DEFINITION, nIdWeekDefinition);
 		model.put(MARK_LIST_DATE_OF_MODIFICATION, WeekDefinitionService.findAllDateOfWeekDefinition(nIdForm));
 		AppointmentFormJspBean.addElementsToModel(request, appointmentForm, getUser(), getLocale(), model);
