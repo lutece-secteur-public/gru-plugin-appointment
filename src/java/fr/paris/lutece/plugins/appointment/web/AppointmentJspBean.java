@@ -1060,7 +1060,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         else
         {
-            HashMap<LocalDateTime, Slot> mapSlot = SlotService.findSlotsByIdFormAndDateRange( appointmentDTO.getIdForm( ), appointmentDTO.getSlot( )
+            HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( appointmentDTO.getIdForm( ), appointmentDTO.getSlot( )
                     .getStartingDateTime( ), appointmentDTO.getSlot( ).getEndingDateTime( ) );
             if ( !mapSlot.isEmpty( ) )
             {

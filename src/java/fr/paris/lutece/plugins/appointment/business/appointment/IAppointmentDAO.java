@@ -95,19 +95,6 @@ public interface IAppointmentDAO
     Appointment findByReference( String strReference, Plugin plugin );
 
     /**
-     * Returns a list of all the appointment that start after a given date
-     * 
-     * @param nIdForm
-     *            the form id
-     * @param startingDateTime
-     *            the starting date
-     * @param plugin
-     *            the plugin
-     * @return a list of the appointments
-     */
-    List<Appointment> findByIdFormAndAfterADateTime( int nIdForm, LocalDateTime startingDateTime, Plugin plugin );
-
-    /**
      * Returns a list of all the appointment of a form
      * 
      * @param nIdForm

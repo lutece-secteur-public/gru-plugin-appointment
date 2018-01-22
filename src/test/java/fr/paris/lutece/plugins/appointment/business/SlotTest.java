@@ -1,7 +1,6 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -114,7 +113,7 @@ public final class SlotTest extends LuteceTestCase
         SlotHome.create( slot2 );
 
         // Find the Slot created in database
-        HashMap<LocalDateTime, Slot> listSlotStored = SlotHome.findByIdFormAndDateRange( form.getIdForm( ), STARTING_DATE_1, ENDING_DATE_1 );
+        List<Slot> listSlotStored = SlotHome.findByIdFormAndDateRange( form.getIdForm( ), STARTING_DATE_1, ENDING_DATE_1 );
         assertEquals( listSlotStored.size( ), 1 );
 
         // Clean

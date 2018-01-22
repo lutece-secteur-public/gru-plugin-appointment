@@ -253,7 +253,7 @@ public final class TimeSlotService
         }
         return listTimeSlot;
     }
-
+    
     /**
      * Return an ordered and filtered list of time slots after a given time
      * 

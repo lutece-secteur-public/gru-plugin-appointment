@@ -114,21 +114,7 @@ public final class AppointmentHome
     {
         return _dao.findByIdSlot( nIdSlot, _plugin );
     }
-
-    /**
-     * Return a list of appointment whose take place after a date
-     * 
-     * @param nIdForm
-     *            the form id
-     * @param startingDateTime
-     *            the date which the appointment must begin after
-     * @return the list of the appointments
-     */
-    public static List<Appointment> findByIdFormAndAfterADateTime( int nIdForm, LocalDateTime startingDateTime )
-    {
-        return _dao.findByIdFormAndAfterADateTime( nIdForm, startingDateTime, _plugin );
-    }
-
+    
     /**
      * Return a list of appointment of a form
      * 

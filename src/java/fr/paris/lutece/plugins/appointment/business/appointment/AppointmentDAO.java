@@ -34,8 +34,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_slot = ?";
     private static final String SQL_QUERY_SELECT_BY_REFERENCE = SQL_QUERY_SELECT_COLUMNS + " WHERE reference = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS
-            + " INNER JOIN appointment_slot slot ON appointment.id_slot = slot.id_slot WHERE slot.id_form = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_AFTER_A_DATE = SQL_QUERY_SELECT_BY_ID_FORM + " AND slot.starting_date_time >= ?";
+            + " INNER JOIN appointment_slot slot ON appointment.id_slot = slot.id_slot WHERE slot.id_form = ?";    
     private static final String SQL_QUERY_SELECT_BY_FILTER = "SELECT "
             + "app.id_appointment, app.reference, app.nb_places, app.is_cancelled, app.id_action_cancelled, app.notification, app.id_admin_user, app.id_user, app.id_slot, "
             + "user.id_user, user.id_lutece_user, user.first_name, user.last_name, user.email, user.phone_number, "
@@ -290,33 +289,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             sbSql.append( SQL_FILTER_DATE_APPOINTMENT_MAX );
         }
         return sbSql.toString( );
-    }
-
-    @Override
-    public List<Appointment> findByIdFormAndAfterADateTime( int nIdForm, LocalDateTime startingDateTime, Plugin plugin )
-    {
-        DAOUtil daoUtil = null;
-        List<Appointment> listAppointment = new ArrayList<>( );
-        try
-        {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_AFTER_A_DATE, plugin );
-            daoUtil.setInt( 1, nIdForm );
-            daoUtil.setTimestamp( 2, Timestamp.valueOf( startingDateTime ) );
-            daoUtil.executeQuery( );
-            while ( daoUtil.next( ) )
-            {
-                listAppointment.add( buildAppointment( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-        return listAppointment;
-    }
+    }    
 
     @Override
     public List<Appointment> findByIdForm( int nIdForm, Plugin plugin )

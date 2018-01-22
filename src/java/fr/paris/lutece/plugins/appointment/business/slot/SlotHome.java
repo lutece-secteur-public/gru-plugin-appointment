@@ -1,7 +1,6 @@
 package fr.paris.lutece.plugins.appointment.business.slot;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
@@ -91,10 +90,10 @@ public final class SlotHome
      *            the ending Date
      * @return a list of slots whose dates are included in the given period
      */
-    public static HashMap<LocalDateTime, Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime )
+    public static List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime )
     {
         return _dao.findByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
-    }
+    }   
 
     /**
      * Returns a list of slots of a form
@@ -135,5 +134,13 @@ public final class SlotHome
     {
         return _dao.findOpenSlotsByIdForm( nIdForm, _plugin );
     }
-
+    
+    /**
+     * Return the Slot that have the max date
+     * @param nIdForm the form id
+     * @return the slot
+     */
+    public static Slot findSlotWithTheMaxDate( int nIdForm ){
+    	return _dao.findSlotWithMaxDate( nIdForm, _plugin );
+    }
 }

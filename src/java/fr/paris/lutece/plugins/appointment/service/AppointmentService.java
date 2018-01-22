@@ -92,20 +92,6 @@ public final class AppointmentService
     }
 
     /**
-     * Find the appointments by form and that will be after a given date
-     * 
-     * @param nIdForm
-     *            the form Id
-     * @param startingDateTime
-     *            the starting date
-     * @return the appointments that matches the criteria
-     */
-    public static List<Appointment> findListAppointmentByIdFormAndAfterADateTime( int nIdForm, LocalDateTime startingDateTime )
-    {
-        return AppointmentHome.findByIdFormAndAfterADateTime( nIdForm, startingDateTime );
-    }
-
-    /**
      * Find the appointments by form
      * 
      * @param nIdForm
