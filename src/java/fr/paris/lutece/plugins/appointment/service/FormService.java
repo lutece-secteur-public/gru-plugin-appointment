@@ -47,8 +47,9 @@ public final class FormService
      *            the Form Id to copy
      * @param newNameForCopy
      *            the new Name of the copy
+     * @return the id of the form created
      */
-    public static void copyForm( int nIdForm, String newNameForCopy )
+    public static int copyForm( int nIdForm, String newNameForCopy )
     {
         AppointmentForm appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
         appointmentForm.setTitle( newNameForCopy );
@@ -57,6 +58,7 @@ public final class FormService
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         formMessage.setIdForm( nIdNewForm );
         FormMessageHome.create( formMessage );
+        return nIdNewForm;
     }
 
     /**

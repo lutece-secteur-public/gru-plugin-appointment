@@ -599,7 +599,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         if ( formToCopy != null )
         {
             String newNameForCopy = I18nService.getLocalizedString( PROPERTY_COPY_OF_FORM, request.getLocale( ) ) + formToCopy.getTitle( );
-            FormService.copyForm( nIdForm, newNameForCopy );
+            int nIdCopyForm = FormService.copyForm( nIdForm, newNameForCopy );
             AppLogService.info( LogUtilities.buildLog( ACTION_DO_COPY_FORM, strIdForm, getUser( ) ) );
             EntryFilter filter = new EntryFilter( );
             filter.setIdResource( nIdForm );
@@ -609,7 +609,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             {
                 for ( Entry entry : listEntry )
                 {
-                    entry.setIdResource( nIdForm );
+                    entry.setIdResource( nIdCopyForm );
                     int oldEntry = entry.getIdEntry( );
                     EntryHome.create( entry );
                     listField = FieldHome.getFieldListByIdEntry( oldEntry );
