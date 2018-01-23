@@ -149,7 +149,7 @@ public final class FormService
         List<AppointmentForm> listActiveAppointmentForm = new ArrayList<>( );
         for ( Form form : FormHome.findActiveForms( ) )
         {
-            listActiveAppointmentForm.add( buildAppointmentFormLight( form ) );
+            listActiveAppointmentForm.add( buildAppointmentForm(form.getIdForm(), 0, 0) );
         }
         return listActiveAppointmentForm;
     }
