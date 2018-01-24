@@ -114,7 +114,7 @@ public final class AppointmentHome
     {
         return _dao.findByIdSlot( nIdSlot, _plugin );
     }
-    
+
     /**
      * Return a list of appointment of a form
      * 

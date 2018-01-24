@@ -73,7 +73,7 @@ public interface ISlotDAO
      *            the plugin
      * @return a list of slots whose dates are included in the given period
      */
-    List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin );    
+    List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin );
 
     /**
      * Returns all the slots of a form
@@ -111,13 +111,16 @@ public interface ISlotDAO
      * @return a list of open slots
      */
     List<Slot> findOpenSlotsByIdForm( int nIdForm, Plugin plugin );
-    
+
     /**
      * Return the slot with the max date
-     * @param nIdForm the form id
-     * @param plugin the plugin
+     * 
+     * @param nIdForm
+     *            the form id
+     * @param plugin
+     *            the plugin
      * @return the slot
      */
-    Slot findSlotWithMaxDate( int nIdForm, Plugin plugin);
+    Slot findSlotWithMaxDate( int nIdForm, Plugin plugin );
 
 }

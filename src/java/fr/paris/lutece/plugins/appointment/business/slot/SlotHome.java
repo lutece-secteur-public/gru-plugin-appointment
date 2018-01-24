@@ -93,7 +93,7 @@ public final class SlotHome
     public static List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime )
     {
         return _dao.findByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
-    }   
+    }
 
     /**
      * Returns a list of slots of a form
@@ -134,13 +134,16 @@ public final class SlotHome
     {
         return _dao.findOpenSlotsByIdForm( nIdForm, _plugin );
     }
-    
+
     /**
      * Return the Slot that have the max date
-     * @param nIdForm the form id
+     * 
+     * @param nIdForm
+     *            the form id
      * @return the slot
      */
-    public static Slot findSlotWithTheMaxDate( int nIdForm ){
-    	return _dao.findSlotWithMaxDate( nIdForm, _plugin );
+    public static Slot findSlotWithTheMaxDate( int nIdForm )
+    {
+        return _dao.findSlotWithMaxDate( nIdForm, _plugin );
     }
 }

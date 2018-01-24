@@ -149,7 +149,7 @@ public final class FormService
         List<AppointmentForm> listActiveAppointmentForm = new ArrayList<>( );
         for ( Form form : FormHome.findActiveForms( ) )
         {
-            listActiveAppointmentForm.add( buildAppointmentForm(form.getIdForm(), 0, 0) );
+            listActiveAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
         }
         return listActiveAppointmentForm;
     }
@@ -230,7 +230,7 @@ public final class FormService
     {
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         return buildAppointmentFormLight( form );
-    }    
+    }
 
     /**
      * Build an appointmentForm DTO

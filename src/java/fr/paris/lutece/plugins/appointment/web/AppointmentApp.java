@@ -554,7 +554,8 @@ public class AppointmentApp extends MVCApplication
                 LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
                 LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
                 // Need to check if the slot has not been already created
-                HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateTime, endingDateTime );
+                HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateTime,
+                        endingDateTime );
                 if ( !slotInDbMap.isEmpty( ) )
                 {
                     slot = slotInDbMap.get( startingDateTime );
@@ -839,9 +840,9 @@ public class AppointmentApp extends MVCApplication
     {
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
-        AppLogService.debug("n Id Appointment :"+ nIdAppointment);
+        AppLogService.debug( "n Id Appointment :" + nIdAppointment );
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
-        FormMessage formMessages = FormMessageService.findFormMessageByIdForm(nIdForm);
+        FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         String strTimeBegin = slot.getStartingDateTime( ).toLocalTime( ).toString( );
