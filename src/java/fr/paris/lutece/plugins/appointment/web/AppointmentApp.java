@@ -33,9 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -276,13 +279,14 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_CALENDAR )
     public XPage getViewAppointmentCalendar( HttpServletRequest request )
     {
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        Locale locale = getLocale(request); 
+    	int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Map<String, Object> model = getModel( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         boolean bError = false;
         if ( !form.getIsActive( ) )
         {
-            addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, getLocale( request ) );
+            addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, locale );
             bError = true;
         }
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
@@ -291,7 +295,7 @@ public class AppointmentApp extends MVCApplication
         LocalDate startingValidityDate = form.getStartingValidityDate( );
         if ( startingValidityDate == null )
         {
-            addError( ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, getLocale( request ) );
+            addError( ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE, locale );
             bError = true;
         }
         LocalDate startingDateOfDisplay = LocalDate.now( );
@@ -303,8 +307,11 @@ public class AppointmentApp extends MVCApplication
         // Get the nb weeks to display
         int nNbWeeksToDisplay = display.getNbWeeksToDisplay( );
         // Calculate the ending date of display with the nb weeks to display
-        // since today
-        LocalDate endingDateOfDisplay = startingDateOfDisplay.plusWeeks( nNbWeeksToDisplay );
+        // since today 
+        // We calculate the number of weeks including the current week, so it will end to the (n) next sunday
+        TemporalField fieldISO = WeekFields.of(locale).dayOfWeek();
+        LocalDate dateOfSunday = startingDateOfDisplay.with(fieldISO, DayOfWeek.SUNDAY.getValue());
+        LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks(nNbWeeksToDisplay - 1);                
         // if the ending date of display is after the ending validity date of
         // the form
         // assign the ending date of display with the ending validity date of
@@ -318,14 +325,14 @@ public class AppointmentApp extends MVCApplication
             }
             if ( startingDateOfDisplay.isAfter( endingDateOfDisplay ) )
             {
-                addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, getLocale( request ) );
+                addError( ERROR_MESSAGE_FORM_NO_MORE_VALID, locale );
                 bError = true;
             }
         }
         LocalDate firstDateOfFreeOpenSlot = SlotService.findFirstDateOfFreeOpenSlot( nIdForm, startingDateOfDisplay, endingDateOfDisplay );
         if ( firstDateOfFreeOpenSlot == null )
         {
-            addError( ERROR_MESSAGE_NO_AVAILABLE_SLOT, getLocale( request ) );
+            addError( ERROR_MESSAGE_NO_AVAILABLE_SLOT, locale );
             bError = true;
         }
         // Get the current date of display of the calendar, if it exists
@@ -400,8 +407,7 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
         model.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
-        Locale locale = getLocale( request );
+        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );        
         CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( display.getIdCalendarTemplate( ) );
         List<String> listHiddenDays = new ArrayList<>( );
         String dayView = AGENDA_DAY;

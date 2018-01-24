@@ -178,7 +178,9 @@ public final class AppointmentForm extends ReservationRule implements RBACResour
     /**
      * Number of weeks to display the form to the user
      */
-    private int _nNbWeeksToDisplay;
+    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 1, message = "#i18n{appointment.validation.appointmentform.NbWeeksToDisplay.notEmpty}" )
+    private int _nNbWeeksToDisplay = 1;
 
     /**
      * True if the authentication is required
