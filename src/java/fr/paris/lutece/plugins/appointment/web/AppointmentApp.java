@@ -280,8 +280,7 @@ public class AppointmentApp extends MVCApplication
     public XPage getViewAppointmentCalendar( HttpServletRequest request )
     {
         Locale locale = getLocale(request); 
-    	int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        Map<String, Object> model = getModel( );
+    	int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );        
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         boolean bError = false;
         if ( !form.getIsActive( ) )
@@ -343,7 +342,7 @@ public class AppointmentApp extends MVCApplication
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
         }
         // Display the week with the first available slot
-        if ( firstDateOfFreeOpenSlot.isAfter( dateOfDisplay ) )
+        if ( firstDateOfFreeOpenSlot != null && firstDateOfFreeOpenSlot.isAfter( dateOfDisplay ) )
         {
             dateOfDisplay = firstDateOfFreeOpenSlot;
         }
@@ -383,6 +382,7 @@ public class AppointmentApp extends MVCApplication
             // Filter the list of slots
             listSlots = listSlots.stream( ).filter( s -> s.getStartingDateTime( ).isAfter( dateTimeBeforeAppointment ) ).collect( Collectors.toList( ) );
         }
+        Map<String, Object> model = getModel( );
         if ( bError )
         {
             model.put( MARK_FORM_CALENDAR_ERRORS, bError );
