@@ -20,7 +20,7 @@
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
         <maven.version>3.5.1</maven.version>    
         <regularexpression.version>3.0.3</regularexpression.version>                        
-        <workflow.version>4.3.6-SNAPSHOT</workflow.version>    
+        <workflow.version>4.3.6</workflow.version>    
         <rest.version>3.1.0</rest.version>
     </properties>
     <repositories>
