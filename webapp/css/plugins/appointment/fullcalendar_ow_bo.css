@@ -1,0 +1,95 @@
+td.fc-axis.fc-time.ui-widget-content {
+    width: 80px ;
+    height: 45px ;
+    padding: 8px 4px;
+    text-align: center;
+    line-height: 1.42857143;
+    width: 130px;
+    margin: 0;
+    border-top: 0px solid transparent;    
+}
+
+th.fc-day-header.ui-widget-header {    
+    height: 40px ;
+    padding: 15px 20px;
+    text-align: center;
+    line-height: 1.42857143;
+    margin: 0;
+    border-top: 0px solid transparent;
+	font-weight: normal;
+	vertical-align: middle;
+}
+
+.fc-view-container {
+    background-color: rgba(255,255,255,0.6);
+	padding-bottom: 190px;
+}
+
+th.fc-axis.ui-widget-header {
+    width: 100px ;
+	background: none;
+}
+
+td.fc-axis.ui-widget-content {
+    width: 100px ;
+}
+
+.fc-event {
+	border-radius: 5px;
+	border: 1px solid rgba(255,255,255,0.6);
+    padding: 5px;
+    margin: 1px 0px;
+}
+
+.fc-time-grid-event .fc-time .fc-time-grid-event .fc-title {
+    text-align: center;
+}
+
+.fc-time {
+    text-align: center;
+}
+
+.fc-title {
+    text-align: center;
+}
+
+td.fc-day.ui-widget-content.fc-today.ui-state-highlight {
+	background: none ;
+	border: none ;
+}
+
+.fc td {
+	border-style: none;
+}
+
+.fc-ltr .fc-time-grid .fc-event-container { /* space on the sides of events for LTR (default) */
+	margin: 0 2.5% 0 2.5%;
+}
+
+.fc-rtl .fc-time-grid .fc-event-container { /* space on the sides of events for RTL */
+	margin: 0 2.5% 0 2.5%;
+}
+
+button.fc-today-button:hover, button.fc-today-button:active, button.fc-today-button:focus {
+    border: none;
+
+}
+
+button.fc-datePicker-button:hover, button.fc-datePicker-button:active, button.fc-datePicker-button:focus {
+    border: none;
+
+}
+
+button.fc-prev-button:hover, button.fc-prev-button:active, button.fc-prev-button:focus {
+    border: none;
+
+}
+
+button.fc-next-button:hover, button.fc-next-button:active, button.fc-next-button:focus {
+    border: none;
+
+}
+
+.ui-state-over {
+
+}

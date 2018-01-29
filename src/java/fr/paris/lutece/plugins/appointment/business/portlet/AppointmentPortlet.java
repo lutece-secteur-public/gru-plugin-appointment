@@ -33,18 +33,21 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 
-import org.apache.commons.lang.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * This class represents business objects AppointmentPortlet
+ * 
+ * @author Laurent Payen
+ *
  */
-public class AppointmentPortlet extends PortletHtmlContent
+public final class AppointmentPortlet extends PortletHtmlContent
 {
     // ///////////////////////////////////////////////////////////////////////////////
     // Constants

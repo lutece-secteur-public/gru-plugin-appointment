@@ -33,8 +33,20 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplate;
-import fr.paris.lutece.plugins.appointment.business.template.CalendarTemplateHome;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -48,21 +60,11 @@ import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.datatable.DataTableManager;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.validation.ConstraintViolation;
-
 /**
  * This class provides the user interface to manage calendar templates
+ * 
+ * @author Laurent Payen
+ *
  */
 @Controller( controllerJsp = CalendarTemplateJspBean.CONTROLLER_JSP, controllerPath = CalendarTemplateJspBean.CONTROLLER_PATH, right = CalendarTemplateJspBean.RIGHT_MANAGE_CALENDAR_TEMPLATES )
 public class CalendarTemplateJspBean extends MVCAdminJspBean
@@ -106,12 +108,12 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
     private static final String PARAMETER_TEMPLACE_PATH = "templatePath";
 
     // Messages
-    private static final String MESSAGE_COLUMN_TITLE_TITLE = "appointment.manageCalendarTemplates.labelTitle";
-    private static final String MESSAGE_COLUMN_TITLE_DESCRIPTION = "appointment.manageCalendarTemplates.labelDescription";
+    private static final String MESSAGE_COLUMN_TITLE_TITLE = "appointment.labelTitle";
+    private static final String MESSAGE_COLUMN_TITLE_DESCRIPTION = "appointment.labelDescription";
     private static final String MESSAGE_COLUMN_TITLE_TEMPLATE_PATH = "appointment.manageCalendarTemplates.labelTemplatePath";
     private static final String MESSAGE_COLUMN_TITLE_ACTIONS = "portal.util.labelActions";
-    private static final String MESSAGE_DEFAULT_PAGE_TITLE = "appointment.manageCalendarTemplates.pageTitleManageCalendarTemplates";
-    private static final String MESSAGE_CREATE_TEMPLATE_PAGE_TITLE = "appointment.createModifyCalendarTemplate.pageTitleCreate";
+    private static final String MESSAGE_DEFAULT_PAGE_TITLE = "appointment.adminFeature.manageCalendarTemplates.name";
+    private static final String MESSAGE_CREATE_TEMPLATE_PAGE_TITLE = "appointment.labelAddTemplate";
     private static final String MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE = "appointment.createModifyCalendarTemplate.pageTitleModify";
     private static final String MESSAGE_INFO_TEMPLATE_CREATED = "appointment.createModifyCalendarTemplate.infoTemplateCreated";
     private static final String MESSAGE_INFO_TEMPLATE_UPDATED = "appointment.createModifyCalendarTemplate.infoTemplateUpdated";
@@ -191,7 +193,8 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
         if ( StringUtils.isNotEmpty( strIdTemplate ) && StringUtils.isNumeric( strIdTemplate ) )
         {
-            // If the id template is valid, then we load the template from the database
+            // If the id template is valid, then we load the template from the
+            // database
             int nIdTemplate = Integer.parseInt( strIdTemplate );
             _template = CalendarTemplateHome.findByPrimaryKey( nIdTemplate );
         }
@@ -218,21 +221,32 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
         {
             if ( calendarTemplatesFolder.isDirectory( ) )
             {
-                for ( File file : calendarTemplatesFolder.listFiles( ) )
+                if ( calendarTemplatesFolder != null )
                 {
-                    refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
+                    File [ ] listFiles = calendarTemplatesFolder.listFiles( );
+                    if ( listFiles != null && listFiles.length != 0 )
+                    {
+                        for ( File file : listFiles )
+                        {
+                            if ( file != null )
+                            {
+                                refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
+                            }
+                        }
+                    }
                 }
             }
             else
             {
-                // If the specified folder is a file, we add that file to the reference list
+                // If the specified folder is a file, we add that file to the
+                // reference list
                 refListTemplates.addItem( strCalendarTemplatesFolder + calendarTemplatesFolder.getName( ), calendarTemplatesFolder.getName( ) );
             }
         }
 
         model.put( MARK_REF_LIST_TEMPLATES, refListTemplates );
 
-        return getPage( ( _template.getId( ) > 0 ) ? MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE : MESSAGE_CREATE_TEMPLATE_PAGE_TITLE,
+        return getPage( ( _template.getIdCalendarTemplate( ) > 0 ) ? MESSAGE_MODIFY_TEMPLATE_PAGE_TITLE : MESSAGE_CREATE_TEMPLATE_PAGE_TITLE,
                 TEMPLATE_CREATE_MODIFY_CALENDAR_TEMPLATE, model );
     }
 
@@ -246,13 +260,14 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
     @Action( ACTION_CREATE_MODIFY_TEMPLATE )
     public String doCreateModifyTemplate( HttpServletRequest request )
     {
-        // We reset the session template to prevent collisions with any other tab or page
+        // We reset the session template to prevent collisions with any other
+        // tab or page
         _template = new CalendarTemplate( );
         populate( _template, request );
 
         Set<ConstraintViolation<CalendarTemplate>> listErrors = validate( _template );
 
-        if ( ( listErrors != null ) && ( listErrors.size( ) > 0 ) )
+        if ( CollectionUtils.isNotEmpty( listErrors ) )
         {
             for ( ConstraintViolation<CalendarTemplate> error : listErrors )
             {
@@ -262,7 +277,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
             return redirectView( request, VIEW_CREATE_MODIFY_TEMPLATE );
         }
 
-        if ( _template.getId( ) > 0 )
+        if ( _template.getIdCalendarTemplate( ) > 0 )
         {
             CalendarTemplateHome.update( _template );
             addInfo( MESSAGE_INFO_TEMPLATE_UPDATED, getLocale( ) );

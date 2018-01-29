@@ -38,13 +38,16 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * class EntryTypeText
+ * 
+ * @author Laurent Payen
+ * 
  */
 public class EntryTypeText extends AbstractEntryTypeText
 {
-    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_text.html";
     private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_text.html";
-    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_text.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_text.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_text.html";
+    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_text.html";
 
     /**
      * {@inheritDoc}
@@ -59,17 +62,17 @@ public class EntryTypeText extends AbstractEntryTypeText
      * {@inheritDoc}
      */
     @Override
-    public String getTemplateCreate( Entry entry, boolean bDisplayFront )
+    public String getTemplateModify( Entry entry, boolean bDisplayFront )
     {
-        return TEMPLATE_CREATE;
+        return TEMPLATE_MODIFY;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getTemplateModify( Entry entry, boolean bDisplayFront )
+    public String getTemplateCreate( Entry entry, boolean bDisplayFront )
     {
-        return TEMPLATE_MODIFY;
+        return TEMPLATE_CREATE;
     }
 }

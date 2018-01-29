@@ -33,6 +33,14 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -50,16 +58,11 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
-import org.apache.commons.lang.StringUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
- * JspBean to manage appointment form fields
+ * JspBean to manage appointment form fieldsl
+ * 
+ * @author Laurent Payen
+ *
  */
 @Controller( controllerJsp = "ManageAppointmentFormFields.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
 public class AppointmentFormFieldJspBean extends MVCAdminJspBean
@@ -81,7 +84,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_FIELD = "appointment.message.confirmRemoveField";
     private static final String MESSAGE_MANDATORY_FIELD = "portal.util.message.mandatoryField";
-    private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.field_value_field";
+    private static final String MESSAGE_FIELD_VALUE_FIELD = "appointment.message.error.fieldValue";
 
     // Views
     private static final String VIEW_GET_CREATE_FIELD = "getCreateField";
@@ -107,8 +110,8 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
     private static final String PARAMETER_DEFAULT_VALUE = "default_value";
     private static final String PARAMETER_NO_DISPLAY_TITLE = "no_display_title";
     private static final String PARAMETER_COMMENT = "comment";
-    private static final String FIELD_TITLE_FIELD = "appointment.createField.labelTitle";
-    private static final String FIELD_VALUE_FIELD = "appointment.createField.labelValue";
+    private static final String FIELD_TITLE_FIELD = "appointment.labelTitle";
+    private static final String FIELD_VALUE_FIELD = "appointment.value.name";
 
     // Templates
     private static final String TEMPLATE_CREATE_FIELD = "admin/plugins/appointment/create_field.html";

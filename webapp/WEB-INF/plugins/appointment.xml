@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><plug-in>
     <name>appointment</name>
     <class>fr.paris.lutece.plugins.appointment.service.AppointmentPlugin</class>
-    <version>1.1.8-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <documentation/>
     <installation/>
     <changes/>
@@ -26,9 +26,17 @@
 		<admin-feature>
             <feature-id>APPOINTMENT_CALENDAR_TEMPLATE</feature-id>
             <feature-title>appointment.adminFeature.manageCalendarTemplates.name</feature-title>
-            <feature-description>appointment.adminFeature.manageCalendarTemplates.description</feature-description>
+            <feature-description>appointment.adminFeature.manageCalendarTemplates.name</feature-description>
             <feature-level>0</feature-level>
             <feature-url>jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp</feature-url>
+            <feature-icon-url/>
+		</admin-feature>
+		<admin-feature>
+            <feature-id>APPOINTMENT_CATEGORY_MANAGEMENT</feature-id>
+            <feature-title>appointment.adminFeature.manageCategories.name</feature-title>
+            <feature-description>appointment.adminFeature.manageCategories.name</feature-description>
+            <feature-level>2</feature-level>
+            <feature-url>jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp</feature-url>
             <feature-icon-url/>
 		</admin-feature>
     </admin-features>
@@ -72,44 +80,7 @@
         <portlet-create-specific-form-template/>
         <portlet-modify-specific-form-template/> 
      </portlet>
-   </portlets>
-	<daemons>
-		<daemon>
-			<daemon-id>DayCreationDaemon</daemon-id>
-			<daemon-name>appointment.daemon.dayCreationDaemon.name</daemon-name>
-			<daemon-description>appointment.daemon.dayCreationDaemon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.DayCreationDaemon</daemon-class>
-		</daemon>
-		<daemon>
-			<daemon-id>DayRemovalDaemon</daemon-id>
-			<daemon-name>appointment.daemon.dayRemovalDaemon.name</daemon-name>
-			<daemon-description>appointment.daemon.dayRemovalDaemon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.DayRemovalDaemon</daemon-class>
-		</daemon>
-		<daemon>
-			<daemon-id>AppointmentPublicationDaemon</daemon-id>
-			<daemon-name>appointment.daemon.appointmentPublicationDaemon.name</daemon-name>
-			<daemon-description>appointment.daemon.appointmentPublicationDaemon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.appointment.service.daemon.AppointmentPublicationDaemon</daemon-class>
-		</daemon>
-	
-   		<daemon>
-			<daemon-id>AppointmentSlotDisponibilityDaemon</daemon-id>
-			<daemon-name>appointment.Daemon.AppointmentSlotDisponibilityDaemon.name</daemon-name>
-			<daemon-description>appointment.Daemon.AppointmentSlotDisponibilityDaemon.description</daemon-description>
-			<daemon-class>fr.paris.lutece.plugins.appointment.Daemon.AppointmentSlotDisponibilityDaemon</daemon-class>
-		</daemon>
-   </daemons>
-   
-   
-	
-<!--    <javascript-files> -->
-<!--         <javascript-files-scope>portal</javascript-files-scope> -->
-<!--         <javascript-file>appointment/appointment.js</javascript-file> -->
-<!-- 		<javascript-file>appointment/uploadify/jquery.uploadify.v2.1.4.min.js</javascript-file> -->
-<!-- 		<javascript-file>appointment/uploadify/swfobject.js</javascript-file> -->
-<!-- 		<javascript-file>appointment/appointmentupload.js</javascript-file> -->
-<!--     </javascript-files> -->
+   </portlets>	
     <css-stylesheets>
         <css-stylesheets-scope>portal</css-stylesheets-scope>
         <css-stylesheet>appointment/appointment.css</css-stylesheet>

@@ -1,16 +1,21 @@
-<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+			<#assign hasError = true>
+		</#if>
+	</#list>
+</#if>
+
+<div class="form-group<#if hasError??> has-error</#if>">
+	<label class="col-xs-12 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 	<#list entry.fields as field>
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<input class="form-control" type="text" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}" 
+	<div class="col-xs-12">
+		<input type="text" class="form-control" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}" 
 			<#if list_responses??>
 				<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry>
 					<#if response.toStringValueResponse??>
 						value="${response.toStringValueResponse}"
-					</#if>
-					<#if response.entry.error??>
-						class="error"
 					</#if>
 					</#if>
 				</#list>
@@ -24,21 +29,21 @@
 			<#if field.maxSizeEnter!=-1>
 				maxlength="${field.maxSizeEnter}"
 			</#if>
-			class="${entry.CSSClass!} "	/>
+			class="${entry.CSSClass!} form-control"	/>
 		</#list>
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 			<p class="help-block">${entry.helpMessage}</p>
 		</#if>
+		<#if list_responses??>
+			<#list list_responses as response>
+				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+					<#assign error = response.entry.error>
+					<span class="help-block"><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></span>
+				</#if>
+			</#list>
+		</#if>
 	</div>
 </div>
-<#if list_responses??>
-	<#list list_responses as response>
-		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-			<#assign error = response.entry.error>
-			<div class="alert alert-error alert-danger"> <#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></div>
-		</#if>
-	</#list>
-</#if>
 <#if entry.confirmField>
 <div class="form-group">
 	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}_confirm_field">${entry.confirmFieldTitle}<#if entry.mandatory> *</#if></label>

@@ -41,8 +41,11 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  * 
  * @see #getFileItems(String, String)
  * @see #removeFileItem(String, String, int)
+ * 
+ * @author Laurent Payen
+ * 
  */
-public class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
+public final class AppointmentAsynchronousUploadHandler extends AbstractGenAttUploadHandler
 {
     private static final String UPLOAD_SUBMIT_PREFIX = "_appointment_upload_submit_";
     private static final String UPLOAD_DELETE_PREFIX = "_appointment_upload_delete_";

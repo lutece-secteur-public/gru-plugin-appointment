@@ -33,25 +33,28 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
-import fr.paris.lutece.portal.service.image.ImageResource;
-import fr.paris.lutece.portal.service.rbac.RBACResource;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
-
-import org.hibernate.validator.constraints.NotBlank;
-
 import java.io.Serializable;
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.portal.service.image.ImageResource;
+import fr.paris.lutece.portal.service.rbac.RBACResource;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
+
 /**
- * This is the business class for the object AppointmentForm
+ * This is the DTO class for the object AppointmentForm
+ * 
+ * @author Laurent Payen
+ *
  */
-public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
+public final class AppointmentForm extends ReservationRule implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
 {
     /**
      * Name of the resource type of Appointment Forms
@@ -59,120 +62,242 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
 
     /**
-     * Constant for separator between hours and minutes.
+     * Name of the resource type of Appointment Forms
      */
-    public static final String CONSTANT_H = "h";
+    public static final String RESOURCE_TYPE_CREATE = "APPOINTMENT_FORM_CREATE";
 
     /**
-     * Regular expression used to control time format
+     * Serial version UID
      */
-    public static final String CONSTANT_TIME_REGEX = "^[0-2][0-9]" + CONSTANT_H + "[0-5][0-9]$";
     private static final long serialVersionUID = 307685220867535209L;
 
-    // Variables declarations
-    private int _nIdForm;
+    /**
+     * The title of the form
+     */
     @NotBlank( message = "#i18n{appointment.validation.appointmentform.Title.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.appointmentform.Title.size}" )
     private String _strTitle;
+
+    /**
+     * The description of the form
+     */
     @NotBlank( message = "#i18n{appointment.validation.appointmentform.Description.notEmpty}" )
     private String _strDescription;
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    @Pattern( regexp = CONSTANT_TIME_REGEX, message = "#i18n{appointment.modify_appointmentForm.patternTimeStart}" )
+
+    /**
+     * The starting time of a working day
+     */
+    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeStart;
-    @Pattern( regexp = CONSTANT_TIME_REGEX, message = "#i18n{appointment.modify_appointmentForm.patternTimeEnd}" )
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+
+    /**
+     * The ending time of a working day
+     */
+    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeEnd;
+
+    /**
+     * The duration of an appointment
+     */
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nDurationAppointments;
+
+    /**
+     * The minimum time from now before a user can take an appointment
+     */
+    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 0, message = "#i18n{portal.validation.message.notEmpty}" )
+    private int _nMinTimeBeforeAppointment;
+
+    /**
+     * True if it is open on Monday (checkbox)
+     */
     private boolean _bIsOpenMonday;
+
+    /**
+     * True if it is open on Tuesday (checkbox)
+     */
     private boolean _bIsOpenTuesday;
+
+    /**
+     * True if it is open on Wednesday (checkbox)
+     */
     private boolean _bIsOpenWednesday;
+
+    /**
+     * True if it is open on Thursday (checkbox)
+     */
     private boolean _bIsOpenThursday;
+
+    /**
+     * True if it is open on Friday (checkbox)
+     */
     private boolean _bIsOpenFriday;
+
+    /**
+     * True if it is open on Saturday (checkbox)
+     */
     private boolean _bIsOpenSaturday;
+
+    /**
+     * True if it is open on Sunday (checkbox)
+     */
     private boolean _bIsOpenSunday;
-    private Date _dateDateStartValidity;
-    private Date _dateDateEndValidity;
+
+    /**
+     * Starting validity date of the form
+     */
+    private Date _dateStartValidity;
+
+    /**
+     * Ending validity date of the form
+     */
+    private Date _dateEndValidity;
+
+    /**
+     * Date of modification of the form
+     */
+    private Date _dateOfModification;
+
+    /**
+     * True if the form is active
+     */
     private boolean _bIsActive;
-    private boolean _bIsActiveAuthentification;
+
+    /**
+     * True if the title has to be displayed on the front office
+     */
     private boolean _bDisplayTitleFo;
-    private int _nNbWeeksToDisplay;
-    private Date _dateDateLimit;
-    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nPeoplePerAppointment;
-    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
-    private int _nMaximumNumberOfBookedSeats = 0;
+
+    /**
+     * True if the form has to be displayed on the front office portlet
+     */
+    private boolean _bIsDisplayOnPortlet = true;
+
+    /**
+     * Number of weeks to display the form to the user
+     */
+    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 1, message = "#i18n{appointment.validation.appointmentform.NbWeeksToDisplay.notEmpty}" )
+    private int _nNbWeeksToDisplay = 1;
+
+    /**
+     * True if the authentication is required
+     */
+    private boolean _bActiveAuthentication;
+
+    /**
+     * The workflow Id
+     */
     private int _nIdWorkflow;
-    private int _nOpeningHour;
-    private int _nOpeningMinutes;
-    private int _nClosingHour;
-    private int _nClosingMinutes;
-    private int _nMinDaysBeforeAppointment;
+
+    /**
+     * True if the captcha is enabled
+     */
     private boolean _bEnableCaptcha;
-    private boolean _bAllowUsersToCancelAppointments;
-    private boolean _bOpeningHourInitialized;
-    private boolean _bOpeningMinutesInitialized;
-    private boolean _bClosingHourInitialized;
-    private boolean _bClosingMinutesInitialized;
+
+    /**
+     * The Calendar Template Id
+     */
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nCalendarTemplateId;
-    private int _nMaxAppointmentMail;
-    private int _nNbWeeksLimits;
-    private String _strReference;
-    private boolean _bIsFormStep;
-    private boolean _bEnableConfirmEmail;
-    private boolean _bEnableMandatoryEmail;
-    private String _strWorkgroup;
-    private ImageResource _imageResource;
-    @Min( value = 0, message = "#i18n{appointment.validation.appointmentform.fromTimeSeizure.notEmpty}" )
-    private int _nseizureDuration;
 
+    /**
+     * The Reference of the form (that will be in front of the reference appointment)
+     */
+    private String _strReference;
+
+    /**
+     * True if the email is enabled
+     */
+    private boolean _bEnableMandatoryEmail;
+
+    /**
+     * The icon of the form
+     */
+    private ImageResource _imageResource;
+
+    /**
+     * The category of the form
+     */
+    private int _nIdCategory;
+
+    /**
+     * Minimum of days between two appointments of a same user
+     */
+    private int _nNbDaysBeforeNewAppointment;
+
+    /**
+     * Maximum appointments for a user on a given period
+     */
+    private int _nNbMaxAppointmentsPerUser;
+
+    /**
+     * Number of days for the period for the the maximum appointments for a user
+     */
+    private int _nNbDaysForMaxAppointmentsPerUser;
+
+    /**
+     * Workgroup of the form
+     */
+    private String _strWorkgroup;
+
+    /**
+     * Longitude
+     */
     private Double _dLongitude;
+
+    /**
+     * Latitude
+     */
     private Double _dLatitude;
+
+    /**
+     * Address
+     */
     private String _strAddress;
 
-    private String _strCategory;
-
-    public int getMaximumNumberOfBookedSeats( )
+    /**
+     * Get the maximum number of appointments authorized for a same user
+     * 
+     * @return the maximum number
+     */
+    public int getNbMaxAppointmentsPerUser( )
     {
-        return _nMaximumNumberOfBookedSeats;
-    }
-
-    public void setMaximumNumberOfBookedSeats( int _nMaximumNumberOfBookedSeats )
-    {
-        this._nMaximumNumberOfBookedSeats = _nMaximumNumberOfBookedSeats;
-    }
-
-    public int getSeizureDuration( )
-    {
-        return _nseizureDuration;
-    }
-
-    public void setSeizureDuration( int _nseizureDuration )
-    {
-        this._nseizureDuration = _nseizureDuration;
+        return _nNbMaxAppointmentsPerUser;
     }
 
     /**
-     * Returns the IdForm
+     * Set the maximum number of appointments authorized for a same user
      * 
-     * @return The IdForm
+     * @param nNbMaxAppointmentsPerUser
+     *            the maximum number of appointments to set
      */
-    public int getIdForm( )
+    public void setNbMaxAppointmentsPerUser( int nNbMaxAppointmentsPerUser )
     {
-        return _nIdForm;
+        this._nNbMaxAppointmentsPerUser = nNbMaxAppointmentsPerUser;
     }
 
     /**
-     * Sets the IdForm
+     * Get the number of days for the period of the maximum number of appointments authorized for a same user
      * 
-     * @param nIdForm
-     *            The IdForm
+     * @return the number of days of the period
      */
-    public void setIdForm( int nIdForm )
+    public int getNbDaysForMaxAppointmentsPerUser( )
     {
-        _nIdForm = nIdForm;
+        return _nNbDaysForMaxAppointmentsPerUser;
+    }
+
+    /**
+     * Set the number of days of the period for the maximum number of appointments authorized for a same user
+     * 
+     * @param nNbDaysForMaxAppointmentsPerUser
+     *            the number of days to set
+     */
+    public void setNbDaysForMaxAppointmentsPerUser( int nNbDaysForMaxAppointmentsPerUser )
+    {
+        this._nNbDaysForMaxAppointmentsPerUser = nNbDaysForMaxAppointmentsPerUser;
     }
 
     /**
@@ -197,6 +322,41 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
+     * Get the date of modification of the form
+     * 
+     * @return the date of modification
+     */
+    public Date getDateOfModification( )
+    {
+        if ( _dateOfModification != null )
+        {
+            return (Date) _dateOfModification.clone( );
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Set the date of modification of the form
+     * 
+     * @param dateOfModification
+     *            the date to set
+     */
+    public void setDateOfModification( Date dateOfModification )
+    {
+        if ( dateOfModification != null )
+        {
+            this._dateOfModification = (Date) dateOfModification.clone( );
+        }
+        else
+        {
+            this._dateOfModification = null;
+        }
+    }
+
+    /**
      * Get the description of the appointment form
      * 
      * @return The description of the appointment form
@@ -218,9 +378,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the _strReference
+     * Returns the Reference of the form
      * 
-     * @return The strRef
+     * @return The reference of the form
      */
     public String getReference( )
     {
@@ -228,10 +388,11 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the Reference
+     * Sets the Reference of the form
      * 
-     * @param strRef
-     *            The strRef
+     * @param the
+     *            reference to set
+     * 
      */
     public void setReference( String strRef )
     {
@@ -239,30 +400,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the _strReference
+     * Returns the starting time of the working day of the form
      * 
-     * @return The strRef
-     */
-    public boolean getIsFormStep( )
-    {
-        return _bIsFormStep;
-    }
-
-    /**
-     * Sets the Reference
-     * 
-     * @param strRef
-     *            The strRef
-     */
-    public void setIsFormStep( boolean nStep )
-    {
-        _bIsFormStep = nStep;
-    }
-
-    /**
-     * Returns the TimeStart
-     * 
-     * @return The TimeStart
+     * @return The starting time
      */
     public String getTimeStart( )
     {
@@ -270,22 +410,20 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the TimeStart
+     * Sets the starting time of the working day of the form
      * 
-     * @param nTimeStart
-     *            The TimeStart
+     * @param the
+     *            starting time to set The TimeStart
      */
-    public void setTimeStart( String nTimeStart )
+    public void setTimeStart( String timeStart )
     {
-        _strTimeStart = nTimeStart;
-        _bOpeningHourInitialized = false;
-        _bOpeningMinutesInitialized = false;
+        _strTimeStart = timeStart;
     }
 
     /**
-     * Returns the TimeEnd
+     * Returns the ending time of the working day of the form
      * 
-     * @return The TimeEnd
+     * @return The ending time
      */
     public String getTimeEnd( )
     {
@@ -293,22 +431,20 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the TimeEnd
+     * Sets the ending time of the working day of the form
      * 
-     * @param nTimeEnd
-     *            The TimeEnd
+     * @param the
+     *            ending time to set
      */
-    public void setTimeEnd( String nTimeEnd )
+    public void setTimeEnd( String timeEnd )
     {
-        _strTimeEnd = nTimeEnd;
-        _bClosingHourInitialized = false;
-        _bClosingMinutesInitialized = false;
+        _strTimeEnd = timeEnd;
     }
 
     /**
-     * Returns the DurationAppointments
+     * Returns the duration of an appointment
      * 
-     * @return The DurationAppointments
+     * @return The duration of an appointment
      */
     public int getDurationAppointments( )
     {
@@ -316,10 +452,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the DurationAppointments
+     * Sets the duration of an appointment
      * 
      * @param nDurationAppointments
-     *            The DurationAppointments
+     *            The Duration of an Appointments
      */
     public void setDurationAppointments( int nDurationAppointments )
     {
@@ -327,9 +463,24 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsOpenMonday
+     * Get the minimum time from now before a user can take an appointment
      * 
-     * @return The IsOpenMonday
+     * @return
+     */
+    public int getMinTimeBeforeAppointment( )
+    {
+        return _nMinTimeBeforeAppointment;
+    }
+
+    public void setMinTimeBeforeAppointment( int nMinTimeBeforeAppointment )
+    {
+        this._nMinTimeBeforeAppointment = nMinTimeBeforeAppointment;
+    }
+
+    /**
+     * Returns if it is open on Monday (if the checkbox is checked or not)
+     * 
+     * @return true if it is open on Monday
      */
     public boolean getIsOpenMonday( )
     {
@@ -337,10 +488,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsOpenMonday
+     * Sets if it is open on Monday (if the checkbox is checked or not)
      * 
      * @param bIsOpenMonday
-     *            The IsOpenMonday
+     *            The boolean value
      */
     public void setIsOpenMonday( boolean bIsOpenMonday )
     {
@@ -348,9 +499,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsOpenTuesday
+     * Returns if it is open on Tuesday (if the checkbox is checked or not)
      * 
-     * @return The IsOpenTuesday
+     * @return true if it is open on Tuesday
      */
     public boolean getIsOpenTuesday( )
     {
@@ -358,10 +509,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsOpenTuesday
+     * Sets if it is open on Tuesday (if the checkbox is checked or not)
      * 
      * @param bIsOpenTuesday
-     *            The IsOpenTuesday
+     *            The boolean value
      */
     public void setIsOpenTuesday( boolean bIsOpenTuesday )
     {
@@ -369,9 +520,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsOpenWednesday
+     * Returns if it is open on Wednesday (if the checkbox is checked or not)
      * 
-     * @return The IsOpenWednesday
+     * @return true if it is open on Wednesday
      */
     public boolean getIsOpenWednesday( )
     {
@@ -379,10 +530,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsOpenWednesday
+     * Sets if it is open on Wednesday (if the checkbox is checked or not)
      * 
      * @param bIsOpenWednesday
-     *            The IsOpenWednesday
+     *            The boolean value
      */
     public void setIsOpenWednesday( boolean bIsOpenWednesday )
     {
@@ -390,9 +541,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsOpenThursday
+     * Returns if it is open on Thursday (if the checkbox is checked or not)
      * 
-     * @return The IsOpenThursday
+     * @return true if it is open on Thursday
      */
     public boolean getIsOpenThursday( )
     {
@@ -400,10 +551,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsOpenThursday
+     * Sets if it is open on Thursday (if the checkbox is checked or not)
      * 
      * @param bIsOpenThursday
-     *            The IsOpenThursday
+     *            The boolean value
      */
     public void setIsOpenThursday( boolean bIsOpenThursday )
     {
@@ -411,9 +562,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsOpenFriday
+     * Returns if it is open on Friday (if the checkbox is checked or not)
      * 
-     * @return The IsOpenFriday
+     * @return true if it is open on Friday
      */
     public boolean getIsOpenFriday( )
     {
@@ -421,10 +572,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsOpenFriday
+     * Sets if it is open on Friday (if the checkbox is checked or not)
      * 
      * @param bIsOpenFriday
-     *            The IsOpenFriday
+     *            The boolean value
      */
     public void setIsOpenFriday( boolean bIsOpenFriday )
     {
@@ -432,9 +583,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsOpenSaturday
+     * Returns if it is open on Saturday (if the checkbox is checked or not)
      * 
-     * @return The IsOpenSaturday
+     * @return true if it is open on Saturday
      */
     public boolean getIsOpenSaturday( )
     {
@@ -442,10 +593,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsOpenSaturday
+     * Sets if it is open on Saturday (if the checkbox is checked or not)
      * 
      * @param bIsOpenSaturday
-     *            The IsOpenSaturday
+     *            The boolean value
      */
     public void setIsOpenSaturday( boolean bIsOpenSaturday )
     {
@@ -453,9 +604,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsOpenSunday
+     * Returns if it is open on Monday (if the checkbox is checked or not)
      * 
-     * @return The IsOpenSunday
+     * @return true if it is open on Sunday
      */
     public boolean getIsOpenSunday( )
     {
@@ -463,10 +614,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsOpenSunday
+     * Sets if it is open on Sunday (if the checkbox is checked or not)
      * 
      * @param bIsOpenSunday
-     *            The IsOpenSunday
+     *            The boolean value
      */
     public void setIsOpenSunday( boolean bIsOpenSunday )
     {
@@ -474,51 +625,79 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the DateStartValidity
+     * Returns the starting validity date of the form
      * 
-     * @return The DateStartValidity
+     * @return The starting validity date of the form
      */
     public Date getDateStartValidity( )
     {
-        return _dateDateStartValidity;
+        if ( _dateStartValidity != null )
+        {
+            return (Date) _dateStartValidity.clone( );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
-     * Sets the DateStartValidity
+     * Sets the starting validity date of the form
      * 
-     * @param dateDateStartValidity
-     *            The DateStartValidity
+     * @param dateStartValidity
+     *            The starting validity date
      */
-    public void setDateStartValidity( Date dateDateStartValidity )
+    public void setDateStartValidity( Date dateStartValidity )
     {
-        _dateDateStartValidity = dateDateStartValidity;
+        if ( dateStartValidity != null )
+        {
+            this._dateStartValidity = (Date) dateStartValidity.clone( );
+        }
+        else
+        {
+            this._dateStartValidity = null;
+        }
     }
 
     /**
-     * Returns the DateEndValidity
+     * Returns the ending validity date of the form
      * 
-     * @return The DateEndValidity
+     * @return The ending validity date
      */
     public Date getDateEndValidity( )
     {
-        return _dateDateEndValidity;
+        if ( _dateEndValidity != null )
+        {
+            return (Date) _dateEndValidity.clone( );
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**
-     * Sets the DateEndValidity
+     * Sets the ending validity date of the form
      * 
-     * @param dateDateEndValidity
-     *            The DateEndValidity
+     * @param dateEndValidity
+     *            the ending validity date to set
      */
-    public void setDateEndValidity( Date dateDateEndValidity )
+    public void setDateEndValidity( Date dateEndValidity )
     {
-        _dateDateEndValidity = dateDateEndValidity;
+        if ( dateEndValidity != null )
+        {
+            this._dateEndValidity = (Date) dateEndValidity.clone( );
+        }
+        else
+        {
+            this._dateEndValidity = null;
+        }
     }
 
     /**
-     * Returns the IsActive
+     * Returns if the form is active or not
      * 
-     * @return The IsActive
+     * @return true if the form is active
      */
     public boolean getIsActive( )
     {
@@ -526,10 +705,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the IsActive
+     * Sets if the form is active or not
      * 
      * @param bIsActive
-     *            The IsActive
+     *            The boolean value
      */
     public void setIsActive( boolean bIsActive )
     {
@@ -537,30 +716,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the IsActiveAuthentification
+     * Returns if the title of the form has to be displayed on the front office
      * 
-     * @return The IsActiveAuthentification
-     */
-    public boolean getIsActiveAuthentification( )
-    {
-        return _bIsActiveAuthentification;
-    }
-
-    /**
-     * Sets the IsActiveAuthentification
-     * 
-     * @param bIsActiveAuthentification
-     *            The IsActiveAuthentification
-     */
-    public void setIsActiveAuthentification( boolean bIsActiveAuthentification )
-    {
-        _bIsActiveAuthentification = bIsActiveAuthentification;
-    }
-
-    /**
-     * Returns the DisplayTitleFo
-     * 
-     * @return The DisplayTitleFo
+     * @return true if it has to be displayed
      */
     public boolean getDisplayTitleFo( )
     {
@@ -568,10 +726,10 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the DispolayTitleFo
+     * Sets if the title of the form has to be displayed on the front office
      * 
      * @param bDisplayTitleFo
-     *            The DisplayTitleFo
+     *            The boolean value
      */
     public void setDisplayTitleFo( boolean bDisplayTitleFo )
     {
@@ -579,9 +737,30 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Returns the NbWeeksToDisplay
+     * Returns if the form has to be displayed on the front office portlet
      * 
-     * @return The NbWeeksToDisplay
+     * @return true if it has to be displayed
+     */
+    public boolean getIsDisplayedOnPortlet( )
+    {
+        return _bIsDisplayOnPortlet;
+    }
+
+    /**
+     * Sets if the form has to be displayed on the front office portlet
+     * 
+     * @param bIsDisplayedOnPortlet
+     *            The boolean value
+     */
+    public void setIsDisplayedOnPortlet( boolean bIsDisplayedOnPortlet )
+    {
+        this._bIsDisplayOnPortlet = bIsDisplayedOnPortlet;
+    }
+
+    /**
+     * Returns the number of weeks to display the form to the user (for an appointment)
+     * 
+     * @return The number of weeks to display
      */
     public int getNbWeeksToDisplay( )
     {
@@ -589,35 +768,14 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Sets the NbWeeksToDisplay
+     * Sets the number of weeks to display the form to the user (for an appointment)
      * 
      * @param nNbWeeksToDisplay
-     *            The NbWeeksToDisplay
+     *            the number of weeks to display the form
      */
     public void setNbWeeksToDisplay( int nNbWeeksToDisplay )
     {
         _nNbWeeksToDisplay = nNbWeeksToDisplay;
-    }
-
-    /**
-     * Returns the number of person per appointment
-     * 
-     * @return The number of person per appointment
-     */
-    public int getPeoplePerAppointment( )
-    {
-        return _nPeoplePerAppointment;
-    }
-
-    /**
-     * Sets the number of person per appointment
-     * 
-     * @param nPeoplePerAppointment
-     *            The number of person per appointment
-     */
-    public void setPeoplePerAppointment( int nPeoplePerAppointment )
-    {
-        _nPeoplePerAppointment = nPeoplePerAppointment;
     }
 
     /**
@@ -642,139 +800,6 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Get the opening hour
-     * 
-     * @return the opening hour
-     */
-    public int getOpeningHour( )
-    {
-        if ( !_bOpeningHourInitialized )
-        {
-            _nOpeningHour = Integer.parseInt( _strTimeStart.split( CONSTANT_H ) [0] );
-            _bOpeningHourInitialized = true;
-        }
-
-        return _nOpeningHour;
-    }
-
-    /**
-     * Set the opening hour
-     * 
-     * @param nOpeningHour
-     *            The opening hour
-     */
-    public void setOpeningHour( int nOpeningHour )
-    {
-        this._nOpeningHour = nOpeningHour;
-        _bOpeningHourInitialized = true;
-    }
-
-    /**
-     * Get the opening minutes
-     * 
-     * @return The opening minutes
-     */
-    public int getOpeningMinutes( )
-    {
-        if ( !_bOpeningMinutesInitialized )
-        {
-            _nOpeningMinutes = Integer.parseInt( _strTimeStart.split( CONSTANT_H ) [1] );
-            _bOpeningMinutesInitialized = true;
-        }
-
-        return _nOpeningMinutes;
-    }
-
-    /**
-     * Set the opening minutes
-     * 
-     * @param nOpeningMinutes
-     *            The opening minutes
-     */
-    public void setOpeningMinutes( int nOpeningMinutes )
-    {
-        this._nOpeningMinutes = nOpeningMinutes;
-        _bOpeningMinutesInitialized = true;
-    }
-
-    /**
-     * Get the closing hour
-     * 
-     * @return the closing hour
-     */
-    public int getClosingHour( )
-    {
-        if ( !_bClosingHourInitialized )
-        {
-            _nClosingHour = Integer.parseInt( _strTimeEnd.split( CONSTANT_H ) [0] );
-            _bClosingHourInitialized = true;
-        }
-
-        return _nClosingHour;
-    }
-
-    /**
-     * Set the closing hour
-     * 
-     * @param nClosingHour
-     *            The closing hour
-     */
-    public void setClosingHour( int nClosingHour )
-    {
-        this._nClosingHour = nClosingHour;
-        _bClosingHourInitialized = true;
-    }
-
-    /**
-     * Get the closing minutes
-     * 
-     * @return the closing minutes
-     */
-    public int getClosingMinutes( )
-    {
-        if ( !_bClosingMinutesInitialized )
-        {
-            _nClosingMinutes = Integer.parseInt( _strTimeEnd.split( CONSTANT_H ) [1] );
-            _bClosingMinutesInitialized = true;
-        }
-
-        return _nClosingMinutes;
-    }
-
-    /**
-     * Set the closing minutes
-     * 
-     * @param nClosingMinutes
-     *            the closing minutes
-     */
-    public void setClosingMinutes( int nClosingMinutes )
-    {
-        this._nClosingMinutes = nClosingMinutes;
-        _bClosingMinutesInitialized = true;
-    }
-
-    /**
-     * Get the minimum number of days between the current date and the date of appointment make by users
-     * 
-     * @return The minimum number of days between the current date and the date of appointment make by users
-     */
-    public int getMinDaysBeforeAppointment( )
-    {
-        return _nMinDaysBeforeAppointment;
-    }
-
-    /**
-     * Set the minimum number of days between the current date and the date of appointment make by users
-     * 
-     * @param nMinDayBeforeAppointment
-     *            The minimum number of days between the current date and the date of appointment make by users
-     */
-    public void setMinDaysBeforeAppointment( int nMinDayBeforeAppointment )
-    {
-        this._nMinDaysBeforeAppointment = nMinDayBeforeAppointment;
-    }
-
-    /**
      * Check if the captcha is enabled for this appointment form
      * 
      * @return True if the captcha is enabled, false otherwise
@@ -793,27 +818,6 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     public void setEnableCaptcha( boolean bEnableCaptcha )
     {
         this._bEnableCaptcha = bEnableCaptcha;
-    }
-
-    /**
-     * Check if a FO user can cancel appointments of this form
-     * 
-     * @return True if a FO user can cancel appointments of this form, false otherwise
-     */
-    public boolean getAllowUsersToCancelAppointments( )
-    {
-        return _bAllowUsersToCancelAppointments;
-    }
-
-    /**
-     * Set whether FO user can cancel appointments of this form
-     * 
-     * @param bAllowUsersToCancelAppointments
-     *            True if a FO user can cancel appointments of this form, false otherwise
-     */
-    public void setAllowUsersToCancelAppointments( boolean bAllowUsersToCancelAppointments )
-    {
-        this._bAllowUsersToCancelAppointments = bAllowUsersToCancelAppointments;
     }
 
     /**
@@ -838,90 +842,9 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * Get the max for weeks of this appointment form to validate
+     * Check if the email is mandatory or not
      * 
-     * @param nMaxAppointment
-     *            The nb of the max appointpents for weeks of this appointment form
-     */
-    public int getMaxAppointments( )
-    {
-        return _nMaxAppointmentMail;
-    }
-
-    /**
-     * Set the max for weeks of this appointment form to validate
-     * 
-     * @param nMaxAppointment
-     *            The nb of the max appointpents for weeks of this appointment form
-     */
-    public void setMaxAppointmentMail( int nMaxAppointment )
-    {
-        _nMaxAppointmentMail = nMaxAppointment;
-    }
-
-    /**
-     * Get the limits for weeks of this appointment form to validate
-     * 
-     * @param _nNbWeeksLimits
-     *            The nb of the max appointpents for weeks of this appointment form
-     */
-    public int getWeeksLimits( )
-    {
-        return _nNbWeeksLimits;
-    }
-
-    /**
-     * Set the limits for weeks of this appointment form to validate
-     * 
-     * @param _nNbWeeksLimits
-     *            The nb of the max appointpents for weeks of this appointment form
-     */
-    public void setNbWeeksLimits( int nWeekLimits )
-    {
-        _nNbWeeksLimits = nWeekLimits;
-    }
-
-    /**
-     * Check if a day of the week is opened or not
-     * 
-     * @param nDayOfWeek
-     *            The number of the day of the week : 1 for Monday, 2 for Tuesday, ...
-     * @return True if the requested day of the week is open, false otherwise
-     */
-    public boolean isDayOfWeekOpened( int nDayOfWeek )
-    {
-        boolean [ ] bArrayDaysOpened = {
-                _bIsOpenMonday, _bIsOpenTuesday, _bIsOpenWednesday, _bIsOpenThursday, _bIsOpenFriday, _bIsOpenSaturday, _bIsOpenSunday,
-        };
-
-        return ( ( nDayOfWeek > 0 ) && ( nDayOfWeek < bArrayDaysOpened.length ) ) ? bArrayDaysOpened [nDayOfWeek - 1] : false;
-    }
-
-    /**
-     * Get enable confirm email
-     * 
-     * @return boolean enable confirm email
-     */
-    public boolean getEnableConfirmEmail( )
-    {
-        return _bEnableConfirmEmail;
-    }
-
-    /**
-     * Set enable confirm email
-     * 
-     * @param bEnableConfirmEmail
-     *            confirm email
-     */
-    public void setEnableConfirmEmail( boolean bEnableConfirmEmail )
-    {
-        this._bEnableConfirmEmail = bEnableConfirmEmail;
-    }
-
-    /**
-     * Get enable mandatory email
-     * 
-     * @return enable mandatory email
+     * @return true if enable mandatory email
      */
     public boolean getEnableMandatoryEmail( )
     {
@@ -932,7 +855,7 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
      * Set enable mandatory email
      * 
      * @param bEnableMandatoryEmail
-     *            mandatory email
+     *            the boolean value for mandatory email
      */
     public void setEnableMandatoryEmail( boolean bEnableMandatoryEmail )
     {
@@ -940,79 +863,87 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getWorkgroup( )
-    {
-        return _strWorkgroup;
-    }
-
-    /**
-     * set the work group associate to the form
+     * Get the Icon of the form
      * 
-     * @param workGroup
-     *            the work group associate to the form
+     * @return the icon of the form
      */
-    public void setWorkgroup( String workGroup )
-    {
-        _strWorkgroup = workGroup;
-    }
-
     public ImageResource getIcon( )
     {
         return _imageResource;
     }
 
+    /**
+     * Set the icon of the form
+     * 
+     * @param imgIcon
+     *            the icon to associate to the form
+     */
     public void setIcon( ImageResource imgIcon )
     {
         this._imageResource = imgIcon;
     }
 
     /**
-     * {@inheritDoc}
+     * Get the number of days between two appointments of the same user
+     * 
+     * @return the delay in days
      */
-    @Override
-    public String getResourceTypeCode( )
+    public int getNbDaysBeforeNewAppointment( )
     {
-        return RESOURCE_TYPE;
+        return _nNbDaysBeforeNewAppointment;
     }
 
     /**
-     * {@inheritDoc}
+     * Set the number of days between two appointments of the same user (0 : no delay)
+     * 
+     * @param nNbDaysBeforeNewAppointment
+     *            the number of days to set
      */
-    @Override
-    public String getResourceId( )
+    public void setNbDaysBeforeNewAppointment( int nNbDaysBeforeNewAppointment )
     {
-        return Integer.toString( getIdForm( ) );
-    }
-
-    public Date getDateLimit( )
-    {
-        return _dateDateLimit;
-    }
-
-    public void setDateLimit( Date dateDateLimit )
-    {
-        this._dateDateLimit = dateDateLimit;
+        this._nNbDaysBeforeNewAppointment = nNbDaysBeforeNewAppointment;
     }
 
     /**
-     * {@inheritDoc}
+     * Get the category of the form
+     * 
+     * @return the category of the form
      */
-    @Override
-    public Object clone( )
+    public int getIdCategory( )
     {
-        try
-        {
-            return super.clone( );
-        }
-        catch( CloneNotSupportedException e )
-        {
-            AppLogService.error( e.getMessage( ), e );
+        return _nIdCategory;
+    }
 
-            return null;
-        }
+    /**
+     * Set the category of the form
+     * 
+     * @param nIdCategory
+     *            the category to set
+     */
+    public void setIdCategory( int nIdCategory )
+    {
+        _nIdCategory = nIdCategory;
+    }
+
+    /**
+     * Get the authentication
+     * 
+     * @return true if the authentication is required
+     */
+    public boolean getActiveAuthentication( )
+    {
+        return _bActiveAuthentication;
+    }
+
+    /**
+     * Set the authentication of the form
+     * 
+     * @param _bActiveAuthentication
+     *            the boolean value for the authentication
+     */
+    public void setActiveAuthentication( boolean bActiveAuthentication )
+    {
+        this._bActiveAuthentication = bActiveAuthentication;
     }
 
     /**
@@ -1079,20 +1010,56 @@ public class AppointmentForm implements RBACResource, AdminWorkgroupResource, Cl
     }
 
     /**
-     * @return the category
+     * {@inheritDoc}
      */
-    public String getCategory( )
+    @Override
+    public String getResourceTypeCode( )
     {
-        return _strCategory;
+        return RESOURCE_TYPE;
     }
 
     /**
-     * @param category
-     *            the category to set
+     * {@inheritDoc}
      */
-    public void setCategory( String strCategory )
+    @Override
+    public String getResourceId( )
     {
-        _strCategory = strCategory;
+        return Integer.toString( getIdForm( ) );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object clone( )
+    {
+        try
+        {
+            return super.clone( );
+        }
+        catch( CloneNotSupportedException e )
+        {
+            AppLogService.error( e.getMessage( ), e );
+
+            return null;
+        }
+    }
+
+    @Override
+    public String getWorkgroup( )
+    {
+        return _strWorkgroup;
+    }
+
+    /**
+     * set the work group associate to the form
+     * 
+     * @param workGroup
+     *            the work group associate to the form
+     */
+    public void setWorkgroup( String workGroup )
+    {
+        _strWorkgroup = workGroup;
     }
 
 }

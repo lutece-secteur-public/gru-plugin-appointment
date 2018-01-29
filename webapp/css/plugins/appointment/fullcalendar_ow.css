@@ -1,0 +1,175 @@
+body {
+	min-width: 350px;
+}
+
+td.fc-axis.fc-time.ui-widget-content {
+    /* background: none; */
+    background-color: rgba(32, 37, 57, 0.8) ;
+    width: 80px ;
+    height: 45px ;
+    padding: 8px;
+    text-align: center;
+    line-height: 1.42857143;
+    width: 130px;
+    margin: 0;
+    border-top: 0px solid transparent;
+    color: #fff;
+}
+
+.fc-row.ui-widget-header {
+    background: none;
+}
+
+.fc-head-container.ui-widget-header {
+    background: none;
+}
+
+th.fc-day-header.ui-widget-header {
+    background-color: rgba(32, 37, 57, 0.8);
+    height: 40px ;
+    padding: 15px 20px;
+    text-align: center;
+    line-height: 1.42857143;
+    margin: 0;
+    border-top: 0px solid transparent;
+    color: #fff;
+	font-weight: normal;
+	vertical-align: middle;
+}
+
+.fc-view-container {
+    background-color: rgba(255,255,255,0.6);
+	padding-bottom: 190px;
+}
+
+td.ui-widget-content {
+    background: none;
+}
+
+.fc th, .fc td {
+    border-style: none;
+}
+
+.fc table{
+    border-collapse: separate;
+    border-spacing: 10px 4px;
+    text-transform: uppercase;
+	font-size: 90%;
+}
+
+.ui-widget{
+	font-family: "Montserrat",sans-serif ;
+}
+
+.fc-body..ui-widget-content {
+background: none ;
+}
+
+.fc-bgevent {
+	background: none;
+}
+
+th.fc-axis.ui-widget-header {
+    width: 100px ;
+	background: none;
+}
+
+td.fc-axis.ui-widget-content {
+    width: 100px ;
+}
+
+.fc-event {
+	border-radius: 5px;
+	border: 1px solid rgba(255,255,255,0.6);
+	background-color: rgba(125,201,253, 0.5);
+	padding: 5px;
+	font-size: 0.70em;
+}
+
+a.fc-event.slot-closed:hover {
+	background-color:rgba(215,215,215,1)!important;
+}
+
+.ui-widget td.fc-axis {
+    width: 100px ;
+}
+
+a.fc-event:hover {
+    background-color: rgba(43,209,34,0.5) ;
+	text-shadow: 1px 1px 10px #000;
+}
+
+button.fc-prev-button[disabled] {
+	background-color: #df225a;
+}
+
+button.fc-prev-button:hover, button.fc-prev-button:active, button.fc-prev-button:focus {
+    border: none;
+}
+
+button.fc-next-button[disabled]  {
+	background-color: #df225a;
+}
+
+button.fc-next-button:hover, button.fc-next-button:active, button.fc-next-button:focus {
+    border: none;
+}
+
+button.fc-today-button[disabled] {
+	background-color: #df225a;
+}
+
+button.fc-today-button:hover, button.fc-today-button:active, button.fc-today-button:focus {
+    border: none;
+}
+
+.fc-view-container *, .fc-view-container *:before, .fc-view-container *:after {
+	max-width: 1230px;
+}
+
+.fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
+    text-align: center;
+}
+
+.fc-nonbusiness.fc-bgevent {
+    /*background: #d7d7d7;*/
+}
+
+.fc-toolbar {
+    padding: 0px 10px;
+}
+
+a.fc-event.slot-closed {
+    background-color: rgba(215,215,215,1);
+		opacity: 0.3;
+    color: black;
+}
+
+a.fc-event.slot-closed:hover {
+    background: #d7d7d7 ;
+	text-shadow: none;
+	cursor:default ;
+}
+
+a.fc-event.slot-full {
+    background-color: rgba(255,0,0,0.4) ;
+}
+
+a.fc-event.slot-full:hover {
+    background-color: rgba(255,0,0,0.4) ;
+	text-shadow: none;
+	cursor:default ;
+}
+
+td.fc-day.ui-widget-content.fc-today.ui-state-highlight {
+	background: none ;
+	border: 1px solid #d7d7d7 ;
+}
+
+.fc-time-grid .fc-content-skeleton {
+	position: absolute;
+	z-index: 3;
+	top: -5px;
+	left: 0;
+	right: 0;
+}

@@ -33,22 +33,21 @@
  */
 package fr.paris.lutece.plugins.appointment.business.portlet;
 
-import fr.paris.lutece.plugins.appointment.service.AppointmentFormService;
-import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
-import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
+import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 
 /**
  * This class represents business objects AppointmentPortlet
+ * 
+ * @author Laurent Payen
+ *
  */
-public class AppointmentFormListPortlet extends PortletHtmlContent
+public final class AppointmentFormListPortlet extends PortletHtmlContent
 {
-    private final AppointmentFormService _appointmentFormService = SpringContextService.getBean( AppointmentFormService.BEAN_NAME );
-
     /**
      * Sets the identifier of the portlet type to value specified
      */
@@ -65,8 +64,7 @@ public class AppointmentFormListPortlet extends PortletHtmlContent
     {
         if ( request != null )
         {
-            return AppointmentApp.getFormListHtml( request, _appointmentFormService, ( getDisplayPortletTitle( ) == 0 ) ? getName( ) : null,
-                    request.getLocale( ) );
+            return AppointmentApp.getFormListHtml( request, request.getLocale( ) );
         }
 
         return StringUtils.EMPTY;

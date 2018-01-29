@@ -37,36 +37,12 @@ import fr.paris.lutece.portal.business.portlet.Portlet;
 
 /**
  * this class provides Data Access methods for AppointmentFormListPortlet objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public final class AppointmentFormListPortletDAO implements IAppointmentFormListPortletDAO
 {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void insert( Portlet portlet )
-    {
-        // Do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete( int nPortletId )
-    {
-        // Do nothing
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void store( Portlet portlet )
-    {
-        // Do nothing
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -77,5 +53,26 @@ public final class AppointmentFormListPortletDAO implements IAppointmentFormList
         portlet.setId( nIdPortlet );
 
         return portlet;
+    }
+
+    @Override
+    public void delete( int arg0 )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void insert( Portlet arg0 )
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void store( Portlet arg0 )
+    {
+        // TODO Auto-generated method stub
+
     }
 }

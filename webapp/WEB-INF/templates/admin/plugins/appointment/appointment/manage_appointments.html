@@ -1,339 +1,289 @@
+<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <link href="css/datepicker.css" rel="stylesheet">
-<#include
-"/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+<script src="js/plugins/appointment/moment.min.js"></script>
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="box box-primary">
 			<div class="box-header with-border">
 				<h3 class="box-title">
-					${form.title} - #i18n{appointment.manage_appointments.pageTitle}
-					<#if day??>#i18n{appointment.manage_appointment_calendar.labelOf}
-					${day.date}</#if>
-					<#if slot??>
-					#i18n{appointment.manage_appointment_calendar.labelFrom} <#if
-					slot.startingHour &lt; 10>0</#if>${slot.startingHour}h<#if
-					slot.startingMinute &lt; 10>0</#if>${slot.startingMinute}
-					#i18n{appointment.manage_appointment_calendar.labelTo} <#if
-					slot.endingHour &lt; 10>0</#if>${slot.endingHour}h<#if
-					slot.endingMinute &lt; 10>0</#if>${slot.endingMinute} </#if>
-				</h3>
-				<@headerButtons>
-					<#if rightCreate?? && rightCreate>
-					<a
-					href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=createAppointment&id_form=${form.idForm}&nb_week=1"
-					class="btn btn-primary btn-sm pull-right" type="submit"> <i
-					class="glyphicon glyphicon-plus"></i><span class="hidden-xs">&nbsp;#i18n{appointment.manage_appointments.buttonAdd}</span>
-					</a> </#if>
-				</@headerButtons>
+					${form.title} - #i18n{appointment.manageAppointments.pageTitle}					
+				</h3>				
 			</div>
-		</div>
-		
-		<@tabs tab="filter" form=form>
-			
+		</div>		
+		<@tabs tab="filter" form=form>			
 			<@messages infos=infos />
-			<form name="form" id="form"
-				action="jsp/admin/plugins/appointment/ManageAppointments.jsp"
-				method="post">
-				<input type="hidden" name="view" value="manageAppointments">
-				<#if slot??> <input type="hidden" name="idSlot"
-					value="${slot.idSlot}"> </#if> <#if day??> <input
-					type="hidden" name="id_day" value="${day.idDay}"> </#if>
-				<#if form??> <input type="hidden" name="id_form"
-					value="${form.idForm}"> </#if> <input type="hidden"
-					name="orderBy" value=${filter.orderBy}> <input
-					type="hidden" name="orderAsc" value=${filter.orderAsc?string}>
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-						<div class="box box-default box-solid">
-							<div class="box-header with-border">
-								<h3 class="box-title">
-									#i18n{appointment.manage_appointments.labelSearch}
-								</h3>
-								<div class="box-tools pull-right">
-									<button class="btn btn-box-tool" type="button" data-widget="collapse">
-										<i class="fa fa-minus" aria-hidden="true"></i>
-								</div>
-							</div>
-							<div class="box-body">
+			<form name="form" id="form" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post">
+				<input type="hidden" name="view" value="manageAppointments">	
+				<input type="hidden" name="id_form" value=${form.idForm}>
+				<div class="row">					
+					<div class="box box-default box-solid collapsed-box">
+						<div class="box-header with-border" data-widget="collapse">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+							<h3 class="box-title">
+								#i18n{appointment.manageAppointments.labelSearch}
+							</h3>
+						</div>
+						<div class="box-body">	
+							<div class="form-inline">
 								<div class="form-group">
-									<label
-										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">${formMessages.fieldLastNameTitle}</label>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<input type="text" name="lastName" value="${filter.lastName!}"
-											class="form-control">
+									<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="lastName">${formMessages.fieldLastNameTitle}&nbsp;:</label>
+									<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+										<input id="lastName" name="lastName" type="text" value="${filter.lastName!}"/>												
 									</div>
 								</div>
 								<div class="form-group">
-									<label
-										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">${formMessages.fieldFirstNameTitle}</label>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<input type="text" name="firstName"
-											value="${filter.firstName!}" class="form-control">
+									<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="firstName">${formMessages.fieldFirstNameTitle}&nbsp;:</label>
+									<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+										<input id="firstName" name="firstName" type="text" value="${filter.firstName!}"/>												
 									</div>
 								</div>
 								<div class="form-group">
-									<label
-										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">${formMessages.fieldEmailTitle}</label>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<input type="text" name="email" value="${filter.email!}"
-											class="form-control">
+									<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="email">${formMessages.fieldEmailTitle}&nbsp;:</label>
+									<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+										<input id="email" name="email" type="text" value="${filter.email!}"/>												
 									</div>
+								</div>										
+								<div class="form-group">
+									<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="reference">#i18n{appointment.manageAppointments.reference}&nbsp;:</label>
+									<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+										<input id="reference" name="reference" type="text" value="${filter.reference!}"/>												
+									</div>
+								</div>									
+							</div>								
+							<br/>
+							<div class="form-inline">
+								<div class="form-group">
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingDateOfSearch">#i18n{appointment.manageAppointments.startingDateOfSearch}</label>
+									<div class="col-xs-6 col-sm-9 col-md-6 col-lg-4">
+										<div class="input-group">
+											<div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
+											<input class="form-control" id="startingDateOfSearch" name="startingDateOfSearch" type="text" value="${filter.startingDateOfSearch!}" >
+										</div>																					
+									</div>
+                                    <label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="startingTimeOfSearch">#i18n{appointment.labelTo}</label>
+                                    <div id='startingTimeOfSearch' class='col-xs-3 col-sm-3 col-md-3 input-group'>
+                                        <input id="startingTimeOfSearch" name="startingTimeOfSearch" type='text' class="form-control" value="${filter.startingTimeOfSearch!''}"/>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                    </div>
 								</div>
 								<div class="form-group">
-									<label
-										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">#i18n{appointment.manage_appointments.labelDate}</label>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<input type="text" id="dateAppointment" name="dateAppointment"
-											value="${filter.dateAppointment!}" class="form-control">
-										<span class="help-block">#i18n{appointment.manage_appointments.labelDateHelp}</span>
+									<label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingDateOfSearch">#i18n{appointment.manageAppointments.endingDateOfSearch}</label>
+									<div class="col-xs-6 col-sm-9 col-md-6 col-lg-4">
+										<div class="input-group">
+											<div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
+											<input class="form-control" id="endingDateOfSearch" name="endingDateOfSearch" type="text" value="${filter.endingDateOfSearch!}" >
+										</div>											
 									</div>
-								</div>
-								<div class="form-group">
-									<label
-										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">#i18n{appointment.manage_appointments.columnNumberOfBookedseatsPerAppointment}</label>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<input type="text" name="nbReserved" value="${filter.numberPlacesReserved!}"
-											class="form-control">
-									</div>
-								</div>
-								<div class="form-group">
-									<label
-										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">#i18n{appointment.manage_appointments.labelStatus}</label>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<@comboWithParams name="status" items=refListStatus
-										default_value="filter.status"
-										additionalParameters="class='form-control'" /></div>
-								</div>
-								<#if list_admin_users??>
-								<div class="form-group">
-									<label
-										class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label">#i18n{appointment.manage_appointments.labelAdminUser}</label>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<@comboWithParams name="idAdminUser" items=list_admin_users
-										default_value="filter.idAdminUser"
-										additionalParameters="class='form-control'" /> <span
-											class="help-block"></span>
-									</div>
-								</div>
-								</#if>
-								<div class="form-group">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<button class="btn btn-primary btn-sm" id="Rechercher"
-											name="Rechercher"
-											title="#i18n{appointment.manage_appointments.labelSearch}"
-											type="submit">
-											<i class="fa fa-search"></i>
-											#i18n{appointment.manage_appointments.labelSearch}
-										</button>
-										<a class="btn btn-default btn-sm"
-											href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments<#if form??>&id_form=${form.idForm}</#if>"
-											title="#i18n{appointment.display_appointment_form.labelReset}">
-											<i class="fa fa-refresh"></i>
-											#i18n{appointment.display_appointment_form.labelReset}
-										</a>
-									</div>
+                                    <label class="col-xs-6 col-sm-3 col-md-3 col-lg-1 control-label" for="endingTimeOfSearch">#i18n{appointment.labelTo}</label>
+                                    <div id='endingTimeOfSearch' class='col-xs-3 col-sm-3 col-md-3 input-group'>
+                                        <input id="endingTimeOfSearch" name="endingTimeOfSearch" type='text' class="form-control" value="${filter.endingTimeOfSearch!''}"/>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                    </div>
+								</div>															
+							</div>	
+							<br/>
+							<div class="form-group">
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<button class="btn btn-primary btn-sm" id="Search"
+										name="Search"
+										title="#i18n{appointment.manageAppointments.labelSearch}"
+										type="submit">
+										<i class="fa fa-search"></i>
+										#i18n{appointment.manageAppointments.labelSearch}
+									</button>
+									<a class="btn btn-default btn-sm"
+										name="Reset"
+										href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset='true'"
+										title="#i18n{appointment.displayAppointmentForm.labelReset}">
+										<i class="fa fa-refresh"></i>
+										#i18n{appointment.displayAppointmentForm.labelReset}
+									</a>																	
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<div class="box box-default">
-							<div class="box-header with-border">
-								<h3></h3>
-								<div class="box-tools">
-									<div class="form-inline">
-										<div class="input-group">
-											<@comboWithParams
-											name="statusExport" items=refListExports
-											default_value="${filter.statusFilter}"
-											additionalParameters="class='form-control input-sm'" />
-											<div class="input-group-btn">
-											<button class="btn btn-default btn-sm" id="sortedDay" name="sortedDay"
-												type="button" title="Actualiser">
-												<i class="glyphicon glyphicon-repeat"></i>
-											</button>
-											</div>
-										</div>
-										<div class="input-group">
-											<button
-												class="btn btn-danger btn-sm" type="submit" id="eraseAll"
-												name="eraseAll" value="eraseAll" disabled="true">
-												<i class="fa fa-trash" aria-hidden="true"></i>
-												<span class="hidden-xs">#i18n{appointment.permission.label.deleteMassAppointment}</span>
-											</button> <a class="btn btn-info btn-sm"
-											href="jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}">
-												<i class="fa fa-download" aria-hidden="true"></i>
-												<span class="hidden-xs">#i18n{appointment.permission.label.exportMassAppointment}</span>
-											</a>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="box-body">
+					</div>								
+					<div class="box box-default">						
+						<div class="box-body">
 							<table class="table table-condensed table-striped">
 								<tr>
-									<th colspan="7" align="center">
-									<@paginationAdmin paginator=paginator combo=1 form=0 />	
+									<th colspan="12" align="center">									
+										<@paginationAdmin paginator=paginator combo=1 form=0 />																				
 									</th>
 								</tr>
 							</table>
-
-						<#if appointment_list?? && appointment_list?size &gt; 0>
-						<table class="table table-condensed table-striped">
-							<tr>
-								<th><input type="checkbox" id="allCheck"
-									title="#i18n{appointment.appointmentApp.infos}"></th>
-								<th>#i18n{appointment.manage_appointments.columnLastName} <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=true">
-										<i class="fa fa-chevron-up" aria-hidden="true"></i>
-								</a> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=last_name&orderAsc=false">
-										<i class="fa fa-chevron-down" aria-hidden="true"></i>
-								</a>
-								</th>
-								<th>#i18n{appointment.manage_appointments.columnFirstName}
-									<a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=true">
-										<i class="fa fa-chevron-up" aria-hidden="true"></i>
-								</a> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=first_name&orderAsc=false">
-										<i class="fa fa-chevron-down" aria-hidden="true"></i>
-								</a>
-								</th>
-								<#if form.maximumNumberOfBookedSeats &gt; 1>
-								<th>#i18n{appointment.create_appointmentform.labelPlaces}<a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=numberPlacesReserved&orderAsc=true">
-										<i class="fa fa-chevron-up" aria-hidden="true"></i>
-								</a> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=numberPlacesReserved&orderAsc=false">
-										<i class="fa fa-chevron-down" aria-hidden="true"></i>
-								</a>
-								</th>
-								</#if>
-								<th>#i18n{appointment.manage_appointments.columnEmail} <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=&orderAsc=true">
-										<i class="fa fa-chevron-up" aria-hidden="true"></i>
-								</a> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=email&orderAsc=false">
-										<i class="fa fa-chevron-down" aria-hidden="true"></i>
-								</a>
-								<th>
-									#i18n{appointment.manage_appointments.columnDateAppointment} <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=date_appointment&orderAsc=true">
-										<i class="fa fa-chevron-up" aria-hidden="true"></i>
-								</a> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=date_appointment&orderAsc=false">
-										<i class="fa fa-chevron-down" aria-hidden="true"></i>
-								</a>
-								</th>
-								<th class="hidden-xs hidden-sm hidden-md">#i18n{appointment.manage_appointments.columnAdminUser}
-								</th>
-								<th>#i18n{appointment.manage_appointments.columnStatus} <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=true">
-										<i class="fa fa-chevron-up" aria-hidden="true"></i>
-								</a> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=status&orderAsc=false">
-										<i class="fa fa-chevron-down" aria-hidden="true"></i>
-								</a>
-								</th>
-
-								<th>#i18n{appointment.manage_appointments.columnState}
-								<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=true">
-									<i class="fa fa-chevron-up" aria-hidden="true"></i>
-								</a>
-								<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&loadFilterFromSession=true&orderBy=state&orderAsc=false">
-									<i class="fa fa-chevron-down" aria-hidden="true"></i>
-								</a>
-								</th>
-
-
-								<th>#i18n{portal.util.labelActions}</th>
-							</tr>
-							<#list appointment_list as appointment >
-							<tr>
-								<td><input type="checkbox" name="apmt" id="apmt"
-									value="${appointment.idAppointment}"></td>
-								<td>${appointment.lastName}</td>
-								<td>${appointment.firstName}</td>
-								<#if form.maximumNumberOfBookedSeats &gt; 1>
-								<td>${appointment.numberPlacesReserved}</td>
-								</#if>
-								<td>${appointment.email}</td>
-								<td>${appointment.dateAppointment}
-									#i18n{appointment.manage_appointment_calendar.labelFrom}&nbsp;${appointment.startAppointment?time?string["HH:mm"]}&nbsp;#i18n{appointment.manage_appointment_calendar.labelTo}&nbsp;${appointment.endAppointment?time?string["HH:mm"]}
-								</td>
-								<td  class="hidden-xs hidden-sm hidden-md"><#if appointment.idAdminUser &gt; 0> <#list
-									list_admin_users as refItemAdmin> <#if refItemAdmin.code ==
-									appointment.idAdminUser?string> ${refItemAdmin.name} <#break>
-									</#if> </#list> </#if></td>
-								<td><#if appointment.status == status_reserved> <span
-									class="label label-success">
-										#i18n{appointment.message.labelStatusReserved} </span> <#elseif
-									appointment.status = status_unreserved> <span
-									class="label label-important">
-										#i18n{appointment.message.labelStatusUnreserved} </span> <#else> <span
-									class="label">
-										#i18n{appointment.message.labelStatusReserved} </span> </#if>
-								</td>
-								<td><#if appointment.state?? && appointment.state.name??> 
-										${appointment.state.name!}
-									</#if>
-								</td>
-								<td><#if rightModify?? && rightModify &&  appointment.status == status_reserved> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}"
-									class="btn btn-primary btn-xs"
-									title="#i18n{portal.util.labelModify}"> <i
-										class="glyphicon glyphicon-edit"></i>
-								</a> </#if> <#if rightView?? && rightView> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_appointment=${appointment.idAppointment}"
-									class="btn btn-primary btn-xs"
-									title="#i18n{appointment.manage_appointments.labelViewAppointment}">
-										<i class="glyphicon glyphicon-eye-open"></i>
-								</a> </#if> <#if appointment.listWorkflowActions?? &&
-									appointment.listWorkflowActions?size &gt; 0> <#list
-									appointment.listWorkflowActions as action> <a
-									class="btn btn-xs btn-primary"
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}">
-										<img
-										src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if
-										action.icon.width!=-1> width="${action.icon.width}" </#if><#if
-										action.icon.height!=-1> height="${action.icon.height}"</#if>
-										title="${action.name}" alt="${action.name}" />
-								</a> </#list> </#if> <#if activateWorkflow == "true" > <#if
-									rightChangeStatus> <#if appointment.status != status_reserved>
-									<a class="btn btn-xs btn-success"
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_reserved}"
-									title="#i18n{appointment.manage_appointments.labelValidateAppointment}">
-										<i class="glyphicon glyphicon-ok"></i>
-								</a> </#if> <#if appointment.status != status_unreserved> <a
-									class="btn btn-xs btn-danger"
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&new_status=${status_unreserved}"
-									title="#i18n{appointment.manage_appointments.labelRejectAppointment}">
-										<i class="glyphicon glyphicon-remove"></i>
-								</a> </#if> </#if> </#if> <#if rightDelete?? && rightDelete> <a
-									href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_appointment=${appointment.idAppointment}"
-									class="btn btn-danger btn-xs"
-									title="#i18n{portal.util.labelDelete}"> <i
-										class="glyphicon glyphicon-trash"></i>
-								</a> </#if>
-								</td>
-							</tr>
-							</#list>
-						</table>
-						<#else> #i18n{portal.util.labelNoItem} </#if>
-						<center><@paginationAdmin paginator=paginator form=0 /></center>
-					</div>
+							<#if appointment_list?? && appointment_list?size &gt; 0>
+								<table class="table table-condensed table-striped">
+									<tr>
+										<th><input type="checkbox" id="allCheck" title="#i18n{appointment.appointmentApp.infos}"></th>
+										<th>#i18n{appointment.manageAppointments.columnLastName} 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a> 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>
+										</th>
+										<th>#i18n{appointment.manageAppointments.columnFirstName}
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a> 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>
+										</th>								
+										<th>#i18n{appointment.manageAppointments.columnEmail} 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a>
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>
+										<th>#i18n{appointment.manageAppointments.columnNbBookedSeats} 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a>
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>	
+										<th>#i18n{appointment.dateAppointment.title} 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a>
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>
+										</th>
+										<th>#i18n{appointment.manageAppointments.columnAdmin} 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a>
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>
+										</th>									
+										<th>#i18n{appointment.labelStatus} 
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a>
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>
+										</th>
+										<th>#i18n{appointment.manageAppointments.columnState}
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=true">
+												<i class="fa fa-chevron-up" aria-hidden="true"></i>
+											</a>
+											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=false">
+												<i class="fa fa-chevron-down" aria-hidden="true"></i>
+											</a>
+										</th>
+										<th>#i18n{portal.util.labelActions}</th>
+									</tr>
+									<#list appointment_list as appointment >
+										<tr>
+											<td><input type="checkbox" name="apmt" id="apmt" value="${appointment.idAppointment}"></td>
+											<td>${appointment.lastName}</td>
+											<td>${appointment.firstName}</td>								
+											<td>${appointment.email}</td>
+											<td>${appointment.nbBookedSeats}</td>											
+											<td>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</td>
+											<td>${appointment.adminUser}</td>								
+											<td>
+												<#if appointment.isCancelled>
+													<span class="label label-important">#i18n{appointment.message.labelStatusUnreserved}</span>													
+												<#else>
+													<span class="label label-success">#i18n{appointment.message.labelStatusReserved} </span> 
+												</#if>
+											</td>
+											<td>
+												<#if appointment.state?? && appointment.state.name??> 
+													${appointment.state.name!}
+												</#if>
+											</td>
+											<td>
+												<#if rightModify?? && rightModify && !appointment.isCancelled> 
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointments.labelModifyDateAppointment}"> 
+														<i class="glyphicon glyphicon-time"></i>
+													</a>
+												</#if> 
+												<#if rightModify?? && rightModify && !appointment.isCancelled> 
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointments.labelModifyAppointment}"> 
+														<i class="glyphicon glyphicon-edit"></i>
+													</a>
+												</#if> 
+												<#if rightView?? && rightView> 
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointments.labelViewAppointment}">
+														<i class="glyphicon glyphicon-eye-open"></i>
+													</a>
+												</#if> 
+												<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 
+													<#list appointment.listWorkflowActions as action> 
+														<a class="btn btn-xs btn-primary" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}">
+															<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />
+														</a> 
+													</#list>
+												</#if> 
+												<#if activateWorkflow == "true" > 
+													<#if rightChangeStatus> 
+														<#if appointment.isCancelled>
+															<a class="btn btn-xs btn-success" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true" title="#i18n{appointment.manageAppointments.labelValidateAppointment}">
+																<i class="glyphicon glyphicon-ok"></i>
+															</a>
+														</#if> 
+														<#if !appointment.isCancelled> 
+															<a class="btn btn-xs btn-danger" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true" title="#i18n{appointment.labelCancelAppointment}">
+																<i class="glyphicon glyphicon-remove"></i>
+															</a> 
+														</#if> 
+													</#if> 
+												</#if> 
+												<#if rightDelete?? && rightDelete> 
+													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}"> 
+														<i class="glyphicon glyphicon-trash"></i>
+													</a> 
+												</#if>
+											</td>
+										</tr>
+									</#list>
+								</table>
+							<#else>#i18n{portal.util.labelNoItem}</#if>
+							<center><@paginationAdmin paginator=paginator form=0 /></center>							
+						</div>						
+						<div align="right">
+							<button class="btn btn-danger btn-sm" type="submit" id="eraseAll" name="eraseAll" value="eraseAll" disabled="true">
+								<i class="fa fa-trash" aria-hidden="true"></i>
+								<span class="hidden-xs">#i18n{appointment.permission.label.deleteMassAppointment}</span>
+							</button>							
+							<a class="btn btn-info btn-sm" href="jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}">
+								<i class="fa fa-download" aria-hidden="true"></i>
+								<span class="hidden-xs">#i18n{appointment.permission.label.exportMassAppointment}</span>
+							</a>	
+						</div>
+					</div>				
 				</div>
-			</div>
-			</div>
 			</form>
-			</@tabs>
-</div>
+		</@tabs>
+	</div>
 </div>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="dateAppointment" language=language />
 <script type="text/javascript">
+    $(function () {
+        $('#startingTimeOfSearch').datetimepicker({
+            format: 'HH:mm',
+            stepping: 5
+        });
+        $('#endingTimeOfSearch').datetimepicker({
+            format: 'HH:mm',
+            stepping: 5
+        });
+    });
 	$('#allCheck').click(function() {
 		var etat = this.checked;
 		$("input[name='apmt']").each(function() {
@@ -349,21 +299,18 @@
 			}
 		});
 	});
-	$('#dateAppointment').datepicker({
+	$('#startingDateOfSearch').datepicker({
 		language : "${language}",
 		weekStart : 1,
 		todayBtn : true,
 		todayHighLight : true,
 		autoclose : true
 	});
-	$('#sortedDay')
-			.click(
-					function() {
-						var loc = "" + location;
-						var n = loc.indexOf("jsp");
-						var urlbase = loc.substring(0, n);
-						window.location.href = urlbase
-								+ "jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&loadFilterFromSession=true&force=true&allDates="
-								+ $('#statusExport option:selected').val();
-					});
+	$('#endingDateOfSearch').datepicker({
+		language : "${language}",
+		weekStart : 1,
+		todayBtn : true,
+		todayHighLight : true,
+		autoclose : true
+	});	
 </script>

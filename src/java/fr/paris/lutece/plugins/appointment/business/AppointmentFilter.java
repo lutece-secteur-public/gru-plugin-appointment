@@ -1,88 +1,52 @@
-/*
- * Copyright (c) 2002-2015, Mairie de Paris
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *  1. Redistributions of source code must retain the above copyright notice
- *     and the following disclaimer.
- *
- *  2. Redistributions in binary form must reproduce the above copyright notice
- *     and the following disclaimer in the documentation and/or other materials
- *     provided with the distribution.
- *
- *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
- *     contributors may be used to endorse or promote products derived from
- *     this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * License 1.0
- */
 package fr.paris.lutece.plugins.appointment.business;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
-
 import java.sql.Date;
 
-/**
- * Class to filter appointments
- */
-public class AppointmentFilter implements Serializable
-{
-    /**
-     * Value for status to ignore filter
-     */
-    public static final int NO_STATUS_FILTER = -1525;
+import fr.paris.lutece.plugins.appointment.business.user.User;
 
-    /**
-     * Default order by
-     */
-    public static final String CONSTANT_DEFAULT_ORDER_BY = "id_appointment";
+public final class AppointmentFilter extends User implements Serializable
+{
 
     /**
      * Serial version UID
      */
-    private static final long serialVersionUID = 7458206872870171709L;
-    private static final String [ ] LIST_ORDER_BY = {
-            CONSTANT_DEFAULT_ORDER_BY, "id_slot", "first_name", "last_name", "id_user", "authentication_service", "date_appointment", "status", "email",
-            "nb_place_reserved"
-    };
-    private int _nIdSlot;
-    private int _nIdForm;
-    private String _strFirstName;
-    private String _strLastName;
-    private String _strEmail;
-    private String _strIdUser;
-    private String _strAuthenticationService;
-    private int _nIdAdminUser = -1;
-    private Date _dateAppointment;
-    private Date _dateAppointmentMin;
-    private Date _dateAppointmentMax;
-    private int _nStatus = NO_STATUS_FILTER;
-    private String _strOrderBy = CONSTANT_DEFAULT_ORDER_BY;
-    private boolean _bOrderAsc;
-    private String _statusFilter;
-    private int _nNb_place_reserved;
+    private static final long serialVersionUID = -8087511361613314595L;
 
     /**
-     * Get the id of the form
+     * The form Id
+     */
+    private int _nIdForm;
+
+    /**
+     * The starting date for the search
+     */
+    private Date _startingDateOfSearch;
+
+    /**
+     * the ending date for the search
+     */
+    private Date _endingDateOfSearch;
+
+    /**
+     * The starting time for the search
+     */
+    private String _strStartingTimeOfSearch;
+
+    /**
+     * the ending time for the search
+     */
+    private String _strEndingTimeOfSearch;
+
+    /**
+     * The reference of the appointment to search
+     */
+    private String _strReference;
+
+    /**
+     * Get the form id
      * 
-     * @return The id of the form
+     * @return the form id
      */
     public int getIdForm( )
     {
@@ -90,10 +54,10 @@ public class AppointmentFilter implements Serializable
     }
 
     /**
-     * Set the id of the form
+     * Set the form id
      * 
      * @param nIdForm
-     *            The id of the form
+     *            the form id to set
      */
     public void setIdForm( int nIdForm )
     {
@@ -101,334 +65,137 @@ public class AppointmentFilter implements Serializable
     }
 
     /**
-     * Get the id of the slot
+     * Get the starting date of search
      * 
-     * @return The id of the slot
+     * @return the starting date of search
      */
-    public int getIdSlot( )
+    public Date getStartingDateOfSearch( )
     {
-        return _nIdSlot;
-    }
-
-    /**
-     * Set the id of the slot
-     * 
-     * @param nIdSlot
-     *            The id of the slot
-     */
-    public void setIdSlot( int nIdSlot )
-    {
-        this._nIdSlot = nIdSlot;
-    }
-
-    /**
-     * Returns the FirstName
-     * 
-     * @return The FirstName
-     */
-    public String getFirstName( )
-    {
-        return _strFirstName;
-    }
-
-    /**
-     * Sets the FirstName
-     * 
-     * @param strFirstName
-     *            The FirstName
-     */
-    public void setFirstName( String strFirstName )
-    {
-        _strFirstName = strFirstName;
-    }
-
-    /**
-     * Returns the LastName
-     * 
-     * @return The LastName
-     */
-    public String getLastName( )
-    {
-        return _strLastName;
-    }
-
-    /**
-     * Sets the LastName
-     * 
-     * @param strLastName
-     *            The LastName
-     */
-    public void setLastName( String strLastName )
-    {
-        _strLastName = strLastName;
-    }
-
-    /**
-     * Returns the Email
-     * 
-     * @return The Email
-     */
-    public String getEmail( )
-    {
-        return _strEmail;
-    }
-
-    /**
-     * Sets the Email
-     * 
-     * @param strEmail
-     *            The Email
-     */
-    public void setEmail( String strEmail )
-    {
-        _strEmail = strEmail;
-    }
-
-    /**
-     * Returns the IdUser
-     * 
-     * @return The IdUser
-     */
-    public String getIdUser( )
-    {
-        return _strIdUser;
-    }
-
-    /**
-     * Sets the id of the LuteceUser
-     * 
-     * @param strIdUser
-     *            The IdUser
-     */
-    public void setIdUser( String strIdUser )
-    {
-        _strIdUser = strIdUser;
-    }
-
-    /**
-     * Returns the authentication service used by the lutece user that made this appointment, if any
-     * 
-     * @return The authentication service used by the lutece user that made this appointment, or null if this appointment is not associated with a lutece user
-     */
-    public String getAuthenticationService( )
-    {
-        return _strAuthenticationService;
-    }
-
-    /**
-     * Sets the authentication service used by the lutece user that made this appointment, if any
-     * 
-     * @param strAuthenticationService
-     *            The authentication service used by the lutece user that made this appointment, or null if this appointment is not associated with a lutece
-     *            user
-     */
-    public void setAuthenticationService( String strAuthenticationService )
-    {
-        _strAuthenticationService = strAuthenticationService;
-    }
-
-    /**
-     * Sets the id of the admin user
-     * 
-     * @param nIdAdminUser
-     *            The id of the admin user
-     */
-    public void setIdAdminUser( int nIdAdminUser )
-    {
-        _nIdAdminUser = nIdAdminUser;
-    }
-
-    /**
-     * Returns the id of the admin user
-     * 
-     * @return The id of the admin user
-     */
-    public int getIdAdminUser( )
-    {
-        return _nIdAdminUser;
-    }
-
-    /**
-     * Get the date of the appointment
-     * 
-     * @return The date of the appointment
-     */
-    public Date getDateAppointment( )
-    {
-        return _dateAppointment;
-    }
-
-    /**
-     * Set the date of the appointment
-     * 
-     * @param dateAppointment
-     *            The date of the appointment
-     */
-    public void setDateAppointment( Date dateAppointment )
-    {
-        this._dateAppointment = dateAppointment;
-    }
-
-    /**
-     * Get the minimum value of the date of the appointment
-     * 
-     * @return The minimum value of the date of the appointment
-     */
-    public Date getDateAppointmentMin( )
-    {
-        return _dateAppointmentMin;
-    }
-
-    /**
-     * Set the minimum value of the date of the appointment
-     * 
-     * @param dateAppointmentMin
-     *            The minimum value of the date of the appointment
-     */
-    public void setDateAppointmentMin( Date dateAppointmentMin )
-    {
-        this._dateAppointmentMin = dateAppointmentMin;
-    }
-
-    /**
-     * Get the minimum value of the date of the appointment
-     * 
-     * @return The minimum value of the date of the appointment
-     */
-    public Date getDateAppointmentMax( )
-    {
-        return _dateAppointmentMax;
-    }
-
-    /**
-     * Set the value value of the date of the appointment
-     * 
-     * @param dateAppointmentMax
-     *            The maximum value of the date of the appointment
-     */
-    public void setDateAppointmentMax( Date dateAppointmentMax )
-    {
-        this._dateAppointmentMax = dateAppointmentMax;
-    }
-
-    /**
-     * Get the status of the appointment
-     * 
-     * @return The status of the appointment
-     */
-    public int getStatus( )
-    {
-        return _nStatus;
-    }
-
-    /**
-     * Set the status of the appointment
-     * 
-     * @param nStatus
-     *            The status of the appointment
-     */
-    public void setStatus( int nStatus )
-    {
-        _nStatus = nStatus;
-    }
-
-    /**
-     * Get the order by attribute of this filter
-     * 
-     * @return The order by attribute of this filter
-     */
-    public String getOrderBy( )
-    {
-        return _strOrderBy;
-    }
-
-    /**
-     * Set the order by attribute of this filter.
-     * 
-     * @param strOrderBy
-     *            The order by attribute of this filter. If the specified order does not match with column names of the appointment table of the database, then
-     *            the order by is reinitialized.
-     */
-    public void setOrderBy( String strOrderBy )
-    {
-        boolean bValidOrderBy = false;
-
-        for ( String strOrder : LIST_ORDER_BY )
+        if ( _startingDateOfSearch != null )
         {
-            if ( StringUtils.equals( strOrder, strOrderBy ) )
-            {
-                bValidOrderBy = true;
-
-                break;
-            }
-        }
-
-        if ( bValidOrderBy )
-        {
-            if ( strOrderBy.equalsIgnoreCase( "date_appointment" ) )
-            {
-                this._strOrderBy = "date_appointment,starting_hour,starting_minute";
-            }
-            else
-            {
-                this._strOrderBy = strOrderBy;
-            }
+            return (Date) _startingDateOfSearch.clone( );
         }
         else
         {
-            _strOrderBy = LIST_ORDER_BY [0];
+            return null;
         }
     }
 
     /**
-     * Get the order of the sort of this filter
+     * Set the starting date of search
      * 
-     * @return The _bOrderAsc
+     * @param startingDateOfSearch
+     *            the starting date to set
      */
-    public boolean getOrderAsc( )
+    public void setStartingDateOfSearch( Date startingDateOfSearch )
     {
-        return _bOrderAsc;
+        if ( startingDateOfSearch != null )
+        {
+            this._startingDateOfSearch = (Date) startingDateOfSearch.clone( );
+        }
+        else
+        {
+            this._startingDateOfSearch = null;
+        }
     }
 
     /**
-     * Set the order of the sort of this filter
+     * Get the ending date of search
      * 
-     * @param bOrderAsc
-     *            True to sort ascending, false to sort descending,
+     * @return the ending date
      */
-    public void setOrderAsc( boolean bOrderAsc )
+    public Date getEndingDateOfSearch( )
     {
-        this._bOrderAsc = bOrderAsc;
+        if ( _endingDateOfSearch != null )
+        {
+            return (Date) _endingDateOfSearch.clone( );
+        }
+        else
+        {
+            return null;
+        }
+
     }
 
     /**
-     * Get the order of the sort of this filter
+     * Set the ending date of search to the filter
      * 
-     * @return The _bOrderAsc
+     * @param endingDateOfSearch
+     *            the ending date of search to set
      */
-    public String getStatusFilter( )
+    public void setEndingDateOfSearch( Date endingDateOfSearch )
     {
-        return _statusFilter;
+        if ( endingDateOfSearch != null )
+        {
+            this._endingDateOfSearch = (Date) endingDateOfSearch.clone( );
+        }
+        else
+        {
+            this._endingDateOfSearch = null;
+        }
     }
 
     /**
-     * Set the order of the sort of this filter
+     * Get the starting time of search
      * 
-     * @param bOrderAsc
-     *            True to sort ascending, false to sort descending,
+     * @return the starting time of search
      */
-    public void setStatusFilter( String status )
+    public String getStartingTimeOfSearch( )
     {
-        this._statusFilter = status;
+        return _strStartingTimeOfSearch;
     }
 
-    public int getNbPlaceReserved( )
+    /**
+     * Set the starting time of search
+     * 
+     * @param strStartingTimeOfSearch
+     *            the starting time to set
+     */
+    public void setStartingTimeOfSearch( String strStartingTimeOfSearch )
     {
-        return _nNb_place_reserved;
+        this._strStartingTimeOfSearch = strStartingTimeOfSearch;
     }
 
-    public void setNbPlaceReserved( int _nNb_place_reserved )
+    /**
+     * Get the ending time of search
+     * 
+     * @return the ending time of search
+     */
+    public String getEndingTimeOfSearch( )
     {
-        this._nNb_place_reserved = _nNb_place_reserved;
+        return _strEndingTimeOfSearch;
     }
+
+    /**
+     * Set the ending time of search
+     * 
+     * @param strEndingTimeOfSearch
+     *            the ending time to set
+     */
+    public void setEndingTimeOfSearch( String strEndingTimeOfSearch )
+    {
+        this._strEndingTimeOfSearch = strEndingTimeOfSearch;
+    }
+
+    /**
+     * Get the reference entered in the filter
+     * 
+     * @return the reference
+     */
+    public String getReference( )
+    {
+        return _strReference;
+    }
+
+    /**
+     * Set the reference to the filter
+     * 
+     * @param strReference
+     *            the reference to set
+     */
+    public void setReference( String strReference )
+    {
+        this._strReference = strReference;
+    }
+
 }
