@@ -33,29 +33,31 @@
  */
 package fr.paris.lutece.plugins.appointment.web.portlet;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.AppointmentFormHome;
-import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortlet;
-import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletHome;
-import fr.paris.lutece.portal.business.portlet.PortletHome;
-import fr.paris.lutece.portal.service.message.AdminMessage;
-import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.web.portlet.PortletJspBean;
-import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.html.HtmlTemplate;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortlet;
+import fr.paris.lutece.plugins.appointment.business.portlet.AppointmentFormPortletHome;
+import fr.paris.lutece.plugins.appointment.service.FormService;
+import fr.paris.lutece.portal.business.portlet.PortletHome;
+import fr.paris.lutece.portal.service.message.AdminMessage;
+import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.html.HtmlTemplate;
+
 /**
  * This class provides the user interface to manage AppointmentPortlet features
+ * 
+ * @author Laurent Payen
+ *
  */
-public class AppointmentFormPortletJspBean extends PortletJspBean
+public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
 {
     /**
      * Serial version UID
@@ -80,11 +82,11 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         String strPageId = request.getParameter( PARAMETER_PAGE_ID );
         String strPortletTypeId = request.getParameter( PARAMETER_PORTLET_TYPE_ID );
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
+        Collection<Form> listIsActiveAndIsDisplayedOnPortletAppointmentForm = FormService.findAllActiveAndDisplayedOnPortletForms( );
 
         ReferenceList refListAppointmentForm = new ReferenceList( );
 
-        for ( AppointmentForm form : listAppointmentForm )
+        for ( Form form : listIsActiveAndIsDisplayedOnPortletAppointmentForm )
         {
             refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }
@@ -107,11 +109,11 @@ public class AppointmentFormPortletJspBean extends PortletJspBean
         int nPortletId = Integer.parseInt( strPortletId );
         AppointmentFormPortlet portlet = (AppointmentFormPortlet) PortletHome.findByPrimaryKey( nPortletId );
 
-        Collection<AppointmentForm> listAppointmentForm = AppointmentFormHome.getActiveAppointmentFormsList( );
+        Collection<Form> listIsActiveAndIsDisplayedOnPortletAppointmentForm = FormService.findAllActiveAndDisplayedOnPortletForms( );
 
         ReferenceList refListAppointmentForm = new ReferenceList( );
 
-        for ( AppointmentForm form : listAppointmentForm )
+        for ( Form form : listIsActiveAndIsDisplayedOnPortletAppointmentForm )
         {
             refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }

@@ -52,11 +52,11 @@
 	width: 140px;
 }
 
-.appointment-slot-avaiable.appointment-tooltip span.appointment-tooltip-title {
+.appointment-slot-available.appointment-tooltip span.appointment-tooltip-title {
 	margin-top: -45px;
 }
 
-.appointment-slot-avaiable.appointment-tooltip span.appointment-tooltip-title.appointment-tooltip-title-fo {
+.appointment-slot-available.appointment-tooltip span.appointment-tooltip-title.appointment-tooltip-title-fo {
 	margin-top: -15px;
 }
 
@@ -117,18 +117,18 @@
 }
 
 .appointment-slot-horizontal .appointment-slot-closed,
-.appointment-slot-horizontal .appointment-slot-avaiable {
+.appointment-slot-horizontal .appointment-slot-available {
 	height: 40px;
 	text-align: center;
 	vertical-align: middle;
 	background-color: #fafafa;
 }
 
-.appointment-slot-horizontal .appointment-slot-avaiable {
+.appointment-slot-horizontal .appointment-slot-available {
 	background-color: #7E7E7E;
 }
 
-.appointment-slot-horizontal .appointment-slot-avaiable:hover {
+.appointment-slot-horizontal .appointment-slot-available:hover {
 	background-color: #333333;
 }
 

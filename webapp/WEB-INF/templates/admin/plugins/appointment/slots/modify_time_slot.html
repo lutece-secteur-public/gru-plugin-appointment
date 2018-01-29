@@ -1,0 +1,90 @@
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/plugins/appointment/moment.min.js" ></script>
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">				
+		<div class="tab-content">
+			<hr color="black">
+			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
+				<fieldset>							
+					<@messages errors=errors infos=infos/>					
+					<input type="hidden" name="action" value="doModifyTimeSlot">
+					<input type="hidden" name="id_time_slot" value="${timeSlot.idTimeSlot}">
+					<input type="hidden" name="id_form" value="${id_form}">
+					<input type="hidden" name="id_week_definition" value="${id_week_definition}">
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="is_open" >#i18n{appointment.labelOpen} * :</label>
+						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" id="is_open" name="is_open" value="true" <#if timeSlot.isOpen>checked="checked"</#if> />&#160;
+								</label>
+								<span class="help-block">#i18n{appointment.modifySlot.labelOpenHelp}</span>
+							</div>
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot} * :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<input type="text" name="max_capacity" value="${timeSlot.maxCapacity}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.model.entity.appointmentform.attribute.timeStart} :</label>
+						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+							<p class="form-control-static">${timeSlot.startingTime}</p>
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-3 control-label" for="time_end">#i18n{appointment.model.entity.appointmentform.attribute.timeEnd} * : </label>
+                        <div class="col-xs-12 col-sm-9 col-md-9">
+                            <div class='col-xs-2 input-group' id='ending_time'>
+                                <input id="ending_time" name="ending_time" type='text' class="form-control" value="${timeSlot.endingTime!''}"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
+                            <p class="help-block">#i18n{appointment.modifySlot.helpModifyEndSlot} :</p>
+                        </div>
+                    </div>
+                    <div class="form-group">			
+						<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="shift_slot"/></label>
+						<div id="shift_slot" class="col-xs-12 col-sm-9 col-md-9 input-append">
+						<input type= "radio" name="shift_slot" value="false" checked="checked">#i18n{appointment.modifySlot.notShiftSlot}<br>
+						<input type= "radio" name="shift_slot" value="true">#i18n{appointment.modifySlot.shiftSlot}<br>						
+						</div>	
+					</div>
+					<div class="form-group">
+						<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
+							<button class="btn btn-sm btn-primary">
+								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelModify}
+							</button>  
+							<a class="btn btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_week_definition=${id_week_definition}">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+							</a>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">	
+	function validateQty(event) {
+		var key = window.event ? event.keyCode : event.which;
+	
+	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	 || event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	}
+	else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
+	};
+	$('#ending_time').datetimepicker({
+      format: 'HH:mm',
+      stepping: 5
+    });
+</script>

@@ -38,39 +38,33 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * EntryTypeNumbering
+ * 
+ * @author Laurent Payen
+ * 
  */
-public class EntryTypeNumbering extends AbstractEntryTypeNumbering
+public final class EntryTypeNumbering extends AbstractEntryTypeNumbering
 {
-    // TEMPLATES
-    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_numbering.html";
-    private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_numbering.html";
-    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_numbering.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_numbering.html";
+    private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_numbering.html";
+    private static final String TEMPLATE_MODIFY = "admin/plugins/appointment/entries/modify_entry_type_numbering.html";
+    private static final String TEMPLATE_CREATE = "admin/plugins/appointment/entries/create_entry_type_numbering.html";
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    public String getTemplateModify( Entry entry, boolean bDisplayFront )
+    {
+        return TEMPLATE_MODIFY;
+    }
+
     @Override
     public String getTemplateHtmlForm( Entry entry, boolean bDisplayFront )
     {
         return bDisplayFront ? TEMPLATE_HTML_CODE : TEMPLATE_HTML_CODE_ADMIN;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTemplateCreate( Entry entry, boolean bDisplayFront )
     {
         return TEMPLATE_CREATE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTemplateModify( Entry entry, boolean bDisplayFront )
-    {
-        return TEMPLATE_MODIFY;
-    }
 }

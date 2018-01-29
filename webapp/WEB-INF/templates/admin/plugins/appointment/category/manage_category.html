@@ -1,0 +1,27 @@
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{appointment.adminFeature.manageCategories.name}</h3>
+				<div class="box-tools">
+					<a class="btn btn-sm btn-primary" href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory" >
+					<i class="glyphicon glyphicon-plus">&nbsp;</i>&nbsp;#i18n{appointment.manageCategory.buttonAdd}
+				</a>
+				</div>
+			</div>
+			<div class="box-body">
+				<@messages infos=infos errors=errors />
+				<@dataTable dataTableManager=dataTableManager actionMacro="actionColumnCategory" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<#macro actionColumnCategory item>
+	<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${item.idCategory}" >
+		<i class="glyphicon glyphicon-edit"></i>
+	</a>
+	<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${item.idCategory}" >
+		<i class="glyphicon glyphicon-trash"></i>
+	</a>
+</#macro>

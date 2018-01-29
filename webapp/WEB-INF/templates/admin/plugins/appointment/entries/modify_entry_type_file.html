@@ -15,7 +15,7 @@
 					<input name="id_entry" value="${entry.idEntry}" type="hidden">
 					<input name="action" value="doModifyEntry" type="hidden">
 					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.createEntry.labelTitle} * </label>
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} * </label>
 						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 							<input type="text" name="title" id="title" value="${entry.title}" maxlength="255" class="form-control">
 							<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
@@ -29,7 +29,7 @@
 						</div>
 					 </div>
 					 <div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelComment} : </label>
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.comment.name} : </label>
 						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 							<textarea name="comment" rows="2" class="form-control">${entry.comment}</textarea>
 						</div>
@@ -93,9 +93,9 @@
 					</div>
 					<div class="form-group">
 						<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-							<button class="btn btn-primary btn-sm" name="save" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}</button>
+							<button class="btn btn-primary btn-sm" name="save" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}</button>
 							<button class="btn btn-primary btn-sm" name="apply" type="submit" ><i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}</button>
-							<button class="btn btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonCancel}</button>
+							<button class="btn btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-sign"></i>&nbsp;#i18n{appointment.labelCancel}</button>
 						</div>
 					</div>
 				</form>
@@ -118,12 +118,12 @@
 						<input name="id_field" value="${id_field}" type="hidden" />
 						<input name="action" value="doInsertRegularExpression" type="hidden" />
 						<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="id_expression">#i18n{appointment.createEntry.manageRegularExpression.labelInsert} :</label>
+						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="id_expression">#i18n{appointment.regularExpression.label} :</label>
 							<div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
 								<div class="input-group">
 								<@comboWithParams name="id_expression" items=regular_expression_list default_value="-1" additionalParameters="class=\"form-control input-xs\"" />
 								<span class="input-group-btn">
-									<button class="btn btn-primary btn-xs" name="" type="submit" ><i class="glyphicon glyphicon-ok"></i><span class="hidden-xs">&nbsp;#i18n{appointment.createEntry.manageRegularExpression.buttonInsert}</span></button>
+									<button class="btn btn-primary btn-xs" name="" type="submit" ><i class="glyphicon glyphicon-ok"></i><span class="hidden-xs">&nbsp;#i18n{appointment.label.insert}</span></button>
 								</span>
 								</div>
 							</div>
@@ -135,9 +135,9 @@
 						<table class="table table-striped">
 							<tr> 
 								<th>#i18n{appointment.createEntry.manageRegularExpression.rowTitle}</th>
-								<th>#i18n{appointment.createEntry.manageRegularExpression.rowInformationMessage}</th>
+								<th>#i18n{appointment.labelDescription}</th>
 								<th>#i18n{appointment.createEntry.manageRegularExpression.rowValidExemple}</th>
-								<th>#i18n{appointment.createEntry.manageField.rowActions}</th>
+								<th>#i18n{appointment.actions.label}</th>
 							</tr>
 							<#list entry.fields as field>
 								<#list field.regularExpressionList as expression>
@@ -146,7 +146,7 @@
 									<td>${expression.informationMessage}</td>
 									<td>${expression.validExemple}</td>
 									<td>
-										<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${id_field}#list"  title="#i18n{appointment.createEntry.manageField.titleDelete}" >
+										<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${id_field}#list"  title="#i18n{appointment.delete.title}" >
 											<i class="glyphicon glyphicon-trash"></i>
 										</a>
 									</td>

@@ -1,8 +1,7 @@
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<form class="form-horizontal" id="form-validate" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
-			<input name="action" value="doMakeAppointment" type="hidden" />
-                        <input name="previousForm" value="${previousForm!}" type="hidden" />
+			<input name="action" value="doMakeAppointment" type="hidden" />                        
 			<fieldset>
 				<legend>
 					#i18n{appointment.appointmentApp.recap.title} - 
@@ -14,33 +13,33 @@
 				</legend>
 				<@messages errors=errors />
 				<div class="form-group">
-					<label for="lastname" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${formMessages.fieldLastNameTitle!}</label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						${appointment.lastName}
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="lastname">${formMessages.fieldLastNameTitle!}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.lastName}">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="firstname" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${formMessages.fieldFirstNameTitle!}</label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						${appointment.firstName}
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="firstname">${formMessages.fieldFirstNameTitle!}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.firstName}">
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="email" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${formMessages.fieldEmailTitle!}</label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						${appointment.email}
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="email">${formMessages.fieldEmailTitle!}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.email}">
 					</div>
-				</div>
-				<#if form.maximumNumberOfBookedSeats &gt; 1>
-				<div class="form-group">
-					<label for="email" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.create_appointmentform.labelNumberOfBookedseatsPerAppointment}</label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						${appointment.numberPlacesReserved}
-					</div>
-				</div>
-				</#if>
-                <#list listResponseRecapDTO as response>
-                    <#if response?? && response.recapValue?has_content>
+				</div>	
+				<#if form.maxPeoplePerAppointment &gt; 1>				
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="nbSeat">#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}</label>
+						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+							<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.nbBookedSeats}">
+						</div>
+					</div>	
+				</#if>				
+				<#list listResponseRecapDTO as response>
+                    <#if response.recapValue?has_content>
                         <div class="form-group">
 	                        <label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
 	                        <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
@@ -56,22 +55,25 @@
                     </#if>
                 </#list>
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.appointmentApp.labelDateAppointment}</label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						${appointment.dateAppointment} #i18n{appointment.appointmentApp.labelTimeAppointmentFrom} <#if slot.startingHour &lt; 10 >0</#if>${slot.startingHour}h<#if slot.startingMinute &lt; 10>0</#if>${slot.startingMinute} #i18n{appointment.appointmentApp.labelTimeAppointmentTo} <#if slot.endingHour &lt; 10 >0</#if>${slot.endingHour}h<#if slot.endingMinute &lt; 10>0</#if>${slot.endingMinute}
+					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{appointment.dateAppointment.title}</label>
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}">
 					</div>
 				</div>
-				<#if captcha??>
-					${captcha!}
-				</#if>
 				<div class="form-group">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<button name="validate" class="btn btn-primary btn-sm" value="validate">
 							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
 						</button>
-						<button name="back" class="btn btn-sm" value="back">
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-						</button>
+						<#if comeFromCalendar??>
+							<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+							</a>
+						<#else>
+							<button name="back" class="btn btn-sm" value="back">
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
+							</button>
+						</#if>
 					</div>
 				</div>
 			</fieldset>

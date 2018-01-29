@@ -12,7 +12,7 @@
 						<input name="action" value="doModifyEntry" type="hidden" />
 						<input name="id_entry" value="${entry.idEntry}" type="hidden" />
 						<div class="form-group">
-							<label for="title">#i18n{appointment.createEntry.labelTitle} * : </label>
+							<label for="title">#i18n{appointment.labelTitle} * : </label>
 							<input type="text" name="title" id="title" value="${entry.title}" maxlength="255" class="form-control">
 							<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
 						</div>
@@ -22,7 +22,7 @@
 							<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
 						</div>
 						<div class="form-group">
-							<label for="comment"> #i18n{appointment.createEntry.labelComment} :</label>
+							<label for="comment"> #i18n{appointment.comment.name} :</label>
 							<textarea name="comment" class="form-control">${entry.comment}</textarea>
 						</div>
 						<div class="form-group">
@@ -54,13 +54,13 @@
 						</div>
 						<div class="form-group">
 							<button class="btn btn-primary btn-sm" name="save" type="submit">
-								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.modifyEntry.buttonSave}
+								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}
 							</button>
 							<button class="btn btn-primary btn-sm" name="apply" type="submit">
 								<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
 							</button>
 							<button class="btn btn-default btn-sm" type="submit" name="cancel" value="cancel" >
-								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonCancel}
+								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelCancel}
 							</button>
 						</div>
 					</form>
@@ -82,10 +82,10 @@
 				<legend class="hidden">#i18n{appointment.createEntry.manageField.title}</legend>
 				<table class="table table-striped">
 					<tr> 
-						<th>#i18n{appointment.createEntry.manageField.rowTitle}</th>
+						<th>#i18n{appointment.labelTitle}</th>
 						<th>#i18n{appointment.createEntry.manageField.rowValue}</th>
 						<th>#i18n{appointment.createEntry.manageField.rowDefaultValue}</th>
-						<th> #i18n{appointment.createEntry.manageField.rowActions}</th>
+						<th> #i18n{appointment.actions.label}</th>
 					</tr>
 					<#assign cpt=0>
 					<#list list as field>
@@ -99,16 +99,16 @@
 									<i class="glyphicon glyphicon-edit"></i>
 								</a>
 							<#if cpt!=1>
-								<a class="btn btn-primary btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list" title="#i18n{appointment.createEntry.manageField.titleMoveUp}" >
+								<a class="btn btn-primary btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list" title="#i18n{appointment.moveUp.title}" >
 									<i class="glyphicon glyphicon-chevron-up"></i>
 								</a>
 							</#if> 
 							<#if field_has_next >
-								<a class="btn btn-primary btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list" title="#i18n{appointment.createEntry.manageField.titleMoveDown}" >
+								<a class="btn btn-primary btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list" title="#i18n{appointment.moveDown.title}" >
 									<i class="glyphicon glyphicon-chevron-down"></i>
 								</a>
 							</#if>
-								<a class="btn btn-danger btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list" title="#i18n{appointment.createEntry.manageField.titleDelete}" >
+								<a class="btn btn-danger btn-xs" href="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list" title="#i18n{appointment.delete.title}" >
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
 							</td>

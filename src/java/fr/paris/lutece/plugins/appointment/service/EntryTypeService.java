@@ -33,16 +33,17 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.util.ReferenceList;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- *
  * EntryTypeService
+ * 
+ * @author Laurent Payen
  *
  */
 public final class EntryTypeService

@@ -1,180 +1,139 @@
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <link href="css/datepicker.css" rel="stylesheet">
-
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 	<@messages infos=infos errors=errors />
 		<div class="box box-primary">
 			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.create_appointmentform.pageTitle}</h3>
-				<form class="form-inline pull-right spaced" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentFormsAdvanced.jsp?view=modifyAppointmentFormAdvanced&id_form=${appointmentform.idForm}&forceReload=true">
-					<button type="submit" class="btn btn-primary btn-sm" /><i class="glyphicon glyphicon-cog"></i><span class="hidden-phone">&nbsp;Param&#232;tres avanc&#233;s</span></button>
-				</form>
+				<h3 class="box-title">#i18n{appointment.modifyAppointmentForm.title} : ${appointmentform.title}</h3>				
 			</div>
 		</div>
 	</div>
 </div>
-
 <#macro tabs tab appointmentform >
-	<div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
-    		<li <#if tab="params">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&forceReload=true">
-					#i18n{appointment.modify_appointmentForm.titleAlterablesParameters}
-				</a>
-            </li>
-            <li <#if tab="entries">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}&page=form_rdv">
-					#i18n{appointment.modify_appointmentform.pageTitle}
-				</a>
-            </li>
-            <li <#if tab="days">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentFormDays.jsp?view=modifyAppointmentFormDays&id_form=${appointmentform.idForm}&nb_week=0">
-					#i18n{appointment.modify_appointmentformDays.pageTitle}
-				</a>
-            </li>
-            <li <#if tab="slots">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlots&id_form=${appointmentform.idForm}">
-					#i18n{appointment.manageCalendarSlots.pageTitle}
-				</a>
-            </li>
-             <li <#if tab="typicalWeek">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageAppointmentSlotss&id_form=${appointmentform.idForm}">
-					#i18n{appointment.typicalWeek.pageTitle}
-				</a>
-            </li>
-             <li <#if tab="holidays">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewManageHolidays&id_form=${appointmentform.idForm}">
-					#i18n{appointment.manageHolidays.pageTitle}
-				</a>
-            </li>
-              
-            <#if isResourceInstalled?? && isResourceInstalled>
-            	<li <#if tab="resources">class="active"</#if>>
-					<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
-						#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
-					</a>
-	            </li>
-            </#if>
-        </ul>
-    
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+    	<li <#if tab="params">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
+				#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}
+			</a>
+        </li>
+    	<li <#if tab="entries">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
+				#i18n{appointment.modifyAppointmentFormEntries.pageTitle}
+			</a>
+        </li>     	 				                          
+    </ul>
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
 	<div class="tab-content">
-	<fieldset>    
-	<legend> #i18n{appointment.modify_appointmentForm.titleAlterablesParameters}</legend>
-	    
-	        <form method="post" class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data" >
-	      
-	            <@messages errors=errors />
-	            <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-	            <input type="hidden" id="formName" name="formName" value="second_form"/>
-	            <@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.create_appointmentform.labelTitle' maxlength=255 /> 
-
-	            <@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelCategory' inputName='category' mandatory=false value=appointmentform.category!'' i18nHelpBlockKey='appointment.create_appointmentform.labelCategory' maxlength=255 /> 
-
-				<@fieldTextArea i18nLabelKey='appointment.create_appointmentform.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDescription'/>
-
-				
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelMinDaysBeforeAppointments' inputName='min_days_before_appointment' value=appointmentform.minDaysBeforeAppointment!'0' i18nHelpBlockKey='appointment.create_appointmentform.labelMinDaysBeforeAppointments.help'  maxlength=2 />
-			
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelUserCanCancelAppointments' inputName='allow_users_to_cancel_appointments' value='true' checked=appointmentform.allowUsersToCancelAppointments!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelDisplayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.create_appointmentform.labelDisplayTitleFo.help' />
-<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelRequiredAuthentification' inputName='is_active_authentification' value='true' checked=appointmentform.isActiveAuthentification!false i18nHelpBlockKey='appointment.create_appointmentform.labelRequiredAuthentification.help' />				
+		<fieldset>    			   
+			<form id="formid" method="post" class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" enctype="multipart/form-data" >	     
+				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>				
+				<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelTitle' inputName='title' mandatory=true value=appointmentform.title!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelTitle' maxlength=255 /> 
+				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCategory' inputName='idCategory' mandatory=false items=listCategories value="${appointmentform.idCategory!}"/>				 
+				<@fieldTextArea i18nLabelKey='appointment.labelDescription' inputName='description' mandatory=true value=appointmentform.description!'' i18nHelpBlockKey='appointment.labelDescription'/>								
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="isOpen" >#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay} :</label>
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment} * :</label>
 					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-						<div class="radio">
-							<label>
-								<input type="radio" id="isOpenWeek" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();" <#if appointmentform.nbWeeksToDisplay?? && appointmentform.nbWeeksToDisplay !=0 >checked="checked"</#if> />&#160;
-							</label>
-						</div>
+						<input type="text" name="min_time_before_appointment" value="${appointmentform.minTimeBeforeAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}</p>
 					</div>
-				</div>
-
-				<div class="form-group" id="divNbWeek">
-					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="nb_weeks_to_display" ></label>
-					<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-						<input type="text" id="nb_weeks_to_display" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" maxlength=3 class="form-control input-sm">
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbWeeksToDisplay.help}</span>
-					</div>
-				</div>
-
+				</div>	
+				<@fieldInputCalendar i18nLabelKey='appointment.createAppointmentForm.labelDateStartValidity' inputName='date_start_validity' value=appointmentform.dateStartValidity!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelDateStartValidity.help' cssClass='form-control input-sm' />
+				<@fieldInputCalendar i18nLabelKey='appointment.createAppointmentForm.labelDateEndValidity' inputName='date_end_validity' value=appointmentform.dateEndValidity!'' i18nHelpBlockKey='appointment.createAppointmentForm.labelDateEndValidity.help' cssClass='form-control input-sm' />						
+				<@fieldInputCheckBox i18nLabelKey='appointment.label.displayTitleFo' inputName='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false i18nHelpBlockKey='appointment.label.displayTitleFo.help' />
+				<@fieldInputCheckBox i18nLabelKey='appointment.label.displayOnPortlet' inputName='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false i18nHelpBlockKey='appointment.label.displayOnPortlet.help' />				
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="isOpenDate" >#i18n{appointment.create_appointmentform.labelNbDaysToDisplay} :</label>
-					<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-						<div class="radio">
-							<label>
-								<input type="radio" id="isOpenDate" name="isOpenDate" value="true" onClick="javascript:switchVisibilityDate();" <#if appointmentform.dateLimit?? >checked="checked"</#if> />&#160;
-							</label>
-						</div>
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.label.nbWeeksToDisplay} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" name="nb_weeks_to_display" value="${appointmentform.nbWeeksToDisplay!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
+						<p class="help-block">#i18n{appointment.label.nbWeeksToDisplay.help}</p>
 					</div>
-				</div>
-
-				<div class="form-group" id="divNbDate">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="dateLimit" ></label>
-					<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
-					<div class="input-group">
-					    <div class="input-group-addon"><i class="fa fa-calendar">&nbsp;</i></div>
-						<input type="text" id="dateLimit" name="dateLimit" value="${appointmentform.dateLimit!''}" class="form-control">
-					</div>	
-						<span class="help-block">#i18n{appointment.create_appointmentform.labelNbDaysToDisplay.help}</span>
+				</div>	
+				<div class="form-group">
+					<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment} * :</label>
+					<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+						<input type="text" name="nb_days_before_new_appointment" value="${appointmentform.nbDaysBeforeNewAppointment!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}</p>
 					</div>
-				</div>
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.create_appointmentform.labelReference.help' />				
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxByEmail' inputName='max_appointment_mail' mandatory=false value=appointmentform.maxAppointments!'0'  maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelMaxAppointments.help' />
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.labelNbMaxWeek'    inputName='nb_weeks_limits'  mandatory=false  value=appointmentform.weeksLimits!'0'     maxlength=2 i18nHelpBlockKey='appointment.create_appointmentform.labelWeeksLimits.help' />
-				
-				<@fieldInputText i18nLabelKey='appointment.create_appointmentform.fromTimeSeizure' inputName='seizureDuration' mandatory=false value=appointmentform.seizureDuration!'' i18nHelpBlockKey='appointment.create_appointmentform.labelDurationAppointments.help'  maxlength=2 />
-			
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelIsFormStep' inputName='is_form_step' value='true' checked=appointmentform.isFormStep!false />
-				
-				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
-				<@fieldInputCombo i18nLabelKey='appointment.create_appointmentform.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />
-				
+				</div>	
+				<div class="form-group">
+					<label class="col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments} * :</label>
+					<div class="col-lg-3">
+						<input type="text" name="nb_max_appointments_per_user" value="${appointmentform.nbMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}</p>
+					</div>
+                    <label class="col-lg-1 control-label">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments} * :</label>
+                    <div class="col-lg-3">
+						<input type="text" name="nb_days_for_max_appointments_per_user" value="${appointmentform.nbDaysForMaxAppointmentsPerUser!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="2"/>	
+						<p class="help-block">#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}</p>
+					</div>
+				</div>		
+				<@fieldInputText i18nLabelKey='appointment.createAppointmentForm.labelReference' inputName='reference' mandatory=false value=appointmentform.reference!'' maxlength=10 i18nHelpBlockKey='appointment.createAppointmentForm.labelReference.help' />												
+				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelCalendarTemplate' inputName='calendarTemplateId' items=refListCalendarTemplates value="${appointmentform.calendarTemplateId!}" mandatory=true />
 				<#if isCaptchaEnabled>
-					<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
-				</#if>
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableConfirmEmail' inputName='enableConfirmEmail' value='true' checked=appointmentform.enableConfirmEmail!false />
-				<@fieldInputCheckBox i18nLabelKey='appointment.create_appointmentform.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
-	           	<#assign icon= appointmentform.getIcon()>
+					<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelEnableCaptcha' inputName='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+				</#if>				
+				<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelEnableMandatoryEmail' inputName='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
+				<@fieldInputCheckBox i18nLabelKey='appointment.createAppointmentForm.labelActiveAuthentication' inputName='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
+				<#if listWorkflows??>
+					<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
+				</#if>	
+				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />				
+				<#assign icon= appointmentform.getIcon()>
 				<#if icon.mimeType?? >
-				<@fieldInputCheckBox i18nLabelKey='appointment.modify_appointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
+					<@fieldInputCheckBox i18nLabelKey='appointment.modifyAppointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
 				</#if>
-
-
 				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3" for="icon">#i18n{appointment.create_appointmentform.labelIconForm} &nbsp;:</label>
+					<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="icon">#i18n{appointment.createAppointmentForm.labelIconForm} &nbsp;:</label>
 					<div class="col-xs-12 col-sm-3 col-md-3">
 						<div class="input-group">	
 							<input id="image_resource" type="file" name="image_resource" accept="image/*"/> 
 						</div>
-						<p class="help-block">#i18n{appointment.modify_appointmentForm.helpFormatIcon}</p>
+						<p class="help-block">#i18n{appointment.modifyAppointmentForm.helpFormatIcon}</p>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-6">
 						<div class="input-group">
-							<a class="btn btn-danger btn-sm btn-flat" role="button" onclick ="$('#image_resource').val('')"><i class="glyphicon glyphicon-remove-circle"></i> Effacer</a>
+							<a class="btn btn-default" role="button" onclick ="$('#image_resource').val('')">
+								<i class="glyphicon glyphicon-remove-circle"></i> Effacer
+							</a>
 						</div>
 					</div>	
-				</div>
-
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="geoloc_address">#i18n{appointment.modify_appointmentform.labelAddress} &nbsp;:</label>
+				</div>  				
+				<div class="form-group ">
+					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fileHolidays">#i18n{appointment.manageHolidays.labelImport} :</label>
+					<div class="col-xs-12 col-sm-3 col-md-4 col-lg-3">
+						<div class="input-group">
+							<input id="fileSelect" type="file" name="fileClosingDays" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+						</div>
+						<p class="help-block"> #i18n{appointment.manageHolidays.labelClosinglabelFormatFile} </p>					
+					</div>
+					<div class="col-xs-12 col-sm-3 col-md-3">
+						<div class="input-group">
+							<a class="btn btn-default" onclick="$('#fileSelect').val('')">
+								<i class="fa fa-times-circle-o" aria-hidden="true"></i> Effacer
+							</a>
+						</div>	
+					</div>
+				</div>	
+				<div class="form-group">
+                    <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="geoloc_address">#i18n{appointment.label.formAddress} &nbsp;:</label>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <input type="text" class="form-control input-sm" name="geoloc_address" id="geoloc_address" value="${(appointmentform.address?html)!}"/>
                         <input type="text" class="form-control input-sm" name="geoloc_longitude" id="geoloc_longitude" value="${(appointmentform.longitude?c)!}"/>
                         <input type="text" class="form-control input-sm" name="geoloc_latitude" id="geoloc_latitude" value="${(appointmentform.latitude?c)!}"/>
-                        <p class="help-block" id="help_address">#i18n{appointment.modify_appointmentform.helpAddress}</p>
+                        <p class="help-block" id="help_address">#i18n{appointment.help.formAddress}</p>
                         <!-- used to keep state if the user presses back button -->
                         <input type="hidden" id="hidden_address"/>
-                        <p class="help-block">#i18n{appointment.modify_appointmentform.descriptionAddress}</p>
+                        <p class="help-block">#i18n{appointment.label.addressDescription}</p>
                     </div>
                     <script type='text/javascript'>
                         $('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
                         $('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
                         $('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
 
-                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.modify_appointmentform.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
+                        $('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control input-sm"><span class="input-group-btn"><button class="btn btn-default" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button> </span>').insertAfter('#geoloc_address');
 
                         $('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
 
@@ -189,11 +148,13 @@
                             loadresource = document.createElement('script');
                             loadresource.setAttribute("type", "text/javascript");
                             loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
+                            loadresource.async = false;
                             document.getElementsByTagName("head")[0].appendChild(loadresource);
 
                             loadresource = document.createElement('script');
                             loadresource.setAttribute("type", "text/javascript");
                             loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
+                            loadresource.async = false;
                             document.getElementsByTagName("head")[0].appendChild(loadresource);
 
                             loadresource = document.createElement('script');
@@ -293,9 +254,7 @@
                     });
 
                     </script>
-                </div>
-
-				
+                </div>		
 				<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6">
 					<div class="form-group">
 						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -307,58 +266,49 @@
 							</button>	
 						</div>
 					</div>
-	            </div>
-	        
-	    </form>
-	    </fieldset>
-	    </div>
-    </div>
-
-    <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
-	<@getDatePickerBootstrap idField="date_start_validity" language=language />
-	<@getDatePickerBootstrap idField="date_end_validity"   language=language />
-	<script type="text/javascript">
-	$('#dateLimit').datepicker({language: 'fr'});
-	switchVisibilityDate();
-$('#date_start_validity').datepicker({
-    language:		"${language}",
-    weekStart: 1,
-    todayBtn: true,
-    todayHighLight: true,
-    autoclose: true
-});
-$('#date_end_validity').datepicker({
-    language:		"${language}",
-    weekStart: 1,
-    todayBtn: true,
-    todayHighLight: true,
-    autoclose: true
-});
-$('#dateMin').datepicker({
-    language:		"${language}",
-    weekStart: 1,
-    todayBtn: true,
-    todayHighLight: true,
-    autoclose: true
-});
-
-function switchVisibilityDate(){
-		$("#divNbDate").toggle(true);
-		$("#divNbWeek").toggle(true);
-		if($("#isOpenWeek").prop("checked")){
-			  $("#isOpenDate").prop("checked" , false)
-              $("#dateLimit").val("");
-              $("#divNbDate").toggle(false);
-		}
-		else if($("#isOpenDate").prop("checked")){
-			  $("#isOpenWeek").prop("checked" , false)
-              $("#nb_weeks_to_display").val("");
-              $("#divNbWeek").toggle(false);
-		};
-}
-
-function verif_form(){
-	return true;
-}
+				</div>	        
+			</form>
+		</fieldset>
+	</div>
+</div>
+<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
+<@getDatePickerBootstrap idField="date_start_validity" language=language />
+<@getDatePickerBootstrap idField="date_end_validity"   language=language />
+<script type="text/javascript">
+	$('#formid').on('keyup keypress', function(e) {
+	    var keyCode = e.keyCode || e.which;
+	    if (keyCode === 13) { 
+      		e.preventDefault();
+      		return false;
+    	}
+	});
+	function validateQty(event) {
+		var key = window.event ? event.keyCode : event.which;
+	
+	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	 || event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	}
+	else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
+	};
+	$('#date_start_validity').datepicker({
+    	language:		"${language}",
+    	startDate: 		new Date(),
+    	weekStart: 1,
+    	todayBtn: true,
+    	todayHighLight: true,
+    	autoclose: true
+	});
+	$('#date_end_validity').datepicker({
+	    language:		"${language}",
+	    startDate: 		new Date(),
+	    weekStart: 1,
+	    todayBtn: true,
+	    todayHighLight: true,
+	    autoclose: true
+	});
 </script>
 </#macro> 

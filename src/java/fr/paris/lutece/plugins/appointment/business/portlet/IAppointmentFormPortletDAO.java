@@ -36,8 +36,10 @@ package fr.paris.lutece.plugins.appointment.business.portlet;
 import fr.paris.lutece.portal.business.portlet.IPortletInterfaceDAO;
 
 /**
- *
  * Interface for DAO of Appointment portlet
+ * 
+ * @author Laurent Payen
+ *
  */
 public interface IAppointmentFormPortletDAO extends IPortletInterfaceDAO
 {

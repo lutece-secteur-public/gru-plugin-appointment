@@ -38,8 +38,11 @@ import fr.paris.lutece.plugins.genericattributes.service.entrytype.AbstractEntry
 
 /**
  * class EntryTypeText
+ * 
+ * @author Laurent Payen
+ * 
  */
-public class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser
+public final class EntryTypeMyLuteceUser extends AbstractEntryTypeMyLuteceUser
 {
     private static final String TEMPLATE_HTML_CODE = "skin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";
     private static final String TEMPLATE_HTML_CODE_ADMIN = "admin/plugins/appointment/entries/html_code_entry_type_mylutece_user.html";

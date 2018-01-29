@@ -33,16 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
-import fr.paris.lutece.portal.service.spring.SpringContextService;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.portal.service.spring.SpringContextService;
+
 /**
- * Manager form appointment removal listeners
+ * Manager for appointment listeners
  */
 public final class AppointmentListenerManager
 {
@@ -109,4 +109,5 @@ public final class AppointmentListenerManager
             appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
         }
     }
+
 }

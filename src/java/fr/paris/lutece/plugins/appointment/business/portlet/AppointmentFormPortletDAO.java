@@ -38,6 +38,9 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  * this class provides Data Access methods for AppointmentPortlet objects
+ * 
+ * @author Laurent Payen
+ *
  */
 public final class AppointmentFormPortletDAO implements IAppointmentFormPortletDAO
 {
@@ -60,14 +63,24 @@ public final class AppointmentFormPortletDAO implements IAppointmentFormPortletD
     @Override
     public void insert( Portlet portlet )
     {
-        if ( portlet instanceof AppointmentFormPortlet )
+        DAOUtil daoUtil = null;
+        try
         {
-            AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT );
-            daoUtil.setInt( 1, p.getId( ) );
-            daoUtil.setInt( 2, p.getIdAppointmentForm( ) );
-            daoUtil.executeUpdate( );
-            daoUtil.free( );
+            if ( portlet instanceof AppointmentFormPortlet )
+            {
+                AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
+                daoUtil = new DAOUtil( SQL_QUERY_INSERT );
+                daoUtil.setInt( 1, p.getId( ) );
+                daoUtil.setInt( 2, p.getIdAppointmentForm( ) );
+                daoUtil.executeUpdate( );
+            }
+        }
+        finally
+        {
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
         }
     }
 
@@ -80,10 +93,20 @@ public final class AppointmentFormPortletDAO implements IAppointmentFormPortletD
     @Override
     public void delete( int nPortletId )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE );
-        daoUtil.setInt( 1, nPortletId );
-        daoUtil.executeUpdate( );
-        daoUtil.free( );
+        DAOUtil daoUtil = null;
+        try
+        {
+            daoUtil = new DAOUtil( SQL_QUERY_DELETE );
+            daoUtil.setInt( 1, nPortletId );
+            daoUtil.executeUpdate( );
+        }
+        finally
+        {
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
+        }
     }
 
     /**
@@ -95,15 +118,24 @@ public final class AppointmentFormPortletDAO implements IAppointmentFormPortletD
     @Override
     public void store( Portlet portlet )
     {
-        if ( portlet instanceof AppointmentFormPortlet )
+        DAOUtil daoUtil = null;
+        try
         {
-            AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
-            DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
-            daoUtil.setInt( 1, p.getIdAppointmentForm( ) );
-            daoUtil.setInt( 2, p.getId( ) );
-
-            daoUtil.executeUpdate( );
-            daoUtil.free( );
+            if ( portlet instanceof AppointmentFormPortlet )
+            {
+                AppointmentFormPortlet p = (AppointmentFormPortlet) portlet;
+                daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+                daoUtil.setInt( 1, p.getIdAppointmentForm( ) );
+                daoUtil.setInt( 2, p.getId( ) );
+                daoUtil.executeUpdate( );
+            }
+        }
+        finally
+        {
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
         }
     }
 
@@ -118,18 +150,25 @@ public final class AppointmentFormPortletDAO implements IAppointmentFormPortletD
     public Portlet load( int nIdPortlet )
     {
         AppointmentFormPortlet portlet = new AppointmentFormPortlet( );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT );
-        daoUtil.setInt( 1, nIdPortlet );
-        daoUtil.executeQuery( );
-
-        if ( daoUtil.next( ) )
+        DAOUtil daoUtil = null;
+        try
         {
-            portlet.setId( daoUtil.getInt( 1 ) );
-            portlet.setIdAppointmentForm( daoUtil.getInt( 2 ) );
+            daoUtil = new DAOUtil( SQL_QUERY_SELECT );
+            daoUtil.setInt( 1, nIdPortlet );
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                portlet.setId( daoUtil.getInt( 1 ) );
+                portlet.setIdAppointmentForm( daoUtil.getInt( 2 ) );
+            }
         }
-
-        daoUtil.free( );
-
+        finally
+        {
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
+        }
         return portlet;
     }
 }

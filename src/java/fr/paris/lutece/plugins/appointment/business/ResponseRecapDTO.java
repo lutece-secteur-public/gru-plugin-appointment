@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import java.util.Objects;
+
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -40,14 +42,25 @@ import fr.paris.lutece.portal.business.file.File;
 
 /**
  * DTO that represent a response to display a recap
+ * 
+ * @author Laurent Payen
+ *
  */
-public class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO>
+public final class ResponseRecapDTO extends Response implements Comparable<ResponseRecapDTO>
 {
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = -248405445729375667L;
+
+    /**
+     * The recap value
+     */
     private String _strRecapValue;
+
+    /**
+     * The response
+     */
     private Response _response;
 
     /**
@@ -169,4 +182,26 @@ public class ResponseRecapDTO extends Response implements Comparable<ResponseRec
         }
         return 0;
     }
+
+    @Override
+    public boolean equals( Object o )
+    {
+        if ( o == this )
+        {
+            return true;
+        }
+        if ( !( o instanceof ResponseRecapDTO ) )
+        {
+            return false;
+        }
+        ResponseRecapDTO responseToCompare = (ResponseRecapDTO) o;
+        return Objects.equals( _strRecapValue, responseToCompare._strRecapValue ) && Objects.equals( _response, responseToCompare._response );
+    }
+
+    @Override
+    public int hashCode( )
+    {
+        return Objects.hash( _strRecapValue, _response );
+    }
+
 }

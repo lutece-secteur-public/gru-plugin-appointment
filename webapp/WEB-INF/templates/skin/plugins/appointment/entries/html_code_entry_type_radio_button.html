@@ -6,12 +6,21 @@
 </#list>
 ${entry.CSSClass!}
 
-<div class="form-group">
-	<label class="control-label col-xs-12 col-sm-12 col-md-3 col-lg-3" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<div class=" col-xs-12 col-sm-12 col-md-6 col-lg-6">
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+			<#assign hasError = true>
+		</#if>
+	</#list>
+</#if>
+
+<div class="form-group<#if hasError??> has-error</#if>">
+	<label class="control-label col-xs-12" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
+	<div class=" col-xs-12">
     <#list entry.fields as field>
-			<label class="radio <#if entry.fieldInLine>inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> > 
-			<input type="radio" class="" id="attribute${entry.idEntry}_${field.idField}" name="attribute${entry.idEntry}" value="${field.idField}"
+			<#if !entry.fieldInLine><div class="radio"></#if>
+			<label class="<#if entry.fieldInLine>radio-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> > 
+			<input type="radio" id="attribute${entry.idEntry}_${field.idField}" name="attribute${entry.idEntry}" value="${field.idField}"
 			<#if list_responses??>
 				<#list list_responses as response>
 					<#if response.entry.idEntry == entry.idEntry && response.field??>
@@ -27,29 +36,30 @@ ${entry.CSSClass!}
 			 	${field.title}
 			 </#if>
 			</label>
-		   <#if !entry.fieldInLine && entry.helpMessage?exists && entry.helpMessage != ''>
-				<p class="help-block">${entry.helpMessage}</p>
-			</#if>
+			<#if !entry.fieldInLine></div></#if>
 		</#list>
+		<#if !entry.fieldInLine && entry.helpMessage?exists && entry.helpMessage != ''>
+			<span class="help-block">${entry.helpMessage}</span>
+		</#if>
+		<#if entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
+		<p class="help-block">${entry.helpMessage}</p>
+		</#if>
+		<#if list_responses??>
+			<#list list_responses as response>
+				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+					<span class="help-block">
+					<#assign error = response.entry.error>
+						<#if error.mandatoryError>
+								${error.errorMessage}
+							<#else>
+								#i18n{appointment.message.mandatory.entry}
+							</#if>
+					</span>
+				</#if>
+			</#list>
+		</#if>
 	</div>
  </div>	
-<#if entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
-<p class="help-block">${entry.helpMessage}</p>
-</#if>
-<#if list_responses??>
-	<#list list_responses as response>
-		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-			<div class="alert alert-error alert-danger">
-			<#assign error = response.entry.error>
-				<#if error.mandatoryError>
-						${error.errorMessage}
-					<#else>
-						#i18n{appointment.message.mandatory.entry}
-					</#if>
-			</div>
-		</#if>
-	</#list>
-</#if>
 <#if str_list_entry_children?exists>${str_list_entry_children}</#if>
 
 <#if list_responses??>

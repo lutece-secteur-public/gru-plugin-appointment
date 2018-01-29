@@ -33,13 +33,14 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
-
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
+
 /**
  * Will remove fileItems uploaded
+ * 
  */
 public class AppointmentSessionListener implements HttpSessionListener
 {

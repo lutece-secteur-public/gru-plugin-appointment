@@ -36,8 +36,11 @@ package fr.paris.lutece.plugins.appointment.service.addon;
 import java.util.Locale;
 
 /**
- * Interface for add-on providers for appointments<br />
- * Add-ons are additional content of appointments provided by appointment modules. Add-ons should only be displayed to admin users.
+ * Interface for add-on providers for appointments Add-ons are additional content of appointments provided by appointment modules. Add-ons should only be
+ * displayed to admin users.
+ * 
+ * @author Laurent Payen
+ *
  */
 public interface IAppointmentAddonService
 {

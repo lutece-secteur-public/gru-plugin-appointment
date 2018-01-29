@@ -1,0 +1,58 @@
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<@messages infos=infos errors=errors />
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">#i18n{appointment.modifyAppointmentForm.title} : ${appointmentform.title}</h3>				
+			</div>
+		</div>
+	</div>
+</div>
+<#macro tabs tab appointmentform >
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+   		<li <#if tab="typicalWeek">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
+				#i18n{appointment.typicalWeek.pageTitle}
+			</a>
+        </li>
+		<li <#if tab="specificWeek">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}">
+				#i18n{appointment.specificWeek.pageTitle}
+			</a>
+        </li>  	 				                          
+    </ul>
+</#macro>
+<#macro modifyAppointmentFormLeftColumn appointmentform >
+<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
+<@getDatePickerBootstrap idField="date_start_validity" language=language />
+<@getDatePickerBootstrap idField="date_end_validity"   language=language />
+<script type="text/javascript">
+	function validateQty(event) {
+		var key = window.event ? event.keyCode : event.which;
+	
+	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	 || event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	}
+	else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
+	};
+	$('#date_start_validity').datepicker({
+    	language:		"${language}",
+    	weekStart: 1,
+    	todayBtn: true,
+    	todayHighLight: true,
+    	autoclose: true
+	});
+	$('#date_end_validity').datepicker({
+	    language:		"${language}",
+	    weekStart: 1,
+	    todayBtn: true,
+	    todayHighLight: true,
+	    autoclose: true
+	});
+</script>
+</#macro> 
