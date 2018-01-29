@@ -279,8 +279,8 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_CALENDAR )
     public XPage getViewAppointmentCalendar( HttpServletRequest request )
     {
-        Locale locale = getLocale(request); 
-    	int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );        
+        Locale locale = getLocale( request );
+        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         boolean bError = false;
         if ( !form.getIsActive( ) )
@@ -306,11 +306,11 @@ public class AppointmentApp extends MVCApplication
         // Get the nb weeks to display
         int nNbWeeksToDisplay = display.getNbWeeksToDisplay( );
         // Calculate the ending date of display with the nb weeks to display
-        // since today 
+        // since today
         // We calculate the number of weeks including the current week, so it will end to the (n) next sunday
-        TemporalField fieldISO = WeekFields.of(locale).dayOfWeek();
-        LocalDate dateOfSunday = startingDateOfDisplay.with(fieldISO, DayOfWeek.SUNDAY.getValue());
-        LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks(nNbWeeksToDisplay - 1);                
+        TemporalField fieldISO = WeekFields.of( locale ).dayOfWeek( );
+        LocalDate dateOfSunday = startingDateOfDisplay.with( fieldISO, DayOfWeek.SUNDAY.getValue( ) );
+        LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( nNbWeeksToDisplay - 1 );
         // if the ending date of display is after the ending validity date of
         // the form
         // assign the ending date of display with the ending validity date of
@@ -407,7 +407,7 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
         model.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );        
+        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         CalendarTemplate calendarTemplate = CalendarTemplateHome.findByPrimaryKey( display.getIdCalendarTemplate( ) );
         List<String> listHiddenDays = new ArrayList<>( );
         String dayView = AGENDA_DAY;
