@@ -51,8 +51,8 @@
             <#list events as event>
                 <#assign nbAppointments = event.maxCapacity - event.nbRemainingPlaces>
                 {
-                    title : <#if modifDateAppointment?? >'#i18n{appointment.manageCalendarSlots.chooseThisSlot}'+ '&nbsp;&nbsp;'<#else>''</#if>+
-                            <#if event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                    title : <#if modifDateAppointment?? >'<a href=' + eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>'
+                            <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
                                 '<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
                                 + '</br>'
                                 + '<a href=' + eventUrl + 'createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}'+'><i class="glyphicon icon-plus-sign"></i></a>'
