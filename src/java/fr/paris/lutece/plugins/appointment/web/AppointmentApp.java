@@ -1079,6 +1079,7 @@ public class AppointmentApp extends MVCApplication
     public static String getFormListHtml( HttpServletRequest request, Locale locale )
     {
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
+        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         Map<String, Object> model = new HashMap<String, Object>( );
         List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );
         // We keep only the active
