@@ -1,7 +1,6 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;

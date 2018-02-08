@@ -1,6 +1,5 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
