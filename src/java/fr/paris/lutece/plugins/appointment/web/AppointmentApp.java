@@ -474,6 +474,12 @@ public class AppointmentApp extends MVCApplication
     {
         AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
+        if ( form == null )
+        {
+            form = FormService.buildAppointmentForm( nIdForm, 0, 0 );
+        }
+        checkMyLuteceAuthentication( form, request );
         // Need to manage the anchor
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
@@ -490,12 +496,6 @@ public class AppointmentApp extends MVCApplication
             return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
 
         }
-        int nIdForm = Integer.parseInt( strIdForm );
-        if ( form == null )
-        {
-            form = FormService.buildAppointmentForm( nIdForm, 0, 0 );
-        }
-        checkMyLuteceAuthentication( form, request );
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         boolean bModificationForm = false;
         if ( strIdSlot == null )
@@ -659,10 +659,10 @@ public class AppointmentApp extends MVCApplication
     @Action( ACTION_DO_VALIDATE_FORM )
     public XPage doValidateForm( HttpServletRequest request ) throws SiteMessageException, UserNotSignedException
     {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Locale locale = request.getLocale( );
         String strEmail = request.getParameter( PARAMETER_EMAIL );
@@ -725,6 +725,8 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
+        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        checkMyLuteceAuthentication( form, request );
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
@@ -737,7 +739,6 @@ public class AppointmentApp extends MVCApplication
         {
             return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
         }
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         Map<String, Object> model = new HashMap<String, Object>( );
         if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
         {
@@ -769,13 +770,13 @@ public class AppointmentApp extends MVCApplication
     @Action( ACTION_DO_MAKE_APPOINTMENT )
     public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
+        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        checkMyLuteceAuthentication( form, request );
         AppointmentDTO appointment = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
         {
             return redirect( request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        checkMyLuteceAuthentication( form, request );
         if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
         {
             if ( !getCaptchaService( ).validate( request ) )
@@ -1078,6 +1079,7 @@ public class AppointmentApp extends MVCApplication
     public static String getFormListHtml( HttpServletRequest request, Locale locale )
     {
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
+        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         Map<String, Object> model = new HashMap<String, Object>( );
         List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );
         // We keep only the active

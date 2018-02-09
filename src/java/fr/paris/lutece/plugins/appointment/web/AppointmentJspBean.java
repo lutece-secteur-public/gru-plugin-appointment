@@ -332,10 +332,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
         LocalDate startingDateOfDisplay = LocalDate.now( ).minusWeeks( nNbWeeksToDisplay );
-        if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
-        {
-            startingDateOfDisplay = startingValidityDate;
-        }
         LocalDate endingDateOfDisplay = LocalDate.now( ).plusWeeks( nNbWeeksToDisplay );
         LocalDate endingValidityDate = form.getEndingValidityDate( );
         if ( endingValidityDate != null )
