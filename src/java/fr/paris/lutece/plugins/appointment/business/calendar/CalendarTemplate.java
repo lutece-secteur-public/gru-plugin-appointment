@@ -50,8 +50,8 @@ public final class CalendarTemplate implements Serializable
 
     public static final String CALENDAR = "Calendrier";
     public static final String CALENDAR_OPEN_DAYS = "Calendrier jours ouverts";
-    public static final String FREE_SLOTS = "Liste des créneaux disponibles";
-    public static final String FREE_SLOTS_ON_OPEN_DAYS = "Liste des créneaux disponibles jours ouverts";
+    public static final String FREE_SLOTS = "Liste des creneaux disponibles";
+    public static final String FREE_SLOTS_ON_OPEN_DAYS = "Liste des creneaux disponibles jours ouverts";
 
     /**
      * Serial version UID
