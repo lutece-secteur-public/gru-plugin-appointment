@@ -41,10 +41,10 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             + "FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
             + "INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot " + "WHERE slot.id_form = ?";
 
-    private static final String SQL_FILTER_FIRST_NAME = "user.first_name LIKE ?";
-    private static final String SQL_FILTER_LAST_NAME = "user.last_name LIKE ?";
-    private static final String SQL_FILTER_EMAIL = "user.email LIKE ?";
-    private static final String SQL_FILTER_REFERENCE = "app.reference LIKE ?";
+    private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
+    private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
+    private static final String SQL_FILTER_EMAIL = "UPPER(user.email) LIKE ?";
+    private static final String SQL_FILTER_REFERENCE = "UPPER(app.reference) LIKE ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = "slot.starting_date_time >= ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
 
@@ -203,19 +203,19 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         daoUtil.setInt( nIndex++, appointmentFilter.getIdForm( ) );
         if ( appointmentFilter.getFirstName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName( ) + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName( ).toUpperCase() + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getLastName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getLastName( ) + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getLastName( ).toUpperCase() + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getEmail( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ) + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase() + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getReference( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getReference( ) + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getReference( ).toUpperCase() + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getStartingDateOfSearch( ) != null )
         {
