@@ -64,7 +64,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<ul class="recap-step-list">
-								<li>{formMessages.fieldLastNameTitle!}</li>
+								<li>${formMessages.fieldLastNameTitle!}</li>
 								<ul>
 									<li>${user.lastName}</li>
 								</ul>
@@ -72,7 +72,7 @@
 						</div>
 						<div class="col-sm-6">
 							<ul class="recap-step-list">
-								<li>{formMessages.fieldFirstNameTitle!}</li>
+								<li>${formMessages.fieldFirstNameTitle!}</li>
 								<ul>
 									<li>${user.firstName}</li>
 								</ul>
@@ -80,7 +80,7 @@
 						</div>
 						<div class="col-xs-12">
 							<ul class="recap-step-list">
-								<li>{formMessages.fieldEmailTitle!}</li>
+								<li>${formMessages.fieldEmailTitle!}</li>
 								<ul>
 									<li>${user.email}</li>
 								</ul>
@@ -124,7 +124,7 @@
 		<div class="container">
 			<h2 class="current stepTitle">
 				<span class="current stepTitleNumber"><i class="fa fa-close"></i></span>
-				Je souhaite annuler mon rendez-vous
+				#i18n{appointment.cancelAppointment.pageTitle}
 			</h2>
 		</div>
 	</div>
@@ -138,45 +138,40 @@
 				</div>
 				<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
 					<div class="formGroupContainer">
-		<form class="form-horizontal" role="form" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">		
-			<fieldset>
-				<legend>#i18n{appointment.cancelAppointment.pageTitle}</legend>
-				<input type="hidden" name="refAppointment" value="${refAppointment}">
-				<input type="hidden" name="page" value="appointment">
-				<input type="hidden" name="action" value="doCancelAppointment">
-				<div class="form-group">
-					<label class="col-sm-6 control-label" for="dateAppointment">#i18n{appointment.dateAppointment.title}</label>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" disabled readonly="readonly" value="${dateAppointment}">
-					</div>					
-				</div>
-				<div class="form-group">
-					<label class="col-sm-6 control-label" for="timeAppointment">#i18n{appointment.cancelAppointment.labelTimeAppointment}</label>
-					<div class="col-sm-4">
-						<input type="text" class="form-control" disabled readonly="readonly" value="#i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-6 control-label" for="refAppointment">#i18n{appointment.cancelAppointment.labelRefAppointment}</label>
-					<div class="col-sm-4" >
-						<input type="text" class="form-control" disabled readonly="readonly" value="${refAppointment}">
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-4 col-sm-10">
-						<button class="btn btn-primary btn-sm" title="#i18n{portal.util.labelValidate}">
-							<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
-						</button>
-						<button class="btn btn-small" type="button" onClick="javascript:history.go(-1);" title="#i18n{portal.util.labelCancel}">
-							<i class="icon-remove-circle">&nbsp;</i>&nbsp;#i18n{portal.util.labelCancel}
-						</button>
-					</div>
-				</div>
-			</fieldset>
-		</form>
-		</div>
-				<div class="col-xs-12 text-center" style="margin:20px 0;">
-					<a class="btn btn-primary btn-lg" href="{formMessages.urlRedirectAfterCreation}">{formMessages.labelButtonRedirection} <i class="fa fa-check"></i></a>
+						<form class="form-horizontal" role="form" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">		
+							<fieldset>
+								<legend>#i18n{appointment.cancelAppointment.pageTitle}</legend>
+								<input type="hidden" name="refAppointment" value="${refAppointment}">
+								<input type="hidden" name="page" value="appointment">
+								<input type="hidden" name="action" value="doCancelAppointment">
+								<div class="form-group">
+									<label class="col-sm-6 control-label" for="dateAppointment">#i18n{appointment.dateAppointment.title}</label>
+									<div class="col-sm-4">
+										<input type="text" class="form-control" disabled readonly="readonly" value="${dateAppointment}">
+									</div>					
+								</div>
+								<div class="form-group">
+									<label class="col-sm-6 control-label" for="timeAppointment">#i18n{appointment.cancelAppointment.labelTimeAppointment}</label>
+									<div class="col-sm-4">
+										<input type="text" class="form-control" disabled readonly="readonly" value="#i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-6 control-label" for="refAppointment">#i18n{appointment.cancelAppointment.labelRefAppointment}</label>
+									<div class="col-sm-4" >
+										<input type="text" class="form-control" disabled readonly="readonly" value="${refAppointment}">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-4 col-sm-10">
+										<button class="btn btn-primary btn-sm" title="#i18n{portal.util.labelValidate}">
+											<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
+										</button>						
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>				
 				</div>
 			</div>
 		</div>

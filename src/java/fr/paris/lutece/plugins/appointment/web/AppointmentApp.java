@@ -307,7 +307,8 @@ public class AppointmentApp extends MVCApplication
         int nNbWeeksToDisplay = display.getNbWeeksToDisplay( );
         // Calculate the ending date of display with the nb weeks to display
         // since today
-        // We calculate the number of weeks including the current week, so it will end to the (n) next sunday
+        // We calculate the number of weeks including the current week, so it
+        // will end to the (n) next sunday
         TemporalField fieldISO = WeekFields.of( locale ).dayOfWeek( );
         LocalDate dateOfSunday = startingDateOfDisplay.with( fieldISO, DayOfWeek.SUNDAY.getValue( ) );
         LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( nNbWeeksToDisplay - 1 );
@@ -328,23 +329,12 @@ public class AppointmentApp extends MVCApplication
                 bError = true;
             }
         }
-        LocalDate firstDateOfFreeOpenSlot = SlotService.findFirstDateOfFreeOpenSlot( nIdForm, startingDateOfDisplay, endingDateOfDisplay );
-        if ( firstDateOfFreeOpenSlot == null )
-        {
-            addError( ERROR_MESSAGE_NO_AVAILABLE_SLOT, locale );
-            bError = true;
-        }
         // Get the current date of display of the calendar, if it exists
         String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
         LocalDate dateOfDisplay = startingDateOfDisplay;
         if ( StringUtils.isNotEmpty( strDateOfDisplay ) )
         {
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
-        }
-        // Display the week with the first available slot
-        if ( firstDateOfFreeOpenSlot != null && firstDateOfFreeOpenSlot.isAfter( dateOfDisplay ) )
-        {
-            dateOfDisplay = firstDateOfFreeOpenSlot;
         }
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
@@ -380,7 +370,32 @@ public class AppointmentApp extends MVCApplication
             int minTimeBeforeAppointment = formRule.getMinTimeBeforeAppointment( );
             LocalDateTime dateTimeBeforeAppointment = LocalDateTime.now( ).plusHours( minTimeBeforeAppointment );
             // Filter the list of slots
-            listSlots = listSlots.stream( ).filter( s -> s.getStartingDateTime( ).isAfter( dateTimeBeforeAppointment ) ).collect( Collectors.toList( ) );
+            if ( CollectionUtils.isNotEmpty( listSlots ) )
+            {
+                listSlots = listSlots.stream( ).filter( s -> s.getStartingDateTime( ).isAfter( dateTimeBeforeAppointment ) ).collect( Collectors.toList( ) );
+            }
+            LocalDate firstDateOfFreeOpenSlot = null;
+            if ( CollectionUtils.isNotEmpty( listSlots ) )
+            {
+                // Need to find the first available slot from now (with time)
+                listSlots = listSlots.stream( ).filter( s -> ( s.getNbPotentialRemainingPlaces( ) > 0 && s.getIsOpen( ) == Boolean.TRUE ) )
+                        .collect( Collectors.toList( ) );
+                if ( CollectionUtils.isNotEmpty( listSlots ) )
+                {
+                    firstDateOfFreeOpenSlot = listSlots.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) ).get( )
+                            .getDate( );
+                }
+            }
+            if ( firstDateOfFreeOpenSlot == null )
+            {
+                addError( ERROR_MESSAGE_NO_AVAILABLE_SLOT, locale );
+                bError = true;
+            }
+            // Display the week with the first available slot
+            if ( firstDateOfFreeOpenSlot != null && firstDateOfFreeOpenSlot.isAfter( dateOfDisplay ) )
+            {
+                dateOfDisplay = firstDateOfFreeOpenSlot;
+            }
         }
         Map<String, Object> model = getModel( );
         if ( bError )

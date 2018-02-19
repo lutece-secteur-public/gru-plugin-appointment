@@ -27,7 +27,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT + " WHERE id_slot = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT
-            + " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ?";
+            + " WHERE id_form = ? AND starting_date_time >= ? AND starting_date_time <= ?";
     private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM_AND_DATE_RANGE = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT
             + " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ? AND is_open = 1";
     private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT
