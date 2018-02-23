@@ -22,7 +22,14 @@
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
 				#i18n{appointment.modifyAppointmentFormEntries.pageTitle}
 			</a>
-        </li>     	 				                          
+        </li>
+        <#if isResourceInstalled?? && isResourceInstalled>
+        	<li <#if tab="resources">class="active"</#if>>
+				<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
+					#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
+				</a>
+	    	</li>
+        </#if>     	 				                          
     </ul>
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
@@ -81,10 +88,12 @@
 					<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkflow' inputName='idWorkflow' items=listWorkflows value="${appointmentform.idWorkflow!}" cssClass="form-control" />
 				</#if>	
 				<@fieldInputCombo i18nLabelKey='appointment.createAppointmentForm.labelWorkgroup' inputName='workgroup' items=user_workgroup_list value="${appointmentform.workgroup!}" />				
-				<#assign icon= appointmentform.getIcon()>
-				<#if icon.mimeType?? >
-					<@fieldInputCheckBox i18nLabelKey='appointment.modifyAppointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
-				</#if>
+				<#if appointmentform.getIcon()??>
+					<#assign icon= appointmentform.getIcon()>				
+                    <#if icon.mimeType?? >
+                        <@fieldInputCheckBox i18nLabelKey='appointment.modifyAppointmentForm.deleteIcon' inputName='deleteIcon' value='true'/>
+                    </#if>
+                </#if>
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-3 control-label" for="icon">#i18n{appointment.createAppointmentForm.labelIconForm} &nbsp;:</label>
 					<div class="col-xs-12 col-sm-3 col-md-3">

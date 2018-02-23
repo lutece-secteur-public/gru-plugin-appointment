@@ -80,6 +80,8 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -159,6 +161,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_FILE_CLOSING_DAYS = "fileClosingDays";
     private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
+    private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
 
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -167,6 +170,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENTFORM = "appointment.message.confirmRemoveAppointmentForm";
     public static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
+    private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
 
     private static final String PROPERTY_COPY_OF_FORM = "appointment.manageAppointmentForms.Copy";
     private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
@@ -405,7 +409,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         }
         Map<String, Object> model = getModel( );
-        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
+        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );        
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
 
@@ -727,7 +731,9 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
         model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
         model.put( MARK_LIST_CATEGORIES, CategoryService.findAllInReferenceList( ) );
-        model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
+        model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) ); 
+        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
+        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
     }
 
