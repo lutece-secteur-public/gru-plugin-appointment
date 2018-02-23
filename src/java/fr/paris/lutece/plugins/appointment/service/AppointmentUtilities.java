@@ -961,7 +961,7 @@ public final class AppointmentUtilities
                 // If there is no ending validity date
                 // Find the slot with appointments with the max date
                 Slot slotWithMaxDate = SlotService.findSlotWithMaxDate( nIdForm );
-                if ( slotWithMaxDate != null )
+                if ( slotWithMaxDate != null && slotWithMaxDate.getStartingDateTime() != null)
                 {
                     maxDate = slotWithMaxDate.getStartingDateTime( ).toLocalDate( );
                 }
