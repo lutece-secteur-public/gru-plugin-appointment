@@ -62,8 +62,10 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -105,6 +107,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
     private static final String PROPERTY_MODIFY_QUESTION_TITLE = "appointment.modifyEntry.titleQuestion";
     private static final String PROPERTY_COPY_ENTRY_TITLE = "appointment.copyEntry.title";
+    private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
 
     // Views
     private static final String VIEW_GET_CREATE_ENTRY = "getCreateEntry";
@@ -133,6 +136,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     private static final String MARK_FORM = "form";
     private static final String MARK_ENTRY_TYPE_SERVICE = "entryTypeService";
     private static final String MARK_APPOINTMENT_FORM = "appointmentform";
+    private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
 
     private static final String PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES = "appointment.modifyAppointmentFormEntries.pageTitle";
 
@@ -163,6 +167,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         Map<String, Object> model = getModel( );
         EntryService.addListEntryToModel( nIdForm, model );
         model.put( MARK_APPOINTMENT_FORM, appointmentForm );
+        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
+        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
         return getPage( PROPERTY_PAGE_TITLE_APPOINTMENT_FORM_ENTRIES, TEMPLATE_MODIFY_APPOINTMENT_FORM, model );
     }
 

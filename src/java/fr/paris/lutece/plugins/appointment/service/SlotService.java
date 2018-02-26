@@ -337,13 +337,14 @@ public final class SlotService
     {
         LocalDate dateOfSlot = slot.getDate( );
         WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm(), slot.getDate() );
         WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
         List<TimeSlot> listTimeSlot = null;
         if ( workingDay != null )
         {
             listTimeSlot = TimeSlotService.findListTimeSlotByWorkingDay( workingDay.getIdWorkingDay( ) );
         }
-        return isSpecificSlot( slot, workingDay, listTimeSlot );
+        return isSpecificSlot( slot, workingDay, listTimeSlot, reservationRule.getMaxCapacityPerSlot() );
     }
 
     /**
@@ -357,14 +358,14 @@ public final class SlotService
      *            the list of time slots
      * @return true if it's a specific slot
      */
-    private static boolean isSpecificSlot( Slot slot, WorkingDay workingDay, List<TimeSlot> listTimeSlot )
+    private static boolean isSpecificSlot( Slot slot, WorkingDay workingDay, List<TimeSlot> listTimeSlot, int nMaxCapacity )
     {
         boolean bIsSpecific = Boolean.TRUE;
         List<TimeSlot> listMatchTimeSlot = null;
         if ( workingDay == null )
         {
-            if ( !slot.getIsOpen( ) )
-            {
+            if ( !slot.getIsOpen( ) && slot.getMaxCapacity() == nMaxCapacity )
+            {            	
                 bIsSpecific = Boolean.FALSE;
             }
         }
@@ -582,7 +583,7 @@ public final class SlotService
         {
             Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, Boolean.FALSE,
                     Boolean.TRUE );
-            slotToCreate.setIsSpecific( isSpecificSlot( slotToCreate, workingDay, listTimeSlot ) );
+            slotToCreate.setIsSpecific( isSpecificSlot( slotToCreate, workingDay, listTimeSlot, nMaxCapacity ) );
             startingDateTime = endingDateTime;
             endingDateTime = startingDateTime.plusMinutes( nDurationSlot );
             listSlotToCreate.add( slotToCreate );
@@ -591,7 +592,7 @@ public final class SlotService
         {
             Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTimeOfTheDay ), nMaxCapacity, nMaxCapacity, nMaxCapacity,
                     Boolean.FALSE, Boolean.TRUE );
-            slotToCreate.setIsSpecific( isSpecificSlot( slotToCreate, workingDay, listTimeSlot ) );
+            slotToCreate.setIsSpecific( isSpecificSlot( slotToCreate, workingDay, listTimeSlot, nMaxCapacity ) );
             listSlotToCreate.add( slotToCreate );
         }
         return listSlotToCreate;
