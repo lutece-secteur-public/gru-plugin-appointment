@@ -378,11 +378,11 @@ public class AppointmentApp extends MVCApplication
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Need to find the first available slot from now (with time)
-                listSlots = listSlots.stream( ).filter( s -> ( s.getNbPotentialRemainingPlaces( ) > 0 && s.getIsOpen( ) == Boolean.TRUE ) )
+            	List<Slot> listAvailableSlots = listSlots.stream( ).filter( s -> ( s.getNbPotentialRemainingPlaces( ) > 0 && s.getIsOpen( ) == Boolean.TRUE ) )
                         .collect( Collectors.toList( ) );
-                if ( CollectionUtils.isNotEmpty( listSlots ) )
+                if ( CollectionUtils.isNotEmpty( listAvailableSlots ) )
                 {
-                    firstDateOfFreeOpenSlot = listSlots.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) ).get( )
+                    firstDateOfFreeOpenSlot = listAvailableSlots.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) ).get( )
                             .getDate( );
                 }
             }
