@@ -32,8 +32,8 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
             + " WHERE id_form = ? AND starting_date_time >= ? AND ending_date_time <= ? AND is_open = 1";
     private static final String SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT
             + " WHERE id_form = ? AND is_open = 1";
-    private static final String SQL_QUERY_SELECT_SLOT_WITH_MAX_DATE = SQL_QUERY_SELECT_COLUMNS + ", MAX(slot.starting_date_time) FROM appointment_slot slot"
-            + " WHERE slot.id_form = ?";
+    private static final String SQL_QUERY_SELECT_SLOT_WITH_MAX_DATE = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_slot slot"
+            + " WHERE slot.id_form = ? ORDER BY slot.starting_date_time DESC LIMIT 1";
 
     @Override
     public synchronized void insert( Slot slot, Plugin plugin )
