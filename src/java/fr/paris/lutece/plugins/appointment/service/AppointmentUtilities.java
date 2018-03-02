@@ -161,13 +161,14 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the delay is not respected
      */
-    public static boolean checkNbDaysBetweenTwoAppointments( AppointmentDTO appointmentDTO, String strEmail, AppointmentForm form )
+    public static boolean checkNbDaysBetweenTwoAppointments( AppointmentDTO appointmentDTO, String strFirstName, String strLastName, String strEmail,
+            AppointmentForm form )
     {
         boolean bCheckPassed = true;
         int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
         if ( nbDaysBetweenTwoAppointments != 0 )
         {
-            List<Slot> listSlots = getSlotsByEmail( strEmail, appointmentDTO.getIdAppointment( ) );
+            List<Slot> listSlots = getSlotsByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail, appointmentDTO.getIdAppointment( ) );
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Get the last appointment date for this form
@@ -198,13 +199,13 @@ public final class AppointmentUtilities
      *            the id of the appointment
      * @return the list of slots
      */
-    private static List<Slot> getSlotsByEmail( String strEmail, int idAppointment )
+    private static List<Slot> getSlotsByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail, int idAppointment )
     {
         List<Slot> listSlots = new ArrayList<>( );
         if ( StringUtils.isNotEmpty( strEmail ) )
         {
             // Looking for existing user with this email
-            User user = UserService.findUserByEmail( strEmail );
+            User user = UserService.findUserByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
             if ( user != null )
             {
                 // looking for its appointment
@@ -246,14 +247,15 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the number of appointments is above the maximum authorized on the defined period
      */
-    public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strEmail, AppointmentForm form )
+    public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strFisrtName, String strLastName, String strEmail,
+            AppointmentForm form )
     {
         boolean bCheckPassed = true;
         int nbMaxAppointmentsPerUser = form.getNbMaxAppointmentsPerUser( );
         int nbDaysForMaxAppointmentsPerUser = form.getNbDaysForMaxAppointmentsPerUser( );
         if ( nbMaxAppointmentsPerUser != 0 )
         {
-            List<Slot> listSlots = getSlotsByEmail( strEmail, appointmentDTO.getIdAppointment( ) );
+            List<Slot> listSlots = getSlotsByFirstNameLastNameAndEmail( strFisrtName, strLastName, strEmail, appointmentDTO.getIdAppointment( ) );
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Filter fot the good form
@@ -961,7 +963,7 @@ public final class AppointmentUtilities
                 // If there is no ending validity date
                 // Find the slot with appointments with the max date
                 Slot slotWithMaxDate = SlotService.findSlotWithMaxDate( nIdForm );
-                if ( slotWithMaxDate != null && slotWithMaxDate.getStartingDateTime() != null)
+                if ( slotWithMaxDate != null && slotWithMaxDate.getStartingDateTime( ) != null )
                 {
                     maxDate = slotWithMaxDate.getStartingDateTime( ).toLocalDate( );
                 }

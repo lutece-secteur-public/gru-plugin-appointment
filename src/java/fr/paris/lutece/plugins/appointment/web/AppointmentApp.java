@@ -378,12 +378,12 @@ public class AppointmentApp extends MVCApplication
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Need to find the first available slot from now (with time)
-            	List<Slot> listAvailableSlots = listSlots.stream( ).filter( s -> ( s.getNbPotentialRemainingPlaces( ) > 0 && s.getIsOpen( ) == Boolean.TRUE ) )
+                List<Slot> listAvailableSlots = listSlots.stream( ).filter( s -> ( s.getNbPotentialRemainingPlaces( ) > 0 && s.getIsOpen( ) == Boolean.TRUE ) )
                         .collect( Collectors.toList( ) );
                 if ( CollectionUtils.isNotEmpty( listAvailableSlots ) )
                 {
-                    firstDateOfFreeOpenSlot = listAvailableSlots.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) ).get( )
-                            .getDate( );
+                    firstDateOfFreeOpenSlot = listAvailableSlots.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) )
+                            .get( ).getDate( );
                 }
             }
             if ( firstDateOfFreeOpenSlot == null )
@@ -681,20 +681,21 @@ public class AppointmentApp extends MVCApplication
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Locale locale = request.getLocale( );
         String strEmail = request.getParameter( PARAMETER_EMAIL );
+        String strFirstName = request.getParameter( PARAMETER_FIRST_NAME );
+        String strLastName = request.getParameter( PARAMETER_LAST_NAME );
         AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), form, locale, listFormErrors );
         int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
                 locale, listFormErrors );
-        AppointmentUtilities.fillAppointmentDTO( appointmentDTO, nbBookedSeats, strEmail, request.getParameter( PARAMETER_FIRST_NAME ),
-                request.getParameter( PARAMETER_LAST_NAME ) );
+        AppointmentUtilities.fillAppointmentDTO( appointmentDTO, nbBookedSeats, strEmail, strFirstName, strLastName );
         AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
         AppointmentUtilities.fillInListResponseWithMapResponse( appointmentDTO );
         boolean bErrors = false;
-        if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointments( appointmentDTO, strEmail, form ) )
+        if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointments( appointmentDTO, strFirstName, strLastName, strEmail, form ) )
         {
             addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
             bErrors = true;
         }
-        if ( !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO, strEmail, form ) )
+        if ( !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO, strFirstName, strLastName, strEmail, form ) )
         {
             addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
             bErrors = true;

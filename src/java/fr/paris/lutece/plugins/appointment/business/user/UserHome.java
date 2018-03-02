@@ -81,17 +81,19 @@ public final class UserHome
     }
 
     /**
-     * Return a user by its email
+     * return a user by its firstname, lastname and email
      * 
-     * @param strUser
-     *            The User Email
-     * 
+     * @param strFirstName
+     *            the user first name
+     * @param strLastName
+     *            the user last name
+     * @param strEmail
+     *            the user email
      * @return the user if it exists
-     * 
      */
-    public static User findByEmail( String strEmail )
+    public static User findByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail )
     {
-        return _dao.findByEmail( strEmail, _plugin );
+        return _dao.findByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail, _plugin );
     }
 
     /**

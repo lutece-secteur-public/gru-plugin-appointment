@@ -203,19 +203,19 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         daoUtil.setInt( nIndex++, appointmentFilter.getIdForm( ) );
         if ( appointmentFilter.getFirstName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName( ).toUpperCase() + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getLastName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getLastName( ).toUpperCase() + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getLastName( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getEmail( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase() + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getReference( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getReference( ).toUpperCase() + CONSTANT_PERCENT );
+            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getReference( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getStartingDateOfSearch( ) != null )
         {

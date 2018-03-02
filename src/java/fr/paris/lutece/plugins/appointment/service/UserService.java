@@ -29,20 +29,18 @@ public final class UserService
      */
     public static User saveUser( AppointmentDTO appointment )
     {
-        User user = new User( );
-        user.setFirstName( appointment.getFirstName( ) );
-        user.setLastName( appointment.getLastName( ) );
-        user.setEmail( appointment.getEmail( ) );
-        User userFromDb = UserHome.findByEmail( user.getEmail( ) );
-        if ( userFromDb == null )
+        String strFirstName = appointment.getFirstName( );
+        String strLastName = appointment.getLastName( );
+        String strEmail = appointment.getEmail( );
+        User user = UserHome.findByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
+        if ( user == null )
         {
+            user = new User( );
+            user.setFirstName( strFirstName );
+            user.setLastName( strLastName );
+            user.setEmail( strEmail );
+            user.setPhoneNumber( appointment.getPhoneNumber( ) );
             user = UserHome.create( user );
-        }
-        else
-        {
-            userFromDb.setFirstName( appointment.getFirstName( ) );
-            userFromDb.setLastName( appointment.getLastName( ) );
-            user = UserHome.update( userFromDb );
         }
         return user;
     }
@@ -60,15 +58,19 @@ public final class UserService
     }
 
     /**
-     * Find a user with its email
+     * Find a user by its first name, last name and email
      * 
+     * @param strFirstName
+     *            the first name
+     * @param strLastName
+     *            the last name
      * @param strEmail
-     *            the email of the user
+     *            the email
      * @return the user
      */
-    public static User findUserByEmail( String strEmail )
+    public static User findUserByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail )
     {
-        return UserHome.findByEmail( strEmail );
+        return UserHome.findByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
     }
 
 }

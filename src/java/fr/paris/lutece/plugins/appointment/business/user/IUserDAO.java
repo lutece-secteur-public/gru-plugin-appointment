@@ -67,4 +67,19 @@ public interface IUserDAO
      * @return The User found
      */
     User findByEmail( String strEmail, Plugin plugin );
+
+    /**
+     * Return the user by its first name, last name and email
+     * 
+     * @param strFirstName
+     *            the first name of the user
+     * @param strLastName
+     *            the last name of the user
+     * @param strEmail
+     *            the email of the user
+     * @param plugin
+     *            the plugin
+     * @return the user found
+     */
+    User findByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail, Plugin plugin );
 }
