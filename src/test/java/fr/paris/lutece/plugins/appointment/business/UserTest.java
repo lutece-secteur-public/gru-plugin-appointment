@@ -13,8 +13,8 @@ import fr.paris.lutece.test.LuteceTestCase;
 public final class UserTest extends LuteceTestCase
 {
 
-    public final static int ID_LUTECE_USER_1 = 1;
-    public final static int ID_LUTECE_USER_2 = 2;
+    public final static String GUID_1 = "guid1";
+    public final static String GUID_2 = "guid2";
     public final static String FIRST_NAME_1 = "firstName1";
     public final static String FIRST_NAME_2 = "firstName2";
     public final static String LAST_NAME_1 = "lastName1";
@@ -39,7 +39,7 @@ public final class UserTest extends LuteceTestCase
         checkAsserts( userStored, user );
 
         // Update the user
-        user.setIdLuteceUser( ID_LUTECE_USER_2 );
+        user.setGuid( GUID_2 );
         user.setFirstName( FIRST_NAME_2 );
         user.setLastName( LAST_NAME_2 );
         user.setEmail( EMAIL_2 );
@@ -66,7 +66,7 @@ public final class UserTest extends LuteceTestCase
     public static User buildUser( )
     {
         User user = new User( );
-        user.setIdLuteceUser( ID_LUTECE_USER_1 );
+        user.setGuid( GUID_1 );
         user.setFirstName( FIRST_NAME_1 );
         user.setLastName( LAST_NAME_1 );
         user.setEmail( EMAIL_1 );
@@ -82,7 +82,7 @@ public final class UserTest extends LuteceTestCase
     public static User buildUser2( )
     {
         User user = new User( );
-        user.setIdLuteceUser( ID_LUTECE_USER_2 );
+        user.setGuid( GUID_2 );
         user.setFirstName( FIRST_NAME_2 );
         user.setLastName( LAST_NAME_2 );
         user.setEmail( EMAIL_2 );
@@ -100,7 +100,7 @@ public final class UserTest extends LuteceTestCase
      */
     public void checkAsserts( User userStored, User user )
     {
-        assertEquals( userStored.getIdLuteceUser( ), user.getIdLuteceUser( ) );
+        assertEquals( userStored.getGuid( ), user.getGuid( ) );
         assertEquals( userStored.getFirstName( ), user.getFirstName( ) );
         assertEquals( userStored.getLastName( ), user.getLastName( ) );
         assertEquals( userStored.getEmail( ), user.getEmail( ) );

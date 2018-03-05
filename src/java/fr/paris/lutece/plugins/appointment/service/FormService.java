@@ -54,8 +54,8 @@ public final class FormService
         AppointmentForm appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
         appointmentForm.setTitle( newNameForCopy );
         appointmentForm.setIsActive( Boolean.FALSE );
-        appointmentForm.setDateStartValidity(null);
-        appointmentForm.setDateEndValidity(null);
+        appointmentForm.setDateStartValidity( null );
+        appointmentForm.setDateEndValidity( null );
         int nIdNewForm = createAppointmentForm( appointmentForm );
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         formMessage.setIdForm( nIdNewForm );

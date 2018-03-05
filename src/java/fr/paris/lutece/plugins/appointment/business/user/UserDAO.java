@@ -14,12 +14,14 @@ public final class UserDAO extends UtilDAO implements IUserDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_user) FROM appointment_user";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user (id_user, id_lutece_user, first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_user SET id_lutece_user = ?, first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE id_user = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user (id_user, guid, first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_user SET guid = ?, first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE id_user = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_user WHERE id_user = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_user, id_lutece_user, first_name, last_name, email, phone_number FROM appointment_user";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_user, guid, first_name, last_name, email, phone_number FROM appointment_user";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
     private static final String SQL_QUERY_SELECT_BY_EMAIL = SQL_QUERY_SELECT_COLUMNS + " WHERE email = ?";
+    private static final String SQL_QUERY_SELECT_BY_FIRSTNAME_LASTNAME_AND_EMAIL = SQL_QUERY_SELECT_COLUMNS
+            + " WHERE UPPER(first_name) = ? and UPPER(last_name) = ? and UPPER(email) = ?";
 
     @Override
     public synchronized void insert( User user, Plugin plugin )
@@ -94,6 +96,33 @@ public final class UserDAO extends UtilDAO implements IUserDAO
         return user;
     }
 
+    @Override
+    public User findByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail, Plugin plugin )
+    {
+        DAOUtil daoUtil = null;
+        User user = null;
+        try
+        {
+            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_FIRSTNAME_LASTNAME_AND_EMAIL, plugin );
+            daoUtil.setString( 1, strFirstName.toUpperCase( ) );
+            daoUtil.setString( 2, strLastName.toUpperCase( ) );
+            daoUtil.setString( 3, strEmail.toUpperCase( ) );
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                user = buildUser( daoUtil );
+            }
+        }
+        finally
+        {
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
+        }
+        return user;
+    }
+
     /**
      * Build a User business object from the resultset
      * 
@@ -106,7 +135,7 @@ public final class UserDAO extends UtilDAO implements IUserDAO
         int nIndex = 1;
         User user = new User( );
         user.setIdUser( daoUtil.getInt( nIndex++ ) );
-        user.setIdLuteceUser( daoUtil.getInt( nIndex++ ) );
+        user.setGuid( daoUtil.getString( nIndex++ ) );
         user.setFirstName( daoUtil.getString( nIndex++ ) );
         user.setLastName( daoUtil.getString( nIndex++ ) );
         user.setEmail( daoUtil.getString( nIndex++ ) );
@@ -136,7 +165,7 @@ public final class UserDAO extends UtilDAO implements IUserDAO
         {
             daoUtil.setInt( nIndex++, user.getIdUser( ) );
         }
-        daoUtil.setInt( nIndex++, user.getIdLuteceUser( ) );
+        daoUtil.setString( nIndex++, user.getGuid( ) );
         daoUtil.setString( nIndex++, user.getFirstName( ) );
         daoUtil.setString( nIndex++, user.getLastName( ) );
         daoUtil.setString( nIndex++, user.getEmail( ) );

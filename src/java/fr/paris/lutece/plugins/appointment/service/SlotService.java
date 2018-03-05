@@ -337,14 +337,14 @@ public final class SlotService
     {
         LocalDate dateOfSlot = slot.getDate( );
         WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm(), slot.getDate() );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm( ), slot.getDate( ) );
         WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
         List<TimeSlot> listTimeSlot = null;
         if ( workingDay != null )
         {
             listTimeSlot = TimeSlotService.findListTimeSlotByWorkingDay( workingDay.getIdWorkingDay( ) );
         }
-        return isSpecificSlot( slot, workingDay, listTimeSlot, reservationRule.getMaxCapacityPerSlot() );
+        return isSpecificSlot( slot, workingDay, listTimeSlot, reservationRule.getMaxCapacityPerSlot( ) );
     }
 
     /**
@@ -364,8 +364,8 @@ public final class SlotService
         List<TimeSlot> listMatchTimeSlot = null;
         if ( workingDay == null )
         {
-            if ( !slot.getIsOpen( ) && slot.getMaxCapacity() == nMaxCapacity )
-            {            	
+            if ( !slot.getIsOpen( ) && slot.getMaxCapacity( ) == nMaxCapacity )
+            {
                 bIsSpecific = Boolean.FALSE;
             }
         }

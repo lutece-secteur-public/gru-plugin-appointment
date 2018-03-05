@@ -290,6 +290,7 @@ public final class AppointmentService
         appointmentDTO.setFirstName( appointment.getUser( ).getFirstName( ) );
         appointmentDTO.setLastName( appointment.getUser( ).getLastName( ) );
         appointmentDTO.setEmail( appointment.getUser( ).getEmail( ) );
+        appointmentDTO.setReference( appointment.getReference( ) );
         LocalDateTime startingDateTime = appointment.getSlot( ).getStartingDateTime( );
         appointmentDTO.setStartingDateTime( startingDateTime );
         appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getFormatter( ) ) );
