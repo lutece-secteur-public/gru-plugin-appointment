@@ -36,7 +36,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             + " INNER JOIN appointment_slot slot ON appointment.id_slot = slot.id_slot WHERE slot.id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_FILTER = "SELECT "
             + "app.id_appointment, app.reference, app.nb_places, app.is_cancelled, app.id_action_cancelled, app.notification, app.id_admin_user, app.id_user, app.id_slot, "
-            + "user.id_user, user.id_lutece_user, user.first_name, user.last_name, user.email, user.phone_number, "
+            + "user.id_user, user.guid, user.first_name, user.last_name, user.email, user.phone_number, "
             + "slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.id_form "
             + "FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
             + "INNER JOIN appointment_slot slot ON app.id_slot = slot.id_slot " + "WHERE slot.id_form = ?";
