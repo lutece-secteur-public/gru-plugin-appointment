@@ -30,9 +30,9 @@ public class User implements Serializable
     private int _nIdUser;
 
     /**
-     * Lutece User Id
+     * GUID
      */
-    private int _nIdLuteceUser;
+    private String _strGuid;
 
     /**
      * First name of the User
@@ -87,24 +87,24 @@ public class User implements Serializable
     }
 
     /**
-     * Get the Lutece User Id of the User
+     * Get the Guid of the User
      * 
-     * @return the Lutece User Id
+     * @return the Guid
      */
-    public int getIdLuteceUser( )
+    public String getGuid( )
     {
-        return _nIdLuteceUser;
+        return _strGuid;
     }
 
     /**
-     * Set the Lutece User Id of the User
+     * Set the Guid
      * 
-     * @param nIdLuteceUser
-     *            the lutece User Id to set
+     * @param strGuid
+     *            the Guid
      */
-    public void setIdLuteceUser( int nIdLuteceUser )
+    public void setGuid( String strGuid )
     {
-        this._nIdLuteceUser = nIdLuteceUser;
+        this._strGuid = strGuid;
     }
 
     /**

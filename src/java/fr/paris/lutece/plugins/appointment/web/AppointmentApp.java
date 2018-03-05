@@ -261,6 +261,7 @@ public class AppointmentApp extends MVCApplication
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
     private static final String PROPERTY_USER_ATTRIBUTE_PREFERED_NAME = "appointment.userAttribute.preferred_username";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
+    private static final String PROPERTY_USER_ATTRIBUTE_GUID = "appointment.userAttribute.guid";
 
     private static final String AGENDA_WEEK = "agendaWeek";
     private static final String BASIC_WEEK = "basicWeek";
@@ -1191,6 +1192,7 @@ public class AppointmentApp extends MVCApplication
 
             if ( user != null )
             {
+                appointment.setGuid( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_GUID, StringUtils.EMPTY ) ) );
                 appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
                 appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
                 String lastName = user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_PREFERED_NAME, StringUtils.EMPTY ) );

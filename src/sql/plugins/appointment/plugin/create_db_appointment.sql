@@ -33,7 +33,7 @@ ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS appointment_user (
   id_user INT NOT NULL,
-  id_lutece_user INT NULL,
+  guid VARCHAR(255) NULL,
   first_name VARCHAR(255) BINARY NOT NULL,
   last_name VARCHAR(255) BINARY NOT NULL,
   email VARCHAR(255) NULL,

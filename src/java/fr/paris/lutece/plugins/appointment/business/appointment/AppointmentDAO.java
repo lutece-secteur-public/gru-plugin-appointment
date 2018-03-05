@@ -360,7 +360,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
         User user = new User( );
         user.setIdUser( daoUtil.getInt( nIndex++ ) );
-        user.setIdLuteceUser( daoUtil.getInt( nIndex++ ) );
+        user.setGuid( daoUtil.getString( nIndex++ ) );
         user.setFirstName( daoUtil.getString( nIndex++ ) );
         user.setLastName( daoUtil.getString( nIndex++ ) );
         user.setEmail( daoUtil.getString( nIndex++ ) );

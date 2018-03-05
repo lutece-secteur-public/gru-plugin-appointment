@@ -36,6 +36,7 @@ public final class UserService
         if ( user == null )
         {
             user = new User( );
+            user.setGuid( appointment.getGuid( ) );
             user.setFirstName( strFirstName );
             user.setLastName( strLastName );
             user.setEmail( strEmail );
