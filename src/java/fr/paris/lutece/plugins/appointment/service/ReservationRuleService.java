@@ -1,8 +1,11 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
@@ -125,7 +128,35 @@ public final class ReservationRuleService
      */
     public static ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
-        ReservationRule reservationRule = ReservationRuleHome.findByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
+        // Get all the reservation rules
+        List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
+        List<LocalDate> listDate = new ArrayList<>( );
+        for ( ReservationRule reservationRule : listReservationRule )
+        {
+            listDate.add( reservationRule.getDateOfApply( ) );
+        }
+        // Try to get the closest date in past of the dateOfApply
+        LocalDate closestDate = Utilities.getClosestDateInPast( listDate, dateOfApply );
+        ReservationRule reservationRule = null;
+        // If there is no closest date in past
+        if ( closestDate == null )
+        {
+            // if the list of reservation rules is not empty
+            if ( CollectionUtils.isNotEmpty( listReservationRule ) )
+            {
+                // Get the next week definition in future
+                reservationRule = listReservationRule.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).get( );
+            }
+        }
+        else
+        {
+            // The closest date in past is not null
+            if ( CollectionUtils.isNotEmpty( listReservationRule ) )
+            {
+                // Get the corresponding reservation rule
+                reservationRule = listReservationRule.stream( ).filter( x -> closestDate.isEqual( x.getDateOfApply( ) ) ).findAny( ).orElse( null );
+            }
+        }
         return reservationRule;
     }
 

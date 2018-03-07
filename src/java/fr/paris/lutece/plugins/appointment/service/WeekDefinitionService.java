@@ -164,26 +164,32 @@ public final class WeekDefinitionService
      */
     public static WeekDefinition findWeekDefinitionByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
+        // Get all the week definitions
         List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
         List<LocalDate> listDate = new ArrayList<>( );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
             listDate.add( weekDefinition.getDateOfApply( ) );
         }
+        // Try to get the closest date in past of the date of apply
         LocalDate closestDate = Utilities.getClosestDateInPast( listDate, dateOfApply );
         WeekDefinition weekDefinition = null;
+        // If there is no closest date in past
         if ( closestDate == null )
         {
+            // if the list of week definitions is not null
             if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
             {
-                // Get the next week definition
+                // Get the next week definition in the future
                 weekDefinition = listWeekDefinition.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).get( );
             }
         }
         else
         {
+            // There is a closest date in past
             if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
             {
+                // Get the corresponding week definition
                 weekDefinition = listWeekDefinition.stream( ).filter( x -> closestDate.isEqual( x.getDateOfApply( ) ) ).findAny( ).orElse( null );
             }
         }

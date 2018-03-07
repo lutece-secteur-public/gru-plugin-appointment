@@ -84,16 +84,4 @@ public interface IWeekDefinitionDAO
      */
     WeekDefinition findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin );
 
-    /**
-     * Get the week definitions of a form for the closest date of apply
-     * 
-     * @param nIdForm
-     *            the form id
-     * @param dateOfApply
-     *            the date of apply
-     * @param plugin
-     *            the plugin
-     * @return the week definition
-     */
-    WeekDefinition findByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin );
 }

@@ -7,6 +7,7 @@ import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
+import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -124,7 +125,7 @@ public final class ReservationRuleTest extends LuteceTestCase
         // Create the ReservationRule in database
         ReservationRuleHome.create( reservationRule1 );
         // Find the ReservationRule created in database
-        ReservationRule reservationRuleStored = ReservationRuleHome.findByIdFormAndClosestToDateOfApply( form.getIdForm( ), DATE_OF_APPLY_1 );
+        ReservationRule reservationRuleStored = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( form.getIdForm( ), DATE_OF_APPLY_1 );
         // Check Asserts
         checkAsserts( reservationRuleStored, reservationRule1 );
         // Clean
