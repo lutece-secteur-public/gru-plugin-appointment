@@ -162,6 +162,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_FILE_CLOSING_DAYS = "fileClosingDays";
     private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
+    private static final String MARK_PERMISSION_CREATE = "permission_create";
 
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -244,6 +245,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
         LocalizedPaginator<AppointmentForm> paginator = new LocalizedPaginator<AppointmentForm>( listAppointmentForm, nItemsPerPage, strUrl,
                 PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
+        AdminUser user = AdminUserService.getAdminUser( request );
         Map<String, Object> model = getModel( );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
@@ -251,7 +253,9 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                 MARK_APPOINTMENTFORM_LIST,
                 RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                         AdminUserService.getAdminUser( request ) ) );
-        model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), AdminUserService.getAdminUser( request ) ) );
+        model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
+        model.put( MARK_PERMISSION_CREATE, String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE_CREATE, "0",
+                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
@@ -267,7 +271,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     @View( VIEW_CREATE_APPOINTMENTFORM )
     public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
@@ -300,7 +304,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     @Action( ACTION_CREATE_APPOINTMENTFORM )
     public String doCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException, FileNotFoundException
     {
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
@@ -588,10 +592,10 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     @Action( ACTION_DO_COPY_FORM )
     public String doCopyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_COPY_FORM,
+        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
                 AdminUserService.getAdminUser( request ) ) )
         {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_COPY_FORM );
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( StringUtils.isEmpty( strIdForm ) )

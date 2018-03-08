@@ -59,8 +59,6 @@ public final class AppointmentResourceIdService extends ResourceIdService
     /** Permission to create appointments */
     public static final String PERMISSION_CREATE_FORM = "CREATE_FORM";
 
-    public static final String PERMISSION_COPY_FORM = "COPY_FORM";
-
     /** Permission to create appointments of the form */
     public static final String PERMISSION_CREATE_APPOINTMENT = "CREATE_APPOINTMENT";
 
@@ -95,7 +93,6 @@ public final class AppointmentResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.appointment.name";
     private static final String PROPERTY_LABEL_RESOURCE_TYPE_CREATE = "appointment.appointment.name.create";
     private static final String PROPERTY_LABEL_CREATE_FORM = "appointment.permission.label.createForm";
-    private static final String PROPERTY_LABEL_COPY_FORM = "appointment.permission.label.copyForm";
     private static final String PROPERTY_LABEL_CREATE_APPOINTMENT = "appointment.permission.label.createAppointment";
     private static final String PROPERTY_LABEL_DELETE_FORM = "appointment.permission.label.deleteForm";
     private static final String PROPERTY_LABEL_DELETE_APPOINTMENT = "appointment.permission.label.deleteAppointment";
@@ -143,11 +140,6 @@ public final class AppointmentResourceIdService extends ResourceIdService
         permission = new Permission( );
         permission.setPermissionKey( PERMISSION_DELETE_FORM );
         permission.setPermissionTitleKey( PROPERTY_LABEL_DELETE_FORM );
-        resourceType.registerPermission( permission );
-
-        permission = new Permission( );
-        permission.setPermissionKey( PERMISSION_COPY_FORM );
-        permission.setPermissionTitleKey( PROPERTY_LABEL_COPY_FORM );
         resourceType.registerPermission( permission );
 
         permission = new Permission( );

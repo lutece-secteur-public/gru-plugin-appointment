@@ -67,6 +67,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     private static final String MARK_URL = "url";
     private static final String MARK_ICON = "icon";
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
+    private static final String MARK_PERMISSION_CREATE = "permission_create";
     private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
     // TEMPLATES
@@ -89,6 +90,8 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
                         AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        model.put( MARK_PERMISSION_CREATE, String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE_CREATE, "0",
+                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( listAppointmentForm, AdminUserService.getAdminUser( request ) ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, AdminUserService.getLocale( request ), model );
         return template.getHtml( );

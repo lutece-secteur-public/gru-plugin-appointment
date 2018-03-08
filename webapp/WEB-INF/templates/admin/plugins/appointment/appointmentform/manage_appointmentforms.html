@@ -4,10 +4,12 @@
 			<div class="box-header with-border">
 				<h3 class="box-title">#i18n{appointment.manage.appointmentforms.title}</h3>
 				<div class="box-tools">
-					<a class="btn btn-primary btn-sm pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm">
-						<i class="fa fa-plus" aria-hidden="true"></i><span class="hidden-xs"> #i18n{appointment.manageAppointmentForms.buttonAdd}</span>
-					</a>
-				</div>
+					<#if permission_create=="true">
+						<a class="btn btn-primary btn-sm pull-right" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm">
+							<i class="fa fa-plus" aria-hidden="true"></i><span class="hidden-xs"> #i18n{appointment.manageAppointmentForms.buttonAdd}</span>
+						</a>
+					</#if>
+				</div>				
 			</div>
 			<div class="box-body">
 				<div class="row">
@@ -59,12 +61,12 @@
 												<i class="fa fa-comment" aria-hidden="true"></i>
 											</a>
 										</#if>
-										<#if permissions[appointmentform?index][4]=="true">
+										<#if permission_create=="true">
 											<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelCopy}">
 												<i class="glyphicon glyphicon-duplicate"></i>
 											</a>
 										</#if>										
-										<#if permissions[appointmentform?index][5]=="true">					
+										<#if permissions[appointmentform?index][4]=="true">					
 											<#if appointmentform.isActive>
 												<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{appointment.manageAppointmentForms.labelDisable}">
 													<i class="fa fa-stop" aria-hidden="true"></i>
@@ -75,7 +77,7 @@
 												</a>
 											</#if>
 										</#if>
-										<#if permissions[appointmentform?index][6]=="true">
+										<#if permissions[appointmentform?index][5]=="true">
 											<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
 												<i class="glyphicon glyphicon-trash"></i>
 											</a>
