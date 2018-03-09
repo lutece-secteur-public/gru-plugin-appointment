@@ -1,142 +1,81 @@
 <#include "/admin/plugins/appointment/commons.html" />
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</h3>
-			</div>
-			<div class="box-body">
-			
-			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
-			<fieldset>
-				<legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-				<input name="id_form" value="${form.idForm}" type="hidden">
-				<input name="action" value="doCreateEntry" type="hidden">
-				<input name="id_type" value="${entry.entryType.idType}" type="hidden">
-				<#if entry.fieldDepend?exists>
-			   		<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
-				</#if>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} * : </label>
-			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="title" id="title" value="" maxlength="255" class="form-control">
-						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
-					</div>
-				</div>
-			    <div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" > #i18n{appointment.createEntry.labelHelpMessage} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">						<textarea name="help_message" id="help_message" rows="5" class="form-control"></textarea>
-						<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>					</div>
-			    </div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.comment.name} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">						<textarea name="comment" class="form-control" rows="2"></textarea>					</div>
-			    </div>
-			    <div class="form-group">
-			    	<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.createEntry.labelType} :</label>  
-			    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-			    		${entry.entryType.title}
-			    	</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.defaultValue.name} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="value" id="value" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} :</label>
-			   		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<div class="checkbox">
-							<label>
-								<input name="mandatory" value="1" type="checkbox">&#160;
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="only_display_in_back">#i18n{appointment.createEntry.labelOnlyDisplayInBack}</label>
-                    <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-                        <div class="checkbox">
-                            <label>
-                                <input name="only_display_in_back" value="1" type="checkbox">&#160;
-                            </label>
-                        </div>
-                    </div>
-                </div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="errorMessage"> #i18n{appointment.createEntry.labelMandatoryErrorMessage} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<textarea name="errorMessage" rows="2" class="form-control"></textarea>
-						<span class="help-block">#i18n{appointment.createEntry.labelMandatoryErrorMessageHelp}</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="width">#i18n{appointment.createEntry.labelWidth} * : </label>
-			   		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="width" id="width" value="50" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="max_size_enter">#i18n{appointment.createEntry.labelMaxSizeEnter}  : </label>
-			   		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="max_size_enter" id="max_size_enter" value="" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="confirm_field">#i18n{appointment.createEntry.labelConfirmField} :</label>
-			   		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<div class="checkbox">
-							<label>
-								<input name="confirm_field" id="confirm_field" value="1" type="checkbox" onchange="javascript:changeVisilityConfirmFieldTitle();">&#160;
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="confirm_field_title">#i18n{appointment.createEntry.labelConfirmFieldTitle} * : </label>
-			   		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="confirm_field_title" id="confirm_field_title" class="form-control" value="" maxlength="255">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="css_class" value="" maxlength="255" class="form-control">
-						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-						<button class="btn btn-primary btn-sm" name="save" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}</button>
-						<button class="btn btn-primary btn-sm" name="apply" type="submit" ><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonApplyAndManageVerification}</button>
-						<button class="btn btn-default btn-sm" type="submit" name="cancel" value="cancel" >
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelCancel}
-						</button>
-					</div>
-				</div>
-			</fieldset>
-			</form>
-		</div>
-	</div>
-	</div>
-</div>
+<@row>
+    <@columns>
+        <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' />
+            <@boxBody>
+                <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
+                    <fieldset>
+                        <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
+                        <input name="id_form" value="${form.idForm}" type="hidden">
+                        <input name="action" value="doCreateEntry" type="hidden">
+                        <input name="id_type" value="${entry.entryType.idType}" type="hidden">
+                        <#if entry.fieldDepend?exists>
+                               <input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
+                        </#if>
+                        <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
+                            <@input type='text' name='title' id='title' value='' maxlength=255 />
+                        </@formGroup>
+                        <@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
+                            <@input type='textarea' name='help_message' id='help_message' rows=5 />
+                        </@formGroup>
+                        <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+                            <@input type='textarea' name='comment' rows=2 />
+                        </@formGroup>
+                        <@formGroup labelFor='type' labelKey='#i18n{appointment.createEntry.labelType}'>
+                            <@tag color='info' id='type'>${entry.entryType.title}</@tag>
+                        </@formGroup>
+                        <@formGroup labelFor='value' labelKey='#i18n{appointment.defaultValue.name}'>
+                            <@input type='text' name='value' id='value' value='' maxlength=255 />
+                        </@formGroup>
+                        <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
+                            <@checkBox name='mandatory' value='1' />
+                        </@formGroup>
+                        <@formGroup labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
+                            <@checkBox name='only_display_in_back' value='1' />
+                        </@formGroup>
+                        <@formGroup labelFor='errorMessage' labelKey='#i18n{appointment.createEntry.labelMandatoryErrorMessage}' helpKey='#i18n{appointment.createEntry.labelMandatoryErrorMessageHelp}'>
+                            <@input type='textarea' name='errorMessage' rows=2 />
+                        </@formGroup>
+                        <@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
+                            <@input type='text' name='width' id='width' value='50' />
+                        </@formGroup>
+                        <@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
+                            <@input type='text' name='max_size_enter' id='max_size_enter' value='' />
+                        </@formGroup>
+                        <@formGroup labelFor='confirm_field' labelKey='#i18n{appointment.createEntry.labelConfirmField}'>
+                            <@checkBox name='confirm_field' id='confirm_field' value='1' params='onchange="javascript:changeVisilityConfirmFieldTitle();"'/>
+                        </@formGroup>
+                        <@formGroup labelFor='confirm_field_title' labelKey='#i18n{appointment.createEntry.labelConfirmFieldTitle}' mandatory=true>
+                            <@input type='text' name='confirm_field_title' id='confirm_field_title' value='' maxlength=255 />
+                        </@formGroup>
+                        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+                            <@input type='text' name='css_class' value='' maxlength=255 />
+                        </@formGroup>
+                        <@formGroup>
+                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
+                            <@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageVerification}' size='' />
+                            <@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' size='' />
+                        </@formGroup>
+                    </fieldset>
+                </@tform>
+            </@boxBody>
+        </@box>
+    </@columns>
+</@row>
 <#include "/admin/util/editor/editor.html" />
- <script type="text/javascript">
+<script type="text/javascript">
 changeVisilityConfirmFieldTitle();
 function changeVisilityConfirmFieldTitle()
-	{
-		if(document.getElementById("confirm_field").checked)
-		{
-	  		document.getElementById("confirm_field_title_p").style.display = 'block';
-		}
-		else
-		{
-	  		document.getElementById("confirm_field_title_p").style.display = 'none';
-		}
-	} 
-  </script>
- 
- <@initEditor />
-
- 
+    {
+        if(document.getElementById("confirm_field").checked)
+        {
+              document.getElementById("confirm_field_title_p").style.display = 'block';
+        }
+        else
+        {
+              document.getElementById("confirm_field_title_p").style.display = 'none';
+        }
+    }
+</script>
+<@initEditor />
