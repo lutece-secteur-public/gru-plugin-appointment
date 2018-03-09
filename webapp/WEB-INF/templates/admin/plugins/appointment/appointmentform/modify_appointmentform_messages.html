@@ -1,132 +1,72 @@
 <#include "/admin/util/editor/editor.html" />
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.modifyAppointmentFormMessages.pageTitle}</h3>
-			</div>
-			<div class="box-body">
-				<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp" method="post">
+<@row>
+	<@columns>
+		<@box color='primary'>
+			<@boxHeader title='#i18n{appointment.modifyAppointmentFormMessages.pageTitle}' />
+			<@boxBody>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp'>
 				<@messages errors=errors /> 
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="calendarTitle">#i18n{appointment.modifyAppointmentFormMessages.labelCalendarTitle}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="calendarTitle" value="${formMessage.calendarTitle}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="calendarDescription">#i18n{appointment.modifyAppointmentFormMessages.labelCalendarDescription}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<textarea class="richtext" name="calendarDescription" class="form-control">${formMessage.calendarDescription}</textarea>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldFirstNameTitle">#i18n{appointment.modifyAppointmentFormMessages.labelFieldFirstNameTitle}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldFirstNameTitle" value="${formMessage.fieldFirstNameTitle}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldFirstNameHelp">#i18n{appointment.modifyAppointmentFormMessages.labelFieldFirstNameHelp}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldFirstNameHelp" value="${formMessage.fieldFirstNameHelp}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldLastNameTitle">#i18n{appointment.modifyAppointmentFormMessages.labelFieldLastNameTitle}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldLastNameTitle" value="${formMessage.fieldLastNameTitle}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldLastNameHelp">#i18n{appointment.modifyAppointmentFormMessages.labelFieldLastNameHelp}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldLastNameHelp" value="${formMessage.fieldLastNameHelp}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldEmailTitle">#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailTitle}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldEmailTitle" value="${formMessage.fieldEmailTitle}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldEmailHelp">#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailHelp}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldEmailHelp" value="${formMessage.fieldEmailHelp}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldConfirmationEmail">#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailConfirmation}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldConfirmationEmail" value="${formMessage.fieldConfirmationEmail}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="fieldConfirmationEmailHelp">#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailConfirmationHelp}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="fieldConfirmationEmailHelp" value="${formMessage.fieldConfirmationEmailHelp}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="calendarReserveLabel">#i18n{appointment.modifyAppointmentFormMessages.labelCalendarReserveLabel}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="calendarReserveLabel" value="${formMessage.calendarReserveLabel}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="calendarFullLabel">#i18n{appointment.modifyAppointmentFormMessages.labelCalendarFullLabel}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="calendarFullLabel" value="${formMessage.calendarFullLabel}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="textAppointmentCreated">#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCreated}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<textarea class="richtext" name="textAppointmentCreated" >${formMessage.textAppointmentCreated}</textarea>
-							<span class="help-block">#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCreatedHelp}</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="urlRedirectAfterCreation">#i18n{appointment.modifyAppointmentFormMessages.labelUrlRedirectAfterCreation}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="urlRedirectAfterCreation" value="${formMessage.urlRedirectAfterCreation}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="textAppointmentCanceled">#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCanceled}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<textarea class="richtext" name="textAppointmentCanceled" class="form-control">${formMessage.textAppointmentCanceled}</textarea>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="labelButtonRedirection">#i18n{appointment.modifyAppointmentFormMessages.labelLabelButtonRedirection}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="labelButtonRedirection" value="${formMessage.labelButtonRedirection}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="noAvailableSlot">#i18n{appointment.modifyAppointmentFormMessages.labelNoAvailableSlot}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" maxlength="255" name="noAvailableSlot" value="${formMessage.noAvailableSlot}" class="form-control">
-						</div>
-					</div>
-
-					<div class="form-group">
-						<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-							<input type="hidden" name="action" value="doModifyAppointmentFormMessages" />
-							<input type="hidden" name="id_form" value="${formMessage.idForm}" />
-							<button class="btn btn-primary" name="apply" value="apply" title="#i18n{portal.util.labelModify}">
-								<i class="fa fa-check" aria-hidden="true"></i> #i18n{portal.util.labelModify}
-							</button>
-							<button class="btn btn-default" name="back" value="back" title="#i18n{portal.util.labelBack}">
-								<i class="fa fa-times" aria-hidden="true"></i> &nbsp;#i18n{portal.util.labelBack}
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+					<@formGroup labelFor='calendarTitle' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarTitle}'>
+						<@input type='text' maxlength=255 name='calendarTitle' value='${formMessage.calendarTitle}' />
+					</@formGroup>
+					<@formGroup labelFor='calendarDescription' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarDescription}'>
+						<@input type='textarea' richtext=true name='calendarDescription'>${formMessage.calendarDescription}</@input>
+					</@formGroup>
+					<@formGroup labelFor='fieldFirstNameTitle' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldFirstNameTitle}'>
+						<@input type='text' maxlength=255 name='fieldFirstNameTitle' value='${formMessage.fieldFirstNameTitle}' />
+					</@formGroup>
+					<@formGroup labelFor='fieldFirstNameHelp' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldFirstNameHelp}'>
+						<@input type='text' maxlength=255 name='fieldFirstNameHelp' value='${formMessage.fieldFirstNameHelp}' />
+					</@formGroup>
+					<@formGroup labelFor='fieldLastNameTitle' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldLastNameTitle}'>
+						<@input type='text' maxlength=255 name='fieldLastNameTitle' value='${formMessage.fieldLastNameTitle}' />
+					</@formGroup>
+					<@formGroup labelFor='fieldLastNameHelp' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldLastNameHelp}'>
+						<@input type='text' maxlength=255 name='fieldLastNameHelp' value='${formMessage.fieldLastNameHelp}' />
+					</@formGroup>
+					<@formGroup labelFor='fieldEmailTitle' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailTitle}'>
+						<@input type='text' maxlength=255 name='fieldEmailTitle' value='${formMessage.fieldEmailTitle}' />
+					</@formGroup>
+					<@formGroup labelFor='fieldEmailHelp' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailHelp}'>
+						<@input type='text' maxlength=255 name='fieldEmailHelp' value='${formMessage.fieldEmailHelp}' />
+					</@formGroup>
+					<@formGroup labelFor='fieldConfirmationEmail' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailConfirmation}'>
+						<@input type='text' maxlength=255 name='fieldConfirmationEmail' value='${formMessage.fieldConfirmationEmail}' />
+					</@formGroup>
+					<@formGroup labelFor='fieldConfirmationEmailHelp' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelFieldEmailConfirmationHelp}'>
+						<@input type='text' maxlength=255 name='fieldConfirmationEmailHelp' value='${formMessage.fieldConfirmationEmailHelp}' />
+					</@formGroup>
+					<@formGroup labelFor='calendarReserveLabel' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarReserveLabel}'>
+						<@input type='text' maxlength=255 name='calendarReserveLabel' value='${formMessage.calendarReserveLabel}' />
+					</@formGroup>
+					<@formGroup labelFor='calendarFullLabel' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelCalendarFullLabel}'>
+						<@input type='text' maxlength=255 name='calendarFullLabel' value='${formMessage.calendarFullLabel}' />
+					</@formGroup>
+					<@formGroup labelFor='textAppointmentCreated' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCreated}' helpKey='#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCreatedHelp}'>
+						<@input type='textarea' richtext=true name='textAppointmentCreated'>${formMessage.textAppointmentCreated}</@input>
+					</@formGroup>
+					<@formGroup labelFor='urlRedirectAfterCreation' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelUrlRedirectAfterCreation}'>
+						<@input type='text' maxlength=255 name='urlRedirectAfterCreation' value='${formMessage.urlRedirectAfterCreation}' />
+					</@formGroup>
+					<@formGroup labelFor='textAppointmentCanceled' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelTextAppointmentCanceled}'>
+						<@input type='textarea' richtext=true name='textAppointmentCanceled'>${formMessage.textAppointmentCanceled}</@input>
+					</@formGroup>
+					<@formGroup labelFor='labelButtonRedirection' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelLabelButtonRedirection}'>
+						<@input type='text' maxlength=255 name='labelButtonRedirection' value='${formMessage.labelButtonRedirection}' />
+					</@formGroup>
+					<@formGroup labelFor='noAvailableSlot' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelNoAvailableSlot}'>
+						<@input type='text' maxlength=255 name='noAvailableSlot' value='${formMessage.noAvailableSlot}' />
+					</@formGroup>
+					
+					<@formGroup>
+						<input type="hidden" name="action" value="doModifyAppointmentFormMessages" />
+						<input type="hidden" name="id_form" value="${formMessage.idForm}" />
+						<@button type='submit' name='apply' value='apply' title='#i18n{portal.util.labelModify}' buttonIcon='save' size='' />
+						<@button type='submit' name='back' value='back' title='#i18n{portal.util.labelBack}' buttonIcon='times' color='btn-secondary' size='' />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 <@initEditor />
