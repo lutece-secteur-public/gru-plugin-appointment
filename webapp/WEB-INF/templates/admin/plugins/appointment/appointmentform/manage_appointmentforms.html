@@ -2,7 +2,9 @@
 	<@columns>
 		<@box color='primary'>
 			<@boxHeader title='#i18n{appointment.manage.appointmentforms.title}'>
-				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' buttonIcon='plus' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' />
+				<#if permission_create=="true">
+					<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' buttonIcon='plus' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' />
+				</#if>
 			</@boxHeader>
 			<@boxBody>
 				<@messages infos=infos errors=errors/>
@@ -44,17 +46,17 @@
 										<#if permissions[appointmentform?index][3]=="true">
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelModifyMessages}' showTitle=false buttonIcon='comment' />
 										</#if>
-										<#if permissions[appointmentform?index][4]=="true">
+										<#if permission_create=="true">
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelCopy}' showTitle=false buttonIcon='copy' />
 										</#if>										
-										<#if permissions[appointmentform?index][5]=="true">					
+										<#if permissions[appointmentform?index][4]=="true">					
 											<#if appointmentform.isActive>
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelDisable}' showTitle=false buttonIcon='stop' color='btn-danger' />
 											<#else>
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelEnable}' showTitle=false buttonIcon='check' color='btn-success' />
 											</#if>
 										</#if>
-										<#if permissions[appointmentform?index][6]=="true">
+										<#if permissions[appointmentform?index][5]=="true">
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{portal.util.labelDelete}' showTitle=false buttonIcon='trash' color='btn-danger' />
 										</#if>
 									</td>
