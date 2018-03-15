@@ -33,11 +33,13 @@
 	    	</li>
 			</#if>
 		</@listTabs>
+		<@tabContent>
+			<#nested>
+		</@tabContent>
 	</@tabs>
 </#macro>
 
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-	<@tabContent>
 		<div class="tab-pane active" id="">
 			<fieldset>    			   
 			<@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
@@ -303,8 +305,7 @@
 			</@tform>
 		</fieldset>
 	</div>
-	</div>
-</@tabContent>
+</div>
 <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="date_start_validity" language=language />
 <@getDatePickerBootstrap idField="date_end_validity"   language=language />
