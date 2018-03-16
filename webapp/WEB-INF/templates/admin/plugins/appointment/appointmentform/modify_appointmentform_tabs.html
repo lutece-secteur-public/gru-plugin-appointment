@@ -54,7 +54,7 @@
 				</@formGroup>
 				
 				<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' helpKey='#i18n{appointment.labelDescription}' mandatory=true>
-					<@input type='textarea' name='description' id='description'>#i18n{appointmentform.description!''}</@input>
+					<@input type='textarea' name='description' id='description'>${appointmentform.description!}</@input>
 				</@formGroup>
 				
 				<@formGroup labelFor='min_time_before_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}' mandatory=true>
