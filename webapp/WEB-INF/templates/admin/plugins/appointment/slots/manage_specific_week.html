@@ -32,7 +32,6 @@
         </#if>
     ];
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}';
-    var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
         <#if events??>
             <#list events as event>
@@ -96,7 +95,9 @@
                 center: 'today, datePicker, title',
                 right: 'next'
             },
-            columnFormat: columnFormat,
+            columnHeaderHtml: function(mom) {
+                return mom.format('dddd') + '</br>' + mom.format('LL');
+            },
             slotLabelFormat: 'H:mm',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
