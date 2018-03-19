@@ -207,7 +207,7 @@
 												</#if>
 											</td>
 											<td>
-												<#if rightModify?? && rightModify && !appointment.isCancelled> 
+												<#if rightChangeDate?? && rightChangeDate && !appointment.isCancelled> 
 													<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointments.labelModifyDateAppointment}"> 
 														<i class="glyphicon glyphicon-time"></i>
 													</a>
