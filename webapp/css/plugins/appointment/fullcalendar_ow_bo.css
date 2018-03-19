@@ -93,3 +93,14 @@ button.fc-next-button:hover, button.fc-next-button:active, button.fc-next-button
 .ui-state-over {
 
 }
+
+.fc-time-grid .fc-slats td {
+	border-bottom: solid 1px rgb(190, 190, 190);
+}
+
+.fc-time-grid table {
+	border: solid 1px rgb(190, 190, 190);
+	border-top: 0;
+}
+
+
