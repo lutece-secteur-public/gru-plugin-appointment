@@ -113,7 +113,7 @@
 
 				<#if isCaptchaEnabled>
 					<@formGroup labelFor='enableCaptcha'>
-						<@checkBox labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' name='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+						<@checkBox labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
 					</@formGroup>
 				</#if>
 
