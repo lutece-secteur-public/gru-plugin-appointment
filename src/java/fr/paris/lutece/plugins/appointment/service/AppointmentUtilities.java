@@ -761,7 +761,7 @@ public final class AppointmentUtilities
      */
     public static String [ ][ ] getPermissions( List<AppointmentForm> listForms, AdminUser user )
     {
-        String [ ][ ] retour = new String [ listForms.size( )] [ 7];
+        String [ ][ ] retour = new String [ listForms.size( )] [ 6];
         int nI = 0;
 
         for ( AppointmentForm tmpForm : listForms )
@@ -776,10 +776,8 @@ public final class AppointmentUtilities
             strRetour [3] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
             strRetour [4] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_COPY_FORM, user ) );
-            strRetour [5] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
-            strRetour [6] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+            strRetour [5] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
             retour [nI++] = strRetour;
         }

@@ -84,17 +84,4 @@ public interface IReservationRuleDAO
      */
     ReservationRule findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin );
 
-    /**
-     * Returns the Reservation Rule with the given search parameters
-     * 
-     * @param nIdForm
-     *            the Form Id
-     * @param dateOfApply
-     *            the date of apply
-     * @param plugin
-     *            the plugin
-     * @return the reservation rule that matches
-     */
-    ReservationRule findByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin );
-
 }

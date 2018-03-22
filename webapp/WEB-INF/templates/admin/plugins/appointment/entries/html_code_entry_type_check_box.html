@@ -1,38 +1,45 @@
 <#assign cpt=0>
 ${entry.CSSClass!}
-<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
-		<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-		<#list entry.fields as field>
-			<#if !entry.fieldInLine><div class="checkbox"></#if>
-			<label <#if entry.fieldInLine>class="checkbox-inline"</#if> for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
-			<input type="checkbox" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}_${field.idField}" value="${field.idField}"
-				<#if list_responses??>
-					<#list list_responses as response>
-						<#if response.entry.idEntry == entry.idEntry && response.field??>
-							<#if response.field.idField == field.idField>checked="checked"</#if>
-						</#if>
-					</#list>
-				<#else>
-					<#if field.defaultValue>checked="checked" </#if>
+
+<@formGroup labelFor='form${entry.idEntry}' labelKey='${entry.title}' mandatory=entry.mandatory id='form${entry.idEntry}' helpKey='${entry.helpMessage}'>
+
+<#list entry.fields as field>
+	
+	<#if entry.fieldInLine>
+		<#assign orientation = 'horizontal' />
+	</#if>
+	
+	<#if !field.noDisplayTitle>
+		<#assign labelKey= field.title />
+	</#if>
+	
+	<#if field.comment?? && field.comment != ''>
+		<#assign title = field.comment />
+	</#if>
+	
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.field??>
+				<#if response.field.idField == field.idField>
+					<#assign checked = true />
 				</#if>
-				<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
-					onclick="doCheckboxEffect(this.checked,${field.idField});"
-				</#if>
-			/>
-			<#if !field.noDisplayTitle>
-				${field.title}
 			</#if>
-			</label>
-			<#if !entry.fieldInLine></div></#if>
-			
-			<#if !entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
-				<p class="help-block">${entry.helpMessage}</p>
-			</#if>	
 		</#list>
-		<#if entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
-			<p class="help-block">${entry.helpMessage}</p>
-		</#if>	
+	<#else>
+		<#if field.defaultValue>
+			<#assign checked = true />
+		</#if>
+	</#if>
+	
+	<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
+		<#assign params='onclick="doCheckboxEffect(this.checked,${field.idField});"' />
+	</#if>
+	
+	<@checkBox labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${field.title!}' title=field.comment! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' params=params
+			/>
+</#list>
+	
+			
 		<#if list_responses??>
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
@@ -43,9 +50,9 @@ ${entry.CSSClass!}
 				</#if>
 			</#list>
 		</#if>
+		
 		<#if str_list_entry_children?exists>${str_list_entry_children}</#if>
-		</div>
-	</div>	
+
 	<#if list_responses??>
 		<script type="text/javascript">
 		<#list list_responses as response>
@@ -73,3 +80,4 @@ ${entry.CSSClass!}
 			</#if>
 		</#list>
 	</#if>
+</@formGroup>

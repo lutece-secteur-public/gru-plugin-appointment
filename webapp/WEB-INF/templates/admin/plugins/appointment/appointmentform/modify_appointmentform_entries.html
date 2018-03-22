@@ -1,159 +1,156 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs.html" />
-<script>
-	$(document).ready(function() {
-		$("#selectAll").change( function() {
-	    if ( $(this).attr("checked") ){
-			// check all
-	        $("input[name='entry_id_move']").prop( "checked", "checked");
-			} else {
-	        // uncheck all
-	        $("input[name='entry_id_move']").prop( "checked", "");
-			}
-	    });
-	});
-</script>
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    	<@tabs tab="entries" appointmentform=appointmentform />
-		<div class="tab-content">
-    	<fieldset>    		
-			<form method="get" class="form-inline" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp">
-				<input type="hidden" value="getCreateEntry" name="view">
-				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
-				<label for="id_type">#i18n{appointment.modifyAppointmentForm.labelInsertEntry} :&#160;&#160;</label>
-				<div class="input-group">
-				<@comboWithParams name="id_type" items=entry_type_list default_value="-1" additionalParameters="class='form-control input-sm'"/>
-				<span class="input-group-btn">
-				<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.label.insert}">
-					<i class="glyphicon glyphicon-plus"></i>
-				</button>
-				</span>
-				</div>
-			</form>
-			<form method="post"	action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" class="form-inline">
-				<input type="hidden" name="action" value="doChangeOrderEntry">
-				<input type="hidden" name="id_form" value="${appointmentform.idForm}">
-				<#if entry_group_list?has_content>
-					<div class="input-group">
-						<!-- List all entry of type group  -->
-						<@comboWithParams name="id_entry_group" default_value="" additionalParameters="class=\"form-control input-sm\"" items=entry_group_list />
-						<span class="input-group-btn">
-						<button type="submit" class="btn btn-primary btn-sm" title="#i18n{appointment.move.name}" name="add_to_group" value="#i18n{appointment.moveAll.name}">
-							<i class="glyphicon glyphicon-resize-vertical"></i>
-						</button>
-						</span>
-					</div>
-				</#if>
-				<table class="table table-striped">
-					<thead>
-						<tr>
-							<th>
-								<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modifyAppointmentForm.selectAll}">
-							</th>
-							<th>
-								#i18n{appointment.labelTitle} #i18n{appointment.type.name}
-							</th>
-							<th>
-								<i class="glyphicon glyphicon-question-sign" title="#i18n{appointment.createEntry.manageField.rowConditionalQuestion}"></i>
-							</th>
-							<th>
-								#i18n{appointment.createEntry.manageField.rowOrder}
-							</th>
-							<th>
-								#i18n{appointment.actions.label}&nbsp;
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<#list entry_list as entry>
-							<#if entry.entryType.group>
-								<#assign lastGroup = entry>
+<#assign entryIconList = ['dot-circle-o','check-square-o','comment-o','calendar','list-alt','file-text-o','file-text','phone','indent','database','map-o','sign-in','user','image','file','phone'] />
+
+<@row>
+	<@columns>
+		<@appointmentTabs tab="entries" appointmentform=appointmentform>
+			<@row>
+				<@columns md=9>
+					<fieldset>
+						<@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+							<input type="hidden" name="action" value="doChangeOrderEntry">
+							<input type="hidden" name="id_form" value="${appointmentform.idForm}">
+							<#if entry_group_list?has_content>
+								<@formGroup formStyle='inline'>
+									<@inputGroup>
+										<!-- List all entry of type group  -->
+										<@select name='id_entry_group' default_value='' items=entry_group_list size='sm' />
+										<@inputGroupItem>
+											<@button type='submit' title='#i18n{appointment.move.name}' name='add_to_group' value='#i18n{appointment.moveAll.name}' buttonIcon='arrows' showTitle=false />
+										</@inputGroupItem>
+									</@inputGroup>
+								</@formGroup>
 							</#if>
-							<tr>
-								<td>
-									<!--  add checkbox if entry isn't a group --> 
-									<#if !entry.entryType.group>
-										<input type="checkbox" name="entry_id_move" value="${entry.idEntry!}" title="#i18n{appointment.modifyAppointmentForm.select}">
-									</#if>
-								</td>
-								<td>
+							<hr></hr>
+						<@table>
+							<thead>
+								<tr>
+									<th>
+										<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modifyAppointmentForm.selectAll}">
+									</th>
+									<th>#i18n{appointment.labelTitle}</th>
+									<th>#i18n{appointment.type.name}</th>
+									<th>
+										<@icon style='question-circle' title='#i18n{appointment.createEntry.manageField.rowConditionalQuestion}' /></i>
+									</th>
+									<th>#i18n{appointment.createEntry.manageField.rowOrder}</th>
+									<th>#i18n{appointment.actions.label}&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody>
+								<#list entry_list as entry>
 									<#if entry.entryType.group>
-										${entry.title}
-									<#elseif entry.parent?exists>
-										<#if entry.entryType.comment>
-											<blockquote>${entry.comment}</blockquote>
+										<#assign lastGroup = entry>
+									</#if>
+									<tr>
+										<td>
+											<!--  add checkbox if entry isn't a group --> 
+											<#if entry.entryType.group>
+												<@icon style='indent' />
+											<#else>
+												<input type="checkbox" name="entry_id_move" id='entry_id_${entry.idEntry}' value="${entry.idEntry!}" title="#i18n{appointment.modifyAppointmentForm.select}">
+											</#if>
+										</td>
+										<td>
+											<#if entry.entryType.group>
+												<h4 class="text-primary">${entry.title}</h4>
+											<#elseif entry.parent?exists>
+												<span class="text-primary"><@icon style='caret-right' /></span>
+												<#if entry.entryType.comment>
+													${entry.comment}
+												<#else>
+													${entry.title}
+												</#if>
+											<#elseif entry.entryType.myLuteceUser>
+													<span class="text-primary">
+														<@icon style='caret-right' />
+													</span>
+													${entry.title}
+											<#else>
+												<#if entry.entryType.comment>
+													${entry.comment}
+												<#else>
+													${entry.title}
+												</#if>
+											</#if>
+										</td>
+										<td>
+											<#if !entry.entryType.group>
+												<@tag>
+														<#list entryIconList as entryIcon>
+															<#if entry.entryType.idType == 100+entryIcon?index+1>
+																<@icon style='${entryIcon}' />
+															</#if>
+														</#list>
+													&#160;${entry.entryType.title}
+												</@tag>
+											</#if>
+										</td>
+										<td>
+											<#if entry.numberConditionalQuestion!=0>${entry.numberConditionalQuestion}</#if>
+										</td>
+										<!--  Change the order of the attribute -->
+										<#if entry.parent?exists>
+											<td>
+												<@formGroup rows=2>
+													<@inputGroup>
+														<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
+														<@inputGroupItem>
+															<@button type='submit' name='id_entry' value='${entry.idEntry}' title='#i18n{appointment.move.name}' buttonIcon='check' showTitle=false />
+														</@inputGroupItem>
+													</@inputGroup>
+												</@formGroup>
+											</td>
 										<#else>
-											<blockquote>${entry.title}</blockquote>
+											<td>
+												<@formGroup rows=2>
+													<@inputGroup>
+														<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=0 />
+														<@inputGroupItem>
+															<@button type='submit' name='id_entry' title='#i18n{appointment.move.name}' value='${entry.idEntry}' buttonIcon='check' showTitle=false />
+														</@inputGroupItem>
+													</@inputGroup>
+												</@formGroup>
+											</td>
 										</#if>
-									<#elseif entry.entryType.myLuteceUser>
-											${entry.title}
-									<#else>
-										<#if entry.entryType.comment>
-											${entry.comment}
-										<#else>
-											${entry.title}
-										</#if>
-									</#if>
-									<#if !entry.entryType.group>
-										<span class="badge">${entry.entryType.title}</span>
-									</#if>
-								</td>
-								<td>
-									<#if entry.numberConditionalQuestion!=0>
-										${entry.numberConditionalQuestion}
-									</#if>
-								</td>
-								<!--  Change the order of the attribute -->
-								<#if entry.parent?exists>
-									<td>
-										<blockquote>
-											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=entry.parent.idEntry />
-											<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.move.name}" value="${entry.idEntry}">
-												<i class="glyphicon glyphicon-ok"></i>
-											</button>
-										</blockquote>
-									</td>
-								<#else>
-									<td>
-										<div class="input-group">
-											<@comboOrders name="order_id_${entry.idEntry}" default_value=entry.position idParent=0 />
-											<div class="input-group-btn">
-												<button class="btn btn-primary btn-sm" type="submit" name="id_entry" title="#i18n{appointment.move.name}" value="${entry.idEntry}">
-													<i class="glyphicon glyphicon-ok"></i>
-												</button>
-											</div>
-										</div>
-									</td>
+										<td>
+											<#if !entry.entryType.myLuteceUser>
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}' buttonIcon='edit' />
+											</#if>
+											<#if entry.parent?exists>
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}' showTitle=false buttonIcon='outdent' />
+											</#if>
+											<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.createEntry.manageField.titleCopy}' showTitle=false buttonIcon='copy' />
+											</#if>
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list' title='#i18n{appointment.delete.title}' showTitle=false buttonIcon='trash' color='btn-danger' />
+											</td>
+										</tr>
+									</#list>
+								</tbody>
+							</@table>
+						</@tform>
+					</fieldset>
+				</@columns>
+				<@columns md=3>
+					<@listGroup>
+						<a class="${listElementClass} active lead">#i18n{appointment.modifyAppointmentForm.labelInsertEntry}</a>
+						<#list entry_type_list as item>
+							<a class="${listElementClass}" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${item.code}">
+							<#list entryIconList as entryIcon>
+								<#if item.code?number == 100+entryIcon?index+1>
+									<@icon style='${entryIcon}' />
 								</#if>
-								<td>
-									<#if !entry.entryType.myLuteceUser>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getModifyEntry&id_entry=${entry.idEntry}" class="btn btn-primary btn-sm">
-											<i class="glyphicon glyphicon-edit"></i>
-										</a>
-									</#if>
-									<#if entry.parent?exists>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doMoveOutEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.modifyField.manageConditionalQuestion.titleGoOut}" class="btn btn-primary btn-sm">
-											<i class="glyphicon glyphicon-chevron-right"></i>
-										</a>
-									</#if>
-									<#if !entry.entryType.group && !entry.entryType.myLuteceUser>
-										<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doCopyEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.createEntry.manageField.titleCopy}" class="btn btn-primary btn-sm">
-											<i class="glyphicon glyphicon-plus-sign"></i>
-										</a>
-									</#if>
-									<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=confirmRemoveEntry&id_entry=${entry.idEntry}#list" title="#i18n{appointment.delete.title}" class="btn btn-danger btn-sm">
-										<i class="glyphicon glyphicon-trash"></i>
-									</a>
-								</td>
-							</tr>
+							</#list>
+								&#160;${item.name}
+							</a>
 						</#list>
-					</tbody>
-				</table>
-			</form>
-    	</fieldset>
-		</div>
-    </div>
-</div>
+					</@listGroup>
+				</@columns>
+			</@row>
+		</@appointmentTabs>
+	</@columns>
+</@row>
 
 <#macro comboOrders name default_value idParent >
 		<select id="${name}" name="${name}" class="form-control input-sm">
@@ -178,3 +175,17 @@
 			</#if>
 		</select>
 </#macro>
+
+<script>
+$("#selectAll").click(function(event) {  //on click
+	if ( this.checked ){ // check select status
+			$("input[name='entry_id_move']").each(function() { //loop through each checkbox
+					this.checked = true;  //select all checkboxes with class "checkbox1"
+			});
+	} else {
+			$("input[name='entry_id_move']").each(function() { //loop through each checkbox
+					this.checked = false; //deselect all checkboxes with class "checkbox1"
+			});
+	}
+});
+</script>

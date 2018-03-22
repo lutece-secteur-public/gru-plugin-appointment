@@ -1,82 +1,50 @@
 <#include "/admin/plugins/appointment/commons.html" />
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</h3>
-			</div>
-			<div class="box-body">
-				<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
-					<fieldset>
-						<legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-						<input name="id_form" value="${form.idForm}" type="hidden">
-						<input name="action" value="doCreateEntry" type="hidden">
-						<input name="id_type" value="${entry.entryType.idType}" type="hidden">
-						<#if entry.fieldDepend?exists>
-							<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
-						</#if>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} * : </label>
-							<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-								<input type="text" name="title" id="title" class="form-control" value="" maxlength="255">
-								<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" >  #i18n{appointment.createEntry.labelHelpMessage} : </label>
-							<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">								<textarea name="help_message" id="help_message" rows="2" class="form-control"></textarea>								<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.comment.name} : </label>
-							<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">								<textarea name="comment" class="form-control" rows="2"></textarea>							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="">#i18n{appointment.createEntry.labelType}</label>
-							<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-								<span>${entry.entryType.title}</span>
-							</div>
-						</div>
-						<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} :</label>
-							<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-								<div class="checkbox">
-									<label>
-									<input name="mandatory" value="1" type="checkbox">&#160;
-									</label>
-								</div>
-							</div>
-						</div>
-						  <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="only_display_in_back">#i18n{appointment.createEntry.labelOnlyDisplayInBack}</label>
-                    <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-                        <div class="checkbox">
-                            <label>
-                                <input name="only_display_in_back" value="1" type="checkbox">&#160;
-                            </label>
-                        </div>
-                    </div>
-                    </div>
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-							<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-								<input type="text" name="css_class" value="" maxlength="255" class="form-control">
-								<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
-								<button class="btn btn-primary btn-sm" name="save" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}</button>
-								<button class="btn btn-primary btn-sm" name="apply" type="submit" ><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;#i18n{appointment.createEntry.buttonApplyAndManageResponse}</button>
-								<button class="btn btn-default btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelCancel}</button>
-							</div>
-						</div>
-					</fieldset>
-				</form>
-			</div>
-		</div>
-	</div>
- </div>
+<@row>
+    <@columns>
+        <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' />
+            <@boxBody>
+                <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
+                    <fieldset>
+                        <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
+                        <input name="id_form" value="${form.idForm}" type="hidden">
+                        <input name="action" value="doCreateEntry" type="hidden">
+                        <input name="id_type" value="${entry.entryType.idType}" type="hidden">
+                        <#if entry.fieldDepend?exists>
+                            <input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
+                        </#if>
+                        <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
+                            <@input type='text' name='title' id='title' value='' maxlength=255 />
+                        </@formGroup>
+                        <@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
+                            <@input type='textarea' name='help_message' id='help_message' rows=2 />
+                        </@formGroup>
+                        <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+                            <@input type='textarea' name='comment' rows=2 />
+                        </@formGroup>
+                        <@formGroup labelFor='type' labelKey='#i18n{appointment.createEntry.labelType}'>
+                            <@tag color='info' id='type'>${entry.entryType.title}</@tag>
+                        </@formGroup>
+                        <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
+                            <@checkBox name='mandatory' value='1' />
+                        </@formGroup>
+                        <@formGroup labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
+                            <@checkBox name='only_display_in_back' value='1' />
+                        </@formGroup>
+                        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+                            <@input type='text' name='css_class' value='' maxlength=255 />
+                        </@formGroup>
+                        <@formGroup>
+                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
+                            <@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageResponse}' size='' />
+                            <@button type='button' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' params='onclick="javascript:window.history.back();"' color='btn-secondary' size='' />
+                        </@formGroup>
+                    </fieldset>
+                </@tform>
+            </@boxBody>
+        </@box>
+    </@columns>
+</@row>
 <#include "/admin/util/editor/editor.html" />
  <@initEditor />
  
