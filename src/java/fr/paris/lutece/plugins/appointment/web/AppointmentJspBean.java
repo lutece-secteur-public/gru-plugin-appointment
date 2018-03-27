@@ -358,7 +358,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         List<WeekDefinition> listWeekDefinition = new ArrayList<WeekDefinition>( mapWeekDefinition.values( ) );
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
-        List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );
+        List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( listWeekDefinition ) );
         if ( !bError )
         {
             listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
@@ -701,7 +701,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         appointmentDTO.setListResponse( listResponse );
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, locale ) );
-        model.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( appointmentDTO.getIdAppointment( ), getLocale( ) ) );        
+        model.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( appointmentDTO.getIdAppointment( ), getLocale( ) ) );
         AdminUser user = getUser( );
         model.put( MARK_RIGHT_CREATE,
                 RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
