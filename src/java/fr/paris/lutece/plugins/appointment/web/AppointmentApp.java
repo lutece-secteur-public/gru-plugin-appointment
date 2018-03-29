@@ -286,6 +286,7 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        AppointmentForm appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         boolean bError = false;
         if ( !form.getIsActive( ) )
         {
@@ -424,9 +425,8 @@ public class AppointmentApp extends MVCApplication
         LocalDate minDateOfOpenDay = LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).get( ) ) );
         LocalDate maxDateOfOpenDay = endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).get( ) ) );
         model.put( PARAMETER_MIN_DATE_OF_OPEN_DAY, minDateOfOpenDay );
-        model.put( PARAMETER_MAX_DATE_OF_OPEN_DAY, maxDateOfOpenDay );
-
-        model.put( MARK_FORM, form );
+        model.put( PARAMETER_MAX_DATE_OF_OPEN_DAY, maxDateOfOpenDay );        
+        model.put( MARK_FORM, appointmentForm );
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
@@ -887,7 +887,7 @@ public class AppointmentApp extends MVCApplication
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        AppointmentForm form = FormService.buildAppointmentForm(nIdForm, 0, 0);
         String strTimeBegin = slot.getStartingDateTime( ).toLocalTime( ).toString( );
         String strTimeEnd = slot.getEndingDateTime( ).toLocalTime( ).toString( );
         String strReference = StringUtils.EMPTY;
@@ -959,7 +959,7 @@ public class AppointmentApp extends MVCApplication
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
             model.put( MARK_PLACES, appointment.getNbPlaces( ) );
-            model.put( MARK_FORM, FormService.findFormLightByPrimaryKey( slot.getIdForm( ) ) );
+            model.put( MARK_FORM, FormService.buildAppointmentForm( slot.getIdForm( ), 0, 0 ) );
             model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( slot.getIdForm( ) ) );
             AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
             appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
