@@ -218,6 +218,7 @@
 			events: events,
             eventRender: function(event, element) {
                 $(element).popover({
+                	container: 'body',
                     placement : 'bottom',
                     html : true,
                     trigger : 'hover',
