@@ -120,7 +120,6 @@
          </#if>
     ];
     var eventUrl = 'jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentForm';    
-    var columnFormat = 'dddd DD/MM/YYYY';
     var defaultDate = '${date_of_display}';
     var dayView = '${day_view}';
     var weekView = '${week_view}';
@@ -199,7 +198,9 @@
 				center: 'datePicker, title',
 				right: 'next'
 			},
-			columnFormat: columnFormat,
+			columnHeaderHtml: function(mom) {
+				return mom.format('dddd') + '</br>' + mom.format('LL');
+			},
 			slotLabelFormat: 'H : mm',
 			slotLabelInterval: slotDuration,
 			slotDuration: slotDuration,

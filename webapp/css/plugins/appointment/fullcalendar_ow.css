@@ -13,8 +13,7 @@ td.fc-axis.fc-time.ui-widget-content {
     width: 130px;
     margin: 0;
     border-top: 0px solid transparent;
-    color: #fff;
-    border-right: solid 1px rgb(190, 190, 190);
+    color: #fff;    
 }
 
 .fc-row.ui-widget-header {
