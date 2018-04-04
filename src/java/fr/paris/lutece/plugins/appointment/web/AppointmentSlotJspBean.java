@@ -234,7 +234,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule, nIdWeekDefinition );
             }
             List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay( );
-            listDayOfWeek = new ArrayList<>( WorkingDayService.getSetDayOfWeekOfAListOfWorkingDay( listWorkingDay ) );
+            listDayOfWeek = new ArrayList<>( WorkingDayService.getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( listWorkingDay ) );
             listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay( listWorkingDay, dateOfApply );
             minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
             maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
@@ -529,7 +529,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Get the max time of all the week definitions
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
         // Get all the working days of all the week definitions
-        List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );
+        List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( listWeekDefinition ) );
         // Build the slots
         List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, dateOfDisplay, endingDateOfDisplay );
         listSlot = listSlot.stream( ).filter( s -> s.getEndingDateTime( ).isAfter( LocalDateTime.now( ) ) ).collect( Collectors.toList( ) );

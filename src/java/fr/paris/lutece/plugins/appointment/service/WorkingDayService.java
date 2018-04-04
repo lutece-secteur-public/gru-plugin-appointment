@@ -306,7 +306,7 @@ public final class WorkingDayService
      *            the list of working days
      * @return a set of day of week
      */
-    public static HashSet<String> getSetDayOfWeekOfAListOfWorkingDay( List<WorkingDay> listWorkingDay )
+    public static HashSet<String> getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( List<WorkingDay> listWorkingDay )
     {
         HashSet<String> setDayOfWeek = new HashSet<>( );
         for ( WorkingDay workingDay : listWorkingDay )

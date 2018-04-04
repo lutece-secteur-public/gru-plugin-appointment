@@ -3,7 +3,11 @@
 		<div class="container">
 			<h2 class="stepTitle next">
 				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				${form.title!}
+				<#if form.displayTitleFo && form.title != '' >
+					${form.title}
+				<#else>
+					#i18n{appointment.appointmentApp.defaultTitle}
+				</#if>
 			</h2>
 		</div>
 	</div>
@@ -167,7 +171,7 @@
 								<div class="formGroupContainer">
 									<legend class="sr-only">
 										<p class="alert alert-info">#i18n{appointment.appointmentApp.recap.title} - 
-										<#if form.displayTitleFo && form.title != "" >
+										<#if form.displayTitleFo && form.title != '' >
 											${form.title}
 										<#else>
 											#i18n{appointment.appointmentApp.defaultTitle}

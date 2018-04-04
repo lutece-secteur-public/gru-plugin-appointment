@@ -12,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -409,16 +410,36 @@ public final class WeekDefinitionService
      * 
      * @param listWeekDefinition
      *            the list of week definitions
-     * @return a set of the working days (integer value in a week : 1-> Monday ...)
+     * @return a set of the working days (integer value in a week : 1-> Monday ...) // The fullCalendar library is zero-base (Sunday=0)
      */
-    public static HashSet<String> getSetDayOfWeekOfAListOfWeekDefinition( List<WeekDefinition> listWeekDefinition )
+    public static HashSet<String> getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( List<WeekDefinition> listWeekDefinition )
     {
         HashSet<String> setDayOfWeek = new HashSet<>( );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
-            setDayOfWeek.addAll( WorkingDayService.getSetDayOfWeekOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) ) );
+            setDayOfWeek.addAll( WorkingDayService.getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( weekDefinition.getListWorkingDay( ) ) );
         }
         return setDayOfWeek;
+    }
+
+    /**
+     * Get the set of the open days of all the week definitons
+     * 
+     * @param listWeekDefinition
+     *            the list of week definitions
+     * @return the set of the open days
+     */
+    public static HashSet<Integer> getOpenDaysOfWeek( List<WeekDefinition> listWeekDefinition )
+    {
+        HashSet<Integer> setOpenDays = new HashSet<>( );
+        for ( WeekDefinition weekDefinition : listWeekDefinition )
+        {
+            for ( WorkingDay workingDay : weekDefinition.getListWorkingDay( ) )
+            {
+                setOpenDays.add( workingDay.getDayOfWeek( ) );
+            }
+        }
+        return setOpenDays;
     }
 
 }

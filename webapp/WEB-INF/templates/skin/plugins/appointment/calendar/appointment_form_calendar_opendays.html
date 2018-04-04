@@ -15,7 +15,11 @@
 		<div class="container">
 			<h2 class="stepTitle next">
 				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				${form.title}
+				<#if form.displayTitleFo && form.title != '' >
+					${form.title}
+				<#else>
+					#i18n{appointment.appointmentApp.defaultTitle}
+				</#if>
 			</h2>
 		</div>
 	</div>
@@ -99,6 +103,8 @@
     var maxTime = '${max_time}';
 	var strEndingDateOfDisplay = '${str_ending_date_of_display}';
     var endingDateOfDisplay = '${ending_date_of_display}';
+    var minDateOfOpenDay = '${min_date_of_open_day}';
+    var maxDateOfOpenDay = '${max_date_of_open_day}';
     var dow = [
 		<#if dow??>								   
 			<#list dow as day>
@@ -137,7 +143,7 @@
 				},								
 			</#list>
 		</#if>
-	];
+	];    
     var eventTitleResult = <#if formMessages?? && formMessages.calendarFullLabel??>
 	'${formMessages.calendarFullLabel}'
 	<#else>
@@ -216,6 +222,7 @@
 			events: events,
             eventRender: function(event, element) {
                 $(element).popover({
+                	container: 'body',
                     placement : 'bottom',
                     html : true,
                     trigger : 'hover',
@@ -223,8 +230,8 @@
                 });
             },
 			viewRender: function(view, element) {
-				var minDate = moment();
-				var maxDate = moment(endingDateOfDisplay);
+				var minDate = moment.utc(minDateOfOpenDay);
+				var maxDate = moment.utc(maxDateOfOpenDay);
 				// Past
 				if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
 					$(".fc-prev-button").prop('disabled', true);

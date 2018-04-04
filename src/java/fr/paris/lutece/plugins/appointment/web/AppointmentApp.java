@@ -40,7 +40,9 @@ import java.time.LocalTime;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -196,7 +198,8 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_DAY_VIEW = "day_view";
     private static final String PARAMETER_ANCHOR = "anchor";
     private static final String PARAMETER_MODIFICATION_FORM = "mod";
-
+    private static final String PARAMETER_MIN_DATE_OF_OPEN_DAY = "min_date_of_open_day";
+    private static final String PARAMETER_MAX_DATE_OF_OPEN_DAY = "max_date_of_open_day";
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
@@ -283,6 +286,7 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        AppointmentForm appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         boolean bError = false;
         if ( !form.getIsActive( ) )
         {
@@ -359,7 +363,8 @@ public class AppointmentApp extends MVCApplication
         // Get the max time of all the week definitions
         LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
         // Get all the working days of all the week definitions
-        List<String> listDayOfWeek = new ArrayList<>( WeekDefinitionService.getSetDayOfWeekOfAListOfWeekDefinition( listWeekDefinition ) );
+        List<String> listStrBase0OpenDaysOfWeek = new ArrayList<>(
+                WeekDefinitionService.getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( listWeekDefinition ) );
         // Build the slots if no errors
         List<Slot> listSlots = new ArrayList<>( );
         if ( !bError )
@@ -414,13 +419,20 @@ public class AppointmentApp extends MVCApplication
             MVCMessage message = new MVCMessage( formMessages.getCalendarDescription( ) );
             listInfos.add( message );
         }
-        model.put( MARK_FORM, form );
+
+        // Get the min and max date of the open days (for the week navigation on open days calendar templates)
+        HashSet<Integer> setOpenDays = WeekDefinitionService.getOpenDaysOfWeek( listWeekDefinition );
+        LocalDate minDateOfOpenDay = LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).get( ) ) );
+        LocalDate maxDateOfOpenDay = endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).get( ) ) );
+        model.put( PARAMETER_MIN_DATE_OF_OPEN_DAY, minDateOfOpenDay );
+        model.put( PARAMETER_MAX_DATE_OF_OPEN_DAY, maxDateOfOpenDay );        
+        model.put( MARK_FORM, appointmentForm );
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
         model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
-        model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
+        model.put( PARAMETER_DAY_OF_WEEK, listStrBase0OpenDaysOfWeek );
         model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
         model.put( PARAMETER_MAX_TIME, AppointmentUtilities.getMaxTimeToDisplay( maxEndingTime ) );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
@@ -432,6 +444,9 @@ public class AppointmentApp extends MVCApplication
         {
             listHiddenDays.add( Integer.toString( i ) );
         }
+        /**
+         * Calculate the hidden days and set the view (Day and week) with the type of calendar
+         */
         switch( calendarTemplate.getTitle( ) )
         {
             case CalendarTemplate.CALENDAR:
@@ -440,19 +455,23 @@ public class AppointmentApp extends MVCApplication
                 weekView = AGENDA_WEEK;
                 break;
             case CalendarTemplate.CALENDAR_OPEN_DAYS:
-                listHiddenDays.removeAll( listDayOfWeek );
+                // update the list of the days to hide
+                listHiddenDays.removeAll( listStrBase0OpenDaysOfWeek );
                 dayView = AGENDA_DAY;
                 weekView = AGENDA_WEEK;
                 break;
             case CalendarTemplate.FREE_SLOTS:
+                // Keep only the available slots
                 listSlots = listSlots.stream( ).filter( s -> ( ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).collect( Collectors.toList( ) );
                 listHiddenDays.clear( );
                 dayView = BASIC_DAY;
                 weekView = BASIC_WEEK;
                 break;
             case CalendarTemplate.FREE_SLOTS_ON_OPEN_DAYS:
+                // Keep only the available slots
                 listSlots = listSlots.stream( ).filter( s -> ( ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).collect( Collectors.toList( ) );
-                listHiddenDays.removeAll( listDayOfWeek );
+                // update the list of the days to hide
+                listHiddenDays.removeAll( listStrBase0OpenDaysOfWeek );
                 dayView = BASIC_DAY;
                 weekView = BASIC_WEEK;
                 break;
@@ -868,7 +887,7 @@ public class AppointmentApp extends MVCApplication
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        AppointmentForm form = FormService.buildAppointmentForm(nIdForm, 0, 0);
         String strTimeBegin = slot.getStartingDateTime( ).toLocalTime( ).toString( );
         String strTimeEnd = slot.getEndingDateTime( ).toLocalTime( ).toString( );
         String strReference = StringUtils.EMPTY;
@@ -940,7 +959,7 @@ public class AppointmentApp extends MVCApplication
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
             model.put( MARK_PLACES, appointment.getNbPlaces( ) );
-            model.put( MARK_FORM, FormService.findFormLightByPrimaryKey( slot.getIdForm( ) ) );
+            model.put( MARK_FORM, FormService.buildAppointmentForm( slot.getIdForm( ), 0, 0 ) );
             model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( slot.getIdForm( ) ) );
             AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
             appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
