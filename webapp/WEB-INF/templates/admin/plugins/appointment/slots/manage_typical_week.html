@@ -209,6 +209,15 @@ function validateQty(event) {
                 location.href = eventUrl + calEvent.id;
             },
             events: events,
+            eventRender: function(event, element) {
+                $(element).popover({
+                	container: 'body',
+                    placement : 'bottom',
+                    html : true,
+                    trigger : 'hover',
+                    content : '#i18n{appointment.labelFrom} <b>' + event.start.format('H:mm') + '</b> #i18n{appointment.labelTo} <b>' + event.end.format('H:mm')+'</b>'
+                });
+            },
             eventAfterAllRender: function(view) {
                 $('.fc-event').css('cursor', 'pointer');
             },

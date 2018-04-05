@@ -113,6 +113,15 @@
                 location.href = calEvent.url;
             },
             events: events,
+            eventRender: function(event, element) {
+                $(element).popover({
+                	container: 'body',
+                    placement : 'bottom',
+                    html : true,
+                    trigger : 'hover',
+                    content : event.start.format('ddd Do MMM') + '</br> #i18n{appointment.labelFrom} <b>' + event.start.format('H:mm') + '</b></br> #i18n{appointment.labelTo} <b>' + event.end.format('H:mm')+'</b>'
+                });
+            },
             viewRender: function(view, element) {
                 var minDate = moment();
                 var maxDate = moment(endingDateOfDisplay);

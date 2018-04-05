@@ -199,6 +199,13 @@
             eventRender: function( event, element, view ) {
                 var $title = element.find( '.fc-title' );
                 $title.html( $title.text() );
+                $(element).popover({
+                	container: 'body',
+                    placement : 'bottom',
+                    html : true,
+                    trigger : 'hover',
+                    content : event.start.format('ddd Do MMM') + '</br> #i18n{appointment.labelFrom} <b>' + event.start.format('H:mm') + '</b></br> #i18n{appointment.labelTo} <b>' + event.end.format('H:mm')+'</b>'
+                });
             }
         });
     });
