@@ -105,6 +105,7 @@ button.fc-next-button:hover, button.fc-next-button:active, button.fc-next-button
 }
 
 .fc .fc-axis {
+	position: relative;
 	top: -22px;
 }
 
