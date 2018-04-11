@@ -16,7 +16,7 @@
                 <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
                 <#if listDateOfModification??>
                     <label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
-                        <select id="id_week_definition" name="id_week_definition" class="form-control" >
+                        <@select id='id_week-definition' name='id_week_definition'>
                             <#list listDateOfModification as item>
                                 <#if "${id_week_definition}"="${item.code}">
                                     <option selected="selected" value="${item.code}" >${item.name}</option>
@@ -24,7 +24,7 @@
                                     <option value="${item.code}" >${item.name}</option>
                                 </#if>
                             </#list>
-                        </select>
+                        </@select>
                     <@button type='submit' name='view_manageTypicalWeek' title='#i18n{appointment.labelDisplay}' buttonIcon='check' size='' />
                     <@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='' />
                 </#if>
