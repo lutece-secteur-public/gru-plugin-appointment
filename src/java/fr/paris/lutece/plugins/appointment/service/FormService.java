@@ -106,38 +106,47 @@ public final class FormService
     }
 
     /**
-     * Update a form with the new values of an appointmentForm DTO
+     * Update a form with the new values of the Global Parameters of an appointmentForm DTO
      * 
      * @param appointmentForm
      *            the appointmentForm DTO
-     * @param dateOfModification
-     *            the date of the update
+     * 
      */
-    public static void updateAppointmentForm( AppointmentForm appointmentForm, LocalDate dateOfModification )
+    public static void updateGlobalParameters( AppointmentForm appointmentForm )
     {
         Form form = FormService.updateForm( appointmentForm );
         int nIdForm = form.getIdForm( );
         DisplayService.updateDisplay( appointmentForm, nIdForm );
         LocalizationService.updateLocalization( appointmentForm, nIdForm );
         FormRuleService.updateFormRule( appointmentForm, nIdForm );
-        if ( dateOfModification != null )
+    }
+
+    /**
+     * Update a form with the new values of an appointmentForm DTO Advanced Parameters (with a date of application) --> new Typical Week
+     * 
+     * @param appointmentForm
+     *            the appointmentForm DTO
+     * @param dateOfModification
+     *            the date of the update
+     */
+    public static void updateAdvancedParameters( AppointmentForm appointmentForm, LocalDate dateOfModification )
+    {
+        int nIdForm = appointmentForm.getIdForm( );
+        ReservationRule reservationRule = ReservationRuleService.updateReservationRule( appointmentForm, nIdForm, dateOfModification );
+        int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
+        WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition( nIdForm, dateOfModification );
+        int nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
+        List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( nIdWeekDefinition );
+        if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
         {
-            ReservationRule reservationRule = ReservationRuleService.updateReservationRule( appointmentForm, nIdForm, dateOfModification );
-            int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
-            WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition( nIdForm, dateOfModification );
-            int nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
-            List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( nIdWeekDefinition );
-            if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
-            {
-                WorkingDayService.deleteListWorkingDay( listWorkingDay );
-            }
-            LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
-            LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
-            int nDuration = appointmentForm.getDurationAppointments( );
-            for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
-            {
-                WorkingDayService.generateWorkingDayAndListTimeSlot( nIdWeekDefinition, dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
-            }
+            WorkingDayService.deleteListWorkingDay( listWorkingDay );
+        }
+        LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
+        LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        int nDuration = appointmentForm.getDurationAppointments( );
+        for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
+        {
+            WorkingDayService.generateWorkingDayAndListTimeSlot( nIdWeekDefinition, dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
         }
     }
 

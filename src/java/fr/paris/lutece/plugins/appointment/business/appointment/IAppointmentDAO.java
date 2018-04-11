@@ -2,7 +2,7 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilter;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**

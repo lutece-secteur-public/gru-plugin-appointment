@@ -300,7 +300,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
         }
-        FormService.updateAppointmentForm( appointmentForm, dateOfModification );
+        FormService.updateAdvancedParameters( appointmentForm, dateOfModification );
         SlotService.deleteListSlots( listSlotsImpacted );
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );

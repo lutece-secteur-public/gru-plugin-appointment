@@ -1,8 +1,8 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 
 /**
  * Service class of a user

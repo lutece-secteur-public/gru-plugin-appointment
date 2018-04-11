@@ -1,4 +1,4 @@
-package fr.paris.lutece.plugins.appointment.business;
+package fr.paris.lutece.plugins.appointment.web.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

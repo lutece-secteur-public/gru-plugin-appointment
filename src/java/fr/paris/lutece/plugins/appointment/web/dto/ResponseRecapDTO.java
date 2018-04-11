@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.business;
+package fr.paris.lutece.plugins.appointment.web.dto;
 
 import java.util.Objects;
 

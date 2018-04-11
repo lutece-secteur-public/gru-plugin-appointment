@@ -65,7 +65,6 @@ import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
-import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -121,12 +120,10 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String TEMPLATE_CREATE_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/create_appointmentform.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_appointmentform.html";
     private static final String TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES = "/admin/plugins/appointment/appointmentform/modify_appointmentform_messages.html";
-    private static final String TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM = "/admin/plugins/appointment/appointmentform/modify_advanced_appointmentform.html";
 
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ERROR = "error";
-    private static final String PARAMETER_ID_RESERVATION_RULE = "id_reservation_rule";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
@@ -139,7 +136,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage.appointmentforms.title";
     private static final String PROPERTY_PAGE_TITLE_GENERAL_SETTINGS = "appointment.modifyAppointmentForm.titleAlterablesParameters";
-    private static final String PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS = "appointment.modifyAppointmentForm.titleStructuralsParameters";
     private static final String PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM = "appointment.manage.appointmentforms.title";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES = "appointment.modifyAppointmentFormMessages.pageTitle";
 
@@ -150,7 +146,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
     private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
-    private static final String MARK_LIST_DATE_OF_MODIFICATION = "listDateOfModification";
     private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
     private static final String MARK_FORM_MESSAGE = "formMessage";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
@@ -182,7 +177,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
     private static final String VIEW_CREATE_APPOINTMENTFORM = "createAppointmentForm";
     private static final String VIEW_MODIFY_APPOINTMENTFORM = "modifyAppointmentForm";
-    private static final String VIEW_ADVANCED_MODIFY_APPOINTMENTFORM = "modifyAppointmentFormAdvanced";
     private static final String VIEW_MODIFY_FORM_MESSAGES = "modifyAppointmentFormMessages";
     private static final String VIEW_PERMISSIONS_FORM = "permissions";
 
@@ -418,46 +412,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     }
 
     /**
-     * Returns the form to update info about a appointment form
-     * 
-     * @param request
-     *            The HTTP request
-     * @return The HTML form to update info
-     * @throws AccessDeniedException
-     *             If the user is not authorized to modify this appointment form
-     */
-    @View( VIEW_ADVANCED_MODIFY_APPOINTMENTFORM )
-    public String getAdvancedModifyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
-    {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        if ( StringUtils.isEmpty( strIdForm ) )
-        {
-            return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
-        }
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                AdminUserService.getAdminUser( request ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
-        }
-        int nIdForm = Integer.parseInt( strIdForm );
-        int nIdReservationRule = 0;
-        String strIdReservationRule = request.getParameter( PARAMETER_ID_RESERVATION_RULE );
-        if ( StringUtils.isNotEmpty( strIdReservationRule ) && StringUtils.isNumeric( strIdReservationRule ) )
-        {
-            nIdReservationRule = Integer.parseInt( strIdReservationRule );
-        }
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( ( appointmentForm == null ) || ( nIdReservationRule != appointmentForm.getIdReservationRule( ) ) )
-        {
-            appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule, 0 );
-        }
-        Map<String, Object> model = getModel( );
-        model.put( MARK_LIST_DATE_OF_MODIFICATION, ReservationRuleService.findAllDateOfReservationRule( nIdForm ) );
-        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
-        return getPage( PROPERTY_PAGE_TITLE_ADVANCED_SETTINGS, TEMPLATE_ADVANCED_MODIFY_APPOINTMENTFORM, model );
-    }
-
-    /**
      * Process the change form of a appointment form
      * 
      * @param request
@@ -514,7 +468,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
         }
         appointmentForm.setIsActive( appointmentFormDb.getIsActive( ) );
-        FormService.updateAppointmentForm( appointmentForm, null );
+        FormService.updateGlobalParameters( appointmentForm );
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_APPOINTMENTFORM, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
