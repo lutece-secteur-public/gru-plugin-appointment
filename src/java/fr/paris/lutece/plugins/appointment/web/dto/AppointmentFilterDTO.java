@@ -5,7 +5,7 @@ import java.sql.Date;
 
 import fr.paris.lutece.plugins.appointment.business.user.User;
 
-public final class AppointmentFilter extends User implements Serializable
+public final class AppointmentFilterDTO extends User implements Serializable
 {
 
     /**

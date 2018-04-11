@@ -56,7 +56,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bouncycastle.util.Strings;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
@@ -84,6 +83,7 @@ import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -286,7 +286,7 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
-        AppointmentForm appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
+        AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         boolean bError = false;
         if ( !form.getIsActive( ) )
         {
@@ -507,7 +507,7 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_APPOINTMENT_FORM )
     public XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException
     {
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
         if ( form == null )
@@ -694,7 +694,7 @@ public class AppointmentApp extends MVCApplication
     @Action( ACTION_DO_VALIDATE_FORM )
     public XPage doValidateForm( HttpServletRequest request ) throws SiteMessageException, UserNotSignedException
     {
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
@@ -761,7 +761,7 @@ public class AppointmentApp extends MVCApplication
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
@@ -806,7 +806,7 @@ public class AppointmentApp extends MVCApplication
     @Action( ACTION_DO_MAKE_APPOINTMENT )
     public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
-        AppointmentForm form = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
         AppointmentDTO appointment = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
@@ -887,7 +887,7 @@ public class AppointmentApp extends MVCApplication
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-        AppointmentForm form = FormService.buildAppointmentForm(nIdForm, 0, 0);
+        AppointmentFormDTO form = FormService.buildAppointmentForm(nIdForm, 0, 0);
         String strTimeBegin = slot.getStartingDateTime( ).toLocalTime( ).toString( );
         String strTimeEnd = slot.getEndingDateTime( ).toLocalTime( ).toString( );
         String strReference = StringUtils.EMPTY;
@@ -1117,7 +1117,7 @@ public class AppointmentApp extends MVCApplication
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         Map<String, Object> model = new HashMap<String, Object>( );
-        List<AppointmentForm> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );
+        List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );
         // We keep only the active
         if ( CollectionUtils.isNotEmpty( listAppointmentForm ) )
         {
@@ -1130,7 +1130,7 @@ public class AppointmentApp extends MVCApplication
                     .collect( Collectors.toList( ) );
         }
         List<String> icons = new ArrayList<String>( );
-        for ( AppointmentForm form : listAppointmentForm )
+        for ( AppointmentFormDTO form : listAppointmentForm )
         {
             ImageResource img = form.getIcon( );
             if ( img == null || img.getImage( ) == null || StringUtils.isEmpty( img.getMimeType( ) ) || StringUtils.equals( img.getMimeType( ), MARK_ICON_NULL ) )
@@ -1234,7 +1234,7 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      *             exception if the form requires an authentication and the user is not logged
      */
-    private void checkMyLuteceAuthentication( AppointmentForm form, HttpServletRequest request ) throws UserNotSignedException
+    private void checkMyLuteceAuthentication( AppointmentFormDTO form, HttpServletRequest request ) throws UserNotSignedException
     {
         // Try to register the user in case of external authentication
         if ( SecurityService.isAuthenticationEnable( ) )

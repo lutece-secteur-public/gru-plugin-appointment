@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 
 /**
  * Service class of a working day
@@ -91,7 +91,7 @@ public final class WorkingDayService
      *            the appointmentForm DTO
      * @return the list of day of week opened
      */
-    public static List<DayOfWeek> getOpenDays( AppointmentForm appointmentForm )
+    public static List<DayOfWeek> getOpenDays( AppointmentFormDTO appointmentForm )
     {
         List<DayOfWeek> openDays = new ArrayList<>( );
         if ( appointmentForm.getIsOpenMonday( ) )

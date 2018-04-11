@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -22,6 +21,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -51,7 +51,7 @@ public final class FormService
      */
     public static int copyForm( int nIdForm, String newNameForCopy )
     {
-        AppointmentForm appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
+        AppointmentFormDTO appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
         appointmentForm.setTitle( newNameForCopy );
         appointmentForm.setIsActive( Boolean.FALSE );
         appointmentForm.setDateStartValidity( null );
@@ -82,7 +82,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the id of the form created
      */
-    public static int createAppointmentForm( AppointmentForm appointmentForm )
+    public static int createAppointmentForm( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.createForm( appointmentForm );
         int nIdForm = form.getIdForm( );
@@ -112,7 +112,7 @@ public final class FormService
      *            the appointmentForm DTO
      * 
      */
-    public static void updateGlobalParameters( AppointmentForm appointmentForm )
+    public static void updateGlobalParameters( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.updateForm( appointmentForm );
         int nIdForm = form.getIdForm( );
@@ -129,7 +129,7 @@ public final class FormService
      * @param dateOfModification
      *            the date of the update
      */
-    public static void updateAdvancedParameters( AppointmentForm appointmentForm, LocalDate dateOfModification )
+    public static void updateAdvancedParameters( AppointmentFormDTO appointmentForm, LocalDate dateOfModification )
     {
         int nIdForm = appointmentForm.getIdForm( );
         ReservationRule reservationRule = ReservationRuleService.updateReservationRule( appointmentForm, nIdForm, dateOfModification );
@@ -155,9 +155,9 @@ public final class FormService
      * 
      * @return the list of appointment form dto that are active
      */
-    public static List<AppointmentForm> buildAllActiveAppointmentForm( )
+    public static List<AppointmentFormDTO> buildAllActiveAppointmentForm( )
     {
-        List<AppointmentForm> listActiveAppointmentForm = new ArrayList<>( );
+        List<AppointmentFormDTO> listActiveAppointmentForm = new ArrayList<>( );
         for ( Form form : FormHome.findActiveForms( ) )
         {
             listActiveAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
@@ -171,9 +171,9 @@ public final class FormService
      * 
      * @return the list of all the appointmentForm DTO
      */
-    public static List<AppointmentForm> buildAllAppointmentFormLight( )
+    public static List<AppointmentFormDTO> buildAllAppointmentFormLight( )
     {
-        List<AppointmentForm> listAppointmentFormLight = new ArrayList<>( );
+        List<AppointmentFormDTO> listAppointmentFormLight = new ArrayList<>( );
         for ( Form form : FormService.findAllForms( ) )
         {
             checkValidityDate( form );
@@ -203,9 +203,9 @@ public final class FormService
      * 
      * @return a list of appointmentForm DTO
      */
-    public static List<AppointmentForm> buildAllActiveAndDisplayedOnPortletAppointmentForm( )
+    public static List<AppointmentFormDTO> buildAllActiveAndDisplayedOnPortletAppointmentForm( )
     {
-        List<AppointmentForm> listAppointmentForm = new ArrayList<>( );
+        List<AppointmentFormDTO> listAppointmentForm = new ArrayList<>( );
         for ( Form form : FormService.findAllActiveAndDisplayedOnPortletForms( ) )
         {
             listAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
@@ -220,9 +220,9 @@ public final class FormService
      *            the form object
      * @return the appointmentForm DTO
      */
-    public static AppointmentForm buildAppointmentFormLight( Form form )
+    public static AppointmentFormDTO buildAppointmentFormLight( Form form )
     {
-        AppointmentForm appointmentForm = new AppointmentForm( );
+        AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
         if ( form != null )
         {
             fillAppointmentFormWithFormPart( appointmentForm, form );
@@ -237,7 +237,7 @@ public final class FormService
      *            the form Id
      * @return the appointmentForm DTO
      */
-    public static AppointmentForm buildAppointmentFormLight( int nIdForm )
+    public static AppointmentFormDTO buildAppointmentFormLight( int nIdForm )
     {
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         return buildAppointmentFormLight( form );
@@ -254,9 +254,9 @@ public final class FormService
      *            the WeekDefinition Id
      * @return the apointmentForm DTO built
      */
-    public static AppointmentForm buildAppointmentForm( int nIdForm, int nIdReservationRule, int nIdWeekDefinition )
+    public static AppointmentFormDTO buildAppointmentForm( int nIdForm, int nIdReservationRule, int nIdWeekDefinition )
     {
-        AppointmentForm appointmentForm = new AppointmentForm( );
+        AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         fillAppointmentFormWithFormPart( appointmentForm, form );
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
@@ -314,7 +314,7 @@ public final class FormService
      * @param weekDefinition
      *            the week definition
      */
-    private static void fillAppointmentFormWithWeekDefinitionPart( AppointmentForm appointmentForm, WeekDefinition weekDefinition )
+    private static void fillAppointmentFormWithWeekDefinitionPart( AppointmentFormDTO appointmentForm, WeekDefinition weekDefinition )
     {
         List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay( );
         if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
@@ -366,7 +366,7 @@ public final class FormService
      * @param reservationRule
      *            the reservation rule
      */
-    private static void fillAppointmentFormWithReservationRulePart( AppointmentForm appointmentForm, ReservationRule reservationRule )
+    private static void fillAppointmentFormWithReservationRulePart( AppointmentFormDTO appointmentForm, ReservationRule reservationRule )
     {
         appointmentForm.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         appointmentForm.setMaxCapacityPerSlot( reservationRule.getMaxCapacityPerSlot( ) );
@@ -381,7 +381,7 @@ public final class FormService
      * @param formRule
      *            the form rule
      */
-    private static void fillAppointmentFormWithFormRulePart( AppointmentForm appointmentForm, FormRule formRule )
+    private static void fillAppointmentFormWithFormRulePart( AppointmentFormDTO appointmentForm, FormRule formRule )
     {
         appointmentForm.setEnableCaptcha( formRule.getIsCaptchaEnabled( ) );
         appointmentForm.setEnableMandatoryEmail( formRule.getIsMandatoryEmailEnabled( ) );
@@ -400,7 +400,7 @@ public final class FormService
      * @param form
      *            the Form
      */
-    private static void fillAppointmentFormWithFormPart( AppointmentForm appointmentForm, Form form )
+    private static void fillAppointmentFormWithFormPart( AppointmentFormDTO appointmentForm, Form form )
     {
         appointmentForm.setIdForm( form.getIdForm( ) );
         appointmentForm.setTitle( form.getTitle( ) );
@@ -429,7 +429,7 @@ public final class FormService
      * @param display
      *            the display
      */
-    private static void fillAppointmentFormWithDisplayPart( AppointmentForm appointmentForm, Display display )
+    private static void fillAppointmentFormWithDisplayPart( AppointmentFormDTO appointmentForm, Display display )
     {
         appointmentForm.setDisplayTitleFo( display.isDisplayTitleFo( ) );
         appointmentForm.setIcon( display.getIcon( ) );
@@ -446,7 +446,7 @@ public final class FormService
      * @param localization
      *            the localization
      */
-    private static void fillAppointmentFormWithLocalizationPart( AppointmentForm appointmentForm, Localization localization )
+    private static void fillAppointmentFormWithLocalizationPart( AppointmentFormDTO appointmentForm, Localization localization )
     {
         if ( localization != null )
         {
@@ -500,7 +500,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the Form created
      */
-    public static Form createForm( AppointmentForm appointmentForm )
+    public static Form createForm( AppointmentFormDTO appointmentForm )
     {
         Form form = new Form( );
         form = fillInFormWithAppointmentForm( form, appointmentForm );
@@ -516,7 +516,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the Form object updated
      */
-    public static Form updateForm( AppointmentForm appointmentForm )
+    public static Form updateForm( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.findFormLightByPrimaryKey( appointmentForm.getIdForm( ) );
         form = fillInFormWithAppointmentForm( form, appointmentForm );
@@ -546,7 +546,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the form completed
      */
-    public static Form fillInFormWithAppointmentForm( Form form, AppointmentForm appointmentForm )
+    public static Form fillInFormWithAppointmentForm( Form form, AppointmentFormDTO appointmentForm )
     {
         form.setTitle( appointmentForm.getTitle( ) );
         form.setDescription( appointmentForm.getDescription( ) );

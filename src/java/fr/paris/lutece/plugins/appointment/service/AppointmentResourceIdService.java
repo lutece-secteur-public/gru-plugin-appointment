@@ -38,8 +38,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.rbac.Permission;
 import fr.paris.lutece.portal.service.rbac.ResourceIdService;
 import fr.paris.lutece.portal.service.rbac.ResourceType;
@@ -123,7 +123,7 @@ public final class AppointmentResourceIdService extends ResourceIdService
         ResourceType resourceType = new ResourceType( );
         resourceType.setResourceIdServiceClass( AppointmentResourceIdService.class.getName( ) );
         resourceType.setPluginName( AppointmentPlugin.PLUGIN_NAME );
-        resourceType.setResourceTypeKey( AppointmentForm.RESOURCE_TYPE );
+        resourceType.setResourceTypeKey( AppointmentFormDTO.RESOURCE_TYPE );
         resourceType.setResourceTypeLabelKey( PROPERTY_LABEL_RESOURCE_TYPE );
 
         Permission permission = new Permission( );
@@ -186,7 +186,7 @@ public final class AppointmentResourceIdService extends ResourceIdService
         ResourceType resourceTypeCreate = new ResourceType( );
         resourceTypeCreate.setResourceIdServiceClass( AppointmentResourceIdService.class.getName( ) );
         resourceTypeCreate.setPluginName( AppointmentPlugin.PLUGIN_NAME );
-        resourceTypeCreate.setResourceTypeKey( AppointmentForm.RESOURCE_TYPE_CREATE );
+        resourceTypeCreate.setResourceTypeKey( AppointmentFormDTO.RESOURCE_TYPE_CREATE );
         resourceTypeCreate.setResourceTypeLabelKey( PROPERTY_LABEL_RESOURCE_TYPE_CREATE );
 
         permission = new Permission( );

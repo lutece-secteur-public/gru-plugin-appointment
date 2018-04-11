@@ -47,7 +47,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -68,6 +67,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -206,10 +206,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             }
         }
         Map<String, Object> model = getModel( );
-        AppointmentForm appointmentForm = null;
+        AppointmentFormDTO appointmentForm = null;
         if ( request.getParameter( PARAMETER_ERROR_MODIFICATION ) != null )
         {
-            appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+            appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
             model.put( PARAMETER_ERROR_MODIFICATION, Boolean.TRUE );
         }
         List<String> listDayOfWeek = new ArrayList<>( );
@@ -263,12 +263,12 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         populate( appointmentForm, request );
         if ( appointmentForm.getDateOfModification( ) == null )
         {
@@ -341,7 +341,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     public String doRemoveParameter( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
@@ -502,7 +502,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Get the nb weeks to display
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
         {
             appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );

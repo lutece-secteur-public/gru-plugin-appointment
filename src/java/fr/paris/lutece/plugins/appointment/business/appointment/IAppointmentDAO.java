@@ -2,7 +2,7 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilter;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -113,5 +113,5 @@ public interface IAppointmentDAO
      *            the plugin
      * @return a list of appointments
      */
-    List<Appointment> findByFilter( AppointmentFilter appointmentFilter, Plugin plugin );
+    List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin );
 }

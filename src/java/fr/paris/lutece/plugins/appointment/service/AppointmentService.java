@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -15,7 +14,8 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
-import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilter;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
@@ -258,7 +258,7 @@ public final class AppointmentService
      *            the filter
      * @return a list of appointments
      */
-    public static List<AppointmentDTO> findListAppointmentsDTOByFilter( AppointmentFilter appointmentFilter )
+    public static List<AppointmentDTO> findListAppointmentsDTOByFilter( AppointmentFilterDTO appointmentFilter )
     {
         List<AppointmentDTO> listAppointmentsDTO = new ArrayList<>( );
         for ( Appointment appointment : AppointmentHome.findByFilter( appointmentFilter ) )
@@ -268,7 +268,7 @@ public final class AppointmentService
         return listAppointmentsDTO;
     }
 
-    public static List<Appointment> findListAppointmentsByFilter( AppointmentFilter appointmentFilter )
+    public static List<Appointment> findListAppointmentsByFilter( AppointmentFilterDTO appointmentFilter )
     {
         return AppointmentHome.findByFilter( appointmentFilter );
     }
@@ -328,7 +328,7 @@ public final class AppointmentService
     {
         Appointment appointmentToDelete = AppointmentHome.findByPrimaryKey( nIdAppointment );
         Slot slotOfTheAppointmentToDelete = SlotService.findSlotById( appointmentToDelete.getIdSlot( ) );
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, Integer.toString( slotOfTheAppointmentToDelete.getIdForm( ) ),
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( slotOfTheAppointmentToDelete.getIdForm( ) ),
                 AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, user ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );

@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -40,7 +40,7 @@ public final class ReservationRuleService
      *            the date of the reservation rule
      * @return the Reservation Rule object created
      */
-    public static ReservationRule createReservationRule( AppointmentForm appointmentForm, int nIdForm, LocalDate dateOfApply )
+    public static ReservationRule createReservationRule( AppointmentFormDTO appointmentForm, int nIdForm, LocalDate dateOfApply )
     {
         ReservationRule reservationRule = new ReservationRule( );
         fillInReservationRule( reservationRule, appointmentForm, nIdForm, dateOfApply );
@@ -82,7 +82,7 @@ public final class ReservationRuleService
      *            the date of the update
      * @return the reservation rule object updated
      */
-    public static ReservationRule updateReservationRule( AppointmentForm appointmentForm, int nIdForm, LocalDate dateOfApply )
+    public static ReservationRule updateReservationRule( AppointmentFormDTO appointmentForm, int nIdForm, LocalDate dateOfApply )
     {
         ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply( nIdForm, dateOfApply );
         if ( reservationRule == null )
@@ -109,7 +109,7 @@ public final class ReservationRuleService
      * @param dateOfApply
      *            the date of the reservation rule
      */
-    public static void fillInReservationRule( ReservationRule reservationRule, AppointmentForm appointmentForm, int nIdForm, LocalDate dateOfApply )
+    public static void fillInReservationRule( ReservationRule reservationRule, AppointmentFormDTO appointmentForm, int nIdForm, LocalDate dateOfApply )
     {
         reservationRule.setDateOfApply( dateOfApply );
         reservationRule.setMaxCapacityPerSlot( appointmentForm.getMaxCapacityPerSlot( ) );
