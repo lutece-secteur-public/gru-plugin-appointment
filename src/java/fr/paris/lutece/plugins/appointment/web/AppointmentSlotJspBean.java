@@ -627,6 +627,11 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         if ( nMaxCapacity != slotFromSessionOrFromDb.getMaxCapacity( ) )
         {
             slotFromSessionOrFromDb.setMaxCapacity( nMaxCapacity );
+            // Need to set also the nb remaining places and the nb potential remaining places
+            // If the slot already exist, the good values will be set at the update of the slot with taking the old values
+            // If it is a new slot, the value set here will be good
+            slotFromSessionOrFromDb.setNbRemainingPlaces(nMaxCapacity);
+            slotFromSessionOrFromDb.setNbPotentialRemainingPlaces(nMaxCapacity);
         }
         if ( !endingTime.equals( slotFromSessionOrFromDb.getEndingTime( ) ) )
         {
