@@ -2,7 +2,6 @@ package fr.paris.lutece.plugins.appointment.business.slot;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 

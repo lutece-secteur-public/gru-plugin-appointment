@@ -533,8 +533,9 @@ public final class FormService
      */
     public static Form updateForm( Form form )
     {
-        FormListenerManager.notifyListenersFormChange( form.getIdForm( ) );
-        return FormHome.update( form );
+        Form formUpdated = FormHome.update( form );
+        FormListenerManager.notifyListenersFormChange( formUpdated.getIdForm( ) );
+        return formUpdated;
     }
 
     /**
@@ -575,14 +576,14 @@ public final class FormService
      */
     public static void removeForm( int nIdForm )
     {
-        FormListenerManager.notifyListenersFormRemoval( nIdForm );
-        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
         // Delete all the responses linked to all the appointments of the form
         for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
         {
             AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
         }
         FormHome.delete( nIdForm );
+        FormListenerManager.notifyListenersFormRemoval( nIdForm );
+        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
     }
 
     /**

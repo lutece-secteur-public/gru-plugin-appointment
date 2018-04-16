@@ -554,8 +554,9 @@ public final class SlotService
      */
     public static Slot updateSlot( Slot slot )
     {
+        Slot slotToReturn = SlotHome.update( slot );
         SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
-        return SlotHome.update( slot );
+        return slotToReturn;
     }
 
     /**
@@ -674,8 +675,10 @@ public final class SlotService
      */
     public static void deleteSlot( Slot slot )
     {
-        SlotListenerManager.notifyListenersSlotRemoval( slot.getIdSlot( ) );
-        SlotHome.delete( slot.getIdSlot( ) );
+        int nIdSlot = slot.getIdSlot( );
+        SlotHome.delete( nIdSlot );
+        SlotListenerManager.notifyListenersSlotRemoval( nIdSlot );
+
     }
 
     /**

@@ -88,7 +88,7 @@ public final class AppointmentResourceIdService extends ResourceIdService
 
     /** Permission for changing appointment status */
     public static final String PERMISSION_CHANGE_APPOINTMENT_STATUS = "CHANGE_APPOINTMENT_STATUS";
-    
+
     /** Permission for changing the date of the appointment */
     public static final String PERMISSION_CHANGE_APPOINTMENT_DATE = "CHANGE_APPOINTMENT_DATE";
 
@@ -180,7 +180,7 @@ public final class AppointmentResourceIdService extends ResourceIdService
         permission.setPermissionKey( PERMISSION_CHANGE_APPOINTMENT_DATE );
         permission.setPermissionTitleKey( PROPERTY_LABEL_CHANGE_APPOINTMENT_DATE );
         resourceType.registerPermission( permission );
-        
+
         ResourceTypeManager.registerResourceType( resourceType );
 
         ResourceType resourceTypeCreate = new ResourceType( );
