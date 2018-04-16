@@ -675,10 +675,9 @@ public final class SlotService
      */
     public static void deleteSlot( Slot slot )
     {
-        int nIdSlot = slot.getIdSlot( );
-        SlotHome.delete( nIdSlot );
+        int nIdSlot = slot.getIdSlot( );        
         SlotListenerManager.notifyListenersSlotRemoval( nIdSlot );
-
+        SlotHome.delete( nIdSlot );
     }
 
     /**

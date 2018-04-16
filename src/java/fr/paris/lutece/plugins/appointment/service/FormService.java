@@ -580,10 +580,10 @@ public final class FormService
         for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
         {
             AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
-        }
-        FormHome.delete( nIdForm );
+        }        
         FormListenerManager.notifyListenersFormRemoval( nIdForm );
         AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
+        FormHome.delete( nIdForm );
     }
 
     /**
