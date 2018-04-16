@@ -681,7 +681,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @param model
      *            the model to add elements in
      */
-    public static void addElementsToModel( HttpServletRequest request, AppointmentFormDTO appointmentForm, AdminUser user, Locale locale, Map<String, Object> model )
+    public static void addElementsToModel( HttpServletRequest request, AppointmentFormDTO appointmentForm, AdminUser user, Locale locale,
+            Map<String, Object> model )
     {
         model.put( MARK_APPOINTMENT_FORM, appointmentForm );
         model.put( MARK_LOCALE, locale );

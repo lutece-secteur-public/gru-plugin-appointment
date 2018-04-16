@@ -469,49 +469,60 @@ public final class SlotService
         // If it's an update of an existing slot
         if ( slot.getIdSlot( ) != 0 )
         {
-            Slot oldSlot = SlotService.findSlotById( slot.getIdSlot( ) );
-            int nNewNbMaxCapacity = slot.getMaxCapacity( );
-            int nOldBnMaxCapacity = oldSlot.getMaxCapacity( );
-            // If the max capacity has been modified
-            if ( nNewNbMaxCapacity != nOldBnMaxCapacity )
-            {
-                // Need to update the remaining places
-
-                // Need to add the diff between the old value and the new value
-                // to the remaining places (if the new is higher)
-                if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
-                {
-                    int nValueToAdd = nNewNbMaxCapacity - nOldBnMaxCapacity;
-                    slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) + nValueToAdd );
-                    slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) + nValueToAdd );
-                }
-                else
-                {
-                    // the new value is lower than the previous capacity
-                    // !!!! If there are appointments on this slot and if the
-                    // slot is already full, the slot will be surbooked !!!!
-                    int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                    if ( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract > 0 )
-                    {
-                        slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
-                    }
-                    else
-                    {
-                        slot.setNbPotentialRemainingPlaces( 0 );
-                    }
-                    if ( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract > 0 )
-                    {
-                        slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract );
-                    }
-                    else
-                    {
-                        slot.setNbRemainingPlaces( 0 );
-                    }
-                }
-            }
+            updateRemainingPlaces( slot );
         }
         saveSlot( slot );
         createListSlot( listSlotToCreate );
+    }
+
+    /**
+     * Update the capacity of the slot
+     * 
+     * @param slot
+     *            the slot to update
+     */
+    public static void updateRemainingPlaces( Slot slot )
+    {
+        Slot oldSlot = SlotService.findSlotById( slot.getIdSlot( ) );
+        int nNewNbMaxCapacity = slot.getMaxCapacity( );
+        int nOldBnMaxCapacity = oldSlot.getMaxCapacity( );
+        // If the max capacity has been modified
+        if ( nNewNbMaxCapacity != nOldBnMaxCapacity )
+        {
+            // Need to update the remaining places
+
+            // Need to add the diff between the old value and the new value
+            // to the remaining places (if the new is higher)
+            if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
+            {
+                int nValueToAdd = nNewNbMaxCapacity - nOldBnMaxCapacity;
+                slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) + nValueToAdd );
+                slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) + nValueToAdd );
+            }
+            else
+            {
+                // the new value is lower than the previous capacity
+                // !!!! If there are appointments on this slot and if the
+                // slot is already full, the slot will be surbooked !!!!
+                int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
+                if ( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract > 0 )
+                {
+                    slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
+                }
+                else
+                {
+                    slot.setNbPotentialRemainingPlaces( 0 );
+                }
+                if ( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract > 0 )
+                {
+                    slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract );
+                }
+                else
+                {
+                    slot.setNbRemainingPlaces( 0 );
+                }
+            }
+        }
     }
 
     /**

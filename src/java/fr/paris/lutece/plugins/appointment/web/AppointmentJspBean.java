@@ -764,8 +764,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         HttpSession session = request.getSession( );
         clearUploadFilesIfNeeded( session );
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
-        if ( !RBACService
-                .isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdAppointment, AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT, getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdAppointment, AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT,
+                getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_APPOINTMENT );
         }
@@ -958,7 +958,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, getUser( ) ) )
+        if ( !RBACService
+                .isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE );
         }
