@@ -46,7 +46,7 @@ public final class SlotService
      *            the starting date time to search
      * @param endingDateTime
      *            the ending date time to search
-     * @return a HashMap with the starting Date Time in Key and the corresponding slot in value
+     * @return a list of the slots found
      */
     public static List<Slot> findSlotsByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime )
     {
@@ -56,6 +56,23 @@ public final class SlotService
             addDateAndTimeToSlot( slot );
         }
         return listSlots;
+    }
+
+    /**
+     * Find specific slots of a form
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @return a list of the slots found
+     */
+    public static List<Slot> findSpecificSlotsByIdForm( int nIdForm )
+    {
+        List<Slot> listSpecificSlots = SlotHome.findIsSpecificByIdForm( nIdForm );
+        for ( Slot slot : listSpecificSlots )
+        {
+            addDateAndTimeToSlot( slot );
+        }
+        return listSpecificSlots;
     }
 
     /**
@@ -675,7 +692,7 @@ public final class SlotService
      */
     public static void deleteSlot( Slot slot )
     {
-        int nIdSlot = slot.getIdSlot( );        
+        int nIdSlot = slot.getIdSlot( );
         SlotListenerManager.notifyListenersSlotRemoval( nIdSlot );
         SlotHome.delete( nIdSlot );
     }

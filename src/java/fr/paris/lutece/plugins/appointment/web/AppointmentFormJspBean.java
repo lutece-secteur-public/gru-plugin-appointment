@@ -66,11 +66,6 @@ import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
-import fr.paris.lutece.plugins.genericattributes.business.Entry;
-import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
-import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.plugins.genericattributes.business.Field;
-import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -562,29 +557,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             String newNameForCopy = I18nService.getLocalizedString( PROPERTY_COPY_OF_FORM, request.getLocale( ) ) + formToCopy.getTitle( );
             int nIdCopyForm = FormService.copyForm( nIdForm, newNameForCopy );
-            AppLogService.info( LogUtilities.buildLog( ACTION_DO_COPY_FORM, strIdForm, getUser( ) ) );
-            EntryFilter filter = new EntryFilter( );
-            filter.setIdResource( nIdForm );
-            List<Entry> listEntry = EntryHome.getEntryList( filter );
-            List<Field> listField = null;
-            if ( listEntry != null )
-            {
-                for ( Entry entry : listEntry )
-                {
-                    entry.setIdResource( nIdCopyForm );
-                    int oldEntry = entry.getIdEntry( );
-                    EntryHome.create( entry );
-                    listField = FieldHome.getFieldListByIdEntry( oldEntry );
-                    if ( listField != null )
-                    {
-                        for ( Field field : listField )
-                        {
-                            field.setParentEntry( entry );
-                            FieldHome.create( field );
-                        }
-                    }
-                }
-            }
+            AppLogService.info( LogUtilities.buildLog( ACTION_DO_COPY_FORM, String.valueOf( nIdCopyForm ), getUser( ) ) );
         }
         return getManageAppointmentForms( request );
     }

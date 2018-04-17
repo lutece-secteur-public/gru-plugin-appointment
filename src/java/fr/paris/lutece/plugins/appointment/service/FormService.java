@@ -14,14 +14,19 @@ import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.localization.Localization;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
-import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
+import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -51,15 +56,90 @@ public final class FormService
      */
     public static int copyForm( int nIdForm, String newNameForCopy )
     {
+        // Build the simple form to copy with the values of the original form
         AppointmentFormDTO appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
         appointmentForm.setTitle( newNameForCopy );
         appointmentForm.setIsActive( Boolean.FALSE );
         appointmentForm.setDateStartValidity( null );
         appointmentForm.setDateEndValidity( null );
-        int nIdNewForm = createAppointmentForm( appointmentForm );
+        // Save it
+        Form form = FormService.createForm( appointmentForm );
+        int nIdNewForm = form.getIdForm( );
+        // Add the display
+        DisplayService.createDisplay( appointmentForm, nIdNewForm );
+        // Add the localization
+        LocalizationService.createLocalization( appointmentForm, nIdNewForm );
+        // Add the form rule
+        FormRuleService.createFormRule( appointmentForm, nIdNewForm );
+        // Get all the weekDefinitions, WorkingDays and TimeSlots of the
+        // original form and set the new id
+        // of the copy of the form and save them
+        WeekDefinition copyWeekDefinition;
+        int idCopyWeekDefinition;
+        WorkingDay copyWorkingDay;
+        int idCopyWorkingDay;
+        List<WeekDefinition> listWeekDefinitions = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        List<WorkingDay> listWorkingDays;
+        List<TimeSlot> listTimeSlots;
+        for ( WeekDefinition weekDefinition : listWeekDefinitions )
+        {
+            weekDefinition.setIdForm( nIdNewForm );
+            copyWeekDefinition = WeekDefinitionService.saveWeekDefinition( weekDefinition );
+            listWorkingDays = weekDefinition.getListWorkingDay( );
+            idCopyWeekDefinition = copyWeekDefinition.getIdWeekDefinition( );
+            for ( WorkingDay workingDay : listWorkingDays )
+            {
+                workingDay.setIdWeekDefinition( idCopyWeekDefinition );
+                copyWorkingDay = WorkingDayService.saveWorkingDay( workingDay );
+                idCopyWorkingDay = copyWorkingDay.getIdWorkingDay( );
+                listTimeSlots = workingDay.getListTimeSlot( );
+                for ( TimeSlot timeSlot : listTimeSlots )
+                {
+                    timeSlot.setIdWorkingDay( idCopyWorkingDay );
+                    TimeSlotService.saveTimeSlot( timeSlot );
+                }
+            }
+        }
+        // Get all the reservation rules of the original form and set the new id
+        // of the copy of the form and save them
+        List<ReservationRule> listReservationRules = ReservationRuleService.findListReservationRule( nIdForm );
+        for ( ReservationRule reservationRule : listReservationRules )
+        {
+            reservationRule.setIdForm( nIdNewForm );
+            ReservationRuleService.saveReservationRule( reservationRule );
+        }
+        // Copy the messages of the original form and add them to the copy
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         formMessage.setIdForm( nIdNewForm );
-        FormMessageHome.create( formMessage );
+        FormMessageService.saveFormMessage( formMessage );
+        // Get all the closing days of the original form and add them to the
+        // copy
+        List<ClosingDay> listClosingDays = ClosingDayService.findListClosingDay( nIdForm );
+        for ( ClosingDay closingDay : listClosingDays )
+        {
+            closingDay.setIdForm( nIdNewForm );
+            ClosingDayService.saveClosingDay( closingDay );
+        }
+        // Get all the specific slots of the original form and copy them for the
+        // new form
+        List<Slot> listSpecificSlots = SlotService.findSpecificSlotsByIdForm( nIdForm );
+        for ( Slot specificSlot : listSpecificSlots )
+        {
+            specificSlot.setIdForm( nIdNewForm );
+            SlotService.saveSlot( specificSlot );
+        }
+        // Copy the entries of the original form
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( nIdForm );
+        entryFilter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
+        entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
+        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+        List<Entry> listEntries = EntryHome.getEntryList( entryFilter );
+        for ( Entry entry : listEntries )
+        {
+            entry.setIdResource( nIdNewForm );
+            EntryHome.copy( entry );
+        }
         return nIdNewForm;
     }
 
@@ -580,7 +660,7 @@ public final class FormService
         for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
         {
             AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
-        }        
+        }
         FormListenerManager.notifyListenersFormRemoval( nIdForm );
         AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
         FormHome.delete( nIdForm );

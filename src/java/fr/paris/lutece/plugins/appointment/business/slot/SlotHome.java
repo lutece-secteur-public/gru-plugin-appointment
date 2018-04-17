@@ -96,6 +96,18 @@ public final class SlotHome
     }
 
     /**
+     * Returns a list of specific slots for a form
+     * 
+     * @param nIdForm
+     *            the Form Id
+     * @return a list of slots found
+     */
+    public static List<Slot> findIsSpecificByIdForm( int nIdForm )
+    {
+        return _dao.findIsSpecificByIdForm( nIdForm, _plugin );
+    }
+
+    /**
      * Returns a list of slots of a form
      * 
      * @param nIdForm
