@@ -831,6 +831,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         // Get the not validated appointment in session if it exists
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
+        Locale locale = getLocale( );
         if ( appointmentDTO == null )
         {
             appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
@@ -846,18 +847,36 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 appointmentDTO = new AppointmentDTO( );
                 if ( nIdSlot == 0 )
                 {
-                    LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+                    // Need to get all the informations to create the slot
                     LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-                    boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
-                    boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
-                    int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-                    slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, bIsOpen,
-                            bIsSpecific );
-                    slot = SlotService.saveSlot( slot );
+                    LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+                    // Need to check if the slot has not been already created
+                    HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateTime,
+                            endingDateTime );
+                    if ( !slotInDbMap.isEmpty( ) )
+                    {
+                        slot = slotInDbMap.get( startingDateTime );
+                    }
+                    else
+                    {
+                        boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+                        boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
+                        int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+                        slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity,
+                                bIsOpen, bIsSpecific );
+                        slot = SlotService.saveSlot( slot );
+                    }
                 }
                 else
                 {
                     slot = SlotService.findSlotById( nIdSlot );
+                }
+                // Need to check competitive access
+                // May be the slot is already taken at the same time
+                if ( slot.getNbPotentialRemainingPlaces( ) == 0 )
+                {
+                    addInfo( ERROR_MESSAGE_SLOT_FULL, locale );
+                    return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
                 }
                 appointmentDTO.setSlot( slot );
                 appointmentDTO.setIdForm( nIdForm );
@@ -879,7 +898,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         }
         Map<String, Object> model = getModel( );
-        Locale locale = getLocale( );
         List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), true );
         StringBuffer strBuffer = new StringBuffer( );
         for ( Entry entry : listEntryFirstLevel )

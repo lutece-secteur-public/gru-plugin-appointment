@@ -615,6 +615,16 @@ public class AppointmentApp extends MVCApplication
             {
                 slot = SlotService.findSlotById( nIdSlot );
             }
+            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
+            WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
+            form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
+            // Need to check competitive access
+            // May be the slot is already taken at the same time
+            if ( slot.getNbPotentialRemainingPlaces( ) == 0 )
+            {
+                addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+            }
             appointmentDTO.setSlot( slot );
             appointmentDTO.setIdSlot( slot.getIdSlot( ) );
             appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
@@ -625,9 +635,6 @@ public class AppointmentApp extends MVCApplication
                 setUserInfo( request, appointmentDTO );
             }
             request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
-            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-            WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-            form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
             AppointmentUtilities.putTimerInSession( request, slot, appointmentDTO, form.getMaxPeoplePerAppointment( ) );
         }
@@ -845,7 +852,7 @@ public class AppointmentApp extends MVCApplication
         appointment.setSlot( slot );
         if ( appointment.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) )
         {
-            addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+            addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
         int nIdAppointment = AppointmentService.saveAppointment( appointment );
