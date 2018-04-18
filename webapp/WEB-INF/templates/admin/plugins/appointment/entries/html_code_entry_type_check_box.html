@@ -4,7 +4,7 @@ ${entry.CSSClass!}
 <@formGroup labelFor='form${entry.idEntry}' labelKey='${entry.title}' mandatory=entry.mandatory id='form${entry.idEntry}' helpKey='${entry.helpMessage}'>
 
 <#list entry.fields as field>
-	
+	<#assign checked = false />
 	<#if entry.fieldInLine>
 		<#assign orientation = 'horizontal' />
 	</#if>
@@ -35,7 +35,7 @@ ${entry.CSSClass!}
 		<#assign params='onclick="doCheckboxEffect(this.checked,${field.idField});"' />
 	</#if>
 	
-	<@checkBox labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${field.title!}' title=field.comment! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' params=params
+	<@checkBox labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${field.title!}' title=field.comment! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked params=params
 			/>
 </#list>
 	
