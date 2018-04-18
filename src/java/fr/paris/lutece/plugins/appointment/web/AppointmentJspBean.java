@@ -454,12 +454,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             // Populate the filter
             populate( filter, request );
-            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter ).stream( )
-                    .sorted( ( a1, a2 ) -> Integer.compare( a1.getIdAppointment( ), a2.getIdAppointment( ) ) ).collect( Collectors.toList( ) );
         }
         // If it is an order by
         String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
         String strOrderAsc = request.getParameter( PARAMETER_ORDER_ASC );
+        if ( listAppointmentsDTO == null )
+        {
+            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
+        }
         listAppointmentsDTO = orderList( listAppointmentsDTO, strOrderBy, strOrderAsc );
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_DELETE_AND_BACK ) ) )
         {
@@ -485,11 +487,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
         url.addParameter( PARAMETER_ID_FORM, strIdForm );
         String strUrl = url.getUrl( );
-        if ( listAppointmentsDTO == null )
-        {
-            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter ).stream( )
-                    .sorted( ( a1, a2 ) -> Integer.compare( a1.getIdAppointment( ), a2.getIdAppointment( ) ) ).collect( Collectors.toList( ) );
-        }
         request.getSession( ).setAttribute( SESSION_LIST_APPOINTMENTS, listAppointmentsDTO );
         LocalizedPaginator<AppointmentDTO> paginator = new LocalizedPaginator<AppointmentDTO>( listAppointmentsDTO, nItemsPerPage, strUrl,
                 PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
@@ -1207,41 +1204,46 @@ public class AppointmentJspBean extends MVCAdminJspBean
             sortedList = new ArrayList<>( );
             sortedList.addAll( listAppointmentsDTO );
         }
-        if ( strOrderBy != null && strOrderAsc != null )
+        if ( strOrderBy == null )
         {
-            boolean bAsc = Boolean.parseBoolean( strOrderAsc );
-            Stream<AppointmentDTO> stream = null;
-            switch( strOrderBy )
-            {
-                case LAST_NAME:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getLastName( ).compareTo( a2.getLastName( ) ) );
-                    break;
-                case FIRST_NAME:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getFirstName( ).compareTo( a2.getFirstName( ) ) );
-                    break;
-                case EMAIL:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getEmail( ).compareTo( a2.getEmail( ) ) );
-                    break;
-                case NB_BOOKED_SEATS:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Integer.compare( a1.getNbBookedSeats( ), a2.getNbBookedSeats( ) ) );
-                    break;
-                case DATE_APPOINTMENT:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getStartingDateTime( ).compareTo( a2.getStartingDateTime( ) ) );
-                    break;
-                case ADMIN:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getAdminUser( ).compareTo( a2.getAdminUser( ) ) );
-                    break;
-                case STATUS:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Boolean.compare( a1.getIsCancelled( ), a2.getIsCancelled( ) ) );
-                    break;
-                default:
-                    stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Integer.compare( a1.getIdAppointment( ), a2.getIdAppointment( ) ) );
-            }
-            sortedList = stream.collect( Collectors.toList( ) );
-            if ( !bAsc )
-            {
-                Collections.reverse( sortedList );
-            }
+            strOrderBy = DATE_APPOINTMENT;
+        }
+        boolean bAsc = Boolean.FALSE;
+        if ( strOrderAsc != null )
+        {
+            bAsc = Boolean.parseBoolean( strOrderAsc );
+        }
+        Stream<AppointmentDTO> stream = null;
+        switch( strOrderBy )
+        {
+            case LAST_NAME:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getLastName( ).compareTo( a2.getLastName( ) ) );
+                break;
+            case FIRST_NAME:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getFirstName( ).compareTo( a2.getFirstName( ) ) );
+                break;
+            case EMAIL:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getEmail( ).compareTo( a2.getEmail( ) ) );
+                break;
+            case NB_BOOKED_SEATS:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Integer.compare( a1.getNbBookedSeats( ), a2.getNbBookedSeats( ) ) );
+                break;
+            case DATE_APPOINTMENT:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getStartingDateTime( ).compareTo( a2.getStartingDateTime( ) ) );
+                break;
+            case ADMIN:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getAdminUser( ).compareTo( a2.getAdminUser( ) ) );
+                break;
+            case STATUS:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> Boolean.compare( a1.getIsCancelled( ), a2.getIsCancelled( ) ) );
+                break;
+            default:
+                stream = sortedList.stream( ).sorted( ( a1, a2 ) -> a1.getStartingDateTime( ).compareTo( a2.getStartingDateTime( ) ) );
+        }
+        sortedList = stream.collect( Collectors.toList( ) );
+        if ( !bAsc )
+        {
+            Collections.reverse( sortedList );
         }
         return sortedList;
     }
