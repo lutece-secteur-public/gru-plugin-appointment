@@ -1,5 +1,7 @@
 package fr.paris.lutece.plugins.appointment.business.user;
 
+import java.util.List;
+
 import fr.paris.lutece.portal.service.plugin.Plugin;
 
 /**
@@ -58,15 +60,15 @@ public interface IUserDAO
     User select( int nIdUser, Plugin plugin );
 
     /**
-     * Return the user by its email
+     * Return the users by its email
      * 
      * @param strEmail
      *            the email of the user
      * @param plugin
      *            the plugin
-     * @return The User found
+     * @return The Users found
      */
-    User findByEmail( String strEmail, Plugin plugin );
+    List<User> findByEmail( String strEmail, Plugin plugin );
 
     /**
      * Return the user by its first name, last name and email

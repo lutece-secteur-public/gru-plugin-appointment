@@ -168,7 +168,7 @@ public final class AppointmentUtilities
         int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
         if ( nbDaysBetweenTwoAppointments != 0 )
         {
-            List<Slot> listSlots = getSlotsByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail, appointmentDTO.getIdAppointment( ) );
+            List<Slot> listSlots = getSlotsByEmail( strEmail, appointmentDTO.getIdAppointment( ) );
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Get the last appointment date for this form
@@ -199,17 +199,22 @@ public final class AppointmentUtilities
      *            the id of the appointment
      * @return the list of slots
      */
-    private static List<Slot> getSlotsByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail, int idAppointment )
+    private static List<Slot> getSlotsByEmail( String strEmail, int idAppointment )
     {
         List<Slot> listSlots = new ArrayList<>( );
         if ( StringUtils.isNotEmpty( strEmail ) )
         {
-            // Looking for existing user with this email
-            User user = UserService.findUserByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
-            if ( user != null )
+            // Looking for existing users with this email
+            List<User> listUsers = UserService.findUsersByEmail( strEmail );
+            if ( listUsers != null )
             {
-                // looking for its appointment
-                List<Appointment> listAppointment = AppointmentService.findListAppointmentByUserId( user.getIdUser( ) );
+                List<Appointment> listAppointment = new ArrayList<>();
+                // For each User
+            	for (User user : listUsers){
+                    // looking for its appointment
+            		listAppointment.addAll(AppointmentService.findListAppointmentByUserId( user.getIdUser( ) ));
+            	}
+
                 // If we modify an appointment, we remove the
                 // appointment that we currently edit
                 if ( idAppointment != 0 )
@@ -247,15 +252,14 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the number of appointments is above the maximum authorized on the defined period
      */
-    public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strFisrtName, String strLastName, String strEmail,
-            AppointmentFormDTO form )
+    public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form )
     {
         boolean bCheckPassed = true;
         int nbMaxAppointmentsPerUser = form.getNbMaxAppointmentsPerUser( );
         int nbDaysForMaxAppointmentsPerUser = form.getNbDaysForMaxAppointmentsPerUser( );
         if ( nbMaxAppointmentsPerUser != 0 )
         {
-            List<Slot> listSlots = getSlotsByFirstNameLastNameAndEmail( strFisrtName, strLastName, strEmail, appointmentDTO.getIdAppointment( ) );
+            List<Slot> listSlots = getSlotsByEmail( strEmail, appointmentDTO.getIdAppointment( ) );
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Filter fot the good form

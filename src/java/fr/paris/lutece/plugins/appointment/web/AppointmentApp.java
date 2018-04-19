@@ -722,7 +722,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
             bErrors = true;
         }
-        if ( !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO, strFirstName, strLastName, strEmail, form ) )
+        if ( form.getEnableMandatoryEmail( ) && !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( appointmentDTO, strEmail, form ) )
         {
             addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
             bErrors = true;

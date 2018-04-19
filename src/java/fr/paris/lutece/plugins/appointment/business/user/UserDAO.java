@@ -1,5 +1,8 @@
 package fr.paris.lutece.plugins.appointment.business.user;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -72,18 +75,18 @@ public final class UserDAO extends UtilDAO implements IUserDAO
     }
 
     @Override
-    public User findByEmail( String strEmail, Plugin plugin )
+    public List<User> findByEmail( String strEmail, Plugin plugin )
     {
         DAOUtil daoUtil = null;
-        User user = null;
+        List<User> listUsers = new ArrayList<>( );
         try
         {
             daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_EMAIL, plugin );
             daoUtil.setString( 1, strEmail );
             daoUtil.executeQuery( );
-            if ( daoUtil.next( ) )
+            while ( daoUtil.next( ) )
             {
-                user = buildUser( daoUtil );
+            	listUsers.add( buildUser( daoUtil ) );
             }
         }
         finally
@@ -93,7 +96,7 @@ public final class UserDAO extends UtilDAO implements IUserDAO
                 daoUtil.free( );
             }
         }
-        return user;
+        return listUsers;
     }
 
     @Override
