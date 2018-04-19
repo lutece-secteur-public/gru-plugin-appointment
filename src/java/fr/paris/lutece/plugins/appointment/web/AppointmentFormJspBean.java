@@ -51,6 +51,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 
+import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -58,6 +59,7 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
@@ -767,17 +769,20 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             }
             else
             {
-                boolean bErrorOpenSlotOnClosingDay = false;
+                boolean bErrorAppointmentOnClosingDay = false;
+                List<Slot> listSlotsImpacted;
+                List<Appointment> listAppointmentsImpacted;
                 for ( LocalDate closingDate : listDateImported )
                 {
                     if ( !listClosingDaysDb.contains( closingDate ) )
                     {
-                        // Check if there is an open slot on this date
-                        List<Slot> listSlot = SlotService.findListOpenSlotByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ),
+                        listSlotsImpacted = SlotService.findListOpenSlotByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ),
                                 closingDate.atTime( LocalTime.MAX ) );
-                        if ( CollectionUtils.isNotEmpty( listSlot ) )
+                        // Check if there is appointments on this slots
+                        listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
+                        if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
                         {
-                            bErrorOpenSlotOnClosingDay = true;
+                            bErrorAppointmentOnClosingDay = true;
                             break;
                         }
                         else
@@ -786,7 +791,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                         }
                     }
                 }
-                if ( bErrorOpenSlotOnClosingDay )
+                if ( bErrorAppointmentOnClosingDay )
                 {
                     addError( MESSAGE_ERROR_OPEN_SLOTS, getLocale( ) );
                     bError = true;
