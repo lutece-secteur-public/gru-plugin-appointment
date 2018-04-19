@@ -86,7 +86,7 @@ public final class UserDAO extends UtilDAO implements IUserDAO
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
-            	listUsers.add( buildUser( daoUtil ) );
+                listUsers.add( buildUser( daoUtil ) );
             }
         }
         finally

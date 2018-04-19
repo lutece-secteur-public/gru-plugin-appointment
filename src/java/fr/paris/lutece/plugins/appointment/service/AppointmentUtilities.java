@@ -208,12 +208,13 @@ public final class AppointmentUtilities
             List<User> listUsers = UserService.findUsersByEmail( strEmail );
             if ( listUsers != null )
             {
-                List<Appointment> listAppointment = new ArrayList<>();
+                List<Appointment> listAppointment = new ArrayList<>( );
                 // For each User
-            	for (User user : listUsers){
+                for ( User user : listUsers )
+                {
                     // looking for its appointment
-            		listAppointment.addAll(AppointmentService.findListAppointmentByUserId( user.getIdUser( ) ));
-            	}
+                    listAppointment.addAll( AppointmentService.findListAppointmentByUserId( user.getIdUser( ) ) );
+                }
 
                 // If we modify an appointment, we remove the
                 // appointment that we currently edit

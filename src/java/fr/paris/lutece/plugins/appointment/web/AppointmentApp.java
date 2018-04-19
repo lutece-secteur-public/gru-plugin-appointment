@@ -735,7 +735,7 @@ public class AppointmentApp extends MVCApplication
         if ( bErrors )
         {
             LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
-            additionalParameters.put( PARAMETER_ID_FORM, strIdForm );            
+            additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
             additionalParameters.put( PARAMETER_MODIFICATION_FORM, String.valueOf( Boolean.TRUE ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + STEP_3 );
             return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
