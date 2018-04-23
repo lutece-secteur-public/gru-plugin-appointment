@@ -626,7 +626,7 @@ public class AppointmentApp extends MVCApplication
             form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
             // Need to check competitive access
             // May be the slot is already taken at the same time
-            if ( bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
+            if ( !bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
                 return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
