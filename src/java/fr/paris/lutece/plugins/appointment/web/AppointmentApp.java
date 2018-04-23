@@ -515,6 +515,12 @@ public class AppointmentApp extends MVCApplication
             form = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         }
         checkMyLuteceAuthentication( form, request );
+        // Patch needed for authentication after being on the form 
+        String secondAttempt = request.getParameter("secondAttempt");
+        boolean bTestSecondAttempt = Boolean.FALSE;
+        if (StringUtils.isNotEmpty(secondAttempt)){
+        	bTestSecondAttempt = Boolean.TRUE;
+        }        
         // Need to manage the anchor
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
@@ -620,7 +626,7 @@ public class AppointmentApp extends MVCApplication
             form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
             // Need to check competitive access
             // May be the slot is already taken at the same time
-            if ( slot.getNbPotentialRemainingPlaces( ) == 0 )
+            if ( bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
             {
                 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
                 return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
@@ -1210,6 +1216,11 @@ public class AppointmentApp extends MVCApplication
         return urlItem.getUrl( );
     }
 
+    /**
+     * Set the user infos to the appointment DTO
+     * @param request the request
+     * @param appointment the appointment DTO
+     */
     public void setUserInfo( HttpServletRequest request, AppointmentDTO appointment )
     {
         if ( SecurityService.isAuthenticationEnable( ) && ( appointment != null ) )
