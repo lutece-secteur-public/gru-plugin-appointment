@@ -97,6 +97,18 @@ public final class UserHome
     }
 
     /**
+     * return user(s) by its email
+     * 
+     * @param strEmail
+     *            the user email
+     * @return the user(s) if it exists
+     */
+    public static List<User> findByEmail( String strEmail )
+    {
+        return _dao.findByEmail( strEmail, _plugin );
+    }
+
+    /**
      * Return the list of the appointments of the User
      */
     public List<Appointment> getListAppointments( )

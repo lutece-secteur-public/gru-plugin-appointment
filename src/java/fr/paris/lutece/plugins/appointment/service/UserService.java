@@ -1,8 +1,10 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
+import java.util.List;
+
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 
 /**
  * Service class of a user
@@ -72,6 +74,18 @@ public final class UserService
     public static User findUserByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail )
     {
         return UserHome.findByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
+    }
+
+    /**
+     * Find users by its email
+     * 
+     * @param strEmail
+     *            the email
+     * @return the user(s)
+     */
+    public static List<User> findUsersByEmail( String strEmail )
+    {
+        return UserHome.findByEmail( strEmail );
     }
 
 }

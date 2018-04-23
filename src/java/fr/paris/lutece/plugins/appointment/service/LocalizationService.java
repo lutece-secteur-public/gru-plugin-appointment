@@ -1,8 +1,8 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.localization.Localization;
 import fr.paris.lutece.plugins.appointment.business.localization.LocalizationHome;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 
 /**
  * Service class for the localization
@@ -31,7 +31,7 @@ public final class LocalizationService
      *            the form Id
      * @return the localization overload
      */
-    public static Localization fillInLocalizationWithAppointmentForm( Localization localization, AppointmentForm appointmentForm, int nIdForm )
+    public static Localization fillInLocalizationWithAppointmentForm( Localization localization, AppointmentFormDTO appointmentForm, int nIdForm )
     {
         localization.setLongitude( appointmentForm.getLongitude( ) );
         localization.setLatitude( appointmentForm.getLatitude( ) );
@@ -49,7 +49,7 @@ public final class LocalizationService
      *            the form Id
      * @return the display object created
      */
-    public static Localization createLocalization( AppointmentForm appointmentForm, int nIdForm )
+    public static Localization createLocalization( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         Localization localization = new Localization( );
         localization = fillInLocalizationWithAppointmentForm( localization, appointmentForm, nIdForm );
@@ -77,7 +77,7 @@ public final class LocalizationService
      *            the form Id
      * @return the localization object updated
      */
-    public static Localization updateLocalization( AppointmentForm appointmentForm, int nIdForm )
+    public static Localization updateLocalization( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         Localization localization = LocalizationService.findLocalizationWithFormId( nIdForm );
         localization = fillInLocalizationWithAppointmentForm( localization, appointmentForm, nIdForm );

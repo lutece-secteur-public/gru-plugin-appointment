@@ -33,9 +33,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
-import fr.paris.lutece.plugins.appointment.business.ResponseRecapDTO;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
@@ -46,6 +43,9 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.ResponseRecapDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -125,7 +125,7 @@ public final class AppointmentUtilities
      * @param listFormErrors
      *            the list of errors that can be fill in with the errors found for the email
      */
-    public static void checkEmail( String strEmail, String strConfirmEmail, AppointmentForm form, Locale locale, List<GenericAttributeError> listFormErrors )
+    public static void checkEmail( String strEmail, String strConfirmEmail, AppointmentFormDTO form, Locale locale, List<GenericAttributeError> listFormErrors )
     {
         if ( form.getEnableMandatoryEmail( ) )
         {
@@ -162,13 +162,13 @@ public final class AppointmentUtilities
      * @return false if the delay is not respected
      */
     public static boolean checkNbDaysBetweenTwoAppointments( AppointmentDTO appointmentDTO, String strFirstName, String strLastName, String strEmail,
-            AppointmentForm form )
+            AppointmentFormDTO form )
     {
         boolean bCheckPassed = true;
         int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
         if ( nbDaysBetweenTwoAppointments != 0 )
         {
-            List<Slot> listSlots = getSlotsByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail, appointmentDTO.getIdAppointment( ) );
+            List<Slot> listSlots = getSlotsByEmail( strEmail, appointmentDTO.getIdAppointment( ) );
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Get the last appointment date for this form
@@ -199,17 +199,23 @@ public final class AppointmentUtilities
      *            the id of the appointment
      * @return the list of slots
      */
-    private static List<Slot> getSlotsByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail, int idAppointment )
+    private static List<Slot> getSlotsByEmail( String strEmail, int idAppointment )
     {
         List<Slot> listSlots = new ArrayList<>( );
         if ( StringUtils.isNotEmpty( strEmail ) )
         {
-            // Looking for existing user with this email
-            User user = UserService.findUserByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
-            if ( user != null )
+            // Looking for existing users with this email
+            List<User> listUsers = UserService.findUsersByEmail( strEmail );
+            if ( listUsers != null )
             {
-                // looking for its appointment
-                List<Appointment> listAppointment = AppointmentService.findListAppointmentByUserId( user.getIdUser( ) );
+                List<Appointment> listAppointment = new ArrayList<>( );
+                // For each User
+                for ( User user : listUsers )
+                {
+                    // looking for its appointment
+                    listAppointment.addAll( AppointmentService.findListAppointmentByUserId( user.getIdUser( ) ) );
+                }
+
                 // If we modify an appointment, we remove the
                 // appointment that we currently edit
                 if ( idAppointment != 0 )
@@ -247,15 +253,14 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the number of appointments is above the maximum authorized on the defined period
      */
-    public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strFisrtName, String strLastName, String strEmail,
-            AppointmentForm form )
+    public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form )
     {
         boolean bCheckPassed = true;
         int nbMaxAppointmentsPerUser = form.getNbMaxAppointmentsPerUser( );
         int nbDaysForMaxAppointmentsPerUser = form.getNbDaysForMaxAppointmentsPerUser( );
         if ( nbMaxAppointmentsPerUser != 0 )
         {
-            List<Slot> listSlots = getSlotsByFirstNameLastNameAndEmail( strFisrtName, strLastName, strEmail, appointmentDTO.getIdAppointment( ) );
+            List<Slot> listSlots = getSlotsByEmail( strEmail, appointmentDTO.getIdAppointment( ) );
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Filter fot the good form
@@ -333,7 +338,7 @@ public final class AppointmentUtilities
      *            the list of errors that can be fill in with the errors found for the number of booked seats
      * @return
      */
-    public static int checkAndReturnNbBookedSeats( String strNbBookedSeats, AppointmentForm form, AppointmentDTO appointmentDTO, Locale locale,
+    public static int checkAndReturnNbBookedSeats( String strNbBookedSeats, AppointmentFormDTO form, AppointmentDTO appointmentDTO, Locale locale,
             List<GenericAttributeError> listFormErrors )
     {
         int nbBookedSeats = 1;
@@ -503,7 +508,7 @@ public final class AppointmentUtilities
     public static void buildExcelFileWithAppointments( String strIdForm, HttpServletResponse response, Locale locale, List<AppointmentDTO> listAppointmentsDTO,
             StateService stateService )
     {
-        AppointmentForm tmpForm = FormService.buildAppointmentFormLight( Integer.parseInt( strIdForm ) );
+        AppointmentFormDTO tmpForm = FormService.buildAppointmentFormLight( Integer.parseInt( strIdForm ) );
         XSSFWorkbook workbook = new XSSFWorkbook( );
         XSSFSheet sheet = workbook.createSheet( I18nService.getLocalizedString( KEY_RESOURCE_TYPE, locale ) );
         List<Object [ ]> tmpObj = new ArrayList<Object [ ]>( );
@@ -759,25 +764,25 @@ public final class AppointmentUtilities
      * @param request
      * @return
      */
-    public static String [ ][ ] getPermissions( List<AppointmentForm> listForms, AdminUser user )
+    public static String [ ][ ] getPermissions( List<AppointmentFormDTO> listForms, AdminUser user )
     {
         String [ ][ ] retour = new String [ listForms.size( )] [ 6];
         int nI = 0;
 
-        for ( AppointmentForm tmpForm : listForms )
+        for ( AppointmentFormDTO tmpForm : listForms )
         {
             String [ ] strRetour = new String [ 7];
-            strRetour [0] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+            strRetour [0] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, user ) );
-            strRetour [1] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+            strRetour [1] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, user ) );
-            strRetour [2] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+            strRetour [2] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
-            strRetour [3] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+            strRetour [3] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
-            strRetour [4] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+            strRetour [4] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
-            strRetour [5] = String.valueOf( RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
+            strRetour [5] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
             retour [nI++] = strRetour;
         }
@@ -841,7 +846,7 @@ public final class AppointmentUtilities
      * @return true if there are appointments impacted
      */
     public static boolean checkNoAppointmentsImpacted( List<Appointment> listAppointment, int nIdForm, LocalDate dateOfModification,
-            AppointmentForm appointmentForm )
+            AppointmentFormDTO appointmentForm )
     {
         boolean bNoAppointmentsImpacted = true;
         // Find the previous WeekDefinition
@@ -850,7 +855,7 @@ public final class AppointmentUtilities
         ReservationRule previousReservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
         // Build the previous appointment form with the previous week
         // definition and the previous reservation rule
-        AppointmentForm previousAppointmentForm = FormService.buildAppointmentForm( nIdForm, previousReservationRule.getIdReservationRule( ),
+        AppointmentFormDTO previousAppointmentForm = FormService.buildAppointmentForm( nIdForm, previousReservationRule.getIdReservationRule( ),
                 previousWeekDefinition.getIdWeekDefinition( ) );
         // Need to check if the new definition week has more open days.
         List<DayOfWeek> previousOpenDays = WorkingDayService.getOpenDays( previousAppointmentForm );

@@ -76,6 +76,17 @@ public interface ISlotDAO
     List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin );
 
     /**
+     * Returns all the specific slot for the form
+     * 
+     * @param nIdForm
+     *            the Form Id
+     * @param plugin
+     *            the plugin
+     * @return a list of specific slots
+     */
+    List<Slot> findIsSpecificByIdForm( int nIdForm, Plugin plugin );
+
+    /**
      * Returns all the slots of a form
      * 
      * @param nIdForm

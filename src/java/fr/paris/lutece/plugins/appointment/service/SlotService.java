@@ -46,7 +46,7 @@ public final class SlotService
      *            the starting date time to search
      * @param endingDateTime
      *            the ending date time to search
-     * @return a HashMap with the starting Date Time in Key and the corresponding slot in value
+     * @return a list of the slots found
      */
     public static List<Slot> findSlotsByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime )
     {
@@ -56,6 +56,23 @@ public final class SlotService
             addDateAndTimeToSlot( slot );
         }
         return listSlots;
+    }
+
+    /**
+     * Find specific slots of a form
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @return a list of the slots found
+     */
+    public static List<Slot> findSpecificSlotsByIdForm( int nIdForm )
+    {
+        List<Slot> listSpecificSlots = SlotHome.findIsSpecificByIdForm( nIdForm );
+        for ( Slot slot : listSpecificSlots )
+        {
+            addDateAndTimeToSlot( slot );
+        }
+        return listSpecificSlots;
     }
 
     /**
@@ -469,49 +486,60 @@ public final class SlotService
         // If it's an update of an existing slot
         if ( slot.getIdSlot( ) != 0 )
         {
-            Slot oldSlot = SlotService.findSlotById( slot.getIdSlot( ) );
-            int nNewNbMaxCapacity = slot.getMaxCapacity( );
-            int nOldBnMaxCapacity = oldSlot.getMaxCapacity( );
-            // If the max capacity has been modified
-            if ( nNewNbMaxCapacity != nOldBnMaxCapacity )
-            {
-                // Need to update the remaining places
-
-                // Need to add the diff between the old value and the new value
-                // to the remaining places (if the new is higher)
-                if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
-                {
-                    int nValueToAdd = nNewNbMaxCapacity - nOldBnMaxCapacity;
-                    slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) + nValueToAdd );
-                    slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) + nValueToAdd );
-                }
-                else
-                {
-                    // the new value is lower than the previous capacity
-                    // !!!! If there are appointments on this slot and if the
-                    // slot is already full, the slot will be surbooked !!!!
-                    int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                    if ( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract > 0 )
-                    {
-                        slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
-                    }
-                    else
-                    {
-                        slot.setNbPotentialRemainingPlaces( 0 );
-                    }
-                    if ( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract > 0 )
-                    {
-                        slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract );
-                    }
-                    else
-                    {
-                        slot.setNbRemainingPlaces( 0 );
-                    }
-                }
-            }
+            updateRemainingPlaces( slot );
         }
         saveSlot( slot );
         createListSlot( listSlotToCreate );
+    }
+
+    /**
+     * Update the capacity of the slot
+     * 
+     * @param slot
+     *            the slot to update
+     */
+    public static void updateRemainingPlaces( Slot slot )
+    {
+        Slot oldSlot = SlotService.findSlotById( slot.getIdSlot( ) );
+        int nNewNbMaxCapacity = slot.getMaxCapacity( );
+        int nOldBnMaxCapacity = oldSlot.getMaxCapacity( );
+        // If the max capacity has been modified
+        if ( nNewNbMaxCapacity != nOldBnMaxCapacity )
+        {
+            // Need to update the remaining places
+
+            // Need to add the diff between the old value and the new value
+            // to the remaining places (if the new is higher)
+            if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
+            {
+                int nValueToAdd = nNewNbMaxCapacity - nOldBnMaxCapacity;
+                slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) + nValueToAdd );
+                slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) + nValueToAdd );
+            }
+            else
+            {
+                // the new value is lower than the previous capacity
+                // !!!! If there are appointments on this slot and if the
+                // slot is already full, the slot will be surbooked !!!!
+                int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
+                if ( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract > 0 )
+                {
+                    slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
+                }
+                else
+                {
+                    slot.setNbPotentialRemainingPlaces( 0 );
+                }
+                if ( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract > 0 )
+                {
+                    slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract );
+                }
+                else
+                {
+                    slot.setNbRemainingPlaces( 0 );
+                }
+            }
+        }
     }
 
     /**
@@ -543,8 +571,9 @@ public final class SlotService
      */
     public static Slot updateSlot( Slot slot )
     {
+        Slot slotToReturn = SlotHome.update( slot );
         SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
-        return SlotHome.update( slot );
+        return slotToReturn;
     }
 
     /**
@@ -663,8 +692,9 @@ public final class SlotService
      */
     public static void deleteSlot( Slot slot )
     {
-        SlotListenerManager.notifyListenersSlotRemoval( slot.getIdSlot( ) );
-        SlotHome.delete( slot.getIdSlot( ) );
+        int nIdSlot = slot.getIdSlot( );
+        SlotListenerManager.notifyListenersSlotRemoval( nIdSlot );
+        SlotHome.delete( nIdSlot );
     }
 
     /**

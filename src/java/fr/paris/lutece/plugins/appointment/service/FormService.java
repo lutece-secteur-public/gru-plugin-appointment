@@ -8,20 +8,25 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.localization.Localization;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
-import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
+import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -51,15 +56,90 @@ public final class FormService
      */
     public static int copyForm( int nIdForm, String newNameForCopy )
     {
-        AppointmentForm appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
+        // Build the simple form to copy with the values of the original form
+        AppointmentFormDTO appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
         appointmentForm.setTitle( newNameForCopy );
         appointmentForm.setIsActive( Boolean.FALSE );
         appointmentForm.setDateStartValidity( null );
         appointmentForm.setDateEndValidity( null );
-        int nIdNewForm = createAppointmentForm( appointmentForm );
+        // Save it
+        Form form = FormService.createForm( appointmentForm );
+        int nIdNewForm = form.getIdForm( );
+        // Add the display
+        DisplayService.createDisplay( appointmentForm, nIdNewForm );
+        // Add the localization
+        LocalizationService.createLocalization( appointmentForm, nIdNewForm );
+        // Add the form rule
+        FormRuleService.createFormRule( appointmentForm, nIdNewForm );
+        // Get all the weekDefinitions, WorkingDays and TimeSlots of the
+        // original form and set the new id
+        // of the copy of the form and save them
+        WeekDefinition copyWeekDefinition;
+        int idCopyWeekDefinition;
+        WorkingDay copyWorkingDay;
+        int idCopyWorkingDay;
+        List<WeekDefinition> listWeekDefinitions = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        List<WorkingDay> listWorkingDays;
+        List<TimeSlot> listTimeSlots;
+        for ( WeekDefinition weekDefinition : listWeekDefinitions )
+        {
+            weekDefinition.setIdForm( nIdNewForm );
+            copyWeekDefinition = WeekDefinitionService.saveWeekDefinition( weekDefinition );
+            listWorkingDays = weekDefinition.getListWorkingDay( );
+            idCopyWeekDefinition = copyWeekDefinition.getIdWeekDefinition( );
+            for ( WorkingDay workingDay : listWorkingDays )
+            {
+                workingDay.setIdWeekDefinition( idCopyWeekDefinition );
+                copyWorkingDay = WorkingDayService.saveWorkingDay( workingDay );
+                idCopyWorkingDay = copyWorkingDay.getIdWorkingDay( );
+                listTimeSlots = workingDay.getListTimeSlot( );
+                for ( TimeSlot timeSlot : listTimeSlots )
+                {
+                    timeSlot.setIdWorkingDay( idCopyWorkingDay );
+                    TimeSlotService.saveTimeSlot( timeSlot );
+                }
+            }
+        }
+        // Get all the reservation rules of the original form and set the new id
+        // of the copy of the form and save them
+        List<ReservationRule> listReservationRules = ReservationRuleService.findListReservationRule( nIdForm );
+        for ( ReservationRule reservationRule : listReservationRules )
+        {
+            reservationRule.setIdForm( nIdNewForm );
+            ReservationRuleService.saveReservationRule( reservationRule );
+        }
+        // Copy the messages of the original form and add them to the copy
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         formMessage.setIdForm( nIdNewForm );
-        FormMessageHome.create( formMessage );
+        FormMessageService.saveFormMessage( formMessage );
+        // Get all the closing days of the original form and add them to the
+        // copy
+        List<ClosingDay> listClosingDays = ClosingDayService.findListClosingDay( nIdForm );
+        for ( ClosingDay closingDay : listClosingDays )
+        {
+            closingDay.setIdForm( nIdNewForm );
+            ClosingDayService.saveClosingDay( closingDay );
+        }
+        // Get all the specific slots of the original form and copy them for the
+        // new form
+        List<Slot> listSpecificSlots = SlotService.findSpecificSlotsByIdForm( nIdForm );
+        for ( Slot specificSlot : listSpecificSlots )
+        {
+            specificSlot.setIdForm( nIdNewForm );
+            SlotService.saveSlot( specificSlot );
+        }
+        // Copy the entries of the original form
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( nIdForm );
+        entryFilter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
+        entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
+        entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
+        List<Entry> listEntries = EntryHome.getEntryList( entryFilter );
+        for ( Entry entry : listEntries )
+        {
+            entry.setIdResource( nIdNewForm );
+            EntryHome.copy( entry );
+        }
         return nIdNewForm;
     }
 
@@ -82,7 +162,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the id of the form created
      */
-    public static int createAppointmentForm( AppointmentForm appointmentForm )
+    public static int createAppointmentForm( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.createForm( appointmentForm );
         int nIdForm = form.getIdForm( );
@@ -106,38 +186,47 @@ public final class FormService
     }
 
     /**
-     * Update a form with the new values of an appointmentForm DTO
+     * Update a form with the new values of the Global Parameters of an appointmentForm DTO
      * 
      * @param appointmentForm
      *            the appointmentForm DTO
-     * @param dateOfModification
-     *            the date of the update
+     * 
      */
-    public static void updateAppointmentForm( AppointmentForm appointmentForm, LocalDate dateOfModification )
+    public static void updateGlobalParameters( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.updateForm( appointmentForm );
         int nIdForm = form.getIdForm( );
         DisplayService.updateDisplay( appointmentForm, nIdForm );
         LocalizationService.updateLocalization( appointmentForm, nIdForm );
         FormRuleService.updateFormRule( appointmentForm, nIdForm );
-        if ( dateOfModification != null )
+    }
+
+    /**
+     * Update a form with the new values of an appointmentForm DTO Advanced Parameters (with a date of application) --> new Typical Week
+     * 
+     * @param appointmentForm
+     *            the appointmentForm DTO
+     * @param dateOfModification
+     *            the date of the update
+     */
+    public static void updateAdvancedParameters( AppointmentFormDTO appointmentForm, LocalDate dateOfModification )
+    {
+        int nIdForm = appointmentForm.getIdForm( );
+        ReservationRule reservationRule = ReservationRuleService.updateReservationRule( appointmentForm, nIdForm, dateOfModification );
+        int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
+        WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition( nIdForm, dateOfModification );
+        int nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
+        List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( nIdWeekDefinition );
+        if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
         {
-            ReservationRule reservationRule = ReservationRuleService.updateReservationRule( appointmentForm, nIdForm, dateOfModification );
-            int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
-            WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition( nIdForm, dateOfModification );
-            int nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
-            List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( nIdWeekDefinition );
-            if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
-            {
-                WorkingDayService.deleteListWorkingDay( listWorkingDay );
-            }
-            LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
-            LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
-            int nDuration = appointmentForm.getDurationAppointments( );
-            for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
-            {
-                WorkingDayService.generateWorkingDayAndListTimeSlot( nIdWeekDefinition, dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
-            }
+            WorkingDayService.deleteListWorkingDay( listWorkingDay );
+        }
+        LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
+        LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        int nDuration = appointmentForm.getDurationAppointments( );
+        for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
+        {
+            WorkingDayService.generateWorkingDayAndListTimeSlot( nIdWeekDefinition, dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
         }
     }
 
@@ -146,9 +235,9 @@ public final class FormService
      * 
      * @return the list of appointment form dto that are active
      */
-    public static List<AppointmentForm> buildAllActiveAppointmentForm( )
+    public static List<AppointmentFormDTO> buildAllActiveAppointmentForm( )
     {
-        List<AppointmentForm> listActiveAppointmentForm = new ArrayList<>( );
+        List<AppointmentFormDTO> listActiveAppointmentForm = new ArrayList<>( );
         for ( Form form : FormHome.findActiveForms( ) )
         {
             listActiveAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
@@ -162,9 +251,9 @@ public final class FormService
      * 
      * @return the list of all the appointmentForm DTO
      */
-    public static List<AppointmentForm> buildAllAppointmentFormLight( )
+    public static List<AppointmentFormDTO> buildAllAppointmentFormLight( )
     {
-        List<AppointmentForm> listAppointmentFormLight = new ArrayList<>( );
+        List<AppointmentFormDTO> listAppointmentFormLight = new ArrayList<>( );
         for ( Form form : FormService.findAllForms( ) )
         {
             checkValidityDate( form );
@@ -194,9 +283,9 @@ public final class FormService
      * 
      * @return a list of appointmentForm DTO
      */
-    public static List<AppointmentForm> buildAllActiveAndDisplayedOnPortletAppointmentForm( )
+    public static List<AppointmentFormDTO> buildAllActiveAndDisplayedOnPortletAppointmentForm( )
     {
-        List<AppointmentForm> listAppointmentForm = new ArrayList<>( );
+        List<AppointmentFormDTO> listAppointmentForm = new ArrayList<>( );
         for ( Form form : FormService.findAllActiveAndDisplayedOnPortletForms( ) )
         {
             listAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
@@ -211,9 +300,9 @@ public final class FormService
      *            the form object
      * @return the appointmentForm DTO
      */
-    public static AppointmentForm buildAppointmentFormLight( Form form )
+    public static AppointmentFormDTO buildAppointmentFormLight( Form form )
     {
-        AppointmentForm appointmentForm = new AppointmentForm( );
+        AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
         if ( form != null )
         {
             fillAppointmentFormWithFormPart( appointmentForm, form );
@@ -228,7 +317,7 @@ public final class FormService
      *            the form Id
      * @return the appointmentForm DTO
      */
-    public static AppointmentForm buildAppointmentFormLight( int nIdForm )
+    public static AppointmentFormDTO buildAppointmentFormLight( int nIdForm )
     {
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         return buildAppointmentFormLight( form );
@@ -245,9 +334,9 @@ public final class FormService
      *            the WeekDefinition Id
      * @return the apointmentForm DTO built
      */
-    public static AppointmentForm buildAppointmentForm( int nIdForm, int nIdReservationRule, int nIdWeekDefinition )
+    public static AppointmentFormDTO buildAppointmentForm( int nIdForm, int nIdReservationRule, int nIdWeekDefinition )
     {
-        AppointmentForm appointmentForm = new AppointmentForm( );
+        AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         fillAppointmentFormWithFormPart( appointmentForm, form );
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
@@ -305,7 +394,7 @@ public final class FormService
      * @param weekDefinition
      *            the week definition
      */
-    private static void fillAppointmentFormWithWeekDefinitionPart( AppointmentForm appointmentForm, WeekDefinition weekDefinition )
+    private static void fillAppointmentFormWithWeekDefinitionPart( AppointmentFormDTO appointmentForm, WeekDefinition weekDefinition )
     {
         List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay( );
         if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
@@ -357,7 +446,7 @@ public final class FormService
      * @param reservationRule
      *            the reservation rule
      */
-    private static void fillAppointmentFormWithReservationRulePart( AppointmentForm appointmentForm, ReservationRule reservationRule )
+    private static void fillAppointmentFormWithReservationRulePart( AppointmentFormDTO appointmentForm, ReservationRule reservationRule )
     {
         appointmentForm.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         appointmentForm.setMaxCapacityPerSlot( reservationRule.getMaxCapacityPerSlot( ) );
@@ -372,7 +461,7 @@ public final class FormService
      * @param formRule
      *            the form rule
      */
-    private static void fillAppointmentFormWithFormRulePart( AppointmentForm appointmentForm, FormRule formRule )
+    private static void fillAppointmentFormWithFormRulePart( AppointmentFormDTO appointmentForm, FormRule formRule )
     {
         appointmentForm.setEnableCaptcha( formRule.getIsCaptchaEnabled( ) );
         appointmentForm.setEnableMandatoryEmail( formRule.getIsMandatoryEmailEnabled( ) );
@@ -391,7 +480,7 @@ public final class FormService
      * @param form
      *            the Form
      */
-    private static void fillAppointmentFormWithFormPart( AppointmentForm appointmentForm, Form form )
+    private static void fillAppointmentFormWithFormPart( AppointmentFormDTO appointmentForm, Form form )
     {
         appointmentForm.setIdForm( form.getIdForm( ) );
         appointmentForm.setTitle( form.getTitle( ) );
@@ -420,7 +509,7 @@ public final class FormService
      * @param display
      *            the display
      */
-    private static void fillAppointmentFormWithDisplayPart( AppointmentForm appointmentForm, Display display )
+    private static void fillAppointmentFormWithDisplayPart( AppointmentFormDTO appointmentForm, Display display )
     {
         appointmentForm.setDisplayTitleFo( display.isDisplayTitleFo( ) );
         appointmentForm.setIcon( display.getIcon( ) );
@@ -437,7 +526,7 @@ public final class FormService
      * @param localization
      *            the localization
      */
-    private static void fillAppointmentFormWithLocalizationPart( AppointmentForm appointmentForm, Localization localization )
+    private static void fillAppointmentFormWithLocalizationPart( AppointmentFormDTO appointmentForm, Localization localization )
     {
         if ( localization != null )
         {
@@ -491,7 +580,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the Form created
      */
-    public static Form createForm( AppointmentForm appointmentForm )
+    public static Form createForm( AppointmentFormDTO appointmentForm )
     {
         Form form = new Form( );
         form = fillInFormWithAppointmentForm( form, appointmentForm );
@@ -507,7 +596,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the Form object updated
      */
-    public static Form updateForm( AppointmentForm appointmentForm )
+    public static Form updateForm( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.findFormLightByPrimaryKey( appointmentForm.getIdForm( ) );
         form = fillInFormWithAppointmentForm( form, appointmentForm );
@@ -524,8 +613,9 @@ public final class FormService
      */
     public static Form updateForm( Form form )
     {
-        FormListenerManager.notifyListenersFormChange( form.getIdForm( ) );
-        return FormHome.update( form );
+        Form formUpdated = FormHome.update( form );
+        FormListenerManager.notifyListenersFormChange( formUpdated.getIdForm( ) );
+        return formUpdated;
     }
 
     /**
@@ -537,7 +627,7 @@ public final class FormService
      *            the appointmentForm DTO
      * @return the form completed
      */
-    public static Form fillInFormWithAppointmentForm( Form form, AppointmentForm appointmentForm )
+    public static Form fillInFormWithAppointmentForm( Form form, AppointmentFormDTO appointmentForm )
     {
         form.setTitle( appointmentForm.getTitle( ) );
         form.setDescription( appointmentForm.getDescription( ) );
@@ -566,13 +656,13 @@ public final class FormService
      */
     public static void removeForm( int nIdForm )
     {
-        FormListenerManager.notifyListenersFormRemoval( nIdForm );
-        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
         // Delete all the responses linked to all the appointments of the form
         for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
         {
             AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
         }
+        FormListenerManager.notifyListenersFormRemoval( nIdForm );
+        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
         FormHome.delete( nIdForm );
     }
 

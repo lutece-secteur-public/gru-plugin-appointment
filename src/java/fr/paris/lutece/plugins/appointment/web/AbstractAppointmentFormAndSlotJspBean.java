@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 
 public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspBean
@@ -28,7 +28,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      * @return
      * @throws ParseException
      */
-    protected boolean checkConstraints( AppointmentForm appointmentForm )
+    protected boolean checkConstraints( AppointmentFormDTO appointmentForm )
     {
         return checkStartingAndEndingTime( appointmentForm ) && checkStartingAndEndingValidityDate( appointmentForm )
                 && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm );
@@ -41,7 +41,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      *            the appointForm DTO
      * @return true if at least one working day is checked, false otherwise
      */
-    private boolean checkAtLeastOneWorkingDayOpen( AppointmentForm appointmentForm )
+    private boolean checkAtLeastOneWorkingDayOpen( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
         if ( !( appointmentForm.getIsOpenMonday( ) || appointmentForm.getIsOpenTuesday( ) || appointmentForm.getIsOpenWednesday( )
@@ -61,7 +61,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      *            the appointmentForm DTO
      * @return false if there is an error
      */
-    private boolean checkStartingAndEndingTime( AppointmentForm appointmentForm )
+    private boolean checkStartingAndEndingTime( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
         LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
@@ -92,7 +92,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      *            the appointmentForm DTO
      * @return false if there is an error
      */
-    private boolean checkStartingAndEndingValidityDate( AppointmentForm appointmentForm )
+    private boolean checkStartingAndEndingValidityDate( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
         if ( ( appointmentForm.getDateStartValidity( ) != null ) && ( appointmentForm.getDateEndValidity( ) != null ) )
@@ -113,7 +113,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      *            athe appointmentForm DTO
      * @return false if the maximum number of people per appointment is bigger than the maximum capacity of the slot
      */
-    private boolean checkSlotCapacityAndPeoplePerAppointment( AppointmentForm appointmentForm )
+    private boolean checkSlotCapacityAndPeoplePerAppointment( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
         if ( appointmentForm.getMaxPeoplePerAppointment( ) > appointmentForm.getMaxCapacityPerSlot( ) )

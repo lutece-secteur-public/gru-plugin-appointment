@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.business;
+package fr.paris.lutece.plugins.appointment.web.dto;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -54,7 +54,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
-public final class AppointmentForm extends ReservationRule implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
+public final class AppointmentFormDTO extends ReservationRule implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
 {
     /**
      * Name of the resource type of Appointment Forms

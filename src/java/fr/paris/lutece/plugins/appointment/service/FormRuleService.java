@@ -1,8 +1,8 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 
 /**
  * Service class for the form rule
@@ -30,7 +30,7 @@ public final class FormRuleService
      * @param nIdForm
      *            the Form Id
      */
-    public static void fillInFormRule( FormRule formRule, AppointmentForm appointmentForm, int nIdForm )
+    public static void fillInFormRule( FormRule formRule, AppointmentFormDTO appointmentForm, int nIdForm )
     {
         formRule.setIsCaptchaEnabled( appointmentForm.getEnableCaptcha( ) );
         formRule.setIsMandatoryEmailEnabled( appointmentForm.getEnableMandatoryEmail( ) );
@@ -51,7 +51,7 @@ public final class FormRuleService
      *            the form Id
      * @return the FormRule created
      */
-    public static FormRule createFormRule( AppointmentForm appointmentForm, int nIdForm )
+    public static FormRule createFormRule( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         FormRule formRule = new FormRule( );
         fillInFormRule( formRule, appointmentForm, nIdForm );
@@ -79,7 +79,7 @@ public final class FormRuleService
      *            the form Id
      * @return the Form Rule updated
      */
-    public static FormRule updateFormRule( AppointmentForm appointmentForm, int nIdForm )
+    public static FormRule updateFormRule( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
         fillInFormRule( formRule, appointmentForm, nIdForm );

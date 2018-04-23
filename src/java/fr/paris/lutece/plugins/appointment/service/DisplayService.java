@@ -1,8 +1,8 @@
 package fr.paris.lutece.plugins.appointment.service;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 
 /**
  * Service class for the display
@@ -31,7 +31,7 @@ public final class DisplayService
      *            the form Id
      * @return the display overload
      */
-    public static Display fillInDisplayWithAppointmentForm( Display display, AppointmentForm appointmentForm, int nIdForm )
+    public static Display fillInDisplayWithAppointmentForm( Display display, AppointmentFormDTO appointmentForm, int nIdForm )
     {
         display.setDisplayTitleFo( appointmentForm.getDisplayTitleFo( ) );
         display.setIcon( appointmentForm.getIcon( ) );
@@ -51,7 +51,7 @@ public final class DisplayService
      *            the form Id
      * @return the display object created
      */
-    public static Display createDisplay( AppointmentForm appointmentForm, int nIdForm )
+    public static Display createDisplay( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         Display display = new Display( );
         display = fillInDisplayWithAppointmentForm( display, appointmentForm, nIdForm );
@@ -79,7 +79,7 @@ public final class DisplayService
      *            the form Id
      * @return the display object updated
      */
-    public static Display updateDisplay( AppointmentForm appointmentForm, int nIdForm )
+    public static Display updateDisplay( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         display = fillInDisplayWithAppointmentForm( display, appointmentForm, nIdForm );

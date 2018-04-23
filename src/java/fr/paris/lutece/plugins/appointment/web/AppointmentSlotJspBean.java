@@ -47,7 +47,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -68,6 +67,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -206,10 +206,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             }
         }
         Map<String, Object> model = getModel( );
-        AppointmentForm appointmentForm = null;
+        AppointmentFormDTO appointmentForm = null;
         if ( request.getParameter( PARAMETER_ERROR_MODIFICATION ) != null )
         {
-            appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+            appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
             model.put( PARAMETER_ERROR_MODIFICATION, Boolean.TRUE );
         }
         List<String> listDayOfWeek = new ArrayList<>( );
@@ -263,12 +263,12 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         populate( appointmentForm, request );
         if ( appointmentForm.getDateOfModification( ) == null )
         {
@@ -280,16 +280,19 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Get all the appointments after this date and until the next week
         // definition if it exists
         WeekDefinition nextWeekDefinition = WeekDefinitionService.findNextWeekDefinition( nIdForm, dateOfModification );
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.MAX;
+        // We can't use the LocalDateTime.MAX value because of the bug of the
+        // year 2038 for Timestamp
+        // (https://fr.wikipedia.org/wiki/Bug_de_l%27an_2038)
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
         if ( nextWeekDefinition != null )
         {
             endingDateTimeOfSearch = nextWeekDefinition.getDateOfApply( ).atTime( LocalTime.MIN );
         }
-        List<Slot> listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, dateOfModification.atTime( LocalTime.MIN ), endingDateTimeOfSearch );
-        List<Appointment> listAppointment = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
+        List<Slot> listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, dateOfModification.atStartOfDay( ), endingDateTimeOfSearch );
+        List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
         // If there are appointments
-        if ( CollectionUtils.isNotEmpty( listAppointment )
-                && !AppointmentUtilities.checkNoAppointmentsImpacted( listAppointment, nIdForm, dateOfModification, appointmentForm ) )
+        if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted )
+                && !AppointmentUtilities.checkNoAppointmentsImpacted( listAppointmentsImpacted, nIdForm, dateOfModification, appointmentForm ) )
         {
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
             addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
@@ -300,8 +303,23 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
         }
-        FormService.updateAppointmentForm( appointmentForm, dateOfModification );
-        SlotService.deleteListSlots( listSlotsImpacted );
+        FormService.updateAdvancedParameters( appointmentForm, dateOfModification );
+        if ( CollectionUtils.isEmpty( listAppointmentsImpacted ) )
+        {
+            SlotService.deleteListSlots( listSlotsImpacted );
+        }
+        else
+        {
+            // If the max capacity has changed,
+            // need to update it for all the slots that already have
+            // appointments
+            for ( Slot slotImpacted : listSlotsImpacted )
+            {
+                slotImpacted.setMaxCapacity( appointmentForm.getMaxCapacityPerSlot( ) );
+                SlotService.updateRemainingPlaces( slotImpacted );
+                SlotService.updateSlot( slotImpacted );
+            }
+        }
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_ADVANCED_PARAMETERS_UPDATED, getLocale( ) );
@@ -341,7 +359,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     public String doRemoveParameter( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        if ( !RBACService.isAuthorized( AppointmentForm.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
@@ -434,6 +452,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         LocalTime endingTime = LocalTime.parse( request.getParameter( PARAMETER_ENDING_TIME ) );
         boolean bShiftSlot = Boolean.parseBoolean( request.getParameter( PARAMETER_SHIFT_SLOT ) );
         boolean bEndingTimeHasChanged = false;
+        boolean bMaxCapacityHasChanged = false;
         if ( bIsOpen != timeSlotFromSession.getIsOpen( ) )
         {
             timeSlotFromSession.setIsOpen( bIsOpen );
@@ -442,6 +461,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         if ( nMaxCapacity != timeSlotFromSession.getMaxCapacity( ) )
         {
             timeSlotFromSession.setMaxCapacity( nMaxCapacity );
+            bMaxCapacityHasChanged = true;
         }
         if ( !endingTime.equals( timeSlotFromSession.getEndingTime( ) ) )
         {
@@ -478,7 +498,25 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
         }
-        SlotService.deleteListSlots( listSlotsImpacted );
+        if ( CollectionUtils.isEmpty( listAppointmentsImpacted ) )
+        {
+            SlotService.deleteListSlots( listSlotsImpacted );
+        }
+        else
+        {
+            // If the max capacity has changed,
+            // need to update it for all the slots that already have
+            // appointments
+            if ( bMaxCapacityHasChanged )
+            {
+                for ( Slot slotImpacted : listSlotsImpacted )
+                {
+                    slotImpacted.setMaxCapacity( nMaxCapacity );
+                    SlotService.updateRemainingPlaces( slotImpacted );
+                    SlotService.updateSlot( slotImpacted );
+                }
+            }
+        }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_TIME_SLOT, strIdTimeSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
@@ -502,7 +540,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Get the nb weeks to display
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
-        AppointmentForm appointmentForm = (AppointmentForm) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
         {
             appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
@@ -627,6 +665,13 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         if ( nMaxCapacity != slotFromSessionOrFromDb.getMaxCapacity( ) )
         {
             slotFromSessionOrFromDb.setMaxCapacity( nMaxCapacity );
+            // Need to set also the nb remaining places and the nb potential
+            // remaining places
+            // If the slot already exist, the good values will be set at the
+            // update of the slot with taking the old values
+            // If it is a new slot, the value set here will be good
+            slotFromSessionOrFromDb.setNbRemainingPlaces( nMaxCapacity );
+            slotFromSessionOrFromDb.setNbPotentialRemainingPlaces( nMaxCapacity );
         }
         if ( !endingTime.equals( slotFromSessionOrFromDb.getEndingTime( ) ) )
         {

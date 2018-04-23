@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentFilter;
 import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -175,7 +175,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     }
 
     @Override
-    public List<Appointment> findByFilter( AppointmentFilter appointmentFilter, Plugin plugin )
+    public List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
     {
         List<Appointment> listAppointment = new ArrayList<Appointment>( );
         DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin );
@@ -197,7 +197,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
      * @param daoUtil
      *            the daoutil
      */
-    private void addFilterParametersToDAOUtil( AppointmentFilter appointmentFilter, DAOUtil daoUtil )
+    private void addFilterParametersToDAOUtil( AppointmentFilterDTO appointmentFilter, DAOUtil daoUtil )
     {
         int nIndex = 1;
         daoUtil.setInt( nIndex++, appointmentFilter.getIdForm( ) );
@@ -254,7 +254,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
      *            the filter
      * @return the query
      */
-    private String getSqlQueryFromFilter( AppointmentFilter appointmentFilter )
+    private String getSqlQueryFromFilter( AppointmentFilterDTO appointmentFilter )
     {
         StringBuilder sbSql = new StringBuilder( SQL_QUERY_SELECT_BY_FILTER );
         if ( appointmentFilter.getFirstName( ) != null )

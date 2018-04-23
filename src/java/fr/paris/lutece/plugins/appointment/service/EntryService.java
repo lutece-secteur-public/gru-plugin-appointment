@@ -43,10 +43,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.appointment.business.AppointmentDTO;
-import fr.paris.lutece.plugins.appointment.business.AppointmentForm;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
@@ -121,7 +121,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     {
         EntryFilter filter = new EntryFilter( );
         filter.setIdResource( nIdForm );
-        filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        filter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
         filter.setIdIsComment( EntryFilter.FILTER_FALSE );
@@ -422,7 +422,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     {
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( nIdForm );
-        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( entryFilter );
@@ -436,7 +436,7 @@ public final class EntryService extends RemovalListenerService implements Serial
             {
                 entryFilter = new EntryFilter( );
                 entryFilter.setIdResource( nIdForm );
-                entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+                entryFilter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
                 entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
                 entryFilter.setIdEntryParent( entry.getIdEntry( ) );
                 List<Entry> listEntryGroup = EntryHome.getEntryList( entryFilter );
@@ -462,7 +462,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         List<Entry> listEntries = new ArrayList<>( );
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( nIdForm );
-        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         List<Entry> listEntriesLight = EntryHome.getEntryList( entryFilter );
         if ( CollectionUtils.isNotEmpty( listEntriesLight ) )
         {
@@ -485,7 +485,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     {
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( nIdForm );
-        entryFilter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        entryFilter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         entryFilter.setIdIsGroup( 1 );
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
         ReferenceList refListGroups = new ReferenceList( );
@@ -744,7 +744,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     {
         EntryFilter filter = new EntryFilter( );
         filter.setIdResource( iform );
-        filter.setResourceType( AppointmentForm.RESOURCE_TYPE );
+        filter.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         filter.setFieldDependNull( EntryFilter.FILTER_TRUE );
         if ( bDisplayFront )

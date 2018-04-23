@@ -58,8 +58,8 @@ public final class WeekDefinitionService
      */
     public static void removeWeekDefinition( int nIdWeekDefinition )
     {
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionRemoval( nIdWeekDefinition );
         WeekDefinitionHome.delete( nIdWeekDefinition );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionRemoval( nIdWeekDefinition );
     }
 
     /**

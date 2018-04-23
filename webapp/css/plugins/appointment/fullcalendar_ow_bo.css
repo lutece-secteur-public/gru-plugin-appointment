@@ -6,7 +6,8 @@ td.fc-axis.fc-time.ui-widget-content {
     line-height: 1.42857143;
     width: 130px;
     margin: 0;
-    border-top: 0px solid transparent;    
+    border-top: 0px solid transparent;   
+    border-right: solid 1px rgb(190, 190, 190); 
 }
 
 th.fc-day-header.ui-widget-header {    
@@ -101,6 +102,11 @@ button.fc-next-button:hover, button.fc-next-button:active, button.fc-next-button
 .fc-time-grid table {
 	border: solid 1px rgb(190, 190, 190);
 	border-top: 0;
+}
+
+.fc .fc-axis {
+	position: relative;
+	top: -22px;
 }
 
 
