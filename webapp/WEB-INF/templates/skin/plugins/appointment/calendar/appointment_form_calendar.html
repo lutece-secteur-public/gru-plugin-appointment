@@ -56,11 +56,12 @@
 		<div class="container" id="current_step">
 		<div class="formGroupContainer">
 		<#if infos??>
-			<@messages infos=infos />
+			<@messages infos=infos/>
 		</#if>
 		<#if formCalendarErrors??>
 			<@messages errors=errors />					
 		<#else>
+			<@messages errors=errors />
 			<div id="calendar"></div>
 		</#if>
 		</div>
