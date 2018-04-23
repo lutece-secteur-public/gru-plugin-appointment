@@ -628,7 +628,7 @@ public class AppointmentApp extends MVCApplication
             // May be the slot is already taken at the same time
             if ( bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
             {
-                addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
                 return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
             }
             appointmentDTO.setSlot( slot );
