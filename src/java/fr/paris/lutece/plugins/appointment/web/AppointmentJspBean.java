@@ -449,20 +449,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
         // Get the list in session
         // If it is an order by or a navigation page, no need to search again
         List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );
+        if ( listAppointmentsDTO == null )
+        {
+            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
+        }
         // If it is a new search
         if ( request.getParameter( PARAMETER_SEARCH ) != null )
         {
             // Populate the filter
             populate( filter, request );
+            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
         }
         // If it is an order by
         String strOrderBy = request.getParameter( PARAMETER_ORDER_BY );
         String strOrderAsc = request.getParameter( PARAMETER_ORDER_ASC );
-        if ( listAppointmentsDTO == null )
-        {
-            listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
-        }
         listAppointmentsDTO = orderList( listAppointmentsDTO, strOrderBy, strOrderAsc );
+        request.getSession( ).setAttribute( SESSION_LIST_APPOINTMENTS, listAppointmentsDTO );
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_DELETE_AND_BACK ) ) )
         {
             String [ ] tabIdAppointmentToDelete = request.getParameterValues( PARAMETER_ID_APPOINTMENT_DELETE );
@@ -482,12 +484,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
                 getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
         request.getSession( ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
-
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
         url.addParameter( PARAMETER_ID_FORM, strIdForm );
         String strUrl = url.getUrl( );
-        request.getSession( ).setAttribute( SESSION_LIST_APPOINTMENTS, listAppointmentsDTO );
         LocalizedPaginator<AppointmentDTO> paginator = new LocalizedPaginator<AppointmentDTO>( listAppointmentsDTO, nItemsPerPage, strUrl,
                 PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
         AppointmentFormDTO form = FormService.buildAppointmentFormLight( nIdForm );
@@ -1198,10 +1198,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
      */
     private List<AppointmentDTO> orderList( List<AppointmentDTO> listAppointmentsDTO, String strOrderBy, String strOrderAsc )
     {
-        List<AppointmentDTO> sortedList = null;
+        List<AppointmentDTO> sortedList = new ArrayList<>( );
         if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) )
         {
-            sortedList = new ArrayList<>( );
             sortedList.addAll( listAppointmentsDTO );
         }
         if ( strOrderBy == null )
