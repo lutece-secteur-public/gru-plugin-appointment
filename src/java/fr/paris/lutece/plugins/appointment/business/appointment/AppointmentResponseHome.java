@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
+import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -68,7 +69,12 @@ public final class AppointmentResponseHome
         List<Response> listResponse = new ArrayList<Response>( listIdResponse.size( ) );
         for ( Integer nIdResponse : listIdResponse )
         {
-            listResponse.add( ResponseHome.findByPrimaryKey( nIdResponse ) );
+            Response response = ResponseHome.findByPrimaryKey( nIdResponse );
+            if ( response.getField( ) != null && response.getField( ).getIdField( ) != 0 )
+            {
+                response.setField( FieldHome.findByPrimaryKey( response.getField( ).getIdField( ) ) );
+            }
+            listResponse.add( response );
         }
         return listResponse;
     }
