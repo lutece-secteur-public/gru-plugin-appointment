@@ -463,7 +463,8 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             timeSlotFromSession.setMaxCapacity( nMaxCapacity );
             bMaxCapacityHasChanged = true;
         }
-        if ( !endingTime.equals( timeSlotFromSession.getEndingTime( ) ) )
+        LocalTime previousEndingTime = timeSlotFromSession.getEndingTime( );
+        if ( !endingTime.equals( previousEndingTime ) )
         {
             timeSlotFromSession.setEndingTime( endingTime );
             if ( !checkEndingTimeOfTimeSlot( endingTime, timeSlotFromSession ) )
@@ -491,7 +492,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_TIME_SLOT, timeSlotFromSession );
             return redirect( request, VIEW_MODIFY_TIME_SLOT, additionalParameters );
         }
-        TimeSlotService.updateTimeSlot( timeSlotFromSession, bEndingTimeHasChanged, bShiftSlot );
+        TimeSlotService.updateTimeSlot( timeSlotFromSession, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
         List<Appointment> listValidatedAppointments = listAppointmentsImpacted.stream( ).filter( appointment -> appointment.getIsCancelled( ) == false )
                 .collect( Collectors.toList( ) );
         if ( bOpeningHasChanged && CollectionUtils.isNotEmpty( listValidatedAppointments ) )
@@ -673,10 +674,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             slotFromSessionOrFromDb.setNbRemainingPlaces( nMaxCapacity );
             slotFromSessionOrFromDb.setNbPotentialRemainingPlaces( nMaxCapacity );
         }
-        LocalTime previousEndingTime = null;
-        if ( !endingTime.equals( slotFromSessionOrFromDb.getEndingTime( ) ) )
+        LocalTime previousEndingTime = slotFromSessionOrFromDb.getEndingTime( );
+        if ( !endingTime.equals( previousEndingTime ) )
         {
-        	previousEndingTime = slotFromSessionOrFromDb.getEndingTime();
             slotFromSessionOrFromDb.setEndingTime( endingTime );
             slotFromSessionOrFromDb.setEndingDateTime( slotFromSessionOrFromDb.getDate( ).atTime( endingTime ) );
             bEndingTimeHasChanged = true;
