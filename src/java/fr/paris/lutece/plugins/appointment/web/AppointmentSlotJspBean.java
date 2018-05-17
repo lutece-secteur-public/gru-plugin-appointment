@@ -395,7 +395,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         ReservationRule reservationRuleToRemove = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply( nIdForm, beginDateOfApply );
         ReservationRuleService.removeReservationRule( reservationRuleToRemove );
-        WeekDefinitionService.removeWeekDefinition( nIdWeekDefinition );
+        WeekDefinitionService.removeWeekDefinition( nIdWeekDefinition, nIdForm );
         addInfo( INFO_PARAMETER_REMOVED, getLocale( ) );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm );
     }
@@ -673,8 +673,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             slotFromSessionOrFromDb.setNbRemainingPlaces( nMaxCapacity );
             slotFromSessionOrFromDb.setNbPotentialRemainingPlaces( nMaxCapacity );
         }
+        LocalTime previousEndingTime = null;
         if ( !endingTime.equals( slotFromSessionOrFromDb.getEndingTime( ) ) )
         {
+        	previousEndingTime = slotFromSessionOrFromDb.getEndingTime();
             slotFromSessionOrFromDb.setEndingTime( endingTime );
             slotFromSessionOrFromDb.setEndingDateTime( slotFromSessionOrFromDb.getDate( ).atTime( endingTime ) );
             bEndingTimeHasChanged = true;
@@ -685,7 +687,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_SLOT, slotFromSessionOrFromDb );
             return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, slotFromSessionOrFromDb.getIdForm( ) );
         }
-        SlotService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, bShiftSlot );
+        SlotService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         if ( bOpeningHasChanged && !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slotFromSessionOrFromDb ) )
