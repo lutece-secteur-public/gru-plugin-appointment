@@ -56,10 +56,10 @@ public final class WeekDefinitionService
      * @param nIdWeekDefinition
      *            the id of the week definition to delete
      */
-    public static void removeWeekDefinition( int nIdWeekDefinition )
+    public static void removeWeekDefinition( int nIdWeekDefinition, int nIdForm )
     {
         WeekDefinitionHome.delete( nIdWeekDefinition );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionRemoval( nIdWeekDefinition );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionRemoval( nIdForm );
     }
 
     /**
