@@ -28,8 +28,8 @@ public interface IWeekDefinitionListener
     /**
      * Notify the listener that a week definition has been deleted
      * 
-     * @param nIdWeekDefinition
-     *            the id of the weekDefinition
+     * @param nIdForm
+     *            the id of the form where a weekDefinition has been removed
      */
-    void notifyWeekDefinitionRemoval( int nIdWeekDefinition );
+    void notifyWeekDefinitionRemoval( int nIdForm );
 }

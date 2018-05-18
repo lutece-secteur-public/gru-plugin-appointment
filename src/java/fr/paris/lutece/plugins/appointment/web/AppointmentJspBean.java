@@ -233,7 +233,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
-
+    private static final String PROPERTY_NB_MAX_APPOINTMENTS_TO_EXPORT = "appointment.nbMaxAppointmentsToExport";
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTS = "manageAppointments";
     private static final String VIEW_CREATE_APPOINTMENT = "createAppointment";
@@ -264,6 +264,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.slot.unvailable";
+    private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_FOR_EXPORT = "appointment.manageAppointments.nbMaxAppointmentsForExport";
 
     // Session keys
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
@@ -286,7 +287,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String DATE_APPOINTMENT = "date_appointment";
     private static final String ADMIN = "admin";
     private static final String STATUS = "status";
-
+    private static final int MAX_NB_APPOINTMENTS_TO_EXPORT = 8000;
     // services
     private final transient StateService _stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
     private final transient ITaskService _taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
@@ -742,7 +743,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         Locale locale = getLocale( );
         List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );
-        AppointmentUtilities.buildExcelFileWithAppointments( strIdForm, response, locale, listAppointmentsDTO, _stateService );
+        if ( listAppointmentsDTO.size( ) > AppPropertiesService.getPropertyInt( PROPERTY_NB_MAX_APPOINTMENTS_TO_EXPORT, MAX_NB_APPOINTMENTS_TO_EXPORT ) )
+        {
+            addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_FOR_EXPORT, locale );
+            UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTS );
+            urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
+            urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
+            return redirect( request, urlItem.getUrl( ) );
+        }
+        else
+        {
+            AppointmentUtilities.buildExcelFileWithAppointments( strIdForm, response, locale, listAppointmentsDTO, _stateService );
+        }
         return null;
     }
 

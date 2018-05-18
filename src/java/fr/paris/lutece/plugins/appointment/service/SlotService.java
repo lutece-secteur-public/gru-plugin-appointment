@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -410,78 +411,101 @@ public final class SlotService
      *            the slot to update
      * @param bEndingTimeHasChanged
      *            true if the ending time has changed
+     * @param previousEndingTime
+     *            the previous ending time
      * @param bShifSlot
      *            true if the user has decided to shift the next slots
      */
-    public static void updateSlot( Slot slot, boolean bEndingTimeHasChanged, boolean bShifSlot )
+    public static void updateSlot( Slot slot, boolean bEndingTimeHasChanged, LocalTime previousEndingTime, boolean bShifSlot )
     {
         slot.setIsSpecific( isSpecificSlot( slot ) );
-        List<Slot> listSlotToCreate = new ArrayList<>( );
+        // If the ending time of the slot has changed
         if ( bEndingTimeHasChanged )
         {
+            // If we don't want to shift the next slots
             if ( !bShifSlot )
             {
-                // Need to get all the slots until the new end of this slot
-                List<Slot> listSlotToDelete = SlotService.findSlotsByIdFormAndDateRange( slot.getIdForm( ), slot.getStartingDateTime( ).plusMinutes( 1 ),
-                        slot.getEndingDateTime( ) );
-                deleteListSlots( listSlotToDelete );
-                // Get the list of slot after the modified slot
-                HashMap<LocalDateTime, Slot> mapNextSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( slot.getIdForm( ),
-                        slot.getEndingDateTime( ), slot.getDate( ).atTime( LocalTime.MAX ) );
-                List<LocalDateTime> listStartingDateTimeNextSlot = new ArrayList<>( mapNextSlot.keySet( ) );
-                // Get the next date time slot
-                LocalDateTime nextStartingDateTime = null;
-                if ( CollectionUtils.isNotEmpty( listStartingDateTimeNextSlot ) )
+                updateSlotWithoutShift( slot );
+            }
+            else
+            {
+                // We want to shift the next slots at the end of the current
+                // slot
+                updateSlotWithShift( slot, previousEndingTime );
+            }
+        }
+        else
+        {
+            // The ending time of the slot has not changed
+            // If it's an update of an existing slot
+            if ( slot.getIdSlot( ) != 0 )
+            {
+                updateRemainingPlaces( slot );
+            }
+            saveSlot( slot );
+        }
+
+    }
+
+    /**
+     * Update the current slot and don't shift the next slots
+     * 
+     * @param slot
+     *            the current slot
+     */
+    private static void updateSlotWithoutShift( Slot slot )
+    {
+        List<Slot> listSlotToCreate = new ArrayList<>( );
+        // Need to get all the slots until the new end of this slot
+        List<Slot> listSlotToDelete = SlotService.findSlotsByIdFormAndDateRange( slot.getIdForm( ), slot.getStartingDateTime( ).plusMinutes( 1 ),
+                slot.getEndingDateTime( ) );
+        deleteListSlots( listSlotToDelete );
+        // Get the list of slot after the modified slot
+        HashMap<LocalDateTime, Slot> mapNextSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( slot.getIdForm( ), slot.getEndingDateTime( ),
+                slot.getDate( ).atTime( LocalTime.MAX ) );
+        List<LocalDateTime> listStartingDateTimeNextSlot = new ArrayList<>( mapNextSlot.keySet( ) );
+        // Get the next date time slot
+        LocalDateTime nextStartingDateTime = null;
+        if ( CollectionUtils.isNotEmpty( listStartingDateTimeNextSlot ) )
+        {
+            nextStartingDateTime = Utilities.getClosestDateTimeInFuture( listStartingDateTimeNextSlot, slot.getEndingDateTime( ) );
+        }
+        else
+        {
+            LocalDate dateOfSlot = slot.getDate( );
+            WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+            WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
+            // No slot after this one.
+            // Need to compute between the end of this slot and the next
+            // time slot
+            if ( workingDay != null )
+            {
+                List<TimeSlot> nextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( workingDay.getListTimeSlot( ),
+                        slot.getEndingTime( ) );
+                TimeSlot nextTimeSlot = null;
+                if ( CollectionUtils.isNotEmpty( nextTimeSlots ) )
                 {
-                    nextStartingDateTime = Utilities.getClosestDateTimeInFuture( listStartingDateTimeNextSlot, slot.getEndingDateTime( ) );
+                    nextTimeSlot = nextTimeSlots.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
                 }
-                else
+                if ( nextTimeSlot != null )
                 {
-                    LocalDate dateOfSlot = slot.getDate( );
-                    WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
-                    WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
-                    // No slot after this one.
-                    // Need to compute between the end of this slot and the next
-                    // time slot
-                    if ( workingDay != null )
-                    {
-                        List<TimeSlot> nextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( workingDay.getListTimeSlot( ),
-                                slot.getEndingTime( ) );
-                        TimeSlot nextTimeSlot = null;
-                        if ( CollectionUtils.isNotEmpty( nextTimeSlots ) )
-                        {
-                            nextTimeSlot = nextTimeSlots.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
-                        }
-                        if ( nextTimeSlot != null )
-                        {
-                            nextStartingDateTime = nextTimeSlot.getStartingTime( ).atDate( dateOfSlot );
-                        }
-                    }
-                    else
-                    {
-                        // This is not a working day
-                        // Generated the new slots at the end of the modified
-                        // slot
-                        listSlotToCreate.addAll( generateListSlotToCreateAfterATime( slot.getEndingDateTime( ), slot.getIdForm( ) ) );
-                    }
-                }
-                // Need to create a slot between these two dateTime
-                if ( nextStartingDateTime != null && !slot.getEndingDateTime( ).isEqual( nextStartingDateTime ) )
-                {
-                    Slot slotToCreate = buildSlot( slot.getIdForm( ), new Period( slot.getEndingDateTime( ), nextStartingDateTime ), slot.getMaxCapacity( ),
-                            slot.getMaxCapacity( ), slot.getMaxCapacity( ), Boolean.FALSE, Boolean.TRUE );
-                    listSlotToCreate.add( slotToCreate );
+                    nextStartingDateTime = nextTimeSlot.getStartingTime( ).atDate( dateOfSlot );
                 }
             }
             else
             {
-                // Need to delete the slot until the end of the day
-                List<Slot> listSlotToDelete = SlotService.findSlotsByIdFormAndDateRange( slot.getIdForm( ),
-                        slot.getStartingDateTime( ).plus( 1, ChronoUnit.MINUTES ), slot.getDate( ).atTime( LocalTime.MAX ) );
-                deleteListSlots( listSlotToDelete );
-                // Generated the new slots at the end of the modified slot
+                // This is not a working day
+                // Generated the new slots at the end of the modified
+                // slot
                 listSlotToCreate.addAll( generateListSlotToCreateAfterATime( slot.getEndingDateTime( ), slot.getIdForm( ) ) );
             }
+        }
+        // Need to create a slot between these two dateTime
+        if ( nextStartingDateTime != null && !slot.getEndingDateTime( ).isEqual( nextStartingDateTime ) )
+        {
+            Slot slotToCreate = buildSlot( slot.getIdForm( ), new Period( slot.getEndingDateTime( ), nextStartingDateTime ), slot.getMaxCapacity( ),
+                    slot.getMaxCapacity( ), slot.getMaxCapacity( ), Boolean.FALSE, Boolean.TRUE );
+            listSlotToCreate.add( slotToCreate );
         }
         // If it's an update of an existing slot
         if ( slot.getIdSlot( ) != 0 )
@@ -490,6 +514,157 @@ public final class SlotService
         }
         saveSlot( slot );
         createListSlot( listSlotToCreate );
+    }
+
+    /**
+     * update the current slot and shift the next slots at the end of the current slot
+     * 
+     * @param slot
+     *            the current slot
+     * @param previousEndingTime
+     *            the previous ending time of the current slot
+     */
+    private static void updateSlotWithShift( Slot slot, LocalTime previousEndingTime )
+    {
+        // We want to shift all the next slots
+        LocalDate dateOfSlot = slot.getDate( );
+        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( slot.getIdForm( ) );
+        // Build or get all the slots of the day
+        List<Slot> listAllSlotsOfThisDayToBuildOrInDb = buildListSlot( slot.getIdForm( ), mapWeekDefinition, dateOfSlot, dateOfSlot );
+        // Remove the current slot and all the slot before it
+        listAllSlotsOfThisDayToBuildOrInDb = listAllSlotsOfThisDayToBuildOrInDb.stream( )
+                .filter( slotToKeep -> slotToKeep.getStartingDateTime( ).isAfter( slot.getStartingDateTime( ) ) ).collect( Collectors.toList( ) );
+        // Need to delete all the slots until the new end of this slot
+        List<Slot> listSlotToDelete = listAllSlotsOfThisDayToBuildOrInDb
+                .stream( )
+                .filter(
+                        slotToDelete -> slotToDelete.getStartingDateTime( ).isAfter( slot.getStartingDateTime( ) )
+                                && !slotToDelete.getEndingDateTime( ).isAfter( slot.getEndingDateTime( ) ) && slotToDelete.getIdSlot( ) != 0 )
+                .collect( Collectors.toList( ) );
+        deleteListSlots( listSlotToDelete );
+        listAllSlotsOfThisDayToBuildOrInDb.removeAll( listSlotToDelete );
+        // Need to find all the existing slots
+        List<Slot> listExistingSlots = listAllSlotsOfThisDayToBuildOrInDb.stream( ).filter( existingSlot -> existingSlot.getIdSlot( ) != 0 )
+                .collect( Collectors.toList( ) );
+        // Remove them from the list of slot to build
+        listAllSlotsOfThisDayToBuildOrInDb.removeAll( listExistingSlots );
+        // Save this list
+        createListSlot( listAllSlotsOfThisDayToBuildOrInDb );
+        List<Slot> listSlotToShift = new ArrayList<>( );
+        listSlotToShift.addAll( listExistingSlots );
+        listSlotToShift.addAll( listAllSlotsOfThisDayToBuildOrInDb );
+        // Need to order the list of slot to shift according to the shift
+        // if the new ending time is before the previous ending time,
+        // the list has to be ordered in chronological order ascending
+        // and the first slot to shift is the closest to the current
+        // slot
+        // (because we have an integrity constraint for the slot, it
+        // can't have the same starting or ending time as another slot
+        listSlotToShift = listSlotToShift.stream( ).sorted( ( slot1, slot2 ) -> slot1.getStartingDateTime( ).compareTo( slot2.getStartingDateTime( ) ) )
+                .collect( Collectors.toList( ) );
+        boolean bNewEndingTimeIsAfterThePreviousTime = false;
+        // Need to know the ending time of the day
+        LocalDateTime endingDateTimeOfTheDay = null;
+        WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
+        LocalTime endingTimeOfTheDay;
+        if ( workingDay != null )
+        {
+            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
+        }
+        else
+        {
+            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+        }
+        endingDateTimeOfTheDay = endingTimeOfTheDay.atDate( dateOfSlot );
+        long timeToAdd = 0;
+        long timeToSubstract = 0;
+        if ( previousEndingTime.isBefore( slot.getEndingTime( ) ) )
+        {
+            bNewEndingTimeIsAfterThePreviousTime = true;
+            // Need to find the next available slot, to know how to
+            // add to the starting time of the next slot to match
+            // with the new end of the current slot
+            if ( CollectionUtils.isNotEmpty( listSlotToShift ) )
+            {
+                Slot nextSlot = listSlotToShift.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) ).get( );
+                if ( slot.getEndingDateTime( ).isAfter( nextSlot.getStartingDateTime( ) ) )
+                {
+                    timeToAdd = nextSlot.getStartingDateTime( ).until( slot.getEndingDateTime( ), ChronoUnit.MINUTES );
+                }
+                else
+                {
+                    timeToAdd = slot.getEndingDateTime( ).until( nextSlot.getStartingDateTime( ), ChronoUnit.MINUTES );
+                }
+                Collections.reverse( listSlotToShift );
+            }
+            else
+            {
+                timeToAdd = previousEndingTime.until( slot.getEndingTime( ), ChronoUnit.MINUTES );
+            }
+        }
+        else
+        {
+            timeToSubstract = slot.getEndingTime( ).until( previousEndingTime, ChronoUnit.MINUTES );
+        }
+        // If it's an update of an existing slot
+        if ( slot.getIdSlot( ) != 0 )
+        {
+            updateRemainingPlaces( slot );
+        }
+        saveSlot( slot );
+        // Need to set the new starting and ending time of all the slots
+        // to shift and update them
+        for ( Slot slotToShift : listSlotToShift )
+        {
+            // If the new ending time is after the previous time
+            if ( bNewEndingTimeIsAfterThePreviousTime )
+            {
+                // If the starting time + the time to add is before the
+                // ending time of the day
+                if ( slotToShift.getStartingDateTime( ).plus( timeToAdd, ChronoUnit.MINUTES ).isBefore( endingDateTimeOfTheDay ) )
+                {
+                    slotToShift.setStartingDateTime( slotToShift.getStartingDateTime( ).plus( timeToAdd, ChronoUnit.MINUTES ) );
+                    // if the ending time is after the ending time of
+                    // the day, we set the new ending time to the ending
+                    // time of the day
+                    if ( slotToShift.getEndingDateTime( ).plus( timeToAdd, ChronoUnit.MINUTES ).isAfter( endingDateTimeOfTheDay ) )
+                    {
+                        slotToShift.setEndingDateTime( endingDateTimeOfTheDay );
+                    }
+                    else
+                    {
+                        slotToShift.setEndingDateTime( slotToShift.getEndingDateTime( ).plus( timeToAdd, ChronoUnit.MINUTES ) );
+                    }
+                    slotToShift.setIsSpecific( isSpecificSlot( slotToShift ) );
+                    saveSlot( slotToShift );
+                }
+                else
+                {
+                    // Delete this slot (the slot can not be after the
+                    // ending time of the day)
+                    deleteSlot( slotToShift );
+                }
+            }
+            else
+            {
+                // The new ending time is before the previous ending
+                // time
+                slotToShift.setStartingDateTime( slotToShift.getStartingDateTime( ).minus( timeToSubstract, ChronoUnit.MINUTES ) );
+                slotToShift.setEndingDateTime( slotToShift.getEndingDateTime( ).minus( timeToSubstract, ChronoUnit.MINUTES ) );
+                slotToShift.setIsSpecific( isSpecificSlot( slotToShift ) );
+                saveSlot( slotToShift );
+            }
+        }
+        if ( !bNewEndingTimeIsAfterThePreviousTime )
+        {
+            // If the slots have been shift earlier,
+            // there is no slot(s) between the last slot created
+            // and the ending time of the day, need to create it(them)
+            List<Slot> listSlotsToAdd = generateListSlotToCreateAfterATime( endingDateTimeOfTheDay.minusMinutes( timeToSubstract ), slot.getIdForm( ) );
+            createListSlot( listSlotsToAdd );
+        }
+
     }
 
     /**

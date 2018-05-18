@@ -44,14 +44,14 @@ public final class WeekDefinitionManagerListener
     /**
      * Notify listeners that a Week Definition is about to be removed
      * 
-     * @param nIdWeekDefinition
-     *            The id of the Week Definition that will be removed
+     * @param nIdForm
+     *            The id of the form where the Week Definition has been removed
      */
-    public static void notifyListenersWeekDefinitionRemoval( int nIdWeekDefinition )
+    public static void notifyListenersWeekDefinitionRemoval( int nIdForm )
     {
         for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
         {
-            weekDefinitionListener.notifyWeekDefinitionRemoval( nIdWeekDefinition );
+            weekDefinitionListener.notifyWeekDefinitionRemoval( nIdForm );
         }
     }
 

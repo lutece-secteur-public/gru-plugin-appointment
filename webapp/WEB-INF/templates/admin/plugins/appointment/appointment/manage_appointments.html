@@ -13,7 +13,7 @@
             </div>
         </div>
         <@tabs tab="filter" form=form>
-            <@messages infos=infos />
+            <@messages infos=infos errors=errors/>
             <form name="form" id="form" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post">
                 <input type="hidden" name="view" value="manageAppointments">    
                 <input type="hidden" name="id_form" value=${form.idForm}>
