@@ -81,6 +81,27 @@ public final class TimeSlotService
      */
     public static TimeSlot saveTimeSlot( TimeSlot timeSlot )
     {
+        TimeSlot timeSlotSaved = null;
+        if ( timeSlot.getIdTimeSlot( ) == 0 )
+        {
+            timeSlotSaved = TimeSlotService.createTimeSlot( timeSlot );
+        }
+        else
+        {
+            timeSlotSaved = TimeSlotService.updateTimeSlot( timeSlot );
+        }
+        return timeSlotSaved;
+    }
+
+    /**
+     * Create a time slot in db
+     * 
+     * @param timeSlot
+     *            the time slot to create
+     * @return the time slot created
+     */
+    public static TimeSlot createTimeSlot( TimeSlot timeSlot )
+    {
         return TimeSlotHome.create( timeSlot );
     }
 
@@ -164,6 +185,10 @@ public final class TimeSlotService
                 updateTimeSlotWithShift( timeSlot, workingDay, reservationRule, nDuration, previousEndingTime );
             }
 
+        }
+        else
+        {
+            saveTimeSlot( timeSlot );
         }
 
         WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( workingDay.getIdWeekDefinition( ) );
@@ -362,9 +387,9 @@ public final class TimeSlotService
      * @param timeSlot
      *            the time slot to update
      */
-    public static void updateTimeSlot( TimeSlot timeSlot )
+    public static TimeSlot updateTimeSlot( TimeSlot timeSlot )
     {
-        TimeSlotHome.update( timeSlot );
+        return TimeSlotHome.update( timeSlot );
     }
 
     /**

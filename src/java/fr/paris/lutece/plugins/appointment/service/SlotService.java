@@ -838,6 +838,13 @@ public final class SlotService
         }
     }
 
+    /**
+     * Create a slot in db
+     * 
+     * @param slot
+     *            the slot to create
+     * @return the slot created
+     */
     public static Slot createSlot( Slot slot )
     {
         Slot slotCreated = SlotHome.create( slot );
