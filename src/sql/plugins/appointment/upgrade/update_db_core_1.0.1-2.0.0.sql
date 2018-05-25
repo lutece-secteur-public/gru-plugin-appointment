@@ -3,4 +3,4 @@ INSERT INTO core_admin_right (id_right,name,level_right,admin_url,description,is
 
 INSERT INTO core_user_right (id_right,id_user) VALUES ('APPOINTMENT_CATEGORY_MANAGEMENT',1);
 
-INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('super_admin','APPOINTMENT_CATEGORY','*','*');
+INSERT INTO core_admin_role_resource (role_key,resource_type,resource_id,permission) VALUES ('super_admin','APPOINTMENT_CATEGORY_MANAGEMENT','*','*');
