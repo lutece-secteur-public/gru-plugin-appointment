@@ -146,7 +146,7 @@ public final class AppointmentService
         int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
         int effectiveBookedSeats = appointmentDTO.getNbBookedSeats( );
         int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
-        slot.setNbPotentialRemainingPlaces( newPotentialRemaningPlaces );
+        slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
 
         slot = SlotService.saveSlot( slot );
         // Create or update the user
