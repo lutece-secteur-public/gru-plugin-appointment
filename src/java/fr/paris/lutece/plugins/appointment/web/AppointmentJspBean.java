@@ -301,10 +301,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @param request
      *            The request
      * @return The HTML code to display
+     * @throws AccessDeniedException 
      */
     @View( value = VIEW_CALENDAR_MANAGE_APPOINTMENTS, defaultView = true )
-    public String getViewCalendarManageAppointments( HttpServletRequest request )
+    public String getViewCalendarManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
+    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
+        }
         cleanSession( request.getSession( ) );
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
         AppointmentDTO appointmentDTO = null;
@@ -408,11 +413,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @param request
      *            The request
      * @return The HTML code to display
+     * @throws AccessDeniedException 
      */
     @SuppressWarnings( "unchecked" )
     @View( value = VIEW_MANAGE_APPOINTMENTS )
-    public String getManageAppointments( HttpServletRequest request )
+    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
+    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
+        }
         // Clean session
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
