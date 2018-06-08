@@ -44,6 +44,11 @@ public final class AppointmentFilterDTO extends User implements Serializable
     private String _strReference;
 
     /**
+     * The status
+     */
+    private int _status = -1;
+
+    /**
      * Get the form id
      * 
      * @return the form id
@@ -196,6 +201,27 @@ public final class AppointmentFilterDTO extends User implements Serializable
     public void setReference( String strReference )
     {
         this._strReference = strReference;
+    }
+
+    /**
+     * Get the status entered in the filter
+     * 
+     * @return the status selected
+     */
+    public int getStatus( )
+    {
+        return _status;
+    }
+
+    /**
+     * Set the status to the filter
+     * 
+     * @param status
+     *            the status to set
+     */
+    public void setStatus( int status )
+    {
+        this._status = status;
     }
 
 }

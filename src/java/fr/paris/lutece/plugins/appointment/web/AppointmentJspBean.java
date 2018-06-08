@@ -97,6 +97,7 @@ import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
@@ -115,6 +116,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
@@ -153,6 +155,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT = "appointment.viewAppointment.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT = "appointment.appointmentApp.recap.title";
     private static final String PROPERTY_PAGE_TITLE_TASKS_FORM_WORKFLOW = "appointment.taskFormWorkflow.pageTitle";
+
+    private static final String UNRESERVED = "appointment.message.labelStatusUnreserved";
+    private static final String RESERVED = "appointment.message.labelStatusReserved";
 
     // Connected User
     private static final String PROPERTY_USER_EMAIL = "user.business-info.online.email";
@@ -217,6 +222,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_RIGHT_CHANGE_STATUS = "rightChangeStatus";
     private static final String MARK_RIGHT_CHANGE_DATE = "rightChangeDate";
     private static final String MARK_FILTER = "filter";
+    private static final String MARK_LIST_STATUS = "listStatus";
     private static final String MARK_RESOURCE_HISTORY = "resource_history";
     private static final String MARK_ADDON = "addon";
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
@@ -301,12 +307,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @param request
      *            The request
      * @return The HTML code to display
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @View( value = VIEW_CALENDAR_MANAGE_APPOINTMENTS, defaultView = true )
     public String getViewCalendarManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
-    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
         }
@@ -413,13 +419,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @param request
      *            The request
      * @return The HTML code to display
-     * @throws AccessDeniedException 
+     * @throws AccessDeniedException
      */
     @SuppressWarnings( "unchecked" )
     @View( value = VIEW_MANAGE_APPOINTMENTS )
     public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
-    	if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
         }
@@ -528,6 +534,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AdminUser user = getUser( );
         model.put( MARK_APPOINTMENT_LIST, paginator.getPageItems( ) );
         model.put( MARK_FILTER, filter );
+        model.put( MARK_LIST_STATUS, getListStatus( ) );
         model.put( MARK_RIGHT_CREATE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, user ) );
         model.put( MARK_RIGHT_MODIFY,
@@ -1087,8 +1094,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
-        }
-        appointmentDTO.setIdAdminUser( getUser( ).getUserId( ) );
+        }        
         Slot slot = null;
         // Reload the slot from the database
         // The slot could have been taken since the beginning of the entry of
@@ -1423,6 +1429,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, slot.getIdForm( ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+    }
+
+    /**
+     * List of all the available status of an appointment
+     * 
+     * @return the list of the status
+     */
+    private ReferenceList getListStatus( )
+    {
+        ReferenceList refListStatus = new ReferenceList( );
+        refListStatus.addItem( -1, StringUtils.EMPTY );
+        refListStatus.addItem( 0, I18nService.getLocalizedString( RESERVED, getLocale( ) ) );
+        refListStatus.addItem( 1, I18nService.getLocalizedString( UNRESERVED, getLocale( ) ) );
+        return refListStatus;
     }
 
 }

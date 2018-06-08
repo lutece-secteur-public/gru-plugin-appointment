@@ -44,7 +44,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
     private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
     private static final String SQL_FILTER_EMAIL = "UPPER(user.email) LIKE ?";
-    private static final String SQL_FILTER_REFERENCE = "UPPER(app.reference) LIKE ?";
+    private static final String SQL_FILTER_STATUS = "app.is_cancelled = ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = "slot.starting_date_time >= ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
 
@@ -213,9 +213,9 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         {
             daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
-        if ( appointmentFilter.getReference( ) != null )
+        if ( appointmentFilter.getStatus( ) != -1 )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getReference( ).toUpperCase( ) + CONSTANT_PERCENT );
+            daoUtil.setInt( nIndex++, appointmentFilter.getStatus( ) );
         }
         if ( appointmentFilter.getStartingDateOfSearch( ) != null )
         {
@@ -272,10 +272,10 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             sbSql.append( CONSTANT_AND );
             sbSql.append( SQL_FILTER_EMAIL );
         }
-        if ( appointmentFilter.getReference( ) != null )
+        if ( appointmentFilter.getStatus( ) != -1 )
         {
             sbSql.append( CONSTANT_AND );
-            sbSql.append( SQL_FILTER_REFERENCE );
+            sbSql.append( SQL_FILTER_STATUS );
         }
         if ( appointmentFilter.getStartingDateOfSearch( ) != null )
         {

@@ -45,12 +45,7 @@
                                         <input id="email" name="email" type="text" value="${filter.email!}"/>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="reference">#i18n{appointment.manageAppointments.reference}&nbsp;:</label>
-                                    <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-                                        <input id="reference" name="reference" type="text" value="${filter.reference!}"/>
-                                    </div>
-                                </div>
+                                <@fieldInputCombo i18nLabelKey='appointment.labelStatus' inputName='status' mandatory=false items=listStatus value="${filter.status!}"/>                                
                             </div>
                             <br/>
                             <div class="form-inline">
