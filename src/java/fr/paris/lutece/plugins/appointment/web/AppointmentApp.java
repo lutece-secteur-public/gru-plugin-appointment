@@ -1009,8 +1009,12 @@ public class AppointmentApp extends MVCApplication
             if ( appointment.getIdActionCancelled( ) > 0 )
             {
                 boolean automaticUpdate = ( AdminUserService.getAdminUser( request ) == null ) ? true : false;
-                WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                try {
+                	WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         appointment.getIdActionCancelled( ), slot.getIdForm( ), request, request.getLocale( ), automaticUpdate );
+                } catch (Exception e){
+                	AppLogService.error("Error Workflow", e);
+                }
             }
             else
             {
