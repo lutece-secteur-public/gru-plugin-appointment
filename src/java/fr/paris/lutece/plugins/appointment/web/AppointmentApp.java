@@ -995,7 +995,7 @@ public class AppointmentApp extends MVCApplication
         }
         else
         {
-        	model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );        	
+            model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );
         }
         Locale locale = getLocale( request );
         XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
@@ -1037,12 +1037,15 @@ public class AppointmentApp extends MVCApplication
                             AppLogService.error( "Error Workflow", e );
                         }
                     }
-                    appointment.setIsCancelled( Boolean.TRUE );
-                    AppointmentService.updateAppointment( appointment );
-                    AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
-                    slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                    slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                    SlotService.updateSlot( slot );
+                    else
+                    {
+                        appointment.setIsCancelled( Boolean.TRUE );
+                        AppointmentService.updateAppointment( appointment );
+                        AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
+                        slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
+                        slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
+                        SlotService.updateSlot( slot );
+                    }
                     Map<String, String> mapParameters = new HashMap<String, String>( );
                     if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
                     {
