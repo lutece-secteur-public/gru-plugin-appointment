@@ -1,185 +1,189 @@
-<div class="row nextStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="stepTitle next">
-				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				<#if form.displayTitleFo && form.title != '' >
-					${form.title}
-				<#else>
-					#i18n{appointment.appointmentApp.defaultTitle}
-				</#if>
-			</h2>
-		</div>
-	</div>
-</div>
-<div class="row steps">
-	<div class="col-xs-12">
-		<div class="container recap">
-			<div class="row">
-				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p class="alert alert-info">${form.description!}</p>
-				</div>
-				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-				</div>
+<#if noAppointmentWithThisReference??>
+	<p class="alert alert-info">#i18n{appointment.message.error.noAppointmentWithThisReference}</p>
+<#else>
+	<div class="row nextStepTitleRow">
+		<div class="col-xs-12">
+			<div class="container">
+				<h2 class="stepTitle next">
+					<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
+					<#if form.displayTitleFo && form.title != '' >
+						${form.title}
+					<#else>
+						#i18n{appointment.appointmentApp.defaultTitle}
+					</#if>
+				</h2>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="row nextStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="stepTitle next">
-				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				Choix de la date
-			</h2>
-		</div>
-	</div>
-</div>
-<div class="row steps">
-	<div class="col-xs-12">
-		<div class="container recap">
-			<div class="row">
-				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p>#i18n{appointment.labelThe} ${dateAppointment} #i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}</p>
-				</div>
-				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="row nextStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="stepTitle next">
-				<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
-				#i18n{appointment.appointmentApp.enteringInformation}
-			</h2>
-		</div>
-	</div>
-</div>
-<div class="row steps">
-	<div class="col-xs-12">
-		<div class="container recap">
-			<div class="row">
-				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p class="alert alert-info">${form.description!}</p>
-					
-					<div class="row">
-						<div class="col-sm-6">
-							<ul class="recap-step-list">
-								<li>${formMessages.fieldLastNameTitle!}</li>
-								<ul>
-									<li>${user.lastName}</li>
-								</ul>
-							</ul>
-						</div>
-						<div class="col-sm-6">
-							<ul class="recap-step-list">
-								<li>${formMessages.fieldFirstNameTitle!}</li>
-								<ul>
-									<li>${user.firstName}</li>
-								</ul>
-							</ul>
-						</div>
-						<div class="col-xs-12">
-							<ul class="recap-step-list">
-								<li>${formMessages.fieldEmailTitle!}</li>
-								<ul>
-									<li>${user.email}</li>
-								</ul>
-							</ul>
-						</div>
-						<#if nbplaces &gt; 1>
-						<div class="col-xs-12">
-							<ul class="recap-step-list">
-								<li>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}</li>
-								<ul>
-									<li>${nbplaces}</li>
-								</ul>
-							</ul>
-						</div>
-						</#if>
-							
-						<#list listResponseRecapDTO as response>
-							<#if response.recapValue?? && response.recapValue?has_content>
-								<div class="col-xs-12">
-									<ul class="recap-step-list">
-									<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
-										<li>${response.entry.title}<#assign entrySave=response.entry></li>
-									</#if>
-										<ul>
-											<li>${response.recapValue}</li>
-										</ul>
-									</ul>
-								</div>
-							</#if>
-						</#list>
+	<div class="row steps">
+		<div class="col-xs-12">
+			<div class="container recap">
+				<div class="row">
+					<div class="col-xs-12 col-sm-9 col-md-9">
+						<p class="alert alert-info">${form.description!}</p>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
 					</div>
 				</div>
-				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
+			</div>
+		</div>
+	</div>
+	<div class="row nextStepTitleRow">
+		<div class="col-xs-12">
+			<div class="container">
+				<h2 class="stepTitle next">
+					<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
+					Choix de la date
+				</h2>
+			</div>
+		</div>
+	</div>
+	<div class="row steps">
+		<div class="col-xs-12">
+			<div class="container recap">
+				<div class="row">
+					<div class="col-xs-12 col-sm-9 col-md-9">
+						<p>#i18n{appointment.labelThe} ${dateAppointment} #i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}</p>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="row currentStepTitleRow">
-	<div class="col-xs-12">
-		<div class="container">
-			<h2 class="current stepTitle">
-				<span class="current stepTitleNumber"><i class="fa fa-close"></i></span>
-				#i18n{appointment.cancelAppointment.pageTitle}
-			</h2>
+	<div class="row nextStepTitleRow">
+		<div class="col-xs-12">
+			<div class="container">
+				<h2 class="stepTitle next">
+					<span class="stepTitleNumber previous"><i class="fa fa-check"></i></span>
+					#i18n{appointment.appointmentApp.enteringInformation}
+				</h2>
+			</div>
 		</div>
 	</div>
-</div>
-
-<div class="row currentStepContentRow">
-	<div class="col-xs-12">
-		<div class="container" id="current_step">
-			<div class="row">
-				<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
-				</div>
-				<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
-					<div class="formGroupContainer">
-						<form class="form-horizontal" role="form" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">		
-							<fieldset>
-								<#if alreadyCancelled??>
-									<p class="alert alert-info">#i18n{appointment.message.info.alreadyCancelled}</p>
-								<#else>
-									<#if appointmentPassed??>
-										<p class="alert alert-error">#i18n{appointment.message.error.canNotCancelPassedAppointment}</p>
-									<#else>
-										<legend>#i18n{appointment.cancelAppointment.pageTitle}</legend>
-										<input type="hidden" name="refAppointment" value="${refAppointment}">
-										<input type="hidden" name="page" value="appointment">
-										<input type="hidden" name="action" value="doCancelAppointment">																																						
-										<div class="form-group">
-											<label class="col-sm-6 control-label" for="dateAppointment">#i18n{appointment.dateAppointment.title}</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" disabled readonly="readonly" value="${dateAppointment}">
-											</div>					
-										</div>
-										<div class="form-group">
-											<label class="col-sm-6 control-label" for="timeAppointment">#i18n{appointment.cancelAppointment.labelTimeAppointment}</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" disabled readonly="readonly" value="#i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}">
-											</div>
-										</div>								
-										<div class="form-group">
-											<div class="col-sm-offset-4 col-sm-10">
-												<button class="btn btn-primary btn-sm" title="#i18n{portal.util.labelValidate}">
-													<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
-												</button>						
-											</div>
-										</div>
-									</#if>
+	<div class="row steps">
+		<div class="col-xs-12">
+			<div class="container recap">
+				<div class="row">
+					<div class="col-xs-12 col-sm-9 col-md-9">
+						<p class="alert alert-info">${form.description!}</p>
+						
+						<div class="row">
+							<div class="col-sm-6">
+								<ul class="recap-step-list">
+									<li>${formMessages.fieldLastNameTitle!}</li>
+									<ul>
+										<li>${user.lastName}</li>
+									</ul>
+								</ul>
+							</div>
+							<div class="col-sm-6">
+								<ul class="recap-step-list">
+									<li>${formMessages.fieldFirstNameTitle!}</li>
+									<ul>
+										<li>${user.firstName}</li>
+									</ul>
+								</ul>
+							</div>
+							<div class="col-xs-12">
+								<ul class="recap-step-list">
+									<li>${formMessages.fieldEmailTitle!}</li>
+									<ul>
+										<li>${user.email}</li>
+									</ul>
+								</ul>
+							</div>
+							<#if nbplaces &gt; 1>
+							<div class="col-xs-12">
+								<ul class="recap-step-list">
+									<li>#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}</li>
+									<ul>
+										<li>${nbplaces}</li>
+									</ul>
+								</ul>
+							</div>
+							</#if>
+								
+							<#list listResponseRecapDTO as response>
+								<#if response.recapValue?? && response.recapValue?has_content>
+									<div class="col-xs-12">
+										<ul class="recap-step-list">
+										<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
+											<li>${response.entry.title}<#assign entrySave=response.entry></li>
+										</#if>
+											<ul>
+												<li>${response.recapValue}</li>
+											</ul>
+										</ul>
+									</div>
 								</#if>
-							</fieldset>
-						</form>
-					</div>				
+							</#list>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+	<div class="row currentStepTitleRow">
+		<div class="col-xs-12">
+			<div class="container">
+				<h2 class="current stepTitle">
+					<span class="current stepTitleNumber"><i class="fa fa-close"></i></span>
+					#i18n{appointment.cancelAppointment.pageTitle}
+				</h2>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row currentStepContentRow">
+		<div class="col-xs-12">
+			<div class="container" id="current_step">
+				<div class="row">
+					<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
+					</div>
+					<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
+						<div class="formGroupContainer">
+							<form class="form-horizontal" role="form" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">		
+								<fieldset>
+									<#if alreadyCancelled??>
+										<p class="alert alert-info">#i18n{appointment.message.info.alreadyCancelled}</p>
+									<#else>
+										<#if appointmentPassed??>
+											<p class="alert alert-error">#i18n{appointment.message.error.canNotCancelPassedAppointment}</p>
+										<#else>
+											<legend>#i18n{appointment.cancelAppointment.pageTitle}</legend>
+											<input type="hidden" name="refAppointment" value="${refAppointment}">
+											<input type="hidden" name="page" value="appointment">
+											<input type="hidden" name="action" value="doCancelAppointment">																																						
+											<div class="form-group">
+												<label class="col-sm-6 control-label" for="dateAppointment">#i18n{appointment.dateAppointment.title}</label>
+												<div class="col-sm-4">
+													<input type="text" class="form-control" disabled readonly="readonly" value="${dateAppointment}">
+												</div>					
+											</div>
+											<div class="form-group">
+												<label class="col-sm-6 control-label" for="timeAppointment">#i18n{appointment.cancelAppointment.labelTimeAppointment}</label>
+												<div class="col-sm-4">
+													<input type="text" class="form-control" disabled readonly="readonly" value="#i18n{appointment.labelFrom} ${startingTimeAppointment} #i18n{appointment.labelTo} ${endingTimeAppointment}">
+												</div>
+											</div>								
+											<div class="form-group">
+												<div class="col-sm-offset-4 col-sm-10">
+													<button class="btn btn-primary btn-sm" title="#i18n{portal.util.labelValidate}">
+														<i class="icon-ok icon-white">&nbsp;</i>&nbsp;#i18n{portal.util.labelValidate}
+													</button>						
+												</div>
+											</div>
+										</#if>
+									</#if>
+								</fieldset>
+							</form>
+						</div>				
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</#if>

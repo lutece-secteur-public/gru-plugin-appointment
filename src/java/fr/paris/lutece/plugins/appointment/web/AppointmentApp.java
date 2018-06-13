@@ -90,9 +90,7 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
-import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
@@ -235,12 +233,12 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_ICON_NULL = "NULL";
     private static final String MARK_ANCHOR = "#";
     private static final String MARK_APPOINTMENT_ALREADY_CANCELLED = "alreadyCancelled";
+    private static final String MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE = "noAppointmentWithThisReference";
     private static final String MARK_APPOINTMENT_PASSED = "appointmentPassed";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
-    private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
     private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
     private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD = "appointment.validation.appointment.NbMaxAppointmentsOnAPeriod.error";
     private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
@@ -997,7 +995,7 @@ public class AppointmentApp extends MVCApplication
         }
         else
         {
-            SiteMessageService.setMessage( request, ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT, SiteMessage.TYPE_STOP );
+        	model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );        	
         }
         Locale locale = getLocale( request );
         XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
