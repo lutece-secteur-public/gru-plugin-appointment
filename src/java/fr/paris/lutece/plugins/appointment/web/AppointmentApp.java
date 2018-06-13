@@ -235,6 +235,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_ICON_NULL = "NULL";
     private static final String MARK_ANCHOR = "#";
     private static final String MARK_APPOINTMENT_ALREADY_CANCELLED = "alreadyCancelled";
+    private static final String MARK_APPOINTMENT_PASSED = "appointmentPassed";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -969,12 +970,18 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
         if ( appointment != null )
         {
+
             if ( appointment.getIsCancelled( ) )
             {
                 model.put( MARK_APPOINTMENT_ALREADY_CANCELLED, Boolean.TRUE );
             }
             int nIdAppointment = appointment.getIdAppointment( );
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
+            // Check if the appointment is passed
+            if ( slot.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
+            {
+                model.put( MARK_APPOINTMENT_PASSED, Boolean.TRUE );
+            }
             model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
@@ -1013,43 +1020,44 @@ public class AppointmentApp extends MVCApplication
         {
             Appointment appointment = AppointmentService.findAppointmentByReference( strRef );
             // Accept only one cancel !!!
-            if ( !appointment.getIsCancelled( ) )
+            if ( appointment != null && !appointment.getIsCancelled( ) )
             {
                 Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-                if ( appointment.getIdActionCancelled( ) > 0 )
+                // Check if the appointment is passed
+                if ( !slot.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
                 {
-                    boolean automaticUpdate = ( AdminUserService.getAdminUser( request ) == null ) ? true : false;
-                    try
+                    if ( appointment.getIdActionCancelled( ) > 0 )
                     {
-                        WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                                appointment.getIdActionCancelled( ), slot.getIdForm( ), request, request.getLocale( ), automaticUpdate );
+                        boolean automaticUpdate = ( AdminUserService.getAdminUser( request ) == null ) ? true : false;
+                        try
+                        {
+                            WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                                    appointment.getIdActionCancelled( ), slot.getIdForm( ), request, request.getLocale( ), automaticUpdate );
+                        }
+                        catch( Exception e )
+                        {
+                            AppLogService.error( "Error Workflow", e );
+                        }
                     }
-                    catch( Exception e )
-                    {
-                        AppLogService.error( "Error Workflow", e );
-                    }
-                }
-                else
-                {
                     appointment.setIsCancelled( Boolean.TRUE );
                     AppointmentService.updateAppointment( appointment );
                     AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
-                }
-                slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                SlotService.updateSlot( slot );
-                Map<String, String> mapParameters = new HashMap<String, String>( );
-                if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
-                {
-                    String strReferer = request.getHeader( PARAMETER_REFERER );
-                    if ( StringUtils.isNotEmpty( strReferer ) )
+                    slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
+                    slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
+                    SlotService.updateSlot( slot );
+                    Map<String, String> mapParameters = new HashMap<String, String>( );
+                    if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
                     {
-                        mapParameters.put( MARK_FROM_URL, strReferer );
+                        String strReferer = request.getHeader( PARAMETER_REFERER );
+                        if ( StringUtils.isNotEmpty( strReferer ) )
+                        {
+                            mapParameters.put( MARK_FROM_URL, strReferer );
+                        }
+                        mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS, request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
                     }
-                    mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS, request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
+                    mapParameters.put( PARAMETER_ID_FORM, Integer.toString( slot.getIdForm( ) ) );
+                    return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
                 }
-                mapParameters.put( PARAMETER_ID_FORM, Integer.toString( slot.getIdForm( ) ) );
-                return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
             }
         }
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
