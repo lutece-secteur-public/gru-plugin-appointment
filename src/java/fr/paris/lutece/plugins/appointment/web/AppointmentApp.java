@@ -234,6 +234,7 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_ICONS = "icons";
     private static final String MARK_ICON_NULL = "NULL";
     private static final String MARK_ANCHOR = "#";
+    private static final String MARK_APPOINTMENT_ALREADY_CANCELLED = "alreadyCancelled";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -968,6 +969,10 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
         if ( appointment != null )
         {
+            if ( appointment.getIsCancelled( ) )
+            {
+                model.put( MARK_APPOINTMENT_ALREADY_CANCELLED, Boolean.TRUE );
+            }
             int nIdAppointment = appointment.getIdAppointment( );
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
             model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
@@ -981,6 +986,7 @@ public class AppointmentApp extends MVCApplication
             appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
             model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, getLocale( request ) ) );
             model.put( MARK_USER, UserService.findUserById( appointment.getIdUser( ) ) );
+
         }
         else
         {
