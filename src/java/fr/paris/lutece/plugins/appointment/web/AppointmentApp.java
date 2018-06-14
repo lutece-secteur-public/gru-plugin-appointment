@@ -1042,9 +1042,6 @@ public class AppointmentApp extends MVCApplication
                         appointment.setIsCancelled( Boolean.TRUE );
                         AppointmentService.updateAppointment( appointment );
                         AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
-                        slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                        slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                        SlotService.updateSlot( slot );
                     }
                     Map<String, String> mapParameters = new HashMap<String, String>( );
                     if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )

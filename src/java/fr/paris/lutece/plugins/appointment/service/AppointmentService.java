@@ -410,6 +410,17 @@ public final class AppointmentService
      */
     public static void updateAppointment( Appointment appointment )
     {
+        // Get the old appointment in db
+        Appointment oldAppointment = AppointmentService.findAppointmentById( appointment.getIdAppointment( ) );
+        // If the update concerns a cancellation of the appointment
+        if ( !oldAppointment.getIsCancelled( ) && appointment.getIsCancelled( ) )
+        {
+            // Need to update the nb remaining places of the related slot
+            Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
+            slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
+            slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
+            SlotService.updateSlot( slot );
+        }
         AppointmentHome.update( appointment );
     }
 }
