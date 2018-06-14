@@ -90,9 +90,7 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
-import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
-import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
@@ -234,11 +232,13 @@ public class AppointmentApp extends MVCApplication
     private static final String MARK_ICONS = "icons";
     private static final String MARK_ICON_NULL = "NULL";
     private static final String MARK_ANCHOR = "#";
+    private static final String MARK_APPOINTMENT_ALREADY_CANCELLED = "alreadyCancelled";
+    private static final String MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE = "noAppointmentWithThisReference";
+    private static final String MARK_APPOINTMENT_PASSED = "appointmentPassed";
 
     // Errors
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
-    private static final String ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT = "appointment.message.error.canNotCancelAppointment";
     private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
     private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD = "appointment.validation.appointment.NbMaxAppointmentsOnAPeriod.error";
     private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
@@ -420,7 +420,8 @@ public class AppointmentApp extends MVCApplication
             listInfos.add( message );
         }
 
-        // Get the min and max date of the open days (for the week navigation on open days calendar templates)
+        // Get the min and max date of the open days (for the week navigation on
+        // open days calendar templates)
         HashSet<Integer> setOpenDays = WeekDefinitionService.getOpenDaysOfWeek( listWeekDefinition );
         LocalDate minDateOfOpenDay = LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).get( ) ) );
         LocalDate maxDateOfOpenDay = endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).get( ) ) );
@@ -967,8 +968,18 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_REF_APPOINTMENT, refAppointment );
         if ( appointment != null )
         {
+
+            if ( appointment.getIsCancelled( ) )
+            {
+                model.put( MARK_APPOINTMENT_ALREADY_CANCELLED, Boolean.TRUE );
+            }
             int nIdAppointment = appointment.getIdAppointment( );
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
+            // Check if the appointment is passed
+            if ( slot.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
+            {
+                model.put( MARK_APPOINTMENT_PASSED, Boolean.TRUE );
+            }
             model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
@@ -980,10 +991,11 @@ public class AppointmentApp extends MVCApplication
             appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
             model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, getLocale( request ) ) );
             model.put( MARK_USER, UserService.findUserById( appointment.getIdUser( ) ) );
+
         }
         else
         {
-            SiteMessageService.setMessage( request, ERROR_MESSAGE_CAN_NOT_CANCEL_APPOINTMENT, SiteMessage.TYPE_STOP );
+            model.put( MARK_NO_APPOINTMENT_WITH_THIS_REFERENCE, Boolean.TRUE );
         }
         Locale locale = getLocale( request );
         XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
@@ -1005,34 +1017,46 @@ public class AppointmentApp extends MVCApplication
         if ( StringUtils.isNotEmpty( strRef ) )
         {
             Appointment appointment = AppointmentService.findAppointmentByReference( strRef );
-            Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-            if ( appointment.getIdActionCancelled( ) > 0 )
+            // Accept only one cancel !!!
+            if ( appointment != null && !appointment.getIsCancelled( ) )
             {
-                boolean automaticUpdate = ( AdminUserService.getAdminUser( request ) == null ) ? true : false;
-                WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                        appointment.getIdActionCancelled( ), slot.getIdForm( ), request, request.getLocale( ), automaticUpdate );
-            }
-            else
-            {
-                appointment.setIsCancelled( Boolean.TRUE );
-                AppointmentService.updateAppointment( appointment );
-                AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
-            }
-            slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
-            slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
-            SlotService.updateSlot( slot );
-            Map<String, String> mapParameters = new HashMap<String, String>( );
-            if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
-            {
-                String strReferer = request.getHeader( PARAMETER_REFERER );
-                if ( StringUtils.isNotEmpty( strReferer ) )
+                Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
+                // Check if the appointment is passed
+                if ( !slot.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
                 {
-                    mapParameters.put( MARK_FROM_URL, strReferer );
+                    if ( appointment.getIdActionCancelled( ) > 0 )
+                    {
+                        boolean automaticUpdate = ( AdminUserService.getAdminUser( request ) == null ) ? true : false;
+                        try
+                        {
+                            WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                                    appointment.getIdActionCancelled( ), slot.getIdForm( ), request, request.getLocale( ), automaticUpdate );
+                        }
+                        catch( Exception e )
+                        {
+                            AppLogService.error( "Error Workflow", e );
+                        }
+                    }
+                    else
+                    {
+                        appointment.setIsCancelled( Boolean.TRUE );
+                        AppointmentService.updateAppointment( appointment );
+                        AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
+                    }
+                    Map<String, String> mapParameters = new HashMap<String, String>( );
+                    if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
+                    {
+                        String strReferer = request.getHeader( PARAMETER_REFERER );
+                        if ( StringUtils.isNotEmpty( strReferer ) )
+                        {
+                            mapParameters.put( MARK_FROM_URL, strReferer );
+                        }
+                        mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS, request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
+                    }
+                    mapParameters.put( PARAMETER_ID_FORM, Integer.toString( slot.getIdForm( ) ) );
+                    return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
                 }
-                mapParameters.put( PARAMETER_FROM_MY_APPOINTMENTS, request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) );
             }
-            mapParameters.put( PARAMETER_ID_FORM, Integer.toString( slot.getIdForm( ) ) );
-            return redirect( request, VIEW_APPOINTMENT_CANCELED, mapParameters );
         }
         return redirectView( request, VIEW_APPOINTMENT_FORM_LIST );
     }

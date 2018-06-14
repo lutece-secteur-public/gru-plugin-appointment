@@ -22,6 +22,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
@@ -125,7 +126,14 @@ public final class AppointmentService
             SlotService.updateSlot( oldSlot );
             // Need to remove the workflow resource to reload again the workflow
             // at the first step
-            WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
+            try
+            {
+                WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
+            }
+            catch( Exception e )
+            {
+                AppLogService.error( "Workflow", e );
+            }
         }
         // Update of the remaining places of the slot
         Slot slot = appointmentDTO.getSlot( );
@@ -183,10 +191,17 @@ public final class AppointmentService
         Form form = FormService.findFormLightByPrimaryKey( slot.getIdForm( ) );
         if ( form.getIdWorkflow( ) > 0 )
         {
-            WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
-                    form.getIdForm( ) );
-            WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                    form.getIdWorkflow( ), form.getIdForm( ) );
+            try
+            {
+                WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
+                        form.getIdForm( ) );
+                WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
+                        form.getIdWorkflow( ), form.getIdForm( ) );
+            }
+            catch( Exception e )
+            {
+                AppLogService.error( "Error Workflow", e );
+            }
         }
         return appointment.getIdAppointment( );
     }
@@ -335,7 +350,14 @@ public final class AppointmentService
         }
         if ( WorkflowService.getInstance( ).isAvailable( ) )
         {
-            WorkflowService.getInstance( ).doRemoveWorkFlowResource( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE );
+            try
+            {
+                WorkflowService.getInstance( ).doRemoveWorkFlowResource( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE );
+            }
+            catch( Exception e )
+            {
+                AppLogService.error( "Error Workflow", e );
+            }
         }
         if ( !appointmentToDelete.getIsCancelled( ) )
         {
@@ -388,6 +410,17 @@ public final class AppointmentService
      */
     public static void updateAppointment( Appointment appointment )
     {
+        // Get the old appointment in db
+        Appointment oldAppointment = AppointmentService.findAppointmentById( appointment.getIdAppointment( ) );
+        // If the update concerns a cancellation of the appointment
+        if ( !oldAppointment.getIsCancelled( ) && appointment.getIsCancelled( ) )
+        {
+            // Need to update the nb remaining places of the related slot
+            Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
+            slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
+            slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
+            SlotService.updateSlot( slot );
+        }
         AppointmentHome.update( appointment );
     }
 }
