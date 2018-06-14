@@ -237,6 +237,7 @@ public final class AppointmentService
         }
         else
         {
+            AppLogService.info( "Update Appointment: " + appointment.getIdAppointment( ) + " on Slot: " + appointment.getIdSlot( ) );
             appointment = AppointmentHome.update( appointment );
         }
         return appointment;
