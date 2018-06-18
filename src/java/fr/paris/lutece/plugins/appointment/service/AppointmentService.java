@@ -153,7 +153,6 @@ public final class AppointmentService
             // Need to update the old slot
             Slot oldSlot = SlotService.findSlotById( appointmentDTO.getIdSlot( ) );
             int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces( );
-            ;
             oldSlot.setNbRemainingPlaces( oldNbRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
             int oldNbPotentialRemainingPlaces = oldSlot.getNbPotentialRemainingPlaces( );
             oldSlot.setNbPotentialRemainingPlaces( oldNbPotentialRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
@@ -185,7 +184,6 @@ public final class AppointmentService
             newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats( ) + appointment.getNbPlaces( );
         }
         slot.setNbRemainingPlaces( newNbRemainingPlaces );
-
         int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
         int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
         int oldNbPlacesTaken = slot.getNbPlacesTaken( );
@@ -399,14 +397,7 @@ public final class AppointmentService
         }
         if ( !appointmentToDelete.getIsCancelled( ) )
         {
-            int nbRemainingPlaces = slotOfTheAppointmentToDelete.getNbRemainingPlaces( );
-            int nbPotentialRemaningPlaces = slotOfTheAppointmentToDelete.getNbPotentialRemainingPlaces( );
-            int nbPlacesTaken = slotOfTheAppointmentToDelete.getNbPlacesTaken( );
-            int nbNewRemainingPlaces = nbRemainingPlaces + appointmentToDelete.getNbPlaces( );
-            slotOfTheAppointmentToDelete.setNbRemainingPlaces( nbNewRemainingPlaces );
-            slotOfTheAppointmentToDelete.setNbPotentialRemainingPlaces( nbPotentialRemaningPlaces + appointmentToDelete.getNbPlaces( ) );
-            slotOfTheAppointmentToDelete.setNbPlacestaken( nbPlacesTaken - appointmentToDelete.getNbPlaces( ) );
-            SlotService.updateSlot( slotOfTheAppointmentToDelete );
+            updateRemaningPlacesWithAppointmentDeletedOrCanceled( appointmentToDelete, slotOfTheAppointmentToDelete );
         }
         // Need to delete also the responses linked to this appointment
         AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
@@ -457,11 +448,23 @@ public final class AppointmentService
         {
             // Need to update the nb remaining places of the related slot
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-            slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
-            slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
-            slot.setNbPlacestaken( slot.getNbPlacesTaken( ) - appointment.getNbPlaces( ) );
-            SlotService.updateSlot( slot );
+            updateRemaningPlacesWithAppointmentDeletedOrCanceled( appointment, slot );
         }
         AppointmentHome.update( appointment );
+    }
+
+    private static void updateRemaningPlacesWithAppointmentDeletedOrCanceled( Appointment appointment, Slot slot )
+    {
+        int nMaxCapacity = slot.getMaxCapacity( );
+        int nOldRemainingPlaces = slot.getNbRemainingPlaces( );
+        int nOldPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
+        int nOldPlacesTaken = slot.getNbPlacesTaken( );
+        int nNewPlacesTaken = nOldPlacesTaken - appointment.getNbPlaces( );
+        int nNewRemainingPlaces = Math.min( nOldRemainingPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
+        int nNewPotentialRemainingPlaces = Math.min( nOldPotentialRemaningPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
+        slot.setNbRemainingPlaces( nNewRemainingPlaces );
+        slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
+        slot.setNbPlacestaken( nNewPlacesTaken );
+        SlotService.updateSlot( slot );
     }
 }
