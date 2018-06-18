@@ -453,13 +453,27 @@ public final class AppointmentService
         AppointmentHome.update( appointment );
     }
 
+    /**
+     * Set the new number of remaining places (and potential) when an appointment is deleted or cancelled This new value must take in account the capacity of
+     * the slot, in case of the slot was already over booked
+     * 
+     * @param appointment
+     *            the appointment that we want to delete (or cancel)
+     * @param slot
+     *            the related slot
+     */
     private static void updateRemaningPlacesWithAppointmentDeletedOrCanceled( Appointment appointment, Slot slot )
     {
+        // The capacity of the slot (that can be less than the number of places taken on the slot --> overbook)
         int nMaxCapacity = slot.getMaxCapacity( );
+        // The old remaining places of the slot (before we delete or cancel the appointment
         int nOldRemainingPlaces = slot.getNbRemainingPlaces( );
         int nOldPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
         int nOldPlacesTaken = slot.getNbPlacesTaken( );
         int nNewPlacesTaken = nOldPlacesTaken - appointment.getNbPlaces( );
+        // The new value of the remaining places of the slot is the minimal value between the old remaining places plus the number of places released by the
+        // appointment
+        // and the capacity of the slot minus the new places taken on the slot
         int nNewRemainingPlaces = Math.min( nOldRemainingPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
         int nNewPotentialRemainingPlaces = Math.min( nOldPotentialRemaningPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
         slot.setNbRemainingPlaces( nNewRemainingPlaces );
