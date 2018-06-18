@@ -153,9 +153,12 @@ public final class AppointmentService
             // Need to update the old slot
             Slot oldSlot = SlotService.findSlotById( appointmentDTO.getIdSlot( ) );
             int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces( );
+            ;
             oldSlot.setNbRemainingPlaces( oldNbRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
             int oldNbPotentialRemainingPlaces = oldSlot.getNbPotentialRemainingPlaces( );
             oldSlot.setNbPotentialRemainingPlaces( oldNbPotentialRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
+            int oldNbPlacesTaken = oldSlot.getNbPlacesTaken( );
+            oldSlot.setNbPlacestaken( oldNbPlacesTaken - appointmentDTO.getNbBookedSeats( ) );
             SlotService.updateSlot( oldSlot );
             // Need to remove the workflow resource to reload again the workflow
             // at the first step
@@ -185,10 +188,11 @@ public final class AppointmentService
 
         int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
         int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
+        int oldNbPlacesTaken = slot.getNbPlacesTaken( );
         int effectiveBookedSeats = appointmentDTO.getNbBookedSeats( );
         int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
         slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
-
+        slot.setNbPlacestaken( oldNbPlacesTaken + appointmentDTO.getNbBookedSeats( ) );
         slot = SlotService.saveSlot( slot );
         // Create or update the user
         User user = UserService.saveUser( appointmentDTO );
@@ -397,9 +401,11 @@ public final class AppointmentService
         {
             int nbRemainingPlaces = slotOfTheAppointmentToDelete.getNbRemainingPlaces( );
             int nbPotentialRemaningPlaces = slotOfTheAppointmentToDelete.getNbPotentialRemainingPlaces( );
+            int nbPlacesTaken = slotOfTheAppointmentToDelete.getNbPlacesTaken( );
             int nbNewRemainingPlaces = nbRemainingPlaces + appointmentToDelete.getNbPlaces( );
             slotOfTheAppointmentToDelete.setNbRemainingPlaces( nbNewRemainingPlaces );
             slotOfTheAppointmentToDelete.setNbPotentialRemainingPlaces( nbPotentialRemaningPlaces + appointmentToDelete.getNbPlaces( ) );
+            slotOfTheAppointmentToDelete.setNbPlacestaken( nbPlacesTaken - appointmentToDelete.getNbPlaces( ) );
             SlotService.updateSlot( slotOfTheAppointmentToDelete );
         }
         // Need to delete also the responses linked to this appointment
@@ -453,6 +459,7 @@ public final class AppointmentService
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
             slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
             slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
+            slot.setNbPlacestaken( slot.getNbPlacesTaken( ) - appointment.getNbPlaces( ) );
             SlotService.updateSlot( slot );
         }
         AppointmentHome.update( appointment );

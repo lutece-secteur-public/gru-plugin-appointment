@@ -52,10 +52,10 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_slot) FROM appointment_slot";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, id_form = ? WHERE id_slot = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, nb_places_taken = ?, id_form = ? WHERE id_slot = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form ";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form ";
     private static final String SQL_FROM_APPOINTMENT_SLOT = "FROM appointment_slot";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT + " WHERE id_slot = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT + " WHERE id_form = ?";
@@ -290,6 +290,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         slot.setMaxCapacity( daoUtil.getInt( nIndex++ ) );
         slot.setNbRemainingPlaces( daoUtil.getInt( nIndex++ ) );
         slot.setNbPotentialRemainingPlaces( daoUtil.getInt( nIndex++ ) );
+        slot.setNbPlacestaken( daoUtil.getInt( nIndex++ ) );
         slot.setIdForm( daoUtil.getInt( nIndex ) );
 
         return slot;
@@ -324,6 +325,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         daoUtil.setInt( nIndex++, slot.getMaxCapacity( ) );
         daoUtil.setInt( nIndex++, slot.getNbRemainingPlaces( ) );
         daoUtil.setInt( nIndex++, slot.getNbPotentialRemainingPlaces( ) );
+        daoUtil.setInt( nIndex++, slot.getNbPlacesTaken( ) );
         daoUtil.setInt( nIndex++, slot.getIdForm( ) );
         if ( !isInsert )
         {

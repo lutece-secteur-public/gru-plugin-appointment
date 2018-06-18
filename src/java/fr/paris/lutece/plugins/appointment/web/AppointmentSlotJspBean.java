@@ -110,6 +110,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_ERROR_LAST_WEEK_DEFINITION = "appointment.message.error.lastWeekDefinition";
     private static final String MESSAGE_INFO_SLOT_UPDATED = "appointment.modifyCalendarSlots.messageSlotUpdated";
     private static final String MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED = "appointment.modifyCalendarSlots.messageValidatedAppointmentsImpacted";
+    private static final String MESSAGE_INFO_SURBOOKING = "appointment.modifyCalendarSlots.messageSurbooking";
     private static final String MESSAGE_INFO_OVERLOAD = "appointment.modifyCalendarSlots.messageOverload";
     private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
@@ -480,7 +481,8 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         List<Slot> listSlotsImpacted = AppointmentUtilities.findSlotsImpactedByThisTimeSlot( timeSlotFromSession, nIdForm, nIdWeekDefinition, bShiftSlot );
         List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
-        if ( bEndingTimeHasChanged && CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
+        // If the ending time of the time slot has changed or if the max capacity has decreased and there are appointments impacted
+        if ( ( bEndingTimeHasChanged || nMaxCapacity < timeSlotFromSession.getMaxCapacity( ) ) && CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
         {
             addError( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
             addError( listAppointmentsImpacted.size( ) + " rendez-vous impacté(s)" );
@@ -616,7 +618,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
                 boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
                 int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-                slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, bIsOpen,
+                slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
                         bIsSpecific );
             }
             else
@@ -690,9 +692,14 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         SlotService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
-        if ( bOpeningHasChanged && !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slotFromSessionOrFromDb ) )
+        boolean appointmentsImpacted = !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slotFromSessionOrFromDb );
+        if ( appointmentsImpacted && bOpeningHasChanged )
         {
             addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+        }
+        if ( appointmentsImpacted && nMaxCapacity < slotFromSessionOrFromDb.getNbPlacesTaken( ) )
+        {
+            addInfo( MESSAGE_INFO_SURBOOKING, getLocale( ) );
         }
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
         Map<String, String> additionalParameters = new HashMap<>( );

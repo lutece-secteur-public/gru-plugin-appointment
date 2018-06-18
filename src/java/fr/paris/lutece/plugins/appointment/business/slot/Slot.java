@@ -112,9 +112,15 @@ public final class Slot implements Serializable
     private int _nNbRemainingPlaces;
 
     /**
-	 * 
-	 */
+     * Nb Potential Remaining Places of the slot
+     */
     private int _nNbPotentialRemainingPlaces;
+
+    /**
+     * Nb Places Taken
+     */
+    private int _nNbPlacesTaken;
+
     /**
      * Form Id the slot belongs to (foreign key)
      */
@@ -407,6 +413,27 @@ public final class Slot implements Serializable
     public void setNbPotentialRemainingPlaces( int nNbPotentialRemainingPlaces )
     {
         this._nNbPotentialRemainingPlaces = nNbPotentialRemainingPlaces;
+    }
+
+    /**
+     * Get the nb places taken on the slot
+     * 
+     * @return the number of places taken
+     */
+    public int getNbPlacesTaken( )
+    {
+        return _nNbPlacesTaken;
+    }
+
+    /**
+     * Set the number of places taken on the slot
+     * 
+     * @param nNbPlacesTaken
+     *            the number to set
+     */
+    public void setNbPlacestaken( int nNbPlacestaken )
+    {
+        this._nNbPlacesTaken = nNbPlacestaken;
     }
 
     /**
