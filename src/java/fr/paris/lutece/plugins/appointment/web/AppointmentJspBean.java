@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2015, Mairie de Paris
+ * Copyright (c) 2002-2018, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -888,7 +888,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
                         boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
                         int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-                        slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity,
+                        slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0,
                                 bIsOpen, bIsSpecific );
                         slot = SlotService.saveSlot( slot );
                     }
@@ -1019,7 +1019,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
             boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
             int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-            slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, bIsOpen,
+            slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
                     bIsSpecific );
             slot = SlotService.saveSlot( slot );
         }
@@ -1425,12 +1425,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 appointment.setIsCancelled( bStatusCancelled );
                 AppointmentService.updateAppointment( appointment );
                 AppLogService.info( LogUtilities.buildLog( ACTION_DO_CHANGE_APPOINTMENT_STATUS, strIdAppointment, getUser( ) ) );
-                if ( bStatusCancelled )
-                {
-                    slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                    slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
-                    SlotService.updateSlot( slot );
-                }
             }
             return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, slot.getIdForm( ) );
         }

@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2002-2018, Mairie de Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.DayOfWeek;
@@ -224,7 +257,7 @@ public final class SlotService
                 if ( listDateOfClosingDay.contains( dateTemp ) )
                 {
                     listSlot.add( buildSlot( nIdForm, new Period( dateTemp.atTime( minTimeForThisDay ), dateTemp.atTime( maxTimeForThisDay ) ), nMaxCapacity,
-                            nMaxCapacity, nMaxCapacity, Boolean.FALSE, Boolean.FALSE ) );
+                            nMaxCapacity, nMaxCapacity, 0, Boolean.FALSE, Boolean.FALSE ) );
                 }
                 else
                 {
@@ -254,7 +287,7 @@ public final class SlotService
                                     nMaxCapacityToPut = timeSlot.getMaxCapacity( );
                                 }
                                 slotToAdd = buildSlot( nIdForm, new Period( dateTimeTemp, dateTemp.atTime( timeTemp ) ), nMaxCapacityToPut, nMaxCapacityToPut,
-                                        nMaxCapacityToPut, timeSlot.getIsOpen( ), Boolean.FALSE );
+                                        nMaxCapacityToPut, 0, timeSlot.getIsOpen( ), Boolean.FALSE );
                                 listSlot.add( slotToAdd );
                             }
                             else
@@ -297,7 +330,7 @@ public final class SlotService
                                     timeTemp = maxTimeForThisDay;
                                 }
                                 slotToAdd = buildSlot( nIdForm, new Period( dateTimeTemp, dateTemp.atTime( timeTemp ) ), nMaxCapacity, nMaxCapacity,
-                                        nMaxCapacity, Boolean.FALSE, Boolean.FALSE );
+                                        nMaxCapacity, 0, Boolean.FALSE, Boolean.FALSE );
                                 listSlot.add( slotToAdd );
                             }
                         }
@@ -327,8 +360,8 @@ public final class SlotService
      *            true if the slot is open
      * @return the slot built
      */
-    public static Slot buildSlot( int nIdForm, Period period, int nMaxCapacity, int nNbRemainingPlaces, int nNbPotentialRemainingPlaces, boolean bIsOpen,
-            boolean bIsSpecific )
+    public static Slot buildSlot( int nIdForm, Period period, int nMaxCapacity, int nNbRemainingPlaces, int nNbPotentialRemainingPlaces, int nNbPlacesTaken,
+            boolean bIsOpen, boolean bIsSpecific )
     {
         Slot slot = new Slot( );
         slot.setIdSlot( 0 );
@@ -338,6 +371,7 @@ public final class SlotService
         slot.setMaxCapacity( nMaxCapacity );
         slot.setNbRemainingPlaces( nNbRemainingPlaces );
         slot.setNbPotentialRemainingPlaces( nNbPotentialRemainingPlaces );
+        slot.setNbPlacestaken( nNbPlacesTaken );
         slot.setIsOpen( bIsOpen );
         slot.setIsSpecific( bIsSpecific );
         addDateAndTimeToSlot( slot );
@@ -504,7 +538,7 @@ public final class SlotService
         if ( nextStartingDateTime != null && !slot.getEndingDateTime( ).isEqual( nextStartingDateTime ) )
         {
             Slot slotToCreate = buildSlot( slot.getIdForm( ), new Period( slot.getEndingDateTime( ), nextStartingDateTime ), slot.getMaxCapacity( ),
-                    slot.getMaxCapacity( ), slot.getMaxCapacity( ), Boolean.FALSE, Boolean.TRUE );
+                    slot.getMaxCapacity( ), slot.getMaxCapacity( ), 0, Boolean.FALSE, Boolean.TRUE );
             listSlotToCreate.add( slotToCreate );
         }
         // If it's an update of an existing slot
@@ -785,7 +819,7 @@ public final class SlotService
         LocalDateTime endingDateTime = startingDateTime.plusMinutes( nDurationSlot );
         while ( !endingDateTime.isAfter( endingDateTimeOfTheDay ) )
         {
-            Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, Boolean.FALSE,
+            Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, Boolean.FALSE,
                     Boolean.TRUE );
             slotToCreate.setIsSpecific( isSpecificSlot( slotToCreate, workingDay, listTimeSlot, nMaxCapacity ) );
             startingDateTime = endingDateTime;
@@ -794,7 +828,7 @@ public final class SlotService
         }
         if ( startingDateTime.isBefore( endingDateTimeOfTheDay ) && endingDateTime.isAfter( endingDateTimeOfTheDay ) )
         {
-            Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTimeOfTheDay ), nMaxCapacity, nMaxCapacity, nMaxCapacity,
+            Slot slotToCreate = buildSlot( nIdForm, new Period( startingDateTime, endingDateTimeOfTheDay ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0,
                     Boolean.FALSE, Boolean.TRUE );
             slotToCreate.setIsSpecific( isSpecificSlot( slotToCreate, workingDay, listTimeSlot, nMaxCapacity ) );
             listSlotToCreate.add( slotToCreate );

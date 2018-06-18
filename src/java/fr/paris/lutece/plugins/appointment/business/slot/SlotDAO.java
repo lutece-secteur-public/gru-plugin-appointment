@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2002-2018, Mairie de Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 package fr.paris.lutece.plugins.appointment.business.slot;
 
 import java.sql.Timestamp;
@@ -19,10 +52,10 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_slot) FROM appointment_slot";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, id_form = ? WHERE id_slot = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, nb_places_taken = ?, id_form = ? WHERE id_slot = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, id_form ";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form ";
     private static final String SQL_FROM_APPOINTMENT_SLOT = "FROM appointment_slot";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT + " WHERE id_slot = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT + " WHERE id_form = ?";
@@ -257,6 +290,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         slot.setMaxCapacity( daoUtil.getInt( nIndex++ ) );
         slot.setNbRemainingPlaces( daoUtil.getInt( nIndex++ ) );
         slot.setNbPotentialRemainingPlaces( daoUtil.getInt( nIndex++ ) );
+        slot.setNbPlacestaken( daoUtil.getInt( nIndex++ ) );
         slot.setIdForm( daoUtil.getInt( nIndex ) );
 
         return slot;
@@ -291,6 +325,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         daoUtil.setInt( nIndex++, slot.getMaxCapacity( ) );
         daoUtil.setInt( nIndex++, slot.getNbRemainingPlaces( ) );
         daoUtil.setInt( nIndex++, slot.getNbPotentialRemainingPlaces( ) );
+        daoUtil.setInt( nIndex++, slot.getNbPlacesTaken( ) );
         daoUtil.setInt( nIndex++, slot.getIdForm( ) );
         if ( !isInsert )
         {

@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2002-2018, Mairie de Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.LocalDateTime;
@@ -123,6 +156,8 @@ public final class AppointmentService
             oldSlot.setNbRemainingPlaces( oldNbRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
             int oldNbPotentialRemainingPlaces = oldSlot.getNbPotentialRemainingPlaces( );
             oldSlot.setNbPotentialRemainingPlaces( oldNbPotentialRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
+            int oldNbPlacesTaken = oldSlot.getNbPlacesTaken( );
+            oldSlot.setNbPlacestaken( oldNbPlacesTaken - appointmentDTO.getNbBookedSeats( ) );
             SlotService.updateSlot( oldSlot );
             // Need to remove the workflow resource to reload again the workflow
             // at the first step
@@ -149,13 +184,13 @@ public final class AppointmentService
             newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats( ) + appointment.getNbPlaces( );
         }
         slot.setNbRemainingPlaces( newNbRemainingPlaces );
-
         int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
         int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
+        int oldNbPlacesTaken = slot.getNbPlacesTaken( );
         int effectiveBookedSeats = appointmentDTO.getNbBookedSeats( );
         int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
         slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
-
+        slot.setNbPlacestaken( oldNbPlacesTaken + appointmentDTO.getNbBookedSeats( ) );
         slot = SlotService.saveSlot( slot );
         // Create or update the user
         User user = UserService.saveUser( appointmentDTO );
@@ -362,12 +397,7 @@ public final class AppointmentService
         }
         if ( !appointmentToDelete.getIsCancelled( ) )
         {
-            int nbRemainingPlaces = slotOfTheAppointmentToDelete.getNbRemainingPlaces( );
-            int nbPotentialRemaningPlaces = slotOfTheAppointmentToDelete.getNbPotentialRemainingPlaces( );
-            int nbNewRemainingPlaces = nbRemainingPlaces + appointmentToDelete.getNbPlaces( );
-            slotOfTheAppointmentToDelete.setNbRemainingPlaces( nbNewRemainingPlaces );
-            slotOfTheAppointmentToDelete.setNbPotentialRemainingPlaces( nbPotentialRemaningPlaces + appointmentToDelete.getNbPlaces( ) );
-            SlotService.updateSlot( slotOfTheAppointmentToDelete );
+            updateRemaningPlacesWithAppointmentDeletedOrCanceled( appointmentToDelete, slotOfTheAppointmentToDelete );
         }
         // Need to delete also the responses linked to this appointment
         AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
@@ -418,10 +448,37 @@ public final class AppointmentService
         {
             // Need to update the nb remaining places of the related slot
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-            slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + appointment.getNbPlaces( ) );
-            slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + appointment.getNbPlaces( ) );
-            SlotService.updateSlot( slot );
+            updateRemaningPlacesWithAppointmentDeletedOrCanceled( appointment, slot );
         }
         AppointmentHome.update( appointment );
+    }
+
+    /**
+     * Set the new number of remaining places (and potential) when an appointment is deleted or cancelled This new value must take in account the capacity of
+     * the slot, in case of the slot was already over booked
+     * 
+     * @param appointment
+     *            the appointment that we want to delete (or cancel)
+     * @param slot
+     *            the related slot
+     */
+    private static void updateRemaningPlacesWithAppointmentDeletedOrCanceled( Appointment appointment, Slot slot )
+    {
+        // The capacity of the slot (that can be less than the number of places taken on the slot --> overbook)
+        int nMaxCapacity = slot.getMaxCapacity( );
+        // The old remaining places of the slot (before we delete or cancel the appointment
+        int nOldRemainingPlaces = slot.getNbRemainingPlaces( );
+        int nOldPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
+        int nOldPlacesTaken = slot.getNbPlacesTaken( );
+        int nNewPlacesTaken = nOldPlacesTaken - appointment.getNbPlaces( );
+        // The new value of the remaining places of the slot is the minimal value between the old remaining places plus the number of places released by the
+        // appointment
+        // and the capacity of the slot minus the new places taken on the slot
+        int nNewRemainingPlaces = Math.min( nOldRemainingPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
+        int nNewPotentialRemainingPlaces = Math.min( nOldPotentialRemaningPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
+        slot.setNbRemainingPlaces( nNewRemainingPlaces );
+        slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
+        slot.setNbPlacestaken( nNewPlacesTaken );
+        SlotService.updateSlot( slot );
     }
 }
