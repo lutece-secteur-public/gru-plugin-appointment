@@ -111,55 +111,73 @@ public final class FormService
         int idCopyWeekDefinition;
         WorkingDay copyWorkingDay;
         int idCopyWorkingDay;
+        TimeSlot copyTimeSlot;
         List<WeekDefinition> listWeekDefinitions = WeekDefinitionService.findListWeekDefinition( nIdForm );
         List<WorkingDay> listWorkingDays;
         List<TimeSlot> listTimeSlots;
         for ( WeekDefinition weekDefinition : listWeekDefinitions )
         {
-            weekDefinition.setIdForm( nIdNewForm );
-            copyWeekDefinition = WeekDefinitionService.saveWeekDefinition( weekDefinition );
+            copyWeekDefinition = weekDefinition;
+            copyWeekDefinition.setIdWeekDefinition( 0 );
+            copyWeekDefinition.setIdForm( nIdNewForm );
+            copyWeekDefinition = WeekDefinitionService.saveWeekDefinition( copyWeekDefinition );
             listWorkingDays = weekDefinition.getListWorkingDay( );
             idCopyWeekDefinition = copyWeekDefinition.getIdWeekDefinition( );
             for ( WorkingDay workingDay : listWorkingDays )
             {
-                workingDay.setIdWeekDefinition( idCopyWeekDefinition );
-                copyWorkingDay = WorkingDayService.saveWorkingDay( workingDay );
+                copyWorkingDay = workingDay;
+                copyWorkingDay.setIdWorkingDay( 0 );
+                copyWorkingDay.setIdWeekDefinition( idCopyWeekDefinition );
+                copyWorkingDay = WorkingDayService.saveWorkingDay( copyWorkingDay );
                 idCopyWorkingDay = copyWorkingDay.getIdWorkingDay( );
                 listTimeSlots = workingDay.getListTimeSlot( );
                 for ( TimeSlot timeSlot : listTimeSlots )
                 {
-                    timeSlot.setIdWorkingDay( idCopyWorkingDay );
-                    TimeSlotService.saveTimeSlot( timeSlot );
+                    copyTimeSlot = timeSlot;
+                    copyTimeSlot.setIdTimeSlot( 0 );
+                    copyTimeSlot.setIdWorkingDay( idCopyWorkingDay );
+                    TimeSlotService.saveTimeSlot( copyTimeSlot );
                 }
             }
         }
         // Get all the reservation rules of the original form and set the new id
         // of the copy of the form and save them
+        ReservationRule copyReservationRule;
         List<ReservationRule> listReservationRules = ReservationRuleService.findListReservationRule( nIdForm );
         for ( ReservationRule reservationRule : listReservationRules )
         {
-            reservationRule.setIdForm( nIdNewForm );
-            ReservationRuleService.saveReservationRule( reservationRule );
+            copyReservationRule = reservationRule;
+            copyReservationRule.setIdReservationRule( 0 );
+            copyReservationRule.setIdForm( nIdNewForm );
+            ReservationRuleService.saveReservationRule( copyReservationRule );
         }
         // Copy the messages of the original form and add them to the copy
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
-        formMessage.setIdForm( nIdNewForm );
-        FormMessageService.saveFormMessage( formMessage );
+        FormMessage copyFormMessage = formMessage;
+        copyFormMessage.setIdFormMessage( 0 );
+        copyFormMessage.setIdForm( nIdNewForm );
+        FormMessageService.saveFormMessage( copyFormMessage );
         // Get all the closing days of the original form and add them to the
         // copy
         List<ClosingDay> listClosingDays = ClosingDayService.findListClosingDay( nIdForm );
+        ClosingDay copyClosingDay;
         for ( ClosingDay closingDay : listClosingDays )
         {
-            closingDay.setIdForm( nIdNewForm );
-            ClosingDayService.saveClosingDay( closingDay );
+            copyClosingDay = closingDay;
+            copyClosingDay.setIdClosingDay( 0 );
+            copyClosingDay.setIdForm( nIdNewForm );
+            ClosingDayService.saveClosingDay( copyClosingDay );
         }
         // Get all the specific slots of the original form and copy them for the
         // new form
         List<Slot> listSpecificSlots = SlotService.findSpecificSlotsByIdForm( nIdForm );
+        Slot copySpecificSlot;
         for ( Slot specificSlot : listSpecificSlots )
         {
-            specificSlot.setIdForm( nIdNewForm );
-            SlotService.saveSlot( specificSlot );
+            copySpecificSlot = specificSlot;
+            copySpecificSlot.setIdSlot( 0 );
+            copySpecificSlot.setIdForm( nIdNewForm );
+            SlotService.saveSlot( copySpecificSlot );
         }
         // Copy the entries of the original form
         EntryFilter entryFilter = new EntryFilter( );
