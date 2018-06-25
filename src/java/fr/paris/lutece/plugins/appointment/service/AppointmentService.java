@@ -48,13 +48,10 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
-import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
-import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
@@ -375,15 +372,10 @@ public final class AppointmentService
      * @param nIdAppointment
      *            the id of the appointment to delete
      */
-    public static void deleteAppointment( int nIdAppointment, AdminUser user ) throws AccessDeniedException
+    public static void deleteAppointment( int nIdAppointment )
     {
         Appointment appointmentToDelete = AppointmentHome.findByPrimaryKey( nIdAppointment );
         Slot slotOfTheAppointmentToDelete = SlotService.findSlotById( appointmentToDelete.getIdSlot( ) );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( slotOfTheAppointmentToDelete.getIdForm( ) ),
-                AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, user ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
-        }
         if ( WorkflowService.getInstance( ).isAvailable( ) )
         {
             try
@@ -410,7 +402,7 @@ public final class AppointmentService
      * @param appointment
      *            the appointment to delete
      */
-    public static void deleteAppointment( Appointment appointment )
+    private static void deleteAppointment( Appointment appointment )
     {
         AppointmentListenerManager.notifyListenersAppointmentRemoval( appointment.getIdAppointment( ) );
         AppointmentHome.delete( appointment.getIdAppointment( ) );

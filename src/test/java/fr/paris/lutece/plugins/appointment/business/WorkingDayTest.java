@@ -61,7 +61,7 @@ public final class WorkingDayTest extends LuteceTestCase
     public void testWorkingDay( )
     {
         // Initialize a WorkingDay
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
         weekDefinition.setIdForm( form.getIdForm( ) );
@@ -100,7 +100,7 @@ public final class WorkingDayTest extends LuteceTestCase
     public void testDeleteCascade( )
     {
         // Initialize a WorkingDay
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
         weekDefinition.setIdForm( form.getIdForm( ) );
@@ -125,7 +125,7 @@ public final class WorkingDayTest extends LuteceTestCase
     public void testFindByIdWeekDefinition( )
     {
         // Initialize a WorkingDay
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
         weekDefinition.setIdForm( form.getIdForm( ) );

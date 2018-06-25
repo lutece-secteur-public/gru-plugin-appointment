@@ -60,7 +60,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
     public void testWeekDefinition( )
     {
         // Initialize a WeekDefinition
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
         WeekDefinition weekDefinition = buildWeekDefinition( );
         weekDefinition.setIdForm( form.getIdForm( ) );
@@ -96,7 +96,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
     public void testDeleteCascade( )
     {
         // Initialize a WeekDefinition
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
         WeekDefinition weekDefinition = buildWeekDefinition( );
         weekDefinition.setIdForm( form.getIdForm( ) );
@@ -118,7 +118,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
     public void testFindByIdForm( )
     {
         // Initialize a WeekDefinition
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
         WeekDefinition weekDefinition = buildWeekDefinition( );
         weekDefinition.setIdForm( form.getIdForm( ) );

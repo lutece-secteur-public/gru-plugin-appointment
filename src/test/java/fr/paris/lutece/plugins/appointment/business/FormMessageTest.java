@@ -88,7 +88,7 @@ public final class FormMessageTest extends LuteceTestCase
      */
     public void testFormMessage( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a FormMessage
@@ -141,7 +141,7 @@ public final class FormMessageTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a FormMessage
@@ -165,7 +165,7 @@ public final class FormMessageTest extends LuteceTestCase
      */
     public void testFindByIdForm( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a FormMessage
