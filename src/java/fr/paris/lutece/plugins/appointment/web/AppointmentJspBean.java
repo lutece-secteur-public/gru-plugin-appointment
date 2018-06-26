@@ -584,7 +584,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
     {
         int nIdAppointment = Integer.parseInt( request.getParameter( PARAMETER_ID_APPOINTMENT ) );
         Integer idForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        AppointmentService.deleteAppointment( nIdAppointment, getUser( ) );
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( idForm ),
+                AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
+        }
+        AppointmentService.deleteAppointment( nIdAppointment );
         AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         addInfo( INFO_APPOINTMENT_REMOVED, getLocale( ) );
         // Need to update the list of the appointments in session
@@ -630,12 +635,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String [ ] tabIdAppointmentToDelete = (String [ ]) request.getSession( ).getAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
         request.getSession( ).removeAttribute( PARAMETER_ID_APPOINTMENT_DELETE );
         Integer idForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, Integer.toString( idForm ),
+                AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT, getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
+        }
         ArrayList<String> listStringIdAppointment = new ArrayList<>( );
         if ( tabIdAppointmentToDelete != null )
         {
             for ( String strIdAppointment : tabIdAppointmentToDelete )
             {
-                AppointmentService.deleteAppointment( Integer.valueOf( strIdAppointment ), getUser( ) );
+                AppointmentService.deleteAppointment( Integer.valueOf( strIdAppointment ) );
                 AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, strIdAppointment, getUser( ) ) );
             }
             addInfo( INFO_APPOINTMENT_MASSREMOVED, getLocale( ) );

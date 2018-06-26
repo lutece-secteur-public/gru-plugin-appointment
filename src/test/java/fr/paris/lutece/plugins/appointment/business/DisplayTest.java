@@ -65,7 +65,7 @@ public final class DisplayTest extends LuteceTestCase
      */
     public void testDisplay( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate( );
@@ -111,7 +111,7 @@ public final class DisplayTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate( );
@@ -138,7 +138,7 @@ public final class DisplayTest extends LuteceTestCase
      */
     public void testFindByIdForm( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate( );

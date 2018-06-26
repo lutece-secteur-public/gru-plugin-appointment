@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
@@ -43,6 +44,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -59,14 +61,14 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void testAppointment( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
-        User user = UserTest.buildUser( );
+        User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
         UserHome.create( user );
 
-        Slot slot = SlotTest.buildSlot( );
-        slot.setIdForm( form.getIdForm( ) );
+        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         SlotHome.create( slot );
 
         // Initialize a Appointment
@@ -100,14 +102,14 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
-        User user = UserTest.buildUser( );
+        User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
         UserHome.create( user );
 
-        Slot slot = SlotTest.buildSlot( );
-        slot.setIdForm( form.getIdForm( ) );
+        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         SlotHome.create( slot );
 
         // Initialize a Appointment
@@ -135,18 +137,18 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void testFindByIdUser( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
-        User user = UserTest.buildUser( );
+        User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
         UserHome.create( user );
 
-        Slot slot1 = SlotTest.buildSlot( );
-        slot1.setIdForm( form.getIdForm( ) );
+        Slot slot1 = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         SlotHome.create( slot1 );
 
-        Slot slot2 = SlotTest.buildSlot2( );
-        slot2.setIdForm( form.getIdForm( ) );
+        Slot slot2 = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
+                Constants.NB_REMAINING_PLACES_2, 0, Constants.NB_REMAINING_PLACES_2, Boolean.TRUE, Boolean.TRUE );
         SlotHome.create( slot2 );
 
         // Initialize a fist Appointment
@@ -177,17 +179,17 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void testFindByIdSlot( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
-        User user1 = UserTest.buildUser( );
+        User user1 = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
         UserHome.create( user1 );
 
-        User user2 = UserTest.buildUser2( );
+        User user2 = UserTest.buildUser( Constants.GUID_2, Constants.FIRST_NAME_2, Constants.LAST_NAME_2, Constants.EMAIL_2, Constants.PHONE_NUMBER_2 );
         UserHome.create( user2 );
 
-        Slot slot = SlotTest.buildSlot( );
-        slot.setIdForm( form.getIdForm( ) );
+        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
+                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
         SlotHome.create( slot );
 
         // Initialize a fist Appointment
@@ -226,5 +228,19 @@ public final class AppointmentTest extends LuteceTestCase
     {
         assertEquals( appointmentStored.getIdSlot( ), appointment.getIdSlot( ) );
         assertEquals( appointmentStored.getIdUser( ), appointment.getIdUser( ) );
+    }
+
+    public static AppointmentDTO buildAppointmentDTO( Slot slot, String strEmail, String strFirstName, String strLastName, LocalTime startingTime,
+            LocalTime endingTime, int nbBookedSeats )
+    {
+        AppointmentDTO appointmentDTO = new AppointmentDTO( );
+        appointmentDTO.setSlot( slot );
+        appointmentDTO.setEmail( strEmail );
+        appointmentDTO.setFirstName( strFirstName );
+        appointmentDTO.setLastName( strLastName );
+        appointmentDTO.setStartingTime( startingTime );
+        appointmentDTO.setEndingTime( endingTime );
+        appointmentDTO.setNbBookedSeats( nbBookedSeats );
+        return appointmentDTO;
     }
 }

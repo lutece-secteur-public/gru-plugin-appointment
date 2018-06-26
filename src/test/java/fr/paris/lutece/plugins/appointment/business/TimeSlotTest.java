@@ -69,7 +69,7 @@ public final class TimeSlotTest extends LuteceTestCase
      */
     public void testTimeSlot( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
@@ -81,8 +81,7 @@ public final class TimeSlotTest extends LuteceTestCase
         WorkingDayHome.create( workingDay );
 
         // Initialize a TimeSlot
-        TimeSlot timeSlot = buildTimeSlot( );
-        timeSlot.setIdWorkingDay( workingDay.getIdWorkingDay( ) );
+        TimeSlot timeSlot = buildTimeSlot( STARTING_TIME_1, ENDING_TIME_1, IS_OPEN_1, MAX_CAPACITY_1, workingDay.getIdWorkingDay( ) );
         // Create the TimeSlot in database
         TimeSlotHome.create( timeSlot );
 
@@ -118,7 +117,7 @@ public final class TimeSlotTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
@@ -130,8 +129,7 @@ public final class TimeSlotTest extends LuteceTestCase
         WorkingDayHome.create( workingDay );
 
         // Initialize a TimeSlot
-        TimeSlot timeSlot = buildTimeSlot( );
-        timeSlot.setIdWorkingDay( workingDay.getIdWorkingDay( ) );
+        TimeSlot timeSlot = buildTimeSlot( STARTING_TIME_1, ENDING_TIME_1, IS_OPEN_1, MAX_CAPACITY_1, workingDay.getIdWorkingDay( ) );
         // Create the TimeSlot in database
         TimeSlotHome.create( timeSlot );
 
@@ -145,6 +143,9 @@ public final class TimeSlotTest extends LuteceTestCase
         // Check the timeSlot has been removed from database
         assertNull( timeSlotStored );
 
+        // Clean
+        FormHome.delete( form.getIdForm( ) );
+
     }
 
     /**
@@ -152,7 +153,7 @@ public final class TimeSlotTest extends LuteceTestCase
      */
     public void testFindByIdWorkingDay( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
@@ -164,8 +165,7 @@ public final class TimeSlotTest extends LuteceTestCase
         WorkingDayHome.create( workingDay );
 
         // Initialize a TimeSlot
-        TimeSlot timeSlot = buildTimeSlot( );
-        timeSlot.setIdWorkingDay( workingDay.getIdWorkingDay( ) );
+        TimeSlot timeSlot = buildTimeSlot( STARTING_TIME_1, ENDING_TIME_1, IS_OPEN_1, MAX_CAPACITY_1, workingDay.getIdWorkingDay( ) );
         // Create the TimeSlot in database
         TimeSlotHome.create( timeSlot );
 
@@ -184,13 +184,14 @@ public final class TimeSlotTest extends LuteceTestCase
      * 
      * @return the timeSlot
      */
-    public static TimeSlot buildTimeSlot( )
+    public static TimeSlot buildTimeSlot( LocalTime startingTime, LocalTime endingTime, boolean bIsOpen, int nMaxCapacity, int nIdWorkingDay )
     {
         TimeSlot timeSlot = new TimeSlot( );
-        timeSlot.setStartingTime( STARTING_TIME_1 );
-        timeSlot.setEndingTime( ENDING_TIME_1 );
-        timeSlot.setIsOpen( IS_OPEN_1 );
-        timeSlot.setMaxCapacity( MAX_CAPACITY_1 );
+        timeSlot.setStartingTime( startingTime );
+        timeSlot.setEndingTime( endingTime );
+        timeSlot.setIsOpen( bIsOpen );
+        timeSlot.setMaxCapacity( nMaxCapacity );
+        timeSlot.setIdWorkingDay( nIdWorkingDay );
         return timeSlot;
     }
 

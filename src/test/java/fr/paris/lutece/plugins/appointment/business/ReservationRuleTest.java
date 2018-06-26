@@ -64,7 +64,7 @@ public final class ReservationRuleTest extends LuteceTestCase
      */
     public void testReservationRule( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a ReservationRule
@@ -103,7 +103,7 @@ public final class ReservationRuleTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a ReservationRule
@@ -126,7 +126,7 @@ public final class ReservationRuleTest extends LuteceTestCase
      */
     public void testFindByIdForm( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a ReservationRule
@@ -150,7 +150,7 @@ public final class ReservationRuleTest extends LuteceTestCase
      */
     public void findByIdFormAndDateOfApply( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
         // Initialize a ReservationRule
         ReservationRule reservationRule1 = buildReservationRule( );

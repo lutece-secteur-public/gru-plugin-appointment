@@ -58,7 +58,7 @@ public final class FormRuleTest extends LuteceTestCase
      */
     public void testFormRule( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a FormRule
@@ -96,7 +96,7 @@ public final class FormRuleTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a FormRule
@@ -119,7 +119,7 @@ public final class FormRuleTest extends LuteceTestCase
      */
     public void testFindByIdForm( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a FormRule

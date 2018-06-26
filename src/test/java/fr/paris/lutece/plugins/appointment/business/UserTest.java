@@ -46,24 +46,13 @@ import fr.paris.lutece.test.LuteceTestCase;
 public final class UserTest extends LuteceTestCase
 {
 
-    public final static String GUID_1 = "guid1";
-    public final static String GUID_2 = "guid2";
-    public final static String FIRST_NAME_1 = "firstName1";
-    public final static String FIRST_NAME_2 = "firstName2";
-    public final static String LAST_NAME_1 = "lastName1";
-    public final static String LAST_NAME_2 = "lastName2";
-    public final static String EMAIL_1 = "email1";
-    public final static String EMAIL_2 = "email2";
-    public final static String PHONE_NUMBER_1 = "0605040302";
-    public final static String PHONE_NUMBER_2 = "0605040303";
-
     /**
      * Test method for the User (CRUD)
      */
     public void testUser( )
     {
         // Initialize a User
-        User user = buildUser( );
+        User user = buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
         // Insert the User in database
         UserHome.create( user );
         // Find the user created in database
@@ -72,11 +61,11 @@ public final class UserTest extends LuteceTestCase
         checkAsserts( userStored, user );
 
         // Update the user
-        user.setGuid( GUID_2 );
-        user.setFirstName( FIRST_NAME_2 );
-        user.setLastName( LAST_NAME_2 );
-        user.setEmail( EMAIL_2 );
-        user.setPhoneNumber( PHONE_NUMBER_2 );
+        user.setGuid( Constants.GUID_2 );
+        user.setFirstName( Constants.FIRST_NAME_2 );
+        user.setLastName( Constants.LAST_NAME_2 );
+        user.setEmail( Constants.EMAIL_2 );
+        user.setPhoneNumber( Constants.PHONE_NUMBER_2 );
         // Update the user in database
         UserHome.update( user );
         // Find the user updated in database
@@ -96,30 +85,14 @@ public final class UserTest extends LuteceTestCase
      * 
      * @return the User
      */
-    public static User buildUser( )
+    public static User buildUser( String strGuid, String strFirstName, String strLastName, String strEmail, String strPhoneNumber )
     {
         User user = new User( );
-        user.setGuid( GUID_1 );
-        user.setFirstName( FIRST_NAME_1 );
-        user.setLastName( LAST_NAME_1 );
-        user.setEmail( EMAIL_1 );
-        user.setPhoneNumber( PHONE_NUMBER_1 );
-        return user;
-    }
-
-    /**
-     * Build a User Business Object
-     * 
-     * @return the User
-     */
-    public static User buildUser2( )
-    {
-        User user = new User( );
-        user.setGuid( GUID_2 );
-        user.setFirstName( FIRST_NAME_2 );
-        user.setLastName( LAST_NAME_2 );
-        user.setEmail( EMAIL_2 );
-        user.setPhoneNumber( PHONE_NUMBER_2 );
+        user.setGuid( strGuid );
+        user.setFirstName( strFirstName );
+        user.setLastName( strLastName );
+        user.setEmail( strEmail );
+        user.setPhoneNumber( strPhoneNumber );
         return user;
     }
 

@@ -58,7 +58,7 @@ public final class ClosingDayTest extends LuteceTestCase
      */
     public void testClosingDay( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a ClosingDay
@@ -95,7 +95,7 @@ public final class ClosingDayTest extends LuteceTestCase
      */
     public void testDeleteCascade( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a ClosingDay
@@ -118,7 +118,7 @@ public final class ClosingDayTest extends LuteceTestCase
      */
     public void testFindByIdFormAndDateOfCLosingDay( )
     {
-        Form form = FormTest.buildForm( );
+        Form form = FormTest.buildForm1( );
         FormHome.create( form );
 
         // Initialize a ClosingDay

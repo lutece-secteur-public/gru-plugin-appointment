@@ -74,7 +74,7 @@ public final class FormTest extends LuteceTestCase
     public void testForm( )
     {
         // Initialize a Form
-        Form form = buildForm( );
+        Form form = buildForm1( );
         // Create the Form in database
         FormHome.create( form );
         // Find the Form created in database
@@ -108,7 +108,7 @@ public final class FormTest extends LuteceTestCase
 	 */
     public void testWeekDefinition( )
     {
-        Form form = buildForm( );
+        Form form = buildForm1( );
         FormHome.create( form );
 
         WeekDefinition weekDefinition1 = new WeekDefinition( );
@@ -210,7 +210,7 @@ public final class FormTest extends LuteceTestCase
      * 
      * @return a form
      */
-    public static Form buildForm( )
+    public static Form buildForm1( )
     {
         Form form = new Form( );
         form.setTitle( TITLE_FORM_1 );
