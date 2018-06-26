@@ -8,7 +8,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-appointment</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>2.0.22-SNAPSHOT</version>
+    <version>2.0.23-SNAPSHOT</version>
     <name>Lutece appointment plugin</name>
     <properties>  
         <componentName>appointment</componentName>
