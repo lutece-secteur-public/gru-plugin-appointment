@@ -318,29 +318,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 SlotService.deleteListSlots( listSlotsImpacted );
             }
         }
-        FormService.updateAdvancedParameters( appointmentForm, dateOfModification );
-
-        // Need to delete the slots that are impacted but with no appointments
-        HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
-        for ( Appointment appointment : listAppointmentsImpacted )
-        {
-            setSlotsImpactedWithAppointments.add( appointment.getIdSlot( ) );
-        }
-        List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
-                .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
-
-        SlotService.deleteListSlots( listSlotsImpactedWithoutAppointments );
-
-        // If the max capacity has changed,
-        // need to update it for all the slots that already have
-        // appointments
-
-        for ( Slot slotImpacted : listSlotsImpacted )
-        {
-            slotImpacted.setMaxCapacity( appointmentForm.getMaxCapacityPerSlot( ) );
-            SlotService.updateRemainingPlaces( slotImpacted );
-            SlotService.updateSlot( slotImpacted );
-        }
+        FormService.updateAdvancedParameters( appointmentForm, dateOfModification );        
 
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
