@@ -170,24 +170,31 @@ public final class AppointmentService
         // Update of the remaining places of the slot
         Slot slot = appointmentDTO.getSlot( );
         int oldNbRemainingPLaces = slot.getNbRemainingPlaces( );
-        int newNbRemainingPlaces = 0;
-        if ( appointmentDTO.getIdAppointment( ) == 0 || appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) )
-        {
-            newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats( );
-        }
-        else
-        {
-            Appointment appointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
-            newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats( ) + appointment.getNbPlaces( );
-        }
-        slot.setNbRemainingPlaces( newNbRemainingPlaces );
         int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
         int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
         int oldNbPlacesTaken = slot.getNbPlacesTaken( );
         int effectiveBookedSeats = appointmentDTO.getNbBookedSeats( );
-        int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+        int newNbRemainingPlaces = 0;
+        int newPotentialRemaningPlaces = 0;
+        int newNbPlacesTaken = 0;
+        if ( appointmentDTO.getIdAppointment( ) == 0 || appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) )
+        {
+            newNbRemainingPlaces = oldNbRemainingPLaces - effectiveBookedSeats;
+            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+            newNbPlacesTaken = oldNbPlacesTaken + effectiveBookedSeats;
+        }
+        else
+        {
+            // It is an update of the appointment
+            Appointment oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
+            newNbRemainingPlaces = oldNbRemainingPLaces + oldAppointment.getNbPlaces( ) - effectiveBookedSeats;
+            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+            newNbPlacesTaken = oldNbPlacesTaken - oldAppointment.getNbPlaces( ) + effectiveBookedSeats;
+        }
+        slot.setNbRemainingPlaces( newNbRemainingPlaces );
+        slot.setNbPlacestaken( newNbPlacesTaken );
         slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
-        slot.setNbPlacestaken( oldNbPlacesTaken + appointmentDTO.getNbBookedSeats( ) );
+
         slot = SlotService.saveSlot( slot );
         // Create or update the user
         User user = UserService.saveUser( appointmentDTO );
