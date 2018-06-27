@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -305,22 +306,29 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
         }
         FormService.updateAdvancedParameters( appointmentForm, dateOfModification );
-        if ( CollectionUtils.isEmpty( listAppointmentsImpacted ) )
+
+        // Need to delete the slots that are impacted but with no appointments
+        HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
+        for ( Appointment appointment : listAppointmentsImpacted )
         {
-            SlotService.deleteListSlots( listSlotsImpacted );
+            setSlotsImpactedWithAppointments.add( appointment.getIdSlot( ) );
         }
-        else
+        List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
+                .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
+
+        SlotService.deleteListSlots( listSlotsImpactedWithoutAppointments );
+
+        // If the max capacity has changed,
+        // need to update it for all the slots that already have
+        // appointments
+
+        for ( Slot slotImpacted : listSlotsImpacted )
         {
-            // If the max capacity has changed,
-            // need to update it for all the slots that already have
-            // appointments
-            for ( Slot slotImpacted : listSlotsImpacted )
-            {
-                slotImpacted.setMaxCapacity( appointmentForm.getMaxCapacityPerSlot( ) );
-                SlotService.updateRemainingPlaces( slotImpacted );
-                SlotService.updateSlot( slotImpacted );
-            }
+            slotImpacted.setMaxCapacity( appointmentForm.getMaxCapacityPerSlot( ) );
+            SlotService.updateRemainingPlaces( slotImpacted );
+            SlotService.updateSlot( slotImpacted );
         }
+
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_ADVANCED_PARAMETERS_UPDATED, getLocale( ) );
@@ -481,7 +489,8 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         List<Slot> listSlotsImpacted = AppointmentUtilities.findSlotsImpactedByThisTimeSlot( timeSlotFromSession, nIdForm, nIdWeekDefinition, bShiftSlot );
         List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
-        // If the ending time of the time slot has changed or if the max capacity has decreased and there are appointments impacted
+        // If the ending time of the time slot has changed or if the max
+        // capacity has decreased and there are appointments impacted
         if ( ( bEndingTimeHasChanged || nMaxCapacity < timeSlotFromSession.getMaxCapacity( ) ) && CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
         {
             addError( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
@@ -501,25 +510,30 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
         }
-        if ( CollectionUtils.isEmpty( listAppointmentsImpacted ) )
+        // Need to delete the slots that are impacted but with no appointments
+        HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
+        for ( Appointment appointment : listAppointmentsImpacted )
         {
-            SlotService.deleteListSlots( listSlotsImpacted );
+            setSlotsImpactedWithAppointments.add( appointment.getIdSlot( ) );
         }
-        else
+        List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
+                .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
+
+        SlotService.deleteListSlots( listSlotsImpactedWithoutAppointments );
+
+        // If the max capacity has changed,
+        // need to update it for all the slots that already have
+        // appointments
+        if ( bMaxCapacityHasChanged )
         {
-            // If the max capacity has changed,
-            // need to update it for all the slots that already have
-            // appointments
-            if ( bMaxCapacityHasChanged )
+            for ( Slot slotImpacted : listSlotsImpacted )
             {
-                for ( Slot slotImpacted : listSlotsImpacted )
-                {
-                    slotImpacted.setMaxCapacity( nMaxCapacity );
-                    SlotService.updateRemainingPlaces( slotImpacted );
-                    SlotService.updateSlot( slotImpacted );
-                }
+                slotImpacted.setMaxCapacity( nMaxCapacity );
+                SlotService.updateRemainingPlaces( slotImpacted );
+                SlotService.updateSlot( slotImpacted );
             }
         }
+
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_TIME_SLOT, strIdTimeSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
