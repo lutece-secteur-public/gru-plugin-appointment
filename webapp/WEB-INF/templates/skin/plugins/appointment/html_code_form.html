@@ -196,7 +196,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="email">${formMessages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if></label>
 											<div class="col-xs-12">
-												<input type="text" class="form-control" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
+												<input type="email" class="form-control" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
@@ -228,7 +228,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
 											<div class="col-xs-12">
-												<input type="text" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
+												<input type="email" value="" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>
@@ -260,7 +260,7 @@
 									<div class="form-group <#if formGroupError!=''>has-error</#if>">
 										<label class="col-xs-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
 										<div class="col-xs-12">
-											<input type="text"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" onchange="this.value = minmax(this.value, 1, ${nbplaces})" onkeypress='return validateQty(event);'>
+											<input type="number"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
 											<#if formGroupError!=''>
 												${formGroupError}
 											<#else>

@@ -398,9 +398,7 @@ public final class AppointmentUtilities
         // if it's a modification, need to check if the new number of booked
         // seats is under or equal to the number of the remaining places + the
         // previous number of booked seats of the appointment
-        if ( ( appointmentDTO.getIdAppointment( ) == 0 && nbBookedSeats > appointmentDTO.getSlot( ).getNbRemainingPlaces( ) )
-                || ( appointmentDTO.getIdAppointment( ) != 0 && nbBookedSeats > ( appointmentDTO.getSlot( ).getNbRemainingPlaces( ) + appointmentDTO
-                        .getNbBookedSeats( ) ) ) )
+        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats() )
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale ) );
