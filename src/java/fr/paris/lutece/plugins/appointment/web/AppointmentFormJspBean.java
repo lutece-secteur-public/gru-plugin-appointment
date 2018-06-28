@@ -787,6 +787,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                         }
                         else
                         {
+                        	SlotService.deleteListSlots(listSlotsImpacted);
                             listDateToSave.add( closingDate );
                         }
                     }
