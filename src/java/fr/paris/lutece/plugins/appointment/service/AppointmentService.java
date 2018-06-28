@@ -431,10 +431,9 @@ public final class AppointmentService {
 		int nOldPlacesTaken = slot.getNbPlacesTaken();
 		int nNewPlacesTaken = nOldPlacesTaken - nbPlaces;
 		// The new value of the remaining places of the slot is the minimal
-		// value between the old remaining places plus the number of places
-		// released by the
-		// appointment
-		// and the capacity of the slot minus the new places taken on the slot
+		// value between : 
+		// 		- the minimal value between the potentially new max capacity and the old remaining places plus the number of places released by the appointment
+		// 		- and the capacity of the slot minus the new places taken on the slot (0 if negative)
 		int nNewRemainingPlaces = Math.min(Math.min(nMaxCapacity, nOldRemainingPlaces + nbPlaces),
 				Math.max(0, nMaxCapacity - nNewPlacesTaken));
 
