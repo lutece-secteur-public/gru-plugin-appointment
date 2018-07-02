@@ -793,10 +793,12 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                     StringJoiner stbListDate = new StringJoiner( StringUtils.SPACE );
                     for ( LocalDate dateWithError : listDateWithError )
                     {
-                        stbListDate.add( Utilities.getFormatter( ).format( dateWithError ) ).add( ";" );
-                    }
+                        stbListDate.add( Utilities.getFormatter( ).format( dateWithError ) ).add( "," );
+                    }                    
+                    String strListdate = stbListDate.toString();
+                    strListdate = strListdate.substring(0, strListdate.length()-1);
                     Object [ ] tabEntryErrorDate = {
-                        stbListDate.toString( )
+                        strListdate
                     };
                     String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( MESSAGE_ERROR_OPEN_SLOTS, tabEntryErrorDate, getLocale( ) );
                     addError( strErrorMessageDateWithAppointments );
