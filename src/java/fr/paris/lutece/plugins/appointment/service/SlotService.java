@@ -731,22 +731,8 @@ public final class SlotService
                 // !!!! If there are appointments on this slot and if the
                 // slot is already full, the slot will be surbooked !!!!
                 int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                if ( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract > 0 )
-                {
-                    slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
-                }
-                else
-                {
-                    slot.setNbPotentialRemainingPlaces( 0 );
-                }
-                if ( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract > 0 )
-                {
-                    slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract );
-                }
-                else
-                {
-                    slot.setNbRemainingPlaces( 0 );
-                }
+                slot.setNbPotentialRemainingPlaces( Math.max( 0, oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract ) );
+                slot.setNbRemainingPlaces( Math.max( 0, oldSlot.getNbRemainingPlaces( ) - nValueToSubstract ) );
             }
         }
     }

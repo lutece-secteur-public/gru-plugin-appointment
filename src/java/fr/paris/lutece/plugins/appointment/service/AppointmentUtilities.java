@@ -398,9 +398,7 @@ public final class AppointmentUtilities
         // if it's a modification, need to check if the new number of booked
         // seats is under or equal to the number of the remaining places + the
         // previous number of booked seats of the appointment
-        if ( ( appointmentDTO.getIdAppointment( ) == 0 && nbBookedSeats > appointmentDTO.getSlot( ).getNbRemainingPlaces( ) )
-                || ( appointmentDTO.getIdAppointment( ) != 0 && nbBookedSeats > ( appointmentDTO.getSlot( ).getNbRemainingPlaces( ) + appointmentDTO
-                        .getNbBookedSeats( ) ) ) )
+        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats() )
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale ) );
@@ -964,7 +962,6 @@ public final class AppointmentUtilities
         LocalDate maxDate = null;
         // Get the weekDefinition that is currently modified
         WeekDefinition currentModifiedWeekDefinition = WeekDefinitionService.findWeekDefinitionById( nIdWeekDefinition );
-        LocalDate beginDate = currentModifiedWeekDefinition.getDateOfApply( );
         // Find the next weekDefinition, if exist, to have the max date to
         // search slots with appointments
         WeekDefinition nextWeekDefinition = WeekDefinitionService.findNextWeekDefinition( nIdForm, currentModifiedWeekDefinition.getDateOfApply( ) );
@@ -992,10 +989,10 @@ public final class AppointmentUtilities
                 }
             }
         }
-        if ( maxDate != null && !maxDate.isBefore( beginDate ) )
+        if ( maxDate != null && !maxDate.isBefore( LocalDate.now( ) ) )
         {
             // We have an upper bound to search with
-            List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, beginDate.atStartOfDay( ), maxDate.atTime( LocalTime.MAX ) );
+            List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, LocalDate.now( ).atStartOfDay( ), maxDate.atTime( LocalTime.MAX ) );
             // Need to check if the modification of the time slot or the typical
             // week impacts these slots
             WorkingDay workingDay = WorkingDayService.findWorkingDayLightById( timeSlot.getIdWorkingDay( ) );
@@ -1023,13 +1020,12 @@ public final class AppointmentUtilities
                 listSlotsImpacted = listSlots
                         .stream( )
                         .filter(
-                                slot -> ( ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) ) && ( slot
-                                        .getStartingTime( ).equals( timeSlot.getStartingTime( ) )
-                                        || ( slot.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) ) && ( !slot.getEndingTime( ).isAfter(
-                                                timeSlot.getEndingTime( ) ) ) )
-                                        || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) ) && ( !slot.getEndingTime( ).isAfter(
-                                                timeSlot.getEndingTime( ) ) ) ) || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) ) && ( slot
-                                        .getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ) ) ) ) ).collect( Collectors.toList( ) );
+                                slot -> ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
+                                        && ( slot.getStartingTime( ).equals( timeSlot.getStartingTime( ) )
+                                                || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) ) && ( slot.getEndingTime( )
+                                                        .isAfter( timeSlot.getStartingTime( ) ) ) ) || ( slot.getStartingTime( ).isAfter(
+                                                timeSlot.getStartingTime( ) ) && ( !slot.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ) ) ) )
+                        .collect( Collectors.toList( ) );
             }
         }
         return listSlotsImpacted;

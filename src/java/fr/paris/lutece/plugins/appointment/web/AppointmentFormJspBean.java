@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +50,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
@@ -67,6 +68,7 @@ import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
+import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -452,12 +454,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                 appointmentForm.setIcon( imageResource );
             }
         }
-        if ( importClosingDayFile( mRequest, nIdForm ) )
-        {
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-            return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
-        }
-        ;
+        // Import of the closing days file
+        importClosingDayFile( mRequest, nIdForm );
         setParametersDays( appointmentForm, appointmentFormDb );
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
@@ -741,9 +739,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      *            the form Id
      * @return false if there is an error during the import
      */
-    private boolean importClosingDayFile( MultipartHttpServletRequest mRequest, int nIdForm )
+    private void importClosingDayFile( MultipartHttpServletRequest mRequest, int nIdForm )
     {
-        boolean bError = false;
         String strPathFile = StringUtils.EMPTY;
         FileItem item = mRequest.getFile( MARK_FILE_CLOSING_DAYS );
         if ( item != null && StringUtils.isNotEmpty( item.getName( ) ) )
@@ -765,45 +762,52 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             if ( CollectionUtils.isEmpty( listDateImported ) )
             {
                 addError( MESSAGE_ERROR_EMPTY_FILE, getLocale( ) );
-                bError = true;
             }
             else
             {
-                boolean bErrorAppointmentOnClosingDay = false;
                 List<Slot> listSlotsImpacted;
+                List<LocalDate> listDateWithError = new ArrayList<>( );
+                List<Slot> listSlotsToDelete = new ArrayList<>( );
                 List<Appointment> listAppointmentsImpacted;
                 for ( LocalDate closingDate : listDateImported )
                 {
                     if ( !listClosingDaysDb.contains( closingDate ) )
                     {
-                        listSlotsImpacted = SlotService.findListOpenSlotByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ),
-                                closingDate.atTime( LocalTime.MAX ) );
+                        listSlotsImpacted = SlotService
+                                .findSlotsByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ), closingDate.atTime( LocalTime.MAX ) );
                         // Check if there is appointments on this slots
                         listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
                         if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
                         {
-                            bErrorAppointmentOnClosingDay = true;
-                            break;
+                            listDateWithError.add( closingDate );
                         }
                         else
                         {
+                            listSlotsToDelete.addAll( listSlotsImpacted );
                             listDateToSave.add( closingDate );
                         }
                     }
                 }
-                if ( bErrorAppointmentOnClosingDay )
+                if ( CollectionUtils.isNotEmpty( listDateWithError ) )
                 {
-                    addError( MESSAGE_ERROR_OPEN_SLOTS, getLocale( ) );
-                    bError = true;
+                    StringJoiner stbListDate = new StringJoiner( StringUtils.SPACE );
+                    for ( LocalDate dateWithError : listDateWithError )
+                    {
+                        stbListDate.add( Utilities.getFormatter( ).format( dateWithError ) ).add( "," );
+                    }                    
+                    String strListdate = stbListDate.toString();
+                    strListdate = strListdate.substring(0, strListdate.length()-1);
+                    Object [ ] tabEntryErrorDate = {
+                        strListdate
+                    };
+                    String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( MESSAGE_ERROR_OPEN_SLOTS, tabEntryErrorDate, getLocale( ) );
+                    addError( strErrorMessageDateWithAppointments );
                 }
-                else
-                {
-                    ClosingDayService.saveListClosingDay( nIdForm, listDateToSave );
-                    addInfo( MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale( ) );
-                }
+                SlotService.deleteListSlots( listSlotsToDelete );
+                ClosingDayService.saveListClosingDay( nIdForm, listDateToSave );
+                addInfo( MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale( ) );
             }
         }
-        return bError;
     }
 
     private void populateAddress( AppointmentFormDTO appointmentForm, HttpServletRequest request )

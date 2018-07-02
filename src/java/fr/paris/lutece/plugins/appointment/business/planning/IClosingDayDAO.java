@@ -131,4 +131,5 @@ public interface IClosingDayDAO
      * @return the list of the closing days that matches the criteria
      */
     List<ClosingDay> findByIdFormAndDateRange( int nIdForm, LocalDate startingDate, LocalDate endingDate, Plugin plugin );
+
 }

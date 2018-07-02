@@ -149,13 +149,7 @@ public final class AppointmentService
         {
             // Need to update the old slot
             Slot oldSlot = SlotService.findSlotById( appointmentDTO.getIdSlot( ) );
-            int oldNbRemainingPlaces = oldSlot.getNbRemainingPlaces( );
-            oldSlot.setNbRemainingPlaces( oldNbRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
-            int oldNbPotentialRemainingPlaces = oldSlot.getNbPotentialRemainingPlaces( );
-            oldSlot.setNbPotentialRemainingPlaces( oldNbPotentialRemainingPlaces + appointmentDTO.getNbBookedSeats( ) );
-            int oldNbPlacesTaken = oldSlot.getNbPlacesTaken( );
-            oldSlot.setNbPlacestaken( oldNbPlacesTaken - appointmentDTO.getNbBookedSeats( ) );
-            SlotService.updateSlot( oldSlot );
+            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentDTO.getNbBookedSeats( ), oldSlot );
             // Need to remove the workflow resource to reload again the workflow
             // at the first step
             try
@@ -170,24 +164,31 @@ public final class AppointmentService
         // Update of the remaining places of the slot
         Slot slot = appointmentDTO.getSlot( );
         int oldNbRemainingPLaces = slot.getNbRemainingPlaces( );
-        int newNbRemainingPlaces = 0;
-        if ( appointmentDTO.getIdAppointment( ) == 0 || appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) )
-        {
-            newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats( );
-        }
-        else
-        {
-            Appointment appointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
-            newNbRemainingPlaces = oldNbRemainingPLaces - appointmentDTO.getNbBookedSeats( ) + appointment.getNbPlaces( );
-        }
-        slot.setNbRemainingPlaces( newNbRemainingPlaces );
         int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
         int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
         int oldNbPlacesTaken = slot.getNbPlacesTaken( );
         int effectiveBookedSeats = appointmentDTO.getNbBookedSeats( );
-        int newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+        int newNbRemainingPlaces = 0;
+        int newPotentialRemaningPlaces = 0;
+        int newNbPlacesTaken = 0;
+        if ( appointmentDTO.getIdAppointment( ) == 0 || appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) )
+        {
+            newNbRemainingPlaces = oldNbRemainingPLaces - effectiveBookedSeats;
+            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+            newNbPlacesTaken = oldNbPlacesTaken + effectiveBookedSeats;
+        }
+        else
+        {
+            // It is an update of the appointment
+            Appointment oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
+            newNbRemainingPlaces = oldNbRemainingPLaces + oldAppointment.getNbPlaces( ) - effectiveBookedSeats;
+            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+            newNbPlacesTaken = oldNbPlacesTaken - oldAppointment.getNbPlaces( ) + effectiveBookedSeats;
+        }
+        slot.setNbRemainingPlaces( newNbRemainingPlaces );
+        slot.setNbPlacestaken( newNbPlacesTaken );
         slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
-        slot.setNbPlacestaken( oldNbPlacesTaken + appointmentDTO.getNbBookedSeats( ) );
+
         slot = SlotService.saveSlot( slot );
         // Create or update the user
         User user = UserService.saveUser( appointmentDTO );
@@ -389,7 +390,7 @@ public final class AppointmentService
         }
         if ( !appointmentToDelete.getIsCancelled( ) )
         {
-            updateRemaningPlacesWithAppointmentDeletedOrCanceled( appointmentToDelete, slotOfTheAppointmentToDelete );
+            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentToDelete.getNbPlaces( ), slotOfTheAppointmentToDelete );
         }
         // Need to delete also the responses linked to this appointment
         AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
@@ -440,7 +441,7 @@ public final class AppointmentService
         {
             // Need to update the nb remaining places of the related slot
             Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-            updateRemaningPlacesWithAppointmentDeletedOrCanceled( appointment, slot );
+            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointment.getNbPlaces( ), slot );
         }
         AppointmentHome.update( appointment );
     }
@@ -449,25 +450,31 @@ public final class AppointmentService
      * Set the new number of remaining places (and potential) when an appointment is deleted or cancelled This new value must take in account the capacity of
      * the slot, in case of the slot was already over booked
      * 
-     * @param appointment
-     *            the appointment that we want to delete (or cancel)
+     * @param nbPlaces
+     *            the nb places taken of the appointment that we want to delete (or cancel, or move)
      * @param slot
      *            the related slot
      */
-    private static void updateRemaningPlacesWithAppointmentDeletedOrCanceled( Appointment appointment, Slot slot )
+    private static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, Slot slot )
     {
-        // The capacity of the slot (that can be less than the number of places taken on the slot --> overbook)
+        // The capacity of the slot (that can be less than the number of places
+        // taken on the slot --> overbook)
         int nMaxCapacity = slot.getMaxCapacity( );
-        // The old remaining places of the slot (before we delete or cancel the appointment
+        // The old remaining places of the slot (before we delete or cancel or move the
+        // appointment
         int nOldRemainingPlaces = slot.getNbRemainingPlaces( );
         int nOldPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
         int nOldPlacesTaken = slot.getNbPlacesTaken( );
-        int nNewPlacesTaken = nOldPlacesTaken - appointment.getNbPlaces( );
-        // The new value of the remaining places of the slot is the minimal value between the old remaining places plus the number of places released by the
-        // appointment
-        // and the capacity of the slot minus the new places taken on the slot
-        int nNewRemainingPlaces = Math.min( nOldRemainingPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
-        int nNewPotentialRemainingPlaces = Math.min( nOldPotentialRemaningPlaces + appointment.getNbPlaces( ), nMaxCapacity - nNewPlacesTaken );
+        int nNewPlacesTaken = nOldPlacesTaken - nbPlaces;
+        // The new value of the remaining places of the slot is the minimal
+        // value between :
+        // - the minimal value between the potentially new max capacity and the old remaining places plus the number of places released by the appointment
+        // - and the capacity of the slot minus the new places taken on the slot (0 if negative)
+        int nNewRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldRemainingPlaces + nbPlaces ), Math.max( 0, nMaxCapacity - nNewPlacesTaken ) );
+
+        int nNewPotentialRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldPotentialRemaningPlaces + nbPlaces ),
+                Math.max( 0, nMaxCapacity - nNewPlacesTaken ) );
+
         slot.setNbRemainingPlaces( nNewRemainingPlaces );
         slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
         slot.setNbPlacestaken( nNewPlacesTaken );
