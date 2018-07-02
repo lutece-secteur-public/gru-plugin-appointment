@@ -97,6 +97,20 @@ public final class ClosingDayService
     }
 
     /**
+     * Find, if it exists, the closing day of a form for a given date
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @param date
+     *            the date
+     * @return the closing day, if it exists
+     */
+    public static ClosingDay findClosingDayByIdFormAndDateOfClosingDay( int nIdForm, LocalDate dateOfClosingDay )
+    {
+        return ClosingDayHome.findByIdFormAndDateOfCLosingDay( nIdForm, dateOfClosingDay );
+    }
+
+    /**
      * Find all the dates of the closing days of the form
      * 
      * @param nIdForm
@@ -136,6 +150,7 @@ public final class ClosingDayService
      */
     public static void saveListClosingDay( int nIdForm, List<LocalDate> listClosingDate )
     {
+
         for ( LocalDate closingDate : listClosingDate )
         {
             saveClosingDay( nIdForm, closingDate );
@@ -167,6 +182,17 @@ public final class ClosingDayService
     public static void saveClosingDay( ClosingDay closingDay )
     {
         ClosingDayHome.create( closingDay );
+    }
+
+    /**
+     * Remove a closing day
+     * 
+     * @param closingDay
+     *            the closing day to remove
+     */
+    public static void removeClosingDay( ClosingDay closingDay )
+    {
+        ClosingDayHome.delete( closingDay.getIdClosingDay( ) );
     }
 
     /**

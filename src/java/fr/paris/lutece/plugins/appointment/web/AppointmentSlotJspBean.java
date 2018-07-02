@@ -51,6 +51,7 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
@@ -61,6 +62,7 @@ import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
+import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
 import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
@@ -318,7 +320,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 SlotService.deleteListSlots( listSlotsImpacted );
             }
         }
-        FormService.updateAdvancedParameters( appointmentForm, dateOfModification );        
+        FormService.updateAdvancedParameters( appointmentForm, dateOfModification );
 
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
@@ -664,6 +666,18 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             slotFromSessionOrFromDb.setIsOpen( bIsOpen );
             bOpeningHasChanged = true;
+        }
+
+        // If we edit the slot, we need to check if this slot is not a closing
+        // day
+        ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( slotFromSessionOrFromDb.getIdForm( ),
+                slotFromSessionOrFromDb.getDate( ) );
+        if ( closingDay != null )
+        {
+            // If the slot is a closing day, we need to remove it from the table
+            // closing day so that the slot is not in conflict with the
+            // definition of the closing days
+            ClosingDayService.removeClosingDay( closingDay );
         }
         if ( nMaxCapacity != slotFromSessionOrFromDb.getMaxCapacity( ) )
         {
