@@ -198,6 +198,8 @@ public final class AppointmentService
         if ( StringUtils.isEmpty( user.getEmail( ) ) )
         {
             strEmailOrLastNamePlusFirstName = user.getLastName( ) + user.getFirstName( );
+        } else {
+        	strEmailOrLastNamePlusFirstName = user.getEmail();
         }
         // Create a unique reference for a new appointment
         if ( appointmentDTO.getIdAppointment( ) == 0 )
