@@ -863,9 +863,9 @@ public class AppointmentApp extends MVCApplication
             addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
-        int nIdAppointment = AppointmentService.saveAppointment( appointment );
-        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         AppointmentUtilities.killTimer( request );
+        int nIdAppointment = AppointmentService.saveAppointment( appointment );
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );        
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
         XPage xPage = null;

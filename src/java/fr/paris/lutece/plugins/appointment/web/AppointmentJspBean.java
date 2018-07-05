@@ -1157,9 +1157,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
             }
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
-        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         AppointmentUtilities.killTimer( request );
+        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );        
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
