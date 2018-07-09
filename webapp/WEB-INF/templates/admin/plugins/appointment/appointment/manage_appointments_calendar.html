@@ -51,7 +51,7 @@
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
                 {
-                    title : <#if modifDateAppointment?? >'<a href=' + eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>'
+                    title : <#if modifDateAppointment>'<a href=' + eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>'
                             <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
                                 '<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
                                 + '&nbsp;'
@@ -73,11 +73,7 @@
                     end : '${event.endingDateTime}',
                     id : '${event.idSlot}',
                     textColor: <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'white'<#else>'#2c2c2d'</#if>,
-                    url : <#if modifDateAppointment?? >
-                                eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}'
-                            <#else>
-                                eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}'
-                            </#if>,                            
+                    url : eventUrl + 'manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}',                                                      
                     backgroundColor : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'#ff6600'
                     				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>'white'
                                       <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'red'

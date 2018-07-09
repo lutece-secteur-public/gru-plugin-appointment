@@ -198,6 +198,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_RESET = "reset";
     private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "nbBookedSeats";
     private static final String PARAMETER_STATUS_CANCELLED = "status_cancelled";
+    private static final String PARAMETER_MODIF_DATE = "modif_date";
 
     // Markers
     private static final String MARK_TASKS_FORM = "tasks_form";
@@ -395,7 +396,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nbBookedSeats = appointmentDTO.getNbBookedSeats( );
             listSlot = listSlot.stream( ).filter( s -> s.getNbPotentialRemainingPlaces( ) >= nbBookedSeats && s.getIsOpen( ) ).collect( Collectors.toList( ) );
             request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
-            model.put( MARK_MODIFICATION_DATE_APPOINTMENT, Boolean.TRUE.toString( ) );
+            model.put( MARK_MODIFICATION_DATE_APPOINTMENT, true );
+        }
+        else
+        {
+            model.put( MARK_MODIFICATION_DATE_APPOINTMENT, false );
         }
         model.put( MARK_FORM, FormService.buildAppointmentFormLight( nIdForm ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
@@ -420,14 +425,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML code to display
      * @throws AccessDeniedException
+     * @throws SiteMessageException
      */
     @SuppressWarnings( "unchecked" )
     @View( value = VIEW_MANAGE_APPOINTMENTS )
-    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
+    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
+        }
+        String strModifDateAppointment = request.getParameter( PARAMETER_MODIF_DATE );
+        if ( strModifDateAppointment != null && Boolean.parseBoolean( strModifDateAppointment ) )
+        {
+            return getViewChangeDateAppointment( request );
         }
         // Clean session
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
@@ -1159,7 +1170,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
         AppointmentUtilities.killTimer( request );
         int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
-        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );        
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );

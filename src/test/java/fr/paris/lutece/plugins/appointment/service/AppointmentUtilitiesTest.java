@@ -339,7 +339,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot1, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        appointmentDTO2.setNbMaxPotentialBookedSeats(1);
+        appointmentDTO2.setNbMaxPotentialBookedSeats( 1 );
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         assertEquals( 1, AppointmentUtilities.checkAndReturnNbBookedSeats( "1", appointmentForm, appointmentDTO2, Locale.FRANCE, listFormErrors ) );
         assertEquals( 0, listFormErrors.size( ) );
