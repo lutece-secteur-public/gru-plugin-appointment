@@ -36,9 +36,10 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
@@ -69,6 +70,8 @@ public final class AppointmentService
     private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
     private static final String CONSTANT_SHA256 = "SHA-256";
     private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
+    private static final String CONSTANT_SEPARATOR = "$";
+    
     /**
      * Get the number of characters of the random part of appointment reference
      */
@@ -194,20 +197,12 @@ public final class AppointmentService
         User user = UserService.saveUser( appointmentDTO );
         // Create or update the appointment
         Appointment appointment = buildAndCreateAppointment( appointmentDTO, user, slot );
-        String strEmailOrLastNamePlusFirstName = StringUtils.EMPTY;
-        if ( StringUtils.isEmpty( user.getEmail( ) ) )
-        {
-            strEmailOrLastNamePlusFirstName = user.getLastName( ) + user.getFirstName( );
-        }
-        else
-        {
-            strEmailOrLastNamePlusFirstName = user.getEmail( );
-        }
+        String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add(user.getEmail( )).add(CONSTANT_SEPARATOR).add(user.getLastName( )).add(CONSTANT_SEPARATOR).add(user.getFirstName( )).toString();        
         // Create a unique reference for a new appointment
         if ( appointmentDTO.getIdAppointment( ) == 0 )
         {
             String strReference = appointment.getIdAppointment( )
-                    + CryptoService.encrypt( appointment.getIdAppointment( ) + strEmailOrLastNamePlusFirstName,
+                    + CryptoService.encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
                             AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) ).substring( 0,
                             AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
             appointment.setReference( strReference );
