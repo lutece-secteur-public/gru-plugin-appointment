@@ -71,7 +71,7 @@ public final class AppointmentService
     private static final String CONSTANT_SHA256 = "SHA-256";
     private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
     private static final String CONSTANT_SEPARATOR = "$";
-    
+
     /**
      * Get the number of characters of the random part of appointment reference
      */
@@ -197,7 +197,8 @@ public final class AppointmentService
         User user = UserService.saveUser( appointmentDTO );
         // Create or update the appointment
         Appointment appointment = buildAndCreateAppointment( appointmentDTO, user, slot );
-        String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add(user.getEmail( )).add(CONSTANT_SEPARATOR).add(user.getLastName( )).add(CONSTANT_SEPARATOR).add(user.getFirstName( )).toString();        
+        String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR ).add( user.getLastName( ) )
+                .add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
         // Create a unique reference for a new appointment
         if ( appointmentDTO.getIdAppointment( ) == 0 )
         {
