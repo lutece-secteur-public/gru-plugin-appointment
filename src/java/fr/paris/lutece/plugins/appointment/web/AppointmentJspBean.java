@@ -1043,7 +1043,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
             slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
                     bIsSpecific );
-            slot = SlotService.saveSlot( slot );
+            // Need to check if the slot has not been yet created
+            List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, slot.getStartingDateTime( ), slot.getEndingDateTime( ) );
+            if ( CollectionUtils.isEmpty( listSlots ) )
+            {
+                slot = SlotService.saveSlot( slot );
+            }
+            else
+            {
+                slot = listSlots.get( 0 );
+            }
         }
         else
         {
