@@ -1038,20 +1038,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
             // Need to get all the informations to create the slot
             LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
             LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
-            boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
-            boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
-            int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-            slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
-                    bIsSpecific );
-            // Need to check if the slot has not been yet created
-            List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, slot.getStartingDateTime( ), slot.getEndingDateTime( ) );
-            if ( CollectionUtils.isEmpty( listSlots ) )
+            // Need to check if the slot has not been already created
+            HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateTime, endingDateTime );
+            if ( !slotInDbMap.isEmpty( ) )
             {
-                slot = SlotService.saveSlot( slot );
+                slot = slotInDbMap.get( startingDateTime );
             }
             else
             {
-                slot = listSlots.get( 0 );
+                boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+                boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
+                int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+                slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
+                        bIsSpecific );
+                slot = SlotService.saveSlot( slot );
             }
         }
         else
