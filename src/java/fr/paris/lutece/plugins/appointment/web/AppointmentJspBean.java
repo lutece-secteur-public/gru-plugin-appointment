@@ -198,6 +198,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_RESET = "reset";
     private static final String PARAMETER_NUMBER_OF_BOOKED_SEATS = "nbBookedSeats";
     private static final String PARAMETER_STATUS_CANCELLED = "status_cancelled";
+    private static final String PARAMETER_MODIF_DATE = "modif_date";
 
     // Markers
     private static final String MARK_TASKS_FORM = "tasks_form";
@@ -395,7 +396,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nbBookedSeats = appointmentDTO.getNbBookedSeats( );
             listSlot = listSlot.stream( ).filter( s -> s.getNbPotentialRemainingPlaces( ) >= nbBookedSeats && s.getIsOpen( ) ).collect( Collectors.toList( ) );
             request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
-            model.put( MARK_MODIFICATION_DATE_APPOINTMENT, Boolean.TRUE.toString( ) );
+            model.put( MARK_MODIFICATION_DATE_APPOINTMENT, true );
+        }
+        else
+        {
+            model.put( MARK_MODIFICATION_DATE_APPOINTMENT, false );
         }
         model.put( MARK_FORM, FormService.buildAppointmentFormLight( nIdForm ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
@@ -420,14 +425,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML code to display
      * @throws AccessDeniedException
+     * @throws SiteMessageException
      */
     @SuppressWarnings( "unchecked" )
     @View( value = VIEW_MANAGE_APPOINTMENTS )
-    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException
+    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, "0", AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_FORM );
+        }
+        String strModifDateAppointment = request.getParameter( PARAMETER_MODIF_DATE );
+        if ( strModifDateAppointment != null && Boolean.parseBoolean( strModifDateAppointment ) )
+        {
+            return getViewChangeDateAppointment( request );
         }
         // Clean session
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
@@ -981,6 +992,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strEmail = request.getParameter( PARAMETER_EMAIL );
         List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
         Locale locale = request.getLocale( );
+        AppointmentUtilities.checkDateOfTheAppointmentIsNotBeforeNow( appointmentDTO, locale, listFormErrors );
         AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), form, locale, listFormErrors );
         int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
                 locale, listFormErrors );
@@ -1026,12 +1038,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
             // Need to get all the informations to create the slot
             LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
             LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
-            boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
-            boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
-            int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-            slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
-                    bIsSpecific );
-            slot = SlotService.saveSlot( slot );
+            // Need to check if the slot has not been already created
+            HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateTime, endingDateTime );
+            if ( !slotInDbMap.isEmpty( ) )
+            {
+                slot = slotInDbMap.get( startingDateTime );
+            }
+            else
+            {
+                boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+                boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
+                int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+                slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
+                        bIsSpecific );
+                slot = SlotService.saveSlot( slot );
+            }
         }
         else
         {
@@ -1157,9 +1178,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
             }
+        AppointmentUtilities.killTimer( request );
         int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
-        AppointmentUtilities.killTimer( request );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );

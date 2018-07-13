@@ -109,6 +109,7 @@ public final class AppointmentUtilities
 
     private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+    private static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
     private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
     private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     private static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
@@ -178,6 +179,26 @@ public final class AppointmentUtilities
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_CONFIRM_EMAIL, locale ) );
+            listFormErrors.add( genAttError );
+        }
+    }
+
+    /**
+     * Check that the date of the appointment we try to take is not in the past
+     * 
+     * @param appointmentDTO
+     *            the appointment
+     * @param locale
+     *            the local
+     * @param listFormErrors
+     *            the list of errors that can be fill in with the error found with the date
+     */
+    public static void checkDateOfTheAppointmentIsNotBeforeNow( AppointmentDTO appointmentDTO, Locale locale, List<GenericAttributeError> listFormErrors )
+    {
+        if ( appointmentDTO.getSlot( ).getStartingDateTime( ).toLocalDate( ).isBefore( LocalDate.now( ) ) )
+        {
+            GenericAttributeError genAttError = new GenericAttributeError( );
+            genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_DATE_APPOINTMENT, locale ) );
             listFormErrors.add( genAttError );
         }
     }
@@ -398,7 +419,7 @@ public final class AppointmentUtilities
         // if it's a modification, need to check if the new number of booked
         // seats is under or equal to the number of the remaining places + the
         // previous number of booked seats of the appointment
-        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats() )
+        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats( ) )
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale ) );
