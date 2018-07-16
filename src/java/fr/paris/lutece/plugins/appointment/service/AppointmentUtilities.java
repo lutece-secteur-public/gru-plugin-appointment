@@ -1002,7 +1002,7 @@ public final class AppointmentUtilities
             else
             {
                 // If there is no ending validity date
-                // Find the slot with appointments with the max date
+                // Find the slot with the max date
                 Slot slotWithMaxDate = SlotService.findSlotWithMaxDate( nIdForm );
                 if ( slotWithMaxDate != null && slotWithMaxDate.getStartingDateTime( ) != null )
                 {
@@ -1010,10 +1010,11 @@ public final class AppointmentUtilities
                 }
             }
         }
-        if ( maxDate != null && !maxDate.isBefore( LocalDate.now( ) ) )
+        if ( maxDate != null )
         {
             // We have an upper bound to search with
-            List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, LocalDate.now( ).atStartOfDay( ), maxDate.atTime( LocalTime.MAX ) );
+            List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, currentModifiedWeekDefinition.getDateOfApply( ).atStartOfDay( ),
+                    maxDate.atTime( LocalTime.MAX ) );
             // Need to check if the modification of the time slot or the typical
             // week impacts these slots
             WorkingDay workingDay = WorkingDayService.findWorkingDayLightById( timeSlot.getIdWorkingDay( ) );
