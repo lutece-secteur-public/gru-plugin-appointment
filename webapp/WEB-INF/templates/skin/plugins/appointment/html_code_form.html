@@ -72,18 +72,16 @@
 				<input name="session" value="session" type="hidden">
 				<input name="anchor" value="step4" type="hidden">
 				
-				<div class="row">
-					<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
-					</div>
-					<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
-						<div class="col-xs-12 formGroupContainer">
-							<#if infos?? || errors??>
-								<@messages infos=infos errors=errors />			
-							</#if>
+				<fieldset>
+					<legend class="sr-only"></legend>
+					<div class="row">
+						<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9"></div>
+						<div class="col-xs-12 col-sm-8 col-sm-pull-4 col-md-9 col-md-pull-3">
+							<div class="col-xs-12 formGroupContainer">
+								<#if infos?? || errors??>
+									<@messages infos=infos errors=errors />			
+								</#if>
 
-							<fieldset>
-								<legend class="sr-only"></legend>
-								<br>				
 								<#if form_errors??>
 									<#assign hasDisplayableError = false>
 									<#list form_errors as form_error>
@@ -106,23 +104,23 @@
 								</#if>
 								
 								<div class="row">
-								<#assign formGroupError = '' />
-								<#if form_errors??>
-									<#assign hasDisplayableError = false>
-									<#list form_errors as form_error>
-										<#if form_error.isDisplayableError>
-											<#assign hasDisplayableError = true>
-											<#break >
-										</#if>
-									</#list>
-									<#if hasDisplayableError>
-										<#list form_errors as form_error>	
-											<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
-												<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-											</#if>	
+									<#assign formGroupError = '' />
+									<#if form_errors??>
+										<#assign hasDisplayableError = false>
+										<#list form_errors as form_error>
+											<#if form_error.isDisplayableError>
+												<#assign hasDisplayableError = true>
+												<#break >
+											</#if>
 										</#list>
+										<#if hasDisplayableError>
+											<#list form_errors as form_error>	
+												<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
+													<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
+												</#if>	
+											</#list>
+										</#if>
 									</#if>
-								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="lastname">${formMessages.fieldLastNameTitle!} *</label>
@@ -139,23 +137,23 @@
 										</div>
 									</div>
 								
-								<#assign formGroupError = '' />
-								<#if form_errors??>
-									<#assign hasDisplayableError = false>
-									<#list form_errors as form_error>
-										<#if form_error.isDisplayableError>
-											<#assign hasDisplayableError = true>
-											<#break >
-										</#if>
-									</#list>
-									<#if hasDisplayableError>
-										<#list form_errors as form_error>	
-											<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
-												<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-											</#if>	
+									<#assign formGroupError = '' />
+									<#if form_errors??>
+										<#assign hasDisplayableError = false>
+										<#list form_errors as form_error>
+											<#if form_error.isDisplayableError>
+												<#assign hasDisplayableError = true>
+												<#break >
+											</#if>
 										</#list>
+										<#if hasDisplayableError>
+											<#list form_errors as form_error>	
+												<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
+													<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
+												</#if>	
+											</#list>
+										</#if>
 									</#if>
-								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="firstname">${formMessages.fieldFirstNameTitle!} *</label>
@@ -175,23 +173,23 @@
 								
 								
 								<div class="row">
-								<#assign formGroupError = '' />
-								<#if form_errors??>
-									<#assign hasDisplayableError = false>
-									<#list form_errors as form_error>
-										<#if form_error.isDisplayableError>
-											<#assign hasDisplayableError = true>
-											<#break >
-										</#if>
-									</#list>
-									<#if hasDisplayableError>
-										<#list form_errors as form_error>	
-											<#if  form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
-												<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-											</#if>	
+									<#assign formGroupError = '' />
+									<#if form_errors??>
+										<#assign hasDisplayableError = false>
+										<#list form_errors as form_error>
+											<#if form_error.isDisplayableError>
+												<#assign hasDisplayableError = true>
+												<#break >
+											</#if>
 										</#list>
+										<#if hasDisplayableError>
+											<#list form_errors as form_error>	
+												<#if  form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
+													<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
+												</#if>	
+											</#list>
+										</#if>
 									</#if>
-								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="email">${formMessages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if></label>
@@ -207,23 +205,23 @@
 											</div>
 										</div>											
 									</div>											
-								<#assign formGroupError = '' />
-								<#if form_errors??>
-									<#assign hasDisplayableError = false>
-									<#list form_errors as form_error>
-										<#if form_error.isDisplayableError>
-											<#assign hasDisplayableError = true>
-											<#break >
-										</#if>
-									</#list>
-									<#if hasDisplayableError>
-										<#list form_errors as form_error>	
-											<#if form_error.isDisplayableError && (form_error.errorMessage == listAllErrors[4] || form_error.errorMessage == listAllErrors[5] )>
-												<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-											</#if>	
+									<#assign formGroupError = '' />
+									<#if form_errors??>
+										<#assign hasDisplayableError = false>
+										<#list form_errors as form_error>
+											<#if form_error.isDisplayableError>
+												<#assign hasDisplayableError = true>
+												<#break >
+											</#if>
 										</#list>
+										<#if hasDisplayableError>
+											<#list form_errors as form_error>	
+												<#if form_error.isDisplayableError && (form_error.errorMessage == listAllErrors[4] || form_error.errorMessage == listAllErrors[5] )>
+													<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
+												</#if>	
+											</#list>
+										</#if>
 									</#if>
-								</#if>
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12 control-label" for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
@@ -239,80 +237,78 @@
 											</div>
 										</div>							
 									</div>							
-								<#if form.maxPeoplePerAppointment &gt; 1>
-									<#assign formGroupError = '' />
-									<#if form_errors??>
-										<#assign hasDisplayableError = false>
-										<#list form_errors as form_error>
-											<#if form_error.isDisplayableError>
-												<#assign hasDisplayableError = true>
-												<#break >
-											</#if>
-										</#list>
-										<#if hasDisplayableError>
-											<#list form_errors as form_error>	
-												<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage == listAllErrors[7]) >
-													<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-												</#if>	
-											</#list>
-										</#if>
-									</#if>
-									<div class="form-group <#if formGroupError!=''>has-error</#if>">
-										<label class="col-xs-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
-										<div class="col-xs-12">
-											<input type="number"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
-											<#if formGroupError!=''>
-												${formGroupError}
-											<#else>
-												<#if nbplaces != 0 >
-													<span class="help-block">${nbplaces!} place(s) maximum</span>
+									<#if form.maxPeoplePerAppointment &gt; 1>
+										<#assign formGroupError = '' />
+										<#if form_errors??>
+											<#assign hasDisplayableError = false>
+											<#list form_errors as form_error>
+												<#if form_error.isDisplayableError>
+													<#assign hasDisplayableError = true>
+													<#break >
 												</#if>
+											</#list>
+											<#if hasDisplayableError>
+												<#list form_errors as form_error>	
+													<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage == listAllErrors[7]) >
+														<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
+													</#if>	
+												</#list>
 											</#if>
+										</#if>
+										<div class="form-group <#if formGroupError!=''>has-error</#if>">
+											<label class="col-xs-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
+											<div class="col-xs-12">
+												<input type="number"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
+												<#if formGroupError!=''>
+													${formGroupError}
+												<#else>
+													<#if nbplaces != 0 >
+														<span class="help-block">${nbplaces!} place(s) maximum</span>
+													</#if>
+												</#if>
+											</div>
 										</div>
+									</#if>
+									<div class="col-xs-12">
+										${str_entry}
 									</div>
-								</#if>
-								<div class="col-xs-12">
-									${str_entry}
 								</div>
-							</fieldset>
+							</div>
 						</div>
-						<div class="col-xs-12 text-right" style="margin:20px 0;">
-						<div class="form-group">
-							<div class="col-xs-12">
-								<button class="btn btn-primary btn-sm" type="submit" name="save" >
-									<i class="fa fa-chevron-down"></i>
-									<span class="hidden-xs">&nbsp;#i18n{appointment.displayAppointmentForm.labelValidate}</span>
-								</button>
+						<div class="col-xs-12 text-center" style="margin:20px 0;">
+							<div class="form-group">
+								<div class="col-xs-12">
+									<button class="btn btn-primary btn-sm" type="submit" name="save" >
+										<i class="fa fa-chevron-down"></i>
+										<span class="hidden-xs">&nbsp;#i18n{appointment.displayAppointmentForm.labelValidate}</span>
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
-					</div>					
-				</form>
-			</div>
+				</fieldset>
+			</form>
 		</div>
 	</div>
-</div>
 </div>
 
-<div class="col-xs-12">
-	<div class="row nextStepTitleRow">
-		<div class="col-xs-12">
-			<div class="container">
-				<h2 class="stepTitle next">
-					<span class="stepTitleNumber next">4</span>
-					#i18n{appointment.appointmentApp.recap.title}
-				</h2>
-			</div>
+<div class="row nextStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2 class="stepTitle next">
+				<span class="stepTitleNumber next">4</span>
+				#i18n{appointment.appointmentApp.recap.title}
+			</h2>
 		</div>
 	</div>
-	<div class="row nextStepTitleRow">
-		<div class="col-xs-12">
-			<div class="container">
-				<h2 class="stepTitle next">
-					<span class="stepTitleNumber next">5</span>
-					#i18n{appointment.appointmentApp.confirmation}
-				</h2>
-			</div>
+</div>
+<div class="row nextStepTitleRow">
+	<div class="col-xs-12">
+		<div class="container">
+			<h2 class="stepTitle next">
+				<span class="stepTitleNumber next">5</span>
+				#i18n{appointment.appointmentApp.confirmation}
+			</h2>
 		</div>
 	</div>
 </div>
