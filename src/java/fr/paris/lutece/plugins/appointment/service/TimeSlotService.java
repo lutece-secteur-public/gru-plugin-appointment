@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -86,20 +87,21 @@ public final class TimeSlotService
             boolean forceTimeSlotCreationWithMinTime )
     {
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
-        LocalTime tempStartingTime = startingTime;
-        LocalTime tempEndingTime = startingTime.plusMinutes( nDuration );
-        while ( !tempEndingTime.isAfter( endingTime ) )
+        LocalDateTime tempStartingDateTime = LocalDate.now().atTime(startingTime);
+        LocalDateTime tempEndingDateTime = LocalDate.now().atTime(startingTime.plusMinutes( nDuration ));
+        LocalDateTime endingDateTime = LocalDate.now().atTime(endingTime);
+        while ( !tempEndingDateTime.isAfter( endingDateTime ) )
         {
-            listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingTime, tempEndingTime, Boolean.TRUE.booleanValue( ), nMaxCapacity ) );
-            tempStartingTime = tempEndingTime;
-            tempEndingTime = tempEndingTime.plusMinutes( nDuration );
+            listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingDateTime.toLocalTime(), tempEndingDateTime.toLocalTime(), Boolean.TRUE.booleanValue( ), nMaxCapacity ) );
+            tempStartingDateTime = tempEndingDateTime;
+            tempEndingDateTime = tempEndingDateTime.plusMinutes( nDuration );
         }
         if ( forceTimeSlotCreationWithMinTime )
         {
-            tempStartingTime = tempEndingTime.minusMinutes( nDuration );
-            if ( tempStartingTime.isBefore( endingTime ) )
+            tempStartingDateTime = tempEndingDateTime.minusMinutes( nDuration );
+            if ( tempStartingDateTime.isBefore( endingDateTime ) )
             {
-                listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingTime, endingTime, Boolean.FALSE, nMaxCapacity ) );
+                listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingDateTime.toLocalTime(), endingTime, Boolean.FALSE, nMaxCapacity ) );
             }
         }
         return listTimeSlot;
