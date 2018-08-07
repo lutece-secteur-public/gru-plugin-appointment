@@ -1,34 +1,33 @@
-<div class="row">
-    <div id="app-form-list">
-    	<div class="col-xs-12">
-    		<div class="container">
-    			<h3><#if title??>${title}<#else>#i18n{appointment.xpage.formList.labelFormList}</#if></h3>
-    			
-    			<ul>
-                    <#if form_list?has_content>
-                        <#assign compteur=form_list?size - 1>
-                        <#list 0..compteur as item>
-                            <li class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="appointment-form-list">
-                                <#if icons?? && icons[item]?? && icons[item]!='NULL'>
-                                    <p><img src="${icons[item]}" class="icon" title="icon_form"/></p>
-                                <#else>
-                                    <p><img src="images/local/skin/icon_appointment.png"></p>
-                                </#if>
-                                
-                                <a href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form_list[item].idForm}">
-                                    <span class="visible-xs">${form_list[item].title}</span>
-                                    <span class="hidden-xs hidden-lg"><#if form_list[item].title?length &gt; 80>${form_list[item].title?substring(0,80)}...<#else>${form_list[item].title}</#if></span>
-                                    <span class="visible-lg"><#if form_list[item].title?length &gt; 90>${form_list[item].title?substring(0,90)}...<#else>${form_list[item].title}</#if></span>
-                                </a>
-                                </div>
-                            </li>
-                        </#list>
-                    <#else>
-                    	#i18n{appointment.xpage.formList.noForm}
-                    </#if>
-    			</ul>
-    		</div>
-    	</div>
-    </div>
+<div class="row" id="app-form-list">
+ 	<div class="col-xs-12">
+		<div class="container">
+			<h3><#if title??>${title}<#else>#i18n{appointment.xpage.formList.labelFormList}</#if></h3>
+			
+			<ul>
+				<#if form_list?has_content>
+						<#assign compteur=form_list?size - 1>
+						<#list 0..compteur as item>
+								<li class="col-xs-12 col-sm-6 col-md-4">
+										<div class="appointment-form-list">
+										<#if icons?? && icons[item]?? && icons[item]!='NULL'>
+												<p><img src="${icons[item]}" class="icon" title="icon_form"/></p>
+										<#else>
+												<p><img src="images/local/skin/icon_appointment.png"></p>
+										</#if>
+										
+										<a href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form_list[item].idForm}">
+												<span class="visible-xs">${form_list[item].title}</span>
+												<span class="hidden-xs hidden-lg"><#if form_list[item].title?length &gt; 80>${form_list[item].title?substring(0,80)}...<#else>${form_list[item].title}</#if></span>
+												<span class="visible-lg"><#if form_list[item].title?length &gt; 90>${form_list[item].title?substring(0,90)}...<#else>${form_list[item].title}</#if></span>
+										</a>
+										</div>
+								</li>
+						</#list>
+				<#else>
+					#i18n{appointment.xpage.formList.noForm}
+				</#if>
+			</ul>
+		</div>
+	</div>
 </div>
+
