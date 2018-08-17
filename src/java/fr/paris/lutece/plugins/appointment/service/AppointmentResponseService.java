@@ -188,7 +188,7 @@ public final class AppointmentResponseService
         List<Response> listResponse = AppointmentResponseService.findListResponse( nIdAppointment );
         for ( Response response : listResponse )
         {
-            AppointmentResponseService.removeResponseById( response.getEntry( ).getIdEntry( ) );
+            AppointmentResponseService.removeResponseById( response.getIdResponse() );
         }
     }
 }
