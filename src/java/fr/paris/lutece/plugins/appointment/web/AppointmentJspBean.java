@@ -325,6 +325,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             // If we want to change the date of an appointment
             int nIdAppointment = Integer.parseInt( strIdAppointment );
             appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
+            AppointmentService.addAppointmentResponses( appointmentDTO );
         }
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );

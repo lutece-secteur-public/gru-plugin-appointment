@@ -366,6 +366,19 @@ public final class AppointmentService
         }
         return appointmentDTO;
     }
+    
+    /**
+     * Fill the appointment data transfer object with complementary appointment responses
+     * @param appointmentDto
+     *              The appointmentDTO object
+     */
+    public static void addAppointmentResponses( AppointmentDTO appointmentDto )
+    {
+        //Load the response list in the DTO
+        appointmentDto.setListResponse( AppointmentResponseService.findListResponse( appointmentDto.getIdAppointment( ) ) );
+    }
+    
+    
 
     /**
      * Delete an appointment (and update the number of remaining places of the related slot)
