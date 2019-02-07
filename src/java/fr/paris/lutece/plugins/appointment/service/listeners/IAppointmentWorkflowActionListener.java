@@ -33,51 +33,25 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
-import java.util.Locale;
 
 /**
- * Interface for listeners that should be notified when appointments are removed or when the date changed. <b>The listener must be a Spring bean.</b>
+ * Interface for listeners that should be notified when the action of the workflow processed. <b>The listener must be a Spring bean.</b>
  * 
- * @author Laurent Payen
  * 
  */
-public interface IAppointmentListener
+public interface IAppointmentWorkflowActionListener
 {
     /**
-     * Notify the listener that an appointment has been removed
+     * Notify the listener that an appointment Workflow action has been Triggred
      * 
      * @param nIdAppointment
      *            The id of the appointment
+    * @param nIdAction
+     *            The id of the wf action           
+     *            
      */
-    void notifyAppointmentRemoval( int nIdAppointment );
+    void notifyAppointmentWFActionTriggered( int nIdAppointment, int nIdAction );
 
-    /**
-     * Notify the listener that the date of an appointment has changed.
-     * 
-     * @param nIdAppointment
-     *            the id of the appointment
-     * @param nIdSlot
-     *            The new slot of the appointment
-     * @param locale
-     *            The locale to display error messages with
-     * @return The message to display to the user, if any.
-     */
-    String appointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale );
-    
-    /**
-     * Notify the listener that an appointment has been creates
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment
-     */
-    void notifyAppointmentCreated( int nIdAppointment );
-    
-    /**
-     * Notify the listener that an appointment has been update
-     * 
-     * @param nIdAppointment
-     *            The id of the appointment
-     */
-    void notifyAppointmentUpdated( int nIdAppointment );
+  
     
 }

@@ -1407,6 +1407,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                         WorkflowService.getInstance( ).doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, form.getIdForm( ),
                                 request, getLocale( ), false );
+                        AppointmentListenerManager.notifyAppointmentWFActionTriggered(nIdAppointment, nIdAction);
                     }
                 }
                 catch( Exception e )

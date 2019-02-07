@@ -208,6 +208,8 @@ public final class AppointmentService
                             AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
             appointment.setReference( strReference );
             AppointmentHome.update( appointment );
+            AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
+
         }
         else
         {
@@ -267,11 +269,14 @@ public final class AppointmentService
         if ( appointment.getIdAppointment( ) == 0 )
         {
             appointment = AppointmentHome.create( appointment );
+            AppointmentListenerManager.notifyListenersAppointmentCreated( appointment.getIdAppointment( ) );
         }
         else
         {
             AppLogService.info( "Update Appointment: " + appointment.getIdAppointment( ) + " on Slot: " + appointment.getIdSlot( ) );
             appointment = AppointmentHome.update( appointment );
+            AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
+
         }
         return appointment;
     }
@@ -457,6 +462,8 @@ public final class AppointmentService
             updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointment.getNbPlaces( ), slot );
         }
         AppointmentHome.update( appointment );
+        AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
+
     }
 
     /**

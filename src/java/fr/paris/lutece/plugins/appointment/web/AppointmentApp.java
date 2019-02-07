@@ -81,6 +81,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.UserService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -1031,6 +1032,7 @@ public class AppointmentApp extends MVCApplication
                         {
                             WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                                     appointment.getIdActionCancelled( ), slot.getIdForm( ), request, request.getLocale( ), automaticUpdate );
+                            AppointmentListenerManager.notifyAppointmentWFActionTriggered(appointment.getIdAppointment( ), appointment.getIdActionCancelled( ));
                         }
                         catch( Exception e )
                         {
