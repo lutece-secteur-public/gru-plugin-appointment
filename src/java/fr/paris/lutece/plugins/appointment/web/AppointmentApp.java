@@ -507,7 +507,7 @@ public class AppointmentApp extends MVCApplication
      */
     @SuppressWarnings( "unchecked" )
     @View( VIEW_APPOINTMENT_FORM )
-    public XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -642,10 +642,15 @@ public class AppointmentApp extends MVCApplication
             if ( user != null )
             {
                 setUserInfo( request, appointmentDTO );
+            }        
+            AppointmentUtilities.putTimerInSession( request, slot.getIdSlot(), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
+            if ( appointmentDTO.getNbMaxPotentialBookedSeats() == 0 )
+            {
+                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
             }
             request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
-            AppointmentUtilities.putTimerInSession( request, slot, appointmentDTO, form.getMaxPeoplePerAppointment( ) );
         }
         else
         {
@@ -866,7 +871,13 @@ public class AppointmentApp extends MVCApplication
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
         AppointmentUtilities.killTimer( request );
-        int nIdAppointment = AppointmentService.saveAppointment( appointment );
+        int nIdAppointment;
+		try {
+			nIdAppointment = AppointmentService.saveAppointment( appointment );
+		} catch (Exception e) {
+			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+	         return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
+		}
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );

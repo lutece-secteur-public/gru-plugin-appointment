@@ -40,6 +40,7 @@ import org.apache.commons.beanutils.BeanUtilsBean;
 import org.dozer.converters.DateConverter;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 
 /**
  * Appointment plugin
@@ -74,5 +75,14 @@ public final class AppointmentPlugin extends Plugin
     public static Locale getPluginLocale( Locale locale )
     {
         return Locale.FRANCE;
+    }
+    /**
+     * Get the appointment plugin
+     * 
+     * @return The appointment plugin
+     */
+    public static Plugin getPlugin( )
+    {
+        return PluginService.getPlugin( PLUGIN_NAME );
     }
 }

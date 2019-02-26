@@ -779,21 +779,30 @@ public final class AppointmentUtilities
      *            the max people per appointment
      * @return the timer
      */
-    public static Timer putTimerInSession( HttpServletRequest request, Slot slot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
+    public synchronized static Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
     {
-        SlotEditTask slotEditTask = new SlotEditTask( );
+    	Slot slot = SlotService.findSlotById( nIdSlot );
+    	
+       
         int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
         int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
-        appointmentDTO.setNbMaxPotentialBookedSeats( nbPotentialPlacesTaken );
-        slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces - nbPotentialPlacesTaken );
-        SlotService.updateSlot( slot );
-        slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
-        slotEditTask.setIdSlot( slot.getIdSlot( ) );
-        TimerForLockOnSlot timer = new TimerForLockOnSlot( );
-        long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
-        timer.schedule( slotEditTask, delay );
-        request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT, timer );
-        return timer;
+        
+        if( slot.getNbPotentialRemainingPlaces() > 0 ){
+        	
+        	appointmentDTO.setNbMaxPotentialBookedSeats( nbPotentialPlacesTaken );
+            slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces - nbPotentialPlacesTaken );
+	        SlotService.updateSlot( slot );
+	        SlotEditTask slotEditTask = new SlotEditTask( );
+	        slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
+	        slotEditTask.setIdSlot( slot.getIdSlot( ) );
+	        TimerForLockOnSlot timer = new TimerForLockOnSlot( );
+	        long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
+	        timer.schedule( slotEditTask, delay );
+	        request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT, timer );
+	        return timer;
+    	}
+        appointmentDTO.setNbMaxPotentialBookedSeats(0);
+    	return null;
     }
 
     /**
