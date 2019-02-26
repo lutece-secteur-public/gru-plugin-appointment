@@ -1,0 +1,5 @@
+files:
+  - source: >-
+      /src/java/fr/paris/lutece/plugins/appointment/resources/appointment_messages.properties
+    translation: >-
+      /src/java/fr/paris/lutece/plugins/appointment/resources/appointment_messages_%two_letters_code%.properties
