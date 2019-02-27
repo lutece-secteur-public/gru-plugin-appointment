@@ -732,7 +732,7 @@ public class AppointmentApp extends MVCApplication
         AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
         AppointmentUtilities.fillInListResponseWithMapResponse( appointmentDTO );
         boolean bErrors = false;
-        if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointments( appointmentDTO, strFirstName, strLastName, strEmail, form ) )
+        if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointmentsTaken( appointmentDTO, strEmail, form ) )
         {
             addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
             bErrors = true;

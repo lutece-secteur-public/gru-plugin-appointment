@@ -116,6 +116,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
   id_action_cancelled INT,
   notification INT NOT NULL DEFAULT 0,
   id_admin_user INT NULL DEFAULT 0,
+  date_appointment_taken DATE NOT NULL
   id_user INT NOT NULL,
   id_slot INT NOT NULL,
   PRIMARY KEY (id_appointment, id_user, id_slot),  

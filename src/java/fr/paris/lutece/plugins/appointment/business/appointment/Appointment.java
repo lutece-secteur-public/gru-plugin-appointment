@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.time.LocalDate;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -110,6 +112,10 @@ public class Appointment extends User implements Serializable
      * The user of the appointment
      */
     private User _user;
+    /**
+     * The date appointment taken
+     */
+    private LocalDate _dateAppointmentTaken;
 
     /**
      * Get the reference of the appointment
@@ -330,5 +336,54 @@ public class Appointment extends User implements Serializable
     {
         this._user = user;
     }
-
+    
+    /**
+     * Returns the DateAppointmentTaken
+     * @return The DateAppointmentTaken
+     */ 
+     public LocalDate getDateAppointmentTaken()
+     {
+         return _dateAppointmentTaken;
+     }
+ 
+    /**
+     * Sets the DateAppointmentTaken
+     * @param dateAppointmentTaken The DateAppointmentTaken
+     */ 
+     public void setDateAppointmentTaken( LocalDate dateAppointmentTaken )
+     {
+         _dateAppointmentTaken = dateAppointmentTaken;
+     }
+     /**
+      * Get the date appointment taken  (in sql date format)
+      * 
+      * @return  The DateAppointmentTaken
+      */
+     public Date getAppointmentTakenSqlDate( )
+     {
+         Date date = null;
+         if ( _dateAppointmentTaken != null )
+         {
+             date = Date.valueOf( _dateAppointmentTaken );
+         }
+         return date;
+     }
+     
+     /**
+      * Set the date appointment taken  (in sql date format)
+      * 
+      * @param endingValidityDate
+      *            The DateAppointmentTaken to set (in sql Date format)
+      */
+     public void setAppointmentTakenSqlDate( Date dateAppointmentTaken )
+     {
+         if ( dateAppointmentTaken != null )
+         {
+             this._dateAppointmentTaken = dateAppointmentTaken.toLocalDate( );
+         }
+         else
+         {
+             this._dateAppointmentTaken = null;
+         }
+     }
 }

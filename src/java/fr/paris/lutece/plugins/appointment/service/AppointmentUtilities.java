@@ -77,6 +77,7 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.ResponseRecapDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -242,7 +243,88 @@ public final class AppointmentUtilities
         }
         return bCheckPassed;
     }
+    
+    /**
+     * Check that the delay between two appointments for the same use has been respected
+     * 
+     * @param appointmentDTO
+     *            the appointment
+     * @param strEmail
+     *            the email
+     * @param form
+     *            the form
+     * @return false if the delay is not respected
+     */
+    public static boolean checkNbDaysBetweenTwoAppointmentsTaken( AppointmentDTO appointmentDTO, String strEmail,
+            AppointmentFormDTO form )
+    {
+        boolean bCheckPassed = true;
+        int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
+        if ( nbDaysBetweenTwoAppointments != 0 )
+        {
+        	AppointmentFilterDTO filter= new AppointmentFilterDTO();
+        	filter.setEmail(strEmail);
+        	filter.setIdForm(form.getIdForm());
+        	List<Appointment> listAppointment = AppointmentService.findListAppointmentsByFilter(filter);
+        	 // If we modify an appointment, we remove the
+            // appointment that we currently edit
+            if ( appointmentDTO.getIdAppointment( ) != 0 )
+            {
+                listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) ).collect( Collectors.toList( ) );
+            }
+        	
+            if ( CollectionUtils.isNotEmpty( listAppointment ) )
+            {
 
+                    LocalDate dateOfTheLastAppointmentTaken = listAppointment.stream( ).map( Appointment:: getDateAppointmentTaken ).max( LocalDate::compareTo ).get( );
+               
+                    if ( Math.abs( dateOfTheLastAppointmentTaken.until( LocalDate.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                    {
+                        bCheckPassed = false;
+                    }
+               
+            }
+        }
+        return bCheckPassed;
+    }
+
+    /**
+     * Get the appointment of a user appointment
+     * 
+     * @param strEmail
+     *            the user's email
+     * @param idAppointment
+     *            the id of the appointment
+     * @return the list of appointment
+     */
+    private static List<Appointment> getAppointmentByEmail( String strEmail, int idAppointment )
+    {
+        List<Appointment> listAppointment = new ArrayList<>( );
+        if ( StringUtils.isNotEmpty( strEmail ) )
+        {
+            // Looking for existing users with this email
+            List<User> listUsers = UserService.findUsersByEmail( strEmail );
+            if ( listUsers != null )
+            {
+                // For each User
+                for ( User user : listUsers )
+                {
+                    // looking for its appointment
+                    listAppointment.addAll( AppointmentService.findListAppointmentByUserId( user.getIdUser( ) ) );
+                }
+
+                // If we modify an appointment, we remove the
+                // appointment that we currently edit
+                if ( idAppointment != 0 )
+                {
+                    listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != idAppointment ).collect( Collectors.toList( ) );
+                }
+                
+            }
+            }
+        return listAppointment;
+    }
+    
     /**
      * Get the slot of a user appointment
      * 
@@ -257,24 +339,7 @@ public final class AppointmentUtilities
         List<Slot> listSlots = new ArrayList<>( );
         if ( StringUtils.isNotEmpty( strEmail ) )
         {
-            // Looking for existing users with this email
-            List<User> listUsers = UserService.findUsersByEmail( strEmail );
-            if ( listUsers != null )
-            {
-                List<Appointment> listAppointment = new ArrayList<>( );
-                // For each User
-                for ( User user : listUsers )
-                {
-                    // looking for its appointment
-                    listAppointment.addAll( AppointmentService.findListAppointmentByUserId( user.getIdUser( ) ) );
-                }
-
-                // If we modify an appointment, we remove the
-                // appointment that we currently edit
-                if ( idAppointment != 0 )
-                {
-                    listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != idAppointment ).collect( Collectors.toList( ) );
-                }
+        	    List<Appointment> listAppointment = getAppointmentByEmail( strEmail, idAppointment );
                 if ( CollectionUtils.isNotEmpty( listAppointment ) )
                 {
                     // I know we could have a join sql query, but I don't
@@ -290,7 +355,7 @@ public final class AppointmentUtilities
                     }
 
                 }
-            }
+            
         }
         return listSlots;
     }
