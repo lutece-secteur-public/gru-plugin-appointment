@@ -54,6 +54,8 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryType;
 import fr.paris.lutece.plugins.genericattributes.business.EntryTypeHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseFilter;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -104,6 +106,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_ENTRY = "appointment.message.confirmRemoveEntry";
     private static final String MESSAGE_CANT_REMOVE_ENTRY = "advert.message.cantRemoveEntry";
+    private static final String MESSAGE_CANT_REMOVE_ENTRY_RESOURCES_ATTACHED = "appointment.message.cantRemoveEntry.resourceAttached";
     private static final String PROPERTY_CREATE_ENTRY_TITLE = "appointment.createEntry.titleQuestion";
     private static final String PROPERTY_MODIFY_QUESTION_TITLE = "appointment.modifyEntry.titleQuestion";
     private static final String PROPERTY_COPY_ENTRY_TITLE = "appointment.copyEntry.title";
@@ -407,6 +410,14 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     public String getConfirmRemoveEntry( HttpServletRequest request )
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
+        int nIdEntry = Integer.parseInt( strIdEntry );
+        ResponseFilter responsefilter= new ResponseFilter();
+        responsefilter.setIdEntry(nIdEntry);
+        if( !ResponseHome.getResponseList(responsefilter).isEmpty()){
+        	
+            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY_RESOURCES_ATTACHED,  AdminMessage.TYPE_STOP ) );
+            		
+        }
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_ENTRY ) );
         url.addParameter( PARAMETER_ID_ENTRY, strIdEntry );
         return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_ENTRY, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION ) );
@@ -440,6 +451,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 };
                 return AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY, args, AdminMessage.TYPE_STOP );
             }
+            
             // Update order
             List<Entry> listEntry;
             EntryFilter filter = new EntryFilter( );
