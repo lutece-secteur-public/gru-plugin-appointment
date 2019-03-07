@@ -276,7 +276,7 @@ public final class AppointmentUtilities
             if ( CollectionUtils.isNotEmpty( listAppointment ) )
             {
 
-                    LocalDate dateOfTheLastAppointmentTaken = listAppointment.stream( ).map( Appointment:: getDateAppointmentTaken ).max( LocalDate::compareTo ).get( );
+            	LocalDateTime dateOfTheLastAppointmentTaken = listAppointment.stream( ).map( Appointment:: getDateAppointmentTaken ).max( LocalDateTime::compareTo ).get( );
                
                     if ( Math.abs( dateOfTheLastAppointmentTaken.until( LocalDate.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
                     {

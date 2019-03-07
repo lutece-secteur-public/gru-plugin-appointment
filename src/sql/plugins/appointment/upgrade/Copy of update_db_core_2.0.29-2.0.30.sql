@@ -1,1 +1,1 @@
-ALTER TABLE appointment_appointment ADD date_appointment_taken DATE NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE appointment_appointment ADD date_appointment_taken TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;

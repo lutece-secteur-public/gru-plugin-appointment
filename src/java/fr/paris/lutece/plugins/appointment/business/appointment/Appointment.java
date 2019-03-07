@@ -35,7 +35,9 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -115,7 +117,7 @@ public class Appointment extends User implements Serializable
     /**
      * The date appointment taken
      */
-    private LocalDate _dateAppointmentTaken;
+    private LocalDateTime _dateAppointmentTaken;
 
     /**
      * Get the reference of the appointment
@@ -341,7 +343,7 @@ public class Appointment extends User implements Serializable
      * Returns the DateAppointmentTaken
      * @return The DateAppointmentTaken
      */ 
-     public LocalDate getDateAppointmentTaken()
+     public LocalDateTime getDateAppointmentTaken()
      {
          return _dateAppointmentTaken;
      }
@@ -350,7 +352,7 @@ public class Appointment extends User implements Serializable
      * Sets the DateAppointmentTaken
      * @param dateAppointmentTaken The DateAppointmentTaken
      */ 
-     public void setDateAppointmentTaken( LocalDate dateAppointmentTaken )
+     public void setDateAppointmentTaken( LocalDateTime dateAppointmentTaken )
      {
          _dateAppointmentTaken = dateAppointmentTaken;
      }
@@ -359,12 +361,12 @@ public class Appointment extends User implements Serializable
       * 
       * @return  The DateAppointmentTaken
       */
-     public Date getAppointmentTakenSqlDate( )
+     public Timestamp getAppointmentTakenSqlDate( )
      {
-         Date date = null;
+    	 Timestamp date = null;
          if ( _dateAppointmentTaken != null )
          {
-             date = Date.valueOf( _dateAppointmentTaken );
+             date = Timestamp.valueOf( _dateAppointmentTaken );
          }
          return date;
      }
@@ -375,11 +377,11 @@ public class Appointment extends User implements Serializable
       * @param endingValidityDate
       *            The DateAppointmentTaken to set (in sql Date format)
       */
-     public void setAppointmentTakenSqlDate( Date dateAppointmentTaken )
+     public void setAppointmentTakenSqlDate( Timestamp dateAppointmentTaken )
      {
          if ( dateAppointmentTaken != null )
          {
-             this._dateAppointmentTaken = dateAppointmentTaken.toLocalDate( );
+             this._dateAppointmentTaken = dateAppointmentTaken.toLocalDateTime( );
          }
          else
          {

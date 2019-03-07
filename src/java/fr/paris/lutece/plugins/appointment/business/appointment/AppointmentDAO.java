@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +90,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     public synchronized void insert( Appointment appointment, Plugin plugin )
     {
         appointment.setIdAppointment( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
-        appointment.setDateAppointmentTaken(LocalDate.now( ));
+        appointment.setDateAppointmentTaken(LocalDateTime.now( ));
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, appointment, plugin, true );
         executeUpdate( daoUtil );
     }
@@ -370,7 +371,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         appointment.setIdAdminUser( daoUtil.getInt( nIndex++ ) );
         appointment.setIdUser( daoUtil.getInt( nIndex++ ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
-        appointment.setAppointmentTakenSqlDate(daoUtil.getDate( nIndex ) );
+        appointment.setAppointmentTakenSqlDate(daoUtil.getTimestamp( nIndex ) );
         return appointment;
     }
 
@@ -394,7 +395,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         appointment.setIdAdminUser( daoUtil.getInt( nIndex++ ) );
         appointment.setIdUser( daoUtil.getInt( nIndex++ ) );
         appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
-        appointment.setAppointmentTakenSqlDate( daoUtil.getDate( nIndex++ ) );
+        appointment.setAppointmentTakenSqlDate( daoUtil.getTimestamp( nIndex++ ) );
         User user = new User( );
         user.setIdUser( daoUtil.getInt( nIndex++ ) );
         user.setGuid( daoUtil.getString( nIndex++ ) );
@@ -446,7 +447,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         daoUtil.setInt( nIndex++, appointment.getIdAdminUser( ) );
         daoUtil.setInt( nIndex++, appointment.getIdUser( ) );
         daoUtil.setInt( nIndex++, appointment.getIdSlot( ) );
-        daoUtil.setDate(nIndex++, appointment.getAppointmentTakenSqlDate( ));
+        daoUtil.setTimestamp(nIndex++, appointment.getAppointmentTakenSqlDate( ));
         
         if ( !isInsert )
         {
