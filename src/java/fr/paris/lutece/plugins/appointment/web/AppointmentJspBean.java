@@ -1189,11 +1189,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
             }
-        AppointmentUtilities.killTimer( request );
         int nIdAppointment;
 		try {
 			
 			nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+	        AppointmentUtilities.killTimer( request );
+
 			
 		} catch (Exception e) {
 			 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );

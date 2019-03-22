@@ -870,10 +870,11 @@ public class AppointmentApp extends MVCApplication
             addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
-        AppointmentUtilities.killTimer( request );
+        
         int nIdAppointment;
 		try {
 			nIdAppointment = AppointmentService.saveAppointment( appointment );
+			AppointmentUtilities.killTimer( request );
 		} catch (Exception e) {
 			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
 	         return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );

@@ -278,7 +278,7 @@ public final class AppointmentUtilities
 
             	LocalDateTime dateOfTheLastAppointmentTaken = listAppointment.stream( ).map( Appointment:: getDateAppointmentTaken ).max( LocalDateTime::compareTo ).get( );
                
-                    if ( Math.abs( dateOfTheLastAppointmentTaken.until( LocalDate.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                    if ( Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
                     {
                         bCheckPassed = false;
                     }
