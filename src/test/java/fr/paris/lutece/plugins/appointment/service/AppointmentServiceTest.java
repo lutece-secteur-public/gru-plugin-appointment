@@ -34,7 +34,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -56,7 +64,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -78,7 +94,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -100,7 +124,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -122,7 +154,16 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -144,7 +185,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -166,7 +215,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -188,7 +245,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -210,7 +275,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment = -1;
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -232,11 +305,26 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
+        
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -259,11 +347,25 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -286,11 +388,25 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
@@ -312,7 +428,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1;
+        try 
+        {
+            nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
@@ -340,7 +464,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1;
+        try 
+        {
+            nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
@@ -368,11 +500,26 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1 ;
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 2, slot.getNbPlacesTaken( ) );
@@ -400,11 +547,26 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1;
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 3, slot.getNbPlacesTaken( ) );
@@ -432,7 +594,15 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1;
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
@@ -463,11 +633,26 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1;
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 2, slot.getNbPlacesTaken( ) );
@@ -498,11 +683,26 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1;
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 3, slot.getNbPlacesTaken( ) );
