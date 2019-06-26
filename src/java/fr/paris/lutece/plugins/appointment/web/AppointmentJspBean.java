@@ -97,6 +97,7 @@ import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -1190,16 +1191,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
             }
         int nIdAppointment;
-		try {
-			
-			nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
-	        AppointmentUtilities.killTimer( request );
-
-			
-		} catch (Exception e) {
-			 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
-             return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
-		}
+        if ( appointmentDTO.getIdAppointment( ) == 0 )
+        {
+            // set the admin user who is creating the appointment
+            AdminUser adminLuteceUser = AdminAuthenticationService.getInstance( ).getRegisteredUser( request );
+            appointmentDTO.setAdminUserCreate( adminLuteceUser.getAccessCode( ) );
+        }
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+            AppointmentUtilities.killTimer( request );
+        } catch (Exception e) {
+            addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
+            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
+        }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );

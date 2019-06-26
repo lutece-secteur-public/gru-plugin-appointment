@@ -283,6 +283,10 @@ public final class AppointmentService
         {
             appointment.setIdAdminUser( appointmentDTO.getIdAdminUser( ) );
         }
+        if ( appointmentDTO.getAdminUserCreate( ) != null )
+        {
+            appointment.setAdminUserCreate( appointmentDTO.getAdminUserCreate( ) );
+        }
         appointment.setNbPlaces( appointmentDTO.getNbBookedSeats( ) );
         appointment.setIdSlot( slot.getIdSlot( ) );
         appointment.setIdUser( user.getIdUser( ) );
@@ -389,6 +393,7 @@ public final class AppointmentService
         {
             appointmentDTO.setAdminUser( StringUtils.EMPTY );
         }
+        appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
         return appointmentDTO;
     }
     
