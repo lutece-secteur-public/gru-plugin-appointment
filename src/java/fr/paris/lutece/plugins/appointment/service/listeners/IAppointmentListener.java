@@ -63,4 +63,21 @@ public interface IAppointmentListener
      * @return The message to display to the user, if any.
      */
     String appointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale );
+    
+    /**
+     * Notify the listener that an appointment has been creates
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     */
+    void notifyAppointmentCreated( int nIdAppointment );
+    
+    /**
+     * Notify the listener that an appointment has been update
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment
+     */
+    void notifyAppointmentUpdated( int nIdAppointment );
+    
 }

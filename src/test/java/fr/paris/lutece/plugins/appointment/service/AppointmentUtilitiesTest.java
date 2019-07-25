@@ -51,7 +51,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-05T10:00" ), LocalDateTime.parse( "2018-06-05T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -86,7 +93,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -121,7 +135,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -129,7 +150,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot2, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-16T10:00" ), LocalDateTime.parse( "2018-06-16T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -164,7 +192,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -172,7 +207,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot2, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-07T10:00" ), LocalDateTime.parse( "2018-06-07T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -208,7 +250,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -216,7 +265,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot2, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-14T10:00" ), LocalDateTime.parse( "2018-06-14T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -251,7 +307,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-05T10:00" ), LocalDateTime.parse( "2018-06-05T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -259,7 +322,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot2, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-07T10:00" ), LocalDateTime.parse( "2018-06-07T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -293,7 +363,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-05T10:00" ), LocalDateTime.parse( "2018-06-05T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -301,7 +378,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot2, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-07T10:00" ), LocalDateTime.parse( "2018-06-07T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -335,7 +419,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot1, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 1 );
@@ -368,7 +459,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
         slot1 = SlotService.findSlotById( slot1.getIdSlot( ) );
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot1, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
@@ -417,7 +515,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
 
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-26T17:00" ), LocalDateTime.parse( "2018-06-26T17:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -425,7 +530,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot2, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "17:00" ),
                 LocalTime.parse( "17:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
         appointmentForm2.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
@@ -462,7 +574,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-25T10:00" ), LocalDateTime.parse( "2018-06-25T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
@@ -470,7 +589,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot2, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO2 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO2 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
         appointmentForm2.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
@@ -511,7 +637,14 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        AppointmentService.saveAppointment( appointmentDTO1 );
+        try 
+        {
+            AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
 
         assertFalse( AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slot1 ) );
 
@@ -536,7 +669,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
 
         AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot1, "jean.dupont@mdp.fr", "Jean", "Dupont", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
-        int nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        int nIdAppointment1 = -1;
+        try 
+        {
+            nIdAppointment1 = AppointmentService.saveAppointment( appointmentDTO1 );
+        }
+        catch (Exception e) 
+        {
+            fail( e.getLocalizedMessage( ) );
+        }
         Appointment appointment1 = AppointmentService.findAppointmentById( nIdAppointment1 );
         appointment1.setIsCancelled( true );
         AppointmentService.updateAppointment( appointment1 );

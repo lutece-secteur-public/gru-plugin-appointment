@@ -67,6 +67,33 @@ public final class AppointmentListenerManager
             appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
         }
     }
+    
+    /**
+     * Notify listeners that an appointment is about to be created
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment that will be update
+     */
+    public static void notifyListenersAppointmentCreated( int nIdAppointment )
+    {
+        for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+        {
+            appointmentListener.notifyAppointmentCreated(nIdAppointment);
+        }
+    }
+    /**
+     * Notify listeners that an appointment is about to be updated
+     * 
+     * @param nIdAppointment
+     *            The id of the appointment that will be update
+     */
+    public static void notifyListenersAppointmentUpdated( int nIdAppointment )
+    {
+        for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+        {
+            appointmentListener.notifyAppointmentUpdated(nIdAppointment);
+        }
+    }
 
     /**
      * Notify listeners that the date of an appointment has been modified
@@ -107,6 +134,22 @@ public final class AppointmentListenerManager
         for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
         {
             appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
+        }
+    }
+    
+    /**
+     * Notify users that an Notify the listener that an appointment Workflow action has been Triggred
+     * 
+     * @param nIdAppointment
+     *            the id of the  appointment
+     * @param nIdAction
+     *            The id of the wf action   
+     */
+    public static void notifyAppointmentWFActionTriggered( int nIdAppointment, int nIdAction )
+    {
+        for ( IAppointmentWorkflowActionListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentWorkflowActionListener.class ) )
+        {
+        	appointmentListener.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
         }
     }
 

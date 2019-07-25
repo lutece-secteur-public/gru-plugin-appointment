@@ -97,6 +97,7 @@ import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -807,7 +808,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @View( VIEW_MODIFY_APPOINTMENT )
-    public String getModifyAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String getModifyAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         HttpSession session = request.getSession( );
         clearUploadFilesIfNeeded( session );
@@ -867,7 +868,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      */
     @SuppressWarnings( "unchecked" )
     @View( VIEW_CREATE_APPOINTMENT )
-    public String getViewCreateAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public synchronized String getViewCreateAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         clearUploadFilesIfNeeded( request.getSession( ) );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -936,12 +937,22 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     appointmentDTO.setFirstName( map.get( PROPERTY_USER_FIRST_NAME ) );
                     appointmentDTO.setLastName( map.get( PROPERTY_USER_LAST_NAME ) );
                 }
-                request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
+               
                 ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
                 WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
                 form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
+                
+                
+                AppointmentUtilities.putTimerInSession( request, slot.getIdSlot(), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
+                // Need to check competitive access
+                // May be the slot is already taken at the same time
+                if ( appointmentDTO.getNbMaxPotentialBookedSeats( ) == 0 )
+                {
+                    addInfo( ERROR_MESSAGE_SLOT_FULL, locale );
+                    return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+                }
+                request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
                 request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
-                AppointmentUtilities.putTimerInSession( request, slot, appointmentDTO, form.getMaxPeoplePerAppointment( ) );
 
             }
         }
@@ -1067,7 +1078,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfSlot );
         AppointmentFormDTO form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
-        AppointmentUtilities.putTimerInSession( request, slot, appointmentDTO, form.getMaxPeoplePerAppointment( ) );
+        AppointmentUtilities.putTimerInSession( request, slot.getIdSlot(), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
         Map<String, String> additionalParameters = new HashMap<>( );
         additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( form.getIdForm( ) ) );
         additionalParameters.put( PARAMETER_COME_FROM_CALENDAR, Boolean.TRUE.toString( ) );
@@ -1179,8 +1190,21 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
             }
-        AppointmentUtilities.killTimer( request );
-        int nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+        int nIdAppointment;
+        if ( appointmentDTO.getIdAppointment( ) == 0 )
+        {
+            // set the admin user who is creating the appointment
+            AdminUser adminLuteceUser = AdminAuthenticationService.getInstance( ).getRegisteredUser( request );
+            appointmentDTO.setAdminUserCreate( adminLuteceUser.getAccessCode( ) );
+        }
+        try 
+        {
+            nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
+            AppointmentUtilities.killTimer( request );
+        } catch (Exception e) {
+            addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
+            return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
+        }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
@@ -1407,6 +1431,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                         WorkflowService.getInstance( ).doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, form.getIdForm( ),
                                 request, getLocale( ), false );
+                        AppointmentListenerManager.notifyAppointmentWFActionTriggered(nIdAppointment, nIdAction);
                     }
                 }
                 catch( Exception e )

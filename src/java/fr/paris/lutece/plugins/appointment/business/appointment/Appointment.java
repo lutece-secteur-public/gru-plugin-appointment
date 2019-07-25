@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -87,9 +89,14 @@ public class Appointment extends User implements Serializable
     private int _notification;
 
     /**
-     * The Admin User Id
-     */
+      * The Admin User Id assigned to the appointment
+      */
     private int _nIdAdminUser;
+
+    /**
+     * The Admin User who created the appointment (if not created by the user himself)
+     */
+    private String _strAdminUserCreate;
 
     /**
      * User id
@@ -110,6 +117,10 @@ public class Appointment extends User implements Serializable
      * The user of the appointment
      */
     private User _user;
+    /**
+     * The date appointment taken
+     */
+    private LocalDateTime _dateAppointmentTaken;
 
     /**
      * Get the reference of the appointment
@@ -258,14 +269,43 @@ public class Appointment extends User implements Serializable
         this._nIdUser = nIdUser;
     }
 
+    /**
+     * get the admin user assigned to the appointment
+     * 
+     * @return the assigned admin user id (if exists)
+     */
     public int getIdAdminUser( )
     {
         return _nIdAdminUser;
     }
-
-    public void setIdAdminUser( int nIdAdminUser )
-    {
+ 
+    /**
+     * set admin user id assigned to the appointment
+     * 
+     * @param nIdAdminUser
+     */
+    public void setIdAdminUser( int nIdAdminUser )    {
         this._nIdAdminUser = nIdAdminUser;
+    }
+
+    /**
+     * get the admin user who created the appointment (if exists)
+     * 
+     * @return the admin user (if exists, null otherwise)
+     */
+    public String getAdminUserCreate( )
+    {
+        return _strAdminUserCreate;
+    }
+
+    /**
+     * set admin user id who created the appointment
+     * 
+     * @param strAdminUser 
+     */
+    public void setAdminUserCreate( String strAdminUser )
+    {
+        this._strAdminUserCreate = strAdminUser;
     }
 
     /**
@@ -330,5 +370,54 @@ public class Appointment extends User implements Serializable
     {
         this._user = user;
     }
-
+    
+    /**
+     * Returns the DateAppointmentTaken
+     * @return The DateAppointmentTaken
+     */ 
+     public LocalDateTime getDateAppointmentTaken()
+     {
+         return _dateAppointmentTaken;
+     }
+ 
+    /**
+     * Sets the DateAppointmentTaken
+     * @param dateAppointmentTaken The DateAppointmentTaken
+     */ 
+     public void setDateAppointmentTaken( LocalDateTime dateAppointmentTaken )
+     {
+         _dateAppointmentTaken = dateAppointmentTaken;
+     }
+     /**
+      * Get the date appointment taken  (in sql date format)
+      * 
+      * @return  The DateAppointmentTaken
+      */
+     public Timestamp getAppointmentTakenSqlDate( )
+     {
+    	 Timestamp date = null;
+         if ( _dateAppointmentTaken != null )
+         {
+             date = Timestamp.valueOf( _dateAppointmentTaken );
+         }
+         return date;
+     }
+     
+     /**
+      * Set the date appointment taken  (in sql date format)
+      * 
+      * @param endingValidityDate
+      *            The DateAppointmentTaken to set (in sql Date format)
+      */
+     public void setAppointmentTakenSqlDate( Timestamp dateAppointmentTaken )
+     {
+         if ( dateAppointmentTaken != null )
+         {
+             this._dateAppointmentTaken = dateAppointmentTaken.toLocalDateTime( );
+         }
+         else
+         {
+             this._dateAppointmentTaken = null;
+         }
+     }
 }

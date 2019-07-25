@@ -81,6 +81,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.UserService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
+import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -506,7 +507,7 @@ public class AppointmentApp extends MVCApplication
      */
     @SuppressWarnings( "unchecked" )
     @View( VIEW_APPOINTMENT_FORM )
-    public XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -641,10 +642,15 @@ public class AppointmentApp extends MVCApplication
             if ( user != null )
             {
                 setUserInfo( request, appointmentDTO );
+            }        
+            AppointmentUtilities.putTimerInSession( request, slot.getIdSlot(), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
+            if ( appointmentDTO.getNbMaxPotentialBookedSeats() == 0 )
+            {
+                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
             }
             request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
-            AppointmentUtilities.putTimerInSession( request, slot, appointmentDTO, form.getMaxPeoplePerAppointment( ) );
         }
         else
         {
@@ -726,7 +732,7 @@ public class AppointmentApp extends MVCApplication
         AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
         AppointmentUtilities.fillInListResponseWithMapResponse( appointmentDTO );
         boolean bErrors = false;
-        if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointments( appointmentDTO, strFirstName, strLastName, strEmail, form ) )
+        if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointmentsTaken( appointmentDTO, strEmail, form ) )
         {
             addError( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
             bErrors = true;
@@ -864,8 +870,15 @@ public class AppointmentApp extends MVCApplication
             addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
-        AppointmentUtilities.killTimer( request );
-        int nIdAppointment = AppointmentService.saveAppointment( appointment );
+        
+        int nIdAppointment;
+		try {
+			nIdAppointment = AppointmentService.saveAppointment( appointment );
+			AppointmentUtilities.killTimer( request );
+		} catch (Exception e) {
+			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+	         return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
+		}
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
@@ -1031,6 +1044,7 @@ public class AppointmentApp extends MVCApplication
                         {
                             WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                                     appointment.getIdActionCancelled( ), slot.getIdForm( ), request, request.getLocale( ), automaticUpdate );
+                            AppointmentListenerManager.notifyAppointmentWFActionTriggered(appointment.getIdAppointment( ), appointment.getIdActionCancelled( ));
                         }
                         catch( Exception e )
                         {

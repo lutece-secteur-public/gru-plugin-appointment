@@ -31,58 +31,27 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.service;
+package fr.paris.lutece.plugins.appointment.service.listeners;
 
-import java.text.DateFormat;
-import java.util.Locale;
-
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.dozer.converters.DateConverter;
-
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 
 /**
- * Appointment plugin
+ * Interface for listeners that should be notified when the action of the workflow processed. <b>The listener must be a Spring bean.</b>
  * 
- * @author Laurent Payen
  * 
  */
-public final class AppointmentPlugin extends Plugin
+public interface IAppointmentWorkflowActionListener
 {
     /**
-     * Name of the appointment plugin
-     */
-    public static final String PLUGIN_NAME = "appointment";
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void init( )
-    {
-        BeanUtilsBean.getInstance( ).getConvertUtils( )
-                .register( new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, getPluginLocale( Locale.FRANCE ) ) ), java.sql.Date.class );
-    }
-
-    /**
-     * Get the locale used by this plugin
+     * Notify the listener that an appointment Workflow action has been Triggred
      * 
-     * @param locale
-     *            The locale preferred by the user
-     * @return The locale used by this plugin
+     * @param nIdAppointment
+     *            The id of the appointment
+    * @param nIdAction
+     *            The id of the wf action           
+     *            
      */
-    public static Locale getPluginLocale( Locale locale )
-    {
-        return Locale.FRANCE;
-    }
-    /**
-     * Get the appointment plugin
-     * 
-     * @return The appointment plugin
-     */
-    public static Plugin getPlugin( )
-    {
-        return PluginService.getPlugin( PLUGIN_NAME );
-    }
+    void notifyAppointmentWFActionTriggered( int nIdAppointment, int nIdAction );
+
+  
+    
 }
