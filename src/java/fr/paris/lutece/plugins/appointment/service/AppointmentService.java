@@ -46,6 +46,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
@@ -148,8 +149,20 @@ public final class AppointmentService
      * @return the id of the appointment saved
      * @throws Exception 
      */
-    public static int saveAppointment( AppointmentDTO appointmentDTO ) throws Exception
+    public  static synchronized int saveAppointment( AppointmentDTO appointmentDTO ) 
     {
+    	
+    	 Slot slot = appointmentDTO.getSlot( );
+    	 if ( appointmentDTO.getSlot( ).getIdSlot( ) != 0 )
+         {
+    		 //recovery of the slot in the bdd to manage the concurrent access
+             slot = SlotService.findSlotById( appointmentDTO.getSlot( ).getIdSlot( ) );
+         }
+    	 if ( appointmentDTO.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) )
+         {
+    		 throw new SlotFullException( "ERROR SLOT FULL" );
+         
+         }
     	TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
 
         try
@@ -164,7 +177,9 @@ public final class AppointmentService
 	            // at the first step
 	            try
 	            {
+	            	
 	                WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
+	            
 	            }
 	            catch( Exception e )
 	            {
@@ -172,7 +187,7 @@ public final class AppointmentService
 	            }
 	        }
 	        // Update of the remaining places of the slot
-	        Slot slot = appointmentDTO.getSlot( );
+	      
 	        int oldNbRemainingPLaces = slot.getNbRemainingPlaces( );
 	        int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
 	        int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
@@ -199,11 +214,12 @@ public final class AppointmentService
 	        slot.setNbPlacestaken( newNbPlacesTaken );
 	        slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
 	
-	        slot = SlotService.saveSlot( slot );
+	        
 	        if(slot.getNbPlacesTaken() > slot.getMaxCapacity()){
 	             
-	        	throw new Exception( "case of overbooking" );
+	        	throw new SlotFullException( "case of overbooking" );
 	        }
+	        slot = SlotService.saveSlot( slot );
 	        // Create or update the user
 	        User user = UserService.saveUser( appointmentDTO );
 	        // Create or update the appointment
@@ -256,7 +272,7 @@ public final class AppointmentService
         {
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
             AppLogService.error( "Error Save appointment " + e.getMessage(), e );
-            throw new Exception( e.getMessage( ), e );
+            throw new SlotFullException( e.getMessage( ), e );
         }
     
     }

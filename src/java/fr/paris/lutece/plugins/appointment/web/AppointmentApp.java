@@ -67,6 +67,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
@@ -826,7 +827,7 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
+    public  XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
@@ -875,7 +876,8 @@ public class AppointmentApp extends MVCApplication
 		try {
 			nIdAppointment = AppointmentService.saveAppointment( appointment );
 			AppointmentUtilities.killTimer( request );
-		} catch (Exception e) {
+		} catch (SlotFullException e) {
+			
 			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
 	         return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
 		}

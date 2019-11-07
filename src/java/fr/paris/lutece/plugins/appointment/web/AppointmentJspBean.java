@@ -63,6 +63,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
@@ -1125,7 +1126,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public String doMakeAppointment( HttpServletRequest request ) throws AccessDeniedException
+    public  String doMakeAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
@@ -1201,7 +1202,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             nIdAppointment = AppointmentService.saveAppointment( appointmentDTO );
             AppointmentUtilities.killTimer( request );
-        } catch (Exception e) {
+        } catch (SlotFullException e) {
             addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );
             return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, appointmentDTO.getIdForm( ) );
         }
