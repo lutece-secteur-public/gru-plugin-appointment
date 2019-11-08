@@ -46,6 +46,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
@@ -153,11 +154,17 @@ public final class AppointmentService
     {
     	
     	 Slot slot = appointmentDTO.getSlot( );
+    	 
+         if( appointmentDTO.getIsSaved( ) ){
+    		 
+    		 throw new AppointmentSavedException( "Appointment is already saved " );
+    	 }
     	 if ( appointmentDTO.getSlot( ).getIdSlot( ) != 0 )
          {
     		 //recovery of the slot in the bdd to manage the concurrent access
              slot = SlotService.findSlotById( appointmentDTO.getSlot( ).getIdSlot( ) );
          }
+    	
     	 if ( appointmentDTO.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) )
          {
     		 throw new SlotFullException( "ERROR SLOT FULL" );
@@ -266,6 +273,9 @@ public final class AppointmentService
 	            }
 	        }
 	    TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+	    appointmentDTO.setIdAppointment( appointment.getIdAppointment( ));
+	    appointmentDTO.setIsSaved(true);
+
 	    return appointment.getIdAppointment( );
         }
         catch( Exception e )

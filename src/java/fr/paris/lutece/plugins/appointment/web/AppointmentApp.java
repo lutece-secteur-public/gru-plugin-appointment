@@ -67,6 +67,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
@@ -836,13 +837,10 @@ public class AppointmentApp extends MVCApplication
         {
             return redirect( request, VIEW_APPOINTMENT_FORM, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
-        if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) )
+        if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( )  && !getCaptchaService( ).validate( request ))
         {
-            if ( !getCaptchaService( ).validate( request ) )
-            {
                 addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
-                return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, appointment.getIdForm( ) );
-            }
+                return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, appointment.getIdForm( ) );      
         }
         Slot slot = null;
         // Reload the slot from the database
@@ -876,10 +874,14 @@ public class AppointmentApp extends MVCApplication
 		try {
 			nIdAppointment = AppointmentService.saveAppointment( appointment );
 			AppointmentUtilities.killTimer( request );
-		} catch (SlotFullException e) {
+		} catch ( SlotFullException e ) {
 			
 			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
 	         return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
+		}catch( AppointmentSavedException e ){
+			
+			nIdAppointment = appointment.getIdAppointment( );
+			AppLogService.error( "Error Save appointment: " + e.getMessage(), e );
 		}
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
@@ -888,7 +890,7 @@ public class AppointmentApp extends MVCApplication
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
-            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
+            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap< >( );
             additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ) );
             additionalParameters.put( PARAMETER_ID_APPOINTMENT, String.valueOf( nIdAppointment ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );

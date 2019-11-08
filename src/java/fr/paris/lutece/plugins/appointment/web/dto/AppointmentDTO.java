@@ -141,6 +141,10 @@ public final class AppointmentDTO extends Appointment implements Serializable
      * List of the available action of the workflow for this appointment
      */
     private transient Collection<Action> _listWorkflowActions;
+    /**
+     * The appointment is saved
+     */
+    private boolean _bIsSaved;
 
     /**
      * Get the name of the admin user
@@ -418,6 +422,24 @@ public final class AppointmentDTO extends Appointment implements Serializable
     {
         this._mapResponsesByIdEntry.clear( );
     }
+    
+    /**
+     * Returns the IsSaved
+     * @return The IsSaved
+     */ 
+     public boolean getIsSaved()
+     {
+         return _bIsSaved;
+     }
+ 
+    /**
+     * Sets the IsSaved
+     * @param bIsSaved The IsSaved
+     */ 
+     public void setIsSaved( boolean bIsSaved )
+     {
+         _bIsSaved = bIsSaved;
+     }
 
     /**
      * Get all the possible errors of the form
