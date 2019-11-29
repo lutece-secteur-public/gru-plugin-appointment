@@ -38,6 +38,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -125,6 +126,18 @@ public final class Slot implements Serializable
      * Form Id the slot belongs to (foreign key)
      */
     private int _nIdForm;
+    
+    
+    private AtomicBoolean _bSlotLocked = new AtomicBoolean( );
+    
+    /**
+     * Returns the BSlotLocked
+     * @return The BSlotLocked
+     */ 
+     public AtomicBoolean getSlotLocked()
+     {
+         return _bSlotLocked;
+     }
 
     /**
      * Get the id of the slot

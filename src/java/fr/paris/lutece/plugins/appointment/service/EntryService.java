@@ -507,15 +507,15 @@ public final class EntryService extends RemovalListenerService implements Serial
      * @param bDisplayFront
      * @param request
      */
-    public static void getHtmlEntry( Map<String, Object> model, int nIdEntry, StringBuffer stringBuffer, Locale locale, boolean bDisplayFront,
+    public static void getHtmlEntry( Map<String, Object> model, int nIdEntry, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
             HttpServletRequest request )
     {
-        StringBuffer strConditionalQuestionStringBuffer = null;
+    	StringBuilder strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
         if ( entry.getEntryType( ).getGroup( ) )
         {
-            StringBuffer strGroupStringBuffer = new StringBuffer( );
+        	StringBuilder strGroupStringBuffer = new StringBuilder( );
             for ( Entry entryChild : entry.getChildren( ) )
             {
                 getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );
@@ -534,12 +534,12 @@ public final class EntryService extends RemovalListenerService implements Serial
         }
         if ( entry.getNumberConditionalQuestion( ) != 0 )
         {
-            strConditionalQuestionStringBuffer = new StringBuffer( );
+            strConditionalQuestionStringBuffer = new StringBuilder( );
             for ( Field field : entry.getFields( ) )
             {
                 if ( CollectionUtils.isNotEmpty( field.getConditionalQuestions( ) ) )
                 {
-                    StringBuffer strGroupStringBuffer = new StringBuffer( );
+                	StringBuilder strGroupStringBuffer = new StringBuilder( );
                     for ( Entry entryConditional : field.getConditionalQuestions( ) )
                     {
                         getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );

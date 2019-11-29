@@ -166,5 +166,7 @@ public interface ISlotDAO
      * @return the slot
      */
     Slot findSlotWithMaxDate( int nIdForm, Plugin plugin );
+    
+    void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin  );
 
 }

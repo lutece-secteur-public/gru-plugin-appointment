@@ -36,31 +36,23 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
-import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
-import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
-import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
+
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
-import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
-import fr.paris.lutece.portal.service.util.AppException;
+
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.util.CryptoService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
-import fr.paris.lutece.util.sql.TransactionManager;
 
 /**
  * Service class for an appointment
@@ -71,15 +63,6 @@ import fr.paris.lutece.util.sql.TransactionManager;
 public final class AppointmentService
 {
 
-    private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
-    private static final String CONSTANT_SHA256 = "SHA-256";
-    private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
-    private static final String CONSTANT_SEPARATOR = "$";
-
-    /**
-     * Get the number of characters of the random part of appointment reference
-     */
-    private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -142,151 +125,7 @@ public final class AppointmentService
         return AppointmentHome.findByIdForm( nIdForm );
     }
 
-    /**
-     * Save an appointment in database
-     * 
-     * @param appointmentDTO
-     *            the appointment dto
-     * @return the id of the appointment saved
-     * @throws Exception 
-     */
-    public  static synchronized int saveAppointment( AppointmentDTO appointmentDTO ) 
-    {
-    	
-    	 Slot slot = appointmentDTO.getSlot( );
-    	 
-         if( appointmentDTO.getIsSaved( ) ){
-    		 
-    		 throw new AppointmentSavedException( "Appointment is already saved " );
-    	 }
-    	 if ( appointmentDTO.getSlot( ).getIdSlot( ) != 0 )
-         {
-    		 //recovery of the slot in the bdd to manage the concurrent access
-             slot = SlotService.findSlotById( appointmentDTO.getSlot( ).getIdSlot( ) );
-         }
-    	
-    	 if ( appointmentDTO.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) )
-         {
-    		 throw new SlotFullException( "ERROR SLOT FULL" );
-         
-         }
-    	TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
-
-        try
-        {
-	        // if it's an update for modification of the date of the appointment
-	        if ( appointmentDTO.getIdAppointment( ) != 0 && appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) )
-	        {
-	            // Need to update the old slot
-	            Slot oldSlot = SlotService.findSlotById( appointmentDTO.getIdSlot( ) );
-	            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentDTO.getNbBookedSeats( ), oldSlot );
-	            // Need to remove the workflow resource to reload again the workflow
-	            // at the first step
-	            try
-	            {
-	            	
-	                WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
-	            
-	            }
-	            catch( Exception e )
-	            {
-	                AppLogService.error( "Workflow", e );
-	            }
-	        }
-	        // Update of the remaining places of the slot
-	      
-	        int oldNbRemainingPLaces = slot.getNbRemainingPlaces( );
-	        int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
-	        int oldNbPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
-	        int oldNbPlacesTaken = slot.getNbPlacesTaken( );
-	        int effectiveBookedSeats = appointmentDTO.getNbBookedSeats( );
-	        int newNbRemainingPlaces = 0;
-	        int newPotentialRemaningPlaces = 0;
-	        int newNbPlacesTaken = 0;
-	        if ( appointmentDTO.getIdAppointment( ) == 0 || appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) )
-	        {
-	            newNbRemainingPlaces = oldNbRemainingPLaces - effectiveBookedSeats;
-	            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
-	            newNbPlacesTaken = oldNbPlacesTaken + effectiveBookedSeats;
-	        }
-	        else
-	        {
-	            // It is an update of the appointment
-	            Appointment oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
-	            newNbRemainingPlaces = oldNbRemainingPLaces + oldAppointment.getNbPlaces( ) - effectiveBookedSeats;
-	            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
-	            newNbPlacesTaken = oldNbPlacesTaken - oldAppointment.getNbPlaces( ) + effectiveBookedSeats;
-	        }
-	        slot.setNbRemainingPlaces( newNbRemainingPlaces );
-	        slot.setNbPlacestaken( newNbPlacesTaken );
-	        slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
-	
-	        
-	        if(slot.getNbPlacesTaken() > slot.getMaxCapacity()){
-	             
-	        	throw new SlotFullException( "case of overbooking" );
-	        }
-	        slot = SlotService.saveSlot( slot );
-	        // Create or update the user
-	        User user = UserService.saveUser( appointmentDTO );
-	        // Create or update the appointment
-	        Appointment appointment = buildAndCreateAppointment( appointmentDTO, user, slot );
-	        String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR ).add( user.getLastName( ) )
-	                .add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
-	        // Create a unique reference for a new appointment
-	        if ( appointmentDTO.getIdAppointment( ) == 0 )
-	        {
-	            String strReference = appointment.getIdAppointment( )
-	                    + CryptoService.encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
-	                            AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) ).substring( 0,
-	                            AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
-	            appointment.setReference( strReference );
-	            AppointmentHome.update( appointment );
-	            AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
-	
-	        }
-	        else
-	        {
-	            AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
-	        }
-	        if ( CollectionUtils.isNotEmpty( appointmentDTO.getListResponse( ) ) )
-	        {
-	            for ( Response response : appointmentDTO.getListResponse( ) )
-	            {
-	                ResponseHome.create( response );
-	                AppointmentResponseService.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
-	            }
-	        }
-	        Form form = FormService.findFormLightByPrimaryKey( slot.getIdForm( ) );
-	        if ( form.getIdWorkflow( ) > 0 )
-	        {
-	            try
-	            {
-	                WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
-	                        form.getIdForm( ) );
-	                WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-	                        form.getIdWorkflow( ), form.getIdForm( ) );
-	            }
-	            catch( Exception e )
-	            {
-	                AppLogService.error( "Error Workflow", e );
-	            }
-	        }
-	    TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-	    appointmentDTO.setIdAppointment( appointment.getIdAppointment( ));
-	    appointmentDTO.setIsSaved(true);
-
-	    return appointment.getIdAppointment( );
-        }
-        catch( Exception e )
-        {
-            TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-            AppLogService.error( "Error Save appointment " + e.getMessage(), e );
-            throw new SlotFullException( e.getMessage( ), e );
-        }
     
-    }
-
     /**
      * Build and create in database an appointment from the dto
      * 
@@ -298,7 +137,7 @@ public final class AppointmentService
      *            the slot
      * @return the appointment created
      */
-    private static Appointment buildAndCreateAppointment( AppointmentDTO appointmentDTO, User user, Slot slot )
+    public static Appointment buildAndCreateAppointment( AppointmentDTO appointmentDTO, User user, Slot slot )
     {
         Appointment appointment = new Appointment( );
         if ( appointmentDTO.getIdAppointment( ) != 0 )
@@ -445,7 +284,6 @@ public final class AppointmentService
     public static void deleteAppointment( int nIdAppointment )
     {
         Appointment appointmentToDelete = AppointmentHome.findByPrimaryKey( nIdAppointment );
-        Slot slotOfTheAppointmentToDelete = SlotService.findSlotById( appointmentToDelete.getIdSlot( ) );
         if ( WorkflowService.getInstance( ).isAvailable( ) )
         {
             try
@@ -459,7 +297,7 @@ public final class AppointmentService
         }
         if ( !appointmentToDelete.getIsCancelled( ) )
         {
-            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentToDelete.getNbPlaces( ), slotOfTheAppointmentToDelete );
+            SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentToDelete.getNbPlaces( ), appointmentToDelete.getIdSlot( ) );
         }
         // Need to delete also the responses linked to this appointment
         AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
@@ -509,8 +347,7 @@ public final class AppointmentService
         if ( !oldAppointment.getIsCancelled( ) && appointment.getIsCancelled( ) )
         {
             // Need to update the nb remaining places of the related slot
-            Slot slot = SlotService.findSlotById( appointment.getIdSlot( ) );
-            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointment.getNbPlaces( ), slot );
+            SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointment.getNbPlaces( ), appointment.getIdSlot( ) );
         }
         AppointmentHome.update( appointment );
         AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
@@ -526,29 +363,10 @@ public final class AppointmentService
      * @param slot
      *            the related slot
      */
-    private static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, Slot slot )
+    @Deprecated
+    public static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, Slot slot )
     {
-        // The capacity of the slot (that can be less than the number of places
-        // taken on the slot --> overbook)
-        int nMaxCapacity = slot.getMaxCapacity( );
-        // The old remaining places of the slot (before we delete or cancel or move the
-        // appointment
-        int nOldRemainingPlaces = slot.getNbRemainingPlaces( );
-        int nOldPotentialRemaningPlaces = slot.getNbPotentialRemainingPlaces( );
-        int nOldPlacesTaken = slot.getNbPlacesTaken( );
-        int nNewPlacesTaken = nOldPlacesTaken - nbPlaces;
-        // The new value of the remaining places of the slot is the minimal
-        // value between :
-        // - the minimal value between the potentially new max capacity and the old remaining places plus the number of places released by the appointment
-        // - and the capacity of the slot minus the new places taken on the slot (0 if negative)
-        int nNewRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldRemainingPlaces + nbPlaces ), Math.max( 0, nMaxCapacity - nNewPlacesTaken ) );
-
-        int nNewPotentialRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldPotentialRemaningPlaces + nbPlaces ),
-                Math.max( 0, nMaxCapacity - nNewPlacesTaken ) );
-
-        slot.setNbRemainingPlaces( nNewRemainingPlaces );
-        slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
-        slot.setNbPlacestaken( nNewPlacesTaken );
-        SlotService.updateSlot( slot );
+    	SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( nbPlaces, slot.getIdSlot( ) );
+       
     }
 }

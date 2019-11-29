@@ -44,7 +44,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 0, slot.getNbRemainingPlaces( ) );
 
@@ -74,7 +74,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 0, slot.getNbRemainingPlaces( ) );
 
@@ -104,7 +104,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 1, slot.getNbRemainingPlaces( ) );
 
@@ -134,7 +134,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
 
@@ -165,7 +165,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
 
@@ -195,7 +195,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
 
@@ -225,7 +225,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 1, slot.getNbPlacesTaken( ) );
 
@@ -255,7 +255,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 1, slot.getNbPlacesTaken( ) );
 
@@ -285,7 +285,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 2, slot.getNbPlacesTaken( ) );
 
@@ -326,7 +326,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         }
         
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 2, slot.getNbPlacesTaken( ) );
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
@@ -367,7 +367,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 2, slot.getNbPlacesTaken( ) );
         assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
@@ -408,7 +408,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
 
         assertEquals( 3, slot.getNbPlacesTaken( ) );
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
@@ -438,14 +438,14 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 0, slot.getNbRemainingPlaces( ) );
 
         AppointmentService.deleteAppointment( nIdAppointment1 );
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 0, slot.getNbPlacesTaken( ) );
         assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 1, slot.getNbRemainingPlaces( ) );
@@ -474,14 +474,14 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
         assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 1, slot.getNbRemainingPlaces( ) );
 
         AppointmentService.deleteAppointment( nIdAppointment1 );
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 0, slot.getNbPlacesTaken( ) );
         assertEquals( 2, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 2, slot.getNbRemainingPlaces( ) );
@@ -521,14 +521,14 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 2, slot.getNbPlacesTaken( ) );
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 0, slot.getNbRemainingPlaces( ) );
 
         AppointmentService.deleteAppointment( nIdAppointment1 );
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
         assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 1, slot.getNbRemainingPlaces( ) );
@@ -568,14 +568,14 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 3, slot.getNbPlacesTaken( ) );
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 0, slot.getNbRemainingPlaces( ) );
 
         AppointmentService.deleteAppointment( nIdAppointment1 );
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
         assertEquals( 2, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 2, slot.getNbRemainingPlaces( ) );
@@ -604,7 +604,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
         assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 1, slot.getNbRemainingPlaces( ) );
@@ -613,7 +613,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         appointmentToCancel.setIsCancelled( true );
         AppointmentService.updateAppointment( appointmentToCancel );
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 0, slot.getNbPlacesTaken( ) );
         assertEquals( 2, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 2, slot.getNbRemainingPlaces( ) );
@@ -654,7 +654,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 2, slot.getNbPlacesTaken( ) );
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 0, slot.getNbRemainingPlaces( ) );
@@ -663,7 +663,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         appointmentToCancel.setIsCancelled( true );
         AppointmentService.updateAppointment( appointmentToCancel );
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
         assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 1, slot.getNbRemainingPlaces( ) );
@@ -704,7 +704,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 3, slot.getNbPlacesTaken( ) );
         assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 0, slot.getNbRemainingPlaces( ) );
@@ -713,7 +713,7 @@ public class AppointmentServiceTest extends LuteceTestCase
         appointmentToCancel.setIsCancelled( true );
         AppointmentService.updateAppointment( appointmentToCancel );
 
-        slot = SlotService.findSlotById( slot.getIdSlot( ) );
+        slot = SlotSafeService.findSlotById( slot.getIdSlot( ) );
         assertEquals( 1, slot.getNbPlacesTaken( ) );
         assertEquals( 2, slot.getNbPotentialRemainingPlaces( ) );
         assertEquals( 2, slot.getNbRemainingPlaces( ) );

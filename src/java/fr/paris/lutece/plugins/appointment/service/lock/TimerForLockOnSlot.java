@@ -43,7 +43,10 @@ public final class TimerForLockOnSlot extends Timer implements Serializable
      * UID
      */
     private static final long serialVersionUID = -5582069386646092271L;
-
+    /**
+     * Is Cancelled
+     */
+    private boolean _bIsCancelled;
     /**
      * Constructor
      */
@@ -51,5 +54,17 @@ public final class TimerForLockOnSlot extends Timer implements Serializable
     {
         super( );
     }
+    
+    public boolean isCancelled( ){
+    	
+    	return _bIsCancelled;
+    	
+    }
+     
+    public void setIsCancelled( boolean isCancelled){
+    	
+    	_bIsCancelled= isCancelled;
+    }
+    
 
 }

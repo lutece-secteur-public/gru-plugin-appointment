@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><plug-in>
     <name>appointment</name>
     <class>fr.paris.lutece.plugins.appointment.service.AppointmentPlugin</class>
-    <version>2.0.32-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
     <documentation/>
     <installation/>
     <changes/>
@@ -54,6 +54,15 @@
             <application-class>fr.paris.lutece.plugins.appointment.web.AppointmentApp</application-class>
         </application>
     </applications>
+    <!-- Daemons -->
+    <daemons>
+        <daemon>
+            <daemon-id>slotDaemon</daemon-id>
+            <daemon-name>appointment.daemon.slotDaemon.name</daemon-name>
+            <daemon-description>appointment.daemon.slotDaemon.description</daemon-description>
+            <daemon-class>fr.paris.lutece.plugins.appointment.service.SlotDaemon</daemon-class>
+        </daemon>
+    </daemons>
     <!-- Dashboard components -->
     <dashboard-components>
         <dashboard-component>

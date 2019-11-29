@@ -79,6 +79,7 @@ import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormRuleService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
+import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.UserService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
@@ -605,47 +606,44 @@ public class AppointmentApp extends MVCApplication
                 // Need to get all the informations to create the slot
                 LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
                 LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
-                // Need to check if the slot has not been already created
-                HashMap<LocalDateTime, Slot> slotInDbMap = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateTime,
-                        endingDateTime );
-                if ( !slotInDbMap.isEmpty( ) )
-                {
-                    slot = slotInDbMap.get( startingDateTime );
-                }
-                else
-                {
-                    boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
-                    boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
-                    int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-                    slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0,
+               
+                boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+                boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
+                int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+                slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0,
                             bIsOpen, bIsSpecific );
-                    slot = SlotService.saveSlot( slot );
-                }
-            }
-            else
-            {
-                slot = SlotService.findSlotById( nIdSlot );
+                slot = SlotSafeService.createSlot( slot );
+                
+            }else{
+            
+            	slot = SlotService.findSlotById( nIdSlot );
             }
             ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
             WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
             form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
-            // Need to check competitive access
-            // May be the slot is already taken at the same time
-            if ( !bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
-            {
-                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+           
+            synchronized(slot){
+            	 
+                // Need to check competitive access
+                // May be the slot is already taken at the same time
+	            if ( !bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
+	            {
+	                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+	                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+	            }
+	            
+            
+	            appointmentDTO.setSlot( slot );
+	            appointmentDTO.setIdSlot( slot.getIdSlot( ) );
+	            appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
+	            appointmentDTO.setIdForm( nIdForm );
+	            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+	            if ( user != null )
+	            {
+	                setUserInfo( request, appointmentDTO );
+	            }        
+	            AppointmentUtilities.putTimerInSession( request, slot.getIdSlot(), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
             }
-            appointmentDTO.setSlot( slot );
-            appointmentDTO.setIdSlot( slot.getIdSlot( ) );
-            appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
-            appointmentDTO.setIdForm( nIdForm );
-            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
-            if ( user != null )
-            {
-                setUserInfo( request, appointmentDTO );
-            }        
-            AppointmentUtilities.putTimerInSession( request, slot.getIdSlot(), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
             if ( appointmentDTO.getNbMaxPotentialBookedSeats() == 0 )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
@@ -661,7 +659,7 @@ public class AppointmentApp extends MVCApplication
             // Need to redirect for the anchor
             if ( StringUtils.isEmpty( strModificationForm ) )
             {
-                LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<String, String>( );
+                LinkedHashMap<String, String> additionalParameters = new LinkedHashMap< >( );
                 additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                 additionalParameters.put( PARAMETER_MODIFICATION_FORM, String.valueOf( Boolean.TRUE ) );
                 additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + STEP_3 );
@@ -670,7 +668,7 @@ public class AppointmentApp extends MVCApplication
         }
         Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
-        StringBuffer strBuffer = new StringBuffer( );
+        StringBuilder strBuffer = new StringBuilder( );
         List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), true );
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -872,8 +870,8 @@ public class AppointmentApp extends MVCApplication
         
         int nIdAppointment;
 		try {
-			nIdAppointment = AppointmentService.saveAppointment( appointment );
-			AppointmentUtilities.killTimer( request );
+			nIdAppointment = SlotSafeService.saveAppointment( appointment, request );
+			//AppointmentUtilities.killTimer( request );
 		} catch ( SlotFullException e ) {
 			
 			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );

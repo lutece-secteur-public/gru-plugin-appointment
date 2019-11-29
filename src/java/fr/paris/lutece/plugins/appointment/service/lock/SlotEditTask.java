@@ -36,8 +36,7 @@ package fr.paris.lutece.plugins.appointment.service.lock;
 import java.io.Serializable;
 import java.util.TimerTask;
 
-import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.service.SlotService;
+import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
 
 /**
  * Timer Task for a slot (Manage a lock the time the user fill the form
@@ -62,14 +61,24 @@ public final class SlotEditTask extends TimerTask implements Serializable
      * Id of the slot on which the user is taking an appointment
      */
     private int _idSlot;
+    
+    private TimerForLockOnSlot _timer;
 
+    public SlotEditTask ( TimerForLockOnSlot timer ){
+    	
+    	super();
+    	_timer= timer;
+    }
     @Override
     public void run( )
     {
-        Slot slot = SlotService.findSlotById( _idSlot );
-        int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces + _nbPlacesTaken );
-        SlotService.updateSlot( slot );
+        //Slot slot = SlotService.findSlotById( _idSlot );
+        //int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
+       // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces + _nbPlacesTaken );
+       // SlotService.updateSlot( slot );
+        	
+        	SlotSafeService.incrementPotentialRemainingPlaces(_nbPlacesTaken, _idSlot, _timer );
+        
     }
 
     /**

@@ -467,7 +467,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         {
             fail( e.getLocalizedMessage( ) );
         }
-        slot1 = SlotService.findSlotById( slot1.getIdSlot( ) );
+        slot1 = SlotSafeService.findSlotById( slot1.getIdSlot( ) );
         AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot1, "gerard.durand@mdp.fr", "Gérard", "Durand", LocalTime.parse( "10:00" ),
                 LocalTime.parse( "10:30" ), 2 );
 

@@ -264,6 +264,7 @@ public final class AppointmentUtilities
         {
         	AppointmentFilterDTO filter= new AppointmentFilterDTO();
         	filter.setEmail(strEmail);
+        	filter.setStatus( 0 );
         	filter.setIdForm(form.getIdForm());
         	List<Appointment> listAppointment = AppointmentService.findListAppointmentsByFilter(filter);
         	 // If we modify an appointment, we remove the
@@ -272,7 +273,7 @@ public final class AppointmentUtilities
             {
                 listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) ).collect( Collectors.toList( ) );
             }
-        	
+
             if ( CollectionUtils.isNotEmpty( listAppointment ) )
             {
 
@@ -825,9 +826,10 @@ public final class AppointmentUtilities
      */
     public static void killTimer( HttpServletRequest request )
     {
-        Timer timer = (Timer) request.getSession( ).getAttribute( SESSION_TIMER_SLOT );
+    	TimerForLockOnSlot timer = (TimerForLockOnSlot) request.getSession( ).getAttribute( SESSION_TIMER_SLOT );
         if ( timer != null )
         {
+        	timer.setIsCancelled(true);
             timer.cancel( );
             request.getSession( ).removeAttribute( SESSION_TIMER_SLOT );
         }
@@ -855,12 +857,15 @@ public final class AppointmentUtilities
         if( slot.getNbPotentialRemainingPlaces() > 0 ){
         	
         	appointmentDTO.setNbMaxPotentialBookedSeats( nbPotentialPlacesTaken );
-            slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces - nbPotentialPlacesTaken );
-	        SlotService.updateSlot( slot );
-	        SlotEditTask slotEditTask = new SlotEditTask( );
+           // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces - nbPotentialPlacesTaken );
+            SlotSafeService.decrementPotentialRemainingPlaces(nbPotentialPlacesTaken, slot.getIdSlot( ));
+
+            //SlotService.updateSlot( slot );
+	     
+	        TimerForLockOnSlot timer = new TimerForLockOnSlot( );
+	        SlotEditTask slotEditTask = new SlotEditTask( timer );
 	        slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
 	        slotEditTask.setIdSlot( slot.getIdSlot( ) );
-	        TimerForLockOnSlot timer = new TimerForLockOnSlot( );
 	        long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
 	        timer.schedule( slotEditTask, delay );
 	        request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT, timer );
