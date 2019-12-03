@@ -68,11 +68,19 @@ public final class SlotSafeService {
     private SlotSafeService( )
     {
     }
-    
+    /**
+     * Get the slot in memory
+     * @return Map of slot 
+     */
     public static Map<Integer, Object> getListSlotInMemory(){
     	
     	return _listSlot;
     }
+    /**
+     * get lock for slot
+     * @param nIdSlot the Id Slot
+     * @return return the lock
+     */
     public static Object getLockOnSlot( int nIdSlot )
     {
     	if( nIdSlot == 0){
@@ -82,17 +90,29 @@ public final class SlotSafeService {
         return _listSlot.get( nIdSlot );
     }
   
+    /**
+     * remove slot in map memory
+     * @param nIdSlot the Id Slot
+     */
     public static void removeSlotInMemory( int nIdSlot ){
     	
     	_listSlot.remove(nIdSlot);
     }
- 
+	  /**
+	  * get lock for form 
+	  * @param nIdform Id from
+	  * @return return lock 
+	  */
     private static Object getLockOnForm( int nIdform )
     {
         _lockFormId.putIfAbsent( nIdform, new Object( ) );
         return _lockFormId.get( nIdform );
     }
-
+    /**
+     * Create slot 
+     * @param slot 
+     * @return slot 
+     */
     public static Slot createSlot( Slot slot )
     {
         Object formLock = getLockOnForm( slot.getIdForm( ) );
@@ -116,7 +136,12 @@ public final class SlotSafeService {
 
     
 
-    
+    /**
+     * Update potential remaining places
+     * @param nbPotentialRemainingPlaces the nbPotentialRemainingPlaces
+     * @param nIdSlot the is Slot
+     * @param timer the timer
+     */
 	public  static  void incrementPotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, TimerForLockOnSlot timer){
 	    
 		
@@ -132,7 +157,11 @@ public final class SlotSafeService {
 			 }
 	 	 }   	
 	}
-	
+	/**
+     * Update potential remaining places
+     * @param nbPotentialRemainingPlaces the nbPotentialRemainingPlaces
+     * @param nIdSlot the is Slot
+     */
 	public  static void decrementPotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot){
     	
 		 Object lock = getLockOnSlot( nIdSlot );
@@ -147,7 +176,14 @@ public final class SlotSafeService {
 		 }		
 			 
     }
-	
+
+    /**
+     * Save a slot in database
+     * 
+     * @param slot
+     *            the slot to save
+     * @return the slot saved
+     */
 	public  static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request ) 
     {
     	
