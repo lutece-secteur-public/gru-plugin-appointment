@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,6 +58,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -63,6 +66,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
@@ -91,13 +95,17 @@ import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
+import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.business.state.StateFilter;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
+import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.business.file.FileHome;
+import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
+import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
@@ -169,6 +177,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PROPERTY_USER_LAST_NAME = "user.name.family";
 
     // Parameters
+    private static final String PARAMETER_ID_RESPONSE = "idResponse";
     private static final String PARAMETER_IS_OPEN = "is_open";
     private static final String PARAMETER_IS_SPECIFIC = "is_specific";
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
@@ -1215,6 +1224,117 @@ public class AppointmentJspBean extends MVCAdminJspBean
         return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, additionalParameters );
     }
 
+    /**
+     * Do download a file from an appointment response stored in session and not yet on server fs
+     * 
+     * @param request
+     *            The request
+     * @param httpResponse
+     *            The response
+     * @return nothing.
+     * @throws AccessDeniedException
+     *             If the user is not authorized to access this feature
+     */
+    public String getDownloadFileFromSession( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
+    {
+        String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
+        File respfile = null;
+        if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
+
+        int nIdResponse = Integer.parseInt( strIdResponse );
+        AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
+
+        List<Response> lResponse = appointmentDTO.getListResponse( );
+
+        for ( Response response : lResponse )
+        {
+            if ( response.getEntry( ).getIdEntry( ) == nIdResponse && response.getFile( ) != null )
+            {
+                respfile = response.getFile( );
+                break;
+            }
+        }
+
+        if ( respfile == null )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
+
+        httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + respfile.getTitle( ) + "\";" );
+        httpResponse.setHeader( "Content-type", respfile.getMimeType( ) );
+        httpResponse.addHeader( "Content-Encoding", "UTF-8" );
+        httpResponse.addHeader( "Pragma", "public" );
+        httpResponse.addHeader( "Expires", "0" );
+        httpResponse.addHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+
+        try
+        {
+            OutputStream os = httpResponse.getOutputStream( );
+            os.write( respfile.getPhysicalFile( ).getValue( ) );
+            // We do not close the output stream in finally clause because it is
+            // the response stream,
+            // and an error message needs to be displayed if an exception occurs
+            os.close( );
+        }
+        catch( IOException e )
+        {
+            AppLogService.error( e.getStackTrace( ), e );
+        }
+
+        return StringUtils.EMPTY;
+    }
+
+    /**
+     * Do download a file from an appointment response
+     * 
+     * @param request
+     *            The request
+     * @param httpResponse
+     *            The response
+     * @return nothing.
+     * @throws AccessDeniedException
+     *             If the user is not authorized to access this feature
+     */
+    public String getDownloadFile( HttpServletRequest request, HttpServletResponse httpResponse ) throws AccessDeniedException
+    {
+        String strIdResponse = request.getParameter( PARAMETER_ID_RESPONSE );
+
+        if ( StringUtils.isEmpty( strIdResponse ) || !StringUtils.isNumeric( strIdResponse ) )
+        {
+            return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
+        }
+
+        int nIdResponse = Integer.parseInt( strIdResponse );
+        Response response = ResponseHome.findByPrimaryKey( nIdResponse );
+        File file = FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) );
+        PhysicalFile physicalFile = PhysicalFileHome.findByPrimaryKey( file.getPhysicalFile( ).getIdPhysicalFile( ) );
+
+        httpResponse.setHeader( "Content-Disposition", "attachment; filename=\"" + file.getTitle( ) + "\";" );
+        httpResponse.setHeader( "Content-type", file.getMimeType( ) );
+        httpResponse.addHeader( "Content-Encoding", "UTF-8" );
+        httpResponse.addHeader( "Pragma", "public" );
+        httpResponse.addHeader( "Expires", "0" );
+        httpResponse.addHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
+
+        try
+        {
+            OutputStream os = httpResponse.getOutputStream( );
+            os.write( physicalFile.getValue( ) );
+            // We do not close the output stream in finnaly clause because it is
+            // the response stream,
+            // and an error message needs to be displayed if an exception occurs
+            os.close( );
+        }
+        catch( IOException e )
+        {
+            AppLogService.error( e.getStackTrace( ), e );
+        }
+
+        return StringUtils.EMPTY;
+}
     /**
      * Get an integer attribute from the session
      * 
