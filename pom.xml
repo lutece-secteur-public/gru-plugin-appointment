@@ -3,15 +3,17 @@
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
         <version>4.0.6</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+    </parent>   
+
+   <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-appointment</artifactId>
+    <packaging>lutece-plugin</packaging>    
     <version>2.1.0-SNAPSHOT</version>
     <name>Lutece appointment plugin</name>
     <properties>  
         <componentName>appointment</componentName>
-        <core.version>6.0.1</core.version>    
+        <core.version>[6.0.1,)</core.version>    
         <genericattributes.version>1.2.1</genericattributes.version>
         <jackson.version>2.8.4</jackson.version>
         <jiraComponentId>12273</jiraComponentId>
