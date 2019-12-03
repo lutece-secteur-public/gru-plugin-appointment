@@ -368,5 +368,20 @@ public final class AppointmentService
     {
     	SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( nbPlaces, slot.getIdSlot( ) );
        
-    }
+    } 
+    	
+    /**
+     * Save an appointment in database
+     * 
+     * @param appointmentDTO
+     *            the appointment dto
+     * @return the id of the appointment saved
+     * @throws Exception 
+     */
+      public  static synchronized int saveAppointment( AppointmentDTO appointmentDTO ) 
+      {
+    	  return SlotSafeService.saveAppointment(appointmentDTO, null);
+      
+      }
+     
 }
