@@ -62,10 +62,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentRemoval( int nIdAppointment )
     {
-        for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
-        }
+    	new Thread( ( ) -> {
+	        for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+	        {
+	            appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
+	        }
+    	}).start();
     }
     
     /**
@@ -76,10 +78,16 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentCreated( int nIdAppointment )
     {
-        for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-        {
-            appointmentListener.notifyAppointmentCreated(nIdAppointment);
-        }
+    	new Thread( ( ) -> {
+    	   
+    		for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+    		{
+    			appointmentListener.notifyAppointmentCreated(nIdAppointment);
+    	    }
+    	    
+    	}).start();
+    	
+        
     }
     /**
      * Notify listeners that an appointment is about to be updated
@@ -89,10 +97,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentUpdated( int nIdAppointment )
     {
-        for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-        {
-            appointmentListener.notifyAppointmentUpdated(nIdAppointment);
-        }
+    	new Thread( ( ) -> {
+	        for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+	        {
+	            appointmentListener.notifyAppointmentUpdated(nIdAppointment);
+	        }
+    	}).start();
     }
 
     /**
@@ -108,7 +118,7 @@ public final class AppointmentListenerManager
      */
     public static List<String> notifyListenersAppointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale )
     {
-        List<String> listMessages = new ArrayList<String>( );
+        List<String> listMessages = new ArrayList<>( );
 
         for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
         {
@@ -131,10 +141,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
     {
-        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
-        {
-            appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
-        }
+    	new Thread( ( ) -> {
+	        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
+	        {
+	            appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
+	        }
+    	}).start();
     }
     
     /**
@@ -147,10 +159,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyAppointmentWFActionTriggered( int nIdAppointment, int nIdAction )
     {
-        for ( IAppointmentWorkflowActionListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentWorkflowActionListener.class ) )
-        {
-        	appointmentListener.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
-        }
+    	new Thread( ( ) -> {
+	        for ( IAppointmentWorkflowActionListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentWorkflowActionListener.class ) )
+	        {
+	        	appointmentListener.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
+	        }
+    	}).start();
     }
 
 }

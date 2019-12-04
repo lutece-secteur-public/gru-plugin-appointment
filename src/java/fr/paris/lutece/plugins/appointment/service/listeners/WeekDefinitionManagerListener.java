@@ -54,10 +54,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionCreation( int nIdWeekDefinition )
     {
-        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
-        {
-            weekDefinitionListener.notifyWeekDefinitionCreation( nIdWeekDefinition );
-        }
+    	new Thread( ( ) -> {
+	        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
+	        {
+	            weekDefinitionListener.notifyWeekDefinitionCreation( nIdWeekDefinition );
+	        }
+    	}).start();
     }
 
     /**
@@ -68,10 +70,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionChange( int nIdWeekDefinition )
     {
-        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
-        {
-            weekDefinitionListener.notifyWeekDefinitionChange( nIdWeekDefinition );
-        }
+    	new Thread( ( ) -> {
+	        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
+	        {
+	            weekDefinitionListener.notifyWeekDefinitionChange( nIdWeekDefinition );
+	        }
+    	}).start();
     }
 
     /**
@@ -82,10 +86,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionRemoval( int nIdForm )
     {
-        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
-        {
-            weekDefinitionListener.notifyWeekDefinitionRemoval( nIdForm );
-        }
+    	new Thread( ( ) -> {
+	        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
+	        {
+	            weekDefinitionListener.notifyWeekDefinitionRemoval( nIdForm );
+	        }
+    	}).start();
     }
 
 }

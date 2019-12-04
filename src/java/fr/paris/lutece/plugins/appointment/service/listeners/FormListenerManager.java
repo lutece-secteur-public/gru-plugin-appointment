@@ -54,10 +54,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormCreation( int nIdForm )
     {
-        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
-        {
-            formListener.notifyFormCreation( nIdForm );
-        }
+    	new Thread( ( ) -> {
+	        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
+	        {
+	            formListener.notifyFormCreation( nIdForm );
+	        }
+    	}).start();
     }
 
     /**
@@ -68,10 +70,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormChange( int nIdForm )
     {
-        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
-        {
-            formListener.notifyFormChange( nIdForm );
-        }
+    	new Thread( ( ) -> {
+	        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
+	        {
+	            formListener.notifyFormChange( nIdForm );
+	        }
+    	}).start();
     }
 
     /**
@@ -82,10 +86,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormRemoval( int nIdForm )
     {
-        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
-        {
-            formListener.notifyFormRemoval( nIdForm );
-        }
+    	new Thread( ( ) -> {
+	        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
+	        {
+	            formListener.notifyFormRemoval( nIdForm );
+	        }
+    	}).start();
     }
 
 }

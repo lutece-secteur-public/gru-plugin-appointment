@@ -54,10 +54,13 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotCreation( int nIdSlot )
     {
-        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
-        {
-            slotListener.notifySlotCreation( nIdSlot );
-        }
+    	new Thread( ( ) -> {
+	        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
+	        {
+	            slotListener.notifySlotCreation( nIdSlot );
+	        }
+    	}).start();
+    	
     }
 
     /**
@@ -68,10 +71,12 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotChange( int nIdSlot )
     {
-        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
-        {
-            slotListener.notifySlotChange( nIdSlot );
-        }
+    	new Thread( ( ) -> {
+	        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
+	        {
+	            slotListener.notifySlotChange( nIdSlot );
+	        }
+    	}).start();
     }
 
     /**
@@ -82,10 +87,12 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotRemoval( int nIdSlot )
     {
-        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
-        {
-            slotListener.notifySlotRemoval( nIdSlot );
-        }
+    	new Thread( ( ) -> {
+	        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
+	        {
+	            slotListener.notifySlotRemoval( nIdSlot );
+	        }
+    	}).start();
     }
 
 }
