@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.slot;
 
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,8 +52,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class SlotDAO extends UtilDAO implements ISlotDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_slot) FROM appointment_slot";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, nb_places_taken = ?, id_form = ? WHERE id_slot = ?";
     private static final String SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE = "UPDATE appointment_slot SET nb_potential_remaining_places = ? WHERE id_slot = ?";
 
@@ -72,11 +72,20 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
             + " WHERE slot.id_form = ? ORDER BY slot.starting_date_time DESC LIMIT 1";
 
     @Override
-    public synchronized void insert( Slot slot, Plugin plugin )
+    public void insert( Slot slot, Plugin plugin )
     {
-        slot.setIdSlot( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, slot, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	slot.setIdSlot( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -337,10 +346,12 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     private DAOUtil buildDaoUtil( String query, Slot slot, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, slot.getIdSlot( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setTimestamp( nIndex++, slot.getStartingTimestampDate( ) );
         daoUtil.setTimestamp( nIndex++, slot.getEndingTimestampDate( ) );

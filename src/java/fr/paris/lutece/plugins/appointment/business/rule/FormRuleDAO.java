@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.rule;
 
+import java.sql.Statement;
+
 import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -46,8 +48,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form_rule) FROM appointment_form_rule";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule (id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule ( is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, is_active_authentication = ?, nb_days_before_new_appointment = ?, min_time_before_appointment = ?, nb_max_appointments_per_user = ?, nb_days_for_max_appointments_per_user = ?, id_form = ? WHERE id_form_rule = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_rule WHERE id_form_rule = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, id_form FROM appointment_form_rule";
@@ -57,9 +58,18 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
     @Override
     public synchronized void insert( FormRule formRule, Plugin plugin )
     {
-        formRule.setIdFormRule( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formRule, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	 formRule.setIdFormRule(  daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -167,10 +177,12 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
     private DAOUtil buildDaoUtil( String query, FormRule formRule, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, formRule.getIdFormRule( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setBoolean( nIndex++, formRule.getIsCaptchaEnabled( ) );
         daoUtil.setBoolean( nIndex++, formRule.getIsMandatoryEmailEnabled( ) );

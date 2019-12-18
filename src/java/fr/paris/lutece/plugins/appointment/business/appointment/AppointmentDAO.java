@@ -33,8 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -58,8 +58,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_appointment) FROM appointment_appointment";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (id_appointment, reference, nb_places, is_cancelled, id_action_cancelled, notification, id_admin_user, admin_access_code_create, id_user, id_slot, date_appointment_create) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (reference, nb_places, is_cancelled, id_action_cancelled, notification, id_admin_user, admin_access_code_create, id_user, id_slot, date_appointment_create) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET reference = ?, nb_places = ?, is_cancelled = ?, id_action_cancelled = ?, notification = ?, id_admin_user = ?, admin_access_code_create = ?, id_user = ?, id_slot = ?, date_appointment_create = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.id_slot, appointment.date_appointment_create FROM appointment_appointment appointment";
@@ -87,12 +86,22 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private static final String CONSTANT_PERCENT = "%";
 
     @Override
-    public synchronized void insert( Appointment appointment, Plugin plugin )
+    public void insert( Appointment appointment, Plugin plugin )
     {
-        appointment.setIdAppointment( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         appointment.setDateAppointmentTaken(LocalDateTime.now( ));
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, appointment, plugin, true );
-        executeUpdate( daoUtil );
+
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	appointment.setIdAppointment( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -436,10 +445,12 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private DAOUtil buildDaoUtil( String query, Appointment appointment, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, appointment.getIdAppointment( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setString( nIndex++, appointment.getReference( ) );
         daoUtil.setInt( nIndex++, appointment.getNbPlaces( ) );

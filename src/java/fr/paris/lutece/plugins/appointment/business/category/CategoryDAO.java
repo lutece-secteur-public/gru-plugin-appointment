@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.category;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +50,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class CategoryDAO extends UtilDAO implements ICategoryDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_category) FROM appointment_category";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_category (id_category, label) VALUES (?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_category ( label) VALUES ( ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_category SET label = ? WHERE id_category = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_category WHERE id_category = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_category, label FROM appointment_category";
@@ -59,11 +59,20 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
     private static final String SQL_QUERY_SELECT_BY_LABEL = SQL_QUERY_SELECT_COLUMNS + " WHERE label = ?";
 
     @Override
-    public synchronized void insert( Category category, Plugin plugin )
+    public void insert( Category category, Plugin plugin )
     {
-        category.setIdCategory( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, category, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	category.setIdCategory( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -188,11 +197,15 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
     private DAOUtil buildDaoUtil( String query, Category category, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
+        
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, category.getIdCategory( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
+        
         daoUtil.setString( nIndex++, category.getLabel( ) );
         if ( !isInsert )
         {

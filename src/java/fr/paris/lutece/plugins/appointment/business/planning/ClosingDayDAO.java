@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business.planning;
 
 import java.sql.Date;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_closing_day) FROM appointment_closing_day";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_closing_day (id_closing_day, date_of_closing_day, id_form) VALUES ( ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_closing_day ( date_of_closing_day, id_form) VALUES (?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_closing_day SET date_of_closing_day = ?, id_form = ? WHERE id_closing_day = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_closing_day WHERE id_closing_day = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_closing_day, date_of_closing_day, id_form FROM appointment_closing_day";
@@ -63,11 +63,20 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
             + " AND date_of_closing_day >= ? AND date_of_closing_day <= ?";
 
     @Override
-    public synchronized void insert( ClosingDay closingDay, Plugin plugin )
+    public void insert( ClosingDay closingDay, Plugin plugin )
     {
-        closingDay.setIdClosingDay( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, closingDay, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	 closingDay.setIdClosingDay( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -225,7 +234,9 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
         DAOUtil daoUtil = new DAOUtil( query, plugin );
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, closingDay.getIdClosingDay( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setDate( nIndex++, closingDay.getSqlDateOfClosingDay( ) );
         daoUtil.setInt( nIndex++, closingDay.getIdForm( ) );

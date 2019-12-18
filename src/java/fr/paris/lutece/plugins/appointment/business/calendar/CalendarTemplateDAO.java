@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.calendar;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,19 +49,28 @@ import fr.paris.lutece.util.sql.DAOUtil;
  */
 public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTemplateDAO
 {
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_calendar_template) FROM appointment_calendar_template";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_calendar_template (id_calendar_template, title, description, template_path) VALUES (?,?,?,?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_calendar_template ( title, description, template_path) VALUES (?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_calendar_template SET title = ?, description = ?, template_path = ? WHERE id_calendar_template = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_calendar_template WHERE id_calendar_template = ?";
     private static final String SQL_QUERY_SELECT = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template WHERE id_calendar_template = ?";
     private static final String SQL_QUERY_SELECT_ALL = "SELECT id_calendar_template, title, description, template_path FROM appointment_calendar_template";
 
     @Override
-    public synchronized void insert( CalendarTemplate calendarTemplate, Plugin plugin )
+    public void insert( CalendarTemplate calendarTemplate, Plugin plugin )
     {
-        calendarTemplate.setIdCalendarTemplate( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, calendarTemplate, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	 calendarTemplate.setIdCalendarTemplate ( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
+        
     }
 
     @Override
@@ -162,11 +172,14 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
     private DAOUtil buildDaoUtil( String query, CalendarTemplate calendarTemplate, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, calendarTemplate.getIdCalendarTemplate( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
+     
         daoUtil.setString( nIndex++, calendarTemplate.getTitle( ) );
         daoUtil.setString( nIndex++, calendarTemplate.getDescription( ) );
         daoUtil.setString( nIndex++, calendarTemplate.getTemplatePath( ) );

@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.message;
 
+import java.sql.Statement;
+
 import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -46,8 +48,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form_message) FROM appointment_form_message";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_message(id_form_message, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help, field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_message( calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help, field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_message SET calendar_title = ?, field_firstname_title = ?, field_firstname_help = ?, field_lastname_title = ?, field_lastname_help = ?, field_email_title = ?, field_email_help = ?, field_confirmationEmail_title = ?, field_confirmationEmail_help = ?, text_appointment_created = ?, url_redirect_after_creation = ?, text_appointment_canceled = ?, label_button_redirection = ?, no_available_slot = ?, calendar_description = ?, calendar_reserve_label = ?, calendar_full_label = ?, id_form = ? WHERE id_form_message = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_message WHERE id_form_message = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_message, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help,field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form FROM appointment_form_message";
@@ -55,11 +56,20 @@ public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
     @Override
-    public synchronized void insert( FormMessage formMessage, Plugin plugin )
+    public  void insert( FormMessage formMessage, Plugin plugin )
     {
-        formMessage.setIdFormMessage( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formMessage, plugin, true );
-        executeUpdate( daoUtil );
+        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formMessage, plugin, true );        
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	 formMessage.setIdFormMessage(  daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -177,10 +187,12 @@ public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
     private DAOUtil buildDaoUtil( String query, FormMessage formMessage, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, formMessage.getIdFormMessage( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setString( nIndex++, formMessage.getCalendarTitle( ) );
         daoUtil.setString( nIndex++, formMessage.getFieldFirstNameTitle( ) );

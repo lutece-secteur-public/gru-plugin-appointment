@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.planning;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +50,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_working_day) FROM appointment_working_day";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_working_day (id_working_day, day_of_week, id_week_definition) VALUES (?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_working_day ( day_of_week, id_week_definition) VALUES ( ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_working_day SET day_of_week = ?, id_week_definition = ? WHERE id_working_day = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_working_day WHERE id_working_day = ? ";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_working_day, day_of_week, id_week_definition FROM appointment_working_day";
@@ -58,11 +58,20 @@ public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
     private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
 
     @Override
-    public synchronized void insert( WorkingDay workingDay, Plugin plugin )
+    public void insert( WorkingDay workingDay, Plugin plugin )
     {
-        workingDay.setIdWorkingDay( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, workingDay, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	workingDay.setIdWorkingDay(daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -164,10 +173,12 @@ public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
     private DAOUtil buildDaoUtil( String query, WorkingDay workingDay, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, workingDay.getIdWorkingDay( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setInt( nIndex++, workingDay.getDayOfWeek( ) );
         daoUtil.setInt( nIndex++, workingDay.getIdWeekDefinition( ) );

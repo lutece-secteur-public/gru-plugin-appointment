@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business.planning;
 
 import java.sql.Date;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_week_definition) FROM appointment_week_definition";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_week_definition (id_week_definition, date_of_apply, id_form) VALUES (?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_week_definition ( date_of_apply, id_form) VALUES ( ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_week_definition SET date_of_apply = ?, id_form = ? WHERE id_week_definition = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_week_definition WHERE id_week_definition = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_week_definition, date_of_apply, id_form FROM appointment_week_definition";
@@ -61,11 +61,20 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
 
     @Override
-    public synchronized void insert( WeekDefinition weekDefinition, Plugin plugin )
+    public void insert( WeekDefinition weekDefinition, Plugin plugin )
     {
-        weekDefinition.setIdWeekDefinition( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, weekDefinition, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	 weekDefinition.setIdWeekDefinition( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -193,10 +202,12 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
     private DAOUtil buildDaoUtil( String query, WeekDefinition weekDefinition, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, weekDefinition.getIdWeekDefinition( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setDate( nIndex++, weekDefinition.getSqlDateOfApply( ) );
         daoUtil.setInt( nIndex++, weekDefinition.getIdForm( ) );

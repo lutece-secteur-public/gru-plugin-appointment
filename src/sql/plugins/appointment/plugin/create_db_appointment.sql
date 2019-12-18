@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS appointment_category ;
 -- -----------------------------------------------------
 
 CREATE TABLE appointment_category (
-  id_category INT NOT NULL,
+  id_category INT AUTO_INCREMENT,
   label VARCHAR(255) NOT NULL,
   PRIMARY KEY (id_category),
   UNIQUE KEY unique_label (label))
@@ -32,7 +32,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_user (
-  id_user INT NOT NULL,
+  id_user INT AUTO_INCREMENT,
   guid VARCHAR(255) NULL,
   first_name VARCHAR(255) BINARY NOT NULL,
   last_name VARCHAR(255) BINARY NOT NULL,
@@ -49,7 +49,7 @@ CREATE INDEX email_idx ON appointment_user (email ASC);
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_form (
-  id_form INT NOT NULL,
+  id_form INT AUTO_INCREMENT,
   title VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL,
   reference VARCHAR(255) NULL,
@@ -78,7 +78,7 @@ CREATE INDEX fk_appointment_form_appointment_category_idx ON appointment_form (i
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_slot (
-  id_slot INT NOT NULL,
+  id_slot INT AUTO_INCREMENT,
   starting_date_time TIMESTAMP NULL,
   ending_date_time TIMESTAMP NULL,
   is_open BOOLEAN NOT NULL DEFAULT TRUE,
@@ -109,7 +109,7 @@ CREATE INDEX ending_date_time_idx ON appointment_slot (ending_date_time ASC);
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_appointment (
-  id_appointment INT NOT NULL,
+  id_appointment INT AUTO_INCREMENT,
   reference VARCHAR(45) NULL,
   nb_places INT NOT NULL DEFAULT 0,
   is_cancelled BOOLEAN NOT NULL DEFAULT FALSE,
@@ -144,7 +144,7 @@ CREATE INDEX reference_idx ON appointment_appointment (reference ASC);
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_appointment_response (
-  id_appointment_response INT NOT NULL,
+  id_appointment_response INT AUTO_INCREMENT,
   id_response INT NOT NULL,
   id_appointment INT NOT NULL,
   PRIMARY KEY (id_appointment_response, id_response, id_appointment),
@@ -165,7 +165,7 @@ CREATE INDEX fk_appointment_appointment_response_appointment_appointment_idx ON 
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_calendar_template (
-  id_calendar_template INT NOT NULL,
+  id_calendar_template INT AUTO_INCREMENT,
   title VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL,
   template_path VARCHAR(255) NOT NULL,
@@ -179,7 +179,7 @@ COLLATE = utf8_unicode_ci;
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_form_message (
-  id_form_message INT NOT NULL,
+  id_form_message INT AUTO_INCREMENT,
   calendar_title VARCHAR(255) NOT NULL,
   field_firstname_title VARCHAR(255) NOT NULL,
   field_firstname_help VARCHAR(255) NOT NULL,
@@ -236,7 +236,7 @@ CREATE INDEX fk_appointment_form_portlet_appointment_form_idx ON appointment_for
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_week_definition (
-  id_week_definition INT NOT NULL,
+  id_week_definition INT AUTO_INCREMENT,
   date_of_apply DATE NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_week_definition, id_form),
@@ -258,7 +258,7 @@ CREATE INDEX date_of_apply_idx ON appointment_week_definition (date_of_apply ASC
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_working_day (
-  id_working_day INT NOT NULL,
+  id_working_day INT AUTO_INCREMENT,
   day_of_week INT NOT NULL,
   id_week_definition INT NOT NULL,
   PRIMARY KEY (id_working_day, id_week_definition),
@@ -278,7 +278,7 @@ CREATE INDEX fk_appointment_working_day_appointment_week_definition_idx ON appoi
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_time_slot (
-  id_time_slot INT NOT NULL,
+  id_time_slot INT AUTO_INCREMENT,
   starting_time TIME NOT NULL,
   ending_time TIME NOT NULL,
   is_open BOOLEAN NOT NULL DEFAULT TRUE,
@@ -306,7 +306,7 @@ CREATE INDEX ending_time_idx ON appointment_time_slot (ending_time ASC);
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_localization (
-  id_localization INT NOT NULL,
+  id_localization INT AUTO_INCREMENT,
   longitude FLOAT NULL,
   latitude FLOAT NULL,
   address VARCHAR(255) NULL,
@@ -327,7 +327,7 @@ CREATE INDEX fk_appointment_localization_appointment_form_idx ON appointment_loc
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_display (
-  id_display INT NOT NULL,
+  id_display INT AUTO_INCREMENT,
   display_title_fo BOOLEAN NOT NULL DEFAULT FALSE,
   icon_form_content MEDIUMBLOB NULL,
   icon_form_mime_type VARCHAR(255) NULL,
@@ -359,7 +359,7 @@ CREATE INDEX fk_appointment_display_appointment_form_idx ON appointment_display 
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_form_rule (
-  id_form_rule INT NOT NULL,
+  id_form_rule INT AUTO_INCREMENT,
   is_captcha_enabled BOOLEAN NOT NULL DEFAULT FALSE,
   is_mandatory_email_enabled BOOLEAN NOT NULL DEFAULT FALSE,
   is_active_authentication BOOLEAN NOT NULL DEFAULT FALSE,
@@ -385,7 +385,7 @@ CREATE INDEX fk_appointment_form_rule_appointment_form_idx ON appointment_form_r
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_closing_day (
-  id_closing_day INT NOT NULL,
+  id_closing_day INT AUTO_INCREMENT,
   date_of_closing_day DATE NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_closing_day, id_form),
@@ -407,7 +407,7 @@ CREATE INDEX date_of_closing_day ON appointment_closing_day (date_of_closing_day
 -- -----------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS appointment_reservation_rule (
-  id_reservation_rule INT NOT NULL,
+  id_reservation_rule INT AUTO_INCREMENT,
   date_of_apply DATE NOT NULL,
   max_capacity_per_slot INT NOT NULL DEFAULT 0,
   max_people_per_appointment INT NOT NULL DEFAULT 0,

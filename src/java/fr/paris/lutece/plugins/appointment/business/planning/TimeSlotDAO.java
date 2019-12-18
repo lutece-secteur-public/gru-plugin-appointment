@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.planning;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +50,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_time_slot) FROM appointment_time_slot";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot (id_time_slot, starting_time, ending_time, is_open, max_capacity, id_working_day) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot ( starting_time, ending_time, is_open, max_capacity, id_working_day) VALUES ( ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_time_slot SET starting_time = ?, ending_time = ?, is_open = ?, max_capacity = ?, id_working_day = ? WHERE id_time_slot = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_time_slot WHERE id_time_slot = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_time_slot, starting_time, ending_time, is_open, max_capacity, id_working_day FROM appointment_time_slot";
@@ -58,11 +58,21 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
     private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
 
     @Override
-    public synchronized void insert( TimeSlot timeSlot, Plugin plugin )
+    public void insert( TimeSlot timeSlot, Plugin plugin )
     {
-        timeSlot.setIdTimeSlot( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, timeSlot, plugin, true );
-        executeUpdate( daoUtil );
+        
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	timeSlot.setIdTimeSlot( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -167,10 +177,12 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
     private DAOUtil buildDaoUtil( String query, TimeSlot timeSlot, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, timeSlot.getIdTimeSlot( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setTime( nIndex++, timeSlot.getStartingTimeSqlTime( ) );
         daoUtil.setTime( nIndex++, timeSlot.getEndingTimeSqlTime( ) );

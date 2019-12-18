@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public final class AppointmentResponseDAO extends UtilDAO implements IAppointmen
 {
 
     private static final String SQL_QUERY_NEW_PK = "SELECT max(id_appointment_response) FROM appointment_appointment_response";
-    private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response (id_appointment_response, id_appointment, id_response) VALUES (?,?,?)";
+    private static final String SQL_QUERY_INSERT_APPOINTMENT_RESPONSE = "INSERT INTO appointment_appointment_response ( id_appointment, id_response) VALUES (?,?)";
     private static final String SQL_QUERY_REMOVE_FROM_ID_RESPONSE = "DELETE FROM appointment_appointment_response WHERE id_response = ?";
     private static final String SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST = "SELECT id_response FROM appointment_appointment_response WHERE id_appointment = ?";
 
@@ -61,8 +62,7 @@ public final class AppointmentResponseDAO extends UtilDAO implements IAppointmen
         DAOUtil daoUtil = null;
         try
         {
-            daoUtil = new DAOUtil( SQL_QUERY_INSERT_APPOINTMENT_RESPONSE, plugin );
-            daoUtil.setInt( nIndex++, getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
+            daoUtil = new DAOUtil( SQL_QUERY_INSERT_APPOINTMENT_RESPONSE, Statement.RETURN_GENERATED_KEYS, plugin );
             daoUtil.setInt( nIndex++, nIdAppointment );
             daoUtil.setInt( nIndex++, nIdResponse );
             daoUtil.executeUpdate( );

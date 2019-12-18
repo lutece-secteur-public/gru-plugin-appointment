@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.form;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +50,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class FormDAO extends UtilDAO implements IFormDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_form) FROM appointment_form";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form (id_form, title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form SET title = ?, description = ?, reference = ?, id_category = ?, starting_validity_date = ?, ending_validity_date = ?, is_active = ?, id_workflow = ?, workgroup = ? WHERE id_form = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form WHERE id_form = ? ";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT form.id_form, form.title, form.description, form.reference, form.id_category, form.starting_validity_date, form.ending_validity_date, form.is_active, form.id_workflow, form.workgroup FROM appointment_form form";
@@ -62,11 +62,20 @@ public final class FormDAO extends UtilDAO implements IFormDAO
             + " INNER JOIN appointment_display display ON form.id_form = display.id_form WHERE form.is_active = 1 AND display.is_displayed_on_portlet = 1";
 
     @Override
-    public synchronized void insert( Form form, Plugin plugin )
+    public  void insert( Form form, Plugin plugin )
     {
-        form.setIdForm( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, form, plugin, true );
-        executeUpdate( daoUtil );
+        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, form, plugin, true );       
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	form.setIdForm( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -247,10 +256,12 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     private DAOUtil buildDaoUtil( String query, Form form, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, form.getIdForm( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setString( nIndex++, form.getTitle( ) );
         daoUtil.setString( nIndex++, form.getDescription( ) );

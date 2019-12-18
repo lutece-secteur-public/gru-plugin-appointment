@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.localization;
 
+import java.sql.Statement;
+
 import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -40,8 +42,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_localization) FROM appointment_localization";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_localization (id_localization, longitude, latitude, address, id_form) VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_localization (longitude, latitude, address, id_form) VALUES ( ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_localization SET longitude = ?, latitude = ?, address = ?, id_form = ? WHERE id_localization = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_localization WHERE id_localization = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_localization, longitude, latitude, address, id_form FROM appointment_localization";
@@ -49,11 +50,21 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
     @Override
-    public synchronized void insert( Localization localization, Plugin plugin )
+    public  void insert( Localization localization, Plugin plugin )
     {
-        localization.setIdLocalization( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, localization, plugin, true );
-        executeUpdate( daoUtil );
+     
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	localization.setIdLocalization( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -165,10 +176,12 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
     private DAOUtil buildDaoUtil( String query, Localization localization, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, localization.getIdLocalization( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         if ( localization.getLongitude( ) != null )
         {

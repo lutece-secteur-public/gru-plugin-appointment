@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.business.rule;
 
 import java.sql.Date;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,21 +52,29 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class ReservationRuleDAO extends UtilDAO implements IReservationRuleDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_reservation_rule) FROM appointment_reservation_rule";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_reservation_rule SET date_of_apply = ?, max_capacity_per_slot = ?, max_people_per_appointment =?, id_form = ? WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form FROM appointment_reservation_rule";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_reservation_rule (id_reservation_rule, date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form) VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_reservation_rule (date_of_apply, max_capacity_per_slot, max_people_per_appointment, id_form) VALUES ( ?, ?, ?, ?)";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_reservation_rule WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
 
     @Override
-    public synchronized void insert( ReservationRule reservationRule, Plugin plugin )
+    public void insert( ReservationRule reservationRule, Plugin plugin )
     {
-        reservationRule.setIdReservationRule( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, reservationRule, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	 reservationRule.setIdReservationRule(  daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -195,10 +204,12 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
     private DAOUtil buildDaoUtil( String query, ReservationRule reservationRule, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, reservationRule.getIdReservationRule( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setDate( nIndex++, reservationRule.getSqlDateOfApply( ) );
         daoUtil.setInt( nIndex++, reservationRule.getMaxCapacityPerSlot( ) );

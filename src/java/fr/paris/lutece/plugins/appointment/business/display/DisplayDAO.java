@@ -33,6 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.display;
 
+import java.sql.Statement;
+
 import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -47,8 +49,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class DisplayDAO extends UtilDAO implements IDisplayDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_display) FROM appointment_display";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display (id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display ( display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, is_displayed_on_portlet = ?, id_calendar_template = ?, id_form = ? WHERE id_display = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_display WHERE id_display = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form FROM appointment_display";
@@ -56,11 +57,20 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
     @Override
-    public synchronized void insert( Display display, Plugin plugin )
+    public  void insert( Display display, Plugin plugin )
     {
-        display.setIdDisplay( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, display, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	display.setIdDisplay(  daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -166,10 +176,12 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
     private DAOUtil buildDaoUtil( String query, Display display, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, display.getIdDisplay( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setBoolean( nIndex++, display.isDisplayTitleFo( ) );
         daoUtil.setBytes( nIndex++, display.getIcon( ).getImage( ) );

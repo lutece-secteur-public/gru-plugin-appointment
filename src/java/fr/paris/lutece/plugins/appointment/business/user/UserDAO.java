@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business.user;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +50,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class UserDAO extends UtilDAO implements IUserDAO
 {
 
-    private static final String SQL_QUERY_NEW_PK = "SELECT max(id_user) FROM appointment_user";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user (id_user, guid, first_name, last_name, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user ( guid, first_name, last_name, email, phone_number) VALUES ( ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_user SET guid = ?, first_name = ?, last_name = ?, email = ?, phone_number = ? WHERE id_user = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_user WHERE id_user = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_user, guid, first_name, last_name, email, phone_number FROM appointment_user";
@@ -60,11 +60,20 @@ public final class UserDAO extends UtilDAO implements IUserDAO
             + " WHERE UPPER(first_name) = ? and UPPER(last_name) = ? and UPPER(email) = ?";
 
     @Override
-    public synchronized void insert( User user, Plugin plugin )
+    public void insert( User user, Plugin plugin )
     {
-        user.setIdUser( getNewPrimaryKey( SQL_QUERY_NEW_PK, plugin ) );
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, user, plugin, true );
-        executeUpdate( daoUtil );
+        try
+        {
+            daoUtil.executeUpdate( );       
+	        if ( daoUtil.nextGeneratedKey( ) )
+	        {
+	        	user.setIdUser( daoUtil.getGeneratedKeyInt( 1 ) );
+	        }
+        }finally
+        {
+                daoUtil.free();       
+        }
     }
 
     @Override
@@ -196,10 +205,12 @@ public final class UserDAO extends UtilDAO implements IUserDAO
     private DAOUtil buildDaoUtil( String query, User user, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
-            daoUtil.setInt( nIndex++, user.getIdUser( ) );
+        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }else{
+        	daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setString( nIndex++, user.getGuid( ) );
         daoUtil.setString( nIndex++, user.getFirstName( ) );
