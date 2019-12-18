@@ -186,7 +186,7 @@ public final class SlotSafeService {
      */
 	public  static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request ) 
     {
-    	
+    	boolean bIsUpdate= false;
     	 Slot slot = appointmentDTO.getSlot( );
     	 Object lock = getLockOnSlot( slot.getIdSlot() );
 		 synchronized (lock) {
@@ -207,6 +207,8 @@ public final class SlotSafeService {
 	    		 throw new SlotFullException( "ERROR SLOT FULL" );
 	         
 	         }
+	    	// Create or update the user
+		    User user = UserService.saveUser( appointmentDTO );
 	    	TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
 	
 	        try
@@ -218,16 +220,7 @@ public final class SlotSafeService {
 		            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentDTO.getNbBookedSeats( ), appointmentDTO.getIdSlot( ) );
 		            // Need to remove the workflow resource to reload again the workflow
 		            // at the first step
-		            try
-		            {
-		            	
-		                WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
-		            
-		            }
-		            catch( Exception e )
-		            {
-		                AppLogService.error( "Workflow", e );
-		            }
+		            bIsUpdate=true;		            	            
 		        }
 		        // Update of the remaining places of the slot
 		      
@@ -263,8 +256,7 @@ public final class SlotSafeService {
 		        	throw new SlotFullException( "case of overbooking" );
 		        }
 		        slot = saveSlot( slot );
-		        // Create or update the user
-		        User user = UserService.saveUser( appointmentDTO );
+		      
 		        // Create or update the appointment
 		        Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user, slot );
 		        String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR ).add( user.getLastName( ) )
@@ -293,20 +285,18 @@ public final class SlotSafeService {
 		                AppointmentResponseService.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
 		            }
 		        }
+		        if( bIsUpdate ){
+	                WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
+		        }
 		        Form form = FormService.findFormLightByPrimaryKey( slot.getIdForm( ) );
 		        if ( form.getIdWorkflow( ) > 0 )
 		        {
-		            try
-		            {
+		            
 		                WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
 		                        form.getIdForm( ) );
 		                WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
 		                        form.getIdWorkflow( ), form.getIdForm( ) );
-		            }
-		            catch( Exception e )
-		            {
-		                AppLogService.error( "Error Workflow", e );
-		            }
+		            
 		        }
 		    TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
 		    appointmentDTO.setIdAppointment( appointment.getIdAppointment( ));

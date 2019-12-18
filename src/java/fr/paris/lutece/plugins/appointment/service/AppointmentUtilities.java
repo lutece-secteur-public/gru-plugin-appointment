@@ -846,7 +846,7 @@ public final class AppointmentUtilities
      *            the max people per appointment
      * @return the timer
      */
-    public synchronized static Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
+    public static synchronized  Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
     {
     	Slot slot = SlotService.findSlotById( nIdSlot );
     	

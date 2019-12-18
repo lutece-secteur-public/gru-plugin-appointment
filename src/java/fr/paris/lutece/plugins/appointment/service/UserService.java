@@ -62,7 +62,7 @@ public final class UserService
      *            the appointment DTO
      * @return the user saved
      */
-    public static User saveUser( AppointmentDTO appointment )
+    public static synchronized  User saveUser( AppointmentDTO appointment )
     {
         String strFirstName = appointment.getFirstName( );
         String strLastName = appointment.getLastName( );
