@@ -202,7 +202,7 @@ public final class SlotSafeService {
 	         }
 	    	   
 	    	   
-	    	 if ( slot == null || appointmentDTO.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) )
+	    	 if ( slot == null || appointmentDTO.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) || slot.getEndingDateTime().isBefore(LocalDateTime.now( )))
 	         {
 	    		 throw new SlotFullException( "ERROR SLOT FULL" );
 	         

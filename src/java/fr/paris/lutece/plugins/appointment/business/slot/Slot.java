@@ -128,17 +128,6 @@ public final class Slot implements Serializable
     private int _nIdForm;
     
     
-    private AtomicBoolean _bSlotLocked = new AtomicBoolean( );
-    
-    /**
-     * Returns the BSlotLocked
-     * @return The BSlotLocked
-     */ 
-     public AtomicBoolean getSlotLocked()
-     {
-         return _bSlotLocked;
-     }
-
     /**
      * Get the id of the slot
      * 

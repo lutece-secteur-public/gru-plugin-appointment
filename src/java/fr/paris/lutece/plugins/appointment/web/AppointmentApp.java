@@ -870,8 +870,9 @@ public class AppointmentApp extends MVCApplication
         
         int nIdAppointment;
 		try {
+			
 			nIdAppointment = SlotSafeService.saveAppointment( appointment, request );
-			//AppointmentUtilities.killTimer( request );
+
 		} catch ( SlotFullException e ) {
 			
 			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
