@@ -191,10 +191,25 @@ public final class SlotHome
     {
         return _dao.findSlotWithMaxDate( nIdForm, _plugin );
     }
-    
+    /**
+     * Update Potential Remaining Places
+     * @param nbPotentialRemainingPlaces
+     * @param nIdSlot
+     */
     public static void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot){
     	
     	 _dao.updatePotentialRemainingPlaces(nbPotentialRemainingPlaces, nIdSlot, _plugin);
+
+    }
+    
+    /**
+     * Reset Potential Remaining Places
+     * @param nbPotentialRemainingPlaces
+     * @param nIdSlot
+     */
+    public static void resetPotentialRemainingPlaces( ){
+    	
+    	 _dao.resetPotentialRemainingPlaces( _plugin);
 
     }
    

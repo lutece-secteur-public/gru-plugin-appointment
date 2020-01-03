@@ -25,6 +25,7 @@
     <bean id="appointment.appointmentAsynchronousUploadHandler" class="fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler" />
     
     <bean id="appointment.formRest"  class="fr.paris.lutece.plugins.appointment.web.rs.FormRest" />
+    <bean id="appointment.shutdownService" class="fr.paris.lutece.plugins.appointment.service.AppointmentShutdownService" />
     
     <bean id="appointment.entryService" class="fr.paris.lutece.plugins.appointment.service.EntryService" />    
     <bean id="appointment.entryTypeCheckBox" class="fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeCheckBox" />

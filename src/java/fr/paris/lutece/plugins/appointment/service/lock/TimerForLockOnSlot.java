@@ -54,7 +54,7 @@ public final class TimerForLockOnSlot extends Timer implements Serializable
     {
         super( );
     }
-    
+   
     public boolean isCancelled( ){
     	
     	return _bIsCancelled;
@@ -65,6 +65,5 @@ public final class TimerForLockOnSlot extends Timer implements Serializable
     	
     	_bIsCancelled= isCancelled;
     }
-    
 
 }

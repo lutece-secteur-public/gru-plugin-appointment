@@ -56,6 +56,8 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, nb_places_taken = ?, id_form = ? WHERE id_slot = ?";
     private static final String SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE = "UPDATE appointment_slot SET nb_potential_remaining_places = ? WHERE id_slot = ?";
 
+    private static final String SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN = "UPDATE appointment_slot SET nb_potential_remaining_places = nb_remaining_places WHERE nb_potential_remaining_places < nb_remaining_places ";
+
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form ";
     private static final String SQL_FROM_APPOINTMENT_SLOT = "FROM appointment_slot";
@@ -389,5 +391,22 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
             }
         }
     }
+
+	@Override
+	public void resetPotentialRemainingPlaces(Plugin plugin) {
+		DAOUtil daoUtil= null;
+    	try
+        {
+    		daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN, plugin );
+            daoUtil.executeUpdate( );
+           
+        }
+        finally
+        {
+           if( daoUtil != null ){
+            daoUtil.free();
+           }
+        }
+	}
 
 }
