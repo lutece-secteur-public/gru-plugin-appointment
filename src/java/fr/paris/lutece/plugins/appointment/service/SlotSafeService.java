@@ -202,7 +202,7 @@ public final class SlotSafeService {
 	         }
 	    	   
 	    	   
-	    	 if ( slot == null || appointmentDTO.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) || slot.getEndingDateTime().isBefore(LocalDateTime.now( )))
+	    	 if ( slot == null || (appointmentDTO.getNbBookedSeats( ) > slot.getNbRemainingPlaces( ) && !appointmentDTO.getOverbookingAllowed())|| slot.getEndingDateTime().isBefore(LocalDateTime.now( )))
 	         {
 	    		 throw new SlotFullException( "ERROR SLOT FULL" );
 	         
@@ -251,7 +251,7 @@ public final class SlotSafeService {
 		        slot.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
 		
 		        
-		        if(slot.getNbPlacesTaken() > slot.getMaxCapacity()){
+		        if(slot.getNbPlacesTaken() > slot.getMaxCapacity() && !appointmentDTO.getOverbookingAllowed()){
 		     	    
 		        	throw new SlotFullException( "case of overbooking" );
 		        }

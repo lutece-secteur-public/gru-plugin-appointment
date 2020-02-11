@@ -145,6 +145,10 @@ public final class AppointmentDTO extends Appointment implements Serializable
      * The appointment is saved
      */
     private boolean _bIsSaved;
+    /**
+     * The overbooking is allowed
+     */
+    private boolean _bOverbookingAllowed;
 
     /**
      * Get the name of the admin user
@@ -440,6 +444,24 @@ public final class AppointmentDTO extends Appointment implements Serializable
      {
          _bIsSaved = bIsSaved;
      }
+     
+     /**
+      * Returns the OverbookingAllowed
+      * @return The OverbookingAllowed
+      */ 
+      public boolean getOverbookingAllowed()
+      {
+          return _bOverbookingAllowed;
+      }
+  
+     /**
+      * Sets the OverbookingAllowed
+      * @param bOverbookingAllowed The OverbookingAllowed
+      */ 
+      public void setOverbookingAllowed( boolean bOverbookingAllowed )
+      {
+          _bOverbookingAllowed = bOverbookingAllowed;
+      }
 
     /**
      * Get all the possible errors of the form

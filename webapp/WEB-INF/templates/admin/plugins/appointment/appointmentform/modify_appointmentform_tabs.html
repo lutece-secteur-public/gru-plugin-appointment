@@ -98,6 +98,9 @@
 				<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}' mandatory=true>
 					<@input type='text' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=appointmentform.nbMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
 				</@formGroup>
+				<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
+					<@checkBox labelFor='bo_overbooking' name='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+				</@formGroup>
 				
 				<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
 					<@input type='text' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />

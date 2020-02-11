@@ -1,0 +1,1 @@
+ALTER TABLE appointment_form ADD bo_overbooking BOOLEAN NOT NULL DEFAULT FALSE;

@@ -120,6 +120,8 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Workgroup
      */
     private String _strWorkgroup;
+    
+    private boolean _bBoOverbooking;
 
     /**
      * Get the form Id
@@ -392,6 +394,24 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     {
         this._strWorkgroup = strWorkgroup;
     }
+    
+    /**
+     * Returns the BoOverbooking
+     * @return The BoOverbooking
+     */ 
+     public boolean getBoOverbooking()
+     {
+         return _bBoOverbooking;
+     }
+ 
+    /**
+     * Sets the BoOverbooking
+     * @param bBoOverbooking The BoOverbooking
+     */ 
+     public void setBoOverbooking( boolean bBoOverbooking )
+     {
+         _bBoOverbooking = bBoOverbooking;
+     }
 
     @Override
     public String getResourceTypeCode( )

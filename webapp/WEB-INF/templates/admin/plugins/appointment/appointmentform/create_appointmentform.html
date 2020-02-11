@@ -91,7 +91,9 @@
 							<input type="text" name="max_capacity_per_slot" value="${appointmentform.maxCapacityPerSlot!''}" class="form-control" onkeypress='return validateQty(event);' maxlength="3"/>	
 							<p class="help-block">#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}</p>
 						</div>
-					</div>						
+					</div>	
+					<@fieldInputCheckBox i18nLabelKey='appointment.label.BoOverbooking' inputName='bo_overbooking' value='false' checked=appointmentform.boOverbooking!false i18nHelpBlockKey='appointment.label.boOverbooking.help' />
+							
 					<div class="form-group">
 						<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment} * :</label>
 						<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
@@ -199,7 +201,7 @@
                             var markers_layer = L.featureGroup().addTo(map);
                             // create the tile layer with correct attribution
                             var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-                            var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+                            var osmAttrib='Map data ï¿½ <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
                             var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
 
                             var jAdresse = $('#address_address');

@@ -59,6 +59,7 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   id_workflow INT NULL,
   workgroup varchar(255) NULL,
+  bo_overbooking BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id_form),
    CONSTRAINT fk_appointment_form_appointment_category
     FOREIGN KEY (id_category)

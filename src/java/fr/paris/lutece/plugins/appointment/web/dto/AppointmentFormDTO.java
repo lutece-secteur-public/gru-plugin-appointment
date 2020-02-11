@@ -257,6 +257,11 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      * Address
      */
     private String _strAddress;
+    /**
+     * BoOverbooking
+     */
+    private boolean _bBoOverbooking;
+
 
     /**
      * Get the maximum number of appointments authorized for a same user
@@ -1061,5 +1066,22 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     {
         _strWorkgroup = workGroup;
     }
+    /**
+     * Returns the BoOverbooking
+     * @return The BoOverbooking
+     */ 
+     public boolean getBoOverbooking()
+     {
+         return _bBoOverbooking;
+     }
+ 
+    /**
+     * Sets the BoOverbooking
+     * @param bBoOverbooking The BoOverbooking
+     */ 
+     public void setBoOverbooking( boolean bBoOverbooking )
+     {
+         _bBoOverbooking = bBoOverbooking;
+     }
 
 }
