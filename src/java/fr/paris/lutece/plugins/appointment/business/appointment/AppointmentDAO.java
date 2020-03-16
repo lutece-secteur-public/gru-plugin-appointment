@@ -66,6 +66,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE id_user = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUERY_SELECT_COLUMNS +",appt_slot.nb_places FROM appointment_appointment appointment INNER JOIN appointment_appointment_slot appt_slot on ( appt_slot.id_appointment = appointment.id_appointment and appt_slot.id_slot= ? )";
     private static final String SQL_QUERY_SELECT_BY_REFERENCE = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE reference = ?";
+
     private static final String SQL_QUERY_SELECT_DISTINCT_COLUMNS = "SELECT DISTINCT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.date_appointment_create FROM appointment_appointment appointment";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_DISTINCT_COLUMNS
             + " INNER JOIN appointment_appointment_slot appt_slot on(appt_slot.id_appointment = appointment.id_appointment) INNER JOIN appointment_slot slot ON (appt_slot.id_slot = slot.id_slot) WHERE slot.id_form = ?";
@@ -76,10 +77,8 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             + " FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
             + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
             + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot " + "WHERE slot.id_form = ?";
-    
-    
-    
 
+   
     private static final String SQL_QUERY_INSERT_APPT_SLT = "INSERT INTO appointment_appointment_slot (id_appointment, id_slot, nb_places) VALUES ( ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE_APPT_SLT = "UPDATE appointment_appointment SET nb_plcaces = ? WHERE id_appointment = ? and id_slot = ?";
     private static final String SQL_QUERY_DELETE_APPT_SLT = "DELETE FROM appointment_appointment_slot WHERE id_appointment = ?";
@@ -265,28 +264,10 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
-                Appointment appointment = new Appointment( );
-                AppointmentSlot apptSlot= new AppointmentSlot( );
-                List<AppointmentSlot> listAppointSlot=new ArrayList<AppointmentSlot>( );
-                int nIdAppointment= daoUtil.getInt( 1 );
-                appointment.setIdAppointment( nIdAppointment );
-                appointment.setReference( daoUtil.getString( 2) );
-                appointment.setNbPlaces( daoUtil.getInt( 3 ) );
-                appointment.setIsCancelled( daoUtil.getBoolean( 4 ) );
-                appointment.setIdActionCancelled( daoUtil.getInt( 5) );
-                appointment.setNotification( daoUtil.getInt( 6 ) );
-                appointment.setIdAdminUser( daoUtil.getInt( 7) );
-                appointment.setAdminUserCreate( daoUtil.getString( 7 ) );
-                appointment.setIdUser( daoUtil.getInt( 8 ) );
-                appointment.setAppointmentTakenSqlDate(daoUtil.getTimestamp( 9 ) );
+                Appointment appointment = buildAppointment( daoUtil ) ;
+                appointment.setListAppointmentSlot( selectAppointmentSlot( appointment.getIdAppointment( ), plugin ) );
                 
-                apptSlot.setIdAppointment(nIdAppointment);
-                apptSlot.setNbPlaces(daoUtil.getInt( 10 ));
-                apptSlot.setIdSlot(nIdSlot);
-                listAppointSlot.add( apptSlot );
-                appointment.setListAppointmentSlot( listAppointSlot );
-                
-                listAppointment.add( buildAppointment( daoUtil ) );
+                listAppointment.add(appointment );
             }
         }
         finally
@@ -336,10 +317,12 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         {
             
         	Appointment appt= buildAppointment( daoUtil );
+
         	Slot slot= builSlot( daoUtil, 17 );
         	User user= buildUser( daoUtil, 11 );
         	appt.addSlot( slot );
         	appt.setUser( user );
+
         	Appointment apptAdded= listAppointment.stream().filter(p -> appt.getIdAppointment() == p.getIdAppointment( ) ).findAny().orElse(null);
         	
         	if( apptAdded == null){
@@ -349,8 +332,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         	}else {
         		apptAdded.addSlot(slot);
         	}
-        	
-        	
+        	        	
         }
         daoUtil.free( );
         return listAppointment;
@@ -506,6 +488,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         return appointment;
     }
     
+
     /**
      * Build an Slot business object from the resultset
      * 

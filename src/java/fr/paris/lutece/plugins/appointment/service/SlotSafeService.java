@@ -198,115 +198,22 @@ public final class SlotSafeService {
      */
 	public  static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request ) 
     {
-    	boolean bIsUpdate= false;
-    	List<Slot> listSlot = new ArrayList<>();
-    	List<Slot> listOldSlot = appointmentDTO.getSlot();
-    	List<Lock> listLock = new ArrayList<>();    	
-         if( appointmentDTO.getIsSaved( ) ){
-    		 throw new AppointmentSavedException( "Appointment is already saved " );
-    	 }
-         
-         List<AppointmentSlot> listApptSlot= AppointmentService.buildListAppointmentSlot( listOldSlot , appointmentDTO.getIdAppointment(), appointmentDTO.getNbBookedSeats( ));
-     	 appointmentDTO.setListAppointmentSlot( listApptSlot );
-         
-        // Create or update the user
-	    TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
-		User user = UserService.saveUser( appointmentDTO );
+		boolean bIsUpdate= false;
+		if( appointmentDTO.getIsSaved( ) ){
+			
+			throw new AppointmentSavedException( "Appointment is already saved " );
+		}
+        
+        AppointmentService.buildListAppointmentSlot(appointmentDTO );
+     	User user = UserService.saveUser( appointmentDTO );
 
+        TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
 	    try {
-    	 for( AppointmentSlot appSlot:appointmentDTO.getListAppointmentSlot( ) ) {
-    		 
-    		 Lock lock = getLockOnSlot( appSlot.getIdSlot() );
-    		 if(lock.tryLock(2, TimeUnit.SECONDS)){
-    		
-    			 listLock.add(lock);
-    		 
-    		 }else {
-    			 
-    			 throw new SlotFullException( "ERROR SLOT LOCKED" );
-    		 }
-    		 
-    	  }
-    	  
-    	 int nbRemainingPlaces= listOldSlot.stream().map(slot -> slot.getNbRemainingPlaces( ))
-      			  .reduce(0, Integer::sum); 
-    
-    	 for( AppointmentSlot appSlot:appointmentDTO.getListAppointmentSlot( ) ) {    			 
-    			 
-    		     Slot slt= null;
-    			 if ( appSlot.getIdSlot( ) != 0 )
-    	         {
-    	    		 //recovery of the slot in the bdd to manage the concurrent access
-    	             slt = SlotService.findSlotById( appSlot.getIdSlot( ) );
-    	             
-    	         }else {
-    	        	 
-    	        	 slt = listOldSlot.stream().filter(s -> s.getIdSlot()== appSlot.getIdSlot()).findAny().orElse(null);
-    	         }
-    	    	   
-    	    	   
-    	    	 if ( slt == null || ((appSlot.getNbPlaces() > slt.getNbRemainingPlaces( ) ||(appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces) && !appointmentDTO.getOverbookingAllowed()))|| slt.getEndingDateTime().isBefore(LocalDateTime.now( )))
-    	         {
-    	    		 throw new SlotFullException( "ERROR SLOT FULL" );
-    	         
-    	         }
-    	    	 
-    	    	// if it's an update for modification of the date of the appointment
- 		       if ( appointmentDTO.getIdAppointment( ) != 0 && !appointmentDTO.getSlot( ).stream().anyMatch(p -> p.getIdSlot() == appSlot.getIdSlot()) )
- 		        {
- 		    	   
-		            // Need to update the old slot
-
- 		            updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
- 		            // Need to remove the workflow resource to reload again the workflow
- 		            // at the first step
- 		            bIsUpdate=true;		            	            
- 		        }
-    		   	    	 
-    	    	// Update of the remaining places of the slot
-   		      
- 		        int oldNbRemainingPLaces = slt.getNbRemainingPlaces( );
- 		        int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
- 		        int oldNbPotentialRemaningPlaces = slt.getNbPotentialRemainingPlaces( );
- 		        int oldNbPlacesTaken = slt.getNbPlacesTaken( );
- 		       // int effectiveBookedSeats = appointmentDTO.getNbBookedSeats( );
- 		        int effectiveBookedSeats = appSlot.getNbPlaces( );
-
- 		        int newNbRemainingPlaces = 0;
- 		        int newPotentialRemaningPlaces = 0;
- 		        int newNbPlacesTaken = 0;
- 		        if ( appointmentDTO.getIdAppointment( ) == 0 || !appointmentDTO.getSlot( ).stream().anyMatch(p -> p.getIdSlot() == appSlot.getIdSlot()) )
- 		        {
- 		            newNbRemainingPlaces = oldNbRemainingPLaces - effectiveBookedSeats;
- 		            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
- 		            newNbPlacesTaken = oldNbPlacesTaken + effectiveBookedSeats;
- 		        }
- 		        else
- 		        {
- 		            // It is an update of the appointment
- 		            Appointment oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
- 		            newNbRemainingPlaces = oldNbRemainingPLaces + oldAppointment.getNbPlaces( ) - effectiveBookedSeats;
- 		            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
- 		            newNbPlacesTaken = oldNbPlacesTaken - oldAppointment.getNbPlaces( ) + effectiveBookedSeats;
- 		        }
- 		        slt.setNbRemainingPlaces( newNbRemainingPlaces );
- 		        slt.setNbPlacestaken( newNbPlacesTaken );
- 		        slt.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
- 		
- 		        
- 		        if(slt.getNbPlacesTaken() > slt.getMaxCapacity() && !appointmentDTO.getOverbookingAllowed()){
- 		     	    
- 		        	throw new SlotFullException( "case of overbooking" );
- 		        }
- 		       listSlot.add(slt);
- 		       slt = saveSlot( slt );
- 		       Lock lock = getLockOnSlot( slt.getIdSlot() );
- 		       lock.unlock();
- 		       listLock.remove(lock);
- 		      }    	 
-    	 
-    	 // Create or update the appointment
-	        Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user, listSlot );
+		
+	    	List<Slot> listSlot= saveSlots(  appointmentDTO, bIsUpdate ); 
+	    	
+	    	// Create or update the appointment
+	        Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );
 	        String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR ).add( user.getLastName( ) )
 	                .add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
 	        // Create a unique reference for a new appointment
@@ -333,9 +240,12 @@ public final class SlotSafeService {
 	                AppointmentResponseService.insertAppointmentResponse( appointment.getIdAppointment( ), response.getIdResponse( ) );
 	            }
 	        }
+	        
 	        if( bIsUpdate ){
-             WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
+	        	
+	        	WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
 	        }
+	        
 	        Form form = FormService.findFormLightByPrimaryKey( listSlot.get(0).getIdForm( ) );
 	        if ( form.getIdWorkflow( ) > 0 )
 	        {
@@ -346,28 +256,24 @@ public final class SlotSafeService {
 	                        form.getIdWorkflow( ), form.getIdForm( ) );
 	            
 	        }
-	    TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-	    appointmentDTO.setIdAppointment( appointment.getIdAppointment( ));
-	    appointmentDTO.setIsSaved(true);
-	    if( request!= null ){
-	    	AppointmentUtilities.killTimer( request );
+	    	
+	    	TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+	 	    appointmentDTO.setIdAppointment(  appointment.getIdAppointment( ) );
+	 	    appointmentDTO.setIsSaved(true);
+	 	    if( request!= null ){	 	    	 	    
+	 	    	for(AppointmentSlot apptSlot: appointmentDTO.getListAppointmentSlot( )) {
+	 	    		
+	 	    		AppointmentUtilities.killTimer( request, apptSlot.getIdSlot( ) );
+	 	    	}
+	 	    }
+		    return  appointment.getIdAppointment( );
+		
+	    }catch( Exception e )
+	    {
+	    	TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
+	    	AppLogService.error( "Error Save appointment " + e.getMessage(), e );
+	    	throw new SlotFullException( e.getMessage( ), e );
 	    }
-
-	    return appointment.getIdAppointment( );
-     }
-     catch( Exception e )
-     {
-         TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-         AppLogService.error( "Error Save appointment " + e.getMessage(), e );
-         throw new SlotFullException( e.getMessage( ), e );
-     }finally {
-    	 
-    	 for(Lock lk: listLock) {
-    		 lk.unlock( );
-    	   }
-     
-    		 
-    }
   }
 	
 	
@@ -844,10 +750,156 @@ public final class SlotSafeService {
     			_listSlot.remove(idSlot);
     		}
     		
-    	}
+    	}   	
+    }
+    /**
+     * lock slots and put the lock object in the list passed on the param 
+     * @param appointmentDTO the appoitmentDTO
+     * @param listLock The list of lock object
+     * @throws InterruptedException
+     */
+    
+    private static void lockSlot( AppointmentDTO appointmentDTO, List<Lock> listLock) throws InterruptedException {
     	
+    	for( AppointmentSlot appSlot:appointmentDTO.getListAppointmentSlot( ) ) {
+   		 
+	   		 Lock lock = getLockOnSlot( appSlot.getIdSlot() );
+	   		 if(lock.tryLock(2, TimeUnit.SECONDS)){
+	   		
+	   			 listLock.add(lock);
+	   		 
+	   		 }else {
+	   			 
+	   			 throw new SlotFullException( "ERROR SLOT LOCKED" );
+	   		 }
+	   		 
+   	  }
     	
     }
+    /**
+     * Save and update slots 
+     * @param appointmentDTO the appointmentDTO
+     * @param bIsUpdate the boolean if is an update
+     * @return list slot updated
+     */
+    private static List<Slot> saveSlots( AppointmentDTO appointmentDTO, boolean bIsUpdate) {
+    	
+    	List<Slot> listSlotToUpdate = appointmentDTO.getSlot();
+    	Appointment oldAppointment= null;
+     	List<Slot> listSlot = new ArrayList<>();
+     	List<Lock> listLock = new ArrayList<>();    	
 
+    	 
+         if( appointmentDTO.getIdAppointment() != 0) {
+        	 
+        	 oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
+
+         }
+      
+         try {
+       
+			lockSlot(  appointmentDTO, listLock);			
+	    	 int nbRemainingPlaces= listSlotToUpdate.stream().map(slot -> slot.getNbRemainingPlaces( ))
+	     			  .reduce(0, Integer::sum);
+	    	 
+	    	 for( AppointmentSlot appSlot:appointmentDTO.getListAppointmentSlot( ) ) {    			 
+				 
+			     Slot slt= null;
+				 if ( appSlot.getIdSlot( ) != 0 )
+		         {
+		    		 //recovery of the slot in the bdd to manage the concurrent access
+		             slt = SlotService.findSlotById( appSlot.getIdSlot( ) );
+		             
+		         }else {
+		        	 
+		        	 slt = listSlotToUpdate.stream().filter(s -> s.getIdSlot()== appSlot.getIdSlot()).findAny().orElse(null);
+		         }
+				 //update appointment
+				 if( appointmentDTO.getIdAppointment() != 0 && ( appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces + oldAppointment.getNbPlaces( )  && !appointmentDTO.getOverbookingAllowed()) || slt.getEndingDateTime().isBefore(LocalDateTime.now( ) )) {
+	 				
+					 throw new SlotFullException( "ERROR SLOT FULL" );
+				 }
+		    	   
+				 else if (appointmentDTO.getIdAppointment() == 0 &&( slt == null || ((appSlot.getNbPlaces() > slt.getNbRemainingPlaces( ) ||(appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces  )) && !appointmentDTO.getOverbookingAllowed())|| slt.getEndingDateTime().isBefore(LocalDateTime.now( ))))
+		         {
+		    		 throw new SlotFullException( "ERROR SLOT FULL" );
+		         
+		         }
+		    	 
+		    	// if it's an update for modification of the date of the appointment
+			       if ( !bIsUpdate && appointmentDTO.getIdAppointment( ) != 0 && !oldAppointment.getListAppointmentSlot( ).stream().anyMatch(p -> p.getIdSlot() == appSlot.getIdSlot()) )
+			        {
+		
+		            // Need to update the old slot
+			    	   for(AppointmentSlot appointmentSlot: oldAppointment.getListAppointmentSlot( )) {
+			    		   
+			    		   updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentSlot.getNbPlaces( ), appointmentSlot.getIdSlot( ) );
+			    	   }
+			            // Need to remove the workflow resource to reload again the workflow
+			            // at the first step
+			            bIsUpdate=true;		            	            
+			        }
+			   	    	 
+		    	// Update of the remaining places of the slot
+			      
+			        int oldNbRemainingPLaces = slt.getNbRemainingPlaces( );
+			        int nbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
+			        int oldNbPotentialRemaningPlaces = slt.getNbPotentialRemainingPlaces( );
+			        int oldNbPlacesTaken = slt.getNbPlacesTaken( );
+			        int effectiveBookedSeats = appSlot.getNbPlaces( );
+	
+			        int newNbRemainingPlaces = 0;
+			        int newPotentialRemaningPlaces = 0;
+			        int newNbPlacesTaken = 0;
+			        
+			        if( appointmentDTO.getIdAppointment( ) != 0 && oldAppointment.getListAppointmentSlot().stream().anyMatch(p -> p.getIdSlot() == appSlot.getIdSlot()))
+			        {
+			            // It is an update of the appointment
+	                int nOldTakenPlaces =oldAppointment.getListAppointmentSlot().stream().filter(p -> p.getIdSlot() == appSlot.getIdSlot()).findAny().get().getNbPlaces( );
+			            newNbRemainingPlaces = oldNbRemainingPLaces + nOldTakenPlaces - effectiveBookedSeats;
+			            newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+			            newNbPlacesTaken = oldNbPlacesTaken - nOldTakenPlaces + effectiveBookedSeats;
+			        }
+			        else /*if (  !appointmentDTO.getSlot( ).stream().anyMatch(p -> p.getIdSlot() == appSlot.getIdSlot()) )*/
+			        {
+			        	newNbRemainingPlaces = oldNbRemainingPLaces - effectiveBookedSeats;
+			        	newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
+			        	newNbPlacesTaken = oldNbPlacesTaken + effectiveBookedSeats;
+			        }
+			        slt.setNbRemainingPlaces( newNbRemainingPlaces );
+			        slt.setNbPlacestaken( newNbPlacesTaken );
+			        slt.setNbPotentialRemainingPlaces( Math.min( newPotentialRemaningPlaces, newNbRemainingPlaces ) );
+			       
+			        if(slt.getNbPlacesTaken() > slt.getMaxCapacity() && !appointmentDTO.getOverbookingAllowed()){
+			     	    
+			        	throw new SlotFullException( "case of overbooking" );
+			        }
+			       
+			       listSlot.add(slt);
+			       slt = saveSlot( slt );
+			       Lock lock = getLockOnSlot( slt.getIdSlot() );
+			       lock.unlock();
+			       listLock.remove(lock);
+			      }    	 
+		 
+		
+	   
+	        return listSlot;
+	        
+	    }catch( Exception e )
+        {
+            AppLogService.error( "Error Save slot " + e.getMessage(), e );
+            throw new SlotFullException( e.getMessage( ), e );
+        
+        }finally {
+       	 
+        	for(Lock lk: listLock) {
+       		 
+        		lk.unlock( );
+       	   }
+        
+       		 
+       } 
+    }
 
 }

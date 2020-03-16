@@ -105,10 +105,6 @@ public class Appointment extends User implements Serializable
      */
     private int _nIdUser;
 
-    /**
-     * Slots id
-     */
-   // private List<Integer>_listIdSlot;
 
     /**
      * The slots on which the appointment is
@@ -315,27 +311,7 @@ public class Appointment extends User implements Serializable
         this._strAdminUserCreate = strAdminUser;
     }
 
-    /**
-     * Get the Slots Id list of the Appointment
-     * 
-     * @return the Slots Id list of the Appointment
-     */
- /*   public List<Integer> getIdSlot( )
-    {
-        return _listIdSlot;
-    }
-*/
-    /**
-     * Set the Slot Id list of the Appointment
-     * 
-     * @param listIdSlot
-     *            the Slot Id list of the Appointment
-     */
-  /*  public void setIdSlot( List<Integer> listIdSlot )
-    {
-        _listIdSlot = listIdSlot;
-    }
-*/
+   
     /**
      * Get the list slot of the appointment
      * 
@@ -369,11 +345,12 @@ public class Appointment extends User implements Serializable
     
     public void addSlot( Slot slot) {
     	
+
     	if( _listSlot == null ){
     		
     		_listSlot = new ArrayList<>( );
     	}
-    	
+
     	if (_listSlot.stream().noneMatch((slt -> slt.getIdSlot( ) == slot.getIdSlot( ) ))){
     		
     		_listSlot.add(slot);

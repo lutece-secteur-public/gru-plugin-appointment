@@ -111,13 +111,13 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 public final class AppointmentUtilities
 {
 
-    private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
-    private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
-    private static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
-    private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
-    private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
-    private static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
-    private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
+    public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
+    public static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+    public static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
+    public static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
+    public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
+    public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
+    public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 
     private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
     private static final String KEY_COLUMN_LAST_NAME = "appointment.manageAppointments.columnLastName";
@@ -357,6 +357,7 @@ public final class AppointmentUtilities
                         	for( AppointmentSlot apptSlot: appointment.getListAppointmentSlot( )) {
                             
                         		listSlots.add( SlotService.findSlotById( apptSlot.getIdSlot( ) ) );
+
                         	
                         	}
                         }
@@ -492,7 +493,7 @@ public final class AppointmentUtilities
         // if it's a modification, need to check if the new number of booked
         // seats is under or equal to the number of the remaining places + the
         // previous number of booked seats of the appointment
-        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats( ) && !appointmentDTO.getOverbookingAllowed())
+        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats( )  && !appointmentDTO.getOverbookingAllowed())
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale ) );
@@ -831,14 +832,14 @@ public final class AppointmentUtilities
      * @param request
      *            the request
      */
-    public static void killTimer( HttpServletRequest request )
+    public static void killTimer( HttpServletRequest request, int idSlot )
     {
-    	TimerForLockOnSlot timer = (TimerForLockOnSlot) request.getSession( ).getAttribute( SESSION_TIMER_SLOT );
+    	TimerForLockOnSlot timer = (TimerForLockOnSlot) request.getSession( ).getAttribute( SESSION_TIMER_SLOT + idSlot );
         if ( timer != null )
         {
         	timer.setIsCancelled(true);
             timer.cancel( );
-            request.getSession( ).removeAttribute( SESSION_TIMER_SLOT );
+            request.getSession( ).removeAttribute( SESSION_TIMER_SLOT + idSlot);
         }
     }
 
@@ -877,7 +878,7 @@ public final class AppointmentUtilities
 	        slotEditTask.setIdSlot( slot.getIdSlot( ) );
 	        long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
 	        timer.schedule( slotEditTask, delay );
-	        request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT, timer );
+	        request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT + slotEditTask.getIdSlot( ), timer );
 	        return timer;
     	}
         appointmentDTO.setNbMaxPotentialBookedSeats(0);
@@ -1005,6 +1006,7 @@ public final class AppointmentUtilities
             	for(AppointmentSlot appSlot :appointment.getListAppointmentSlot( )) {
             		
 	                Slot tempSlot = SlotService.findSlotById( appSlot.getIdSlot( ) );
+
 	                if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
 	                {
 	                    bAppointmentOnOpenDays = true;
@@ -1163,7 +1165,7 @@ public final class AppointmentUtilities
     	if (listSlot != null && !listSlot.isEmpty( )) {
     		
     		Slot slot= listSlot.stream().max(Comparator.comparing(Slot::getStartingDateTime )).orElse(listSlot.get(0));
-    		return slot.getStartingDateTime( );
+    		return slot.getEndingDateTime();
     	}
     	
     	return null;

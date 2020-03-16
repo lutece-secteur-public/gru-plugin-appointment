@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -85,7 +84,14 @@ public final class AppointmentService
         List<Appointment> listAppointment = new ArrayList<>( );
         for ( Slot slot : listSlot )
         {
-            listAppointment.addAll( AppointmentService.findListAppointmentBySlot( slot.getIdSlot( ) ) );
+        	List<Appointment> tempAppointment= AppointmentService.findListAppointmentBySlot( slot.getIdSlot( ) );
+        	for (Appointment tmp: tempAppointment){
+	        	
+        		if(!listAppointment.stream().anyMatch(p -> p.getIdAppointment()== tmp.getIdAppointment( ))) {
+        			
+        			listAppointment.add( tmp );
+	        	}
+        	}
         }
         return listAppointment;
     }
@@ -139,7 +145,7 @@ public final class AppointmentService
      *            the slot
      * @return the appointment created
      */
-    public static Appointment buildAndCreateAppointment( AppointmentDTO appointmentDTO, User user, List<Slot> listSlot )
+    public static Appointment buildAndCreateAppointment( AppointmentDTO appointmentDTO, User user )
     {
         Appointment appointment = new Appointment( );
         if ( appointmentDTO.getIdAppointment( ) != 0 )
@@ -156,8 +162,7 @@ public final class AppointmentService
         }
         appointment.setListAppointmentSlot(appointmentDTO.getListAppointmentSlot( ));
         appointment.setNbPlaces( appointmentDTO.getNbBookedSeats( ) );
-        //List<Integer> idSlotList = listSlot.stream().map(Slot::getIdSlot).collect(Collectors.toList());
-       // appointment.setIdSlot( idSlotList );
+        
         appointment.setIdUser( user.getIdUser( ) );
         
         if ( appointment.getIdAppointment( ) == 0 )
@@ -167,7 +172,7 @@ public final class AppointmentService
         }
         else
         {
-            AppLogService.info( "Update Appointment: " + appointment.getIdAppointment( ) + " on Slot: " + appointment.getSlot().get(0).getIdSlot( ) );
+            AppLogService.info( "Update Appointment: " + appointment.getIdAppointment( ) );
             appointment = AppointmentHome.update( appointment );
             AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
 
@@ -242,10 +247,12 @@ public final class AppointmentService
         appointmentDTO.setGuid( appointment.getUser( ).getGuid( ) );
         appointmentDTO.setReference( appointment.getReference( ) );
         LocalDateTime startingDateTime = AppointmentUtilities.getStartingDateTime( appointment);
+        LocalDateTime endingDateTime = AppointmentUtilities.getEndingDateTime( appointment);
         appointmentDTO.setStartingDateTime( startingDateTime );
+        appointmentDTO.setEndingDateTime(endingDateTime);
         appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getFormatter( ) ) );
         appointmentDTO.setStartingTime( startingDateTime.toLocalTime( ) );
-        appointmentDTO.setEndingTime( AppointmentUtilities.getEndingDateTime( appointment ).toLocalTime( ) );
+        appointmentDTO.setEndingTime( endingDateTime.toLocalTime( ) );
         appointmentDTO.setIsCancelled( appointment.getIsCancelled( ) );
         appointmentDTO.setNbBookedSeats( appointment.getNbPlaces( ) );
         for(Slot slt:appointment.getSlot()) {
@@ -342,6 +349,7 @@ public final class AppointmentService
         User user = UserService.findUserById( appointment.getIdUser( ) );
         for(AppointmentSlot appSlot:appointment.getListAppointmentSlot( )) {
         	Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );       
+
         	appointment.addSlot( slot );
         }
         appointment.setUser( user );
@@ -401,36 +409,55 @@ public final class AppointmentService
       
       }
       
-      public static List<AppointmentSlot> buildListAppointmentSlot( List<Slot> listSlot, int nIdAppointment, int nbPlaces) {
+      public static void buildListAppointmentSlot(AppointmentDTO appointmentDTO) {
     	  
     	  List<AppointmentSlot> listApptSlot= new ArrayList<>( );
+    	  int nbPlaces= appointmentDTO.getNbBookedSeats( );
+    	  int nIdAppointment= appointmentDTO.getIdAppointment();
     	  int nNumberPlace=-1;
+    	  int index=0;
+    	  
+    	  List<Slot> listSlot= appointmentDTO.getSlot( );
     	  
     	  listSlot.sort((slot1,slot2) -> slot1.getStartingDateTime().compareTo(slot2.getStartingDateTime()));
+    	  
     	  for(Slot slot: listSlot) {
+    		  
     		  AppointmentSlot apptSlot= new AppointmentSlot();
     		  apptSlot.setIdAppointment(nIdAppointment);
     		  apptSlot.setIdSlot(slot.getIdSlot());
-    		  
-    		  if(nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces() ) {
+    		  index= index+1;
+    		  if( nIdAppointment!= 0 && appointmentDTO.getListAppointmentSlot().stream().anyMatch(p -> p.getIdSlot() == slot.getIdSlot( ))) {
+    			  
+    			  int nNbUpdatePlaces =appointmentDTO.getListAppointmentSlot().stream().filter(p -> p.getIdSlot() == slot.getIdSlot()).findAny().get().getNbPlaces( );
+        		
+    			  if( nbPlaces >= slot.getNbRemainingPlaces() + nNbUpdatePlaces) {
+        			  
+        			  nNumberPlace =  nNbUpdatePlaces;
+
+        		  }else {
+        			
+        			  nNumberPlace= nNbUpdatePlaces;
+        		  }
+    		  }else if(nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces() && index < listSlot.size( ) ) {
     			
     			  nNumberPlace = slot.getNbRemainingPlaces();
     		  
-    		  }else if( nbPlaces > 0) {
+    		  
+    		  }else if( nbPlaces > 0  ) {
     			
     			  nNumberPlace =  nbPlaces;
 
-    		  }else {
+    		  }
+    		  else {
     			  break;
     		  }
-    		  //nbPlaces = nbPlaces - slot.getNbRemainingPlaces();
     		  
     		  apptSlot.setNbPlaces(nNumberPlace);
     		  nbPlaces= nbPlaces - nNumberPlace;
     		  listApptSlot.add(apptSlot);
     	  }
-    	  
-    	  return listApptSlot;
+    	  appointmentDTO.setListAppointmentSlot(listApptSlot);
       }
      
 }
