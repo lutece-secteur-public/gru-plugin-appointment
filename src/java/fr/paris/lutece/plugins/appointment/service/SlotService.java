@@ -342,6 +342,168 @@ public final class SlotService
         return listSlot;
 
     }
+    
+    
+    public static List<Slot> buildListSlot ( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate, int nNbPlaces )
+    {
+        List<Slot> listSlotToShow = new ArrayList<>( );
+
+        // Get all the reservation rules
+        final HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm );
+        final List<LocalDate> listDateWeekDefinition = new ArrayList<>( mapWeekDefinition.keySet( ) );
+        final List<LocalDate> listDateReservationTule = new ArrayList<>( mapReservationRule.keySet( ) );
+        LocalDate closestDateWeekDefinition;
+        LocalDate closestDateReservationRule;
+        WeekDefinition weekDefinitionToApply;
+        ReservationRule reservationRuleToApply;
+        LocalDate dateTemp = startingDate;
+        int nMaxCapacity;
+        DayOfWeek dayOfWeek;
+        WorkingDay workingDay;
+        LocalTime minTimeForThisDay;
+        LocalTime maxTimeForThisDay;
+        LocalTime timeTemp;
+        LocalDateTime dateTimeTemp;
+        LocalDateTime endingDateTime;
+        LocalDateTime startingDateTime = null;
+        boolean isChanged= true;
+        int sumNbPotentialRemainingPlaces;
+        int sumNbRemainingPlaces;
+        
+        Slot slotToAdd;
+        TimeSlot timeSlot;
+        LocalDate dateToCompare;
+        // Need to check if this date is not before the form date creation
+        final LocalDate firstDateOfReservationRule = new ArrayList<>( mapReservationRule.keySet( ) ).stream( ).sorted( ).findFirst( ).orElse( null );
+        LocalDate startingDateToUse = startingDate;
+        if ( firstDateOfReservationRule != null && startingDate.isBefore( firstDateOfReservationRule ) )
+        {
+            startingDateToUse = firstDateOfReservationRule;
+        }
+        // Get all the closing day of this period
+        List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange( nIdForm, startingDateToUse, endingDate );
+        // Get all the slot between these two dates
+        HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateToUse.atStartOfDay( ),
+                endingDate.atTime( LocalTime.MAX ) );
+
+        // Get or build all the event for the period
+        while ( !dateTemp.isAfter( endingDate ) )
+        {
+            dateToCompare = dateTemp;
+            // Find the closest date of apply of week definition with the given
+            // date
+            closestDateWeekDefinition = Utilities.getClosestDateInPast( listDateWeekDefinition, dateToCompare );
+            weekDefinitionToApply = mapWeekDefinition.get( closestDateWeekDefinition );
+            // Find the closest date of apply of reservation rule with the given
+            // date
+            closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
+            reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
+            nMaxCapacity = 0;
+            if ( reservationRuleToApply != null )
+            {
+                nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot( );
+            }
+            // Get the day of week of the date
+            dayOfWeek = dateTemp.getDayOfWeek( );
+            // Get the working day of this day of week
+            workingDay = null;
+            if ( weekDefinitionToApply != null )
+            {
+                workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinitionToApply.getListWorkingDay( ), dayOfWeek );
+            }
+            if ( workingDay != null )
+            {
+                minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAWorkingDay( workingDay );
+                maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
+                // Check if this day is a closing day
+                if ( ! listDateOfClosingDay.contains( dateTemp ) )
+                {
+                    
+                    timeTemp = minTimeForThisDay;
+                    sumNbPotentialRemainingPlaces= 0;
+                    sumNbRemainingPlaces = 0;
+                    isChanged= true;
+                    // For each slot of this day
+                    while ( timeTemp.isBefore( maxTimeForThisDay ) || !timeTemp.equals( maxTimeForThisDay ) )
+                    {
+                    	
+                    	
+                        // Get the LocalDateTime
+                        dateTimeTemp = dateTemp.atTime( timeTemp );
+                        // Search if there is a slot for this datetime
+                        if(isChanged) {
+                        	
+                        	startingDateTime= dateTimeTemp;
+                        	isChanged= false;
+                        }
+                        if ( mapSlot.containsKey( dateTimeTemp ) )
+                        {
+                            slotToAdd = mapSlot.get( dateTimeTemp );
+                            timeTemp = slotToAdd.getEndingDateTime( ).toLocalTime( );
+                            
+                            
+                        }
+                        else
+                        {
+                            // Search the timeslot
+                            timeSlot = TimeSlotService.getTimeSlotInListOfTimeSlotWithStartingTime( workingDay.getListTimeSlot( ), timeTemp );
+                            if ( timeSlot != null )
+                            {
+                                timeTemp = timeSlot.getEndingTime( );
+                                int nMaxCapacityToPut = nMaxCapacity;
+                                if ( timeSlot.getMaxCapacity( ) != 0 )
+                                {
+                                    nMaxCapacityToPut = timeSlot.getMaxCapacity( );
+                                }
+                                slotToAdd = buildSlot( nIdForm, new Period( dateTimeTemp, dateTemp.atTime( timeTemp ) ), nMaxCapacityToPut, nMaxCapacityToPut,
+                                        nMaxCapacityToPut, 0, timeSlot.getIsOpen( ), Boolean.FALSE );
+
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                       
+                    	
+                    	if(sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen() || slotToAdd.getNbPotentialRemainingPlaces() <=0 ) {
+                    		
+                    		sumNbPotentialRemainingPlaces =0;
+                    		sumNbRemainingPlaces = 0;
+                    		startingDateTime= slotToAdd.getEndingDateTime(); 
+                    	}else {
+                    		
+                    		sumNbPotentialRemainingPlaces= sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces();
+                    		sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces();
+                    	}
+                    	
+                    	 if(sumNbPotentialRemainingPlaces >= nNbPlaces) {
+                     		
+                         	endingDateTime= slotToAdd.getEndingDateTime();
+                         	Slot slt= new Slot();
+                     		slt.setStartingDateTime(startingDateTime);
+                     		slt.setEndingDateTime(endingDateTime);
+                     		slt.setIsOpen(true);
+                     		slt.setNbPotentialRemainingPlaces( sumNbPotentialRemainingPlaces );
+                     		slt.setNbRemainingPlaces( sumNbRemainingPlaces );
+                     		slt.setDate(slotToAdd.getDate( ));
+                     		slt.setIdForm(slotToAdd.getIdForm( ));
+                     		listSlotToShow.add(slt);
+                     		sumNbPotentialRemainingPlaces= 0;
+                     		sumNbRemainingPlaces= 0;
+                     		isChanged= true;
+                     	}
+                    	
+                        
+                    }
+                }
+            }
+        
+            dateTemp = dateTemp.plusDays( 1 );
+        }
+        return listSlotToShow;
+
+    }
 
     /**
      * Build a slot with all its values

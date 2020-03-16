@@ -40,8 +40,8 @@
 		<div class="container recap">
 			<div class="row">
 				<div class="col-xs-12 col-sm-9 col-md-9">
-					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</p>
-				</div>
+                    <#assign i = appointment.slot?size>
+					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingDateTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingDateTime}</p></div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
 					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}#step2">
 						<i class="fa fa-pencil"></i> #i18n{portal.util.labelModify}
@@ -122,6 +122,8 @@
 						<input name="page" value="appointment" type="hidden">
 						<input name="action" value="doMakeAppointment" type="hidden">
 						<input name="anchor" value="step3" type="hidden">
+						<input name="is_modification" value="is_modification" type="hidden">
+						
 						<button name="back" class="btn btn-primary btn-sm" value="back">
 							<i class="fa fa-pencil"></i>
 							#i18n{portal.util.labelModify}

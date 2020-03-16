@@ -453,7 +453,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strModifDateAppointment = request.getParameter( PARAMETER_MODIF_DATE );
         if ( strModifDateAppointment != null && Boolean.parseBoolean( strModifDateAppointment ) )
         {
-            return getViewChangeDateAppointment( request );
+            return /*getViewChangeDateAppointment( request )*/null;
         }
         // Clean session
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
@@ -820,7 +820,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
      */
-    @View( VIEW_MODIFY_APPOINTMENT )
+   /* @View( VIEW_MODIFY_APPOINTMENT )
     public synchronized String getModifyAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         HttpSession session = request.getSession( );
@@ -871,7 +871,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         session.setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
         return getViewCreateAppointment( request );
-    }
+    }*/
 
     /**
      * Returns the form to create an appointment
@@ -882,7 +882,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
      */
-    @SuppressWarnings( "unchecked" )
+ /*   @SuppressWarnings( "unchecked" )
     @View( VIEW_CREATE_APPOINTMENT )
     public synchronized String getViewCreateAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
@@ -996,7 +996,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
         }
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENT, TEMPLATE_CREATE_APPOINTMENT, model );
-    }
+    }*/
 
     /**
      * Do validate data entered by a user to fill a form
@@ -1008,7 +1008,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      * @throws SiteMessageExcamoreption
      */
-    @Action( ACTION_DO_VALIDATE_FORM )
+  /*  @Action( ACTION_DO_VALIDATE_FORM )
     public String doValidateForm( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -1039,7 +1039,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
         return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, nIdForm );
     }
-
+*/
     /**
      * Return to the display recap view with the new date selected on the calendar
      * 
@@ -1049,7 +1049,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      * @throws SiteMessageException
      */
-    @View( VIEW_CHANGE_DATE_APPOINTMENT )
+   /* @View( VIEW_CHANGE_DATE_APPOINTMENT )
     public String getViewChangeDateAppointment( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -1094,7 +1094,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( form.getIdForm( ) ) );
         additionalParameters.put( PARAMETER_COME_FROM_CALENDAR, Boolean.TRUE.toString( ) );
         return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, additionalParameters );
-    }
+    }*/
 
     /**
      * Display the recap before validating an appointment
@@ -1103,7 +1103,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML content to display or the next URL to redirect to
      */
-    @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
+   /* @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
     public String displayRecapAppointment( HttpServletRequest request )
     {
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
@@ -1124,7 +1124,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, locale ) );
         model.put( MARK_FORM, form );
         return getPage( PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT, TEMPLATE_APPOINTMENT_FORM_RECAP, model );
-    }
+    }*/
 
     /**
      * Do save an appointment into the database if it is valid
@@ -1135,7 +1135,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
      */
-    @Action( ACTION_DO_MAKE_APPOINTMENT )
+   /* @Action( ACTION_DO_MAKE_APPOINTMENT )
     public  String doMakeAppointment( HttpServletRequest request ) throws AccessDeniedException
     {
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
@@ -1237,7 +1237,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, slot.getDate( ).toString( ) );
         return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, additionalParameters );
     }
-
+*/
     /**
      * Do download a file from an appointment response stored in session and not yet on server fs
      * 
@@ -1493,7 +1493,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *            The request
      * @return The HTML content to display, or the next URL to redirect the user to
      */
-    @View( VIEW_WORKFLOW_ACTION_FORM )
+  /*  @View( VIEW_WORKFLOW_ACTION_FORM )
     public String getWorkflowActionForm( HttpServletRequest request )
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
@@ -1517,7 +1517,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
-
+*/
     /**
      * Do process a workflow action over an appointment
      * 
@@ -1525,7 +1525,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *            The request
      * @return The next URL to redirect to
      */
-    @Action( ACTION_DO_PROCESS_WORKFLOW_ACTION )
+  /*  @Action( ACTION_DO_PROCESS_WORKFLOW_ACTION )
     public String doProcessWorkflowAction( HttpServletRequest request )
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
@@ -1580,7 +1580,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, slot.getIdForm( ) );
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-    }
+    }*/
 
     /**
      * Do change the status of an appointment
@@ -1591,7 +1591,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
      */
-    @Action( ACTION_DO_CHANGE_APPOINTMENT_STATUS )
+   /* @Action( ACTION_DO_CHANGE_APPOINTMENT_STATUS )
     public String doChangeAppointmentStatus( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
@@ -1621,7 +1621,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
     }
-
+*/
     /**
      * List of all the available status of an appointment
      * 

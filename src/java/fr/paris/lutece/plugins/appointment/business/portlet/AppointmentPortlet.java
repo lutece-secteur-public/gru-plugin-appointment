@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp3;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 import fr.paris.lutece.portal.service.security.UserNotSignedException;
 
@@ -79,7 +79,7 @@ public final class AppointmentPortlet extends PortletHtmlContent
 
         try
         {
-            strContent = AppointmentApp.getMyAppointmentsXPage( request, request.getLocale( ) );
+            strContent = AppointmentApp3.getMyAppointmentsXPage( request, request.getLocale( ) );
 
             if ( strContent == null )
             {

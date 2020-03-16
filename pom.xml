@@ -11,9 +11,10 @@
     <packaging>lutece-plugin</packaging>    
     <version>2.1.0-SNAPSHOT</version>
     <name>Lutece appointment plugin</name>
+    
     <properties>  
         <componentName>appointment</componentName>
-        <core.version>[6.0.1,)</core.version>    
+        <core.version>[6.0.1]</core.version>    
         <genericattributes.version>1.2.1</genericattributes.version>
         <jackson.version>2.8.4</jackson.version>
         <jiraComponentId>12273</jiraComponentId>

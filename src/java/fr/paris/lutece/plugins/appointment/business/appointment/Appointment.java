@@ -36,6 +36,8 @@ package fr.paris.lutece.plugins.appointment.business.appointment;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -104,14 +106,14 @@ public class Appointment extends User implements Serializable
     private int _nIdUser;
 
     /**
-     * Slot id
+     * Slots id
      */
-    private int _nIdSlot;
+   // private List<Integer>_listIdSlot;
 
     /**
-     * The slot on which the appointment is
+     * The slots on which the appointment is
      */
-    private Slot _slot;
+    private List<Slot> _listSlot;
 
     /**
      * The user of the appointment
@@ -121,6 +123,11 @@ public class Appointment extends User implements Serializable
      * The date appointment taken
      */
     private LocalDateTime _dateAppointmentTaken;
+    
+    /**
+     * The appointment slots 
+     */
+    private List<AppointmentSlot> _listAppointmentSlot;
 
     /**
      * Get the reference of the appointment
@@ -309,47 +316,69 @@ public class Appointment extends User implements Serializable
     }
 
     /**
-     * Get the Slot Id of the Appointment
+     * Get the Slots Id list of the Appointment
      * 
-     * @return the Slot Id of the Appointment
+     * @return the Slots Id list of the Appointment
      */
-    public int getIdSlot( )
+ /*   public List<Integer> getIdSlot( )
     {
-        return _nIdSlot;
+        return _listIdSlot;
+    }
+*/
+    /**
+     * Set the Slot Id list of the Appointment
+     * 
+     * @param listIdSlot
+     *            the Slot Id list of the Appointment
+     */
+  /*  public void setIdSlot( List<Integer> listIdSlot )
+    {
+        _listIdSlot = listIdSlot;
+    }
+*/
+    /**
+     * Get the list slot of the appointment
+     * 
+     * @return the list of slot
+     */
+    public List<Slot> getSlot( )
+    {
+        return _listSlot;
     }
 
     /**
-     * Set the Slot Id of the Appointment
+     * Set the listslot of the appointment
      * 
-     * @param nIdSlot
-     *            the Slot Id of the Appointment
-     */
-    public void setIdSlot( int nIdSlot )
-    {
-        this._nIdSlot = nIdSlot;
-    }
-
-    /**
-     * Get the slot of the appointment
-     * 
-     * @return the slot
-     */
-    public Slot getSlot( )
-    {
-        return _slot;
-    }
-
-    /**
-     * Set the slot of the appointment
-     * 
-     * @param slot
+     * @param listSlot
      *            the slot to set
      */
-    public void setSlot( Slot slot )
+    public void setSlot( List<Slot> listSlot )
     {
-        this._slot = slot;
+        _listSlot = listSlot;
     }
 
+    public void addAllSlot(List<Slot> listSlot){
+    	
+    	if( _listSlot == null ){
+    		
+    		_listSlot = new ArrayList<>( );
+    	}
+		_listSlot.addAll( listSlot );
+
+    }
+    
+    public void addSlot( Slot slot) {
+    	
+    	if( _listSlot == null ){
+    		
+    		_listSlot = new ArrayList<>( );
+    	}
+    	
+    	if (_listSlot.stream().noneMatch((slt -> slt.getIdSlot( ) == slot.getIdSlot( ) ))){
+    		
+    		_listSlot.add(slot);
+    	}
+    }
     /**
      * Get the user of the appointment
      * 
@@ -370,6 +399,29 @@ public class Appointment extends User implements Serializable
     {
         this._user = user;
     }
+    
+    
+    /**
+     * Get the list of appointment slot
+     * 
+     * @return the list of appointmentslot
+     */
+    public List<AppointmentSlot> getListAppointmentSlot( )
+    {
+        return _listAppointmentSlot;
+    }
+
+    /**
+     * Set the list of listAppointmentSlot
+     * 
+     * @param listAppointmentSlot
+     *            the appointment slot to set
+     */
+    public void setListAppointmentSlot( List<AppointmentSlot> listAppointmentSlot )
+    {
+        _listAppointmentSlot = listAppointmentSlot;
+    }
+
     
     /**
      * Returns the DateAppointmentTaken

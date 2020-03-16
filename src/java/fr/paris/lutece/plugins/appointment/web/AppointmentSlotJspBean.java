@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -496,7 +497,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                     // Error, the time slot can't be changed
                     addError( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
                     addError( listAppointmentsImpacted.size( ) + " rendez-vous impacté(s)" );
-                    addError( "dont un le " + SlotService.findSlotById( listAppointmentsImpacted.get( 0 ).getIdSlot( ) ).getStartingDateTime( ) );
+ //                   addError( "dont un le " + SlotService.findSlotById( listAppointmentsImpacted.get( 0 ).getIdSlot( ) ).getStartingDateTime( ) );
                     Map<String, String> additionalParameters = new HashMap<>( );
                     additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                     additionalParameters.put( PARAMETER_ID_WEEK_DEFINITION, strIdWeekDefinition );
@@ -656,8 +657,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     
         boolean bShiftSlot = Boolean.parseBoolean( request.getParameter( PARAMETER_SHIFT_SLOT ) );
         int nIdSlot = Integer.parseInt( strIdSlot );
-        Object lock = SlotSafeService.getLockOnSlot( nIdSlot );
-		synchronized (lock) {
+        Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
+		lock.lock();
+        try {
 	        if ( nIdSlot != 0 )
 	        {
 	            slotFromSessionOrFromDb = SlotService.findSlotById( nIdSlot );
@@ -710,6 +712,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 	            return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, slotFromSessionOrFromDb.getIdForm( ) );
 	        }
 	        SlotSafeService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
+		 
+        }finally{
+			 
+			 lock.unlock();
 		 }
 	     AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
 	     addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
@@ -846,7 +852,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
         for ( Appointment appointment : listAppointmentsImpacted )
         {
-            setSlotsImpactedWithAppointments.add( appointment.getIdSlot( ) );
+//            setSlotsImpactedWithAppointments.add( appointment.getIdSlot( ) );
         }
         List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
                 .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
@@ -857,8 +863,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 
         for ( Slot slotImpacted : listSlotsImpactedWithAppointments )
         {
-        	Object lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot() );
-    		synchronized (lock) {
+        	Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot() );
+        	
+    		lock.lock();
+    		try{
 	            // If the max capacity has changed,
 	            // need to update it for all the slots that already have
 	            // appointments
@@ -875,6 +883,8 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 	                slotImpacted.setIsSpecific( bIsOpen );
 	            }
 	            SlotSafeService.updateSlot( slotImpacted );
+    	   }finally {
+    		   lock.unlock();
     	   }
         }
     }
