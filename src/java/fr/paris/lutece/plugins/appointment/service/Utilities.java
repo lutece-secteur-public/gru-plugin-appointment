@@ -36,19 +36,16 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 
 /**
  * Class of utilities
  * 
- * @author Laurent Payen
- *
  */
 public final class Utilities
 {
-
-    public static final String FORMAT_DATE = "dd/MM/yyyy";
-    private static DateTimeFormatter _formatter = DateTimeFormatter.ofPattern( FORMAT_DATE );
+    private static DateTimeFormatter _formatter;
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -64,6 +61,10 @@ public final class Utilities
      */
     public static DateTimeFormatter getFormatter( )
     {
+        if( _formatter == null )
+        {
+            _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
+        }
         return _formatter;
     }
 
@@ -72,11 +73,23 @@ public final class Utilities
      * 
      * @param formatter
      *            the formatter to set
+     * @deprecated Useless setter
      */
+    @Deprecated
     public static void setFormatter( DateTimeFormatter formatter )
     {
         _formatter = formatter;
     }
+    
+    
+    /**
+     * Reset formatter scope package to be only used by unit tests
+     */
+    static void resetFormatter()
+    {
+        _formatter = null;
+    }
+   
 
     /**
      * Return the closest date in past a list of date with the given date
