@@ -153,7 +153,7 @@
 							<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="id_expression">#i18n{appointment.regularExpression.label} :</label>
 							<div class="col-xs-12 col-sm-9 col-md-3 col-lg-2">
 								<div class="input-group">
-									<@comboWithParams name="id_expression" items=regular_expression_list default_value="-1" additionalParameters="class='form-control input-xs'" />
+									<@select name='id_expression' items=regular_expression_list default_value='-1' additionalParameters='class='form-control input-xs'' />
 									<div class="input-group-btn">
 										<button class="btn btn-primary btn-xs" type="submit" ><i class="glyphicon glyphicon-plus"></i> <span class="hidden-xs">#i18n{appointment.label.insert}</span></button>
 									</div>

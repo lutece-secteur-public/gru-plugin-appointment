@@ -31,7 +31,7 @@
 						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}</label>
 						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
 							<div class="input-group">
-							<@comboWithParams items=refListTemplates default_value=(template.templatePath)!'' name="templatePath" additionalParameters="class=\"form-control input-sm\""/>
+							<@select items=refListTemplates default_value=(template.templatePath)!'' name='templatePath' additionalParameters='class=\"form-control input-sm\"'/>
 							<div class="input-group-btn">
 							<button name="action" value="doDownloadTemplate" title="#i18n{portal.util.labelDownload}" class="btn btn-sm btn-primary">
 								<i class="fa fa-download" aria-hidden="true"></i><span class="hidden-xs">&nbsp;#i18n{portal.util.labelDownload}</span>

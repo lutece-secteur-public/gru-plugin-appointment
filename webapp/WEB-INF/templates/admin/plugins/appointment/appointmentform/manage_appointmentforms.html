@@ -46,7 +46,7 @@
 										<#if permissions[appointmentform?index][3]=="true">
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelModifyMessages}' buttonIcon='comment' />
 										</#if>
-					  permission_create=="true">
+										<#if permission_create=="true">
 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelCopy}' buttonIcon='copy' />
 										</#if>										
 										<#if permissions[appointmentform?index][4]=="true">					
