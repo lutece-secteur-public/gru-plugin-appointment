@@ -11,7 +11,7 @@
                         <input name="action" value="doCreateEntry" type="hidden">
                         <input name="id_type" value="${entry.entryType.idType}" type="hidden">
                         <#if entry.fieldDepend?exists>
-                               <input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
+						<input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
                         </#if>
                         <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
                             <@input type='text' name='title' id='title' value='' maxlength=255 />
@@ -46,7 +46,7 @@
                         <@formGroup labelFor='confirm_field' labelKey='#i18n{appointment.createEntry.labelConfirmField}'>
                             <@checkBox name='confirm_field' id='confirm_field' value='1' params='onchange="javascript:changeVisilityConfirmFieldTitle();"'/>
                         </@formGroup>
-                        <@formGroup labelFor='confirm_field_title' labelKey='#i18n{appointment.createEntry.labelConfirmFieldTitle}' mandatory=true>
+                        <@formGroup labelFor='confirm_field_title' labelKey='#i18n{appointment.createEntry.labelConfirmFieldTitle}' id='confirm_field_title_p'>
                             <@input type='text' name='confirm_field_title' id='confirm_field_title' value='' maxlength=255 />
                         </@formGroup>
                         <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
@@ -71,6 +71,7 @@ function changeVisilityConfirmFieldTitle()
         if(document.getElementById("confirm_field").checked)
         {
               document.getElementById("confirm_field_title_p").style.display = 'block';
+			  document.getElementById("confirm_field_title").required = true;
         }
         else
         {
