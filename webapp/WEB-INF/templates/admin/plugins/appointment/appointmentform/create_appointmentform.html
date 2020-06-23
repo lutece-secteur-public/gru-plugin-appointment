@@ -141,7 +141,7 @@
 					
 						<#if listWorkflows??>
 							<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
-								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value=appointmentform.idWorkflow! />
+								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows value=appointmentform.idWorkflow! />
 							</@formGroup>
 						</#if>
 						
@@ -317,7 +317,7 @@
 						
 						<@formGroup>
 							<@button type='submit' name='action_createAppointmentForm' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
-							<@button type='submit' name='view_manageAppointmentForms' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' />
+							<@button type='submit' name='view_manageAppointmentForms' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='default' cancel=true />
 						</@formGroup>
 					</fieldset>
 				</@boxBody>

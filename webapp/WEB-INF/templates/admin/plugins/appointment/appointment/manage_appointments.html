@@ -9,7 +9,7 @@
         <@box>
             <@boxHeader title='${form.title} - #i18n{appointment.manageAppointments.pageTitle}' />
         </@box>
-        <@tabs tab='filter' form=form>
+        <@appointmentTabs tab='filter' form=form>
             <@messages infos=infos errors=errors/>
             <@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
                 <input type="hidden" name="view" value="manageAppointments">    
@@ -185,9 +185,9 @@
 						<@paginationAdmin paginator=paginator combo=1 form=0 />
 					</@boxFooter>
 				</@box>
-            </@tform>
-        </@tabs>
-    </@columns>
+			</@tform>
+		</@appointmentTabs>
+	</@columns>
 </@row>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="dateAppointment" language=language />

@@ -10,15 +10,17 @@
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
 
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <@tabs tab="specificWeek" appointmentform=appointmentform />
-        <div class="tab-content">
-        <fieldset>
-            <div id="calendar"></div>
-        </fieldset>
-    </div>
-</div>
+<@row>
+    <@columns>
+			<@appointmentTabs tab="specificWeek" appointmentform=appointmentform>
+        <@tabContent>
+					<fieldset>
+							<div id="calendar"></div>
+					</fieldset>
+				</@tabContent>
+			</@appointmentTabs>
+    </@columns>
+</@row>
 <script type="text/javascript">
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';

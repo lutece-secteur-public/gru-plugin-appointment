@@ -14,7 +14,7 @@
 
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
-		<ul class="nav nav-tabs">
+		<@listTabs>
     	<li <#if tab="params">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
 					#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}
@@ -32,7 +32,7 @@
 					</a>
 	    	</li>
 			</#if>
-		</ul>
+		</@listTabs>
 		<@tabContent>
 			<#nested>
 		</@tabContent>
@@ -206,7 +206,7 @@
 							}
 
 							$(window).load(function() {
-									var map = L.map('map_address').setView([48.85632, 2.33272], 12);
+									var map = L.map('map_address').setView([39.290736,-76.610838], 12);
 									var markers_layer = L.featureGroup().addTo(map);
 									// create the tile layer with correct attribution
 									var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -250,7 +250,7 @@
 													$('#geoloc_address').val("");
 													$('#geoloc_latitude').val("");
 													$('#geoloc_longitude').val("");
-													map.setView([48.85632, 2.33272], 12);
+													map.setView([39.290736,-76.610838], 12);
 													markers_layer.clearLayers();
 									});
 

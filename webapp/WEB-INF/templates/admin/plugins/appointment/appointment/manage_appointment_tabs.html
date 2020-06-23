@@ -1,19 +1,19 @@
-<#macro tabs tab form >
-    <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
-            <li <#if tab="calendar">class="active"</#if>>
+<#macro appointmentTabs tab form>
+  <@tabs>
+		<ul class="nav nav-tabs">
+			<li <#if tab="calendar">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}">
 					#i18n{appointment.manageAppointmentCalendar.pageTitle}
 				</a>
-            </li>
-            <li <#if tab="filter">class="active"</#if>>
+			</li>
+			<li <#if tab="filter">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}">
 					#i18n{appointment.manageAppointments.pageTitle}
 				</a>
-            </li>
-        </ul>
-		<div class="tab-content">
+			</li>
+		</ul>
+		<@tabContent>
 			<#nested>
-		</div>
-    </div>
+		</@tabContent>
+  </@tabs>
 </#macro>
