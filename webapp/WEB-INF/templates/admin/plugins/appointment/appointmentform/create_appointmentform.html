@@ -141,7 +141,7 @@
 					
 						<#if listWorkflows??>
 							<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
-								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value=${appointmentform.idWorkflow!} />
+								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
 							</@formGroup>
 						</#if>
 						
