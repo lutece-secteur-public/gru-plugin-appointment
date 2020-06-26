@@ -1,18 +1,14 @@
-<div class="box box-solid box-success">
-	<div class="box-header">
-    	<h3 class="box-title">#i18n{appointment.manage.appointmentforms.title}</h3>
-	    <div class="box-tools pull-right">
-	    	<#if permission_create=="true">
-				<a class="btn btn-primary btn-xs btn-flat" href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm" title="#i18n{appointment.manageAppointmentForms.buttonAdd}">
-		    		<i class="glyphicon glyphicon-plus"></i>
-		    	</a>
-		    </#if>
-		</div>
-	</div>
+<@box color='primary' style='solid'>
+	<@boxHeader title='#i18n{appointment.manage.appointmentforms.title}'>
+		<#if permission_create=="true">
+			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' buttonIcon='plus' size='sm' />
+		</#if>
+	</@boxHeader>
+
     
 	
-	<div class="box-body table-responsive no-padding">
-	<table class="table table-condensed table-striped">
+	<@boxBody>
+	<@table>
 		<tr>
 			<th>#i18n{appointment.labelTitle}</th>
 			<th>#i18n{portal.util.labelActions}</th>
@@ -21,72 +17,51 @@
 			<tr>
 				<td>
 					<#if appointmentform.isActive>
-						<span class="label label-success">
-							<i class="glyphicon glyphicon-ok-sign"></i>
-						</span>
+						<@tag color='success'><@icon style='check' /></@tag>
 					<#else>
-						<span class="label label-important">
-							<i class="glyphicon glyphicon-remove-circle"></i>
-						</span>
+						<@tag color='danger'><@icon style='times' /></@tag>
 					</#if>
 					&nbsp;${appointmentform.title}
 					<#if appointmentform.isActive>
 						<a target="_blank" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${appointmentform.idForm}">
-							<i class="glyphicon glyphicon-globe"></i>
+							<@icon style='globe' />
 						</a>
 					</#if>
 				</td>
 				<td>
 					<#if permissions[appointmentform?index][0]=="true">
-                        <a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelManageAppointments}">
-							<i class="glyphicon glyphicon-calendar"></i>
-						</a>
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelManageAppointments}' buttonIcon='calendar' size='sm' />
 					</#if>
 					<#if permissions[appointmentform?index][1]=="true">
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelPlanning}">
-							<i class="glyphicon glyphicon-time"></i>
-						</a>
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelPlanning}' buttonIcon='clock-o' size='sm' />
 					</#if>	
 					<#if permissions[appointmentform?index][2]=="true">
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelConfig}">
-							<i class="glyphicon glyphicon-wrench"></i>
-						</a>
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}"' title='#i18n{appointment.manageAppointmentForms.labelConfig}' buttonIcon='wrench' size='sm' />
 					</#if>	
 					<#if permissions[appointmentform?index][3]=="true">
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelModifyMessages}">
-							<i class="fa fa-comment"></i>
-						</a>
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentFormMessages&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelModifyMessages}' buttonIcon='comment' size='sm' />
 					</#if>	
 					<#if permission_create=="true">
-                        <a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-primary btn-xs" title="#i18n{appointment.manageAppointmentForms.labelCopy}">
-								<i class="glyphicon glyphicon-duplicate"></i>
-					    </a>
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doCopyAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelCopy}' buttonIcon='copy' size='sm' />
 					 </#if>   
 					<#if permissions[appointmentform?index][4]=="true">
 						<#if appointmentform.isActive>
-							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{appointment.manageAppointmentForms.labelDisable}">
-								<i class="glyphicon glyphicon-stop"></i>
-							</a>
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelDisable}' buttonIcon='stop' color='btn-danger' size='sm' />
 						<#else>
-							<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}" class="btn btn-success btn-xs" title="#i18n{appointment.manageAppointmentForms.labelEnable}">
-								<i class="glyphicon glyphicon-ok"></i>
-							</a>
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=doChangeFormActivation&id_form=${appointmentform.idForm}' title='#i18n{appointment.manageAppointmentForms.labelEnable}' buttonIcon='check' color='btn-success' size='sm' />
 						</#if>	
 					</#if>	
-					<#if permissions[appointmentform?index][5]=="true">					
-						<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}" class="btn btn-danger btn-xs" title="#i18n{portal.util.labelDelete}" >
-							<i class="glyphicon glyphicon-trash"></i>
-						</a>
+					<#if permissions[appointmentform?index][5]=="true">	
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?action=confirmRemoveAppointmentForm&id_form=${appointmentform.idForm}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' size='sm' />
 					</#if>
 				</td>
 			</tr>
 		</#list>
-	</table>
-	</div>
-	<div class="box-footer text-center">
+	</@table>
+	</@boxBody>
+	<@boxFooter params='style="text-align:center;"'>
 		<a href="${url}" title="#i18n{form.dashboard.formList}">
-			#i18n{appointment.dashboard.formList} <i
-			class="fa fa-arrow-circle-right"></i>
+			#i18n{appointment.dashboard.formList} <@icon style='arrow-circle-right' />
 		</a>
-	</div>
-</div>
+	</@boxFooter>
+</@box>
