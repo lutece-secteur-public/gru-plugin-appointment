@@ -20,11 +20,11 @@
         <#if formCalendarErrors??>
             <div class="layout-wrapper"></div>
         <#else>
-            <div class="tab-content">
+            <@tabContent>
                 <fieldset>
                     <div id="calendar"></div>
                 </fieldset>
-            </div>
+            </@tabContent>
         </#if>
     </@columns>
 </@row>

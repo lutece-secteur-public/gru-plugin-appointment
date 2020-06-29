@@ -14,25 +14,25 @@
 
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
-		<@listTabs>
+		<ul class="nav nav-tabs">
     	<li <#if tab="params">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
-					#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}
-				</a>
-			</li>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
+				#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}
+			</a>
+		</li>
     	<li <#if tab="entries">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
-					#i18n{appointment.modifyAppointmentFormEntries.pageTitle}
-				</a>
-			</li>
-			<#if isResourceInstalled?? && isResourceInstalled>
-				<li <#if tab="resources">class="active"</#if>>
-					<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
-						#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
-					</a>
-	    	</li>
-			</#if>
-		</@listTabs>
+			<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
+				#i18n{appointment.modifyAppointmentFormEntries.pageTitle}
+			</a>
+		</li>
+		<#if isResourceInstalled?? && isResourceInstalled>
+		<li <#if tab="resources">class="active"</#if>>
+			<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
+				#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
+			</a>
+		</li>
+		</#if>
+		</ul>
 		<@tabContent>
 			<#nested>
 		</@tabContent>
@@ -43,7 +43,7 @@
 		<div class="tab-pane active" id="">
 			<fieldset>    			   
 			<@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
-				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
+				<input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 				
 				<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' helpKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 					<@input type='text' name='title' id='title'  value=appointmentform.title!'' maxlength=255 />
@@ -168,7 +168,7 @@
 					<@input type='text' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
 					<@input type='text' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
 					<!-- used to keep state if the user presses back button -->
-					<input type="hidden" id="hidden_address"/>
+					<input type='hidden' id='hidden_address' />
 					<p class="help-block">#i18n{appointment.label.addressDescription}</p>
 					<script type='text/javascript'>
 							$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();

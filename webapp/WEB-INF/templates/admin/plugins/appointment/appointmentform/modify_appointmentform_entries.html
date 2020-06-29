@@ -8,8 +8,8 @@
 				<@columns md=9>
 					<fieldset>
 						<@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-							<input type="hidden" name="action" value="doChangeOrderEntry">
-							<input type="hidden" name="id_form" value="${appointmentform.idForm}">
+							<input type='hidden' name='action' value='doChangeOrderEntry' />
+							<input type='hidden' name='id_form' value='${appointmentform.idForm}' />
 							<#if entry_group_list?has_content>
 								<@formGroup formStyle='inline'>
 									<@inputGroup>
@@ -26,7 +26,7 @@
 							<thead>
 								<tr>
 									<th>
-										<input type="checkbox" name="selectAll" id="selectAll" value="selectAll" title="#i18n{appointment.modifyAppointmentForm.selectAll}">
+										<@checkBox labelFor='selectAll' name='selectAll' id='selectAll' value='selectAll' title='#i18n{appointment.modifyAppointmentForm.selectAll}' />
 									</th>
 									<th>#i18n{appointment.labelTitle}</th>
 									<th>#i18n{appointment.type.name}</th>
@@ -48,7 +48,7 @@
 											<#if entry.entryType.group>
 												<@icon style='indent' />
 											<#else>
-												<input type="checkbox" name="entry_id_move" id='entry_id_${entry.idEntry}' value="${entry.idEntry!}" title="#i18n{appointment.modifyAppointmentForm.select}">
+												<@checkBox labelFor='entry_id_move' name='entry_id_move' id='entry_id_${entry.idEntry}' value='${entry.idEntry!}' title='#i18n{appointment.modifyAppointmentForm.select}' />
 											</#if>
 										</td>
 										<td>
@@ -77,11 +77,11 @@
 										<td>
 											<#if !entry.entryType.group>
 												<@tag>
-														<#list entryIconList as entryIcon>
-															<#if entry.entryType.idType == 100+entryIcon?index+1>
-																<@icon style='${entryIcon}' />
-															</#if>
-														</#list>
+													<#list entryIconList as entryIcon>
+														<#if entry.entryType.idType == 100+entryIcon?index+1>
+															<@icon style='${entryIcon}' />
+														</#if>
+													</#list>
 													&#160;${entry.entryType.title}
 												</@tag>
 											</#if>
