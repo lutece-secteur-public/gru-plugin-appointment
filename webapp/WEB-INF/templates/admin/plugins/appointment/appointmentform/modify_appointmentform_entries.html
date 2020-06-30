@@ -26,7 +26,7 @@
 							<thead>
 								<tr>
 									<th>
-										<@checkBox labelFor='selectAll' name='selectAll' id='selectAll' value='selectAll' title='#i18n{appointment.modifyAppointmentForm.selectAll}' />
+										<@checkBox labelFor='selectAll' name='selectAll' id='selectAll' value='selectAll' title='#i18n{appointment.modifyAppointmentForm.selectAll}' mandatory=false />
 									</th>
 									<th>#i18n{appointment.labelTitle}</th>
 									<th>#i18n{appointment.type.name}</th>
@@ -48,7 +48,7 @@
 											<#if entry.entryType.group>
 												<@icon style='indent' />
 											<#else>
-												<@checkBox labelFor='entry_id_move' name='entry_id_move' id='entry_id_${entry.idEntry}' value='${entry.idEntry!}' title='#i18n{appointment.modifyAppointmentForm.select}' />
+												<@checkBox labelFor='entry_id_move' name='entry_id_move' id='entry_id_${entry.idEntry}' value='${entry.idEntry!}' title='#i18n{appointment.modifyAppointmentForm.select}' mandatory=false />
 											</#if>
 										</td>
 										<td>
