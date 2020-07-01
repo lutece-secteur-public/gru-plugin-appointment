@@ -12,6 +12,9 @@
 						<fieldset>
 						<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
 						
+						 <@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+							<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
+						</@formGroup>
 						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
 							<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 						</@formGroup>
@@ -20,9 +23,6 @@
 						</@formGroup>
 						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
 							<@input type='textarea' name='comment' rows=2>${entry.comment}</@input>
-						</@formGroup>
-						 <@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
-							<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
 						</@formGroup>
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
 							<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />

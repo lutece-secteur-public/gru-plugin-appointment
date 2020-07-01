@@ -11,6 +11,14 @@
 					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
 					<input type='hidden' name='action' value='doModifyEntry' />
 					
+					<@formGroup labelFor='' labelKey='#i18n{appointment.createEntry.labelType}'>
+						<@staticText>
+							<@tag color='info'>
+								${entry.entryType.title}
+							</@tag>
+						</@staticText>
+					</@formGroup>
+					
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 					</@formGroup>
@@ -23,13 +31,6 @@
 						<@input type='textarea' name='comment' id='comment' rows=2>${entry.comment}</@input>
 					</@formGroup>
 					
-					<@formGroup labelFor='' labelKey='#i18n{appointment.createEntry.labelType}'>
-						<@staticText>
-							<@tag color='info'>
-								${entry.entryType.title}
-							</@tag>
-						</@staticText>
-					</@formGroup>
 					
 					<@formGroup labelFor='value' labelKey='#i18n{appointment.defaultValue.name}'>
 						<@input type='textarea' name='value' id='value' rows=10><#list entry.fields as field>${field.value}</#list></@input>

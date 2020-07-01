@@ -1,59 +1,40 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">
-					#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'
-				</h3>
-			</div>
-			<div class="box-body">
+<@row>
+    <@columns>
+        <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
+			<@boxBody>
 				<fieldset>
-				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-				<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post">
-					<input name="id_entry" value="${entry.idEntry}" type="hidden" />
-					<input name="action" value="doModifyEntry" type="hidden" />
-					<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} *</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" name="title" id="title" value="${entry.title}" maxlength="255" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="">#i18n{appointment.createEntry.labelMandatory}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<div class="checkbox">
-							<label>
-							<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked"</#if> />&#160;
-							</label>
-							<span class="help-block">#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}</span>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.createEntry.labelAttributeName} *:</label>
+				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"</legend>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
+					<input type='hidden' name='action' value='doModifyEntry' />
+					
+					<@formGroup labelFor='' labelKey='#i18n{appointment.createEntry.labelType}'>
+						<@staticText>
+							<@tag color='info'>
+								${entry.entryType.title}
+							</@tag>
+						</@staticText>
+					</@formGroup>
+					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
+						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}' helpKey='#i18n{appointment.createEntry.labelMandatoryCommentForEntryTypeSession}'>
+						<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.checked />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{appointment.createEntry.labelAttributeName}' helpKey='#i18n{appointment.createEntry.labelAttributeNameComment}' mandatory=true>
 						<#list entry.fields as field>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" name="value" id="value" maxlength="255" value="${field.value}" class="form-control">
-							<span class="help-block">#i18n{appointment.createEntry.labelAttributeNameComment}</span>
-						</div>
+							<@input type='text' name='value' id='value' maxlength=255 value='${field.value}' />
 						</#list>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
-							<button class="btn btn-primary btn-sm" name="save" type="submit">
-								<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}
-							</button>
-							<button class="btn btn-primary btn-sm" name="apply" type="submit" >
-								<i class="glyphicon glyphicon-ok-circle"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
-							</button>
-							<button class="btn btn-default btn-sm" type="submit" name="cancel" value="cancel" >
-								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelCancel}
-							</button>
-						</div>
-					</div>
-				</form>
+					</@formGroup>
+					<@formGroup>
+						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+						<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
+						<@button type='submit' name='cancel' id='cancel' value='cancel' cancel=true buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' />
+					</@formGroup>
+				</@tform>
 			</fieldset>
-			</div>
-		</div>
-	</div>
-</div>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

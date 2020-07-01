@@ -8,6 +8,13 @@
 					<input type='hidden' name='action' value='doModifyEntry' />
 					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
 					
+					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}' rows=2>
+						<@staticText>
+							<@tag color='info'>
+								${entry.entryType.title}
+							</@tag>
+						</@staticText>
+					</@formGroup>
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true rows=2>
 						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 					</@formGroup>
@@ -16,9 +23,6 @@
 					</@formGroup>
 					<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' rows=2>
 						<@input type='textarea' name='comment' id='comment'>${entry.comment}</@input>
-					</@formGroup>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}' rows=2>
-						<@staticText>${entry.entryType.title}</@staticText>
 					</@formGroup>
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}' rows=2>
 						<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />

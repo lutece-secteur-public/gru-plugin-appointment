@@ -9,6 +9,13 @@
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
 					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
 					<input type='hidden' name='action' value='doModifyEntry' />
+					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+						<@staticText>
+							<@tag color='info'>
+								${entry.entryType.title}
+							</@tag>
+						</@staticText>
+					</@formGroup>
 					<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true>
 						<@input type='textarea' name='comment' id='comment' rows=10 richtext=true>${entry.comment}</@input>
 					</@formGroup>

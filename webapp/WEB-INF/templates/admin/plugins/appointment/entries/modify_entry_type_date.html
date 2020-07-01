@@ -10,13 +10,20 @@
 						<input type='hidden' name='id_entry' value='${entry.idEntry}' />
 						<input type='hidden' name='action' value='doModifyEntry' />
 						
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+							<@staticText>
+								<@tag color='info'>
+									${entry.entryType.title}
+								</@tag>
+							</@staticText>
+						</@formGroup>
 						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
 							<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
 						</@formGroup>
 						<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
 							<@input type='textarea' name='help_message' id='help_message' rows=5>${entry.helpMessage}</@input>
 						</@formGroup>
-						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.createEntry.labelType} :  ${entry.entryType.title}'>
+						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
 							<@input type='textarea' name='comment' rows=5>${entry.comment}</@input>
 						</@formGroup>
 						<@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
