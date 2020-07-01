@@ -6,9 +6,9 @@
                 <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
                     <legend class="hidden">#i18n{appointment.modifyEntry.titleGroup} : '${form.title}'</legend>
-                        <input name="id_form" value="${form.idForm}" type="hidden" />
-                        <input name="action" value="doCreateEntry" type="hidden" />
-                        <input name="id_type" value="${entry.entryType.idType}" type="hidden">
+                        <input type='hidden' name='id_form' value='${form.idForm}' />
+                        <input type='hidden' name='action' value='doCreateEntry' />
+                        <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
                         <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
                             <@input type='text' name='title' id='title' value='' maxlength=255 />
                         </@formGroup>

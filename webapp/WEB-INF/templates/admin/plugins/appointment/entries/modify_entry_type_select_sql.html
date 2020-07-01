@@ -1,82 +1,49 @@
 <#include "/admin/util/editor/editor.html" />
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">
-					#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'
-				</h3>
-			</div>
-			<div class="box-body">
+<@row>
+	<@columns>
+		<@box color='primary'>
+			<@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
+			<@boxBody>
 			
 			<fieldset>
 			<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
-				<input name="action" value="doModifyEntry" type="hidden" />
-				<input name="id_entry" value="${entry.idEntry}" type="hidden" />
-				<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} * : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="title" id="title" value="${entry.title}" maxlength="255" class="form-control">
-						<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="help_message">#i18n{appointment.createEntry.labelHelpMessage} :  </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<textarea name="help_message" id="help_message" rows="2" class="form-control">${entry.helpMessage}</textarea>
-						<span class="help-block">#i18n{appointment.createEntry.labelHelpMessageComment}</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="comment"> #i18n{appointment.createEntry.labelSqlQuery} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<textarea name="comment" rows="2" class="form-control">${entry.comment}</textarea>
-						<span class="help-block">#i18n{appointment.createEntry.labelHelpSqlQuery}</span>
-					</div>
-				</div>
-				<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="mandatory">#i18n{appointment.createEntry.labelMandatory} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<div class="checkbox">
-							<label>
-								<input name="mandatory" value="1" type="checkbox" <#if entry.mandatory>checked="checked"</#if> />&#160;
-							</label>
-						</div>
-					</div>
-				</div>
-				 <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="only_display_in_back">#i18n{appointment.createEntry.labelOnlyDisplayInBack}</label>
-                        <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-                            <div class="checkbox">
-                                <label>
-                                    <input name="only_display_in_back" value="1" type="checkbox" <#if entry.onlyDisplayInBack>checked="checked"</#if> />&#160;
-                                </label>
-                            </div>
-                        </div>
-                 </div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="form-control">
-						<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-						<button class="btn btn-primary btn-sm" type="submit">
-							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}
-						</button>
-						<button class="btn btn-default btn-sm" type="submit" name="cancel" value="cancel" >
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelCancel}
-						</button>
-					</div>
-				</div>
-			</form>
-		</fieldset>
-	</div>
-</div>
-</div>
-</div>
+			<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+				<input type='hidden' name='action' value='doModifyEntry' />
+				<input type='hidden' name='id_entry' value='${entry.idEntry}' />
+				
+				<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
+					<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+				</@formGroup>
+				
+				<@formGroup labelFor='help_message' labelKey='#i18n{appointment.createEntry.labelHelpMessage}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
+					<@input type='textarea' name='help_message' id='help_message' rows=2>${entry.helpMessage}</@input>
+				</@formGroup>
+				
+				<@formGroup labelFor='comment' labelKey='#i18n{appointment.createEntry.labelSqlQuery}' helpKey='#i18n{appointment.createEntry.labelHelpSqlQuery}'>
+					<@input type='textarea' name='comment' rows=2>${entry.comment}</@input>
+				</@formGroup>
+				
+				<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}' mandatory=entry.mandatory>
+					<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
+				</@formGroup>
+				
+				 <@formGroup labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
+					<@checkBox labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' mandatory=entry.onlyDisplayInBack />
+				 </@formGroup>
+				 
+				<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+					<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
+				</@formGroup>
+				
+				<@formGroup>
+					<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+					<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-default' cancel=true />
+				</@formGroup>
+			</@tform>
+			</fieldset>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 
 <@initEditor />

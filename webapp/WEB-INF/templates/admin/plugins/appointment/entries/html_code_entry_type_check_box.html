@@ -7,6 +7,8 @@ ${entry.CSSClass!}
 	<#assign checked = false />
 	<#if entry.fieldInLine>
 		<#assign orientation = 'horizontal' />
+	<#else>
+		<#assign orientation = 'vertical' />
 	</#if>
 	
 	<#if !field.noDisplayTitle>
@@ -35,8 +37,11 @@ ${entry.CSSClass!}
 		<#assign params='onclick="doCheckboxEffect(this.checked,${field.idField});"' />
 	</#if>
 	
-	<@checkBox labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${field.title!}' title=field.comment! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked params=params
-			/>
+	<@checkBox labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${field.title!}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
+	
+	<#if field.comment?? && field.comment != '' && orientation == 'vertical'>
+		<span class="help-block">${field.comment}"</span>
+	</#if>
 </#list>
 	
 			

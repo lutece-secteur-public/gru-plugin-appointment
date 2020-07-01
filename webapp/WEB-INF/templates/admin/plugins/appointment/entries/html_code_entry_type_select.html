@@ -1,36 +1,36 @@
-<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory>
-	<select name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" class="form-control input-sm 
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
-					class="form-control error"
-					<#break>
-				</#if>
-			</#list>
-			${entry.CSSClass!}
-	</#if>">
-		<option value="">#i18n{appointment.xpage.form.noValue}</option>
-	<#list entry.fields as field>
-		<option  value="${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if>
-			<#if list_responses??>
-				<#list list_responses as response>
-					<#if response.entry.idEntry == entry.idEntry && response.field??>
-						<#if response.field.idField == field.idField>
-							selected ="selected"
-							<#break>
-						</#if>
-					</#if>
-				</#list>
-			<#else>
-				<#if field.defaultValue>
-					selected ="selected"
-				</#if>
-			</#if>
-			>
-				${field.title}
-		</option>	
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+			<#assign class = 'has-error' />
+			<#break>
+		</#if>
 	</#list>
-	</select>
+</#if>
+
+<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class='${class!}'+'${entry.CSSClass!}'>
+	<@select name='attribute${entry.idEntry}' id='attribute${entry.idEntry}'>
+		<option value="">#i18n{appointment.xpage.form.noValue}</option>
+		<#list entry.fields as field>
+			<option  value="${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if>
+				<#if list_responses??>
+					<#list list_responses as response>
+						<#if response.entry.idEntry == entry.idEntry && response.field??>
+							<#if response.field.idField == field.idField>
+								selected ="selected"
+								<#break>
+							</#if>
+						</#if>
+					</#list>
+				<#else>
+					<#if field.defaultValue>
+						selected ="selected"
+					</#if>
+				</#if>
+				>
+					${field.title}
+			</option>	
+		</#list>
+	</@select>
 
 	<#if list_responses??>
 		<#list list_responses as response>

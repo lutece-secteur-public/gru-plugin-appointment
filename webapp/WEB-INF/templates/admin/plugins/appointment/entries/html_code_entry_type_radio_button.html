@@ -1,51 +1,57 @@
-<#assign hide="">
+<#assign hide='' />
 <#list entry.fields as field>
-<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
-	<#assign hide=hide+"hide(${field.idField});">
-</#if>	
+	<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
+		<#assign hide = hide + 'hide(${field.idField});' />
+	</#if>
 </#list>
 ${entry.CSSClass!}
 
-<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+<@formGroup labelFor='form${entry.idEntry}' labelKey='${entry.title}' id='form${entry.idEntry}' mandatory=entry.mandatory helpKey='${entry.helpMessage}'>
     <#list entry.fields as field>
-		<#if !entry.fieldInLine><div class="radio lalala"></#if>
-			<label <#if entry.fieldInLine>class="radio-inline"</#if> for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> > 
-			<input type="radio" class="" id="attribute${entry.idEntry}_${field.idField}" name="attribute${entry.idEntry}" value="${field.idField}"
-			<#if list_responses??>
-				<#list list_responses as response>
-					<#if response.entry.idEntry == entry.idEntry && response.field??>
-						<#if response.field.idField == field.idField>checked="checked"<#break></#if>
-					</#if>
-				</#list>
-			<#else>
-				<#if field.defaultValue>checked="checked"</#if>
+		<#if entry.fieldInLine>
+			<#assign orientation = 'horizontal' />
+		<#else>
+			<#assign orientation = 'vertical' />
+		</#if>
+
+		<#if list_responses??>
+			<#list list_responses as response>
+				<#if response.entry.idEntry == entry.idEntry && response.field??>
+					<#if response.field.idField == field.idField><#assign checked = true /><#break></#if>
+				</#if>
+			</#list>
+		<#else>
+			<#if field.defaultValue>
+				<#assign checked = true />
 			</#if>
-				onclick="${hide} <#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>doDisplay(${field.idField});</#if>
-			 "/>
-			 <#if !field.noDisplayTitle>
-			 	${field.title}
-			 </#if>
-			</label>
-		   <#if !entry.fieldInLine && entry.helpMessage?exists && entry.helpMessage != ''>
-				<p class="help-block">${entry.helpMessage}</p>
-			</#if>
-		<#if !entry.fieldInLine></div></#if>
-		</#list>
+		</#if>
 		
-	</div>
- </div>	
-<#if entry.fieldInLine&&entry.helpMessage?exists&&entry.helpMessage!=''>
-<p class="help-block">${entry.helpMessage}</p>
-</#if>
+		<#assign params = 'onclick="${hide}"' />
+		<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
+			<#assign params = 'onclick="${hide} doDisplay(${field.idField});"' />
+		</#if>
+		
+		<#assign radioButtonLabelKey = '' />
+		<#if !field.noDisplayTitle>
+			<#assign radioButtonLabelKey = field.title />
+		</#if>
+			
+		<@radioButton labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${radioButtonLabelKey}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
+		
+		<#if field.comment?? && field.comment != '' && orientation == 'vertical'>
+			<span class="help-block">${field.comment}"</span>
+		</#if>
+			
+	</#list>
+</@formGroup>
+
 <#if list_responses??>
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-			<div class="alert alert-error alert-danger">
+			<@alert class='danger'>
 			<#assign error = response.entry.error>
 				<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-			</div>
+			</@alert>
 		</#if>
 	</#list>
 </#if>
