@@ -13,6 +13,13 @@
                         <#if entry.fieldDepend?exists>
                             <input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
                         </#if>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+							<@staticText>
+								<@tag color='info'>
+									${entry.entryType.title}
+								</@tag>
+							</@staticText>
+						</@formGroup>
                         <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
                             <@input type='text' name='title' id='title' value='' maxlength=255 />
                         </@formGroup>
@@ -25,7 +32,7 @@
                         <@formGroup>
                             <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
                             <@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageVerification}' size='' />
-                            <@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' size='' />
+                            <@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' size='' cancel=true />
                         </@formGroup>
                     </fieldset>
                 </@tform>
