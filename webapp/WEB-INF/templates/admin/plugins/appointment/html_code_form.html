@@ -9,10 +9,10 @@
 			<@boxHeader title=title />
 			<@boxBody>
 				<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
-					<input type="hidden" name="action" value="doValidateForm" />
-					<input type="hidden" name="id_form" value="${form.idForm}" />
-					<input type="hidden" name="date_of_display" value="${date_of_display}">
-					<input type="hidden" name="session" value="session" />			
+					<input type='hidden' name='action' value='doValidateForm' />
+					<input type='hidden' name='id_form' value='${form.idForm}' />
+					<input type='hidden' name='date_of_display' value='${date_of_display}' />
+					<input type='hidden' name='session' value='session' />			
 					<fieldset>
 						<legend class="hidden">
 							<#if form.displayTitleFo && form.title != "" >
@@ -52,7 +52,7 @@
 						</#if>
 						
 						<@formGroup class='${formGroupClass!}' labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
-							<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength='255' maxlength=255 />
+							<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 />
 						</@formGroup>
 						
 						

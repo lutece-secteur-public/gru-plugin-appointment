@@ -1,19 +1,20 @@
-<#list list_responses as response>
-	<#if response.entry.idEntry == entry.idEntry>
-		<#if response.entry.error??>
-			<#assign class = 'has-error' />
+<#if field.valueTypeDate?exists>
+	<#assign value = field.valueTypeDate />
+<#else>
+	<#assign value = '' />
+</#if>
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry>
+			<#if response.entry.error??>
+				<#assign class = 'has-error' />
+			</#if>
+			<#if response.toStringValueResponse??>
+				<#assign value = response.toStringValueResponse />
+			</#if>
 		</#if>
-		<#if response.toStringValueResponse??>
-			<#assign value = response.toStringValueResponse />
-		</#if>
-	<#else>
-		<#if field.valueTypeDate?exists>
-			<#assign value = field.valueTypeDate />
-		<#else>
-			<#assign value = '' />
-		</#if>
-	</#if>
-</#list>
+	</#list>
+</#if>
 
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' class=class mandatory=entry.mandatory>
 	<#list entry.fields as field>

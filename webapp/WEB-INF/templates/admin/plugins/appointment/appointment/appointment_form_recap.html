@@ -1,60 +1,70 @@
 <@row>
 	<@columns>
-		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
-			<input type='hidden' name='action' value='doMakeAppointment' />                        
-			<fieldset>
-				<legend>
-					#i18n{appointment.appointmentApp.recap.title} - 
-					<#if form.displayTitleFo && form.title != "" >
-						${form.title}
-					<#else>
-						#i18n{appointment.appointmentApp.defaultTitle}
-					</#if>
-				</legend>
-				<@messages errors=errors />
-				<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
-					<@input type='text' disabled=true readonly=true value='${appointment.lastName}' />
-				</@formGroup>
-				<@formGroup labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}'>
-					<@input type='text' disabled=true readonly=true value='${appointment.firstName}' />
-				</@formGroup>
-				<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle!}'>
-					<@input type='text' disabled=true readonly=true value='${appointment.email}' />
-				</@formGroup>
-				<#if form.maxPeoplePerAppointment &gt; 1>				
-					<@formGroup labelFor='nbSeat' labelKey='#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}'>
-						<@input type='text' disabled=true readonly=true value='${appointment.nbBookedSeats}' />
-					</@formGroup>
-				</#if>				
-				<#list listResponseRecapDTO as response>
-                    <#if response.recapValue?has_content>
-						<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
-							<#assign formGroupLabelKey = response.entry.title />
-							<#assign entrySave=response.entry />
-						</#if>
-                        <@formGroup labelFor='' labelKey='${formGroupLabelKey!}'>
-							<#if response.file?? >
-								<a href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}'>
-									 ${response.recapValue}
-								</a>
-							<#else>    
-								${response.recapValue}	                                
+		<@box color='primary'>
+            <@boxHeader title='#i18n{appointment.appointmentApp.recap.title}' />
+			<@boxBody>
+				<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
+					<input type='hidden' name='action' value='doMakeAppointment' />                        
+					<fieldset>
+						<legend>
+							#i18n{appointment.appointmentApp.recap.title} - 
+							<#if form.displayTitleFo && form.title != "" >
+								${form.title}
+							<#else>
+								#i18n{appointment.appointmentApp.defaultTitle}
 							</#if>
-	                     </@formGroup>
-                    </#if>
-                </#list>
-				<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
-					<@input type='text' disabled=true readonly=true value='${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}' />
-				</@formGroup>
-				<@formGroup>
-					<@button name='validate' id='validate' value='validate' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
-					<#if comeFromCalendar??>
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
-					<#else>
-						<@button name='back' id='back' value='back' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
-					</#if>
-				</@formGroup>
-			</fieldset>
-		</@tform>
+						</legend>
+						<@messages errors=errors />
+						<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
+							<input type='hidden' name='lastname' value='${appointment.lastName}' />
+							<@staticText>${appointment.lastName}</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}'>
+							<input type='hidden' name='firstname' value='${appointment.firstName}' />
+							<@staticText>${appointment.firstName}</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle!}'>
+							<input type='hidden' name='email' value='${appointment.email}' />
+							<@staticText>${appointment.email}</@staticText>
+						</@formGroup>
+						<#if form.maxPeoplePerAppointment &gt; 1>				
+							<@formGroup labelFor='nbSeat' labelKey='#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}'>
+								<input type='hidden' name='nbSeat' value='${appointment.nbBookedSeats}' />
+								<@staticText>${appointment.nbBookedSeats}</@staticText>
+							</@formGroup>
+						</#if>				
+						<#list listResponseRecapDTO as response>
+							<#if response.recapValue?has_content>
+								<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
+									<#assign formGroupLabelKey = response.entry.title />
+									<#assign entrySave=response.entry />
+								</#if>
+								<@formGroup labelKey='${formGroupLabelKey!}'>
+									<#if response.file?? >
+										<a href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}'>
+											 <@staticText>${response.recapValue}</@staticText>
+										</a>
+									<#else>    
+										<@staticText>${response.recapValue}</@staticText>                                
+									</#if>
+								 </@formGroup>
+							</#if>
+						</#list>
+						<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
+							<input type='hidden' name='appointmentDate' value='${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}' />
+								<@staticText>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</@staticText>
+						</@formGroup>
+						<@formGroup>
+							<@button type='submit' name='validate' id='validate' value='validate' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
+							<#if comeFromCalendar??>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+							<#else>
+								<@button name='back' id='back' value='back' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+							</#if>
+						</@formGroup>
+					</fieldset>
+				</@tform>
+			</@boxBody>
+		</@box>
 	</@columns>
 </@row>

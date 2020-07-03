@@ -12,8 +12,8 @@
         <@appointmentTabs tab='filter' form=form>
             <@messages infos=infos errors=errors/>
             <@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
-                <input type="hidden" name="view" value="manageAppointments">    
-                <input type="hidden" name="id_form" value=${form.idForm}>
+                <input type='hidden' name='view' value='manageAppointments' />    
+                <input type='hidden' name='id_form' value='${form.idForm}' />
 				<@box collapsed=true>
 					<@boxHeader title='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@button style='btn-box-tool' params='data-widget="collapse"' buttonIcon='plus' />
@@ -85,7 +85,7 @@
 					</@boxHeader>
 					<@boxBody>
 						<div align="right"><@paginationAdmin paginator=paginator form=0 /></div>
-						<div class="clearfix"></div>
+						<div style="clear:both;"></div>
 						<#if appointment_list?? && appointment_list?size &gt; 0>
 							<@table>
 								<tr>
