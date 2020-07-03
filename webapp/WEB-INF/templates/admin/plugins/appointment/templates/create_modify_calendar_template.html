@@ -30,7 +30,7 @@
 							<#if (template.idCalendarTemplate)?? && template.idCalendarTemplate &gt; 0>
 								<input type='hidden' name='idCalendarTemplate' value='${template.idCalendarTemplate}' />
 							</#if>
-								<@button name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{portal.util.labelOk}' />
+								<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{portal.util.labelOk}' />
 								<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
 							</div>
 						</@formGroup>
