@@ -6,7 +6,7 @@
 
 <@row>
     <@columns>
-        <@box>
+        <@box color='primary'>
             <@boxHeader title='${form.title} - #i18n{appointment.manageAppointments.pageTitle}' />
         </@box>
         <@appointmentTabs tab='filter' form=form>
@@ -76,7 +76,7 @@
 						<!-- aButton title : title='#i18n{appointment.displayAppointmentForm.labelReset}' -->
 					</@boxBody>
 				</@box>
-				<@box>
+				<@box color='primary'>
 					<@boxHeader>
 						<#if rightDelete?? && rightDelete>
 							<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='btn-danger' size='sm' />

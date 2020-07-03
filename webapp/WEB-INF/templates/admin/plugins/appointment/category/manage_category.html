@@ -1,6 +1,6 @@
 <@row>
 	<@columns>
-		<@box>
+		<@box color='primary'>
 			<@boxHeader title='#i18n{appointment.adminFeature.manageCategories.name}'>
 				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' buttonIcon='plus' title='#i18n{appointment.manageCategory.buttonAdd}' />
 			</@boxHeader>
@@ -13,6 +13,6 @@
 </@row>
 
 <#macro actionColumnCategory item>
-	<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${item.idCategory}' buttonIcon='edit' />
-	<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${item.idCategory}' buttonIcon='trash' color=btn-danger' />
+	<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${item.idCategory}' buttonIcon='edit' size='sm' />
+	<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${item.idCategory}' buttonIcon='trash' color='btn-danger' size='sm' />
 </#macro>
