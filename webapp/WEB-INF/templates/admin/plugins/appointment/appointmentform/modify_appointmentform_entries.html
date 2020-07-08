@@ -134,9 +134,9 @@
 				</@columns>
 				<@columns md=3>
 					<@listGroup>
-						<a class="${listElementClass} active lead">#i18n{appointment.modifyAppointmentForm.labelInsertEntry}</a>
+						<a class="${listElementClass!} active lead">#i18n{appointment.modifyAppointmentForm.labelInsertEntry}</a>
 						<#list entry_type_list as item>
-							<a class="${listElementClass}" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${item.code}">
+							<a class="${listElementClass!}" href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=getCreateEntry&id_form=${appointmentform.idForm}&id_type=${item.code}">
 							<#list entryIconList as entryIcon>
 								<#if item.code?number == 100+entryIcon?index+1>
 									<@icon style='${entryIcon}' />

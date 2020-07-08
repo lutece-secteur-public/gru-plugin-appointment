@@ -33,10 +33,10 @@
                             <@select name='map_provider' items=entryTypeService.mapProvidersRefList default_value='-1' />
                         </@formGroup>
                         <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
-                            <@checkBox name='mandatory' value='1' />
+                            <@checkBox name='mandatory' id='mandatory' value='1' />
                         </@formGroup>
                         <@formGroup labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
-                            <@checkBox name='only_display_in_back' value='1' />
+                            <@checkBox name='only_display_in_back' id='only_display_in_back' value='1' />
                         </@formGroup>
                         <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
                             <@input type='text' name='css_class' value='' maxlength=255 />

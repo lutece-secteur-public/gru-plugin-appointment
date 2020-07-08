@@ -79,11 +79,11 @@
 	</@formGroup>
 	
 	<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
-		<@checkBox labelFor='display_title_fo' name='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
+		<@checkBox labelFor='display_title_fo' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
 	</@formGroup>
 		
 	<@formGroup labelFor='is_displayed_on_portlet' labelKey='#i18n{appointment.label.displayOnPortlet}' helpKey='#i18n{appointment.label.displayOnPortlet.help}'>
-		<@checkBox labelFor='is_displayed_on_portlet' name='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
+		<@checkBox labelFor='is_displayed_on_portlet' name='is_displayed_on_portlet' id='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
 	</@formGroup>
 	
 	<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
@@ -139,7 +139,7 @@
 		<#assign xicon= appointmentform.getIcon()>				
 		<#if xicon.mimeType?? >
 			<@formGroup labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}'>
-				<@checkBox labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}' name='deleteIcon' value='true' />
+				<@checkBox labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}' name='deleteIcon' id='deleteIcon' value='true' />
 			</@formGroup>
 		</#if>
 	</#if>
