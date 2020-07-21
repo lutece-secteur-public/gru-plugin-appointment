@@ -786,8 +786,13 @@ public class AppointmentApp extends MVCApplication
         String strLastName = request.getParameter( PARAMETER_LAST_NAME );
         AppointmentUtilities.checkDateOfTheAppointmentIsNotBeforeNow( appointmentDTO, locale, listFormErrors );
         AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), form, locale, listFormErrors );
-        int nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
-                locale, listFormErrors );
+        int nbBookedSeats= nNbPlacesToTake;
+        if( nNbPlacesToTake == 0) {
+        	
+             nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
+                    locale, listFormErrors );
+        	
+        }
         AppointmentUtilities.fillAppointmentDTO( appointmentDTO, nbBookedSeats, strEmail, strFirstName, strLastName );
         AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
         AppointmentUtilities.fillInListResponseWithMapResponse( appointmentDTO );

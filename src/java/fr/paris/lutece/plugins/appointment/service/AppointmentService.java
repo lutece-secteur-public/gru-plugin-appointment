@@ -411,11 +411,15 @@ public final class AppointmentService
     		  AppointmentSlot apptSlot= new AppointmentSlot();
     		  apptSlot.setIdAppointment(nIdAppointment);
     		  apptSlot.setIdSlot(slot.getIdSlot());
+    		  
     		  if(nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces() ) {
+    			
     			  nNumberPlace = slot.getNbRemainingPlaces();
+    		  
     		  }else if( nbPlaces > 0) {
+    			
     			  nNumberPlace =  nbPlaces;
-    			  break;
+
     		  }else {
     			  break;
     		  }
