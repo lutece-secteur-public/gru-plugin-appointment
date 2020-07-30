@@ -414,7 +414,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         		nNbPlacesToTake= 0;
         		listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
         	}
-        
         	
         	
           //  listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
@@ -903,6 +902,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 		                    .getPropertyInt( AppointmentUtilities.PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
 		            timer.schedule( slotEditTask, delay );
 		            request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT + slotEditTask.getIdSlot( ) , timer );
+
 	        	
         		}
         	}
@@ -966,12 +966,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
                   listSlot = listSlot.stream().filter( s -> (( startingDateTime.compareTo(s.getStartingDateTime()) <= 0) && (endingDateTime.compareTo(s.getEndingDateTime()) >= 0) && (  s.getIsOpen( ) )  )).collect( Collectors.toList( ));
 
               }
+
         }
         
         
         AppointmentDTO oldAppointmentDTO = null;
         // Get the not validated appointment in session if it exists
        // AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
+
         if ( appointmentDTO == null )
         {
             // Try to get the validated appointment in session
@@ -1019,6 +1021,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 appointmentDTO.setMapResponsesByIdEntry( oldAppointmentDTO.getMapResponsesByIdEntry( ) );
             }
         }
+
         
         if ( !bModificationForm )
         {
@@ -1045,6 +1048,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 // Need to check competitive access
                 // May be the slot is already taken at the same time
 	            if (  slot.getNbPotentialRemainingPlaces( ) == 0  && !formRule.getBoOverbooking( ))
+
 	            {
 	                addError( ERROR_MESSAGE_SLOT_FULL, locale );
 	                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
@@ -1062,6 +1066,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 		            appointmentDTO.setIdForm( nIdForm );
 		            appointmentDTO.setEndingDateTime(endingDateTime);
 		            appointmentDTO.setStartingDateTime(startingDateTime);
+
 		            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 	                if ( user != null )
 	                {
@@ -1081,6 +1086,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             
             
             if ( appointmentDTO.getNbMaxPotentialBookedSeats() == 0  && !formRule.getBoOverbooking( ))
+
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, locale );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
@@ -1101,6 +1107,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_APPOINTMENT, appointmentDTO );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).get(0).getDate( ) );
         model.put( MARK_PLACES, (formRule.getBoOverbooking( ))? 20:appointmentDTO.getNbMaxPotentialBookedSeats( ) );
+
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_LOCALE, locale );
@@ -1163,6 +1170,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
              additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
              additionalParameters.put( PARAMETER_STARTING_DATE_TIME, appointmentDTO.getStartingDateTime().toString( ) );
              additionalParameters.put( PARAMETER_ENDING_DATE_TIME, appointmentDTO.getEndingDateTime( ).toString( ) );        	
+
             request.getSession( ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
             return redirect( request, VIEW_CREATE_APPOINTMENT, additionalParameters );
         }
@@ -1371,6 +1379,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
+
       
         List<Slot> listSlot= new ArrayList<>();
         int nbRemainingPlaces=0;
@@ -1402,8 +1411,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 	        listSlot.add(slot);
     
         }
-        
-        
+
         // If it's a modification need to get the old number of booked seats
         // if the reservation is on the same slot, if not, the check has been
         // already done before

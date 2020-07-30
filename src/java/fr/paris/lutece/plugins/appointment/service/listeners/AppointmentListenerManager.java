@@ -116,13 +116,13 @@ public final class AppointmentListenerManager
      *            The locale
      * @return The list of messages to display
      */
-    public static List<String> notifyListenersAppointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale )
+    public static List<String> notifyListenersAppointmentDateChanged( int nIdAppointment, List<Integer> listIdSlot, Locale locale )
     {
         List<String> listMessages = new ArrayList<>( );
 
         for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
         {
-            String strMessage = appointmentRemovalListener.appointmentDateChanged( nIdAppointment, nIdSlot, locale );
+            String strMessage = appointmentRemovalListener.appointmentDateChanged( nIdAppointment, listIdSlot, locale );
 
             if ( StringUtils.isNotEmpty( strMessage ) )
             {

@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -62,7 +63,7 @@ public interface IAppointmentListener
      *            The locale to display error messages with
      * @return The message to display to the user, if any.
      */
-    String appointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale );
+    String appointmentDateChanged( int nIdAppointment, List<Integer> listIdSlot, Locale locale );
     
     /**
      * Notify the listener that an appointment has been creates

@@ -91,6 +91,11 @@ public final class AppointmentDTO extends Appointment implements Serializable
      * The starting date in LocalDateTime
      */
     private LocalDateTime _startingDateTime;
+    
+    /**
+     * The ending date in LocalDateTime
+     */
+    private LocalDateTime _endingDateTime;
 
     /**
      * The starting time
@@ -211,6 +216,27 @@ public final class AppointmentDTO extends Appointment implements Serializable
     public void setStartingDateTime( LocalDateTime startingDateTime )
     {
         this._startingDateTime = startingDateTime;
+    }
+    
+    /**
+     * Get the ending date time of the appointment
+     * 
+     * @return the ending date time
+     */
+    public LocalDateTime getEndingDateTime( )
+    {
+        return _endingDateTime;
+    }
+
+    /**
+     * Set the ending date time of the appointment
+     * 
+     * @param endingDateTime
+     *            the ending date time
+     */
+    public void setEndingDateTime( LocalDateTime endingDateTime )
+    {
+        this._endingDateTime = endingDateTime;
     }
 
     /**

@@ -418,7 +418,7 @@ public final class AppointmentService
     	  int index=0;
     	  
     	  List<Slot> listSlot= appointmentDTO.getSlot( );
-    	  
+    	      	  
     	  listSlot.sort((slot1,slot2) -> slot1.getStartingDateTime().compareTo(slot2.getStartingDateTime()));
     	  
     	  for(Slot slot: listSlot) {
@@ -440,6 +440,7 @@ public final class AppointmentService
         			  nNumberPlace= nNbUpdatePlaces;
         		  }
     		  }else if(nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces() && index < listSlot.size( ) ) {
+   
     			
     			  nNumberPlace = slot.getNbRemainingPlaces();
     		  
