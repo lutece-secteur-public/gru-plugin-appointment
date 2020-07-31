@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.web.AppointmentApp3;
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.portal.business.portlet.PortletHtmlContent;
 
 /**
@@ -64,7 +64,7 @@ public final class AppointmentFormListPortlet extends PortletHtmlContent
     {
         if ( request != null )
         {
-            return AppointmentApp3.getFormListHtml( request, request.getLocale( ) );
+            return AppointmentApp.getFormListHtml( request, request.getLocale( ) );
         }
 
         return StringUtils.EMPTY;

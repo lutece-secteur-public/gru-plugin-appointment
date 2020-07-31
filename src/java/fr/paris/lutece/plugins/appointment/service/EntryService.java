@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.form.Form;
-import fr.paris.lutece.plugins.appointment.web.AppointmentApp3;
+import fr.paris.lutece.plugins.appointment.web.AppointmentApp;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -720,7 +720,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     {
         UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
-        url.addParameter( MVCUtils.PARAMETER_VIEW, AppointmentApp3.VIEW_APPOINTMENT_FORM );
+        url.addParameter( MVCUtils.PARAMETER_VIEW, AppointmentApp.VIEW_APPOINTMENT_FORM );
 
         if ( ( entry != null ) && ( entry.getIdResource( ) > 0 ) )
         {
