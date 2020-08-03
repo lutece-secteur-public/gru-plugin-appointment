@@ -494,6 +494,7 @@ public final class AppointmentUtilities
         // seats is under or equal to the number of the remaining places + the
         // previous number of booked seats of the appointment
         if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats( )  && !appointmentDTO.getOverbookingAllowed())
+
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale ) );

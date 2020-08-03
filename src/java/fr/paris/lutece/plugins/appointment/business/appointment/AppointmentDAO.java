@@ -266,7 +266,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             {
                 Appointment appointment = buildAppointment( daoUtil ) ;
                 appointment.setListAppointmentSlot( selectAppointmentSlot( appointment.getIdAppointment( ), plugin ) );
-                
+
                 listAppointment.add(appointment );
             }
         }

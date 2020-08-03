@@ -266,6 +266,7 @@ public final class SlotSafeService {
 	 	    		
 	 	    		AppointmentUtilities.killTimer( request, apptSlot.getIdSlot( ) );
 	 	    	}
+
 	 	    }
 		    return  appointment.getIdAppointment( );
 		
@@ -790,7 +791,6 @@ public final class SlotSafeService {
      	List<Slot> listSlot = new ArrayList<>();
      	List<Lock> listLock = new ArrayList<>();    	
 
-    	 
          if( appointmentDTO.getIdAppointment() != 0) {
         	 
         	 oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
@@ -822,6 +822,7 @@ public final class SlotSafeService {
 				 }
 		    	   
 				 else if (appointmentDTO.getIdAppointment() == 0 &&( slt == null || ((appSlot.getNbPlaces() > slt.getNbRemainingPlaces( ) ||(appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces  )) && !appointmentDTO.getOverbookingAllowed())|| slt.getEndingDateTime().isBefore(LocalDateTime.now( ))))
+
 		         {
 		    		 throw new SlotFullException( "ERROR SLOT FULL" );
 		         

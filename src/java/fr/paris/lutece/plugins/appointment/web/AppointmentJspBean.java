@@ -414,6 +414,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         		nNbPlacesToTake= 0;
         		listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
         	}
+        
         	
         	
           //  listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
