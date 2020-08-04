@@ -440,7 +440,6 @@ public final class AppointmentService
         			  nNumberPlace= nNbUpdatePlaces;
         		  }
     		  }else if(nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces() && index < listSlot.size( ) ) {
-   
     			
     			  nNumberPlace = slot.getNbRemainingPlaces();
     		  

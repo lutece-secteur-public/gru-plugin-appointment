@@ -521,6 +521,7 @@ public final class FormService
         appointmentForm.setMinTimeBeforeAppointment( formRule.getMinTimeBeforeAppointment( ) );
         appointmentForm.setNbMaxAppointmentsPerUser( formRule.getNbMaxAppointmentsPerUser( ) );
         appointmentForm.setNbDaysForMaxAppointmentsPerUser( formRule.getNbDaysForMaxAppointmentsPerUser( ) );
+        appointmentForm.setBoOverbooking(formRule.getBoOverbooking( ));
     }
 
     /**
@@ -550,7 +551,6 @@ public final class FormService
         appointmentForm.setIdWorkflow( form.getIdWorkflow( ) );
         appointmentForm.setWorkgroup( form.getWorkgroup( ) );
         appointmentForm.setIsActive( form.getIsActive( ) );
-        appointmentForm.setBoOverbooking(form.getBoOverbooking( ));
     }
 
     /**
@@ -697,7 +697,7 @@ public final class FormService
         form.setIsActive( appointmentForm.getIsActive( ) );
         form.setIdWorkflow( appointmentForm.getIdWorkflow( ) );
         form.setWorkgroup( appointmentForm.getWorkgroup( ) );
-        form.setBoOverbooking(appointmentForm.getBoOverbooking( ));
+      //  form.setBoOverbooking(appointmentForm.getBoOverbooking( ));
         return form;
     }
 

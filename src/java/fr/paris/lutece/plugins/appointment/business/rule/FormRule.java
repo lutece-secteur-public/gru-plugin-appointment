@@ -88,6 +88,11 @@ public final class FormRule implements Serializable
      * The period for the maximum number of appointments per user
      */
     private int _nNbDaysForMaxAppointmentsPerUser;
+    /**
+     * Authorize overbooking 
+     */
+    private boolean _bBoOverbooking;
+
 
     /**
      * Form id (foreign key)
@@ -261,6 +266,23 @@ public final class FormRule implements Serializable
     {
         this._nNbDaysForMaxAppointmentsPerUser = nNbDaysForMaxAppointmentsPerUser;
     }
+    /**
+     * Returns the BoOverbooking
+     * @return The BoOverbooking
+     */ 
+     public boolean getBoOverbooking()
+     {
+         return _bBoOverbooking;
+     }
+ 
+    /**
+     * Sets the BoOverbooking
+     * @param bBoOverbooking The BoOverbooking
+     */ 
+     public void setBoOverbooking( boolean bBoOverbooking )
+     {
+         _bBoOverbooking = bBoOverbooking;
+     }
 
     /**
      * Get the form id the formRule belongs to

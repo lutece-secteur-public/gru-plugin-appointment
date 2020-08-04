@@ -72,6 +72,7 @@ public final class FormRuleService
         formRule.setMinTimeBeforeAppointment( appointmentForm.getMinTimeBeforeAppointment( ) );
         formRule.setNbMaxAppointmentsPerUser( appointmentForm.getNbMaxAppointmentsPerUser( ) );
         formRule.setNbDaysForMaxAppointmentsPerUser( appointmentForm.getNbDaysForMaxAppointmentsPerUser( ) );
+        formRule.setBoOverbooking(appointmentForm.getBoOverbooking( ));
         formRule.setIdForm( nIdForm );
     }
 

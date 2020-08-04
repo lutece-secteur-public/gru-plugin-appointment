@@ -967,7 +967,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                   listSlot = listSlot.stream().filter( s -> (( startingDateTime.compareTo(s.getStartingDateTime()) <= 0) && (endingDateTime.compareTo(s.getEndingDateTime()) >= 0) && (  s.getIsOpen( ) )  )).collect( Collectors.toList( ));
 
               }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 55be5cb4... RENDEZVOUS-412: Make overbooking available in BO, move overbooking properties to FormRules object
         }
         
         
@@ -1022,7 +1025,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 appointmentDTO.setMapResponsesByIdEntry( oldAppointmentDTO.getMapResponsesByIdEntry( ) );
             }
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 55be5cb4... RENDEZVOUS-412: Make overbooking available in BO, move overbooking properties to FormRules object
         
         if ( !bModificationForm )
         {
@@ -1049,7 +1055,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 // Need to check competitive access
                 // May be the slot is already taken at the same time
 	            if (  slot.getNbPotentialRemainingPlaces( ) == 0  && !formRule.getBoOverbooking( ))
+<<<<<<< HEAD
 
+=======
+>>>>>>> 55be5cb4... RENDEZVOUS-412: Make overbooking available in BO, move overbooking properties to FormRules object
 	            {
 	                addError( ERROR_MESSAGE_SLOT_FULL, locale );
 	                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
@@ -1067,7 +1076,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
 		            appointmentDTO.setIdForm( nIdForm );
 		            appointmentDTO.setEndingDateTime(endingDateTime);
 		            appointmentDTO.setStartingDateTime(startingDateTime);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 55be5cb4... RENDEZVOUS-412: Make overbooking available in BO, move overbooking properties to FormRules object
 		            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 	                if ( user != null )
 	                {
@@ -1087,7 +1099,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
             
             
             if ( appointmentDTO.getNbMaxPotentialBookedSeats() == 0  && !formRule.getBoOverbooking( ))
+<<<<<<< HEAD
 
+=======
+>>>>>>> 55be5cb4... RENDEZVOUS-412: Make overbooking available in BO, move overbooking properties to FormRules object
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, locale );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
@@ -1108,7 +1123,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_APPOINTMENT, appointmentDTO );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).get(0).getDate( ) );
         model.put( MARK_PLACES, (formRule.getBoOverbooking( ))? 20:appointmentDTO.getNbMaxPotentialBookedSeats( ) );
-
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_LOCALE, locale );
@@ -1171,7 +1185,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
              additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
              additionalParameters.put( PARAMETER_STARTING_DATE_TIME, appointmentDTO.getStartingDateTime().toString( ) );
              additionalParameters.put( PARAMETER_ENDING_DATE_TIME, appointmentDTO.getEndingDateTime( ).toString( ) );        	
+<<<<<<< HEAD
 
+=======
+>>>>>>> 55be5cb4... RENDEZVOUS-412: Make overbooking available in BO, move overbooking properties to FormRules object
             request.getSession( ).setAttribute( SESSION_APPOINTMENT_FORM_ERRORS, listFormErrors );
             return redirect( request, VIEW_CREATE_APPOINTMENT, additionalParameters );
         }
@@ -1380,7 +1397,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 55be5cb4... RENDEZVOUS-412: Make overbooking available in BO, move overbooking properties to FormRules object
       
         List<Slot> listSlot= new ArrayList<>();
         int nbRemainingPlaces=0;
