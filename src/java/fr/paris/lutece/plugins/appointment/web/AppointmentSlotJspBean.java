@@ -50,6 +50,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
@@ -852,7 +853,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
         for ( Appointment appointment : listAppointmentsImpacted )
         {
-//            setSlotsImpactedWithAppointments.add( appointment.getIdSlot( ) );
+        	for(AppointmentSlot apptSlot: appointment.getListAppointmentSlot( ) ) {
+        		setSlotsImpactedWithAppointments.add( apptSlot.getIdSlot( ) );
+        	}
         }
         List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
                 .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );

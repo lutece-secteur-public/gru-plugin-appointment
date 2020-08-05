@@ -40,6 +40,7 @@
                 <@boxBody>
                     <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
                         <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
+                        <input type="hidden" id="bo_overbooking" name="bo_overbooking" value="${appointmentform.boOverbooking?then('true', 'false')}"/>                        
                         <@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>

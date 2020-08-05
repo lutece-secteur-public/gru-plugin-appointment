@@ -214,7 +214,6 @@ public final class SlotSafeService {
 	    	
 	    	// Create or update the appointment
 	        Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );
-
 	        String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR ).add( user.getLastName( ) )
 	                .add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
 	        // Create a unique reference for a new appointment

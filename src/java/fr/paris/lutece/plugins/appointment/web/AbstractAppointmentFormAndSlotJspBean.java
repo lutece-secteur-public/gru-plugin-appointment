@@ -149,7 +149,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private boolean checkSlotCapacityAndPeoplePerAppointment( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
-        if ( appointmentForm.getMaxPeoplePerAppointment( ) > appointmentForm.getMaxCapacityPerSlot( ) )
+        if ( appointmentForm.getMaxPeoplePerAppointment( ) > appointmentForm.getMaxCapacityPerSlot( ) && !appointmentForm.getBoOverbooking( ))
         {
             bReturn = false;
             addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) );
