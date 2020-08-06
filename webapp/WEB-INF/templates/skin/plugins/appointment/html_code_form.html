@@ -44,7 +44,7 @@
 					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingTime}</p>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}&date_of_display=${date_of_display}#step2">
+					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}<#if nbPlacesToTake ?? && nbPlacesToTake != 0  >&nbPlacesToTake=${nbPlacesToTake!}</#if>&date_of_display=${date_of_display}#step2">
 						<i class="fa fa-pencil"></i> #i18n{portal.util.labelModify}
 					</a>
 				</div>
@@ -259,7 +259,7 @@
 										<div class="form-group <#if formGroupError!=''>has-error</#if>">
 											<label class="col-xs-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
 											<div class="col-xs-12">
-												<input type="number"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
+												<input type="number" <#if nbPlacesToTake != 0 > readonly</#if> maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
 												<#if formGroupError!=''>
 													${formGroupError}
 												<#else>

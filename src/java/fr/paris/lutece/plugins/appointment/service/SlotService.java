@@ -398,6 +398,9 @@ public final class SlotService
             // date
             closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
             reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
+            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateTemp);
+
+            
             nMaxCapacity = 0;
             if ( reservationRuleToApply != null )
             {
@@ -466,7 +469,8 @@ public final class SlotService
                         }
                        
                     	
-                    	if(sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen() || slotToAdd.getNbPotentialRemainingPlaces() <=0 ) {
+                    	if(sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen() || slotToAdd.getNbPotentialRemainingPlaces() <=0 || slotToAdd.getEndingDateTime( ).isBefore( LocalDateTime.now( ) )
+                    			|| nNbPlaces > reservationRule.getMaxPeoplePerAppointment( )) {
                     		
                     		sumNbPotentialRemainingPlaces =0;
                     		sumNbRemainingPlaces = 0;

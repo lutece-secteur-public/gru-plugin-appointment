@@ -265,7 +265,6 @@ public final class SlotSafeService {
 	 	    		
 	 	    		AppointmentUtilities.killTimer( request, apptSlot.getIdSlot( ) );
 	 	    	}
-
 	 	    }
 		    return  appointment.getIdAppointment( );
 		

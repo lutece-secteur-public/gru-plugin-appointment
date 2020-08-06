@@ -92,6 +92,7 @@ public final class Utilities
         return listDate.stream( ).filter( x -> x.isBefore( dateToSearch ) || x.isEqual( dateToSearch ) ).max( LocalDate::compareTo ).orElse( null );
     }
 
+
     /**
      * Return the closest date time in future in a list of date time and a given date time
      * 

@@ -389,13 +389,6 @@ public class AppointmentApp extends MVCApplication
         		nNbPlacesToTake= 0;
                 listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
         	}
-        	if ( nNbPlacesToTake > appointmentForm.getMaxPeoplePerAppointment( )  )
-             {
-        		 addError( AppointmentUtilities.ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale );
-        		 nNbPlacesToTake= 0;
-                 bError = true;
-        			
-        	}
             // Get the min time from now before a user can take an appointment
             // (in hours)
             FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
