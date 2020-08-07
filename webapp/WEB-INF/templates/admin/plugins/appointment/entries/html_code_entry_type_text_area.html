@@ -1,15 +1,13 @@
 <#macro getTextAreaContent responseContent has_error entry field>
 	<!#-- 	fieldInLine means use rich text -->
 	<#if has_error>
-		<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field.width}" rows="${field.height}" class="form-control ${entry.CSSClass!}<#if entry.fieldInLine> richtext</#if>">${responseContent}</textarea>
+		<@input type='textarea' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' cols=field.width rows=field.height class='${entry.CSSClass!}' richtext=entry.fieldInLine>${responseContent}</@input>
 	<#else>
-		<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field.width}" rows="${field.height}" class="form-control ${entry.CSSClass!}<#if entry.fieldInLine> richtext</#if>" >${responseContent}</textarea>
+		<@input type='textarea' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' cols=field.width rows=field.height class='${entry.CSSClass!}' richtext=entry.fieldInLine>${responseContent}</@input>
 	</#if>
 </#macro>
 
-<div class="form-group">
-<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory>
 	<#list entry.fields as field>
 		<#if list_responses??>
 			<#list list_responses as response>
@@ -29,23 +27,18 @@
 			</#if>
 		</#if>
 	</#list>
-	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-		<p class="help-block">${entry.helpMessage}</p>
-	</#if>
-	
 	
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-				<div class="alert alert-error alert-danger">
+				<@alert class='danger' params='style="margin-top:10px;"'>
 					<#assign error = response.entry.error> 
 					<#if error.mandatoryError>#i18n{appointment.message.mandatory.entry}<#else>${error.errorMessage}</#if>
-				</div>
+				</@alert>
 			</#if>
 		</#list>
 	</#if>
-	</div>
-</div>
+</@formGroup>
 
 <#if entry.fieldInLine>
 	<#include "/util/editor/editor.html" />

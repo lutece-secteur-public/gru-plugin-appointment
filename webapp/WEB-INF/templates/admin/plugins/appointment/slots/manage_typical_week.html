@@ -9,10 +9,10 @@
 <script src='js/plugins/appointment/locale-all.js' ></script>
 <@row>
     <@columns>
-        <@tabs tab="typicalWeek" appointmentform=appointmentform />
-        <fieldset>
+        <@appointmentTabs tab="typicalWeek" appointmentform=appointmentform>
+				  <fieldset>
             </br>
-            <@tform class2='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' method='post' id='listOfDates' params='enctype="multipart/form-data"'>
+            <@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
                 <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
                 <#if listDateOfModification??>
                     <label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
@@ -30,13 +30,15 @@
                 </#if>
             </@tform>
             </br>
-            <div class="box box-default box-solid <#if !error_modification??>collapsed-box</#if>">
-                <div class="box-header with-border" data-widget="collapse">
-                    <i class="fa <#if !error_modification??>fa-plus<#else>fa-minus</#if>"></i>
-                    <h3 class="box-title">
-                        #i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}
-                    </h3>
-                </div>
+						<@box collapsed=!error_modification??>
+								<#if !error_modification??>
+									<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
+								<#else>
+									<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
+								</#if>
+								<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
+									<@button style='btn-box-tool' params='data-widget="collapse"' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
+								</@boxHeader>
                 <@boxBody>
                     <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
                         <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
@@ -44,7 +46,7 @@
                         <@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
-                                    <@icon prefix='glyphicon glyphicon-' style='time' />
+                                    <@icon style='clock-o' />
                                 </@inputGroupItem>
                                 <@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
                             </@inputGroup>
@@ -52,7 +54,7 @@
                         <@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
-                                    <@icon prefix='glyphicon glyphicon-' style='time' />
+                                  <@icon style='clock-o' />
                                 </@inputGroupItem>
                                 <@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
                             </@inputGroup>
@@ -103,10 +105,11 @@
                         </@formGroup>
                     </@tform>
                 </@boxBody>
-            </div>
+            </@box>
             <hr color="black">
             <div id="calendar"></div>
         </fieldset>
+			</@appointmentTabs>
     </@columns>
 </@row>
 <@getDatePickerBootstrap idField="date_of_modification" language=language />

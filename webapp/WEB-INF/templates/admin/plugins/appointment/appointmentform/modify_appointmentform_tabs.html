@@ -14,25 +14,25 @@
 
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
-		<@listTabs>
-    	<li <#if tab="params">class="active"</#if>>
+		<ul class="nav nav-tabs">
+			<li <#if tab="params">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
 					#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}
 				</a>
 			</li>
-    	<li <#if tab="entries">class="active"</#if>>
+			<li <#if tab="entries">class="active"</#if>>
 				<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
 					#i18n{appointment.modifyAppointmentFormEntries.pageTitle}
 				</a>
 			</li>
 			<#if isResourceInstalled?? && isResourceInstalled>
-				<li <#if tab="resources">class="active"</#if>>
+			<li <#if tab="resources">class="active"</#if>>
 					<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
 						#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
 					</a>
 	    	</li>
 			</#if>
-		</@listTabs>
+		</ul>
 		<@tabContent>
 			<#nested>
 		</@tabContent>
@@ -40,275 +40,271 @@
 </#macro>
 
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-		<div class="tab-pane active" id="">
-			<fieldset>    			   
-			<@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
-				<input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-				
-				<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' helpKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
-					<@input type='text' name='title' id='title'  value=appointmentform.title!'' maxlength=255 />
-				</@formGroup>
-				
-				<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
-					<@select name='idCategory' id='idCategory' items=listCategories default_value='${appointmentform.idCategory!}' />
-				</@formGroup>
-				
-				<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' helpKey='#i18n{appointment.labelDescription}' mandatory=true>
-					<@input type='textarea' name='description' id='description'>${appointmentform.description!}</@input>
-				</@formGroup>
-				
-				<@formGroup labelFor='min_time_before_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}' mandatory=true>
-					<@input type='text' name='min_time_before_appointment' id='min_time_before_appointment' value=appointmentform.minTimeBeforeAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-				</@formGroup>
-				
-				<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
-					<@inputGroup>
-						<@inputGroupItem type='addon'>
-							<@icon style='calendar' />
-						</@inputGroupItem>
-						<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
-					</@inputGroup>
-				</@formGroup>
-				
-				<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
-					<@inputGroup>
-						<@inputGroupItem type='addon'>
-							<@icon style='calendar' />
-						</@inputGroupItem>
-						<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!''  />
-					</@inputGroup>
-				</@formGroup>
-				
-				<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
-					<@checkBox labelFor='display_title_fo' name='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
-				</@formGroup>
-					
-				<@formGroup labelFor='is_displayed_on_portlet' labelKey='#i18n{appointment.label.displayOnPortlet}' helpKey='#i18n{appointment.label.displayOnPortlet.help}'>
-					<@checkBox labelFor='is_displayed_on_portlet' name='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
-				</@formGroup>
-				
-				<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
-					<@input type='text' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-				</@formGroup>
-			
-				<@formGroup labelFor='nb_days_before_new_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}' mandatory=true>
-					<@input type='text' name='nb_days_before_new_appointment' id='nb_days_before_new_appointment' value=appointmentform.nbDaysBeforeNewAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-				</@formGroup>
-				
-				<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}' mandatory=true>
-					<@input type='text' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=appointmentform.nbMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-				</@formGroup>
-				<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
-					<@checkBox labelFor='bo_overbooking' name='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
-				</@formGroup>
-				
-				<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
-					<@input type='text' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
-				</@formGroup>
-				
-				<@formGroup labelFor='reference' labelKey='#i18n{appointment.createAppointmentForm.labelReference}' helpKey='#i18n{appointment.createAppointmentForm.labelReference.help}'>
-					<@input type='text' name='reference' id='reference' value=appointmentform.reference!'' maxlength=10 />
-				</@formGroup>
-				
-				<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' helpKey='#i18n{}' mandatory=true>
-					<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
-				</@formGroup>
 
-				<#if isCaptchaEnabled>
-					<@formGroup labelFor='enableCaptcha'>
-						<@checkBox labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
-					</@formGroup>
-				</#if>
+<fieldset>
+<@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
+	<input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
+	
+	<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' helpKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
+		<@input type='text' name='title' id='title'  value=appointmentform.title!'' maxlength=255 />
+	</@formGroup>
+	
+	<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
+		<@select name='idCategory' id='idCategory' items=listCategories default_value='${appointmentform.idCategory!}' />
+	</@formGroup>
+	
+	<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' helpKey='#i18n{appointment.labelDescription}' mandatory=true>
+		<@input type='textarea' name='description' id='description'>${appointmentform.description!}</@input>
+	</@formGroup>
+	
+	<@formGroup labelFor='min_time_before_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMinTimeBeforeAppointment.help}' mandatory=true>
+		<@input type='text' name='min_time_before_appointment' id='min_time_before_appointment' value=appointmentform.minTimeBeforeAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+	</@formGroup>
+	
+	<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
+		<@inputGroup>
+			<@inputGroupItem type='addon'>
+				<@icon style='calendar' />
+			</@inputGroupItem>
+			<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
+		</@inputGroup>
+	</@formGroup>
+	
+	<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
+		<@inputGroup>
+			<@inputGroupItem type='addon'>
+				<@icon style='calendar' />
+			</@inputGroupItem>
+			<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!''  />
+		</@inputGroup>
+	</@formGroup>
+	
+	<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
+		<@checkBox labelFor='display_title_fo' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
+	</@formGroup>
+		
+	<@formGroup labelFor='is_displayed_on_portlet' labelKey='#i18n{appointment.label.displayOnPortlet}' helpKey='#i18n{appointment.label.displayOnPortlet.help}'>
+		<@checkBox labelFor='is_displayed_on_portlet' name='is_displayed_on_portlet' id='is_displayed_on_portlet' value='true' checked=appointmentform.isDisplayedOnPortlet!false />
+	</@formGroup>
+	
+	<@formGroup labelFor='nb_weeks_to_display' labelKey='#i18n{appointment.label.nbWeeksToDisplay}' helpKey='#i18n{appointment.label.nbWeeksToDisplay.help}' mandatory=true>
+		<@input type='text' name='nb_weeks_to_display' id='nb_weeks_to_display' value=appointmentform.nbWeeksToDisplay!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+	</@formGroup>
 
-				<@formGroup labelFor='enableMandatoryEmail'>
-					<@checkBox labelFor='enableMandatoryEmail' labelKey='#i18n{appointment.createAppointmentForm.labelEnableMandatoryEmail}' name='enableMandatoryEmail' id='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
-				</@formGroup>
-				
-				<@formGroup labelFor='activeAuthentication'>
-					<@checkBox labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
-				</@formGroup>
-				
-				<#if listWorkflows??>
-					<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
-						<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
-					</@formGroup>
-				</#if>
-				
-				<@formGroup labelFor='workgroup' labelKey='#i18n{appointment.createAppointmentForm.labelWorkgroup}'>
-					<@select name='workgroup' id='workgroup' items=user_workgroup_list default_value='${appointmentform.workgroup!}' />
-				</@formGroup>
+	<@formGroup labelFor='nb_days_before_new_appointment' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysBeforeNewAppointment.help}' mandatory=true>
+		<@input type='text' name='nb_days_before_new_appointment' id='nb_days_before_new_appointment' value=appointmentform.nbDaysBeforeNewAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+	</@formGroup>
+	
+	<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbMaxAppointments.help}' mandatory=true>
+		<@input type='text' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=appointmentform.nbMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+	</@formGroup>
+	
+	<@formGroup labelFor='nb_days_for_max_appointments_per_user' labelKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelNbDaysForMaxAppointments.help}' mandatory=true>
+		<@input type='text' name='nb_days_for_max_appointments_per_user' id='nb_days_for_max_appointments_per_user' value=appointmentform.nbDaysForMaxAppointmentsPerUser!'' params='onkeypress="return validateQty(event);"' maxlength=2 />
+	</@formGroup>
+	
+	<@formGroup labelFor='reference' labelKey='#i18n{appointment.createAppointmentForm.labelReference}' helpKey='#i18n{appointment.createAppointmentForm.labelReference.help}'>
+		<@input type='text' name='reference' id='reference' value=appointmentform.reference!'' maxlength=10 />
+	</@formGroup>
+	
+	<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' helpKey='#i18n{}' mandatory=true>
+		<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
+	</@formGroup>
 
-				
-				<#if appointmentform.getIcon()??>
-					<#assign xicon= appointmentform.getIcon()>				
-					<#if xicon.mimeType?? >
-						<@formGroup labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}'>
-							<@checkBox labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}' name='deleteIcon' value='true' />
-						</@formGroup>
-					</#if>
-				</#if>
-				
-				<@formGroup labelFor='image_resource' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
-					<@inputGroup>
-						<@input type='file' name='image_resource' id='image_resource' params='accept="image/*"' />
-						<@inputGroupItem>
-							<@button type='button' name='remove_img' id='remove_img' title='Effacer' size='' color='btn-primary' params='onclick="$(\'#image_resource\').val(\'\')"' buttonIcon='times' />
-						</@inputGroupItem>
-					</@inputGroup>
-				</@formGroup>
-				
-				<@formGroup labelFor='fileHolidays' labelKey='#i18n{appointment.manageHolidays.labelImport}' helpKey='#i18n{appointment.manageHolidays.labelClosinglabelFormatFile}'>
-					<@inputGroup>
-						<@input type='file' name='fileClosingDays' id='fileClosingDays' params='accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"' />
-						<@inputGroupItem>
-							<@button type='button' name='remove_file' id='remove_file' title='Effacer' size='' color='btn-primary' params='onclick="$(\'#fileClosingDays\').val(\'\')"' buttonIcon='times' />
-						</@inputGroupItem>
-					</@inputGroup>
-				</@formGroup>
-				
-				<@formGroup labelFor='geoloc_address' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.help.formAddress}'>
-					<@input type='text' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
-					<@input type='text' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
-					<@input type='text' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
-					<!-- used to keep state if the user presses back button -->
-					<input type="hidden" id="hidden_address"/>
-					<p class="help-block">#i18n{appointment.label.addressDescription}</p>
-					<script type='text/javascript'>
-							$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
-							$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
-							$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
+	<#if isCaptchaEnabled>
+		<@formGroup labelFor='enableCaptcha'>
+			<@checkBox labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false />
+		</@formGroup>
+	</#if>
 
-							$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control"><span class="input-group-btn"><button class="btn btn-primary btn-flat" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button></span>').insertAfter('#geoloc_address');
+	<@formGroup labelFor='enableMandatoryEmail'>
+		<@checkBox labelFor='enableMandatoryEmail' labelKey='#i18n{appointment.createAppointmentForm.labelEnableMandatoryEmail}' name='enableMandatoryEmail' id='enableMandatoryEmail' value='true' checked=appointmentform.enableMandatoryEmail!false />
+	</@formGroup>
+	
+	<@formGroup labelFor='activeAuthentication'>
+		<@checkBox labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
+	</@formGroup>
+	
+	<#if listWorkflows??>
+		<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
+			<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
+		</@formGroup>
+	</#if>
+	
+	<@formGroup labelFor='workgroup' labelKey='#i18n{appointment.createAppointmentForm.labelWorkgroup}'>
+		<@select name='workgroup' id='workgroup' items=user_workgroup_list default_value='${appointmentform.workgroup!}' />
+	</@formGroup>
 
-							$('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
+	
+	<#if appointmentform.getIcon()??>
+		<#assign xicon= appointmentform.getIcon()>				
+		<#if xicon.mimeType?? >
+			<@formGroup labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}'>
+				<@checkBox labelFor='deleteIcon' labelKey='#i18n{appointment.modifyAppointmentForm.deleteIcon}' name='deleteIcon' id='deleteIcon' value='true' />
+			</@formGroup>
+		</#if>
+	</#if>
+	
+	<@formGroup labelFor='image_resource' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
+		<@inputGroup>
+			<@input type='file' name='image_resource' id='image_resource' params='accept="image/*"' />
+			<@inputGroupItem>
+				<@button type='button' name='remove_img' id='remove_img' title='Effacer' size='' color='btn-primary' params='onclick="$(\'#image_resource\').val(\'\')"' buttonIcon='times' />
+			</@inputGroupItem>
+		</@inputGroup>
+	</@formGroup>
+	
+	<@formGroup labelFor='fileHolidays' labelKey='#i18n{appointment.manageHolidays.labelImport}' helpKey='#i18n{appointment.manageHolidays.labelClosinglabelFormatFile}'>
+		<@inputGroup>
+			<@input type='file' name='fileClosingDays' id='fileClosingDays' params='accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"' />
+			<@inputGroupItem>
+				<@button type='button' name='remove_file' id='remove_file' title='Effacer' size='' color='btn-primary' params='onclick="$(\'#fileClosingDays\').val(\'\')"' buttonIcon='times' />
+			</@inputGroupItem>
+		</@inputGroup>
+	</@formGroup>
+	
+	<@formGroup labelFor='geoloc_address' labelKey='#i18n{appointment.label.formAddress}' helpKey='#i18n{appointment.help.formAddress}'>
+		<@input type='text' name='geoloc_address' id='geoloc_address' value='${(appointmentform.address?html)!}' />
+		<@input type='text' name='geoloc_longitude' id='geoloc_longitude' value='${(appointmentform.longitude?c)!}' />
+		<@input type='text' name='geoloc_latitude' id='geoloc_latitude' value='${(appointmentform.latitude?c)!}' />
+		<!-- used to keep state if the user presses back button -->
+		<input type='hidden' id='hidden_address' />
+		<p class="help-block">#i18n{appointment.label.addressDescription}</p>
+		<script type='text/javascript'>
+				$('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
+				$('#geoloc_longitude').clone().attr('type','hidden').insertAfter('#geoloc_longitude').prev().remove();
+				$('#geoloc_latitude').clone().attr('type','hidden').insertAfter('#geoloc_latitude').prev().remove();
 
-							if (typeof(lutece_map_resources_loaded) == 'undefined') {
-									lutece_map_resources_loaded = true
-									var loadresource = document.createElement('link');
-									loadresource.setAttribute("rel", "stylesheet");
-									loadresource.setAttribute("type", "text/css");
-									loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
+				$('<div class="input-group"><input type="text" id="address_address" name="address_address" class="form-control"><span class="input-group-btn"><button class="btn btn-primary btn-flat" type="button" title="#i18n{appointment.label.clearAddress}" id="button_delete_address"><i class="fa fa-remove"></i></button></span></div>').insertAfter('#geoloc_address');
 
-									loadresource = document.createElement('script');
-									loadresource.setAttribute("type", "text/javascript");
-									loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
-									loadresource.async = false;
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
+				$('<div id=map_address style="height: 300px; width: 100%"></div>').insertBefore('#hidden_address');
 
-									loadresource = document.createElement('script');
-									loadresource.setAttribute("type", "text/javascript");
-									loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
-									loadresource.async = false;
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
+				if (typeof(lutece_map_resources_loaded) == 'undefined') {
+						lutece_map_resources_loaded = true
+						var loadresource = document.createElement('link');
+						loadresource.setAttribute("rel", "stylesheet");
+						loadresource.setAttribute("type", "text/css");
+						loadresource.setAttribute("href", "js/plugins/leaflet/leaflet/leaflet.css");
+						document.getElementsByTagName("head")[0].appendChild(loadresource);
 
-									loadresource = document.createElement('script');
-									loadresource.setAttribute("type", "text/javascript");
-									loadresource.setAttribute("src",   "js/plugins/leaflet/leaflet/leaflet.js" );
-									document.getElementsByTagName("head")[0].appendChild(loadresource);
-							}
+						loadresource = document.createElement('script');
+						loadresource.setAttribute("type", "text/javascript");
+						loadresource.setAttribute("src",  "jsp/admin/plugins/address/modules/autocomplete/SetupSuggestPOI.js.jsp");
+						loadresource.async = false;
+						document.getElementsByTagName("head")[0].appendChild(loadresource);
 
-							$(window).load(function() {
-									var map = L.map('map_address').setView([48.85632, 2.33272], 12);
-									var markers_layer = L.featureGroup().addTo(map);
-									// create the tile layer with correct attribution
-									var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-									var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-									var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
+						loadresource = document.createElement('script');
+						loadresource.setAttribute("type", "text/javascript");
+						loadresource.setAttribute("src",  "js/plugins/address/modules/autocomplete/jQuery.suggestPOI.js");
+						loadresource.async = false;
+						document.getElementsByTagName("head")[0].appendChild(loadresource);
 
-									var jAdresse = $('#address_address');
-									jAdresse.suggestPOI();
-									jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
+						loadresource = document.createElement('script');
+						loadresource.setAttribute("type", "text/javascript");
+						loadresource.setAttribute("src",   "js/plugins/leaflet/leaflet/leaflet.js" );
+						document.getElementsByTagName("head")[0].appendChild(loadresource);
+				}
 
-											var poi = event.poi;
-											if (poi) {
-													var address = poi.libelleTypo;
+				$(window).load(function() {
+						var map = L.map('map_address').setView([39.290736,-76.610838], 12);
+						var markers_layer = L.featureGroup().addTo(map);
+						// create the tile layer with correct attribution
+						var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+						var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+						var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
 
-													markers_layer.clearLayers();
-													var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
-													map.fitBounds(markers_layer.getBounds());
+						var jAdresse = $('#address_address');
+						jAdresse.suggestPOI();
+						jAdresse.bind($.suggestPOI.EVT_SELECT, function(event) {
 
-													var obj= {
-															"type": "Feature",
-															"properties": {
-																	"address": address
-															},
-															"geometry": {
-																	"type": "Point",
-																	"coordinates": [poi.x, poi.y]
-															}
-													};
-													$('#hidden_address').val(JSON.stringify(obj));
-													$('#geoloc_address').val(address);
-													$('#geoloc_latitude').val(poi.y);
-													$('#geoloc_longitude').val(poi.x);
-											}
-									});
+								var poi = event.poi;
+								if (poi) {
+										var address = poi.libelleTypo;
 
-									$("#button_delete_address").on('click', function () {
-													$('#address_address').val("");
-													//Don't put the empty string to disambiguate with the user
-													//clearing the field, and then pressing the browser back button
-													$('#hidden_address').val("false");
-													$('#geoloc_address').val("");
-													$('#geoloc_latitude').val("");
-													$('#geoloc_longitude').val("");
-													map.setView([48.85632, 2.33272], 12);
-													markers_layer.clearLayers();
-									});
+										markers_layer.clearLayers();
+										var marker = L.marker([poi.y, poi.x]).addTo(markers_layer);
+										map.fitBounds(markers_layer.getBounds());
 
-									//Try to restore from back/forward browser history buttons
-									var prev_data = $('#hidden_address').val();
-									var prev_value;
-									var user_cleared = false;
-									if (prev_data) {
-											prev_value=JSON.parse(prev_data);
-											if (!prev_value) {
-													user_cleared = true;
-											}
-									} else {
-											var server_address = $('#geoloc_address').val();
-											var server_longitude = $('#geoloc_longitude').val();
-											var server_latitude = $('#geoloc_latitude').val();
-											if (server_address && server_longitude && server_latitude) {
-													prev_value = {
-															"type":"Feature",
-															"properties": {
-																	"address": server_address
-															 },
-															 "geometry": {
-																	"type":"Point",
-																	"coordinates":[server_longitude,server_latitude]
-															 }
-													 };
-											} else {
-													user_cleared = true;
-											}
-									}
+										var obj= {
+												"type": "Feature",
+												"properties": {
+														"address": address
+												},
+												"geometry": {
+														"type": "Point",
+														"coordinates": [poi.x, poi.y]
+												}
+										};
+										$('#hidden_address').val(JSON.stringify(obj));
+										$('#geoloc_address').val(address);
+										$('#geoloc_latitude').val(poi.y);
+										$('#geoloc_longitude').val(poi.x);
+								}
+						});
 
-									if (!user_cleared) {
-													$('#address_address').val(prev_value.properties.address);
-													$('#geoloc_address').val(prev_value.properties.address);
-													$('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
-													$('#geoloc_longitude').val(prev_value.geometry.coordinates[0]);
+						$("#button_delete_address").on('click', function () {
+										$('#address_address').val("");
+										//Don't put the empty string to disambiguate with the user
+										//clearing the field, and then pressing the browser back button
+										$('#hidden_address').val("false");
+										$('#geoloc_address').val("");
+										$('#geoloc_latitude').val("");
+										$('#geoloc_longitude').val("");
+										map.setView([39.290736,-76.610838], 12);
+										markers_layer.clearLayers();
+						});
 
-													markers_layer.clearLayers();
-													var marker = L.marker([prev_value.geometry.coordinates[1],prev_value.geometry.coordinates[0]]).addTo(markers_layer);
-													map.fitBounds(markers_layer.getBounds());
-									}
-					});
+						//Try to restore from back/forward browser history buttons
+						var prev_data = $('#hidden_address').val();
+						var prev_value;
+						var user_cleared = false;
+						if (prev_data) {
+								prev_value=JSON.parse(prev_data);
+								if (!prev_value) {
+										user_cleared = true;
+								}
+						} else {
+								var server_address = $('#geoloc_address').val();
+								var server_longitude = $('#geoloc_longitude').val();
+								var server_latitude = $('#geoloc_latitude').val();
+								if (server_address && server_longitude && server_latitude) {
+										prev_value = {
+												"type":"Feature",
+												"properties": {
+														"address": server_address
+												 },
+												 "geometry": {
+														"type":"Point",
+														"coordinates":[server_longitude,server_latitude]
+												 }
+										 };
+								} else {
+										user_cleared = true;
+								}
+						}
 
-					</script>
-				</@formGroup>
-				
-				<@formGroup>
-					<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='save' size='' />
-					<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='btn-secondary' />
-				</@formGroup>        
-			</@tform>
-		</fieldset>
-	</div>
-</div>
+						if (!user_cleared) {
+										$('#address_address').val(prev_value.properties.address);
+										$('#geoloc_address').val(prev_value.properties.address);
+										$('#geoloc_latitude').val(prev_value.geometry.coordinates[1]);
+										$('#geoloc_longitude').val(prev_value.geometry.coordinates[0]);
+
+										markers_layer.clearLayers();
+										var marker = L.marker([prev_value.geometry.coordinates[1],prev_value.geometry.coordinates[0]]).addTo(markers_layer);
+										map.fitBounds(markers_layer.getBounds());
+						}
+		});
+
+		</script>
+	</@formGroup>
+	
+	<@formGroup>
+		<@button type='submit' name='action_modifyAppointmentForm' title='#i18n{portal.util.labelModify}' buttonIcon='save' size='' />
+		<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='btn-secondary' />
+	</@formGroup>        
+</@tform>
+</fieldset>
+
 <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="date_start_validity" language=language />
 <@getDatePickerBootstrap idField="date_end_validity"   language=language />

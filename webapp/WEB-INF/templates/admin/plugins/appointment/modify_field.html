@@ -1,56 +1,36 @@
-<div class="row">
-	<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp" method="post" name="" id="">
-		<fieldset>
-			<legend>#i18n{appointment.modifyField.title} : '${field.parentEntry.title}'</legend>
- 			<input type="hidden" name="action" value="doModifyField">
-			<input name="id_field" value="${field.idField}" type="hidden">
-    		<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} * : </label>
-		    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-					<input type="text" name="title" id="title" size="80" value="${field.title}" class="form-control" maxlength="255">
-				</div>
-			</div>
-	    	<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.value.name} * : </label>
-	    		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-					<input type="text" name="value" id="value" size="80" class="form-control" value="${field.value}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="value">#i18n{appointment.comment.name} : </label>
-		    	<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-					<textarea name="comment" id="comment" class="form-control">${field.comment!}</textarea>
-				</div>
-			</div>
-	    	<div class="form-group">
-				<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="default_value">#i18n{appointment.defaultValue.name}</label>
-		    	<#if field.defaultValue>
-		    		<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<div class="checkbox">
-							<label>
-								<input name="default_value" value="1" type="checkbox" checked="checked">&#160;
-							</label>
-						</div>
-					</div>
-		  		<#else>
-		  			<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<div class="checkbox">
-							<label>
-								<input name="default_value" value="1" type="checkbox">&#160;
-							</label>
-						</div>
-					</div>
-		  		</#if>
-			</div>
-			<div class="form-group">
-				<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-					<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok">&nbsp;</i>&nbsp;#i18n{appointment.labelSave}</button>
-					<button class="btn btn-default btn-sm" type="submit" ><i class="fa fa-times" aria-hidden="true"></i> #i18n{appointment.labelCancel}</button>
-				</div>
-	  		</div>
-		</fieldset>
-	</form>
-</div>
-
-
- 
+<@row>
+	<@columns>
+		<@box color='primary'>
+			<@boxHeader title='#i18n{appointment.modifyField.title} : "${field.parentEntry.title}"' />
+			<@boxBody>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp'>
+					<fieldset>
+						<legend class="hidden">#i18n{appointment.modifyField.title} : '${field.parentEntry.title}'</legend>
+						<input type='hidden' name='action' value='doModifyField' />
+						<input type='hidden' name='id_field' value='${field.idField}' />
+						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
+							<@input type='text' name='title' id='title' inputSize=80 value='${field.title}' maxlength=255 />
+						</@formGroup>
+						<@formGroup labelFor='value' labelKey='#i18n{appointment.value.name}' mandatory=true>
+							<@input type='text' name='value' id='value' inputSize=80 value='${field.value}' />
+						</@formGroup>
+						<@formGroup labelFor='value' labelKey='#i18n{appointment.comment.name}'>
+							<@input type='textarea' name='comment' id='comment'>${field.comment!}</@input>
+						</@formGroup>
+						<@formGroup>
+							<#if field.defaultValue>
+								<@checkBox labelFor='default_value' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' checked=true />
+							<#else>
+								<@checkBox labelFor='default_value' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' />
+							</#if>
+						</@formGroup>
+						<@formGroup>
+							<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+							<@button type='submit' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-default' />
+						</@formGroup>
+					</fieldset>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

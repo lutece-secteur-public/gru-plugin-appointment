@@ -1,15 +1,13 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<@row>
+	<@columns>
 	<@messages infos=infos errors=errors />
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.modifyAppointmentForm.title} : ${appointmentform.title}</h3>				
-			</div>
-		</div>
-	</div>
-</div>
-<#macro tabs tab appointmentform >
-<div class="nav-tabs-custom">
+		<@box>
+			<@boxHeader title='#i18n{appointment.modifyAppointmentForm.title} : ${appointmentform.title}' />
+		</@box>
+	</@columns>
+</@row>
+<#macro appointmentTabs tab appointmentform>
+	<@tabs>
     <ul class="nav nav-tabs">
    		<li <#if tab="typicalWeek">class="active"</#if>>
 			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
@@ -22,6 +20,10 @@
 			</a>
         </li>  	 				                          
     </ul>
+		<@tabContent>
+			<#nested>
+		</@tabContent>
+	</@tabs>
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
 <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>

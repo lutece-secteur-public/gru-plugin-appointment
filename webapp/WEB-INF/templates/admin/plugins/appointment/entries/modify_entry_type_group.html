@@ -1,39 +1,31 @@
 <#include "/admin/util/editor/editor.html" />
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.modifyEntry.titleGroup} : '${form.title}'</h3>
-			</div>
-			<div class="box-body">
+<@row>
+	<@columns>
+		<@box color='primary'>
+			<@boxHeader title='#i18n{appointment.modifyEntry.titleGroup} : "${form.title}"' />
+			<@boxBody>
 				<fieldset>
 				<legend class="hidden">#i18n{appointment.modifyEntry.titleGroup} : '${form.title}'</legend>
-				<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id=""  >
-					<input name="id_entry" value="${entry.idEntry}" type="hidden">
-					<input name="action" value="doModifyEntry" type="hidden">
-					<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} * : </label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" name="title" id="title" value="${entry.title}"  maxlength="255" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="css_class">#i18n{appointment.createEntry.labelCSSClass} : </label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input type="text" name="css_class" value="${entry.CSSClass!}" maxlength="255" class="form-control">
-							<span class="help-block">#i18n{appointment.createEntry.labelCSSClassComment}</span>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
-							<button class="btn btn-primary btn-sm" type="submit" ><i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}</button>
-							<button class="btn btn-sm" type="button" onclick="javascript:window.history.back();" ><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelCancel}</button>
-						</div>	
-					</div>	
-				</form>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
+					<input type='hidden' name='action' value='doModifyEntry' />
+					
+					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
+						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+					</@formGroup>
+					
+					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+						<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
+					</@formGroup>
+					
+					<@formGroup>
+						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+						<@button type='button' params='onclick="javascript:window.history.back();"' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-default' cancel=true />
+					</@formGroup>	
+				</@tform>
 				</fieldset>
-			</div>
-		</div>
-	</div>
-</div>
-  <@initEditor />
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
+<@initEditor />

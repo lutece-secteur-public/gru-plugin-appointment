@@ -1,29 +1,23 @@
-<div class="row" >
-	<form class="form-horizontal" method="post" action="jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp" enctype="multipart/form-data">
-		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-			<div class="box box-primary">
-				<div class="box-header with-border">
-					<h3 class="box-title">#i18n{appointment.create.category.title}</h3>
-				</div>
-				<div class="box-body">			
+<@row>
+	<@columns>
+		<@box>
+			<@boxHeader title='#i18n{appointment.create.category.title}' />
+			<@boxBody>
+				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp' params='enctype="multipart/form-data"'>
 					<fieldset>
 						<legend class="hidden">#i18n{appointment.create.category.title}</legend>
 						<@messages errors=errors />					
-						<@fieldInputText i18nLabelKey='appointment.createCategory.label' inputName='label' mandatory=true value=category.label!'' maxlength=255 />
+						<@formGroup labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
+							<@input type='text' name='label' id='label' value=category.label!'' maxlength=255 />
+						</@formGroup>
 					</fieldset>
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-				<button name="action_createCategory" class="btn btn-primary btn-sm" type="submit" tabindex="19">
-					<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelCreate}
-				</button>
-				<button name="view_manageCategory" class="btn btn-default btn-sm" type="submit" tabindex="20">
-					<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelCancel}
-				</button>
-			</div>
-		</div>
-	</form>
-</div>
+					<@formGroup>
+						<@button type='submit' name='action_createCategory' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+						<@button type='submit' name='view_manageCategory' buttonIcon='times' title='#i18n{portal.util.labelCancel}' />
+					</@formGroup>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 

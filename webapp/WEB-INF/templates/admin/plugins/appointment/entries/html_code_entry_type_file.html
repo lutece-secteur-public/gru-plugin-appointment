@@ -1,33 +1,29 @@
 <#include "/admin/plugins/appointment/commons.html" />
 <#include "/skin/plugins/asynchronousupload/upload_commons.html" />
-<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="attribute${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
-	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-		<#assign fieldName='attribute'+entry.idEntry >
-		<#assign cssClass=entry.CSSClass!'' >
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
-					<#assign cssClass='error' >
-					<#break>
-				</#if>
-			</#list>
+
+<#assign cssClass = entry.CSSClass!'' >
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+			<#assign cssClass = cssClass + 'has-error' >
+			<#break>
 		</#if>
-		<@addFileInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
-		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-			<span class="help-block">${entry.helpMessage}</span>
+	</#list>
+</#if>
+
+<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' id='form${entry.idEntry}' mandatory=entry.mandatory>
+	<#assign fieldName='attribute'+entry.idEntry >
+	<@addFileInput fieldName=fieldName handler=uploadHandler cssClass=cssClass multiple=true />
+	<#if list_responses?? && list_responses?has_content>
+		<#assign response_error = list_responses[0]>
+		<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
+			<@alert class='danger'>
+				<#assign error = response_error.entry.error>
+				<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
+			</@alert>
 		</#if>
-		<#if list_responses?? && list_responses?has_content>
-			<#assign response_error = list_responses[0]>
-			<#if response_error.entry.idEntry == entry.idEntry && response_error.entry.error?? && response_error.entry.error.isDisplayableError>
-				<div class="alert alert-error">
-					<#assign error = response_error.entry.error>
-					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-				</div>
-			</#if>
-		</#if>
-	</div>
-</div>
+	</#if>
+</@formGroup>
 
 <#if list_responses?? && list_responses?has_content>
 	<#list list_responses as response>

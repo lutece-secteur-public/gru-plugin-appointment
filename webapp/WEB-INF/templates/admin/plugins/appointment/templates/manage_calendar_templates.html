@@ -1,27 +1,18 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.adminFeature.manageCalendarTemplates.name}</h3>
-				<div class="box-tools">
-					<a class="btn btn-sm btn-primary" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate" >
-					<i class="glyphicon glyphicon-plus">&nbsp;</i>&nbsp;#i18n{appointment.labelAddTemplate}
-				</a>
-				</div>
-			</div>
-			<div class="box-body">
+<@row>
+	<@columns>
+		<@box color='primary'>
+			<@boxHeader title='#i18n{appointment.adminFeature.manageCalendarTemplates.name}'>
+				<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate' buttonIcon='plus' title='#i18n{appointment.labelAddTemplate}' />
+			</@boxHeader>
+			<@boxBody>
 				<@messages infos=infos errors=errors />
 				<@dataTable dataTableManager=dataTableManager actionMacro="actionColumnCalendarTemplate" />
-			</div>
-		</div>
-	</div>
-</div>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 
 <#macro actionColumnCalendarTemplate item>
-	<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}" >
-		<i class="glyphicon glyphicon-edit"></i>
-	</a>
-	<a class="btn btn-danger btn-sm" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}" >
-		<i class="glyphicon glyphicon-trash"></i>
-	</a>
+	<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='edit' size='sm' />
+	<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='btn-danger' size='sm' />
 </#macro>

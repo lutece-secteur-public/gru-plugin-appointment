@@ -1,52 +1,53 @@
-<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<#list entry.fields as field>
-	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-		<input type="text" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}" 
-			<#if list_responses??>
-				<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry>
-					<#if response.toStringValueResponse??>
-						value="${response.toStringValueResponse}"
-					</#if>
-					<#if response.entry.error??>
-						class="error"
-					</#if>
-					</#if>
-				</#list>
-			<#else>
-				<#if field.value?exists>
-					value="${field.value}" 
-			 	<#else>
-					value="" 
-				</#if>
+<#list entry.fields as field>
+	<#if list_responses??>
+		<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry>
+			<#if response.toStringValueResponse??>
+				<#assign value = response.toStringValueResponse />
 			</#if>
-			<#if field.maxSizeEnter!=-1>
-				maxlength="${field.maxSizeEnter}"
+			<#if response.entry.error??>
+				<#assign class = 'has-error' />
 			</#if>
-			class="form-control ${entry.CSSClass!} "	/>
+			</#if>
 		</#list>
-		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
-			<p class="help-block">${entry.helpMessage}</p>
+	<#else>
+		<#if field.value?exists>
+			<#assign value = field.value />
+		<#else>
+			<#assign value = '' />
 		</#if>
-	</div>
-</div>
-<#if list_responses??>
-	<#list list_responses as response>
-		<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-			<#assign error = response.entry.error>
-			<div class="alert alert-error alert-danger"><#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if></div>
-		</#if>
-	</#list>
-</#if>
-<#if entry.confirmField>
-<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="attribute${entry.idEntry}_confirm_field">${entry.confirmFieldTitle}<#if entry.mandatory> *</#if></label>
+	</#if>
+	<#if field.maxSizeEnter!=-1>
+		<#assign maxlength = field.maxSizeEnter />
+	</#if>
+</#list>
+	
+<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
 	<#list entry.fields as field>
-	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-		<input type="text" name="attribute${entry.idEntry}_confirm_field" id="attribute${entry.idEntry}_confirm_field" size="${field.width}" value="" 
-		<#if field.maxSizeEnter!=-1>maxlength="${field.maxSizeEnter}"</#if> class="form-control"/>
-	</div>
+		<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field.width class='${entry.CSSClass!}' value=value />
 	</#list>
-</div>
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
+				<#assign error = response.entry.error>
+				<@alert class='danger' params='style="margin-top:10px;"'>
+					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
+				</@alert>
+			</#if>
+		</#list>
+	</#if>
+</@formGroup>
+
+
+<#if entry.confirmField>
+<@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey='${entry.confirmFieldTitle}' mandatory=entry.mandatory>
+	<#list entry.fields as field>
+		<#assign maxlength = 0 />
+		<#if field.maxSizeEnter!=-1>
+			<#assign maxlength = field.maxSizeEnter />
+		</#if>
+		
+		<@input type='text' name='attribute${entry.idEntry}_confirm_field' id='attribute${entry.idEntry}_confirm_field' inputSize=field.width value=entry.comment maxlength=maxlength />
+	</#list>
+</@formGroup>
 </#if>

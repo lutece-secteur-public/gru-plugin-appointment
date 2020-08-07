@@ -1,22 +1,18 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<fieldset>
-		<legend> #i18n{appointment.taskFormWorkflow.pageTitle}</legend>
+<@row>
+	<@columns>
 <!-- 		<form class="form-horizontal" action="jsp/admin/plugins/appointment/DoSaveTasksFormWorkflow.jsp?plugin_name=directory" method="post" name="" id=""  enctype="multipart/form-data" > -->
-			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
-				<input name="action" value="doProcessWorkflowAction" type="hidden">
-				<input name="id_action" value="${id_action}" type="hidden">
-		   		<input name="id_appointment" value="${id_appointment}" type="hidden">
-				${tasks_form}
-			   	<div class="form-group">
-			  		<button class="btn btn-sm btn-primary" type="submit" name="save">
-						<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{workflow.tasks_form_test_workflow.button_save}
-					</button>
-			  		<button class="btn btn-default btn-sm" type="submit" name="back" value="back" >
-						<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{workflow.tasks_form_test_workflow.button_cancel}
-					</button>
-				</div>
-		    </form>
-   		</fieldset>
-	</div>
- </div>
+			<@tform action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
+				<fieldset>
+					<legend> #i18n{appointment.taskFormWorkflow.pageTitle}</legend>
+					<input type='hidden' name='action' value='doProcessWorkflowAction' />
+					<input type='hidden' name='id_action' value='${id_action}' />
+					<input type='hidden' name='id_appointment' value='${id_appointment}' />
+					${tasks_form}
+					<@formGroup>
+						<@button type='submit' name='save' buttonIcon='check' title='#i18n{workflow.tasks_form_test_workflow.button_save}' />
+						<@button type='submit' name='back' value='back' buttonIcon='times' title='#i18n{workflow.tasks_form_test_workflow.button_cancel}' color='btn-default' />
+					</@formGroup>
+				</fieldset>
+		    </@tform>
+	</@columns>
+ </@row>

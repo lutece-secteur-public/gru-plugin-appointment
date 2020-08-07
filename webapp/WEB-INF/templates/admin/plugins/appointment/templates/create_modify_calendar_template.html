@@ -1,61 +1,42 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">
-					<#if template.id?? && template.id &gt; 0>
-						#i18n{appointment.createModifyCalendarTemplate.pageTitleModify}
-					<#else>
-						#i18n{appointment.labelAddTemplate}
-					</#if>
-				</h3>
-			</div>
-			<div class="box-body">
-				<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp">
+<@row>
+	<@columns>
+		<@box color='primary'>
+			<#if template.idCalendarTemplate?? && template.idCalendarTemplate &gt; 0>
+				<#assign boxHeaderTitle = '#i18n{appointment.createModifyCalendarTemplate.pageTitleModify}' />
+			<#else>
+				<#assign boxHeaderTitle = '#i18n{appointment.labelAddTemplate}' />
+			</#if>
+			<@boxHeader title='${boxHeaderTitle}' />
+			
+			<@boxBody>
+				<@tform action='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp'>
 					<fieldset>
-
-					<@messages infos=infos errors=errors />
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.labelTitle}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input maxlength="255" type="text" name="title" value="${(template.title)!}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.labelDescription}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<input maxlength="255" type="text" name="description" value="${(template.description)!}" class="form-control">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							<div class="input-group">
-							<@comboWithParams items=refListTemplates default_value=(template.templatePath)!'' name="templatePath" additionalParameters="class=\"form-control input-sm\""/>
-							<div class="input-group-btn">
-							<button name="action" value="doDownloadTemplate" title="#i18n{portal.util.labelDownload}" class="btn btn-sm btn-primary">
-								<i class="fa fa-download" aria-hidden="true"></i><span class="hidden-xs">&nbsp;#i18n{portal.util.labelDownload}</span>
-							</button>
+						<@messages infos=infos errors=errors />
+						<@formGroup labelKey='#i18n{appointment.labelTitle}'>
+							<@input type='text' name='title' id='title' value='${(template.title)!}' maxlength=255 />
+						</@formGroup>
+						<@formGroup labelKey='#i18n{appointment.labelDescription}'>
+							<@input type='text' name='description' id='description' value='${(template.description)!}' maxlength=255 />
+						</@formGroup>
+						<@formGroup labelKey='#i18n{appointment.createModifyCalendarTemplate.labelTemplatePath}'>
+							<@inputGroup>
+								<@select items=refListTemplates default_value=(template.templatePath)!'' name='templatePath' />
+								<@inputGroupItem>
+									<@button type='submit' name='action' value='doDownloadTemplate' title='#i18n{portal.util.labelDownload}' buttonIcon='download' title='#i18n{portal.util.labelDownload}' />
+								</@inputGroupItem>
+							</@inputGroup>
+						</@formGroup>
+						<@formGroup>
+							<#if (template.idCalendarTemplate)?? && template.idCalendarTemplate &gt; 0>
+								<input type='hidden' name='idCalendarTemplate' value='${template.idCalendarTemplate}' />
+							</#if>
+								<@button type='submit' name='action' id='action' value='doCreateModifyTemplate' buttonIcon='check' title='#i18n{portal.util.labelOk}' />
+								<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
 							</div>
-						</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-12 col-sm-12 col-md-offset-3 col-lg-offset-3">
-						<#if (template.id)?? && template.id &gt; 0>
-							<input type="hidden" name="id" value="${template.id}">
-						</#if>
-							<button name="action" value="doCreateModifyTemplate" class="btn btn-sm btn-primary">
-								<i class="fa fa-check" aria-hidden="true"></i><span class="hidden-xs">&nbsp;#i18n{portal.util.labelOk}</span>
-							</button>
-							<a class="btn btn-sm btn-default" href="jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp">
-								<i class="fa fa-times" aria-hidden="true"></i><span class="hidden-xs">&nbsp;#i18n{portal.util.labelBack}</span>
-							</a>
-						</div>
-					</div>
-				</fieldset>
-			</form>
-		</div>
-	</div>
-</div>
-</div>
+						</@formGroup>
+					</fieldset>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

@@ -10,24 +10,24 @@
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<@row>
+    <@columns>
         <legend>
             ${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}
         </legend>
-        <@tabs tab="calendar" form=form />
+        <@appointmentTabs tab="calendar" form=form />
         <@messages errors=errors infos=infos />
         <#if formCalendarErrors??>
             <div class="layout-wrapper"></div>
         <#else>
-            <div class="tab-content">
+            <@tabContent>
                 <fieldset>
                     <div id="calendar"></div>
                 </fieldset>
-            </div>
+            </@tabContent>
         </#if>
-    </div>
-</div>
+    </@columns>
+</@row>
 <script type="text/javascript">
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';

@@ -1,50 +1,41 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<fieldset>
-			<div class="box box-primary">
-			<div class="box-header with-border">
-				<h3 class="box-title">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</h3>
-			</div>
-			<div class="box-body">
-			
-			<form class="form-horizontal" action="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp" method="post" name="" id="">
-			<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-			<input name="id_entry" value="${entry.idEntry}" type="hidden">
-			<input name="action" value="doModifyEntry" type="hidden">
-			<div class="form-group">
-			<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="title">#i18n{appointment.labelTitle} *</label>
-				<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-					<input type="text" name="title" id="title" class="form-control" value="${entry.title}" maxlength="255">
-					<span class="help-block">#i18n{appointment.createEntry.labelTitleComment}</span>
-				</div>
-			</div>
-			<#if entry.fields?? && entry.fields?has_content>
-				<#assign prefix = "">
-				<#if entry.fields[0].title??>
-						<#assign prefix = entry.fields[0].title>
-				</#if>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label" for="prefix">#i18n{appointment.createEntry.labelPrefix}</label>
-					<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-						<input type="text" name="prefix" value="${prefix}" maxlength="255" class="form-control">
-						<span class="help-block">#i18n{appointment.createEntry.labelPrefixComment}</span>
-					</div>
-				</div>
-			</#if>
-			<div class="form-group">
-				<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-					<button class="btn btn-primary btn-sm" name="save" type="submit">
-						<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{appointment.labelSave}
-					</button>
-					<button class="btn btn-primary btn-sm" name="apply" type="submit">
-						<i class="glyphicon glyphicon-ok-sign"></i>&nbsp;#i18n{appointment.modifyEntry.buttonApply}
-					</button>
-					<button class="btn btn-default btn-sm" type="submit" name="cancel" value="cancel">
-						<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{appointment.labelCancel}
-					</button>
-				</div>
-			</div>
-			</form>
-		</fieldset>
-	</div>
-</div>	
+<@row>
+    <@columns>
+        <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
+            <@boxBody>
+                <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+					<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
+					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
+					<input type='hidden' name='action' value='doModifyEntry' />
+					
+					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+						<@staticText>
+							<@tag color='info'>
+								${entry.entryType.title}
+							</@tag>
+						</@staticText>
+					</@formGroup>
+					
+					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
+						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
+					</@formGroup>
+					
+					<#if entry.fields?? && entry.fields?has_content>
+						<#assign prefix = "">
+						<#if entry.fields[0].title??>
+								<#assign prefix = entry.fields[0].title>
+						</#if>
+						<@formGroup labelFor='prefix' labelKey='#i18n{appointment.createEntry.labelPrefix}' helpKey='#i18n{appointment.createEntry.labelPrefixComment}'>
+							<@input type='text' name='prefix' id='prefix' value='${prefix}' maxlength=255 />
+						</@formGroup>
+					</#if>
+					<@formGroup>
+						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+						<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
+						<@button type='submit' name='cancel' value='cancel' cancel=true buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-default' />
+					</@formGroup>
+			</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>	

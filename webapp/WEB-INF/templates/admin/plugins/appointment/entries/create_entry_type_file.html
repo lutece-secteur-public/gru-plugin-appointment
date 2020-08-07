@@ -7,12 +7,19 @@
                 <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
                         <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-                        <input name="id_form" value="${form.idForm}" type="hidden">
-                        <input name="action" value="doCreateEntry" type="hidden">
-                        <input name="id_type" value="${entry.entryType.idType}" type="hidden">
+                        <input type='hidden' name='id_form' value='${form.idForm}' />
+                        <input type='hidden' name='action' value='doCreateEntry' />
+                        <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
                         <#if entry.fieldDepend?exists>
-                            <input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
+                            <input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
                         </#if>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+							<@staticText>
+								<@tag color='info'>
+									${entry.entryType.title}
+								</@tag>
+							</@staticText>
+						</@formGroup>
                         <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
                             <@input type='text' name='title' id='title' value='' maxlength=255 />
                         </@formGroup>
@@ -22,14 +29,11 @@
                         <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
                             <@input type='textarea' name='comment' rows=2 />
                         </@formGroup>
-                        <@formGroup labelFor='type' labelKey='#i18n{appointment.createEntry.labelType}'>
-                            <@tag color='info' id='type'>${entry.entryType.title}</@tag>
-                        </@formGroup>
                         <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
-                            <@checkBox name='mandatory' value='1' />
+                            <@checkBox name='mandatory' id='mandatory' value='1' />
                         </@formGroup>
                         <@formGroup labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}'>
-                            <@checkBox name='only_display_in_back' value='1' />
+                            <@checkBox name='only_display_in_back' id='only_display_in_back' value='1' />
                         </@formGroup>
                         <@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
                             <@input type='text' name='width' id='width' value='255' />
@@ -46,7 +50,7 @@
                         <@formGroup>
                             <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
                             <@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageVerification}' size='' />
-                            <@button type='button' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' params='onclick="javascript:window.history.back();"' color='btn-secondary' size='' />
+                            <@button type='submit' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' size='' cancel=true />
                         </@formGroup>
                     </fieldset>
                 </@tform>

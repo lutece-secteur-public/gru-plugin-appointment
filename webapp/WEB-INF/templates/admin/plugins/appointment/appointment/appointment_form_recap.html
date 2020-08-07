@@ -1,83 +1,70 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<form class="form-horizontal" id="form-validate" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
-			<input name="action" value="doMakeAppointment" type="hidden" />                        
-			<fieldset>
-				<legend>
-					#i18n{appointment.appointmentApp.recap.title} - 
-					<#if form.displayTitleFo && form.title != "" >
-						${form.title}
-					<#else>
-						#i18n{appointment.appointmentApp.defaultTitle}
-					</#if>
-				</legend>
-				<@messages errors=errors />
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="lastname">${formMessages.fieldLastNameTitle!}</label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.lastName}">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="firstname">${formMessages.fieldFirstNameTitle!}</label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.firstName}">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="email">${formMessages.fieldEmailTitle!}</label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.email}">
-					</div>
-				</div>	
-				<#if form.maxPeoplePerAppointment &gt; 1>				
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="nbSeat">#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}</label>
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.nbBookedSeats}">
-						</div>
-					</div>	
-				</#if>				
-				<#list listResponseRecapDTO as response>
-                    <#if response.recapValue?has_content>
-                        <div class="form-group">
-	                        <label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-	                        <div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-	                            <#if response.file?? >
-	                                <a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}">
-               	                         ${response.recapValue}
-	                                </a>
-	                            <#else>    
-               	                    ${response.recapValue}	                                
-	                            </#if>
-	                        </div>
-	                    </div>
-                    </#if>
-                </#list>
-				<div class="form-group">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">#i18n{appointment.dateAppointment.title}</label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-<#assign i = appointment.slot?size>
-						<input type="text" class="form-control" disabled readonly="readonly" value="${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingDateTime} #i18n{appointment.labelTo}  ${appointment.slot[i - 1].endingDateTime}">
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<button name="validate" class="btn btn-primary btn-sm" value="validate">
-							<i class="glyphicon glyphicon-ok"></i>&nbsp;#i18n{portal.util.labelValidate}
-						</button>
-						<#if comeFromCalendar??>
-							<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}">
-								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-							</a>
-						<#else>
-							<button name="back" class="btn btn-sm" value="back">
-								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-							</button>
-						</#if>
-					</div>
-				</div>
-			</fieldset>
-		</form>
-	</div>
-</div>
+<@row>
+	<@columns>
+		<@box color='primary'>
+            <@boxHeader title='#i18n{appointment.appointmentApp.recap.title}' />
+			<@boxBody>
+				<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
+					<input type='hidden' name='action' value='doMakeAppointment' />                        
+					<fieldset>
+						<legend>
+							#i18n{appointment.appointmentApp.recap.title} - 
+							<#if form.displayTitleFo && form.title != "" >
+								${form.title}
+							<#else>
+								#i18n{appointment.appointmentApp.defaultTitle}
+							</#if>
+						</legend>
+						<@messages errors=errors />
+						<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
+							<input type='hidden' name='lastname' value='${appointment.lastName}' />
+							<@staticText>${appointment.lastName}</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}'>
+							<input type='hidden' name='firstname' value='${appointment.firstName}' />
+							<@staticText>${appointment.firstName}</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle!}'>
+							<input type='hidden' name='email' value='${appointment.email}' />
+							<@staticText>${appointment.email}</@staticText>
+						</@formGroup>
+						<#if form.maxPeoplePerAppointment &gt; 1>				
+							<@formGroup labelFor='nbSeat' labelKey='#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}'>
+								<input type='hidden' name='nbSeat' value='${appointment.nbBookedSeats}' />
+								<@staticText>${appointment.nbBookedSeats}</@staticText>
+							</@formGroup>
+						</#if>				
+						<#list listResponseRecapDTO as response>
+							<#if response.recapValue?has_content>
+								<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
+									<#assign formGroupLabelKey = response.entry.title />
+									<#assign entrySave=response.entry />
+								</#if>
+								<@formGroup labelKey='${formGroupLabelKey!}'>
+									<#if response.file?? >
+										<a href='jsp/admin/plugins/appointment/DoDownloadAppointmentsFileFromSession.jsp?idResponse=${response.entry.idEntry}'>
+											 <@staticText>${response.recapValue}</@staticText>
+										</a>
+									<#else>    
+										<@staticText>${response.recapValue}</@staticText>                                
+									</#if>
+								 </@formGroup>
+							</#if>
+						</#list>
+						<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
+							<input type='hidden' name='appointmentDate' value='${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}' />
+								<@staticText>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot.startingTime} #i18n{appointment.labelTo} ${appointment.slot.endingTime}</@staticText>
+						</@formGroup>
+						<@formGroup>
+							<@button type='submit' name='validate' id='validate' value='validate' buttonIcon='check' title='#i18n{portal.util.labelValidate}' />
+							<#if comeFromCalendar??>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}&id_appointment=${appointment.idAppointment}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+							<#else>
+								<@button name='back' id='back' value='back' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+							</#if>
+						</@formGroup>
+					</fieldset>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>

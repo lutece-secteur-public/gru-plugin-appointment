@@ -6,9 +6,16 @@
                 <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
                     <legend class="hidden">#i18n{appointment.modifyEntry.titleGroup} : '${form.title}'</legend>
-                        <input name="id_form" value="${form.idForm}" type="hidden" />
-                        <input name="action" value="doCreateEntry" type="hidden" />
-                        <input name="id_type" value="${entry.entryType.idType}" type="hidden">
+                        <input type='hidden' name='id_form' value='${form.idForm}' />
+                        <input type='hidden' name='action' value='doCreateEntry' />
+                        <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+							<@staticText>
+								<@tag color='info'>
+									${entry.entryType.title}
+								</@tag>
+							</@staticText>
+						</@formGroup>
                         <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
                             <@input type='text' name='title' id='title' value='' maxlength=255 />
                         </@formGroup>
@@ -17,7 +24,7 @@
                         </@formGroup>
                         <@formGroup>
                             <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
-                            <@button type='button' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' params='onclick="javascript:window.history.back();"' color='btn-secondary' size='' />
+                            <@button type='submit' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' size='' cancel=true />
                         </@formGroup>
                     </fieldset>
                 </@tform>

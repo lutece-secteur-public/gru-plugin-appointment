@@ -7,21 +7,28 @@
                 <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
                         <legend class="hidden">#i18n{appointment.createEntry.titleComment} : '${form.title}'</legend>
-                        <input name="id_form" value="${form.idForm}" type="hidden">
-                        <input name="action" value="doCreateEntry" type="hidden">
-                        <input name="id_type" value="${entry.entryType.idType}" type="hidden">
+                        <input type='hidden' name='id_form' value='${form.idForm}' />
+                        <input type='hidden' name='action' value='doCreateEntry' />
+                        <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
                         <#if entry.fieldDepend?exists>
-                            <input name="id_field" value="${entry.fieldDepend.idField}" type="hidden">
+                            <input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
                         </#if>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
+							<@staticText>
+								<@tag color='info'>
+									${entry.entryType.title}
+								</@tag>
+							</@staticText>
+						</@formGroup>
                         <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true>
                             <@input type='textarea' name='comment' id='comment' rows=5 />
                         </@formGroup>
-                        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' mandatory=true helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
+                        <@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
                             <@input type='text' name='css_class' id='css_class' value='' maxlength=255 />
                         </@formGroup>
                         <@formGroup>
                             <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
-                            <@button type='button' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' params='onclick="javascript:window.history.back();"' color='btn-secondary' size='' />
+                            <@button type='submit' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' size='' cancel=true />
                         </@formGroup>
                     </fieldset>
                 </@tform>

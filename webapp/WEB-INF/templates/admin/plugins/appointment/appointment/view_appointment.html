@@ -1,133 +1,100 @@
-<div class="row calendar-row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="layout-wrapper">
-			<div class="appointment-form form-horizontal">
+<@row class='calendar-row'>
+	<@columns>
+		<@box>
+			<@boxHeader title='${form.title}' />
+			<@boxBody>
+				<@messages errors=errors />
 				<fieldset>
-					<legend>
-						${form.title}
-					</legend>
-					<@messages errors=errors />								
-					<div class="form-group">
-						<label for="lastname" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${formMessages.fieldLastNameTitle!}</label>
-						<div class="col-xs-12 col-sm-3 col-md-6 col-lg-6">
-							${appointment.lastName}
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="firstname" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${formMessages.fieldFirstNameTitle!}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							${appointment.firstName}
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="email" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">${formMessages.fieldEmailTitle!}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							${appointment.email}
-						</div>
-					</div>			
-					<div class="form-group">
-						<label for="nbBookedSeats" class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							${appointment.nbBookedSeats}
-						</div>
-					</div>			
-					<#list listResponseRecapDTO as response>
-						<#if response.recapValue?has_content>
-							<div class="form-group">
-								<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label"><#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>${response.entry.title}<#assign entrySave=response.entry></#if></label>
-								<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-									<#if response.file?? && response.file.idFile &gt; 0>
-										<#assign hasFile = true>
-									<#else>
-										<#assign hasFile = false>
-									</#if>
-									<#if hasFile>
-										<a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?idResponse=${response.idResponse}">
-									</#if>
-									${response.recapValue}
-									<#if hasFile>
-										</a>
-									</#if>
-								</div>
-							</div>
-						</#if>
-					</#list>
-					<div class="form-group">
-						<label class="col-xs-12 col-sm-3 col-md-3 col-lg-3 control-label">#i18n{appointment.dateAppointment.title}</label>
-						<div class="col-xs-12 col-sm-9 col-md-6 col-lg-6">
-							${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}
-						</div>
-					</div>						
-					<fieldset>
-						<div class="form-group" align = "center">
-							<table>
-								<tr>
-									<th>#i18n{portal.util.labelActions}</th>
-								</tr>
-								<tr>
-									<td>
-										<#if rightModify?? && rightModify &&  !appointment.isCancelled> 
-											<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}&id_form=${form.idForm}"
-													class="btn btn-primary btn-xs"
-													title="#i18n{portal.util.labelModify}">
-												<i class="glyphicon glyphicon-edit"></i>
-											</a> 
-										</#if>
-										<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0>
-											<#list appointment.listWorkflowActions as action>
-												<a class="btn btn-xs btn-primary"
-													href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}">
-													<img	src="image?resource_type=workflow_icon_img&id=${action.icon.id}"
-														<#if action.icon.width!=-1> width="${action.icon.width}" </#if>
-														<#if action.icon.height!=-1> height="${action.icon.height}"</#if>
-														title="${action.name}" alt="${action.name}" />
-												</a> 
-											</#list> 							
-										</#if>							
-										<#if activateWorkflow == "true" > 
-											<#if rightChangeStatus> 
-												<#if appointment.isCancelled>
-													<a class="btn btn-xs btn-success"
-														href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=false"
-														title="#i18n{appointment.manageAppointments.labelValidateAppointment}">
-														<i class="glyphicon glyphicon-ok"></i>
-													</a> 
-												</#if>								
-												<#if !appointment.isCancelled> 
-													<a class="btn btn-xs btn-danger"
-														href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true"
-														title="#i18n{appointment.labelCancelAppointment}">
-														<i class="glyphicon glyphicon-remove"></i>
-													</a> 
+					<div class="form-horizontal">
+						<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
+							<@staticText>${appointment.lastName}</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}'>
+							<@staticText>${appointment.firstName}</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle!}'>
+							<@staticText>${appointment.email}</@staticText>
+						</@formGroup>
+						<@formGroup labelFor='nbBookedSeats' labelKey='#i18n{appointment.createAppointmentForm.labelNumberOfBookedseatsPerAppointment}'>
+							<@staticText>${appointment.nbBookedSeats}</@staticText>
+						</@formGroup>
+
+						<#list listResponseRecapDTO as response>
+							<#if response.recapValue?has_content>
+							
+							<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry><#assign responseLabelKey = response.entry.title /><#assign entrySave=response.entry /></#if>
+							
+							<@formGroup labelFor='' labelKey=responseLabelKey!''>
+								<#if response.file?? && response.file.idFile &gt; 0>
+									<#assign hasFile = true>
+								<#else>
+									<#assign hasFile = false>
+								</#if>
+								<#if hasFile>
+									<a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?idResponse=${response.idResponse}">
+								</#if>
+								${response.recapValue}
+								<#if hasFile>
+									</a>
+								</#if>
+							</@formGroup>
+							</#if>
+						</#list>
+						<@formGroup labelKey='#i18n{appointment.dateAppointment.title}'>
+							<@staticText>
+								${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}
+							</@staticText>
+						</@formGroup>						
+						<fieldset>
+							<@formGroup>
+								<@table>
+									<tr>
+										<th>#i18n{portal.util.labelActions}</th>
+									</tr>
+									<tr>
+										<td>
+											<#if rightModify?? && rightModify &&  !appointment.isCancelled> 
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_appointment=${appointment.idAppointment}&id_form=${form.idForm}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' />
+											</#if>
+											<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0>
+												<#list appointment.listWorkflowActions as action>
+													<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}'>
+														<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"
+															<#if action.icon.width!=-1> width="${action.icon.width}" </#if>
+															<#if action.icon.height!=-1> height="${action.icon.height}"</#if>
+															title="${action.name}" alt="${action.name}" />
+													</@aButton> 
+												</#list> 							
+											</#if>							
+											<#if activateWorkflow == "true" > 
+												<#if rightChangeStatus> 
+													<#if appointment.isCancelled>
+														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=false' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' buttonIcon='check' />
+													</#if>								
+													<#if !appointment.isCancelled> 
+														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' buttonIcon='times' color='btn-danger' />
+													</#if> 
 												</#if> 
-											</#if> 
-										</#if>
-										<#if rightDelete?? && rightDelete> 
-											<a	href="jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}"
-												class="btn btn-danger btn-xs"
-												title="#i18n{portal.util.labelDelete}"> <i
-												class="glyphicon glyphicon-trash"></i>
-											</a> 
-										</#if>							
-									</td>
-								</tr>
-							</table>
-						</div>
-					</fieldset>			
-					${addon!}
-					<#if resource_history?? && resource_history != ''>
-						<div class="well">
+											</#if>
+											<#if rightDelete?? && rightDelete> 
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' />
+											</#if>							
+										</td>
+									</tr>
+								</@table>
+							</@formGroup>
+						</fieldset>			
+						${addon!}
+						<#if resource_history?? && resource_history != ''>
 							${resource_history}
-						</div> 
-					</#if>
-					<div class="form-group">
-						<a href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}" class="btn btn-default btn-sm">
-							<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-						</a>
+						</#if>
+						<@formGroup>
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' buttonIcon='times' title='#i18n{portal.util.labelBack}' />
+						</@formGroup>
 					</div>
 				</fieldset>
-			</div>
-		</div>
-	</div>
-</div>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 

@@ -1,49 +1,44 @@
-<div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-3 col-lg-3 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory>* </#if></label>
-	<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-		<select name="attribute${entry.idEntry}" id="attribute${entry.idEntry}"
+<#if list_responses??>
+	<#list list_responses as response>
+		<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
+			<#assign class = 'has-error' />
+			<#break>
+		</#if>
+	</#list>
+</#if>
+
+<@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class='${class!}'+'${entry.CSSClass!}'>
+	<@select name='attribute${entry.idEntry}' id='attribute${entry.idEntry}'>
+		<option value="">#i18n{appointment.xpage.form.noValue}</option>
+		<#list entry.fields as field>
+			<option  value="${field.idField}"
 			<#if list_responses??>
 				<#list list_responses as response>
-					<#if response.entry.idEntry == entry.idEntry && response.entry.error??>
-						class="error"
-						<#break>
-					</#if>
-				</#list>
-				class="${entry.CSSClass!}"</#if> >
-				<option value="">#i18n{appointment.xpage.form.noValue}</option>
-				<#list entry.fields as field>
-					<option  value="${field.idField}"
-					<#if list_responses??>
-						<#list list_responses as response>
-							<#if response.entry.idEntry == entry.idEntry && response.field??>
-								<#if response.field.idField == field.idField>
-									selected ="selected"
-									<#break>
-								</#if>
-							</#if>
-						</#list>
-					<#else>
-						<#if field.defaultValue>
+					<#if response.entry.idEntry == entry.idEntry && response.field??>
+						<#if response.field.idField == field.idField>
 							selected ="selected"
+							<#break>
 						</#if>
 					</#if>
-					>
-					${field.title}
-				</option>
-			</#list>
-		</select>
-   <#if entry.helpMessage?exists&&entry.helpMessage!=''>
-		<p class="help-block">${entry.helpMessage}</p>
-	</#if>
-	</div>
-</div>
+				</#list>
+			<#else>
+				<#if field.defaultValue>
+					selected ="selected"
+				</#if>
+			</#if>
+			>
+			${field.title}
+		</option>
+		</#list>
+	</@select>
+</@formGroup>
 <#if list_responses??>
 <#list list_responses as response>
 	<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
-		<div class="alert alert-error alert-danger">
-		<#assign error = response.entry.error>
-		<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-		</div>	
+		<@alert class='danger'>
+			<#assign error = response.entry.error>
+			<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
+		</@alert>	
 	</#if>
 </#list>
 </#if>

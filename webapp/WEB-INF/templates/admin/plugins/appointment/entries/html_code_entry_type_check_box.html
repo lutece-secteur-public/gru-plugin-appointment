@@ -7,6 +7,8 @@ ${entry.CSSClass!}
 	<#assign checked = false />
 	<#if entry.fieldInLine>
 		<#assign orientation = 'horizontal' />
+	<#else>
+		<#assign orientation = 'vertical' />
 	</#if>
 	
 	<#if !field.noDisplayTitle>
@@ -35,18 +37,21 @@ ${entry.CSSClass!}
 		<#assign params='onclick="doCheckboxEffect(this.checked,${field.idField});"' />
 	</#if>
 	
-	<@checkBox labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${field.title!}' title=field.comment! name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked params=params
-			/>
+	<@checkBox labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${field.title!}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
+	
+	<#if field.comment?? && field.comment != '' && orientation == 'vertical'>
+		<span class="help-block">${field.comment}"</span>
+	</#if>
 </#list>
 	
 			
 		<#if list_responses??>
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-					<div class="alert alert-error alert-danger">
+					<@alert class='danger'>
 					<#assign error = response.entry.error>
 					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-					</div>
+					</@alert>
 				</#if>
 			</#list>
 		</#if>

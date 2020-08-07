@@ -1,218 +1,149 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<form class="form-horizontal" id="form-validate" action="jsp/admin/plugins/appointment/ManageAppointments.jsp" method="post" enctype="multipart/form-data">
-			<input name="action" value="doValidateForm" type="hidden" />
-			<input name="id_form" value="${form.idForm}" type="hidden" />
-			<input type="hidden" name="date_of_display" value="${date_of_display}">
-			<input name="session" value="session" type="hidden" />			
-			<fieldset>
-				<legend>
-					<#if form.displayTitleFo && form.title != "" >
-						${form.title}
-					<#else>
-						#i18n{appointment.appointmentApp.defaultTitle}
-					</#if>
-				</legend>
-				<#if infos?? || errors??>
-					<@messages infos=infos errors=errors />			
-				</#if>
-				<br>				
-				<#if form_errors??>
-					<#assign hasDisplayableError = false>
-					<#list form_errors as form_error>
-						<#if form_error.isDisplayableError>
-							<#assign hasDisplayableError = true>
-							<#break >
-						</#if>
-					</#list>
-					<#if hasDisplayableError>
-						<#list form_errors as form_error>	
-							<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[8] >
-								<div class="alert alert-error alert-danger">
-									<p>
-									  	${form_error.errorMessage}
-									</p>
-								</div>
-							</#if>	
-						</#list>						
-					</#if>
-				</#if>				
-				<#assign formGroupError = '' />
-				<#if form_errors??>
-					<#assign hasDisplayableError = false>
-					<#list form_errors as form_error>
-						<#if form_error.isDisplayableError>
-							<#assign hasDisplayableError = true>
-							<#break >
-						</#if>
-					</#list>
-					<#if hasDisplayableError>
-						<#list form_errors as form_error>	
-							<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
-								<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-							</#if>	
-						</#list>
-					</#if>
-				</#if>
-				<div class="form-group <#if formGroupError!=''>has-error</#if>">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="lastname">${formMessages.fieldLastNameTitle!} *</label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="text" class="form-control" value="<#if appointment??>${appointment.lastName!}</#if>" maxlength="255" id="lastname" name="lastname">
-						<#if formGroupError!=''>
-							${formGroupError}
-						<#else>
-							<#if formMessages.fieldLastNameHelp?? && formMessages.fieldLastNameHelp != ''>
-								<span class="help-block">${formMessages.fieldLastNameHelp}</span>
+<@row>
+	<@columns>
+		<@box>
+			<#if form.displayTitleFo && form.title != "" >
+				<#assign title = form.title />
+			<#else>
+				<#assign title = '#i18n{appointment.appointmentApp.defaultTitle}' />
+			</#if>
+			<@boxHeader title=title />
+			<@boxBody>
+				<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
+					<input type='hidden' name='action' value='doValidateForm' />
+					<input type='hidden' name='id_form' value='${form.idForm}' />
+					<input type='hidden' name='date_of_display' value='${date_of_display}' />
+					<input type='hidden' name='session' value='session' />			
+					<fieldset>
+						<legend class="hidden">
+							<#if form.displayTitleFo && form.title != "" >
+								${form.title}
+							<#else>
+								#i18n{appointment.appointmentApp.defaultTitle}
 							</#if>
+						</legend>
+						<#if infos?? || errors??>
+							<@messages infos=infos errors=errors />			
 						</#if>
-					</div>
-				</div>								
-				<#assign formGroupError = '' />
-				<#if form_errors??>
-					<#assign hasDisplayableError = false>
-					<#list form_errors as form_error>
-						<#if form_error.isDisplayableError>
-							<#assign hasDisplayableError = true>
-							<#break >
+						<br>				
+						<#if form_errors??>
+							<#list form_errors as form_error>
+								<#if form_error.isDisplayableError>
+								<#list form_errors as form_error>	
+									<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[8] >
+										<@alert class='danger'>
+											${form_error.errorMessage}
+										</@alert>
+									</#if>	
+								</#list>						
+								</#if>
+							</#list>
+						</#if>	
+						
+						<#if formMessages.fieldLastNameHelp?? && formMessages.fieldLastNameHelp != ''>
+							<#assign formGroupHelpKey = '${formMessages.fieldLastNameHelp}' />
 						</#if>
-					</#list>
-					<#if hasDisplayableError>
-						<#list form_errors as form_error>	
-							<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
-								<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-							</#if>	
-						</#list>
-					</#if>
-				</#if>
-				<div class="form-group <#if formGroupError!=''>has-error</#if>">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="firstname">${formMessages.fieldFirstNameTitle!} *</label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="text" class="form-control" value="<#if appointment??>${appointment.firstName!}</#if>" maxlength="255" id="firstname" name="firstname">
-						<#if formGroupError!=''>
-							${formGroupError}
-						<#else>
-							<#if formMessages.fieldFirstNameHelp?? && formMessages.fieldFirstNameHelp != ''>
-								<span class="help-block">${formMessages.fieldFirstNameHelp}</span>
-							</#if>
-						</#if>
-					</div>
-				</div>			
-				<#assign formGroupError = '' />
-				<#if form_errors??>
-					<#assign hasDisplayableError = false>
-					<#list form_errors as form_error>
-						<#if form_error.isDisplayableError>
-							<#assign hasDisplayableError = true>
-							<#break >
-						</#if>
-					</#list>
-					<#if hasDisplayableError>
-						<#list form_errors as form_error>	
-							<#if  form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
-								<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-							</#if>	
-						</#list>
-					</#if>
-				</#if>
-				<div class="form-group <#if formGroupError!=''>has-error</#if>">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="email">${formMessages.fieldEmailTitle!} <#if form.enableMandatoryEmail>*</#if></label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="email" class="form-control" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="email" name="email">
-						<#if formGroupError!=''>
-							${formGroupError}
-						<#else>
-							<#if formMessages.fieldEmailHelp?? && formMessages.fieldEmailHelp != ''>
-								<span class="help-block">${formMessages.fieldEmailHelp}</span>
-							</#if>
-						</#if>
-					</div>
-				</div>											
-				<#assign formGroupError = '' />
-				<#if form_errors??>
-					<#assign hasDisplayableError = false>
-					<#list form_errors as form_error>
-						<#if form_error.isDisplayableError>
-							<#assign hasDisplayableError = true>
-							<#break >
-						</#if>
-					</#list>
-					<#if hasDisplayableError>
-						<#list form_errors as form_error>	
-							<#if form_error.isDisplayableError && (form_error.errorMessage == listAllErrors[4] || form_error.errorMessage == listAllErrors[5] )>
-								<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
-							</#if>	
-						</#list>
-					</#if>
-				</#if>
-				<div class="form-group <#if formGroupError!=''>has-error</#if>">
-					<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="emailConfirm">${formMessages.fieldConfirmationEmail!}<#if form.enableMandatoryEmail>*</#if></label>
-					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-						<input type="email" value="<#if appointment??>${appointment.email!}</#if>" maxlength="255" id="emailConfirm" name="emailConfirm" class="form-control">
-						<#if formGroupError!=''>
-							${formGroupError}
-						<#else>
-							<#if formMessages.fieldConfirmationEmail?? && formMessages.fieldConfirmationEmailHelp != ''>
-								<span class="help-block">${formMessages.fieldConfirmationEmailHelp!}</span>
-							</#if>
-						</#if>
-					</div>
-				</div>	
-				<#if form.maxPeoplePerAppointment &gt; 1>				
-					<#assign formGroupError = '' />
-					<#if form_errors??>
-						<#assign hasDisplayableError = false>
-						<#list form_errors as form_error>
-							<#if form_error.isDisplayableError>
-								<#assign hasDisplayableError = true>
-								<#break >
-							</#if>
-						</#list>
-						<#if hasDisplayableError>
+						<#if form_errors??>
 							<#list form_errors as form_error>	
-								<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage == listAllErrors[7]) >
-									<#assign formGroupError = '<span class="help-block">${form_error.errorMessage}</span>' />
+								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[0]>
+									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
+									<#assign formGroupClass='has-error' />
 								</#if>	
 							</#list>
 						</#if>
-					</#if>
-					<div class="form-group <#if formGroupError!=''>has-error</#if>">
-						<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12"for="nbBookedSeats">#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}*</label>
-						<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-							<input type="number"  maxlength="3" id="nbBookedSeats" value="<#if appointment??>${appointment.nbBookedSeats!}</#if>" name="nbBookedSeats" class="form-control" min="1" max="${nbplaces}" onkeypress='return validateQty(event);'>
-							<#if formGroupError!=''>
-								${formGroupError}
-							<#else>
-								<#if nbplaces != 0 >
-									<span class="help-block">${nbplaces!} place(s) maximum</span>
-								</#if>
+						
+						<@formGroup class='${formGroupClass!}' labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
+							<@input type='text' name='lastname' id='lastname' value='${appointment.lastName!}' maxlength=255 />
+						</@formGroup>
+						
+						
+						<#if formMessages.fieldFirstNameHelp?? && formMessages.fieldFirstNameHelp != ''>
+							<#assign formGroupHelpKey = '${formMessages.fieldFirstNameHelp}' />
+						</#if>
+						<#if form_errors??>
+							<#list form_errors as form_error>	
+								<#if form_error.isDisplayableError && form_error.errorMessage==listAllErrors[1]>
+									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
+									<#assign formGroupClass='has-error' />
+								</#if>	
+							</#list>
+						</#if>
+						
+						<@formGroup class='${formGroupClass!}' labelFor='firstname' labelKey='${formMessages.fieldFirstNameTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
+							<@input type='text' name='firstname' id='firstname' value='${appointment.firstName!}' maxlength=255 />
+						</@formGroup>
+						
+						
+						<#if formMessages.fieldEmailHelp?? && formMessages.fieldEmailHelp != ''>
+							<#assign formGroupHelpKey = '${formMessages.fieldEmailHelp}' />
+						</#if>
+						<#if form_errors??>
+							<#list form_errors as form_error>	
+								<#if  form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[2] || form_error.errorMessage==listAllErrors[3])>
+									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
+									<#assign formGroupClass='has-error' />
+								</#if>	
+							</#list>
+						</#if>
+						
+						<@formGroup class='${formGroupClass!}' labelFor='email' labelKey='${formMessages.fieldEmailTitle!}' helpKey='${formGroupHelpKey!}' mandatory=true>
+							<@input type='email' name='email' id='email' value='${appointment.email!}' maxlength=255 />
+						</@formGroup>
+						
+						
+						<#if formMessages.fieldConfirmationEmail?? && formMessages.fieldConfirmationEmailHelp != ''>
+							<#assign formGroupHelpKey = '${formMessages.fieldConfirmationEmailHelp!}' />
+						</#if>
+						<#if form_errors??>
+							<#list form_errors as form_error>	
+								<#if form_error.isDisplayableError && (form_error.errorMessage == listAllErrors[4] || form_error.errorMessage == listAllErrors[5] )>
+									<#assign formGroupHelpKey = '${form_error.errorMessage}' />
+									<#assign formGroupClass='has-error' />
+								</#if>	
+							</#list>
+						</#if>
+						
+						<@formGroup class='${formGroupClass!}' labelFor='emailConfirm' labelKey='${formMessages.fieldConfirmationEmail!}' helpKey='${formGroupHelpKey!}' mandatory=true>
+							<@input type='email' name='emailConfirm' id='emailConfirm' value='${appointment.email!}' maxlength=255 />
+						</@formGroup>
+						
+
+						<#if nbplaces != 0 >
+							<#assign formGroupHelpKey = '${nbplaces!} place(s) maximum' />
+						</#if>
+						<#if form.maxPeoplePerAppointment &gt; 1>				
+							<#assign formGroupError = '' />
+							<#if form_errors??>
+								<#list form_errors as form_error>	
+									<#if form_error.isDisplayableError && (form_error.errorMessage==listAllErrors[6] || form_error.errorMessage == listAllErrors[7]) >
+										<#assign formGroupHelpKey = '${form_error.errorMessage}' />
+										<#assign formGroupClass='has-error' />
+									</#if>	
+								</#list>
 							</#if>
-						</div>
-					</div>	
-				</#if>	
-				<div class="col-xs-12">				
-					${str_entry}
-				</div>
-				${addon!}  
-				<div class="form-group">
-					<div class="col-xs-12 col-sm-offset-3 col-md-offset-3 col-lg-offset-3">
-						<button class="btn btn-primary btn-sm" type="submit" name="save" >
-							<i class="glyphicon glyphicon-ok"></i><span class="hidden-xs">&nbsp;#i18n{appointment.displayAppointmentForm.labelValidate}</span>
-						</button>						
-						<#if appointment.idAppointment &gt; 0>
-							<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}">
-								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-							</a>
-						<#else>
-							<a class="btn btn-primary btn-sm" href="jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}">
-								<i class="glyphicon glyphicon-remove-circle"></i>&nbsp;#i18n{portal.util.labelBack}
-							</a>
-						</#if>						
-					</div>
-				</div>				
-			</fieldset>
-		</form>
-	</div>
-</div>
+							
+							<@formGroup class='${formGroupClass!}' labelFor='nbBookedSeats' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='${formGroupHelpKey!}' mandatory=true>
+								<@input type='number' name='nbBookedSeats' id='nbBookedSeats' value='${appointment.nbBookedSeats!}' maxlength=3 params='onkeypress="return validateQty(event);"' min=1 max=nbplaces />
+							</@formGroup>
+						</#if>
+						
+				
+						${str_entry}
+						${addon!} 
+
+						<@formGroup>
+							<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.displayAppointmentForm.labelValidate}' />
+							<#if appointment.idAppointment &gt; 0>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+							<#else>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&date_of_display=${date_of_display}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+							</#if>
+						</@formGroup>		
+					</fieldset>
+				</@tform>
+			</@boxBody>
+		</@box>
+	</@columns>
+</@row>
 <script type="text/javascript">
 	function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
