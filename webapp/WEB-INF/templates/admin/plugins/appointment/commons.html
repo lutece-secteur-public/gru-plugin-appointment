@@ -72,7 +72,7 @@
 -- @return the number of max authorized uploaded files
 -->
 <#function getMaxFiles entry>
-	<#assign fieldMaxFiles = getFieldValue( entry, "max_files" )>
+	<#assign fieldMaxFiles = getFieldValueByCode( entry, "max_files" )>
 	<#if fieldMaxFiles?? && fieldMaxFiles != "">
 		<#return fieldMaxFiles>
 	</#if>
@@ -85,12 +85,12 @@
 -- @return the max size
 -->
 <#function getFileMaxSize entry>
-	<#assign fieldFileMaxSize = getFieldValue( entry, "file_max_size" )>
+	<#assign fieldFileMaxSize = getFieldValueByCode( entry, "file_max_size" )>
 	<#if fieldFileMaxSize?? && fieldFileMaxSize != "">
 		<#return fieldFileMaxSize>
 	<#else>
 		<#if getField( entry, "option" )??>
-			<#assign fieldFileMaxSize = getField( entry, "option" )>
+			<#assign fieldFileMaxSize = getFieldValueByCode( entry, "option" )>
 			<#return fieldFileMaxSize.width> 
 		</#if>
 	</#if>
