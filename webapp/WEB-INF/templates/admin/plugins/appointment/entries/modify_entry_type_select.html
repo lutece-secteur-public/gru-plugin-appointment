@@ -61,23 +61,25 @@
 					</tr>
 					<#assign cpt=0>
 					<#list list as field>
-						<#assign cpt=cpt+1>
-						<tr>
-							<td>${field.title}</td>
-							<td>${field.value}</td>
-							<td><#if field.defaultValue><@tag color='success'><@icon style='check' /></@tag></#if></td>
-							<td>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyField&id_field=${field.idField}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' />
-							<#if cpt!=1>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list' title='#i18n{appointment.moveUp.title}' buttonIcon='chevron-up' size='sm' />
-							</#if> 
-							<#if field_has_next >
-								<@aButton  href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' buttonIcon='chevron-down' size='sm' />
-								</a>
-							</#if>
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='btn-danger' size='sm' />
-							</td>
-						</tr>
+						<#if field.code == 'answer_choice'>
+							<#assign cpt=cpt+1>
+							<tr>
+								<td>${field.title}</td>
+								<td>${field.value}</td>
+								<td><#if field.defaultValue><@tag color='success'><@icon style='check' /></@tag></#if></td>
+								<td>
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyField&id_field=${field.idField}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' />
+								<#if cpt!=1>
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list' title='#i18n{appointment.moveUp.title}' buttonIcon='chevron-up' size='sm' />
+								</#if> 
+								<#if field_has_next >
+									<@aButton  href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' buttonIcon='chevron-down' size='sm' />
+									</a>
+								</#if>
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='btn-danger' size='sm' />
+								</td>
+							</tr>
+						</#if>
 					</#list> 
 				</@table>
 				</fieldset>

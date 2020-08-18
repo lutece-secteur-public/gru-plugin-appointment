@@ -63,3 +63,10 @@ SELECT e.id_entry FROM genatt_entry e
 INNER JOIN genatt_entry_type t ON t.id_type = e.id_type
 WHERE t.class_name IN( 'appointment.entryTypeImage', 'appointment.entryTypeFile')
 AND e.id_entry = f.id_entry);
+
+UPDATE genatt_field f SET f.CODE = 'answer_choice'
+WHERE f.id_entry IN  (
+SELECT e.id_entry FROM genatt_entry e
+INNER JOIN genatt_entry_type t ON t.id_type = e.id_type
+WHERE t.class_name IN( 'appointment.entryTypeSelect', 'appointment.entryTypeRadioButton', 'appointment.entryTypeCheckBox')
+AND e.id_entry = f.id_entry);
