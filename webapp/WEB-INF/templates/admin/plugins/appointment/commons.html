@@ -109,3 +109,33 @@
 	</#if>
 	<#return false />
 </#function>
+
+<#-- 
+-- Get the field value from a given entry and a given title
+-- @param entry the entry
+-- @param fieldTitle the title
+-- @return the field
+-->
+<#function getFieldValueByCode entry fieldCode>
+	<#if getFieldByCode( entry, fieldCode )??>
+		<#assign field = getFieldByCode( entry, fieldCode )>
+		<#return field.value>
+	</#if>
+	<#return "">
+</#function>
+
+<#--
+-- Get the field from a given code
+-- @param entry the entry
+-- @param fieldCode the code
+-- @return the field
+-->
+<#function getFieldByCode entry fieldCode>
+    <#if entry.fields?? && entry.fields?has_content>
+        <#list entry.fields as field>
+            <#if field?? && field.code?? && field.code == fieldCode>
+                <#return field>
+            </#if>
+        </#list>
+    </#if>
+</#function>

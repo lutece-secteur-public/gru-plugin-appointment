@@ -8,7 +8,7 @@
 
 <div class="form-group<#if hasError??> has-error</#if>">
 <label class="control-label col-xs-12" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>	
-<#list entry.fields as field>
+<#assign field = getFieldByCode( entry, "default_date_value" ) >
 	<div class=" col-xs-12">
 		<div class="input-group">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -21,8 +21,7 @@
 			</#list>
 		<#else>
 			<#if field.valueTypeDate?exists>" value="${field.valueTypeDate}" <#else>" value="" 	</#if></#if>/>
-		</#list>
-		</div>
+	</div>
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 		<p class="help-block">${entry.helpMessage}</p>
 		</#if>	
