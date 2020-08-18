@@ -98,3 +98,7 @@ SELECT e.id_entry FROM genatt_entry e
 INNER JOIN genatt_entry_type t ON t.id_type = e.id_type
 WHERE t.class_name IN( 'appointment.entryTypeMyLuteceUser')
 AND e.id_entry = f.id_entry);
+
+ALTER TABLE genatt_field MODIFY id_field INT AUTO_INCREMENT;
+
+ALTER TABLE genatt_entry DROP COLUMN used_in_correct_form_response;
