@@ -74,7 +74,7 @@ public final class AppointmentTest extends LuteceTestCase
         // Initialize a Appointment
         Appointment appointment = new Appointment( );
         appointment.setIdUser( user.getIdUser( ) );
-        appointment.setIdSlot( slot.getIdSlot( ) );
+        appointment.addSlot( slot );
         // Create the Appointment in database
         AppointmentHome.create( appointment );
         // Find the Appointment created in database
@@ -115,7 +115,7 @@ public final class AppointmentTest extends LuteceTestCase
         // Initialize a Appointment
         Appointment appointment = new Appointment( );
         appointment.setIdUser( user.getIdUser( ) );
-        appointment.setIdSlot( slot.getIdSlot( ) );
+        appointment.addSlot( slot );
         // Create the Appointment in database
         AppointmentHome.create( appointment );
         // Find the Appointment created in database
@@ -154,14 +154,14 @@ public final class AppointmentTest extends LuteceTestCase
         // Initialize a fist Appointment
         Appointment appointment1 = new Appointment( );
         appointment1.setIdUser( user.getIdUser( ) );
-        appointment1.setIdSlot( slot1.getIdSlot( ) );
+        appointment1.addSlot( slot1 );
         // Create the Appointment in database
         AppointmentHome.create( appointment1 );
 
         // Initialize a 2nd Appointment
         Appointment appointment2 = new Appointment( );
         appointment2.setIdUser( user.getIdUser( ) );
-        appointment2.setIdSlot( slot2.getIdSlot( ) );
+        appointment2.addSlot( slot2 );
         // Create the Appointment in database
         AppointmentHome.create( appointment2 );
         // Find the Appointments created in database
@@ -195,18 +195,18 @@ public final class AppointmentTest extends LuteceTestCase
         // Initialize a fist Appointment
         Appointment appointment1 = new Appointment( );
         appointment1.setIdUser( user1.getIdUser( ) );
-        appointment1.setIdSlot( slot.getIdSlot( ) );
+        appointment1.addSlot( slot );
         // Create the Appointment in database
         AppointmentHome.create( appointment1 );
 
         // Initialize a 2nd Appointment
         Appointment appointment2 = new Appointment( );
         appointment2.setIdUser( user2.getIdUser( ) );
-        appointment2.setIdSlot( slot.getIdSlot( ) );
+        appointment2.addSlot( slot );
         // Create the Appointment in database
         AppointmentHome.create( appointment2 );
         // Find the Appointments created in database
-        List<Appointment> listAppointmentStored = AppointmentHome.findByIdSlot( appointment1.getIdSlot( ) );
+        List<Appointment> listAppointmentStored = AppointmentHome.findByIdSlot( slot.getIdSlot( ) );
         // Check that the list has two results
         assertEquals( listAppointmentStored.size( ), 2 );
 
@@ -226,7 +226,7 @@ public final class AppointmentTest extends LuteceTestCase
      */
     public void checkAsserts( Appointment appointmentStored, Appointment appointment )
     {
-        assertEquals( appointmentStored.getIdSlot( ), appointment.getIdSlot( ) );
+        assertEquals( appointmentStored.getSlot( ).get( 0 ).getIdSlot( ), appointment.getSlot( ).get( 0 ).getIdSlot( ) );
         assertEquals( appointmentStored.getIdUser( ), appointment.getIdUser( ) );
     }
 
@@ -234,7 +234,7 @@ public final class AppointmentTest extends LuteceTestCase
             LocalTime endingTime, int nbBookedSeats )
     {
         AppointmentDTO appointmentDTO = new AppointmentDTO( );
-        appointmentDTO.setSlot( slot );
+        appointmentDTO.addSlot( slot );
         appointmentDTO.setEmail( strEmail );
         appointmentDTO.setFirstName( strFirstName );
         appointmentDTO.setLastName( strLastName );
