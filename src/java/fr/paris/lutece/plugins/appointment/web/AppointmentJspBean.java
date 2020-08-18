@@ -66,7 +66,6 @@ import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
-import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
@@ -90,7 +89,6 @@ import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListener
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
-import fr.paris.lutece.plugins.appointment.web.AppointmentFormJspBean;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -487,7 +485,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return /*getViewChangeDateAppointment( request )*/null;
         }
         // Clean session
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
 
@@ -1467,7 +1465,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         Map<String, String> additionalParameters = new HashMap<>( );
         additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( form.getIdForm( ) ) );
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY,appointmentDTO.getSlot( ).get(0).getDate( ).toString( ) );
@@ -1621,7 +1619,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         session.removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         session.removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         session.removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session );
     }
 
     /**
@@ -1635,7 +1633,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         // If we do not reload an appointment, we clear uploaded files.
         if ( session.getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT ) == null && session.getAttribute( SESSION_VALIDATED_APPOINTMENT ) == null )
         {
-            AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
+            AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session );
         }
     }
 

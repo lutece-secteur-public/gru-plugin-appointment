@@ -2,7 +2,7 @@
     <parent>
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
-        <version>5.1.0</version>
+        <version>5.1.1</version>
     </parent>   
 
     <modelVersion>4.0.0</modelVersion>
@@ -15,7 +15,7 @@
     <properties>  
         <componentName>appointment</componentName>
         <core.version>[6.0.1,)</core.version>    
-        <genericattributes.version>1.3.3</genericattributes.version>
+        <genericattributes.version>2.1.1</genericattributes.version>
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
         <regularexpression.version>3.0.3</regularexpression.version>                        

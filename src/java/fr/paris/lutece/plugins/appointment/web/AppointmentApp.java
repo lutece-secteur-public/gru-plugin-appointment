@@ -936,7 +936,7 @@ public class AppointmentApp extends MVCApplication
 		}
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         XPage xPage = null;
         nNbPlacesToTake = 0;
         	
