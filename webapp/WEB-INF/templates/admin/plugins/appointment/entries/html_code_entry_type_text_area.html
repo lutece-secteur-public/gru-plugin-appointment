@@ -8,25 +8,24 @@
 </#macro>
 
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory>
-	<#list entry.fields as field>
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
-					<#if response.entry.error??>
-						<@getTextAreaContent responseContent=response.toStringValueResponse has_error=true entry=entry field=field/>
-					<#else>
-						<@getTextAreaContent responseContent=response.toStringValueResponse has_error=false entry=entry field=field/>
-					</#if>
+	<#assign field=getFieldByCode( entry, "text_config")>
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
+				<#if response.entry.error??>
+					<@getTextAreaContent responseContent=response.toStringValueResponse has_error=true entry=entry field=field/>
+				<#else>
+					<@getTextAreaContent responseContent=response.toStringValueResponse has_error=false entry=entry field=field/>
 				</#if>
-			</#list>
-		<#else>
-			<#if field.value?exists>
-				<@getTextAreaContent responseContent=field.value has_error=false entry=entry field=field/>
-			<#else>
-				<@getTextAreaContent responseContent="" has_error=false entry=entry field=field/>
 			</#if>
+		</#list>
+	<#else>
+		<#if field.value?exists>
+			<@getTextAreaContent responseContent=field.value has_error=false entry=entry field=field/>
+		<#else>
+			<@getTextAreaContent responseContent="" has_error=false entry=entry field=field/>
 		</#if>
-	</#list>
+	</#if>
 	
 	<#if list_responses??>
 		<#list list_responses as response>

@@ -8,7 +8,7 @@
 
 <div class="form-group<#if hasError??> has-error</#if>">
 	<label class="col-xs-12 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<#list entry.fields as field>
+	<#assign field=getFieldByCode( entry, "text_config")>
 	<div class="col-xs-12">
 		<input type="text" class="form-control" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}" 
 			<#if list_responses??>
@@ -30,7 +30,6 @@
 				maxlength="${field.maxSizeEnter}"
 			</#if>
 			class="${entry.CSSClass!} form-control"	/>
-		</#list>
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 			<p class="help-block">${entry.helpMessage}</p>
 		</#if>
