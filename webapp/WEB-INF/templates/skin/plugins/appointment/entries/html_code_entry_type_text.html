@@ -43,9 +43,11 @@
 		</#if>
 	</div>
 </div>
-<#if entry.confirmField>
+
+<#assign confirmField=getFieldByCode( entry, "confirm_field")>
+<#if confirmField.value?boolean >
 <div class="form-group">
-	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}_confirm_field">${entry.confirmFieldTitle}<#if entry.mandatory> *</#if></label>
+	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}_confirm_field">${confirmField.title}<#if entry.mandatory> *</#if></label>
 	<#assign field=getFieldByCode( entry, "text_config")>
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<input type="text" name="attribute${entry.idEntry}_confirm_field" id="attribute${entry.idEntry}_confirm_field" size="${field.width}" value="" 

@@ -38,8 +38,9 @@
 </@formGroup>
 
 
-<#if entry.confirmField>
-<@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey='${entry.confirmFieldTitle}' mandatory=entry.mandatory>
+<#assign confirmField=getFieldByCode( entry, "confirm_field")>
+<#if confirmField.value?boolean >
+<@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey=confirmField.title mandatory=entry.mandatory>
 	<#list entry.fields as field>
 		<#assign maxlength = 0 />
 		<#if field.maxSizeEnter!=-1>
