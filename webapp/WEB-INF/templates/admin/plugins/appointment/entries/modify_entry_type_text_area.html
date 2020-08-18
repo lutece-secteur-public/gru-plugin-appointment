@@ -33,7 +33,8 @@
 					
 					
 					<@formGroup labelFor='value' labelKey='#i18n{appointment.defaultValue.name}'>
-						<@input type='textarea' name='value' id='value' rows=10><#list entry.fields as field>${field.value}</#list></@input>
+						<#assign field=getFieldByCode( entry, "text_config")>
+						<@input type='textarea' name='value' id='value' rows=10>${field.value}</@input>
 					</@formGroup>
 					
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
@@ -45,25 +46,22 @@
 					</@formGroup>
 					
 					<@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
-						<#list entry.fields as field>
-							<@input type='text' name='width' id='width' value='${field.width}' />
-						</#list>
+						<#assign field=getFieldByCode( entry, "text_config")>
+						<@input type='text' name='width' id='width' value='${field.width}' />
 					</@formGroup>
 					
 					<@formGroup labelFor='height' labelKey='#i18n{appointment.createEntry.labelHeight}' mandatory=true>
-						<#list entry.fields as field>
-							<@input type='text' name='height' id='height' inputSize=5 value='${field.height}' />
-						</#list>	
+						<#assign field=getFieldByCode( entry, "text_config")>
+						<@input type='text' name='height' id='height' inputSize=5 value='${field.height}' />
 					</@formGroup>
 					
 					<@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
-						<#list entry.fields as field>
-							<#if field.maxSizeEnter!=-1>
-								<@input type='text' name='max_size_enter' id='max_size_enter' value='${field.maxSizeEnter}' />
-							<#else>
-								<@input type='text' name='max_size_enter' id='max_size_enter' value='' />
-							</#if>
-						</#list>	
+						<#assign field=getFieldByCode( entry, "text_config")>
+						<#if field.maxSizeEnter!=-1>
+							<@input type='text' name='max_size_enter' id='max_size_enter' value='${field.maxSizeEnter}' />
+						<#else>
+							<@input type='text' name='max_size_enter' id='max_size_enter' value='' />
+						</#if>
 					</@formGroup>
 					
 					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>

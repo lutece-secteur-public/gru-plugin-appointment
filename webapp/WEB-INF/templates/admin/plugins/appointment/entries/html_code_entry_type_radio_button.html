@@ -8,40 +8,41 @@ ${entry.CSSClass!}
 
 <@formGroup labelFor='form${entry.idEntry}' labelKey='${entry.title}' id='form${entry.idEntry}' mandatory=entry.mandatory helpKey='${entry.helpMessage}'>
     <#list entry.fields as field>
-		<#if entry.fieldInLine>
-			<#assign orientation = 'horizontal' />
-		<#else>
-			<#assign orientation = 'vertical' />
-		</#if>
-
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.field??>
-					<#if response.field.idField == field.idField><#assign checked = true /><#break></#if>
+    	<#if field.code == 'answer_choice'>
+			<#if entry.fieldInLine>
+				<#assign orientation = 'horizontal' />
+			<#else>
+				<#assign orientation = 'vertical' />
+			</#if>
+	
+			<#if list_responses??>
+				<#list list_responses as response>
+					<#if response.entry.idEntry == entry.idEntry && response.field??>
+						<#if response.field.idField == field.idField><#assign checked = true /><#break></#if>
+					</#if>
+				</#list>
+			<#else>
+				<#if field.defaultValue>
+					<#assign checked = true />
 				</#if>
-			</#list>
-		<#else>
-			<#if field.defaultValue>
-				<#assign checked = true />
+			</#if>
+			
+			<#assign params = 'onclick="${hide}"' />
+			<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
+				<#assign params = 'onclick="${hide} doDisplay(${field.idField});"' />
+			</#if>
+			
+			<#assign radioButtonLabelKey = '' />
+			<#if !field.noDisplayTitle>
+				<#assign radioButtonLabelKey = field.title />
+			</#if>
+				
+			<@radioButton labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${radioButtonLabelKey}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
+			
+			<#if field.comment?? && field.comment != '' && orientation == 'vertical'>
+				<span class="help-block">${field.comment}"</span>
 			</#if>
 		</#if>
-		
-		<#assign params = 'onclick="${hide}"' />
-		<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
-			<#assign params = 'onclick="${hide} doDisplay(${field.idField});"' />
-		</#if>
-		
-		<#assign radioButtonLabelKey = '' />
-		<#if !field.noDisplayTitle>
-			<#assign radioButtonLabelKey = field.title />
-		</#if>
-			
-		<@radioButton labelFor='attribute${entry.idEntry}_${field.idField}' labelKey='${radioButtonLabelKey}' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}_${field.idField}' value='${field.idField}' checked=checked orientation=orientation params=params />
-		
-		<#if field.comment?? && field.comment != '' && orientation == 'vertical'>
-			<span class="help-block">${field.comment}"</span>
-		</#if>
-			
 	</#list>
 </@formGroup>
 

@@ -14,21 +14,20 @@
 <div class="form-group<#if hasError??> has-error</#if>">
 <label class="col-xs-12 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 <div class=" col-xs-12">
-	<#list entry.fields as field>
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
-					<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry field=field/>
-				</#if>
-			</#list>
-		<#else>
-			<#if field.value?exists>
-				<@getTextAreaContent responseContent=field.value entry=entry field=field/>
-			<#else>
-				<@getTextAreaContent responseContent="" entry=entry field=field/>
+	<#assign field=getFieldByCode( entry, "text_config")>
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
+				<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry field=field/>
 			</#if>
+		</#list>
+	<#else>
+		<#if field.value?exists>
+			<@getTextAreaContent responseContent=field.value entry=entry field=field/>
+		<#else>
+			<@getTextAreaContent responseContent="" entry=entry field=field/>
 		</#if>
-	</#list>
+	</#if>
 	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 		<span class="help-block">${entry.helpMessage}</span>
 	</#if>

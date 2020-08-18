@@ -23,9 +23,8 @@
 </#list>
 	
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
-	<#list entry.fields as field>
-		<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field.width class='${entry.CSSClass!}' value=value />
-	</#list>
+	<#assign field=getFieldByCode( entry, "text_config")>
+	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field.width class='${entry.CSSClass!}' value=value />
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>

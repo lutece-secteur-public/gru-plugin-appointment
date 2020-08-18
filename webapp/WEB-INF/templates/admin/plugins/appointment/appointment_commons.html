@@ -72,7 +72,7 @@
 -- @return the number of max authorized uploaded files
 -->
 <#function getMaxFiles entry>
-	<#assign fieldMaxFiles = getFieldValue( entry, "max_files" )>
+	<#assign fieldMaxFiles = getFieldValueByCode( entry, "max_files" )>
 	<#if fieldMaxFiles?? && fieldMaxFiles != "">
 		<#return fieldMaxFiles>
 	</#if>
@@ -85,12 +85,12 @@
 -- @return the max size
 -->
 <#function getFileMaxSize entry>
-	<#assign fieldFileMaxSize = getFieldValue( entry, "file_max_size" )>
+	<#assign fieldFileMaxSize = getFieldValueByCode( entry, "file_max_size" )>
 	<#if fieldFileMaxSize?? && fieldFileMaxSize != "">
 		<#return fieldFileMaxSize>
 	<#else>
 		<#if getField( entry, "option" )??>
-			<#assign fieldFileMaxSize = getField( entry, "option" )>
+			<#assign fieldFileMaxSize = getFieldValueByCode( entry, "option" )>
 			<#return fieldFileMaxSize.width> 
 		</#if>
 	</#if>
@@ -108,4 +108,34 @@
 		<#return true />
 	</#if>
 	<#return false />
+</#function>
+
+<#-- 
+-- Get the field value from a given entry and a given title
+-- @param entry the entry
+-- @param fieldTitle the title
+-- @return the field
+-->
+<#function getFieldValueByCode entry fieldCode>
+	<#if getFieldByCode( entry, fieldCode )??>
+		<#assign field = getFieldByCode( entry, fieldCode )>
+		<#return field.value>
+	</#if>
+	<#return "">
+</#function>
+
+<#--
+-- Get the field from a given code
+-- @param entry the entry
+-- @param fieldCode the code
+-- @return the field
+-->
+<#function getFieldByCode entry fieldCode>
+    <#if entry.fields?? && entry.fields?has_content>
+        <#list entry.fields as field>
+            <#if field?? && field.code?? && field.code == fieldCode>
+                <#return field>
+            </#if>
+        </#list>
+    </#if>
 </#function>

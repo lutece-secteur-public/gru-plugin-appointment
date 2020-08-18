@@ -13,27 +13,29 @@ ${entry.CSSClass!}
 	<label class="col-xs-12 control-label" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory>	*</#if></label>
 	<div class="col-xs-12">
 		<#list entry.fields as field>
-			<#if !entry.fieldInLine><div class="checkbox"></#if>
-				<label <#if entry.fieldInLine>class="checkbox-inline"</#if> for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
-					<input type="checkbox" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}_${field.idField}" value="${field.idField}"
-					<#if list_responses??>
-						<#list list_responses as response>
-							<#if response.entry.idEntry == entry.idEntry && response.field??>
-								<#if response.field.idField == field.idField>checked="checked"</#if>
-							</#if>
-						</#list>
-					<#else>
-						<#if field.defaultValue>checked="checked" </#if>
+			<#if field.code == 'answer_choice'>
+				<#if !entry.fieldInLine><div class="checkbox"></#if>
+					<label <#if entry.fieldInLine>class="checkbox-inline"</#if> for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> >
+						<input type="checkbox" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}_${field.idField}" value="${field.idField}"
+						<#if list_responses??>
+							<#list list_responses as response>
+								<#if response.entry.idEntry == entry.idEntry && response.field??>
+									<#if response.field.idField == field.idField>checked="checked"</#if>
+								</#if>
+							</#list>
+						<#else>
+							<#if field.defaultValue>checked="checked" </#if>
+						</#if>
+						<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
+							onclick="doCheckboxEffect(this.checked,${field.idField});"
+						</#if>
+						/>
+					<#if !field.noDisplayTitle>
+						${field.title}
 					</#if>
-					<#if field.conditionalQuestions?exists&&field.conditionalQuestions?size!=0>
-						onclick="doCheckboxEffect(this.checked,${field.idField});"
-					</#if>
-					/>
-				<#if !field.noDisplayTitle>
-					${field.title}
-				</#if>
-				</label>
-			<#if !entry.fieldInLine></div></#if>
+					</label>
+				<#if !entry.fieldInLine></div></#if>
+			</#if>
 		</#list>
 		<#if list_responses??>
 			<#list list_responses as response>

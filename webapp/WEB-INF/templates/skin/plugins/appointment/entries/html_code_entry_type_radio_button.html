@@ -18,6 +18,7 @@ ${entry.CSSClass!}
 	<label class="control-label col-xs-12" for="form${entry.idEntry}" id="form${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 	<div class=" col-xs-12">
     <#list entry.fields as field>
+    	<#if field.code == 'answer_choice'>
 			<#if !entry.fieldInLine><div class="radio"></#if>
 			<label class="<#if entry.fieldInLine>radio-inline</#if>" for="attribute${entry.idEntry}_${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if> > 
 			<input type="radio" id="attribute${entry.idEntry}_${field.idField}" name="attribute${entry.idEntry}" value="${field.idField}"
@@ -37,7 +38,8 @@ ${entry.CSSClass!}
 			 </#if>
 			</label>
 			<#if !entry.fieldInLine></div></#if>
-		</#list>
+		</#if>
+	</#list>
 		<#if !entry.fieldInLine && entry.helpMessage?exists && entry.helpMessage != ''>
 			<span class="help-block">${entry.helpMessage}</span>
 		</#if>

@@ -21,10 +21,7 @@
 					</@formGroup>
 					
 					<#if entry.fields?? && entry.fields?has_content>
-						<#assign prefix = "">
-						<#if entry.fields[0].title??>
-								<#assign prefix = entry.fields[0].title>
-						</#if>
+						<#assign prefix = getFieldValueByCode( entry, 'prefix') >
 						<@formGroup labelFor='prefix' labelKey='#i18n{appointment.createEntry.labelPrefix}' helpKey='#i18n{appointment.createEntry.labelPrefixComment}'>
 							<@input type='text' name='prefix' id='prefix' value='${prefix}' maxlength=255 />
 						</@formGroup>
