@@ -8,9 +8,9 @@
 
 <div class="form-group<#if hasError??> has-error</#if>">
 	<label class="col-xs-12 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<#assign field=getFieldByCode( entry, "text_config")>
+	<#assign field=getFieldByCode( entry, "width")>
 	<div class="col-xs-12">
-		<input type="text" class="form-control" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.width}" 
+		<input type="text" class="form-control" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.value}" 
 			<#if list_responses??>
 				<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry>
@@ -48,9 +48,9 @@
 <#if confirmField.value?boolean >
 <div class="form-group">
 	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}_confirm_field">${confirmField.title}<#if entry.mandatory> *</#if></label>
-	<#assign field=getFieldByCode( entry, "text_config")>
+	<#assign field=getFieldByCode( entry, "width")>
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<input type="text" name="attribute${entry.idEntry}_confirm_field" id="attribute${entry.idEntry}_confirm_field" size="${field.width}" value="" 
+		<input type="text" name="attribute${entry.idEntry}_confirm_field" id="attribute${entry.idEntry}_confirm_field" size="${field.value}" value="" 
 		<#if field.maxSizeEnter!=-1>maxlength="${field.maxSizeEnter}"</#if>/>
 	</div>
 </div>

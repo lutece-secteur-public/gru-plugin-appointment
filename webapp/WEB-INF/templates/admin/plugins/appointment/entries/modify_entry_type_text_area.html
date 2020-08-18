@@ -51,8 +51,8 @@
 					</@formGroup>
 					
 					<@formGroup labelFor='height' labelKey='#i18n{appointment.createEntry.labelHeight}' mandatory=true>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<@input type='text' name='height' id='height' inputSize=5 value='${field.height}' />
+						<#assign field=getFieldByCode( entry, "heigth")>
+						<@input type='text' name='height' id='height' inputSize=5 value='${field.value}' />
 					</@formGroup>
 					
 					<@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
