@@ -9,6 +9,7 @@
 <div class="form-group<#if hasError??> has-error</#if>">
 	<label class="col-xs-12 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 	<#assign field=getFieldByCode( entry, "width")>
+	<#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 	<div class="col-xs-12">
 		<input type="text" class="form-control" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.value}" 
 			<#if list_responses??>
@@ -26,9 +27,7 @@
 					 value="" 
 				</#if>
 			</#if>
-			<#if field.maxSizeEnter!=-1>
-				maxlength="${field.maxSizeEnter}"
-			</#if>
+			maxlength="${field_max_size}"
 			class="${entry.CSSClass!} form-control"	/>
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 			<p class="help-block">${entry.helpMessage}</p>
@@ -51,7 +50,7 @@
 	<#assign field=getFieldByCode( entry, "width")>
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<input type="text" name="attribute${entry.idEntry}_confirm_field" id="attribute${entry.idEntry}_confirm_field" size="${field.value}" value="" 
-		<#if field.maxSizeEnter!=-1>maxlength="${field.maxSizeEnter}"</#if>/>
+		maxlength="${field_max_size}"/>
 	</div>
 </div>
 </#if>

@@ -56,12 +56,8 @@
 					</@formGroup>
 					
 					<@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<#if field.maxSizeEnter!=-1>
-							<@input type='text' name='max_size_enter' id='max_size_enter' value='${field.maxSizeEnter}' />
-						<#else>
-							<@input type='text' name='max_size_enter' id='max_size_enter' value='' />
-						</#if>
+						<#assign field_max_size=getFieldValueByCode( entry, "max_size")>
+						<@input type='text' name='max_size_enter' id='max_size_enter' value=field_max_size />
 					</@formGroup>
 					
 					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>
