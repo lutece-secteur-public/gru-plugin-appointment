@@ -46,8 +46,8 @@
 					</@formGroup>
 					
 					<@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<@input type='text' name='width' id='width' value='${field.width}' />
+						<#assign field=getFieldByCode( entry, "width")>
+						<@input type='text' name='width' id='width' value='${field.value}' />
 					</@formGroup>
 					
 					<@formGroup labelFor='height' labelKey='#i18n{appointment.createEntry.labelHeight}' mandatory=true>
