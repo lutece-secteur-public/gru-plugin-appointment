@@ -55,13 +55,12 @@
 					</@formGroup>
 					
 					<@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
-						<#list entry.fields as field>
-							<#if field.maxSizeEnter!=-1>
-								<@input type='text' name='max_size_enter' id='max_size_enter' inputSize=5 value='${field.maxSizeEnter}' />
-							<#else>
-								<@input type='text' name='max_size_enter' id='max_size_enter' inputSize=5 value='' />
-							</#if>
-						</#list>	
+						<#assign field=getFieldByCode( entry, "text_config")>
+						<#if field.maxSizeEnter!=-1>
+							<@input type='text' name='max_size_enter' id='max_size_enter' inputSize=5 value='${field.maxSizeEnter}' />
+						<#else>
+							<@input type='text' name='max_size_enter' id='max_size_enter' inputSize=5 value='' />
+						</#if>
 					</@formGroup>
 					
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelConfirmField}'>

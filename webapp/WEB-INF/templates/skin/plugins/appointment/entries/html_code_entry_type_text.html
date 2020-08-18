@@ -46,11 +46,10 @@
 <#if entry.confirmField>
 <div class="form-group">
 	<label class="col-xs-12 col-sm-12 col-md-12 col-lg-12" for="attribute${entry.idEntry}_confirm_field">${entry.confirmFieldTitle}<#if entry.mandatory> *</#if></label>
-	<#list entry.fields as field>
+	<#assign field=getFieldByCode( entry, "text_config")>
 	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<input type="text" name="attribute${entry.idEntry}_confirm_field" id="attribute${entry.idEntry}_confirm_field" size="${field.width}" value="" 
 		<#if field.maxSizeEnter!=-1>maxlength="${field.maxSizeEnter}"</#if>/>
 	</div>
-	</#list>
 </div>
 </#if>
