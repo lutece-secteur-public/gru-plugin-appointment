@@ -36,3 +36,5 @@ ALTER TABLE genatt_field DROP COLUMN image_type;
 
 ALTER TABLE genatt_entry DROP COLUMN is_role_associated;
 ALTER TABLE genatt_field DROP COLUMN role_key;
+
+ALTER TABLE genatt_entry modify COLUMN id_entry int AUTO_INCREMENT NOT NULL;
