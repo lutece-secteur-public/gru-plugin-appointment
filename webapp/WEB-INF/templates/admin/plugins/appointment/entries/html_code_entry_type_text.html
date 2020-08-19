@@ -20,8 +20,9 @@
 </#list>
 <#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
-	<#assign field=getFieldByCode( entry, "width")>
-	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field.value class='${entry.CSSClass!}' value=value />
+	<#assign default=getFieldValueByCode( entry, "text_config")>
+	<#assign field_width=getFieldByCode( entry, "width")>
+	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width class='${entry.CSSClass!}' value=default />
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>

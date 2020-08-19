@@ -22,6 +22,9 @@
 				<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry/>
 			</#if>
 		</#list>
+	<#else>
+		<#assign default=getFieldValueByCode( entry, "text_config")>
+		<@getTextAreaContent responseContent=default entry=entry />
 	</#if>
 	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 		<span class="help-block">${entry.helpMessage}</span>

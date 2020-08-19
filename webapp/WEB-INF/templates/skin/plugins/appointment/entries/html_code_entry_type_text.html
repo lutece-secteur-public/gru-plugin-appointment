@@ -8,10 +8,11 @@
 
 <div class="form-group<#if hasError??> has-error</#if>">
 	<label class="col-xs-12 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
-	<#assign field=getFieldByCode( entry, "width")>
+	<#assign default=getFieldValueByCode( entry, "text_config")>
+	<#assign field_width=getFieldByCode( entry, "width")>
 	<#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 	<div class="col-xs-12">
-		<input type="text" class="form-control" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field.value}" 
+		<input type="text" class="form-control" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" size="${field_width.value}" 
 			<#if list_responses??>
 				<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry>
@@ -21,11 +22,7 @@
 					</#if>
 				</#list>
 			<#else>
-				<#if field.value?exists>
-					value="${field.value}" 
-			 	<#else>
-					 value="" 
-				</#if>
+				value="${default}" 
 			</#if>
 			maxlength="${field_max_size}"
 			class="${entry.CSSClass!} form-control"	/>
