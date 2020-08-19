@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,9 +61,9 @@ public final class Utilities
      */
     public static DateTimeFormatter getFormatter( )
     {
-        if( _formatter == null )
+        if ( _formatter == null )
         {
-            _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
+            _formatter = DateTimeFormatter.ofLocalizedDate( FormatStyle.SHORT ).withLocale( AppointmentPlugin.getPluginLocale( ) );
         }
         return _formatter;
     }
@@ -80,16 +80,14 @@ public final class Utilities
     {
         _formatter = formatter;
     }
-    
-    
+
     /**
      * Reset formatter scope package to be only used by unit tests
      */
-    static void resetFormatter()
+    static void resetFormatter( )
     {
         _formatter = null;
     }
-   
 
     /**
      * Return the closest date in past a list of date with the given date
@@ -104,7 +102,6 @@ public final class Utilities
     {
         return listDate.stream( ).filter( x -> x.isBefore( dateToSearch ) || x.isEqual( dateToSearch ) ).max( LocalDate::compareTo ).orElse( null );
     }
-
 
     /**
      * Return the closest date time in future in a list of date time and a given date time

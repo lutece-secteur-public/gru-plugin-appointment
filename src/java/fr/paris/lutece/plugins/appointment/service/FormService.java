@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -521,7 +521,7 @@ public final class FormService
         appointmentForm.setMinTimeBeforeAppointment( formRule.getMinTimeBeforeAppointment( ) );
         appointmentForm.setNbMaxAppointmentsPerUser( formRule.getNbMaxAppointmentsPerUser( ) );
         appointmentForm.setNbDaysForMaxAppointmentsPerUser( formRule.getNbDaysForMaxAppointmentsPerUser( ) );
-        appointmentForm.setBoOverbooking(formRule.getBoOverbooking( ));
+        appointmentForm.setBoOverbooking( formRule.getBoOverbooking( ) );
     }
 
     /**
@@ -607,11 +607,10 @@ public final class FormService
     private static void checkValidityDate( Form form )
     {
         LocalDate dateNow = LocalDate.now( );
-        if ( form.getStartingValidityDate( ) != null
-                && !form.getIsActive( )
+        if ( form.getStartingValidityDate( ) != null && !form.getIsActive( )
                 && ( form.getStartingValidityDate( ).isBefore( dateNow ) || form.getStartingValidityDate( ).isEqual( dateNow ) )
-                && ( form.getEndingValidityDate( ) == null || form.getEndingValidityDate( ).isAfter( dateNow ) || form.getEndingValidityDate( ).isEqual(
-                        dateNow ) ) )
+                && ( form.getEndingValidityDate( ) == null || form.getEndingValidityDate( ).isAfter( dateNow )
+                        || form.getEndingValidityDate( ).isEqual( dateNow ) ) )
         {
             form.setIsActive( true );
             FormService.updateForm( form );
@@ -697,7 +696,7 @@ public final class FormService
         form.setIsActive( appointmentForm.getIsActive( ) );
         form.setIdWorkflow( appointmentForm.getIdWorkflow( ) );
         form.setWorkgroup( appointmentForm.getWorkgroup( ) );
-      //  form.setBoOverbooking(appointmentForm.getBoOverbooking( ));
+        // form.setBoOverbooking(appointmentForm.getBoOverbooking( ));
         return form;
     }
 

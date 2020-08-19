@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,19 +62,20 @@ public final class FormDAO extends UtilDAO implements IFormDAO
             + " INNER JOIN appointment_display display ON form.id_form = display.id_form WHERE form.is_active = 1 AND display.is_displayed_on_portlet = 1";
 
     @Override
-    public  void insert( Form form, Plugin plugin )
+    public void insert( Form form, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, form, plugin, true );       
+        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, form, plugin, true );
         try
         {
-            daoUtil.executeUpdate( );       
-	        if ( daoUtil.nextGeneratedKey( ) )
-	        {
-	        	form.setIdForm( daoUtil.getGeneratedKeyInt( 1 ) );
-	        }
-        }finally
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                form.setIdForm( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
+        }
+        finally
         {
-                daoUtil.free();       
+            daoUtil.free( );
         }
     }
 
@@ -259,9 +260,11 @@ public final class FormDAO extends UtilDAO implements IFormDAO
         DAOUtil daoUtil = null;
         if ( isInsert )
         {
-        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }else{
-        	daoUtil = new DAOUtil( query, plugin );
+            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }
+        else
+        {
+            daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setString( nIndex++, form.getTitle( ) );
         daoUtil.setString( nIndex++, form.getDescription( ) );

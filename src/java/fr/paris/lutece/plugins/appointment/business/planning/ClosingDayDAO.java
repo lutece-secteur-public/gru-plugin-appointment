@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,14 +68,15 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, closingDay, plugin, true );
         try
         {
-            daoUtil.executeUpdate( );       
-	        if ( daoUtil.nextGeneratedKey( ) )
-	        {
-	        	 closingDay.setIdClosingDay( daoUtil.getGeneratedKeyInt( 1 ) );
-	        }
-        }finally
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                closingDay.setIdClosingDay( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
+        }
+        finally
         {
-                daoUtil.free();       
+            daoUtil.free( );
         }
     }
 
@@ -234,9 +235,11 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
         DAOUtil daoUtil = new DAOUtil( query, plugin );
         if ( isInsert )
         {
-        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }else{
-        	daoUtil = new DAOUtil( query, plugin );
+            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }
+        else
+        {
+            daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setDate( nIndex++, closingDay.getSqlDateOfClosingDay( ) );
         daoUtil.setInt( nIndex++, closingDay.getIdForm( ) );

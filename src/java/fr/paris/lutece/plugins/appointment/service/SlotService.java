@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -342,9 +342,9 @@ public final class SlotService
         return listSlot;
 
     }
-    
-    
-    public static List<Slot> buildListSlot ( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate, int nNbPlaces )
+
+    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate,
+            int nNbPlaces )
     {
         List<Slot> listSlotToShow = new ArrayList<>( );
 
@@ -366,10 +366,10 @@ public final class SlotService
         LocalDateTime dateTimeTemp;
         LocalDateTime endingDateTime;
         LocalDateTime startingDateTime = null;
-        boolean isChanged= true;
+        boolean isChanged = true;
         int sumNbPotentialRemainingPlaces;
         int sumNbRemainingPlaces;
-        
+
         Slot slotToAdd;
         TimeSlot timeSlot;
         LocalDate dateToCompare;
@@ -398,9 +398,8 @@ public final class SlotService
             // date
             closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
             reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
-            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateTemp);
+            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateTemp );
 
-            
             nMaxCapacity = 0;
             if ( reservationRuleToApply != null )
             {
@@ -419,32 +418,31 @@ public final class SlotService
                 minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAWorkingDay( workingDay );
                 maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
                 // Check if this day is a closing day
-                if ( ! listDateOfClosingDay.contains( dateTemp ) )
+                if ( !listDateOfClosingDay.contains( dateTemp ) )
                 {
-                    
+
                     timeTemp = minTimeForThisDay;
-                    sumNbPotentialRemainingPlaces= 0;
+                    sumNbPotentialRemainingPlaces = 0;
                     sumNbRemainingPlaces = 0;
-                    isChanged= true;
+                    isChanged = true;
                     // For each slot of this day
                     while ( timeTemp.isBefore( maxTimeForThisDay ) || !timeTemp.equals( maxTimeForThisDay ) )
                     {
-                    	
-                    	
+
                         // Get the LocalDateTime
                         dateTimeTemp = dateTemp.atTime( timeTemp );
                         // Search if there is a slot for this datetime
-                        if(isChanged) {
-                        	
-                        	startingDateTime= dateTimeTemp;
-                        	isChanged= false;
+                        if ( isChanged )
+                        {
+
+                            startingDateTime = dateTimeTemp;
+                            isChanged = false;
                         }
                         if ( mapSlot.containsKey( dateTimeTemp ) )
                         {
                             slotToAdd = mapSlot.get( dateTimeTemp );
                             timeTemp = slotToAdd.getEndingDateTime( ).toLocalTime( );
-                            
-                            
+
                         }
                         else
                         {
@@ -467,42 +465,45 @@ public final class SlotService
                                 break;
                             }
                         }
-                       
-                    	
-                    	if(sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen() || slotToAdd.getNbPotentialRemainingPlaces() <=0 || slotToAdd.getEndingDateTime( ).isBefore( LocalDateTime.now( ) )
-                    			|| nNbPlaces > reservationRule.getMaxPeoplePerAppointment( )) {
-                    		
-                    		sumNbPotentialRemainingPlaces =0;
-                    		sumNbRemainingPlaces = 0;
-                    		startingDateTime= slotToAdd.getEndingDateTime(); 
-                    	}else {
-                    		
-                    		sumNbPotentialRemainingPlaces= sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces();
-                    		sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces();
-                    	}
-                    	
-                    	 if(sumNbPotentialRemainingPlaces >= nNbPlaces) {
-                     		
-                         	endingDateTime= slotToAdd.getEndingDateTime();
-                         	Slot slt= new Slot();
-                     		slt.setStartingDateTime(startingDateTime);
-                     		slt.setEndingDateTime(endingDateTime);
-                     		slt.setIsOpen(true);
-                     		slt.setNbPotentialRemainingPlaces( sumNbPotentialRemainingPlaces );
-                     		slt.setNbRemainingPlaces( sumNbRemainingPlaces );
-                     		slt.setDate(slotToAdd.getDate( ));
-                     		slt.setIdForm(slotToAdd.getIdForm( ));
-                     		listSlotToShow.add(slt);
-                     		sumNbPotentialRemainingPlaces= 0;
-                     		sumNbRemainingPlaces= 0;
-                     		isChanged= true;
-                     	}
-                    	
-                        
+
+                        if ( sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen( ) || slotToAdd.getNbPotentialRemainingPlaces( ) <= 0
+                                || slotToAdd.getEndingDateTime( ).isBefore( LocalDateTime.now( ) )
+                                || nNbPlaces > reservationRule.getMaxPeoplePerAppointment( ) )
+                        {
+
+                            sumNbPotentialRemainingPlaces = 0;
+                            sumNbRemainingPlaces = 0;
+                            startingDateTime = slotToAdd.getEndingDateTime( );
+                        }
+                        else
+                        {
+
+                            sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces( );
+                            sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces( );
+                        }
+
+                        if ( sumNbPotentialRemainingPlaces >= nNbPlaces )
+                        {
+
+                            endingDateTime = slotToAdd.getEndingDateTime( );
+                            Slot slt = new Slot( );
+                            slt.setStartingDateTime( startingDateTime );
+                            slt.setEndingDateTime( endingDateTime );
+                            slt.setIsOpen( true );
+                            slt.setNbPotentialRemainingPlaces( sumNbPotentialRemainingPlaces );
+                            slt.setNbRemainingPlaces( sumNbRemainingPlaces );
+                            slt.setDate( slotToAdd.getDate( ) );
+                            slt.setIdForm( slotToAdd.getIdForm( ) );
+                            listSlotToShow.add( slt );
+                            sumNbPotentialRemainingPlaces = 0;
+                            sumNbRemainingPlaces = 0;
+                            isChanged = true;
+                        }
+
                     }
                 }
             }
-        
+
             dateTemp = dateTemp.plusDays( 1 );
         }
         return listSlotToShow;
@@ -589,12 +590,11 @@ public final class SlotService
         }
         else
         {
-            listMatchTimeSlot = listTimeSlot
-                    .stream( )
-                    .filter(
-                            t -> ( t.getStartingTime( ).equals( slot.getStartingDateTime( ).toLocalTime( ) ) )
-                                    && ( t.getEndingTime( ).equals( slot.getEndingDateTime( ).toLocalTime( ) ) ) && ( t.getIsOpen( ) == slot.getIsOpen( ) )
-                                    && ( t.getMaxCapacity( ) == slot.getMaxCapacity( ) ) ).collect( Collectors.toList( ) );
+            listMatchTimeSlot = listTimeSlot.stream( )
+                    .filter( t -> ( t.getStartingTime( ).equals( slot.getStartingDateTime( ).toLocalTime( ) ) )
+                            && ( t.getEndingTime( ).equals( slot.getEndingDateTime( ).toLocalTime( ) ) ) && ( t.getIsOpen( ) == slot.getIsOpen( ) )
+                            && ( t.getMaxCapacity( ) == slot.getMaxCapacity( ) ) )
+                    .collect( Collectors.toList( ) );
             if ( CollectionUtils.isNotEmpty( listMatchTimeSlot ) )
             {
                 bIsSpecific = Boolean.FALSE;
@@ -618,12 +618,11 @@ public final class SlotService
      */
     public static void updateSlot( Slot slot, boolean bEndingTimeHasChanged, LocalTime previousEndingTime, boolean bShifSlot )
     {
-    	
-    	SlotSafeService.updateSlot(  slot,  bEndingTimeHasChanged,  previousEndingTime,  bShifSlot );
-        
+
+        SlotSafeService.updateSlot( slot, bEndingTimeHasChanged, previousEndingTime, bShifSlot );
+
     }
 
-  
     /**
      * Update the capacity of the slot
      * 
@@ -632,7 +631,7 @@ public final class SlotService
      */
     public static void updateRemainingPlaces( Slot slot )
     {
-       SlotSafeService.updateRemainingPlaces(  slot );
+        SlotSafeService.updateRemainingPlaces( slot );
     }
 
     /**
@@ -644,8 +643,8 @@ public final class SlotService
      */
     public static Slot saveSlot( Slot slot )
     {
-    	return SlotSafeService.saveSlot( slot );
-        
+        return SlotSafeService.saveSlot( slot );
+
     }
 
     /**
@@ -656,10 +655,8 @@ public final class SlotService
      */
     public static Slot updateSlot( Slot slot )
     {
-    	return SlotSafeService.updateSlot( slot );
+        return SlotSafeService.updateSlot( slot );
     }
-
-  
 
     /**
      * Form the DTO, adding the date and the time to the slot
@@ -689,7 +686,7 @@ public final class SlotService
      */
     public static Slot createSlot( Slot slot )
     {
-    	return SlotSafeService.createSlot( slot );
+        return SlotSafeService.createSlot( slot );
     }
 
     /**

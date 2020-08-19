@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -191,26 +191,31 @@ public final class SlotHome
     {
         return _dao.findSlotWithMaxDate( nIdForm, _plugin );
     }
+
     /**
      * Update Potential Remaining Places
+     * 
      * @param nbPotentialRemainingPlaces
      * @param nIdSlot
      */
-    public static void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot){
-    	
-    	 _dao.updatePotentialRemainingPlaces(nbPotentialRemainingPlaces, nIdSlot, _plugin);
+    public static void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot )
+    {
+
+        _dao.updatePotentialRemainingPlaces( nbPotentialRemainingPlaces, nIdSlot, _plugin );
 
     }
-    
+
     /**
      * Reset Potential Remaining Places
+     * 
      * @param nbPotentialRemainingPlaces
      * @param nIdSlot
      */
-    public static void resetPotentialRemainingPlaces( ){
-    	
-    	 _dao.resetPotentialRemainingPlaces( _plugin);
+    public static void resetPotentialRemainingPlaces( )
+    {
+
+        _dao.resetPotentialRemainingPlaces( _plugin );
 
     }
-   
+
 }

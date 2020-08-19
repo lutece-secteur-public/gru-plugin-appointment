@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,6 @@ import fr.paris.lutece.portal.service.workflow.WorkflowService;
 public final class AppointmentService
 {
 
-
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -84,14 +83,16 @@ public final class AppointmentService
         List<Appointment> listAppointment = new ArrayList<>( );
         for ( Slot slot : listSlot )
         {
-        	List<Appointment> tempAppointment= AppointmentService.findListAppointmentBySlot( slot.getIdSlot( ) );
-        	for (Appointment tmp: tempAppointment){
-	        	
-        		if(!listAppointment.stream().anyMatch(p -> p.getIdAppointment()== tmp.getIdAppointment( ))) {
-        			
-        			listAppointment.add( tmp );
-	        	}
-        	}
+            List<Appointment> tempAppointment = AppointmentService.findListAppointmentBySlot( slot.getIdSlot( ) );
+            for ( Appointment tmp : tempAppointment )
+            {
+
+                if ( !listAppointment.stream( ).anyMatch( p -> p.getIdAppointment( ) == tmp.getIdAppointment( ) ) )
+                {
+
+                    listAppointment.add( tmp );
+                }
+            }
         }
         return listAppointment;
     }
@@ -133,7 +134,6 @@ public final class AppointmentService
         return AppointmentHome.findByIdForm( nIdForm );
     }
 
-    
     /**
      * Build and create in database an appointment from the dto
      * 
@@ -160,11 +160,11 @@ public final class AppointmentService
         {
             appointment.setAdminUserCreate( appointmentDTO.getAdminUserCreate( ) );
         }
-        appointment.setListAppointmentSlot(appointmentDTO.getListAppointmentSlot( ));
+        appointment.setListAppointmentSlot( appointmentDTO.getListAppointmentSlot( ) );
         appointment.setNbPlaces( appointmentDTO.getNbBookedSeats( ) );
-        
+
         appointment.setIdUser( user.getIdUser( ) );
-        
+
         if ( appointment.getIdAppointment( ) == 0 )
         {
             appointment = AppointmentHome.create( appointment );
@@ -174,7 +174,7 @@ public final class AppointmentService
         {
             AppLogService.info( "Update Appointment: " + appointment.getIdAppointment( ) );
             appointment = AppointmentHome.update( appointment );
-            AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
+            AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
 
         }
         return appointment;
@@ -238,26 +238,27 @@ public final class AppointmentService
         AppointmentDTO appointmentDTO = new AppointmentDTO( );
         appointmentDTO.setIdForm( appointment.getSlot( ).get( 0 ).getIdForm( ) );
         appointmentDTO.setIdUser( appointment.getIdUser( ) );
-        //appointmentDTO.setIdSlot( appointment.getIdSlot( ) );
-        appointmentDTO.setListAppointmentSlot(appointment.getListAppointmentSlot( ));
+        // appointmentDTO.setIdSlot( appointment.getIdSlot( ) );
+        appointmentDTO.setListAppointmentSlot( appointment.getListAppointmentSlot( ) );
         appointmentDTO.setIdAppointment( appointment.getIdAppointment( ) );
         appointmentDTO.setFirstName( appointment.getUser( ).getFirstName( ) );
         appointmentDTO.setLastName( appointment.getUser( ).getLastName( ) );
         appointmentDTO.setEmail( appointment.getUser( ).getEmail( ) );
         appointmentDTO.setGuid( appointment.getUser( ).getGuid( ) );
         appointmentDTO.setReference( appointment.getReference( ) );
-        LocalDateTime startingDateTime = AppointmentUtilities.getStartingDateTime( appointment);
-        LocalDateTime endingDateTime = AppointmentUtilities.getEndingDateTime( appointment);
+        LocalDateTime startingDateTime = AppointmentUtilities.getStartingDateTime( appointment );
+        LocalDateTime endingDateTime = AppointmentUtilities.getEndingDateTime( appointment );
         appointmentDTO.setStartingDateTime( startingDateTime );
-        appointmentDTO.setEndingDateTime(endingDateTime);
+        appointmentDTO.setEndingDateTime( endingDateTime );
         appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getFormatter( ) ) );
         appointmentDTO.setStartingTime( startingDateTime.toLocalTime( ) );
         appointmentDTO.setEndingTime( endingDateTime.toLocalTime( ) );
         appointmentDTO.setIsCancelled( appointment.getIsCancelled( ) );
         appointmentDTO.setNbBookedSeats( appointment.getNbPlaces( ) );
-        for(Slot slt:appointment.getSlot()) {
-        	
-        	SlotService.addDateAndTimeToSlot( slt );
+        for ( Slot slt : appointment.getSlot( ) )
+        {
+
+            SlotService.addDateAndTimeToSlot( slt );
         }
         appointmentDTO.setSlot( appointment.getSlot( ) );
         appointmentDTO.setUser( appointment.getUser( ) );
@@ -266,8 +267,8 @@ public final class AppointmentService
             AdminUser adminUser = AdminUserHome.findByPrimaryKey( appointment.getIdAdminUser( ) );
             if ( adminUser != null )
             {
-                appointmentDTO.setAdminUser( new StringBuilder( adminUser.getFirstName( ) + org.apache.commons.lang3.StringUtils.SPACE
-                        + adminUser.getLastName( ) ).toString( ) );
+                appointmentDTO.setAdminUser(
+                        new StringBuilder( adminUser.getFirstName( ) + org.apache.commons.lang3.StringUtils.SPACE + adminUser.getLastName( ) ).toString( ) );
             }
         }
         else
@@ -277,19 +278,18 @@ public final class AppointmentService
         appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
         return appointmentDTO;
     }
-    
+
     /**
      * Fill the appointment data transfer object with complementary appointment responses
+     * 
      * @param appointmentDto
-     *              The appointmentDTO object
+     *            The appointmentDTO object
      */
     public static void addAppointmentResponses( AppointmentDTO appointmentDto )
     {
-        //Load the response list in the DTO
+        // Load the response list in the DTO
         appointmentDto.setListResponse( AppointmentResponseService.findListResponse( appointmentDto.getIdAppointment( ) ) );
     }
-    
-    
 
     /**
      * Delete an appointment (and update the number of remaining places of the related slot)
@@ -313,11 +313,13 @@ public final class AppointmentService
         }
         if ( !appointmentToDelete.getIsCancelled( ) )
         {
-        	for(AppointmentSlot appSlot:appointmentToDelete.getListAppointmentSlot()) {
+            for ( AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
+            {
                 // Need to update the nb remaining places of the related slot
-            		SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces(), appSlot.getIdSlot( ) );
-            	}
-                   // SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentToDelete.getNbPlaces( ), appointmentToDelete.getIdSlot( ) );
+                SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
+            }
+            // SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appointmentToDelete.getNbPlaces( ), appointmentToDelete.getIdSlot( )
+            // );
         }
         // Need to delete also the responses linked to this appointment
         AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
@@ -347,10 +349,11 @@ public final class AppointmentService
     {
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
         User user = UserService.findUserById( appointment.getIdUser( ) );
-        for(AppointmentSlot appSlot:appointment.getListAppointmentSlot( )) {
-        	Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );       
+        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+        {
+            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
 
-        	appointment.addSlot( slot );
+            appointment.addSlot( slot );
         }
         appointment.setUser( user );
         return buildAppointmentDTO( appointment );
@@ -369,13 +372,14 @@ public final class AppointmentService
         // If the update concerns a cancellation of the appointment
         if ( !oldAppointment.getIsCancelled( ) && appointment.getIsCancelled( ) )
         {
-        	for(AppointmentSlot appSlot:appointment.getListAppointmentSlot()) {
-            // Need to update the nb remaining places of the related slot
-        		SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces(), appSlot.getIdSlot( ) );
-        	}
+            for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+            {
+                // Need to update the nb remaining places of the related slot
+                SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
+            }
         }
         AppointmentHome.update( appointment );
-        AppointmentListenerManager.notifyListenersAppointmentUpdated(appointment.getIdAppointment( ));
+        AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
 
     }
 
@@ -391,73 +395,86 @@ public final class AppointmentService
     @Deprecated
     public static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, Slot slot )
     {
-    	SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( nbPlaces, slot.getIdSlot( ) );
-       
-    } 
-    	
+        SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( nbPlaces, slot.getIdSlot( ) );
+
+    }
+
     /**
      * Save an appointment in database
      * 
      * @param appointmentDTO
      *            the appointment dto
      * @return the id of the appointment saved
-     * @throws Exception 
+     * @throws Exception
      */
-      public  static synchronized int saveAppointment( AppointmentDTO appointmentDTO ) 
-      {
-    	  return SlotSafeService.saveAppointment(appointmentDTO, null);
-      
-      }
-      
-      public static void buildListAppointmentSlot(AppointmentDTO appointmentDTO) {
-    	  
-    	  List<AppointmentSlot> listApptSlot= new ArrayList<>( );
-    	  int nbPlaces= appointmentDTO.getNbBookedSeats( );
-    	  int nIdAppointment= appointmentDTO.getIdAppointment();
-    	  int nNumberPlace=-1;
-    	  int index=0;
-    	  
-    	  List<Slot> listSlot= appointmentDTO.getSlot( );
-    	      	  
-    	  listSlot.sort((slot1,slot2) -> slot1.getStartingDateTime().compareTo(slot2.getStartingDateTime()));
-    	  
-    	  for(Slot slot: listSlot) {
-    		  
-    		  AppointmentSlot apptSlot= new AppointmentSlot();
-    		  apptSlot.setIdAppointment(nIdAppointment);
-    		  apptSlot.setIdSlot(slot.getIdSlot());
-    		  index= index+1;
-    		  if( nIdAppointment!= 0 && appointmentDTO.getListAppointmentSlot().stream().anyMatch(p -> p.getIdSlot() == slot.getIdSlot( ))) {
-    			  
-    			  int nNbUpdatePlaces =appointmentDTO.getListAppointmentSlot().stream().filter(p -> p.getIdSlot() == slot.getIdSlot()).findAny().get().getNbPlaces( );
-        		
-    			  if( nbPlaces >= slot.getNbRemainingPlaces() + nNbUpdatePlaces) {
-        			  
-        			  nNumberPlace =  nNbUpdatePlaces;
+    public static synchronized int saveAppointment( AppointmentDTO appointmentDTO )
+    {
+        return SlotSafeService.saveAppointment( appointmentDTO, null );
 
-        		  }else {
-        			
-        			  nNumberPlace= nNbUpdatePlaces;
-        		  }
-    		  }else if(nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces() && index < listSlot.size( ) ) {
-    			
-    			  nNumberPlace = slot.getNbRemainingPlaces();
-    		  
-    		  
-    		  }else if( nbPlaces > 0  ) {
-    			
-    			  nNumberPlace =  nbPlaces;
+    }
 
-    		  }
-    		  else {
-    			  break;
-    		  }
-    		  
-    		  apptSlot.setNbPlaces(nNumberPlace);
-    		  nbPlaces= nbPlaces - nNumberPlace;
-    		  listApptSlot.add(apptSlot);
-    	  }
-    	  appointmentDTO.setListAppointmentSlot(listApptSlot);
-      }
-     
+    public static void buildListAppointmentSlot( AppointmentDTO appointmentDTO )
+    {
+
+        List<AppointmentSlot> listApptSlot = new ArrayList<>( );
+        int nbPlaces = appointmentDTO.getNbBookedSeats( );
+        int nIdAppointment = appointmentDTO.getIdAppointment( );
+        int nNumberPlace = -1;
+        int index = 0;
+
+        List<Slot> listSlot = appointmentDTO.getSlot( );
+
+        listSlot.sort( ( slot1, slot2 ) -> slot1.getStartingDateTime( ).compareTo( slot2.getStartingDateTime( ) ) );
+
+        for ( Slot slot : listSlot )
+        {
+
+            AppointmentSlot apptSlot = new AppointmentSlot( );
+            apptSlot.setIdAppointment( nIdAppointment );
+            apptSlot.setIdSlot( slot.getIdSlot( ) );
+            index = index + 1;
+            if ( nIdAppointment != 0 && appointmentDTO.getListAppointmentSlot( ).stream( ).anyMatch( p -> p.getIdSlot( ) == slot.getIdSlot( ) ) )
+            {
+
+                int nNbUpdatePlaces = appointmentDTO.getListAppointmentSlot( ).stream( ).filter( p -> p.getIdSlot( ) == slot.getIdSlot( ) ).findAny( ).get( )
+                        .getNbPlaces( );
+
+                if ( nbPlaces >= slot.getNbRemainingPlaces( ) + nNbUpdatePlaces )
+                {
+
+                    nNumberPlace = nNbUpdatePlaces;
+
+                }
+                else
+                {
+
+                    nNumberPlace = nNbUpdatePlaces;
+                }
+            }
+            else
+                if ( nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces( ) && index < listSlot.size( ) )
+                {
+
+                    nNumberPlace = slot.getNbRemainingPlaces( );
+
+                }
+                else
+                    if ( nbPlaces > 0 )
+                    {
+
+                        nNumberPlace = nbPlaces;
+
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+            apptSlot.setNbPlaces( nNumberPlace );
+            nbPlaces = nbPlaces - nNumberPlace;
+            listApptSlot.add( apptSlot );
+        }
+        appointmentDTO.setListAppointmentSlot( listApptSlot );
+    }
+
 }

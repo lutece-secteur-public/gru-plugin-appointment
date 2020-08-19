@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -411,12 +411,13 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     {
         String strIdEntry = request.getParameter( PARAMETER_ID_ENTRY );
         int nIdEntry = Integer.parseInt( strIdEntry );
-        ResponseFilter responsefilter= new ResponseFilter();
-        responsefilter.setIdEntry(nIdEntry);
-        if( !ResponseHome.getResponseList(responsefilter).isEmpty()){
-        	
-            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY_RESOURCES_ATTACHED,  AdminMessage.TYPE_STOP ) );
-            		
+        ResponseFilter responsefilter = new ResponseFilter( );
+        responsefilter.setIdEntry( nIdEntry );
+        if ( !ResponseHome.getResponseList( responsefilter ).isEmpty( ) )
+        {
+
+            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY_RESOURCES_ATTACHED, AdminMessage.TYPE_STOP ) );
+
         }
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_ENTRY ) );
         url.addParameter( PARAMETER_ID_ENTRY, strIdEntry );
@@ -447,11 +448,11 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             {
                 String strCause = AdminMessageService.getFormattedList( listErrors, getLocale( ) );
                 Object [ ] args = {
-                    strCause
+                        strCause
                 };
                 return AdminMessageService.getMessageUrl( request, MESSAGE_CANT_REMOVE_ENTRY, args, AdminMessage.TYPE_STOP );
             }
-            
+
             // Update order
             List<Entry> listEntry;
             EntryFilter filter = new EntryFilter( );
@@ -560,7 +561,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             }
             Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
             Object [ ] tabEntryTileCopy = {
-                entry.getTitle( )
+                    entry.getTitle( )
             };
             String strTitleCopyEntry = I18nService.getLocalizedString( PROPERTY_COPY_ENTRY_TITLE, tabEntryTileCopy, getLocale( ) );
             if ( strTitleCopyEntry != null )

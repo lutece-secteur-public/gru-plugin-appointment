@@ -49,26 +49,30 @@
 					</@formGroup>
 					
 					<@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<@input type='text' name='width' id='width' value='${field.width}' />
+						<#assign field=getFieldByCode( entry, "width")>
+						<@input type='text' name='width' id='width' value='${field.value}' />
 						<#assign id_field=field.idField> 
 					</@formGroup>
 					
 					<@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<#if field.maxSizeEnter!=-1>
-							<@input type='text' name='max_size_enter' id='max_size_enter' inputSize=5 value='${field.maxSizeEnter}' />
-						<#else>
-							<@input type='text' name='max_size_enter' id='max_size_enter' inputSize=5 value='' />
-						</#if>
+						<#assign field_max_size=getFieldValueByCode( entry, "max_size")>
+						<@input type='text' name='max_size_enter' id='max_size_enter' inputSize=5 value=field_max_size />
 					</@formGroup>
 					
+					<#assign confirmFieldField=getFieldByCode( entry, "confirm_field")>
+						<#if confirmFieldField.value?boolean>
+							<#assign checkedValue = true />
+							<#assign confirmFieldTitle = confirmFieldField.title />
+						<#else>
+							<#assign checkedValue = false />
+							<#assign confirmFieldTitle ="" />
+						</#if>
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelConfirmField}'>
-						<@checkBox labelFor='confirm_field' labelKey='#i18n{appointment.createEntry.labelConfirmField}' name='confirm_field' id='confirm_field' value='1' params='onchange="javascript:changeVisilityConfirmFieldTitle();"' checked=entry.confirmField />
+						<@checkBox labelFor='confirm_field' labelKey='#i18n{appointment.createEntry.labelConfirmField}' name='confirm_field' id='confirm_field' value='1' params='onchange="javascript:changeVisilityConfirmFieldTitle();"' checked=checkedValue />
 					</@formGroup>
 					
 					<@formGroup labelFor='confirm_field_title' labelKey='#i18n{appointment.createEntry.labelConfirmFieldTitle}' id='confirm_field_title_p'>
-						<@input type='text' name='confirm_field_title' id='confirm_field_title' value='${entry.confirmFieldTitle!}' maxlength=255 />
+						<@input type='text' name='confirm_field_title' id='confirm_field_title' value=confirmFieldTitle maxlength=255 />
 					</@formGroup>
 					
 					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>

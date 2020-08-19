@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,16 +61,17 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, calendarTemplate, plugin, true );
         try
         {
-            daoUtil.executeUpdate( );       
-	        if ( daoUtil.nextGeneratedKey( ) )
-	        {
-	        	 calendarTemplate.setIdCalendarTemplate ( daoUtil.getGeneratedKeyInt( 1 ) );
-	        }
-        }finally
-        {
-                daoUtil.free();       
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                calendarTemplate.setIdCalendarTemplate( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
         }
-        
+        finally
+        {
+            daoUtil.free( );
+        }
+
     }
 
     @Override
@@ -175,11 +176,13 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
         DAOUtil daoUtil = null;
         if ( isInsert )
         {
-        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }else{
-        	daoUtil = new DAOUtil( query, plugin );
+            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
         }
-     
+        else
+        {
+            daoUtil = new DAOUtil( query, plugin );
+        }
+
         daoUtil.setString( nIndex++, calendarTemplate.getTitle( ) );
         daoUtil.setString( nIndex++, calendarTemplate.getDescription( ) );
         daoUtil.setString( nIndex++, calendarTemplate.getTemplatePath( ) );

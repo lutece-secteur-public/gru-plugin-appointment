@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
-
 /**
  * Interface for listeners that should be notified when the action of the workflow processed. <b>The listener must be a Spring bean.</b>
  * 
@@ -46,12 +45,10 @@ public interface IAppointmentWorkflowActionListener
      * 
      * @param nIdAppointment
      *            The id of the appointment
-    * @param nIdAction
-     *            The id of the wf action           
-     *            
+     * @param nIdAction
+     *            The id of the wf action
+     * 
      */
     void notifyAppointmentWFActionTriggered( int nIdAppointment, int nIdAction );
 
-  
-    
 }

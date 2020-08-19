@@ -46,22 +46,18 @@
 					</@formGroup>
 					
 					<@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<@input type='text' name='width' id='width' value='${field.width}' />
+						<#assign field=getFieldByCode( entry, "width")>
+						<@input type='text' name='width' id='width' value='${field.value}' />
 					</@formGroup>
 					
 					<@formGroup labelFor='height' labelKey='#i18n{appointment.createEntry.labelHeight}' mandatory=true>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<@input type='text' name='height' id='height' inputSize=5 value='${field.height}' />
+						<#assign field=getFieldByCode( entry, "height")>
+						<@input type='text' name='height' id='height' inputSize=5 value='${field.value}' />
 					</@formGroup>
 					
 					<@formGroup labelFor='max_size_enter' labelKey='#i18n{appointment.createEntry.labelMaxSizeEnter}'>
-						<#assign field=getFieldByCode( entry, "text_config")>
-						<#if field.maxSizeEnter!=-1>
-							<@input type='text' name='max_size_enter' id='max_size_enter' value='${field.maxSizeEnter}' />
-						<#else>
-							<@input type='text' name='max_size_enter' id='max_size_enter' value='' />
-						</#if>
+						<#assign field_max_size=getFieldValueByCode( entry, "max_size")>
+						<@input type='text' name='max_size_enter' id='max_size_enter' value=field_max_size />
 					</@formGroup>
 					
 					<@formGroup labelFor='css_class' labelKey='#i18n{appointment.createEntry.labelCSSClass}' helpKey='#i18n{appointment.createEntry.labelCSSClassComment}'>

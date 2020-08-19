@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,13 +54,13 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotCreation( int nIdSlot )
     {
-    	new Thread( ( ) -> {
-	        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
-	        {
-	            slotListener.notifySlotCreation( nIdSlot );
-	        }
-    	}).start();
-    	
+        new Thread( ( ) -> {
+            for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
+            {
+                slotListener.notifySlotCreation( nIdSlot );
+            }
+        } ).start( );
+
     }
 
     /**
@@ -71,12 +71,12 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotChange( int nIdSlot )
     {
-    	new Thread( ( ) -> {
-	        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
-	        {
-	            slotListener.notifySlotChange( nIdSlot );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
+            {
+                slotListener.notifySlotChange( nIdSlot );
+            }
+        } ).start( );
     }
 
     /**
@@ -87,12 +87,12 @@ public final class SlotListenerManager
      */
     public static void notifyListenersSlotRemoval( int nIdSlot )
     {
-    	new Thread( ( ) -> {
-	        for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
-	        {
-	            slotListener.notifySlotRemoval( nIdSlot );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( ISlotListener slotListener : SpringContextService.getBeansOfType( ISlotListener.class ) )
+            {
+                slotListener.notifySlotRemoval( nIdSlot );
+            }
+        } ).start( );
     }
 
 }

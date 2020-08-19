@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ public final class CalendarTemplate implements Serializable
 {
 
     public static final String CALENDAR = "Calendrier";
-    
+
     public static final String FREE_SLOTS_GROUPED = "Liste des creneaux disponible regroupés";
     public static final String CALENDAR_OPEN_DAYS = "Calendrier jours ouverts";
     public static final String FREE_SLOTS = "Liste des creneaux disponibles";

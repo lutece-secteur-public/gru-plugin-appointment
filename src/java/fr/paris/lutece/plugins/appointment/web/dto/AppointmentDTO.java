@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,7 +91,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
      * The starting date in LocalDateTime
      */
     private LocalDateTime _startingDateTime;
-    
+
     /**
      * The ending date in LocalDateTime
      */
@@ -217,7 +217,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     {
         this._startingDateTime = startingDateTime;
     }
-    
+
     /**
      * Get the ending date time of the appointment
      * 
@@ -452,42 +452,48 @@ public final class AppointmentDTO extends Appointment implements Serializable
     {
         this._mapResponsesByIdEntry.clear( );
     }
-    
+
     /**
      * Returns the IsSaved
+     * 
      * @return The IsSaved
-     */ 
-     public boolean getIsSaved()
-     {
-         return _bIsSaved;
-     }
- 
+     */
+    public boolean getIsSaved( )
+    {
+        return _bIsSaved;
+    }
+
     /**
      * Sets the IsSaved
-     * @param bIsSaved The IsSaved
-     */ 
-     public void setIsSaved( boolean bIsSaved )
-     {
-         _bIsSaved = bIsSaved;
-     }
-     
-     /**
-      * Returns the OverbookingAllowed
-      * @return The OverbookingAllowed
-      */ 
-      public boolean getOverbookingAllowed()
-      {
-          return _bOverbookingAllowed;
-      }
-  
-     /**
-      * Sets the OverbookingAllowed
-      * @param bOverbookingAllowed The OverbookingAllowed
-      */ 
-      public void setOverbookingAllowed( boolean bOverbookingAllowed )
-      {
-          _bOverbookingAllowed = bOverbookingAllowed;
-      }
+     * 
+     * @param bIsSaved
+     *            The IsSaved
+     */
+    public void setIsSaved( boolean bIsSaved )
+    {
+        _bIsSaved = bIsSaved;
+    }
+
+    /**
+     * Returns the OverbookingAllowed
+     * 
+     * @return The OverbookingAllowed
+     */
+    public boolean getOverbookingAllowed( )
+    {
+        return _bOverbookingAllowed;
+    }
+
+    /**
+     * Sets the OverbookingAllowed
+     * 
+     * @param bOverbookingAllowed
+     *            The OverbookingAllowed
+     */
+    public void setOverbookingAllowed( boolean bOverbookingAllowed )
+    {
+        _bOverbookingAllowed = bOverbookingAllowed;
+    }
 
     /**
      * Get all the possible errors of the form

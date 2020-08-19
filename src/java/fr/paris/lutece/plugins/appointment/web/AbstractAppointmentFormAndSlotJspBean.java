@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
 {
 
     /**
-	 * 
-	 */
+     * 
+     */
     private static final long serialVersionUID = 7709182167218092169L;
     static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
     static final String ERROR_MESSAGE_TIME_START_AFTER_DATE_END = "appointment.message.error.dateStartAfterTimeEnd";
@@ -78,8 +78,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     {
         boolean bReturn = true;
         if ( !( appointmentForm.getIsOpenMonday( ) || appointmentForm.getIsOpenTuesday( ) || appointmentForm.getIsOpenWednesday( )
-                || appointmentForm.getIsOpenThursday( ) || appointmentForm.getIsOpenFriday( ) || appointmentForm.getIsOpenSaturday( ) || appointmentForm
-                    .getIsOpenSunday( ) ) )
+                || appointmentForm.getIsOpenThursday( ) || appointmentForm.getIsOpenFriday( ) || appointmentForm.getIsOpenSaturday( )
+                || appointmentForm.getIsOpenSunday( ) ) )
         {
             bReturn = false;
             addError( ERROR_MESSAGE_NO_WORKING_DAY_CHECKED, getLocale( ) );
@@ -149,7 +149,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private boolean checkSlotCapacityAndPeoplePerAppointment( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
-        if ( appointmentForm.getMaxPeoplePerAppointment( ) > appointmentForm.getMaxCapacityPerSlot( ) && !appointmentForm.getBoOverbooking( ))
+        if ( appointmentForm.getMaxPeoplePerAppointment( ) > appointmentForm.getMaxCapacityPerSlot( ) && !appointmentForm.getBoOverbooking( ) )
         {
             bReturn = false;
             addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) );
