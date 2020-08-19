@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,14 +65,15 @@ public final class UserDAO extends UtilDAO implements IUserDAO
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, user, plugin, true );
         try
         {
-            daoUtil.executeUpdate( );       
-	        if ( daoUtil.nextGeneratedKey( ) )
-	        {
-	        	user.setIdUser( daoUtil.getGeneratedKeyInt( 1 ) );
-	        }
-        }finally
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                user.setIdUser( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
+        }
+        finally
         {
-                daoUtil.free();       
+            daoUtil.free( );
         }
     }
 
@@ -208,9 +209,11 @@ public final class UserDAO extends UtilDAO implements IUserDAO
         DAOUtil daoUtil = null;
         if ( isInsert )
         {
-        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }else{
-        	daoUtil = new DAOUtil( query, plugin );
+            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }
+        else
+        {
+            daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setString( nIndex++, user.getGuid( ) );
         daoUtil.setString( nIndex++, user.getFirstName( ) );

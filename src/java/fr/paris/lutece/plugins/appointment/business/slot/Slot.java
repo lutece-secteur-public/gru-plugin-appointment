@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -126,8 +126,7 @@ public final class Slot implements Serializable
      * Form Id the slot belongs to (foreign key)
      */
     private int _nIdForm;
-    
-    
+
     /**
      * Get the id of the slot
      * 

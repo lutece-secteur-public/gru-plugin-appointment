@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ public final class UserService
      *            the appointment DTO
      * @return the user saved
      */
-    public static synchronized  User saveUser( AppointmentDTO appointment )
+    public static synchronized User saveUser( AppointmentDTO appointment )
     {
         String strFirstName = appointment.getFirstName( );
         String strLastName = appointment.getLastName( );

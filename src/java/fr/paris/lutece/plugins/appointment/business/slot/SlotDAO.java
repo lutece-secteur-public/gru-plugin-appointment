@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,14 +79,15 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, slot, plugin, true );
         try
         {
-            daoUtil.executeUpdate( );       
-	        if ( daoUtil.nextGeneratedKey( ) )
-	        {
-	        	slot.setIdSlot( daoUtil.getGeneratedKeyInt( 1 ) );
-	        }
-        }finally
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                slot.setIdSlot( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
+        }
+        finally
         {
-                daoUtil.free();       
+            daoUtil.free( );
         }
     }
 
@@ -283,27 +284,28 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         }
         return slot;
     }
-    
+
     @Override
-    public void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin  ){
-    	
-    	DAOUtil daoUtil= null;
-    	try
+    public void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin )
+    {
+
+        DAOUtil daoUtil = null;
+        try
         {
-    		daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE, plugin );
+            daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE, plugin );
             daoUtil.setInt( 1, nbPotentialRemainingPlaces );
             daoUtil.setInt( 2, nIdSlot );
             daoUtil.executeUpdate( );
-           
+
         }
         finally
         {
-           if( daoUtil != null ){
-            daoUtil.free();
-           }
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
         }
-    	
-    	 
+
     }
 
     /**
@@ -351,9 +353,11 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         DAOUtil daoUtil = null;
         if ( isInsert )
         {
-        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }else{
-        	daoUtil = new DAOUtil( query, plugin );
+            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }
+        else
+        {
+            daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setTimestamp( nIndex++, slot.getStartingTimestampDate( ) );
         daoUtil.setTimestamp( nIndex++, slot.getEndingTimestampDate( ) );
@@ -392,21 +396,23 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         }
     }
 
-	@Override
-	public void resetPotentialRemainingPlaces(Plugin plugin) {
-		DAOUtil daoUtil= null;
-    	try
+    @Override
+    public void resetPotentialRemainingPlaces( Plugin plugin )
+    {
+        DAOUtil daoUtil = null;
+        try
         {
-    		daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN, plugin );
+            daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN, plugin );
             daoUtil.executeUpdate( );
-           
+
         }
         finally
         {
-           if( daoUtil != null ){
-            daoUtil.free();
-           }
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
         }
-	}
+    }
 
 }

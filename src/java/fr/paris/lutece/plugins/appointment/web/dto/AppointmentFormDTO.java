@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -261,7 +261,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      * BoOverbooking
      */
     private boolean _bBoOverbooking;
-
 
     /**
      * Get the maximum number of appointments authorized for a same user
@@ -1066,22 +1065,26 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     {
         _strWorkgroup = workGroup;
     }
+
     /**
      * Returns the BoOverbooking
+     * 
      * @return The BoOverbooking
-     */ 
-     public boolean getBoOverbooking()
-     {
-         return _bBoOverbooking;
-     }
- 
+     */
+    public boolean getBoOverbooking( )
+    {
+        return _bBoOverbooking;
+    }
+
     /**
      * Sets the BoOverbooking
-     * @param bBoOverbooking The BoOverbooking
-     */ 
-     public void setBoOverbooking( boolean bBoOverbooking )
-     {
-         _bBoOverbooking = bBoOverbooking;
-     }
+     * 
+     * @param bBoOverbooking
+     *            The BoOverbooking
+     */
+    public void setBoOverbooking( boolean bBoOverbooking )
+    {
+        _bBoOverbooking = bBoOverbooking;
+    }
 
 }

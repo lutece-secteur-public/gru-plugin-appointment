@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,8 +91,8 @@ public class Appointment extends User implements Serializable
     private int _notification;
 
     /**
-      * The Admin User Id assigned to the appointment
-      */
+     * The Admin User Id assigned to the appointment
+     */
     private int _nIdAdminUser;
 
     /**
@@ -104,7 +104,6 @@ public class Appointment extends User implements Serializable
      * User id
      */
     private int _nIdUser;
-
 
     /**
      * The slots on which the appointment is
@@ -119,9 +118,9 @@ public class Appointment extends User implements Serializable
      * The date appointment taken
      */
     private LocalDateTime _dateAppointmentTaken;
-    
+
     /**
-     * The appointment slots 
+     * The appointment slots
      */
     private List<AppointmentSlot> _listAppointmentSlot;
 
@@ -281,13 +280,14 @@ public class Appointment extends User implements Serializable
     {
         return _nIdAdminUser;
     }
- 
+
     /**
      * set admin user id assigned to the appointment
      * 
      * @param nIdAdminUser
      */
-    public void setIdAdminUser( int nIdAdminUser )    {
+    public void setIdAdminUser( int nIdAdminUser )
+    {
         this._nIdAdminUser = nIdAdminUser;
     }
 
@@ -304,14 +304,13 @@ public class Appointment extends User implements Serializable
     /**
      * set admin user id who created the appointment
      * 
-     * @param strAdminUser 
+     * @param strAdminUser
      */
     public void setAdminUserCreate( String strAdminUser )
     {
         this._strAdminUserCreate = strAdminUser;
     }
 
-   
     /**
      * Get the list slot of the appointment
      * 
@@ -333,29 +332,34 @@ public class Appointment extends User implements Serializable
         _listSlot = listSlot;
     }
 
-    public void addAllSlot(List<Slot> listSlot){
-    	
-    	if( _listSlot == null ){
-    		
-    		_listSlot = new ArrayList<>( );
-    	}
-		_listSlot.addAll( listSlot );
+    public void addAllSlot( List<Slot> listSlot )
+    {
+
+        if ( _listSlot == null )
+        {
+
+            _listSlot = new ArrayList<>( );
+        }
+        _listSlot.addAll( listSlot );
 
     }
-    
-    public void addSlot( Slot slot) {
-    	
 
-    	if( _listSlot == null ){
-    		
-    		_listSlot = new ArrayList<>( );
-    	}
+    public void addSlot( Slot slot )
+    {
 
-    	if (_listSlot.stream().noneMatch((slt -> slt.getIdSlot( ) == slot.getIdSlot( ) ))){
-    		
-    		_listSlot.add(slot);
-    	}
+        if ( _listSlot == null )
+        {
+
+            _listSlot = new ArrayList<>( );
+        }
+
+        if ( _listSlot.stream( ).noneMatch( ( slt -> slt.getIdSlot( ) == slot.getIdSlot( ) ) ) )
+        {
+
+            _listSlot.add( slot );
+        }
     }
+
     /**
      * Get the user of the appointment
      * 
@@ -376,8 +380,7 @@ public class Appointment extends User implements Serializable
     {
         this._user = user;
     }
-    
-    
+
     /**
      * Get the list of appointment slot
      * 
@@ -399,54 +402,57 @@ public class Appointment extends User implements Serializable
         _listAppointmentSlot = listAppointmentSlot;
     }
 
-    
     /**
      * Returns the DateAppointmentTaken
+     * 
      * @return The DateAppointmentTaken
-     */ 
-     public LocalDateTime getDateAppointmentTaken()
-     {
-         return _dateAppointmentTaken;
-     }
- 
+     */
+    public LocalDateTime getDateAppointmentTaken( )
+    {
+        return _dateAppointmentTaken;
+    }
+
     /**
      * Sets the DateAppointmentTaken
-     * @param dateAppointmentTaken The DateAppointmentTaken
-     */ 
-     public void setDateAppointmentTaken( LocalDateTime dateAppointmentTaken )
-     {
-         _dateAppointmentTaken = dateAppointmentTaken;
-     }
-     /**
-      * Get the date appointment taken  (in sql date format)
-      * 
-      * @return  The DateAppointmentTaken
-      */
-     public Timestamp getAppointmentTakenSqlDate( )
-     {
-    	 Timestamp date = null;
-         if ( _dateAppointmentTaken != null )
-         {
-             date = Timestamp.valueOf( _dateAppointmentTaken );
-         }
-         return date;
-     }
-     
-     /**
-      * Set the date appointment taken  (in sql date format)
-      * 
-      * @param endingValidityDate
-      *            The DateAppointmentTaken to set (in sql Date format)
-      */
-     public void setAppointmentTakenSqlDate( Timestamp dateAppointmentTaken )
-     {
-         if ( dateAppointmentTaken != null )
-         {
-             this._dateAppointmentTaken = dateAppointmentTaken.toLocalDateTime( );
-         }
-         else
-         {
-             this._dateAppointmentTaken = null;
-         }
-     }
+     * 
+     * @param dateAppointmentTaken
+     *            The DateAppointmentTaken
+     */
+    public void setDateAppointmentTaken( LocalDateTime dateAppointmentTaken )
+    {
+        _dateAppointmentTaken = dateAppointmentTaken;
+    }
+
+    /**
+     * Get the date appointment taken (in sql date format)
+     * 
+     * @return The DateAppointmentTaken
+     */
+    public Timestamp getAppointmentTakenSqlDate( )
+    {
+        Timestamp date = null;
+        if ( _dateAppointmentTaken != null )
+        {
+            date = Timestamp.valueOf( _dateAppointmentTaken );
+        }
+        return date;
+    }
+
+    /**
+     * Set the date appointment taken (in sql date format)
+     * 
+     * @param endingValidityDate
+     *            The DateAppointmentTaken to set (in sql Date format)
+     */
+    public void setAppointmentTakenSqlDate( Timestamp dateAppointmentTaken )
+    {
+        if ( dateAppointmentTaken != null )
+        {
+            this._dateAppointmentTaken = dateAppointmentTaken.toLocalDateTime( );
+        }
+        else
+        {
+            this._dateAppointmentTaken = null;
+        }
+    }
 }

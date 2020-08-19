@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -202,7 +202,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_IS_MODIFICATION = "is_modification";
     private static final String PARAMETER_NB_PLACE_TO_TAKE = "nbPlacesToTake";
 
-
     // Mark
 
     private static final String MARK_NBPLACESTOTAKE = "nbPlacesToTake";
@@ -292,9 +291,9 @@ public class AppointmentApp extends MVCApplication
     public XPage getViewAppointmentCalendar( HttpServletRequest request )
     {
         Locale locale = getLocale( request );
-        nNbPlacesToTake= 0;
+        nNbPlacesToTake = 0;
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        String nbPlacesToTake= request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
+        String nbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         boolean bError = false;
@@ -361,12 +360,11 @@ public class AppointmentApp extends MVCApplication
             WeekDefinition weekDefinitionClosest = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, startingDateOfDisplay );
             LocalDate dateOfClosestWeekDefinition = weekDefinitionClosest.getDateOfApply( );
             LocalDate maxEndingDateOfWeekDefinition = endingDateOfDisplay;
-            listWeekDefinition = listWeekDefinition
-                    .stream( )
-                    .filter(
-                            w -> ( w.getDateOfApply( ).isEqual( dateOfClosestWeekDefinition ) || w.getDateOfApply( ).isAfter( dateOfClosestWeekDefinition ) )
-                                    && ( w.getDateOfApply( ).isBefore( maxEndingDateOfWeekDefinition ) || w.getDateOfApply( ).isEqual(
-                                            maxEndingDateOfWeekDefinition ) ) ).collect( Collectors.toList( ) );
+            listWeekDefinition = listWeekDefinition.stream( )
+                    .filter( w -> ( w.getDateOfApply( ).isEqual( dateOfClosestWeekDefinition ) || w.getDateOfApply( ).isAfter( dateOfClosestWeekDefinition ) )
+                            && ( w.getDateOfApply( ).isBefore( maxEndingDateOfWeekDefinition )
+                                    || w.getDateOfApply( ).isEqual( maxEndingDateOfWeekDefinition ) ) )
+                    .collect( Collectors.toList( ) );
         }
         // Get the min time of all the week definitions
         LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
@@ -379,16 +377,19 @@ public class AppointmentApp extends MVCApplication
         List<Slot> listSlots = new ArrayList<>( );
         if ( !bError )
         {
-        	boolean isNewNbPlacesToTake= (nbPlacesToTake != null && StringUtils.isNumeric( nbPlacesToTake ));
-        	if( nNbPlacesToTake != 0 || isNewNbPlacesToTake) {
-        	
-        		nNbPlacesToTake= isNewNbPlacesToTake?Integer.parseInt( nbPlacesToTake ):nNbPlacesToTake;
+            boolean isNewNbPlacesToTake = ( nbPlacesToTake != null && StringUtils.isNumeric( nbPlacesToTake ) );
+            if ( nNbPlacesToTake != 0 || isNewNbPlacesToTake )
+            {
+
+                nNbPlacesToTake = isNewNbPlacesToTake ? Integer.parseInt( nbPlacesToTake ) : nNbPlacesToTake;
                 listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay, nNbPlacesToTake );
 
-        	}else {
-        		nNbPlacesToTake= 0;
+            }
+            else
+            {
+                nNbPlacesToTake = 0;
                 listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay );
-        	}
+            }
             // Get the min time from now before a user can take an appointment
             // (in hours)
             FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
@@ -470,7 +471,7 @@ public class AppointmentApp extends MVCApplication
         switch( calendarTemplate.getTitle( ) )
         {
             case CalendarTemplate.FREE_SLOTS_GROUPED:
-            	 // Keep only the available slots
+                // Keep only the available slots
                 listHiddenDays.clear( );
                 dayView = BASIC_DAY;
                 weekView = BASIC_WEEK;
@@ -515,7 +516,7 @@ public class AppointmentApp extends MVCApplication
         xpage.setContent( template.getHtml( ) );
         xpage.setPathLabel(
 
-        getDefaultPagePath( locale ) );
+                getDefaultPagePath( locale ) );
         xpage.setTitle( getDefaultPageTitle( locale ) );
         return xpage;
     }
@@ -551,7 +552,7 @@ public class AppointmentApp extends MVCApplication
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
-            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap< >( );
+            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
             additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
             additionalParameters.put( PARAMETER_STARTING_DATE_TIME, request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
             additionalParameters.put( PARAMETER_ENDING_DATE_TIME, request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
@@ -560,24 +561,29 @@ public class AppointmentApp extends MVCApplication
             return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
 
         }
-          
+
         String isModification = request.getParameter( PARAMETER_IS_MODIFICATION );
         boolean bModificationForm = false;
-        List<Slot>  listSlot = null;
+        List<Slot> listSlot = null;
         if ( isModification != null )
 
         {
             bModificationForm = true;
-            
-        }else {
-        	
-        	  LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-              LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
-           // Get all the week definitions
-              HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );       
-              listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateTime.toLocalDate(), endingDateTime.toLocalDate() );
-              listSlot = listSlot.stream().filter( s -> (( startingDateTime.compareTo(s.getStartingDateTime()) <= 0) && (endingDateTime.compareTo(s.getEndingDateTime()) >= 0) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ))  ).collect( Collectors.toList( ));
-       
+
+        }
+        else
+        {
+
+            LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
+            LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+            // Get all the week definitions
+            HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
+            listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
+            listSlot = listSlot.stream( )
+                    .filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
+                            && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) )
+                    .collect( Collectors.toList( ) );
+
         }
 
         AppointmentDTO oldAppointmentDTO = null;
@@ -593,7 +599,7 @@ public class AppointmentApp extends MVCApplication
             {
                 request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
                 request.getSession( ).setAttribute( SESSION_NOT_VALIDATED_APPOINTMENT, appointmentDTO );
-                if ( !bModificationForm && listSlot != null && isEquals( appointmentDTO.getSlot(), listSlot) )
+                if ( !bModificationForm && listSlot != null && isEquals( appointmentDTO.getSlot( ), listSlot ) )
 
                 {
                     oldAppointmentDTO = appointmentDTO;
@@ -604,13 +610,13 @@ public class AppointmentApp extends MVCApplication
         {
             // Appointment DTO not validated in session
             // Need to verify if the slot has not changed
-            if (  !bModificationForm && listSlot != null && isEquals( appointmentDTO.getSlot(), listSlot) )
+            if ( !bModificationForm && listSlot != null && isEquals( appointmentDTO.getSlot( ), listSlot ) )
 
             {
                 oldAppointmentDTO = appointmentDTO;
             }
         }
-            
+
         if ( appointmentDTO == null || oldAppointmentDTO != null )
         {
             // Need to get back the informations the user has entered
@@ -628,50 +634,54 @@ public class AppointmentApp extends MVCApplication
         }
         if ( !bModificationForm )
         {
-        	       
-        	Boolean bool= true;
-        	appointmentDTO.setSlot(null);
-        	appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
-            for(Slot slot : listSlot ){
-            	
+
+            Boolean bool = true;
+            appointmentDTO.setSlot( null );
+            appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
+            for ( Slot slot : listSlot )
+            {
+
                 // If nIdSlot == 0, the slot has not been created yet
-	            if ( slot.getIdSlot( ) == 0 )
-	            {
-	               
-	                slot = SlotSafeService.createSlot( slot );
-	                
-	            }else{
-	            
-	            	slot = SlotService.findSlotById( slot.getIdSlot( ) );
-	            }
-       	 
+                if ( slot.getIdSlot( ) == 0 )
+                {
+
+                    slot = SlotSafeService.createSlot( slot );
+
+                }
+                else
+                {
+
+                    slot = SlotService.findSlotById( slot.getIdSlot( ) );
+                }
+
                 // Need to check competitive access
                 // May be the slot is already taken at the same time
-	            if ( !bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
-	            {
-	                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-	                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
-	            }
-	            
-	            appointmentDTO.addSlot( slot );
-	            
-	            if( bool ) {
-	            	
-		            appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
-		            appointmentDTO.setIdForm( nIdForm );
-		            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
-		            if ( user != null )
-		            {
-		                setUserInfo( request, appointmentDTO );
-		            }  
-		            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-		            WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-		            form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
-		            bool = false;
-            	}
-	            AppointmentUtilities.putTimerInSession( request, slot.getIdSlot(), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
-            }           
-            if ( appointmentDTO.getNbMaxPotentialBookedSeats() == 0 )
+                if ( !bTestSecondAttempt && slot.getNbPotentialRemainingPlaces( ) == 0 )
+                {
+                    addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                    return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+                }
+
+                appointmentDTO.addSlot( slot );
+
+                if ( bool )
+                {
+
+                    appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
+                    appointmentDTO.setIdForm( nIdForm );
+                    LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+                    if ( user != null )
+                    {
+                        setUserInfo( request, appointmentDTO );
+                    }
+                    ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
+                    WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
+                    form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );
+                    bool = false;
+                }
+                AppointmentUtilities.putTimerInSession( request, slot.getIdSlot( ), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
+            }
+            if ( appointmentDTO.getNbMaxPotentialBookedSeats( ) == 0 )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
                 return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
@@ -686,7 +696,7 @@ public class AppointmentApp extends MVCApplication
             // Need to redirect for the anchor
             if ( StringUtils.isEmpty( strModificationForm ) )
             {
-                LinkedHashMap<String, String> additionalParameters = new LinkedHashMap< >( );
+                LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
                 additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                 additionalParameters.put( PARAMETER_MODIFICATION_FORM, String.valueOf( Boolean.TRUE ) );
                 additionalParameters.put( PARAMETER_IS_MODIFICATION, String.valueOf( Boolean.TRUE ) );
@@ -709,13 +719,14 @@ public class AppointmentApp extends MVCApplication
             model.put( MARK_FORM_ERRORS, listErrors );
             request.getSession( ).removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
         }
-        if(nNbPlacesToTake != 0) {
-        	
-        	appointmentDTO.setNbBookedSeats(nNbPlacesToTake);
+        if ( nNbPlacesToTake != 0 )
+        {
+
+            appointmentDTO.setNbBookedSeats( nNbPlacesToTake );
         }
         model.put( MARK_APPOINTMENT, appointmentDTO );
         model.put( MARK_NBPLACESTOTAKE, nNbPlacesToTake );
-        model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).get(0).getDate( ) );
+        model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).get( 0 ).getDate( ) );
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
@@ -732,7 +743,7 @@ public class AppointmentApp extends MVCApplication
         if ( form.getDisplayTitleFo( ) )
         {
             xPage.setTitle( form.getTitle( ) );
-        } 
+        }
         return xPage;
     }
 
@@ -746,25 +757,26 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      */
     @Action( ACTION_DO_VALIDATE_FORM )
-    public XPage doValidateForm( HttpServletRequest request ) throws  UserNotSignedException
+    public XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
-        List<GenericAttributeError> listFormErrors = new ArrayList< >( );
+        List<GenericAttributeError> listFormErrors = new ArrayList<>( );
         Locale locale = request.getLocale( );
         String strEmail = request.getParameter( PARAMETER_EMAIL );
         String strFirstName = request.getParameter( PARAMETER_FIRST_NAME );
         String strLastName = request.getParameter( PARAMETER_LAST_NAME );
         AppointmentUtilities.checkDateOfTheAppointmentIsNotBeforeNow( appointmentDTO, locale, listFormErrors );
         AppointmentUtilities.checkEmail( strEmail, request.getParameter( PARAMETER_EMAIL_CONFIRMATION ), form, locale, listFormErrors );
-        int nbBookedSeats= nNbPlacesToTake;
-        if( nNbPlacesToTake == 0) {
-        	
-             nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
+        int nbBookedSeats = nNbPlacesToTake;
+        if ( nNbPlacesToTake == 0 )
+        {
+
+            nbBookedSeats = AppointmentUtilities.checkAndReturnNbBookedSeats( request.getParameter( PARAMETER_NUMBER_OF_BOOKED_SEATS ), form, appointmentDTO,
                     locale, listFormErrors );
-        	
+
         }
         AppointmentUtilities.fillAppointmentDTO( appointmentDTO, nbBookedSeats, strEmail, strFirstName, strLastName );
         AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
@@ -848,7 +860,7 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointment, request, locale ) );
         model.put( MARK_FORM, form );
         model.put( MARK_NBPLACESTOTAKE, nNbPlacesToTake );
-        model.put( PARAMETER_DATE_OF_DISPLAY, appointment.getSlot( ).get(0).getDate( ) );
+        model.put( PARAMETER_DATE_OF_DISPLAY, appointment.getSlot( ).get( 0 ).getDate( ) );
         XPage xPage = new XPage( );
         HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_APPOINTMENT_FORM_RECAP, locale, model );
         xPage.setContent( t.getHtml( ) );
@@ -866,53 +878,54 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public  XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
+    public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
         AppointmentDTO appointment = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_VALIDATED_APPOINTMENT );
         if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_BACK ) ) )
         {
-        	LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>( );
-            parameters.put( PARAMETER_ID_FORM, String.valueOf(appointment.getIdForm( ) ));
+            LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>( );
+            parameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ) );
             parameters.put( PARAMETER_IS_MODIFICATION, String.valueOf( Boolean.TRUE ) );
 
-            return redirect( request, VIEW_APPOINTMENT_FORM,  parameters );
+            return redirect( request, VIEW_APPOINTMENT_FORM, parameters );
         }
-        if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( )  && !getCaptchaService( ).validate( request ))
+        if ( form.getEnableCaptcha( ) && getCaptchaService( ).isAvailable( ) && !getCaptchaService( ).validate( request ) )
         {
-                addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
-                return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, appointment.getIdForm( ) );      
+            addError( ERROR_MESSAGE_CAPTCHA, getLocale( request ) );
+            return redirect( request, VIEW_DISPLAY_RECAP_APPOINTMENT, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
-        List<Slot> listSlot= new ArrayList<>();
-        int nbRemainingPlaces=0;
-        for( Slot slt: appointment.getSlot( )) {
-	        
-        	Slot slot = null;
-	        // Reload the slot from the database
-	        // The slot could have been taken since the beginning of the entry of
-	        // the form
-	        if ( slt.getIdSlot( ) != 0 )
-	        {
-	            slot = SlotService.findSlotById( slt.getIdSlot( ) );
-	        }
-	        
-	        else
-	        {
-	            HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( appointment.getIdForm( ), slt
-	                    .getStartingDateTime( ), slt.getEndingDateTime( ) );
-	            if ( !mapSlot.isEmpty( ) )
-	            {
-	                slot = mapSlot.get( slt.getStartingDateTime( ) );
-	            }
-	            else
-	            {
-	                slot = slt;
-	            }
-	        }
-	        nbRemainingPlaces= nbRemainingPlaces+ slot.getNbRemainingPlaces();
-	        listSlot.add(slot);
-    
+        List<Slot> listSlot = new ArrayList<>( );
+        int nbRemainingPlaces = 0;
+        for ( Slot slt : appointment.getSlot( ) )
+        {
+
+            Slot slot = null;
+            // Reload the slot from the database
+            // The slot could have been taken since the beginning of the entry of
+            // the form
+            if ( slt.getIdSlot( ) != 0 )
+            {
+                slot = SlotService.findSlotById( slt.getIdSlot( ) );
+            }
+
+            else
+            {
+                HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( appointment.getIdForm( ),
+                        slt.getStartingDateTime( ), slt.getEndingDateTime( ) );
+                if ( !mapSlot.isEmpty( ) )
+                {
+                    slot = mapSlot.get( slt.getStartingDateTime( ) );
+                }
+                else
+                {
+                    slot = slt;
+                }
+            }
+            nbRemainingPlaces = nbRemainingPlaces + slot.getNbRemainingPlaces( );
+            listSlot.add( slot );
+
         }
         if ( appointment.getNbBookedSeats( ) > nbRemainingPlaces )
         {
@@ -921,29 +934,34 @@ public class AppointmentApp extends MVCApplication
         }
         appointment.setSlot( listSlot );
         int nIdAppointment;
-		try {
-			
-			nIdAppointment = SlotSafeService.saveAppointment( appointment, request );
+        try
+        {
 
-		} catch ( SlotFullException e ) {
-			
-			 addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-	         return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
-		}catch( AppointmentSavedException e ){
-			
-			nIdAppointment = appointment.getIdAppointment( );
-			AppLogService.error( "Error Save appointment: " + e.getMessage(), e );
-		}
+            nIdAppointment = SlotSafeService.saveAppointment( appointment, request );
+
+        }
+        catch( SlotFullException e )
+        {
+
+            addInfo( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+            return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
+        }
+        catch( AppointmentSavedException e )
+        {
+
+            nIdAppointment = appointment.getIdAppointment( );
+            AppLogService.error( "Error Save appointment: " + e.getMessage( ), e );
+        }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         XPage xPage = null;
         nNbPlacesToTake = 0;
-        	
+
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
         {
-            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap< >( );
+            LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
             additionalParameters.put( PARAMETER_ID_FORM, String.valueOf( appointment.getIdForm( ) ) );
             additionalParameters.put( PARAMETER_ID_APPOINTMENT, String.valueOf( nIdAppointment ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
@@ -971,13 +989,14 @@ public class AppointmentApp extends MVCApplication
         AppLogService.debug( "n Id Appointment :" + nIdAppointment );
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
-        List<AppointmentSlot>  listAppointmentSlot= appointment.getListAppointmentSlot();
-        
-        Slot firstSlot = SlotService.findSlotById( listAppointmentSlot.get(0).getIdSlot( ) );
+        List<AppointmentSlot> listAppointmentSlot = appointment.getListAppointmentSlot( );
+
+        Slot firstSlot = SlotService.findSlotById( listAppointmentSlot.get( 0 ).getIdSlot( ) );
         Slot lastSlot = firstSlot;
-        if( listAppointmentSlot.size() > 1 ) {
-        	
-        	lastSlot= SlotService.findSlotById( listAppointmentSlot.get( listAppointmentSlot.size() -1 ).getIdSlot( ) );
+        if ( listAppointmentSlot.size( ) > 1 )
+        {
+
+            lastSlot = SlotService.findSlotById( listAppointmentSlot.get( listAppointmentSlot.size( ) - 1 ).getIdSlot( ) );
         }
 
         AppointmentFormDTO form = FormService.buildAppointmentForm( nIdForm, 0, 0 );
@@ -1033,10 +1052,10 @@ public class AppointmentApp extends MVCApplication
      * @return the view
      * @throws SiteMessageException
      */
-     @View( VIEW_GET_VIEW_CANCEL_APPOINTMENT )
-    public XPage getViewCancelAppointment( HttpServletRequest request ) throws SiteMessageException 
-     {
-    	String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
+    @View( VIEW_GET_VIEW_CANCEL_APPOINTMENT )
+    public XPage getViewCancelAppointment( HttpServletRequest request ) throws SiteMessageException
+    {
+        String refAppointment = request.getParameter( PARAMETER_REF_APPOINTMENT );
         Appointment appointment = null;
         if ( StringUtils.isNotEmpty( refAppointment ) )
         {
@@ -1051,15 +1070,15 @@ public class AppointmentApp extends MVCApplication
             {
                 model.put( MARK_APPOINTMENT_ALREADY_CANCELLED, Boolean.TRUE );
             }
-            
+
             int nIdAppointment = appointment.getIdAppointment( );
-            AppointmentDTO appointmentDto=  AppointmentService.buildAppointmentDTOFromIdAppointment(  nIdAppointment );
+            AppointmentDTO appointmentDto = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
             // Check if the appointment is passed
             if ( appointmentDto.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) )
             {
                 model.put( MARK_APPOINTMENT_PASSED, Boolean.TRUE );
             }
-            model.put( MARK_DATE_APPOINTMENT, appointmentDto.getDateAppointmentTaken().format( Utilities.getFormatter( ) ) );
+            model.put( MARK_DATE_APPOINTMENT, appointmentDto.getDateAppointmentTaken( ).format( Utilities.getFormatter( ) ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, appointmentDto.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, appointmentDto.getEndingTime( ) );
             model.put( MARK_PLACES, appointment.getNbPlaces( ) );
@@ -1080,7 +1099,7 @@ public class AppointmentApp extends MVCApplication
         XPage xpage = getXPage( TEMPLATE_CANCEL_APPOINTMENT, locale, model );
         xpage.setTitle( I18nService.getLocalizedString( MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE, locale ) );
         return xpage;
-        
+
     }
 
     /**
@@ -1090,14 +1109,14 @@ public class AppointmentApp extends MVCApplication
      * @return the confirmation view of the appointment cancelled
      * @throws SiteMessageException
      */
-     @Action( ACTION_DO_CANCEL_APPOINTMENT )
+    @Action( ACTION_DO_CANCEL_APPOINTMENT )
     public XPage doCancelAppointment( HttpServletRequest request ) throws SiteMessageException
     {
-       String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
+        String strRef = request.getParameter( PARAMETER_REF_APPOINTMENT );
         if ( StringUtils.isNotEmpty( strRef ) )
         {
             Appointment appointment = AppointmentService.findAppointmentByReference( strRef );
-            AppointmentDTO appointmentDto=  AppointmentService.buildAppointmentDTOFromIdAppointment(  appointment.getIdAppointment( ) );
+            AppointmentDTO appointmentDto = AppointmentService.buildAppointmentDTOFromIdAppointment( appointment.getIdAppointment( ) );
 
             // Accept only one cancel !!!
             if ( appointment != null && !appointment.getIsCancelled( ) )
@@ -1112,7 +1131,8 @@ public class AppointmentApp extends MVCApplication
                         {
                             WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                                     appointment.getIdActionCancelled( ), appointmentDto.getIdForm( ), request, request.getLocale( ), automaticUpdate );
-                            AppointmentListenerManager.notifyAppointmentWFActionTriggered(appointment.getIdAppointment( ), appointment.getIdActionCancelled( ));
+                            AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ),
+                                    appointment.getIdActionCancelled( ) );
                         }
                         catch( Exception e )
                         {
@@ -1125,7 +1145,7 @@ public class AppointmentApp extends MVCApplication
                         AppointmentService.updateAppointment( appointment );
                         AppLogService.info( LogUtilities.buildLog( ACTION_DO_CANCEL_APPOINTMENT, Integer.toString( appointment.getIdAppointment( ) ), null ) );
                     }
-                    Map<String, String> mapParameters = new HashMap< >( );
+                    Map<String, String> mapParameters = new HashMap<>( );
                     if ( StringUtils.isNotEmpty( request.getParameter( PARAMETER_FROM_MY_APPOINTMENTS ) ) )
                     {
                         String strReferer = request.getHeader( PARAMETER_REFERER );
@@ -1241,19 +1261,17 @@ public class AppointmentApp extends MVCApplication
         // We keep only the active
         if ( CollectionUtils.isNotEmpty( listAppointmentForm ) )
         {
-            listAppointmentForm = listAppointmentForm
-                    .stream( )
-                    .filter(
-                            a -> ( a.getDateStartValidity( ) != null )
-                                    && ( a.getDateStartValidity( ).toLocalDate( ).isBefore( LocalDate.now( ) ) || a.getDateStartValidity( ).toLocalDate( )
-                                            .equals( LocalDate.now( ) ) ) ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) )
-                    .collect( Collectors.toList( ) );
+            listAppointmentForm = listAppointmentForm.stream( )
+                    .filter( a -> ( a.getDateStartValidity( ) != null ) && ( a.getDateStartValidity( ).toLocalDate( ).isBefore( LocalDate.now( ) )
+                            || a.getDateStartValidity( ).toLocalDate( ).equals( LocalDate.now( ) ) ) )
+                    .sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
         }
         List<String> icons = new ArrayList<String>( );
         for ( AppointmentFormDTO form : listAppointmentForm )
         {
             ImageResource img = form.getIcon( );
-            if ( img == null || img.getImage( ) == null || StringUtils.isEmpty( img.getMimeType( ) ) || StringUtils.equals( img.getMimeType( ), MARK_ICON_NULL ) )
+            if ( img == null || img.getImage( ) == null || StringUtils.isEmpty( img.getMimeType( ) )
+                    || StringUtils.equals( img.getMimeType( ), MARK_ICON_NULL ) )
             {
                 icons.add( MARK_ICON_NULL );
             }
@@ -1394,21 +1412,25 @@ public class AppointmentApp extends MVCApplication
             }
         }
     }
-    
-    private boolean isEquals(List<Slot> listSlot1, List<Slot> listSlot2) {
-    	
-    	if(listSlot1.size() == listSlot2.size()) {
-    		return false;
-    	}
-    	
-    	for (Slot slot: listSlot1) {
-    		
-    		if (!listSlot2.stream().anyMatch(s -> s.getIdSlot() == slot.getIdSlot()) ){
-    		
-    			return false;
-    		}
-    	}
-    	
-    	return true;
+
+    private boolean isEquals( List<Slot> listSlot1, List<Slot> listSlot2 )
+    {
+
+        if ( listSlot1.size( ) == listSlot2.size( ) )
+        {
+            return false;
+        }
+
+        for ( Slot slot : listSlot1 )
+        {
+
+            if ( !listSlot2.stream( ).anyMatch( s -> s.getIdSlot( ) == slot.getIdSlot( ) ) )
+            {
+
+                return false;
+            }
+        }
+
+        return true;
     }
 }

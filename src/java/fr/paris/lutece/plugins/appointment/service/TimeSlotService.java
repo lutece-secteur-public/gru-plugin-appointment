@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,12 +87,13 @@ public final class TimeSlotService
             boolean forceTimeSlotCreationWithMinTime )
     {
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
-        LocalDateTime tempStartingDateTime = LocalDate.now().atTime(startingTime);
-        LocalDateTime tempEndingDateTime = LocalDate.now().atTime(startingTime.plusMinutes( nDuration ));
-        LocalDateTime endingDateTime = LocalDate.now().atTime(endingTime);
+        LocalDateTime tempStartingDateTime = LocalDate.now( ).atTime( startingTime );
+        LocalDateTime tempEndingDateTime = LocalDate.now( ).atTime( startingTime.plusMinutes( nDuration ) );
+        LocalDateTime endingDateTime = LocalDate.now( ).atTime( endingTime );
         while ( !tempEndingDateTime.isAfter( endingDateTime ) )
         {
-            listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingDateTime.toLocalTime(), tempEndingDateTime.toLocalTime(), Boolean.TRUE.booleanValue( ), nMaxCapacity ) );
+            listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingDateTime.toLocalTime( ), tempEndingDateTime.toLocalTime( ),
+                    Boolean.TRUE.booleanValue( ), nMaxCapacity ) );
             tempStartingDateTime = tempEndingDateTime;
             tempEndingDateTime = tempEndingDateTime.plusMinutes( nDuration );
         }
@@ -101,7 +102,7 @@ public final class TimeSlotService
             tempStartingDateTime = tempEndingDateTime.minusMinutes( nDuration );
             if ( tempStartingDateTime.isBefore( endingDateTime ) )
             {
-                listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingDateTime.toLocalTime(), endingTime, Boolean.FALSE, nMaxCapacity ) );
+                listTimeSlot.add( generateTimeSlot( nIdWorkingDay, tempStartingDateTime.toLocalTime( ), endingTime, Boolean.FALSE, nMaxCapacity ) );
             }
         }
         return listTimeSlot;
@@ -254,11 +255,10 @@ public final class TimeSlotService
                 .filter( timeSlotToKeep -> timeSlotToKeep.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) ) ).collect( Collectors.toList( ) );
         // Need to delete all the time slots until the new end of this
         // time slot
-        List<TimeSlot> listTimeSlotToDelete = listOfAllTimeSlotsOfThisWorkingDay
-                .stream( )
-                .filter(
-                        timeSlotToDelete -> timeSlotToDelete.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) )
-                                && !timeSlotToDelete.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ).collect( Collectors.toList( ) );
+        List<TimeSlot> listTimeSlotToDelete = listOfAllTimeSlotsOfThisWorkingDay.stream( )
+                .filter( timeSlotToDelete -> timeSlotToDelete.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) )
+                        && !timeSlotToDelete.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) )
+                .collect( Collectors.toList( ) );
         deleteListTimeSlot( listTimeSlotToDelete );
         listOfAllTimeSlotsOfThisWorkingDay.removeAll( listTimeSlotToDelete );
         // Need to order the list of time slot to shift according to the
@@ -518,7 +518,8 @@ public final class TimeSlotService
      */
     public static List<TimeSlot> getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( List<TimeSlot> listTimeSlot, LocalTime time )
     {
-        return listTimeSlot.stream( ).filter( x -> x.getStartingTime( ).isAfter( time ) || x.getStartingTime( ).equals( time ) ).collect( Collectors.toList( ) );
+        return listTimeSlot.stream( ).filter( x -> x.getStartingTime( ).isAfter( time ) || x.getStartingTime( ).equals( time ) )
+                .collect( Collectors.toList( ) );
     }
 
     /**

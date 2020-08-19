@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,17 +61,18 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
     public void insert( TimeSlot timeSlot, Plugin plugin )
     {
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, timeSlot, plugin, true );
-        
+
         try
         {
-            daoUtil.executeUpdate( );       
-	        if ( daoUtil.nextGeneratedKey( ) )
-	        {
-	        	timeSlot.setIdTimeSlot( daoUtil.getGeneratedKeyInt( 1 ) );
-	        }
-        }finally
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                timeSlot.setIdTimeSlot( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
+        }
+        finally
         {
-                daoUtil.free();       
+            daoUtil.free( );
         }
     }
 
@@ -180,9 +181,11 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
         DAOUtil daoUtil = null;
         if ( isInsert )
         {
-        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }else{
-        	daoUtil = new DAOUtil( query, plugin );
+            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }
+        else
+        {
+            daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setTime( nIndex++, timeSlot.getStartingTimeSqlTime( ) );
         daoUtil.setTime( nIndex++, timeSlot.getEndingTimeSqlTime( ) );

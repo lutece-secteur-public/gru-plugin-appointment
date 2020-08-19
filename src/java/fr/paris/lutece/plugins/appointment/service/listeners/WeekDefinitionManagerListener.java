@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,12 +54,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionCreation( int nIdWeekDefinition )
     {
-    	new Thread( ( ) -> {
-	        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
-	        {
-	            weekDefinitionListener.notifyWeekDefinitionCreation( nIdWeekDefinition );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
+            {
+                weekDefinitionListener.notifyWeekDefinitionCreation( nIdWeekDefinition );
+            }
+        } ).start( );
     }
 
     /**
@@ -70,12 +70,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionChange( int nIdWeekDefinition )
     {
-    	new Thread( ( ) -> {
-	        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
-	        {
-	            weekDefinitionListener.notifyWeekDefinitionChange( nIdWeekDefinition );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
+            {
+                weekDefinitionListener.notifyWeekDefinitionChange( nIdWeekDefinition );
+            }
+        } ).start( );
     }
 
     /**
@@ -86,12 +86,12 @@ public final class WeekDefinitionManagerListener
      */
     public static void notifyListenersWeekDefinitionRemoval( int nIdForm )
     {
-    	new Thread( ( ) -> {
-	        for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
-	        {
-	            weekDefinitionListener.notifyWeekDefinitionRemoval( nIdForm );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
+            {
+                weekDefinitionListener.notifyWeekDefinitionRemoval( nIdForm );
+            }
+        } ).start( );
     }
 
 }

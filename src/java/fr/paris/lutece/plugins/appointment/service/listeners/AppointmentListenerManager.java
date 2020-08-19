@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,14 +62,14 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentRemoval( int nIdAppointment )
     {
-    	new Thread( ( ) -> {
-	        for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-	        {
-	            appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IAppointmentListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+            {
+                appointmentRemovalListener.notifyAppointmentRemoval( nIdAppointment );
+            }
+        } ).start( );
     }
-    
+
     /**
      * Notify listeners that an appointment is about to be created
      * 
@@ -78,17 +78,17 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentCreated( int nIdAppointment )
     {
-    	new Thread( ( ) -> {
-    	   
-    		for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-    		{
-    			appointmentListener.notifyAppointmentCreated(nIdAppointment);
-    	    }
-    	    
-    	}).start();
-    	
-        
+        new Thread( ( ) -> {
+
+            for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+            {
+                appointmentListener.notifyAppointmentCreated( nIdAppointment );
+            }
+
+        } ).start( );
+
     }
+
     /**
      * Notify listeners that an appointment is about to be updated
      * 
@@ -97,12 +97,12 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentUpdated( int nIdAppointment )
     {
-    	new Thread( ( ) -> {
-	        for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
-	        {
-	            appointmentListener.notifyAppointmentUpdated(nIdAppointment);
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IAppointmentListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentListener.class ) )
+            {
+                appointmentListener.notifyAppointmentUpdated( nIdAppointment );
+            }
+        } ).start( );
     }
 
     /**
@@ -141,30 +141,30 @@ public final class AppointmentListenerManager
      */
     public static void notifyListenersAppointmentFormRemoval( int nIdAppointmentForm )
     {
-    	new Thread( ( ) -> {
-	        for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
-	        {
-	            appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IAppointmentFormRemovalListener appointmentRemovalListener : SpringContextService.getBeansOfType( IAppointmentFormRemovalListener.class ) )
+            {
+                appointmentRemovalListener.notifyAppointmentFormRemoval( nIdAppointmentForm );
+            }
+        } ).start( );
     }
-    
+
     /**
      * Notify users that an Notify the listener that an appointment Workflow action has been Triggred
      * 
      * @param nIdAppointment
-     *            the id of the  appointment
+     *            the id of the appointment
      * @param nIdAction
-     *            The id of the wf action   
+     *            The id of the wf action
      */
     public static void notifyAppointmentWFActionTriggered( int nIdAppointment, int nIdAction )
     {
-    	new Thread( ( ) -> {
-	        for ( IAppointmentWorkflowActionListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentWorkflowActionListener.class ) )
-	        {
-	        	appointmentListener.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IAppointmentWorkflowActionListener appointmentListener : SpringContextService.getBeansOfType( IAppointmentWorkflowActionListener.class ) )
+            {
+                appointmentListener.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
+            }
+        } ).start( );
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -89,10 +89,9 @@ public final class FormRule implements Serializable
      */
     private int _nNbDaysForMaxAppointmentsPerUser;
     /**
-     * Authorize overbooking 
+     * Authorize overbooking
      */
     private boolean _bBoOverbooking;
-
 
     /**
      * Form id (foreign key)
@@ -266,23 +265,27 @@ public final class FormRule implements Serializable
     {
         this._nNbDaysForMaxAppointmentsPerUser = nNbDaysForMaxAppointmentsPerUser;
     }
+
     /**
      * Returns the BoOverbooking
+     * 
      * @return The BoOverbooking
-     */ 
-     public boolean getBoOverbooking()
-     {
-         return _bBoOverbooking;
-     }
- 
+     */
+    public boolean getBoOverbooking( )
+    {
+        return _bBoOverbooking;
+    }
+
     /**
      * Sets the BoOverbooking
-     * @param bBoOverbooking The BoOverbooking
-     */ 
-     public void setBoOverbooking( boolean bBoOverbooking )
-     {
-         _bBoOverbooking = bBoOverbooking;
-     }
+     * 
+     * @param bBoOverbooking
+     *            The BoOverbooking
+     */
+    public void setBoOverbooking( boolean bBoOverbooking )
+    {
+        _bBoOverbooking = bBoOverbooking;
+    }
 
     /**
      * Get the form id the formRule belongs to

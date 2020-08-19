@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -242,13 +242,11 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         Map<String, Object> model = getModel( );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put(
-                MARK_APPOINTMENTFORM_LIST,
-                RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                        AdminUserService.getAdminUser( request ) ) );
+        model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
+                AdminUserService.getAdminUser( request ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
-        model.put( MARK_PERMISSION_CREATE, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0",
-                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
+        model.put( MARK_PERMISSION_CREATE, String.valueOf(
+                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
@@ -773,8 +771,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                 {
                     if ( !listClosingDaysDb.contains( closingDate ) )
                     {
-                        listSlotsImpacted = SlotService
-                                .findSlotsByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ), closingDate.atTime( LocalTime.MAX ) );
+                        listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ),
+                                closingDate.atTime( LocalTime.MAX ) );
                         // Check if there is appointments on this slots
                         listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
                         if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
@@ -798,7 +796,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                     String strListdate = stbListDate.toString( );
                     strListdate = strListdate.substring( 0, strListdate.length( ) - 1 );
                     Object [ ] tabEntryErrorDate = {
-                        strListdate
+                            strListdate
                     };
                     String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( MESSAGE_ERROR_OPEN_SLOTS, tabEntryErrorDate, getLocale( ) );
                     addError( strErrorMessageDateWithAppointments );

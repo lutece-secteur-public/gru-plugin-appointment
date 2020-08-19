@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,7 @@ public final class TimerForLockOnSlot extends Timer implements Serializable
      * Is Cancelled
      */
     private boolean _bIsCancelled;
+
     /**
      * Constructor
      */
@@ -54,16 +55,18 @@ public final class TimerForLockOnSlot extends Timer implements Serializable
     {
         super( );
     }
-   
-    public boolean isCancelled( ){
-    	
-    	return _bIsCancelled;
-    	
+
+    public boolean isCancelled( )
+    {
+
+        return _bIsCancelled;
+
     }
-     
-    public void setIsCancelled( boolean isCancelled){
-    	
-    	_bIsCancelled= isCancelled;
+
+    public void setIsCancelled( boolean isCancelled )
+    {
+
+        _bIsCancelled = isCancelled;
     }
 
 }

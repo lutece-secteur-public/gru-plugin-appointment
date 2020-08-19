@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -498,7 +498,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                     // Error, the time slot can't be changed
                     addError( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
                     addError( listAppointmentsImpacted.size( ) + " rendez-vous impacté(s)" );
- //                   addError( "dont un le " + SlotService.findSlotById( listAppointmentsImpacted.get( 0 ).getIdSlot( ) ).getStartingDateTime( ) );
+                    // addError( "dont un le " + SlotService.findSlotById( listAppointmentsImpacted.get( 0 ).getIdSlot( ) ).getStartingDateTime( ) );
                     Map<String, String> additionalParameters = new HashMap<>( );
                     additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                     additionalParameters.put( PARAMETER_ID_WEEK_DEFINITION, strIdWeekDefinition );
@@ -655,81 +655,83 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
         int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
         boolean bEndingTimeHasChanged = false;
-    
+
         boolean bShiftSlot = Boolean.parseBoolean( request.getParameter( PARAMETER_SHIFT_SLOT ) );
         int nIdSlot = Integer.parseInt( strIdSlot );
         Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
-		lock.lock();
-        try {
-	        if ( nIdSlot != 0 )
-	        {
-	            slotFromSessionOrFromDb = SlotService.findSlotById( nIdSlot );
-	        }
-	        else
-	        {
-	            slotFromSessionOrFromDb = (Slot) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_SLOT );
-	        }
-	       
-				
-	        if ( bIsOpen != slotFromSessionOrFromDb.getIsOpen( ) )
-	        {
-	            slotFromSessionOrFromDb.setIsOpen( bIsOpen );
-	            bOpeningHasChanged = true;
-	        }
-	
-	        // If we edit the slot, we need to check if this slot is not a closing
-	        // day
-	        ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( slotFromSessionOrFromDb.getIdForm( ),
-	                slotFromSessionOrFromDb.getDate( ) );
-	        if ( closingDay != null )
-	        {
-	            // If the slot is a closing day, we need to remove it from the table
-	            // closing day so that the slot is not in conflict with the
-	            // definition of the closing days
-	            ClosingDayService.removeClosingDay( closingDay );
-	        }
-	        if ( nMaxCapacity != slotFromSessionOrFromDb.getMaxCapacity( ) )
-	        {
-	            slotFromSessionOrFromDb.setMaxCapacity( nMaxCapacity );
-	            // Need to set also the nb remaining places and the nb potential
-	            // remaining places
-	            // If the slot already exist, the good values will be set at the
-	            // update of the slot with taking the old values
-	            // If it is a new slot, the value set here will be good
-	            slotFromSessionOrFromDb.setNbRemainingPlaces( nMaxCapacity );
-	            slotFromSessionOrFromDb.setNbPotentialRemainingPlaces( nMaxCapacity );
-	        }
-	        LocalTime previousEndingTime = slotFromSessionOrFromDb.getEndingTime( );
-	        if ( !endingTime.equals( previousEndingTime ) )
-	        {
-	            slotFromSessionOrFromDb.setEndingTime( endingTime );
-	            slotFromSessionOrFromDb.setEndingDateTime( slotFromSessionOrFromDb.getDate( ).atTime( endingTime ) );
-	            bEndingTimeHasChanged = true;
-	        }
-	        if ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slotFromSessionOrFromDb, bShiftSlot ) || bEndingTimeHasChanged
-	                && !checkEndingTimeOfSlot( endingTime, slotFromSessionOrFromDb ) )
-	        {
-	            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_SLOT, slotFromSessionOrFromDb );
-	            return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, slotFromSessionOrFromDb.getIdForm( ) );
-	        }
-	        SlotSafeService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
-		 
-        }finally{
-			 
-			 lock.unlock();
-		 }
-	     AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
-	     addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
-	     boolean appointmentsImpacted = !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slotFromSessionOrFromDb );
-	     if ( appointmentsImpacted && bOpeningHasChanged )
-	     {
-	    	 addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
-	     }
-	     if ( appointmentsImpacted && nMaxCapacity < slotFromSessionOrFromDb.getNbPlacesTaken( ) )
-	     {
-	         addInfo( MESSAGE_INFO_SURBOOKING, getLocale( ) );
-	     }
-	
+        lock.lock( );
+        try
+        {
+            if ( nIdSlot != 0 )
+            {
+                slotFromSessionOrFromDb = SlotService.findSlotById( nIdSlot );
+            }
+            else
+            {
+                slotFromSessionOrFromDb = (Slot) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_SLOT );
+            }
+
+            if ( bIsOpen != slotFromSessionOrFromDb.getIsOpen( ) )
+            {
+                slotFromSessionOrFromDb.setIsOpen( bIsOpen );
+                bOpeningHasChanged = true;
+            }
+
+            // If we edit the slot, we need to check if this slot is not a closing
+            // day
+            ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( slotFromSessionOrFromDb.getIdForm( ),
+                    slotFromSessionOrFromDb.getDate( ) );
+            if ( closingDay != null )
+            {
+                // If the slot is a closing day, we need to remove it from the table
+                // closing day so that the slot is not in conflict with the
+                // definition of the closing days
+                ClosingDayService.removeClosingDay( closingDay );
+            }
+            if ( nMaxCapacity != slotFromSessionOrFromDb.getMaxCapacity( ) )
+            {
+                slotFromSessionOrFromDb.setMaxCapacity( nMaxCapacity );
+                // Need to set also the nb remaining places and the nb potential
+                // remaining places
+                // If the slot already exist, the good values will be set at the
+                // update of the slot with taking the old values
+                // If it is a new slot, the value set here will be good
+                slotFromSessionOrFromDb.setNbRemainingPlaces( nMaxCapacity );
+                slotFromSessionOrFromDb.setNbPotentialRemainingPlaces( nMaxCapacity );
+            }
+            LocalTime previousEndingTime = slotFromSessionOrFromDb.getEndingTime( );
+            if ( !endingTime.equals( previousEndingTime ) )
+            {
+                slotFromSessionOrFromDb.setEndingTime( endingTime );
+                slotFromSessionOrFromDb.setEndingDateTime( slotFromSessionOrFromDb.getDate( ).atTime( endingTime ) );
+                bEndingTimeHasChanged = true;
+            }
+            if ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slotFromSessionOrFromDb, bShiftSlot )
+                    || bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, slotFromSessionOrFromDb ) )
+            {
+                request.getSession( ).setAttribute( SESSION_ATTRIBUTE_SLOT, slotFromSessionOrFromDb );
+                return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, slotFromSessionOrFromDb.getIdForm( ) );
+            }
+            SlotSafeService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
+
+        }
+        finally
+        {
+
+            lock.unlock( );
+        }
+        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
+        addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
+        boolean appointmentsImpacted = !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slotFromSessionOrFromDb );
+        if ( appointmentsImpacted && bOpeningHasChanged )
+        {
+            addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+        }
+        if ( appointmentsImpacted && nMaxCapacity < slotFromSessionOrFromDb.getNbPlacesTaken( ) )
+        {
+            addInfo( MESSAGE_INFO_SURBOOKING, getLocale( ) );
+        }
+
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
         Map<String, String> additionalParameters = new HashMap<>( );
         additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( slotFromSessionOrFromDb.getIdForm( ) ) );
@@ -853,9 +855,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
         for ( Appointment appointment : listAppointmentsImpacted )
         {
-        	for(AppointmentSlot apptSlot: appointment.getListAppointmentSlot( ) ) {
-        		setSlotsImpactedWithAppointments.add( apptSlot.getIdSlot( ) );
-        	}
+            for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
+            {
+                setSlotsImpactedWithAppointments.add( apptSlot.getIdSlot( ) );
+            }
         }
         List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
                 .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
@@ -866,29 +869,32 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 
         for ( Slot slotImpacted : listSlotsImpactedWithAppointments )
         {
-        	Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot() );
-        	
-    		lock.lock();
-    		try{
-	            // If the max capacity has changed,
-	            // need to update it for all the slots that already have
-	            // appointments
-	            if ( bMaxCapacityHasChanged )
-	            {
-	                slotImpacted.setMaxCapacity( nMaxCapacity );
-	                SlotSafeService.updateRemainingPlaces( slotImpacted );
-	            }
-	            // if the opening of the timeslot has changed and there are
-	            // appointments impacted,
-	            // all the corresponding slots are marked as specific
-	            if ( bOpeningHasChanged )
-	            {
-	                slotImpacted.setIsSpecific( bIsOpen );
-	            }
-	            SlotSafeService.updateSlot( slotImpacted );
-    	   }finally {
-    		   lock.unlock();
-    	   }
+            Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot( ) );
+
+            lock.lock( );
+            try
+            {
+                // If the max capacity has changed,
+                // need to update it for all the slots that already have
+                // appointments
+                if ( bMaxCapacityHasChanged )
+                {
+                    slotImpacted.setMaxCapacity( nMaxCapacity );
+                    SlotSafeService.updateRemainingPlaces( slotImpacted );
+                }
+                // if the opening of the timeslot has changed and there are
+                // appointments impacted,
+                // all the corresponding slots are marked as specific
+                if ( bOpeningHasChanged )
+                {
+                    slotImpacted.setIsSpecific( bIsOpen );
+                }
+                SlotSafeService.updateSlot( slotImpacted );
+            }
+            finally
+            {
+                lock.unlock( );
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,12 +54,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormCreation( int nIdForm )
     {
-    	new Thread( ( ) -> {
-	        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
-	        {
-	            formListener.notifyFormCreation( nIdForm );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
+            {
+                formListener.notifyFormCreation( nIdForm );
+            }
+        } ).start( );
     }
 
     /**
@@ -70,12 +70,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormChange( int nIdForm )
     {
-    	new Thread( ( ) -> {
-	        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
-	        {
-	            formListener.notifyFormChange( nIdForm );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
+            {
+                formListener.notifyFormChange( nIdForm );
+            }
+        } ).start( );
     }
 
     /**
@@ -86,12 +86,12 @@ public final class FormListenerManager
      */
     public static void notifyListenersFormRemoval( int nIdForm )
     {
-    	new Thread( ( ) -> {
-	        for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
-	        {
-	            formListener.notifyFormRemoval( nIdForm );
-	        }
-    	}).start();
+        new Thread( ( ) -> {
+            for ( IFormListener formListener : SpringContextService.getBeansOfType( IFormListener.class ) )
+            {
+                formListener.notifyFormRemoval( nIdForm );
+            }
+        } ).start( );
     }
 
 }

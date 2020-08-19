@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -510,12 +510,12 @@ public final class EntryService extends RemovalListenerService implements Serial
     public static void getHtmlEntry( Map<String, Object> model, int nIdEntry, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
             HttpServletRequest request )
     {
-    	StringBuilder strConditionalQuestionStringBuffer = null;
+        StringBuilder strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
         if ( entry.getEntryType( ).getGroup( ) )
         {
-        	StringBuilder strGroupStringBuffer = new StringBuilder( );
+            StringBuilder strGroupStringBuffer = new StringBuilder( );
             for ( Entry entryChild : entry.getChildren( ) )
             {
                 getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );
@@ -539,7 +539,7 @@ public final class EntryService extends RemovalListenerService implements Serial
             {
                 if ( CollectionUtils.isNotEmpty( field.getConditionalQuestions( ) ) )
                 {
-                	StringBuilder strGroupStringBuffer = new StringBuilder( );
+                    StringBuilder strGroupStringBuffer = new StringBuilder( );
                     for ( Entry entryConditional : field.getConditionalQuestions( ) )
                     {
                         getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );

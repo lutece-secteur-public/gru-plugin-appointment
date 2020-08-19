@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,24 +61,26 @@ public final class SlotEditTask extends TimerTask implements Serializable
      * Id of the slot on which the user is taking an appointment
      */
     private int _idSlot;
-    
+
     private TimerForLockOnSlot _timer;
 
-    public SlotEditTask ( TimerForLockOnSlot timer ){
-    	
-    	super();
-    	_timer= timer;
+    public SlotEditTask( TimerForLockOnSlot timer )
+    {
+
+        super( );
+        _timer = timer;
     }
+
     @Override
     public void run( )
     {
-        //Slot slot = SlotService.findSlotById( _idSlot );
-        //int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-       // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces + _nbPlacesTaken );
-       // SlotService.updateSlot( slot );
-        	
-        	SlotSafeService.incrementPotentialRemainingPlaces(_nbPlacesTaken, _idSlot, _timer );
-        
+        // Slot slot = SlotService.findSlotById( _idSlot );
+        // int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
+        // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces + _nbPlacesTaken );
+        // SlotService.updateSlot( slot );
+
+        SlotSafeService.incrementPotentialRemainingPlaces( _nbPlacesTaken, _idSlot, _timer );
+
     }
 
     /**
