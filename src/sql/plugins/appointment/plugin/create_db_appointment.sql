@@ -15,6 +15,8 @@ DROP TABLE IF EXISTS appointment_user ;
 DROP TABLE IF EXISTS appointment_slot ;
 DROP TABLE IF EXISTS appointment_form ;
 DROP TABLE IF EXISTS appointment_category ;
+DROP TABLE IF EXISTS appointment_comment;
+
 
 -- -----------------------------------------------------
 -- Table appointment_category
@@ -437,3 +439,20 @@ ENGINE = InnoDB;
 CREATE INDEX fk_appointment_reservation_rule_appointment_form_idx ON appointment_reservation_rule (id_form ASC);
 
 CREATE INDEX date_of_apply_idx ON appointment_reservation_rule (date_of_apply ASC);
+
+
+
+--
+-- Structure for table appointment_comment
+--
+
+CREATE TABLE appointment_comment (
+id_comment int AUTO_INCREMENT,
+id_form int default '0' NOT NULL,
+starting_validity_date date NOT NULL,
+ending_validity_date date NOT NULL,
+comment long varchar NOT NULL,
+PRIMARY KEY (id_comment),
+CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form)
+    REFERENCES appointment_form (id_form)
+);

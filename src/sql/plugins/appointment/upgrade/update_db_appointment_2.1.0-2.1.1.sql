@@ -18,3 +18,14 @@ CREATE TABLE IF NOT EXISTS appointment_appointment_slot (
 );
 
 ALTER TABLE appointment_form DROP COLUMN id_slot;
+
+CREATE TABLE appointment_comment (
+id_comment int AUTO_INCREMENT,
+id_form int default '0' NOT NULL,
+starting_validity_date date NOT NULL,
+ending_validity_date date NOT NULL,
+comment long varchar NOT NULL,
+PRIMARY KEY (id_comment),
+CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form)
+    REFERENCES appointment_form (id_form)
+);

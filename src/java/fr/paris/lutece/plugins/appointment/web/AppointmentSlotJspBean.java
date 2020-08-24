@@ -51,6 +51,8 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.comment.Comment;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
@@ -74,6 +76,7 @@ import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.genericattributes.util.JSONUtils;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -99,10 +102,13 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
      */
     public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
 
+    public static final String TEMPLATE_CREATE_COMMENT= "/admin/plugins/appointment/comment/create_comment.html";
+    public static final String TEMPLATE_MANAGE_COMMENT= "/admin/plugins/appointment/comment/manage_comment.html";
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = 2376721852596997810L;
+    
 
     // Messages
     private static final String MESSAGE_SPECIFIC_WEEK_PAGE_TITLE = "appointment.specificWeek.pageTitle";
@@ -122,6 +128,8 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
     private static final String MESSAGE_CONFIRM_REMOVE_WEEK_DEFINITION = "appointment.message.confirmRemoveWeekDefinition";
+    private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.pageTitle";
+
 
     // Parameters
     private static final String PARAMETER_ENDING_DATE_OF_DISPLAY = "ending_date_of_display";
@@ -143,17 +151,26 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
     private static final String PARAMETER_ID_WEEK_DEFINITION = "id_week_definition";
     private static final String PARAMETER_SHIFT_SLOT = "shift_slot";
+    private static final String PARAMETER_ID_COMMENT = "id_comment";
+
+
 
     // Marks
     private static final String MARK_TIME_SLOT = "timeSlot";
     private static final String MARK_SLOT = "slot";
     private static final String MARK_LIST_DATE_OF_MODIFICATION = "listDateOfModification";
+    private static final String MARK_COMMENT = "comment";
+    private static final String MARK_COMMENT_LIST = "comment_list";
+
 
     // Views
     private static final String VIEW_MANAGE_SPECIFIC_WEEK = "manageSpecificWeek";
     private static final String VIEW_MANAGE_TYPICAL_WEEK = "manageTypicalWeek";
     private static final String VIEW_MODIFY_TIME_SLOT = "viewModifyTimeSlot";
     private static final String VIEW_MODIFY_SLOT = "viewModifySlot";
+    private static final String VIEW_ADD_COMMENT = "viewAddComment";
+    private static final String VIEW_MANAGE_COMMENT = "manageComment";
+
 
     // Actions
     private static final String ACTION_DO_MODIFY_TIME_SLOT = "doModifyTimeSlot";
@@ -161,6 +178,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String ACTION_MODIFY_ADVANCED_PARAMETERS = "modifyAdvancedParameters";
     private static final String ACTION_CONFIRM_REMOVE_PARAMETER = "confirmRemoveParameter";
     private static final String ACTION_REMOVE_PARAMETER = "doRemoveParameter";
+    private static final String ACTION_DO_ADD_COMMENT = "doAddComment";
+    private static final String ACTION_DO_REMOVE_COMMENT = "doRemoveComment";
+    private static final String ACTION_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
+
     // Templates
     private static final String TEMPLATE_MANAGE_SPECIFIC_WEEK = "admin/plugins/appointment/slots/manage_specific_week.html";
     private static final String TEMPLATE_MANAGE_TYPICAL_WEEK = "admin/plugins/appointment/slots/manage_typical_week.html";
@@ -174,10 +195,17 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 
     // Porperties
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
-
+    private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment-comment.manage_comments.pageTitle";
+    private static final String MESSAGE_CONFIRM_REMOVE_COMMENT = "appointment.message.confirmRemoveComment";
+    
     // Infos
     private static final String INFO_ADVANCED_PARAMETERS_UPDATED = "appointment.info.advancedparameters.updated";
     private static final String INFO_PARAMETER_REMOVED = "appointment.info.advancedparameters.removed";
+    private static final String INFO_COMMENT_CREATED = "appointment.info.comment.created";
+    private static final String INFO_COMMENT_REMOVED = "appointment.info.comment.removed";
+    
+    // Session variable to store working values
+    private Comment _comment;
 
     /**
      * Get the view of the typical week
@@ -738,7 +766,97 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, slotFromSessionOrFromDb.getDate( ).toString( ) );
         return redirect( request, VIEW_MANAGE_SPECIFIC_WEEK, additionalParameters );
     }
+    /**
+     * Build the Manage View
+     * @param request The HTTP request
+     * @return The page
+     */
+    @View( VIEW_MANAGE_COMMENT )
+    public String getManageComment( HttpServletRequest request ) {
+    	
+    	 _comment = null;
+         List<Comment> listComments = CommentHome.getCommentsList(  );
+         Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_APPOINTMENT_SLOTS );
 
+         return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_COMMENT, model );
+    }
+    
+    /**
+     * Returns the form to create a comment
+     *
+     * @param request The Http request
+     * @return the html code of the comment form
+     */
+    @View( VIEW_ADD_COMMENT )
+    public String getViewAddComment( HttpServletRequest request )
+    {
+    	int nIdForm= Integer.parseInt( request.getParameter(PARAMETER_ID_FORM) );
+    	 _comment = ( _comment != null ) ? _comment : new Comment(  );
+    	_comment.setIdForm(nIdForm);
+    	
+        Map<String, Object> model = getModel( );
+        model.put( MARK_COMMENT, _comment );
+    	return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
+    	
+    }
+    /**
+     * Process the data capture form of a new comment
+     *
+     * @param request The Http Request
+     * @return The Jsp URL of the process result
+     */
+    @Action( ACTION_DO_ADD_COMMENT )
+    public String doAddComment( HttpServletRequest request )
+    { 
+    	
+    	populate(_comment, request);
+    	 // Check constraints
+        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
+        {
+        	return redirect( request, VIEW_ADD_COMMENT, PARAMETER_ID_FORM, _comment.getIdForm( ));
+        			
+        }
+    	CommentHome.create(_comment);
+    	
+    	 addInfo( INFO_COMMENT_CREATED, getLocale(  ) );
+
+         return redirectView( request, VIEW_MANAGE_COMMENT );
+         
+    }
+    /**
+     * Manages the removal form of a comment whose identifier is in the http
+     * request
+     *
+     * @param request The Http request
+     * @return the html code to confirm
+     */
+    @Action( ACTION_CONFIRM_REMOVE_COMMENT )
+    public String getConfirmRemoveComment( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+        UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
+        url.addParameter( PARAMETER_ID_COMMENT, nId );
+
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
+
+        return redirect( request, strMessageUrl );
+    }
+    /**
+     * Do remove a comment
+     * 
+     * @param request
+     *            the request
+     * @return to the page of the comment
+     */
+    @Action( ACTION_DO_REMOVE_COMMENT )
+    public String doRemoveComment( HttpServletRequest request )
+    { 
+    	int nIdcomment= Integer.parseInt(request.getParameter(PARAMETER_ID_COMMENT));    	
+    	CommentHome.remove( nIdcomment );
+    
+   	  addInfo( INFO_COMMENT_REMOVED, getLocale(  ) );
+      return redirectView( request, VIEW_MANAGE_COMMENT );
+    }
     /**
      * Check the ending time of a time slot
      * 
@@ -898,4 +1016,5 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
     }
 
+    
 }
