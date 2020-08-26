@@ -366,6 +366,8 @@ public final class SlotService
         LocalDateTime dateTimeTemp;
         LocalDateTime endingDateTime;
         LocalDateTime startingDateTime = null;
+        LocalTime tempEndingDateTime = null;
+
         boolean isChanged = true;
         int sumNbPotentialRemainingPlaces;
         int sumNbRemainingPlaces;
@@ -420,11 +422,11 @@ public final class SlotService
                 // Check if this day is a closing day
                 if ( !listDateOfClosingDay.contains( dateTemp ) )
                 {
-
                     timeTemp = minTimeForThisDay;
                     sumNbPotentialRemainingPlaces = 0;
                     sumNbRemainingPlaces = 0;
                     isChanged = true;
+                    tempEndingDateTime = timeTemp;
                     // For each slot of this day
                     while ( timeTemp.isBefore( maxTimeForThisDay ) || !timeTemp.equals( maxTimeForThisDay ) )
                     {
@@ -468,18 +470,21 @@ public final class SlotService
 
                         if ( sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen( ) || slotToAdd.getNbPotentialRemainingPlaces( ) <= 0
                                 || slotToAdd.getEndingDateTime( ).isBefore( LocalDateTime.now( ) )
-                                || nNbPlaces > reservationRule.getMaxPeoplePerAppointment( ) )
+                                 )
                         {
 
                             sumNbPotentialRemainingPlaces = 0;
                             sumNbRemainingPlaces = 0;
                             startingDateTime = slotToAdd.getEndingDateTime( );
+                            tempEndingDateTime = slotToAdd.getEndingTime();
                         }
                         else
                         {
 
-                            sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces( );
-                            sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces( );
+                           // sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces( );
+                            sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + 1;
+                           // sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces( );
+                            sumNbRemainingPlaces = sumNbRemainingPlaces + 1;
                         }
 
                         if ( sumNbPotentialRemainingPlaces >= nNbPlaces )
@@ -495,9 +500,10 @@ public final class SlotService
                             slt.setDate( slotToAdd.getDate( ) );
                             slt.setIdForm( slotToAdd.getIdForm( ) );
                             listSlotToShow.add( slt );
-                            sumNbPotentialRemainingPlaces = 0;
-                            sumNbRemainingPlaces = 0;
+                            //sumNbPotentialRemainingPlaces = 0;
+                            //sumNbRemainingPlaces = 0;
                             isChanged = true;
+                            timeTemp= tempEndingDateTime;
                         }
 
                     }
