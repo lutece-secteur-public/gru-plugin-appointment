@@ -57,7 +57,7 @@ public final class CommentDAO implements ICommentDAO
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, ending_validity_date = ?, comment = ? WHERE id_comment = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment FROM appointment_comment";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_comment FROM appointment_comment";
-    private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment FROM appointment_comment WHERE starting_validity_date >= ? and ending_validity_date <= ? and id_form = ?";
+    private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment FROM appointment_comment WHERE starting_validity_date <= ? and ending_validity_date >= ? and id_form = ?";
 
 
     /**
