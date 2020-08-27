@@ -29,3 +29,5 @@ PRIMARY KEY (id_comment),
 CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
 );
+
+ALTER TABLE appointment_form ADD COLUMN is_multislot_appointment BOOLEAN NOT NULL DEFAULT FALSE;

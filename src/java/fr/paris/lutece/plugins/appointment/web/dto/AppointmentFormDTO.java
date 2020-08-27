@@ -261,6 +261,10 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      * BoOverbooking
      */
     private boolean _bBoOverbooking;
+    /**
+     * isMultislotAppointment
+     */
+    private boolean _bIsMultislotAppointment;
 
     /**
      * Get the maximum number of appointments authorized for a same user
@@ -1087,4 +1091,21 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
         _bBoOverbooking = bBoOverbooking;
     }
 
+    /**
+     * Returns the IsMultislotAppointment
+     * @return The IsMultislotAppointment
+     */ 
+     public boolean getIsMultislotAppointment()
+     {
+         return _bIsMultislotAppointment;
+     }
+ 
+    /**
+     * Sets the IsMultislotAppointment
+     * @param bIsMultislotAppointment The IsMultislotAppointment
+     */ 
+     public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
+     {
+         _bIsMultislotAppointment = bIsMultislotAppointment;
+     }
 }

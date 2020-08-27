@@ -378,9 +378,8 @@ public class AppointmentApp extends MVCApplication
         if ( !bError )
         {
             boolean isNewNbPlacesToTake = ( nbPlacesToTake != null && StringUtils.isNumeric( nbPlacesToTake ) );
-            if ( nNbPlacesToTake != 0 || isNewNbPlacesToTake )
+            if ( appointmentForm.getIsMultislotAppointment() && (nNbPlacesToTake != 0 || isNewNbPlacesToTake ) )
             {
-
                 nNbPlacesToTake = isNewNbPlacesToTake ? Integer.parseInt( nbPlacesToTake ) : nNbPlacesToTake;
                 listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateOfDisplay, endingDateOfDisplay, nNbPlacesToTake );
 

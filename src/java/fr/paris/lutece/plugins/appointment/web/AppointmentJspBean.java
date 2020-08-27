@@ -154,6 +154,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // templates
     private static final String TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR = "/admin/plugins/appointment/appointment/manage_appointments_calendar.html";
+    private static final String TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_GROUPED  = "/admin/plugins/appointment/appointment/appointment_form_list_open_slots_grouped.html";
     private static final String TEMPLATE_CREATE_APPOINTMENT = "/admin/plugins/appointment/appointment/create_appointment.html";
     private static final String TEMPLATE_MANAGE_APPOINTMENTS = "/admin/plugins/appointment/appointment/manage_appointments.html";
     private static final String TEMPLATE_VIEW_APPOINTMENT = "/admin/plugins/appointment/appointment/view_appointment.html";
@@ -399,7 +400,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
 
             boolean isNewNbPlacesToTake = ( nbPlacesToTake != null && StringUtils.isNumeric( nbPlacesToTake ) );
-            if ( ( nNbPlacesToTake != 0 || isNewNbPlacesToTake ) && nbPlacesToTake != null )
+            if ( appointmentForm.getIsMultislotAppointment( ) && (( nNbPlacesToTake != 0 || isNewNbPlacesToTake ) && nbPlacesToTake != null ))
             {
 
                 nNbPlacesToTake = isNewNbPlacesToTake ? Integer.parseInt( nbPlacesToTake ) : nNbPlacesToTake;
@@ -457,7 +458,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( MARK_FORM_OVERBOOKING_ALLOWED, appointmentForm.getBoOverbooking( ) );
 
-        return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR, model );
+        if( appointmentForm.getIsMultislotAppointment( )) {
+        	
+        	return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_GROUPED, model );
+
+        }else {
+        	return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR, model );
+        }
     }
 
     /**
@@ -480,7 +487,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strModifDateAppointment = request.getParameter( PARAMETER_MODIF_DATE );
         if ( strModifDateAppointment != null && Boolean.parseBoolean( strModifDateAppointment ) )
         {
-            return /* getViewChangeDateAppointment( request ) */null;
+            return getViewChangeDateAppointment( request ) ;
         }
         // Clean session
         AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );

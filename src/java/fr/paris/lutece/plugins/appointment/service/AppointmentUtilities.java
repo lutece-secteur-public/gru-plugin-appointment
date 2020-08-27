@@ -140,6 +140,8 @@ public final class AppointmentUtilities
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
     public static final int THIRTY_MINUTES = 30;
+    
+    
 
     /**
      * Private constructor - this class does not need to be instantiated
