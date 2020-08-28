@@ -80,7 +80,10 @@
 	</@formGroup>
 	<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
 				<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false />
-	</@formGroup>				
+	</@formGroup>
+	 <@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
+                      <@checkBox labelFor='bo_overbooking' name='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+     </@formGroup> 				
 	<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
 		<@checkBox labelFor='display_title_fo' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
 	</@formGroup>

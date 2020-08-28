@@ -458,7 +458,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( MARK_FORM_OVERBOOKING_ALLOWED, appointmentForm.getBoOverbooking( ) );
 
-        if( appointmentForm.getIsMultislotAppointment( )) {
+        if( appointmentForm.getIsMultislotAppointment( ) && nNbPlacesToTake > 1) {
         	
         	return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_GROUPED, model );
 
