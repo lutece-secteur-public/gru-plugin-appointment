@@ -860,8 +860,8 @@ public final class AppointmentUtilities
         Slot slot = SlotService.findSlotById( nIdSlot );
 
         int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        int nNbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
-        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment - nNbMaxPotentialBookedSeats );
+        //int nNbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
+        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment  );
         int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
 
         if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
