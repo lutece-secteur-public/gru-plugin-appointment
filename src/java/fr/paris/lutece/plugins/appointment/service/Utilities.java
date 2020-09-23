@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Class of utilities
@@ -80,7 +81,27 @@ public final class Utilities
     {
         _formatter = formatter;
     }
-    
+
+
+    /**
+     * Build a custom DateTimeFormatter for a supplied format string and locale
+     * @param formatPattern the format pattern string
+     * @param locale the supplied locae
+     * @return the custom DateTimeFormatter
+     */
+    public static DateTimeFormatter buildCustomFormatter(String formatPattern, Locale locale) {
+        DateTimeFormatter customFormatter;
+        if ( locale == null ) { locale = AppointmentPlugin.getPluginLocale(); }
+        formatPattern = normalizeFormatString( formatPattern );
+
+        if( formatPattern != null ) {
+            customFormatter = DateTimeFormatter.ofPattern(formatPattern, locale);
+        } else {
+            customFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( locale );
+        }
+
+        return customFormatter;
+    }
     
     /**
      * Reset formatter scope package to be only used by unit tests
@@ -118,6 +139,23 @@ public final class Utilities
     {
         return listDateTime.stream( ).filter( x -> x.isAfter( dateTimeToSearch ) || x.isEqual( dateTimeToSearch ) ).min( LocalDateTime::compareTo )
                 .orElse( null );
+    }
+
+    /**
+     * A convenience method to correct format strings from datetimepicker
+     * @param originalPattern - the supplied format string
+     * @return a format string that formatters can understand
+     */
+    private static String normalizeFormatString ( String originalPattern ) {
+        String normalized;
+        // "h:mm A" needs to be "h:mm a"
+        if (originalPattern.contains("h:") && originalPattern.endsWith(" A")) {
+            normalized = originalPattern.replace(" A", " a");
+        } else {
+            normalized = originalPattern;
+        }
+
+        return normalized;
     }
 
 }
