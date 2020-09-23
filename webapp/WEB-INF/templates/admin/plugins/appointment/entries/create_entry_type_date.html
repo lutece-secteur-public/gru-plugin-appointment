@@ -36,7 +36,7 @@
                                 <@inputGroupItem type='addon'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
-                                <@input type='text' name='value' id='date' value='' />
+                                <@input type='text' name='value' class='datetimepicker' id='date' value='' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
@@ -64,6 +64,4 @@
 </@row>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <@getDatePicker idField="date" language=locale />

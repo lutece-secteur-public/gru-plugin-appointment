@@ -1,46 +1,4 @@
-<script src="js/jquery/jquery-ui.min.js"></script>
-<script src="js/bootstrap-filestyle.min.js"></script>
-
-<#-- Redefine datepicker to use newer libraries. -->
-<#macro getDatePickerBootstrap idField language >
-        <script src="js/plugins/appointment/moment-with-locales.min.js"></script>
-        <script src="js/plugins/appointment/bootstrap-datetimepicker.js"></script>
-        <script type="text/javascript" charset="utf-8">
-        $(document).ready( function() {
-            $('#${idField}').datetimepicker({
-		locale: '${language}',
-		format: 'L',
-		keepOpen: false
-	    });
-        });
-        </script>
-</#macro>
-
-<#macro getTimePickerBootstrap idField language >
-        <script src="js/plugins/appointment/moment-with-locales.min.js"></script>
-        <script src="js/plugins/appointment/bootstrap-datetimepicker.js"></script>
-        <script type="text/javascript" charset="utf-8">
-        $(document).ready( function() {
-            $('#${idField}').datetimepicker({
-		locale: '${language}',
-		format: 'LT',
-		keepOpen: false,
-		stepping: 5,
-		icons: {
-		    time: "fa fa-clock-o",
-		    date: "fa fa-calendar",
-		    up: "fa fa-chevron-up",
-		    down: "fa fa-chevron-down",
-		    previous: 'fa fa-chevron-left',
-		    next: 'fa fa-chevron-right',
-		    today: 'fa fa-screenshot',
-		    clear: 'fa fa-trash',
-		    close: 'fa fa-remove'
-		}		
-	    });
-        });
-        </script>
-</#macro>
+<#include "/admin/plugins/appointment/commons.html" />
 
 <@row>
 	<@tform id='formid' class='form-horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
@@ -211,6 +169,9 @@
 		</@columns>
 	</@tform>
 </@row>
+
+<script src="js/jquery/jquery-ui.min.js"></script>
+<script src="js/bootstrap-filestyle.min.js"></script>
 
 <script type='text/javascript'>
 $('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
