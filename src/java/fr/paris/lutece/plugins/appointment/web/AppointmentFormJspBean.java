@@ -131,6 +131,9 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String PARAMETER_GEOLOC_ADDRESS = "geoloc_address";
     private static final String PARAMETER_GEOLOC_LATITUDE = "geoloc_latitude";
     private static final String PARAMETER_GEOLOC_LONGITUDE = "geoloc_longitude";
+    private static final String PARAMETER_TIMEZONE = "timezone";
+    private static final String PARAMETER_TIME_FORMAT = "timeformat";
+    private static final String PARAMETER_DATE_FORMAT = "dateformat";
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage.appointmentforms.title";
@@ -309,6 +312,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         populate( appointmentForm, request );
         populateAddress( appointmentForm, request );
+        populateDateTime( appointmentForm, request);
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
             return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1 );
@@ -436,6 +440,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         populate( appointmentForm, request );
         populateAddress( appointmentForm, request );
+        populateDateTime( appointmentForm, request);
         AppointmentFormDTO appointmentFormDb = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE : request.getParameter( PARAMETER_DELETE_ICON );
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
@@ -826,6 +831,29 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             appointmentForm.setAddress( null );
             appointmentForm.setLatitude( null );
             appointmentForm.setLongitude( null );
+        }
+    }
+
+    private void populateDateTime( AppointmentFormDTO appointmentForm, HttpServletRequest request )
+    {
+        String strTimezone = request.getParameter( PARAMETER_TIMEZONE );
+        String strTimeFormat = request.getParameter( PARAMETER_TIME_FORMAT);
+        String strDateFormat = request.getParameter( PARAMETER_DATE_FORMAT);
+
+        if ( StringUtils.isNotBlank( strTimezone)) {
+            appointmentForm.setTimezone( strTimezone);
+        } else {
+            appointmentForm.setTimezone( null );
+        }
+        if ( StringUtils.isNotBlank( strTimeFormat)) {
+            appointmentForm.setTimeFormat( strTimeFormat);
+        } else {
+            appointmentForm.setTimeFormat( null );
+        }
+        if ( StringUtils.isNotBlank( strDateFormat)) {
+            appointmentForm.setTimezone( strDateFormat);
+        } else {
+            appointmentForm.setDateFormat( null );
         }
     }
 

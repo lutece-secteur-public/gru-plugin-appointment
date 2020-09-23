@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -226,8 +227,8 @@ public final class FormService
         int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
         WeekDefinition weekDefinition = WeekDefinitionService.createWeekDefinition( nIdForm, dateNow );
         int nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
-        LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
-        LocalTime endingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ), Utilities.buildCustomFormatter( appointmentForm.getTimeFormat( ), Locale.getDefault( ) ) );
+        LocalTime endingTime = LocalTime.parse( appointmentForm.getTimeEnd( ), Utilities.buildCustomFormatter( appointmentForm.getTimeFormat( ), Locale.getDefault( ) ) );
         int nDuration = appointmentForm.getDurationAppointments( );
         for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
         {
@@ -272,8 +273,8 @@ public final class FormService
         {
             WorkingDayService.deleteListWorkingDay( listWorkingDay );
         }
-        LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
-        LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ), Utilities.buildCustomFormatter( appointmentForm.getTimeFormat( ), Locale.getDefault( ) ) );
+        LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ), Utilities.buildCustomFormatter( appointmentForm.getTimeFormat( ), Locale.getDefault( ) ) );
         int nDuration = appointmentForm.getDurationAppointments( );
         for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
         {
