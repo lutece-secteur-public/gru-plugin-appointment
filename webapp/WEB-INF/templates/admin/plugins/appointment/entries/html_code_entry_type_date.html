@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/commons.html" />
+
 <#if field.valueTypeDate?exists>
 	<#assign value = field.valueTypeDate />
 <#else>
@@ -22,7 +24,7 @@
 			<@inputGroupItem type='addon'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
+			<@input type='text' name='attribute${entry.idEntry}' class='datetimepicker' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
 		</@inputGroup>
 		<#if list_responses??>
 			<#list list_responses as response>
@@ -36,6 +38,4 @@
 		</#if>
 	</#list>
 </@formGroup>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <@getDatePickerBootstrap idField="attribute${entry.idEntry}" language=locale />

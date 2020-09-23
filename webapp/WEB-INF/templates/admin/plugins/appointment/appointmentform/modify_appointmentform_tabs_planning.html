@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/commons.html" />
+
 <@row>
 	<@columns>
 	<@messages infos=infos errors=errors />
@@ -26,7 +28,7 @@
 	</@tabs>
 </#macro>
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
+
 <@getDatePickerBootstrap idField="date_start_validity" language=language />
 <@getDatePickerBootstrap idField="date_end_validity"   language=language />
 <script type="text/javascript">
@@ -42,19 +44,5 @@
 	}
 	else return true;
 	};
-	$('#date_start_validity').datepicker({
-    	language:		"${language}",
-    	weekStart: 1,
-    	todayBtn: true,
-    	todayHighLight: true,
-    	autoclose: true
-	});
-	$('#date_end_validity').datepicker({
-	    language:		"${language}",
-	    weekStart: 1,
-	    todayBtn: true,
-	    todayHighLight: true,
-	    autoclose: true
-	});
 </script>
 </#macro> 
