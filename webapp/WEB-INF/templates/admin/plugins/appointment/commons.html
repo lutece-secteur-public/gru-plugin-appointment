@@ -109,3 +109,57 @@
 	</#if>
 	<#return false />
 </#function>
+
+
+<#-- Redefine date picker to be localized. -->
+<#macro getDatePickerBootstrap idField language >
+        <script src='js/plugins/appointment/moment-with-locales.min.js'></script>
+        <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
+        <script type='text/javascript' charset='utf-8'>
+        $(document).ready( function() {
+            $('#${idField}').datetimepicker({
+		locale: '${language}',
+		format: 'L',
+		keepOpen: false,
+		icons: {
+		    time: 'fa fa-clock-o',
+		    date: 'fa fa-calendar',
+		    up: 'fa fa-chevron-up',
+		    down: 'fa fa-chevron-down',
+		    previous: 'fa fa-chevron-left',
+		    next: 'fa fa-chevron-right',
+		    today: 'fa fa-screenshot',
+		    clear: 'fa fa-trash',
+		    close: 'fa fa-remove'
+		}		
+	    });
+        });
+        </script>
+</#macro>
+
+<#-- Provide a localized time picker with 5 minute increments. -->
+<#macro getTimePickerBootstrap idField language >
+        <script src='js/plugins/appointment/moment-with-locales.min.js'></script>
+        <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
+        <script type='text/javascript' charset='utf-8'>
+        $(document).ready( function() {
+            $('#${idField}').datetimepicker({
+		locale: '${language}',
+		format: 'LT',
+		keepOpen: false,
+		stepping: 5,
+		icons: {
+		    time: 'fa fa-clock-o',
+		    date: 'fa fa-calendar',
+		    up: 'fa fa-chevron-up',
+		    down: 'fa fa-chevron-down',
+		    previous: 'fa fa-chevron-left',
+		    next: 'fa fa-chevron-right',
+		    today: 'fa fa-screenshot',
+		    clear: 'fa fa-trash',
+		    close: 'fa fa-remove'
+		}		
+	    });
+        });
+        </script>
+</#macro>
