@@ -1,3 +1,46 @@
+<script src="js/jquery/jquery-ui.min.js"></script>
+<script src="js/bootstrap-filestyle.min.js"></script>
+
+<#-- Redefine datepicker to use newer libraries. -->
+<#macro getDatePickerBootstrap idField language >
+        <script src="js/plugins/appointment/moment-with-locales.min.js"></script>
+        <script src="js/plugins/appointment/bootstrap-datetimepicker.js"></script>
+        <script type="text/javascript" charset="utf-8">
+        $(document).ready( function() {
+            $('#${idField}').datetimepicker({
+		locale: '${language}',
+		format: 'L',
+		keepOpen: false
+	    });
+        });
+        </script>
+</#macro>
+
+<#macro getTimePickerBootstrap idField language >
+        <script src="js/plugins/appointment/moment-with-locales.min.js"></script>
+        <script src="js/plugins/appointment/bootstrap-datetimepicker.js"></script>
+        <script type="text/javascript" charset="utf-8">
+        $(document).ready( function() {
+            $('#${idField}').datetimepicker({
+		locale: '${language}',
+		format: 'LT',
+		keepOpen: false,
+		stepping: 5,
+		icons: {
+		    time: "fa fa-clock-o",
+		    date: "fa fa-calendar",
+		    up: "fa fa-chevron-up",
+		    down: "fa fa-chevron-down",
+		    previous: 'fa fa-chevron-left',
+		    next: 'fa fa-chevron-right',
+		    today: 'fa fa-screenshot',
+		    clear: 'fa fa-trash',
+		    close: 'fa fa-remove'
+		}		
+	    });
+        });
+        </script>
+</#macro>
 
 <@row>
 	<@tform id='formid' class='form-horizontal' method='post' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype=\'multipart/form-data\''>
@@ -9,6 +52,9 @@
 					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
+					<input type="hidden" id="timezone" name="timezone">
+					<input type="hidden" id="timeformat" name="timeformat">
+					<input type="hidden" id="dateformat" name="dateformat">					
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
@@ -20,19 +66,21 @@
 					</@formGroup>
 					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
+							<@input type='text' name='time_start' class='datetimepicker' id='time_start' value=appointmentform.timeStart!'' />
 							<@inputGroupItem type='addon'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
+						<@getTimePickerBootstrap idField="time_start" language=language />
 					</@formGroup>
 					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
+							<@input type='text' name='time_end' class='datetimepicker' id='time_end' value=appointmentform.timeEnd!'' />
 							<@inputGroupItem type='addon'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
+						<@getTimePickerBootstrap idField="time_end" language=language />						
 					</@formGroup>
 					<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
 						<@input type='text' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
@@ -163,13 +211,6 @@
 		</@columns>
 	</@tform>
 </@row>
-
-<script src="js/admin/jquery/jquery-ui.min.js"></script>
-<script src="js/admin/bootstrap-filestyle.min.js"></script>
-
-<!-- Should not be loaded with BS4-Material Kit BO theme - This script is needed in other theme because of it's used for timepicker --> 
-<script src="js/admin/plugins/appointment/moment-with-locales.min.js"></script> 
-<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.js"></script> 
 
 <script type='text/javascript'>
 $('#geoloc_address').clone().attr('type','hidden').insertAfter('#geoloc_address').prev().remove();
@@ -302,35 +343,8 @@ else return true;
 }
 
 $(function () {
-	$('#time_start').datetimepicker({
-		format: 'HH:mm',
-		stepping: 5,
-		icons: {
-			time: "fa fa-clock-o",
-			date: "fa fa-calendar",
-			up: "fa fa-chevron-up",
-			down: "fa fa-chevron-down",
-			previous: 'fa fa-chevron-left',
-			next: 'fa fa-chevron-right',
-			today: 'fa fa-screenshot',
-			clear: 'fa fa-trash',
-			close: 'fa fa-remove'
-		}
-	});
-	$('#time_end').datetimepicker({
-		format: 'HH:mm',
-		stepping: 5,
-		icons: {
-			time: "fa fa-clock-o",
-			date: "fa fa-calendar",
-			up: "fa fa-chevron-up",
-			down: "fa fa-chevron-down",
-			previous: 'fa fa-chevron-left',
-			next: 'fa fa-chevron-right',
-			today: 'fa fa-screenshot',
-			clear: 'fa fa-trash',
-			close: 'fa fa-remove'
-		}
-	});		
+    $('#timezone').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    $('#dateformat').val(moment.localeData().longDateFormat('L'));
+    $('#timeformat').val(moment.localeData().longDateFormat('LT'));
 });
 </script>
