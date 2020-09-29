@@ -2,11 +2,9 @@
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow.css' />
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
+<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
-<script src='js/plugins/appointment/locale-all.js' ></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
 <link href="css/plugins/appointment/appointment.css" rel="stylesheet" />
@@ -164,7 +162,7 @@
 			defaultDate: defaultDate,
 			defaultView: weekView,
 			height: 'auto',
-			locale: 'fr',
+			locale: '${language}',
 			theme: true,
 			editable: false,
 			customButtons: {
@@ -176,7 +174,7 @@
 						$("#hiddenDate").datepicker({
 							showOn: "button",							
 							autoclose: true,
-                            language:'fr',
+                            language:'${language}',
 							startDate: "today",
 							endDate: strEndingDateOfDisplay
 						});

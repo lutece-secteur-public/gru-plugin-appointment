@@ -1,12 +1,10 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<script src="js/plugins/appointment/moment.min.js" ></script>
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
+<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
-<script src='js/plugins/appointment/locale-all.js' ></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
 
@@ -62,7 +60,7 @@
             defaultDate: defaultDate,
             defaultView: 'agendaWeek',
             height: 'auto',
-            locale: 'fr',
+            locale: '${language}',
             theme: true,
             editable: false,
             customButtons: {
@@ -72,7 +70,7 @@
                         var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
                         $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
                         $("#hiddenDate").datepicker({
-                            language:'fr',
+                            language:'${language}',
                             showOn: "button",
                             dateFormat:"yy-mm-dd",
                             autoclose: true,
