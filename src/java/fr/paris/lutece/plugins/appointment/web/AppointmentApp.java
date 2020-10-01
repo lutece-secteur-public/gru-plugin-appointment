@@ -590,7 +590,7 @@ public class AppointmentApp extends MVCApplication
                            && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).limit( nNbConsecutiveSlot )
                     .collect( Collectors.toList( ) );
             
-            if (listSlot == null  || (nNbPlacesToTake >0 && listSlot.size() != nNbPlacesToTake ))
+            if (listSlot == null  || (nNbPlacesToTake >0 && listSlot.size() != nNbPlacesToTake ) || !AppointmentUtilities.isConsecutiveSlots(listSlot))
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
                 return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );

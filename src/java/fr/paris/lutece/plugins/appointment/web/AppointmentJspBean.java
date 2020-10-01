@@ -990,9 +990,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                         && ( s.getIsOpen( ) ) ) ).limit( nNbConsecutiveSlot ).collect( Collectors.toList( ) );
 
             }
-            if( listSlot == null || ( nNbPlacesToTake > 0 && nNbPlacesToTake != listSlot.size( )) ) {
+            if( listSlot == null ||( nNbPlacesToTake > 0 && nNbPlacesToTake != listSlot.size( )) || !AppointmentUtilities.isConsecutiveSlots(listSlot)) {
             	
-           	 addError( ERROR_MESSAGE_SLOT_FULL, locale );
+           	    addError( ERROR_MESSAGE_SLOT_FULL, locale );
                 return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
            }
         }
