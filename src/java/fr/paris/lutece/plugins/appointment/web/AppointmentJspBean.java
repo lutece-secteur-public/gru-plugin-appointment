@@ -154,6 +154,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // templates
     private static final String TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR = "/admin/plugins/appointment/appointment/manage_appointments_calendar.html";
+    private static final String TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_MULTI_SLOT = "/admin/plugins/appointment/appointment/manage_appointments_multislot_calendar.html";
     private static final String TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_GROUPED  = "/admin/plugins/appointment/appointment/appointment_form_list_open_slots_grouped.html";
     private static final String TEMPLATE_CREATE_APPOINTMENT = "/admin/plugins/appointment/appointment/create_appointment.html";
     private static final String TEMPLATE_MANAGE_APPOINTMENTS = "/admin/plugins/appointment/appointment/manage_appointments.html";
@@ -458,11 +459,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( MARK_FORM_OVERBOOKING_ALLOWED, appointmentForm.getBoOverbooking( ) );
 
-        if( appointmentForm.getIsMultislotAppointment( ) && nNbPlacesToTake > 1) {
+        if( appointmentForm.getIsMultislotAppointment( ) ) {
+        	
+        	return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_MULTI_SLOT, model );
+
+        }else if (appointmentForm.getIsMultislotAppointment( ) && nNbPlacesToTake > 1 ){
         	
         	return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_GROUPED, model );
 
         }else {
+        	
         	return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR, model );
         }
     }
@@ -934,6 +940,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         clearUploadFilesIfNeeded( request.getSession( ) );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
+        String strNbPlacesToTake= request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
@@ -954,21 +961,25 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         }
         else
-        {
-
+        {	
+        	if( strNbPlacesToTake != null ) {
+        	
+        		nNbPlacesToTake= Integer.parseInt( strNbPlacesToTake );
+        	}
+        	int nNbConsecutiveSlot= (nNbPlacesToTake == 0 )? 1:nNbPlacesToTake;
             LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-            LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+           // LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
 
             // Get all the week definitions
             HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
-            listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
+            listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateTime.toLocalDate( ), startingDateTime.toLocalDate( ) );
 
             if ( !formRule.getBoOverbooking( ) )
             {
 
                 listSlot = listSlot.stream( )
                         .filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
-                                && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) )
+                               && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).limit( nNbConsecutiveSlot )
                         .collect( Collectors.toList( ) );
 
             }
@@ -976,12 +987,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
 
                 listSlot = listSlot.stream( ).filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
-                        && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getIsOpen( ) ) ) ).collect( Collectors.toList( ) );
+                        && ( s.getIsOpen( ) ) ) ).limit( nNbConsecutiveSlot ).collect( Collectors.toList( ) );
 
             }
-
+            if( listSlot == null || ( nNbPlacesToTake > 0 && nNbPlacesToTake != listSlot.size( )) ) {
+            	
+           	 addError( ERROR_MESSAGE_SLOT_FULL, locale );
+                return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
+           }
         }
 
+        
         AppointmentDTO oldAppointmentDTO = null;
         // Get the not validated appointment in session if it exists
         // AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
@@ -1017,7 +1033,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 {
 
                     nNbPlacesToTake = appointmentDTO.getNbBookedSeats( );
-
+                    
                 }
         }
 
@@ -1075,11 +1091,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 {
 
                     LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-                    LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+                   // LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
 
                     appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
                     appointmentDTO.setIdForm( nIdForm );
-                    appointmentDTO.setEndingDateTime( endingDateTime );
+                    appointmentDTO.setEndingDateTime( listSlot.get( listSlot.size() - 1 ).getEndingDateTime() );
                     appointmentDTO.setStartingDateTime( startingDateTime );
                     LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
                     if ( user != null )
