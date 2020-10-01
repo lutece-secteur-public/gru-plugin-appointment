@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment_slot (
 
 );
 
-ALTER TABLE appointment_form DROP COLUMN id_slot;
+ALTER TABLE appointment_appointment DROP COLUMN id_slot;
 
 CREATE TABLE appointment_comment (
 id_comment int AUTO_INCREMENT,

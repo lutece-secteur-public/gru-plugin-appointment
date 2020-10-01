@@ -534,6 +534,8 @@ public class AppointmentApp extends MVCApplication
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        String strNbPlacesToTake= request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
+
         int nIdForm = Integer.parseInt( strIdForm );
         if ( form == null )
         {
@@ -573,17 +575,29 @@ public class AppointmentApp extends MVCApplication
         else
         {
 
+        	if( strNbPlacesToTake != null ) {
+            	
+        		nNbPlacesToTake= Integer.parseInt( strNbPlacesToTake );
+        	}
+        	int nNbConsecutiveSlot= (nNbPlacesToTake == 0 )? 1:nNbPlacesToTake;
             LocalDateTime startingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-            LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
+         //   LocalDateTime endingDateTime = LocalDateTime.parse( request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
             // Get all the week definitions
             HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
-            listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
+            listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDateTime.toLocalDate( ), startingDateTime.toLocalDate( ) );
             listSlot = listSlot.stream( )
                     .filter( s -> ( ( startingDateTime.compareTo( s.getStartingDateTime( ) ) <= 0 )
-                            && ( endingDateTime.compareTo( s.getEndingDateTime( ) ) >= 0 ) && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) )
+                           && ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).limit( nNbConsecutiveSlot )
                     .collect( Collectors.toList( ) );
+            
+            if (listSlot == null  || (nNbPlacesToTake >0 && listSlot.size() != nNbPlacesToTake ))
+            {
+                addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
+                return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+            }
 
         }
+        
 
         AppointmentDTO oldAppointmentDTO = null;
         // Get the not validated appointment in session if it exists
@@ -633,7 +647,7 @@ public class AppointmentApp extends MVCApplication
         }
         if ( !bModificationForm )
         {
-
+        	
             Boolean bool = true;
             appointmentDTO.setSlot( null );
             appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
