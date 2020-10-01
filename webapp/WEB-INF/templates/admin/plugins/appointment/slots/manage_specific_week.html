@@ -1,4 +1,6 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
+
+<!--
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
 <script src='js/plugins/appointment/jquery.min.js' ></script>
@@ -7,6 +9,14 @@
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
+-->
+
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
+<link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
+<script src="js/jquery/jquery.min.js"></script>
+<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
+<script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 
 <@row>
     <@columns>
@@ -67,25 +77,7 @@
                 datePicker: {
                     text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
                     click: function () {
-                        var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
-                        $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
-                        $("#hiddenDate").datepicker({
-                            language:'${language}',
-                            showOn: "button",
-                            dateFormat:"yy-mm-dd",
-                            autoclose: true,
-                            orientation: "bottom"
-                        });
-                        var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
-                        //Below are required for manipulating dynamically created datepicker on custom button click
-                        $("#hiddenDate").focus().hide();
-                        $btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
-                        $btnDatepicker.hide();
-                        $btnDatepicker.remove();
-                        $("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
-                        $("#hiddenDate").change(function () {
-                            $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
-                        });
+			$('#hiddenDate').data("DateTimePicker").show();
                     }
                 }
             },
@@ -162,4 +154,25 @@
             },
         });
     });
+
+    // Setup button to popup a date picker using the datetime library.
+    $(function () {
+      $('.fc-datePicker-button').after('<input type="text" id="hiddenDate" class="datetimepicker"/>');
+      $("#hiddenDate").hide();
+    });
+</script>
+
+
+// Initialize the date picker popup
+<@getDatePickerBootstrap idField="hiddenDate" language=language />
+
+<script type="text/javascript">
+  $(function () {
+      $("#hiddenDate").on('dp.change', (function () {
+          $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(), 'L'));
+      }));
+
+      // Ensure date picker displays under button
+      $('#hiddenDate').data("DateTimePicker").widgetParent($('.fc-datePicker-button'));
+  });
 </script>
