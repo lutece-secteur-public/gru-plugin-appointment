@@ -91,6 +91,8 @@ public final class AppointmentResourceIdService extends ResourceIdService
 
     /** Permission for changing the date of the appointment */
     public static final String PERMISSION_CHANGE_APPOINTMENT_DATE = "CHANGE_APPOINTMENT_DATE";
+    /** Permission for taking appointment  */
+    public static final String PERMISSION_OVERBOOKING_FORM = "OVERBOOKING_FORM";
 
     // Permission labels
     private static final String PROPERTY_LABEL_RESOURCE_TYPE = "appointment.appointment.name";
@@ -107,6 +109,8 @@ public final class AppointmentResourceIdService extends ResourceIdService
     private static final String PROPERTY_LABEL_CHANGE_STATE = "appointment.permission.label.changeState";
     private static final String PROPERTY_LABEL_CHANGE_APPOINTMENT_STATUS = "appointment.permission.label.changeAppointmentStatus";
     private static final String PROPERTY_LABEL_CHANGE_APPOINTMENT_DATE = "appointment.permission.label.changeAppointmentDate";
+    public static final String  PROPERTY_LABEL_OVERBOOKING_FORM = "appointment.permission.label.overbooking";
+
 
     /** Creates a new instance of DocumentTypeResourceIdService */
     public AppointmentResourceIdService( )
@@ -179,6 +183,11 @@ public final class AppointmentResourceIdService extends ResourceIdService
         permission = new Permission( );
         permission.setPermissionKey( PERMISSION_CHANGE_APPOINTMENT_DATE );
         permission.setPermissionTitleKey( PROPERTY_LABEL_CHANGE_APPOINTMENT_DATE );
+        resourceType.registerPermission( permission );
+        
+        permission = new Permission( );
+        permission.setPermissionKey( PERMISSION_OVERBOOKING_FORM );
+        permission.setPermissionTitleKey( PROPERTY_LABEL_OVERBOOKING_FORM );
         resourceType.registerPermission( permission );
 
         ResourceTypeManager.registerResourceType( resourceType );
