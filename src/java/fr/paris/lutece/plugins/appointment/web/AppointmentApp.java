@@ -556,8 +556,7 @@ public class AppointmentApp extends MVCApplication
             LinkedHashMap<String, String> additionalParameters = new LinkedHashMap<>( );
             additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
             additionalParameters.put( PARAMETER_STARTING_DATE_TIME, request.getParameter( PARAMETER_STARTING_DATE_TIME ) );
-            additionalParameters.put( PARAMETER_ENDING_DATE_TIME, request.getParameter( PARAMETER_ENDING_DATE_TIME ) );
-            additionalParameters.put( PARAMETER_MAX_CAPACITY, request.getParameter( PARAMETER_MAX_CAPACITY ) );
+            additionalParameters.put( PARAMETER_NB_PLACE_TO_TAKE, request.getParameter( PARAMETER_NB_PLACE_TO_TAKE ) );
             additionalParameters.put( PARAMETER_ANCHOR, MARK_ANCHOR + anchor );
             return redirect( request, VIEW_APPOINTMENT_FORM, additionalParameters );
 
