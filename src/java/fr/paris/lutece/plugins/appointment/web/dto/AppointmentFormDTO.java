@@ -1093,19 +1093,22 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
 
     /**
      * Returns the IsMultislotAppointment
+     * 
      * @return The IsMultislotAppointment
-     */ 
-     public boolean getIsMultislotAppointment()
-     {
-         return _bIsMultislotAppointment;
-     }
- 
+     */
+    public boolean getIsMultislotAppointment( )
+    {
+        return _bIsMultislotAppointment;
+    }
+
     /**
      * Sets the IsMultislotAppointment
-     * @param bIsMultislotAppointment The IsMultislotAppointment
-     */ 
-     public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
-     {
-         _bIsMultislotAppointment = bIsMultislotAppointment;
-     }
+     * 
+     * @param bIsMultislotAppointment
+     *            The IsMultislotAppointment
+     */
+    public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
+    {
+        _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
 }

@@ -697,8 +697,8 @@ public final class FormService
         form.setIsActive( appointmentForm.getIsActive( ) );
         form.setIdWorkflow( appointmentForm.getIdWorkflow( ) );
         form.setWorkgroup( appointmentForm.getWorkgroup( ) );
-        form.setIsMultislotAppointment(appointmentForm.getIsMultislotAppointment( ));
-        
+        form.setIsMultislotAppointment( appointmentForm.getIsMultislotAppointment( ) );
+
         return form;
     }
 

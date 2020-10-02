@@ -429,7 +429,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         int nIdForm = Integer.parseInt( strIdForm );
         AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
-        { 
+        {
             appointmentForm = FormService.buildAppointmentFormLight( nIdForm );
         }
         populate( appointmentForm, request );

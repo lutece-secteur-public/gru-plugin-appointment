@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2002-2020, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,25 +40,26 @@ import javax.validation.constraints.NotNull;
 
 /**
  * This is the business class for the object Comment
- */ 
+ */
 public class Comment implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    // Variables declarations 
+    // Variables declarations
     private int _nId;
-    
+
     private int _nIdForm;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private Date _dateStartingValidityDate;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private Date _dateEndingValidityDate;
-    
+
     @NotEmpty( message = "#i18n{appointment.validation.comment.Comment.notEmpty}" )
     private String _strComment;
 
     /**
      * Returns the Id
+     * 
      * @return The Id
      */
     public int getId( )
@@ -69,15 +69,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the Id
-     * @param nId The Id
-     */ 
+     * 
+     * @param nId
+     *            The Id
+     */
     public void setId( int nId )
     {
         _nId = nId;
     }
-    
+
     /**
      * Returns the IdForm
+     * 
      * @return The IdForm
      */
     public int getIdForm( )
@@ -87,15 +90,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the IdForm
-     * @param nIdForm The IdForm
-     */ 
+     * 
+     * @param nIdForm
+     *            The IdForm
+     */
     public void setIdForm( int nIdForm )
     {
         _nIdForm = nIdForm;
     }
-    
+
     /**
      * Returns the StartingValidityDate
+     * 
      * @return The StartingValidityDate
      */
     public Date getStartingValidityDate( )
@@ -105,15 +111,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the StartingValidityDate
-     * @param dateStartingValidityDate The StartingValidityDate
-     */ 
+     * 
+     * @param dateStartingValidityDate
+     *            The StartingValidityDate
+     */
     public void setStartingValidityDate( Date dateStartingValidityDate )
     {
         _dateStartingValidityDate = dateStartingValidityDate;
     }
-    
+
     /**
      * Returns the EndingValidityDate
+     * 
      * @return The EndingValidityDate
      */
     public Date getEndingValidityDate( )
@@ -123,15 +132,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the EndingValidityDate
-     * @param dateEndingValidityDate The EndingValidityDate
-     */ 
+     * 
+     * @param dateEndingValidityDate
+     *            The EndingValidityDate
+     */
     public void setEndingValidityDate( Date dateEndingValidityDate )
     {
         _dateEndingValidityDate = dateEndingValidityDate;
     }
-    
+
     /**
      * Returns the Comment
+     * 
      * @return The Comment
      */
     public String getComment( )
@@ -141,8 +153,10 @@ public class Comment implements Serializable
 
     /**
      * Sets the Comment
-     * @param strComment The Comment
-     */ 
+     * 
+     * @param strComment
+     *            The Comment
+     */
     public void setComment( String strComment )
     {
         _strComment = strComment;

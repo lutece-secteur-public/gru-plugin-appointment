@@ -285,7 +285,6 @@ public final class FormDAO extends UtilDAO implements IFormDAO
         daoUtil.setString( nIndex++, form.getWorkgroup( ) );
         daoUtil.setBoolean( nIndex++, form.getIsMultislotAppointment( ) );
 
-
         if ( !isInsert )
         {
             daoUtil.setInt( nIndex, form.getIdForm( ) );

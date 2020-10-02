@@ -120,11 +120,11 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Workgroup
      */
     private String _strWorkgroup;
-    
+
     /**
-     * 	 _bIsMultislotAppointment
+     * _bIsMultislotAppointment
      */
-	private boolean _bIsMultislotAppointment;
+    private boolean _bIsMultislotAppointment;
 
     /**
      * Get the form Id
@@ -409,23 +409,26 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     {
         return Integer.toString( getIdForm( ) );
     }
-    
+
     /**
      * Returns the IsMultislotAppointment
+     * 
      * @return The IsMultislotAppointment
-     */ 
-     public boolean getIsMultislotAppointment()
-     {
-         return _bIsMultislotAppointment;
-     }
- 
+     */
+    public boolean getIsMultislotAppointment( )
+    {
+        return _bIsMultislotAppointment;
+    }
+
     /**
      * Sets the IsMultislotAppointment
-     * @param bIsMultislotAppointment The IsMultislotAppointment
-     */ 
-     public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
-     {
-         _bIsMultislotAppointment = bIsMultislotAppointment;
-     }
+     * 
+     * @param bIsMultislotAppointment
+     *            The IsMultislotAppointment
+     */
+    public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
+    {
+        _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
 
 }
