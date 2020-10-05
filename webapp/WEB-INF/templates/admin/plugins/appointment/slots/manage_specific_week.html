@@ -35,7 +35,7 @@
         <#if events??>
             <#list events as event>
                 {
-                    title : 'Capacit\u00e9 max : ' + '${event.maxCapacity}' + <#if event.isSpecific>' (*)'<#else>''</#if>,
+                    title : '#i18n{appointment.manageCalendarSlots.maxCapacity} : ' + '${event.maxCapacity}' + <#if event.isSpecific>' (*)'<#else>''</#if>,
                     start : '${event.startingDateTime}',
                     end : '${event.endingDateTime}',
                     id : '${event.idSlot}',
