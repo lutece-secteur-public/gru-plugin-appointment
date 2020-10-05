@@ -1,16 +1,5 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
 
-<!--
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
-<script src='js/plugins/appointment/jquery.min.js' ></script>
-<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
-<script src='js/plugins/appointment/fullcalendar.min.js' ></script>
-<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
--->
-
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
@@ -77,7 +66,7 @@
                 datePicker: {
                     text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
                     click: function () {
-			$('#hiddenDate').data("DateTimePicker").show();
+			$('#hiddenDate').data("DateTimePicker").toggle();
                     }
                 }
             },
