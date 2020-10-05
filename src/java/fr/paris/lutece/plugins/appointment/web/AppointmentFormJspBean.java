@@ -131,9 +131,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String PARAMETER_GEOLOC_ADDRESS = "geoloc_address";
     private static final String PARAMETER_GEOLOC_LATITUDE = "geoloc_latitude";
     private static final String PARAMETER_GEOLOC_LONGITUDE = "geoloc_longitude";
-    private static final String PARAMETER_TIMEZONE = "timezone";
-    private static final String PARAMETER_TIME_FORMAT = "timeformat";
-    private static final String PARAMETER_DATE_FORMAT = "dateformat";
+
 
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage.appointmentforms.title";
@@ -409,6 +407,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         }
+
+        populateDateTime( appointmentForm, request );
         Map<String, Object> model = getModel( );
         addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
@@ -831,29 +831,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             appointmentForm.setAddress( null );
             appointmentForm.setLatitude( null );
             appointmentForm.setLongitude( null );
-        }
-    }
-
-    private void populateDateTime( AppointmentFormDTO appointmentForm, HttpServletRequest request )
-    {
-        String strTimezone = request.getParameter( PARAMETER_TIMEZONE );
-        String strTimeFormat = request.getParameter( PARAMETER_TIME_FORMAT);
-        String strDateFormat = request.getParameter( PARAMETER_DATE_FORMAT);
-
-        if ( StringUtils.isNotBlank( strTimezone)) {
-            appointmentForm.setTimezone( strTimezone);
-        } else {
-            appointmentForm.setTimezone( null );
-        }
-        if ( StringUtils.isNotBlank( strTimeFormat)) {
-            appointmentForm.setTimeFormat( strTimeFormat);
-        } else {
-            appointmentForm.setTimeFormat( null );
-        }
-        if ( StringUtils.isNotBlank( strDateFormat)) {
-            appointmentForm.setTimezone( strDateFormat);
-        } else {
-            appointmentForm.setDateFormat( null );
         }
     }
 

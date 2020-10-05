@@ -86,7 +86,7 @@ public final class Utilities
     /**
      * Build a custom DateTimeFormatter for a supplied format string and locale
      * @param formatPattern the format pattern string
-     * @param locale the supplied locae
+     * @param locale the supplied locale
      * @return the custom DateTimeFormatter
      */
     public static DateTimeFormatter buildCustomFormatter(String formatPattern, Locale locale) {
