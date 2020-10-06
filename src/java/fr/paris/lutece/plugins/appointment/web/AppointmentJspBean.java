@@ -455,7 +455,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return getViewChangeDateAppointment( request );
         }
         // Clean session
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
 
@@ -1217,7 +1217,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         Map<String, String> additionalParameters = new HashMap<>( );
         additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( form.getIdForm( ) ) );
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, slot.getDate( ).toString( ) );
@@ -1371,7 +1371,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         session.removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         session.removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         session.removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session );
     }
 
     /**
@@ -1385,7 +1385,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         // If we do not reload an appointment, we clear uploaded files.
         if ( session.getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT ) == null && session.getAttribute( SESSION_VALIDATED_APPOINTMENT ) == null )
         {
-            AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
+            AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session );
         }
     }
 
