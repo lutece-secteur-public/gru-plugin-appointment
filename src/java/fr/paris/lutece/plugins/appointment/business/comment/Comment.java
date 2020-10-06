@@ -35,8 +35,10 @@
 package fr.paris.lutece.plugins.appointment.business.comment;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -51,12 +53,18 @@ public class Comment implements Serializable
     
     private int _nIdForm;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    private Date _dateStartingValidityDate;
+    private LocalDate _dateStartingValidityDate;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    private Date _dateEndingValidityDate;
-    
+    private LocalDate _dateEndingValidityDate;
     @NotEmpty( message = "#i18n{appointment.validation.comment.Comment.notEmpty}" )
     private String _strComment;
+    
+    private LocalDate _dateCreationDate;
+    
+    /**
+     * The User who created the comment (if not created by the user himself)
+     */
+    private String _strCreatorUserConnectId;
 
     /**
      * Returns the Id
@@ -98,7 +106,7 @@ public class Comment implements Serializable
      * Returns the StartingValidityDate
      * @return The StartingValidityDate
      */
-    public Date getStartingValidityDate( )
+    public LocalDate getStartingValidityDate( )
     {
         return _dateStartingValidityDate;
     }
@@ -107,7 +115,7 @@ public class Comment implements Serializable
      * Sets the StartingValidityDate
      * @param dateStartingValidityDate The StartingValidityDate
      */ 
-    public void setStartingValidityDate( Date dateStartingValidityDate )
+    public void setStartingValidityDate( LocalDate dateStartingValidityDate )
     {
         _dateStartingValidityDate = dateStartingValidityDate;
     }
@@ -116,7 +124,7 @@ public class Comment implements Serializable
      * Returns the EndingValidityDate
      * @return The EndingValidityDate
      */
-    public Date getEndingValidityDate( )
+    public LocalDate getEndingValidityDate( )
     {
         return _dateEndingValidityDate;
     }
@@ -125,7 +133,7 @@ public class Comment implements Serializable
      * Sets the EndingValidityDate
      * @param dateEndingValidityDate The EndingValidityDate
      */ 
-    public void setEndingValidityDate( Date dateEndingValidityDate )
+    public void setEndingValidityDate( LocalDate dateEndingValidityDate )
     {
         _dateEndingValidityDate = dateEndingValidityDate;
     }
@@ -147,4 +155,40 @@ public class Comment implements Serializable
     {
         _strComment = strComment;
     }
+    
+    /**
+     * Returns the CreationDate
+     * @return The CreationDate
+     */
+    public LocalDate getCreationDate( )
+    {
+    	return _dateCreationDate;
+    }
+    
+    /**
+     * Sets the CreationDate
+     * @param dateCreationDate The CreationDate
+     */ 
+    public void setCreationDate( LocalDate dateCreationDate ) 
+    {
+    	_dateCreationDate = dateCreationDate;
+    }
+    
+    /**UserConnectId
+     * @return The _strCreatorUserConnectId
+     */
+    public String getCreatorUserName( )
+    {
+    	return _strCreatorUserConnectId;
+    }
+    
+    /**
+     * Sets the strCreatorUserConnectId
+     * @param creatorUserConnectId The creatorUserConnectId
+     */ 
+    public void setCreatorUserName( String creatorUserConnectId ) 
+    {
+    	_strCreatorUserConnectId = creatorUserConnectId;
+    }
+
 }

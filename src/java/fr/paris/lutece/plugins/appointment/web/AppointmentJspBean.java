@@ -60,6 +60,7 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -192,6 +193,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
     private static final String PARAMETER_DAY_OF_WEEK = "dow";
     private static final String PARAMETER_EVENTS = "events";
+    private static final String PARAMETER_EVENTS_COMMENTS = "comment_events";
     private static final String PARAMETER_MIN_DURATION = "min_duration";
     private static final String PARAMETER_MIN_TIME = "min_time";
     private static final String PARAMETER_MAX_TIME = "max_time";
@@ -453,6 +455,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listSlot );
+        model.put( PARAMETER_EVENTS_COMMENTS, CommentHome.selectCommentsList( (Date) Date.valueOf(startingDateOfDisplay ), (Date) Date.valueOf( endingDateOfDisplay ), nIdForm ) );
         model.put( PARAMETER_MIN_TIME, minStartingTime );
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );

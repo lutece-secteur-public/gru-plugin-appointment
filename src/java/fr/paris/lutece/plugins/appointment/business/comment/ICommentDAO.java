@@ -77,6 +77,7 @@ public interface ICommentDAO
      * @return The instance of the comment
      */
     Comment load( int nKey, Plugin plugin );
+    
     /**
      * Load the data from the table
      * @param plugin the plugin

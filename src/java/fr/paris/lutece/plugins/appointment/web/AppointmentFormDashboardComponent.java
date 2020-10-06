@@ -82,7 +82,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
         listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, user );
         listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                 AdminUserService.getAdminUser( request ) ) );
