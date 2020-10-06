@@ -35,6 +35,9 @@
 package fr.paris.lutece.plugins.appointment.business.comment;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import fr.paris.lutece.portal.business.user.AdminUser;
+
 import java.io.Serializable;
 import java.sql.Date;
 import javax.validation.constraints.NotNull;
@@ -54,9 +57,15 @@ public class Comment implements Serializable
     private Date _dateStartingValidityDate;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private Date _dateEndingValidityDate;
-    
     @NotEmpty( message = "#i18n{appointment.validation.comment.Comment.notEmpty}" )
     private String _strComment;
+    
+    private Date _dateCreationDate;
+    
+    /**
+     * The Admin User who created the comment (if not created by the user himself)
+     */
+    private AdminUser _userAdminUserCreate;
 
     /**
      * Returns the Id
@@ -147,4 +156,40 @@ public class Comment implements Serializable
     {
         _strComment = strComment;
     }
+    
+    /**
+     * Returns the CreationDate
+     * @return The CreationDate
+     */
+    public Date getCreationDate( ) {
+    	return _dateCreationDate;
+    }
+    
+    /**
+     * Sets the CreationDate
+     * @param dateCreationDate The CreationDate
+     */ 
+    public void setCreationDate( Date dateCreationDate ) 
+    {
+    	_dateCreationDate = dateCreationDate;
+    }
+    
+    /**
+     * Returns the AdminUserCreate
+     * @return The AdminUserCreate
+     */
+    public AdminUser getUserAdminUserCreate( )
+    {
+    	return _userAdminUserCreate;
+    }
+    
+    /**
+     * Sets the AdminUserCreate
+     * @param userAdminUserCreate The AdminUserCreate
+     */ 
+    public void setUserAdminUserCreate( AdminUser userAdminUserCreate ) 
+    {
+    	_userAdminUserCreate = userAdminUserCreate;
+    }
+
 }

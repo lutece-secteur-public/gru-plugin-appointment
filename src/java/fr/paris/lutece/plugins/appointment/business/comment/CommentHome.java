@@ -35,6 +35,7 @@
  package fr.paris.lutece.plugins.appointment.business.comment;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
+import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
@@ -122,6 +123,20 @@ public final class CommentHome
     	
     	return  _dao.selectCommentsList( _plugin, startingDate, endingDate, nIdForm );
     }
+    /**
+     * Load the data from the table
+     * @param plugin the plugin
+     * @param startingDate the date start
+     * @param endingDate the date end
+     * @param creationDate the date of the comment's creation
+     * @param creatorUser the user who created the comment
+     * @returnThe instance of the comment
+     */
+    public static List<Comment> selectCommentsList(  Date startingDate, Date endingDate, int nIdForm, Date creationDate, AdminUser creatorUser ){
+    	
+    	return  _dao.selectCommentsList( _plugin, startingDate, endingDate, nIdForm, creationDate, creatorUser );
+    }
+    
     /**
      * Load the id of all the comment objects and returns them as a list
      * @return the list which contains the id of all the comment objects
