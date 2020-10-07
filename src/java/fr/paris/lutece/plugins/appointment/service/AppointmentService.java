@@ -119,6 +119,28 @@ public final class AppointmentService
     public static List<Appointment> findListAppointmentByUserId( int nIdUser )
     {
         return AppointmentHome.findByIdUser( nIdUser );
+        
+    }
+    /**
+     * Find the appointments of a user by guid
+     * 
+     * @param nIdUser
+     *            the user guid
+     * @return the appointment of the guid
+     */
+    public static List<Appointment> findListAppointmentByUserGuid( String strGuidUser )
+    {
+        List<Appointment> listAppointment= AppointmentHome.findByGuidUser( strGuidUser );
+        for(Appointment appointment: listAppointment) {
+	        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+	        {
+	            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
+	
+	            appointment.addSlot( slot );
+	        }
+        }
+        return listAppointment;
+        
     }
 
     /**

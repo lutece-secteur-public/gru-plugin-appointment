@@ -64,6 +64,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.date_appointment_create ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE id_appointment = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_USER = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE id_user = ?";
+    private static final String SQL_QUERY_SELECT_BY_GUID_USER = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment join appointment_user user on (user.id_user = appointment.id_user and user.guid = ?)";
     private static final String SQL_QUERY_SELECT_BY_ID_SLOT = SQL_QUERY_SELECT_COLUMNS
             + ",appt_slot.nb_places FROM appointment_appointment appointment INNER JOIN appointment_appointment_slot appt_slot on ( appt_slot.id_appointment = appointment.id_appointment and appt_slot.id_slot= ? )";
     private static final String SQL_QUERY_SELECT_BY_REFERENCE = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_appointment appointment WHERE reference = ?";
@@ -77,7 +78,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             + " slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form "
             + " FROM appointment_appointment app " + "INNER JOIN appointment_user user ON app.id_user = user.id_user "
             + " INNER JOIN appointment_appointment_slot app_slot ON app.id_appointment = app_slot.id_appointment"
-            + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot " + "WHERE slot.id_form = ?";
+            + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
 
     private static final String SQL_QUERY_INSERT_APPT_SLT = "INSERT INTO appointment_appointment_slot (id_appointment, id_slot, nb_places) VALUES ( ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE_APPT_SLT = "UPDATE appointment_appointment SET nb_plcaces = ? WHERE id_appointment = ? and id_slot = ?";
@@ -87,6 +88,8 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
     private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
     private static final String SQL_FILTER_EMAIL = "UPPER(user.email) LIKE ?";
+    private static final String SQL_FILTER_ID_FORM = "slot.id_form = ?";
+    private static final String  SQL_FILTER_GUID = "user.guid = ?";
     private static final String SQL_FILTER_STATUS = "app.is_cancelled = ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = "slot.starting_date_time >= ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
@@ -254,6 +257,33 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         }
         return listAppointment;
     }
+    @Override
+    public List<Appointment> findByGuidUser( String strGuidUser, Plugin plugin )
+    {
+        DAOUtil daoUtil = null;
+        List<Appointment> listAppointment = new ArrayList<>( );
+        try
+        {
+            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_GUID_USER, plugin );
+            daoUtil.setString( 1, strGuidUser );
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
+            {
+                Appointment appt = buildAppointment( daoUtil );
+                appt.setListAppointmentSlot( selectAppointmentSlot( appt.getIdAppointment( ), plugin ) );
+
+                listAppointment.add( appt );
+            }
+        }
+        finally
+        {
+            if ( daoUtil != null )
+            {
+                daoUtil.free( );
+            }
+        }
+        return listAppointment;
+    }
 
     @Override
     public List<Appointment> findByIdSlot( int nIdSlot, Plugin plugin )
@@ -354,7 +384,10 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private void addFilterParametersToDAOUtil( AppointmentFilterDTO appointmentFilter, DAOUtil daoUtil )
     {
         int nIndex = 1;
-        daoUtil.setInt( nIndex++, appointmentFilter.getIdForm( ) );
+        if ( appointmentFilter.getIdForm() != 0 )
+        {
+        	daoUtil.setInt( nIndex++, appointmentFilter.getIdForm( ) );
+        }
         if ( appointmentFilter.getFirstName( ) != null )
         {
             daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName( ).toUpperCase( ) + CONSTANT_PERCENT );
@@ -366,6 +399,10 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         if ( appointmentFilter.getEmail( ) != null )
         {
             daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
+        }
+        if ( appointmentFilter.getGuid( ) != null )
+        {
+            daoUtil.setString( nIndex++, appointmentFilter.getGuid( )  );
         }
         if ( appointmentFilter.getStatus( ) != -1 )
         {
@@ -411,6 +448,12 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private String getSqlQueryFromFilter( AppointmentFilterDTO appointmentFilter )
     {
         StringBuilder sbSql = new StringBuilder( SQL_QUERY_SELECT_BY_FILTER );
+        
+        if ( appointmentFilter.getIdForm() != 0 )
+        {
+            sbSql.append( CONSTANT_AND );
+            sbSql.append( SQL_FILTER_ID_FORM );
+        }
         if ( appointmentFilter.getFirstName( ) != null )
         {
             sbSql.append( CONSTANT_AND );
@@ -425,6 +468,11 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         {
             sbSql.append( CONSTANT_AND );
             sbSql.append( SQL_FILTER_EMAIL );
+        }
+        if ( appointmentFilter.getGuid() != null )
+        {
+            sbSql.append( CONSTANT_AND );
+            sbSql.append( SQL_FILTER_GUID );
         }
         if ( appointmentFilter.getStatus( ) != -1 )
         {

@@ -463,7 +463,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_FORM_OVERBOOKING_ALLOWED, appointmentForm.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM,
                 getUser() ));
 
-        if( appointmentForm.getIsMultislotAppointment( ) ) {
+        if( appointmentForm.getIsMultislotAppointment( ) && nNbPlacesToTake <= 1 ) {
         	
         	return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_MULTI_SLOT, model );
 

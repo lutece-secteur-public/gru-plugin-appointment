@@ -103,6 +103,16 @@ public interface IAppointmentDAO
      * @return a list of the appointments of the user
      */
     List<Appointment> findByIdUser( int nIdUser, Plugin plugin );
+    /**
+     * Returns all the appointments of a user by Guid
+     * 
+     * @param strGuidUser
+     *            the User Guid
+     * @param plugin
+     *            the Plugin
+     * @return a list of the appointments of the user by Guid
+     */
+    List<Appointment> findByGuidUser( String strGuidUser, Plugin plugin );
 
     /**
      * Returns the appointments of a slot
