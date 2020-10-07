@@ -11,7 +11,7 @@
 				<fieldset>
 					<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
-						<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
+						<@staticText><@tag color='info'>#i18n{${entry.entryType.title}}</@tag></@staticText>
 					</@formGroup>
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' helpKey='#i18n{appointment.createEntry.labelTitleComment}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${entry.title}' maxlength=255 />
@@ -22,7 +22,7 @@
 					<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
 						<@input type='textarea' name='comment' rows=2>${entry.comment}</@input>
 					</@formGroup>
-					<@formGroup labelKey='#i18n{appointment.createEntry.labelType} : ${entry.entryType.title}'>
+					<@formGroup labelKey='#i18n{appointment.createEntry.labelType} : #i18n{${entry.entryType.title}}'>
 						<label for="map_provider">#i18n{appointment.createEntry.mapProvider}</label>
 						<#if entry.mapProvider?has_content && entry.mapProvider.key?has_content>
 							<@select name='map_provider' items=entryTypeService.mapProvidersRefList default_value='${entry.mapProvider.key}' />
