@@ -14,7 +14,7 @@
                             <input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
                         </#if>
                         <@formGroup labelFor='type' labelKey='#i18n{appointment.createEntry.labelType}'>
-                            <@tag color='info' id='type'>#i18n{${entry.entryType.title}}</@tag>
+                            <@tag color='info' id='type'>#i18n{${entry.entryType.beanName}}</@tag>
                         </@formGroup>
                         <@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true helpKey='#i18n{appointment.createEntry.labelTitleComment}'>
                             <@input type='text' name='title' id='title' value='' maxlength=255 />
