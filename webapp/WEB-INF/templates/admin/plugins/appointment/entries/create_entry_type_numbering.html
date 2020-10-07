@@ -1,11 +1,11 @@
 <@row>
     <@columns>
         <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title} - #i18n{appointment.type.name} : ${entry.entryType.title}' />
+            <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title} - #i18n{appointment.type.name} : #i18n{${entry.entryType.title}}' />
             <@boxBody>
                 <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
-                        <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}' - #i18n{appointment.type.name} : ${entry.entryType.title}</legend>
+                        <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}' - #i18n{appointment.type.name} : #i18n{${entry.entryType.title}}</legend>
                         <input type='hidden' name='id_form' value='${form.idForm}' />
                         <input type='hidden' name='action' value='doCreateEntry' />
                         <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
@@ -15,7 +15,7 @@
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText>
 								<@tag color='info'>
-									${entry.entryType.title}
+									#i18n{${entry.entryType.title}}
 								</@tag>
 							</@staticText>
 						</@formGroup>

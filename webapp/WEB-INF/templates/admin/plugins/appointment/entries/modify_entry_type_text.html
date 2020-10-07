@@ -8,12 +8,12 @@
 				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
 					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
-					<input type='hidden' name='action' value='doModifyEntry' type='hidden' />
+					<input type='hidden' name='action' value='doModifyEntry' />
 					
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 						<@staticText>
 							<@tag color='info'>
-								${entry.entryType.title}
+								#i18n{${entry.entryType.title}}
 							</@tag>
 						</@staticText>
 					</@formGroup>

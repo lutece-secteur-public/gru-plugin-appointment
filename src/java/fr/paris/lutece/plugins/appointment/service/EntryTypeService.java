@@ -110,7 +110,10 @@ public final class EntryTypeService
     }
 
     /**
-     * Get a reference list containing entry types
+     * Get a reference list containing entry types. This is used to display EntryTypes in the UI. Since we need to
+     * be able to do this in different languages, we use the bean name instead of the title. The bean name is used to
+     * reference a property in the resource bundle. For example, the bean name "appointment.entryTypeComment", when
+     * internationalized in a template, will access the property entryTypeComment in the resource bundle.
      * 
      * @return A reference list containing entry types
      */
@@ -120,7 +123,7 @@ public final class EntryTypeService
 
         for ( EntryType entryType : _mapEntryTypes.values( ) )
         {
-            refListEntryType.addItem( entryType.getIdType( ), entryType.getTitle( ) );
+            refListEntryType.addItem( entryType.getIdType( ), entryType.getBeanName( ) );
         }
 
         return refListEntryType;

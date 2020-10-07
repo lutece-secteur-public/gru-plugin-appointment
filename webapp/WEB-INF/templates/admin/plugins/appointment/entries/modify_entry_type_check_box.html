@@ -13,7 +13,7 @@
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}' rows=2>
 							<@staticText>
 								<@tag color='info'>
-									${entry.entryType.title}
+									#i18n{${entry.entryType.title}}
 								</@tag>
 							</@staticText>
 						</@formGroup>
@@ -33,7 +33,7 @@
 								<option value=0 <#if !entry.fieldInLine >selected="selected" </#if>>#i18n{appointment.createEntry.selectPresentationNotInLine}</option>
 							</@select>
 						</@formGroup>
-						<@formGroup labelKey='#i18n{appointment.createEntry.labelType} :  ${entry.entryType.title}' rows=2>
+						<@formGroup labelKey='#i18n{appointment.createEntry.labelType} :  #i18n{${entry.entryType.title}}' rows=2>
 							<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />
 						</@formGroup>
 						 <@formGroup labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' rows=2>
