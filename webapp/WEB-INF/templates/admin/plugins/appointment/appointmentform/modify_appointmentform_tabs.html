@@ -15,20 +15,23 @@
 
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
-		<ul class="nav nav-tabs">
-			<li <#if tab="params">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
+		<ul class="nav">
+			<li class="nav-item">
+				<a <#if tab="params">class="nav-link active" <#else> class="nav-link" </#if>
+					href="jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}">
 					#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}
 				</a>
 			</li>
-			<li <#if tab="entries">class="active"</#if>>
-				<a href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
+			<li class="nav-item">
+				<a  <#if tab="entries">class="nav-link active" <#else> class="nav-link" </#if>
+					href="jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?view=modifyAppointmentFormEntries&id_form=${appointmentform.idForm}">
 					#i18n{appointment.modifyAppointmentFormEntries.pageTitle}
 				</a>
 			</li>
 			<#if isResourceInstalled?? && isResourceInstalled>
-			<li <#if tab="resources">class="active"</#if>>
-					<a href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
+			<li class="nav-item">
+					<a  <#if tab="resources">class="nav-link active" <#else> class="nav-link" </#if>
+						href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
 						#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
 					</a>
 	    	</li>
