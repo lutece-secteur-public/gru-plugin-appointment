@@ -10,17 +10,17 @@
 </@row>
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
-    <ul class="nav nav-tabs">
-   		<li <#if tab="typicalWeek">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
+    <ul class="nav">
+		<li class="nav-item">
+			<a  <#if tab="typicalWeek">class="nav-link active"<#else>class="nav-link"</#if> href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}">
 				#i18n{appointment.typicalWeek.pageTitle}
 			</a>
         </li>
-		<li <#if tab="specificWeek">class="active"</#if>>
-			<a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}">
+		<li class="nav-item">
+			<a <#if tab="specificWeek">class="nav-link active"<#else>class="nav-link"</#if> href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}">
 				#i18n{appointment.specificWeek.pageTitle}
 			</a>
-        </li>  	 				                          
+        </li>
     </ul>
 		<@tabContent>
 			<#nested>
