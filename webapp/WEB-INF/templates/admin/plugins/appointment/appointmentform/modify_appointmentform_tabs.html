@@ -30,10 +30,10 @@
 			</li>
 			<#if isResourceInstalled?? && isResourceInstalled>
 			<li class="nav-item">
-					<a  <#if tab="resources">class="nav-link active" <#else> class="nav-link" </#if>
-						href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
-						#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
-					</a>
+				<a  <#if tab="resources">class="nav-link active" <#else> class="nav-link" </#if>
+					href="jsp/admin/plugins/appointment/modules/resource/ManageAppointmentFormResources.jsp?view=manageFormResources&id_form=${appointmentform.idForm}">
+					#i18n{module.appointment.resource.manageAppointmentFormResources.pageTitle}
+				</a>
 	    	</li>
 			</#if>
 		</ul>
