@@ -111,16 +111,23 @@
 </#function>
 
 
-<#-- Redefine date picker to be localized. -->
-<#macro getDatePickerBootstrap idField language >
+<#-- Redefine date picker to be localized. Add min and max date support-->
+<#macro getDatePickerBootstrap idField language minDate="" maxDate="">
         <script src='js/plugins/appointment/moment-with-locales.min.js'></script>
         <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
+	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
         <script type='text/javascript' charset='utf-8'>
         $(document).ready( function() {
             $('#${idField}').datetimepicker({
 		locale: '${language}',
 		format: 'L',
 		keepOpen: false,
+                <#if minDate?has_content>
+                  minDate: '${minDate}',
+                </#if>
+                <#if maxDate?has_content>
+                  maxDate: '${maxDate}',
+                </#if>
 		icons: {
 		    time: 'fa fa-clock-o',
 		    date: 'fa fa-calendar',
@@ -141,6 +148,7 @@
 <#macro getTimePickerBootstrap idField language >
         <script src='js/plugins/appointment/moment-with-locales.min.js'></script>
         <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
+	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
         <script type='text/javascript' charset='utf-8'>
         $(document).ready( function() {
             $('#${idField}').datetimepicker({
@@ -158,7 +166,7 @@
 		    today: 'fa fa-screenshot',
 		    clear: 'fa fa-trash',
 		    close: 'fa fa-remove'
-		}		
+		}
 	    });
         });
         </script>
