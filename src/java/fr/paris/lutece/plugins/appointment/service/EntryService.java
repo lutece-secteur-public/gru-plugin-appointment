@@ -82,6 +82,7 @@ public final class EntryService extends RemovalListenerService implements Serial
     private static final long serialVersionUID = -5378918040356139703L;
 
     private static final String MARK_LOCALE = "locale";
+    private static final String MARK_LANGUAGE = "language";    
     private static final String MARK_ENTRY = "entry";
     private static final String MARK_ENTRY_LIST = "entry_list";
     private static final String MARK_ENTRY_TYPE_LIST = "entry_type_list";
@@ -554,6 +555,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         }
         model.put( MARK_ENTRY, entry );
         model.put( MARK_LOCALE, locale );
+	model.put( MARK_LANGUAGE, locale.getLanguage( ) );
         if ( request != null )
         {
             AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );

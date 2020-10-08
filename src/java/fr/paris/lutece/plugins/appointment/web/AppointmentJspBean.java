@@ -428,6 +428,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_EVENTS, listSlot );
         model.put( PARAMETER_MIN_TIME, minStartingTime );
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
+        model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
+        model.put( MARK_LOCALE, getLocale( ) );	
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR, model );
     }
@@ -538,7 +540,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( nIdForm ) );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_LANGUAGE, getLocale( ) );
+        model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
+        model.put( MARK_LOCALE, getLocale( ) );		
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
@@ -765,7 +768,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, user ) );
         model.put( MARK_RIGHT_CHANGE_DATE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
-        model.put( MARK_LANGUAGE, getLocale( ) );
+        model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
+        model.put( MARK_LOCALE, getLocale( ) );		
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
     }

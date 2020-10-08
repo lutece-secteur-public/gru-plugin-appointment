@@ -133,6 +133,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     // Marks
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_LOCALE = "locale";
+    private static final String MARK_LANGUAGE = "language";    
     private static final String MARK_REGULAR_EXPRESSION_LIST_REF_LIST = "regular_expression_list";
     private static final String MARK_ENTRY = "entry";
     private static final String MARK_LIST = "list";
@@ -215,7 +216,8 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         model.put( MARK_ENTRY, entry );
         model.put( MARK_FORM, appointmentForm );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
+        model.put( MARK_LOCALE, AdminUserService.getLocale( request ) );	
+        model.put( MARK_LANGUAGE, AdminUserService.getLocale( request ).getLanguage( ) );
         model.put( MARK_ENTRY_TYPE_SERVICE, EntryTypeServiceManager.getEntryTypeService( entry ) );
         String strTemplate = EntryTypeServiceManager.getEntryTypeService( entry ).getTemplateCreate( entry, false );
         if ( strTemplate == null )

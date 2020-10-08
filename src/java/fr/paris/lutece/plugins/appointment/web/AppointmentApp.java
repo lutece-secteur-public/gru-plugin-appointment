@@ -205,6 +205,7 @@ public class AppointmentApp extends MVCApplication
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
+    private static final String MARK_LANGUAGE = "language";
     private static final String MARK_FORM = "form";
     private static final String MARK_USER = "user";
     private static final String MARK_FORM_MESSAGES = "formMessages";
@@ -686,7 +687,8 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
-        model.put( MARK_LOCALE, locale );
+	model.put( MARK_LANGUAGE, locale.getLanguage( ) );
+        model.put( MARK_LOCALE, locale );	
         model.put( MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats( ) );
         model.put( MARK_FORM_ERRORS, listErrors );
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
