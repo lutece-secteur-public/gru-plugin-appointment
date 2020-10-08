@@ -22,12 +22,58 @@
         <#else>
             <@tabContent>
                 <fieldset>
-                    <div id="calendar"></div>
+                    <a href="javascript:void(0)" onclick="viewAddComment();">+</a>
+                    <div id="calendar">
+                    </div>
                 </fieldset>
             </@tabContent>
         </#if>
     </@columns>
 </@row>
+<div id="comment" style="display:none;">
+    <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+            <@boxBody>
+            
+                <fieldset>
+                <legend class="hidden">#i18n{appointment.createField.title}</legend>
+                <@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
+                    
+                    <input type='hidden' name='action' value='doAddComment' />
+                    <input type='hidden' name='id_form' value='${id_form}' />
+                
+                    <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+                        <@input type='textarea' name='comment' id='comment' richtext=true />
+                    </@formGroup>
+                    
+                    <@formGroup labelFor='startingValidityDate' labelKey='#i18n{create_comment.labelStartingValidityDate}'>
+                        <@inputGroup>
+                            <@input type='text' name='startingValidityDate' id='startingValidityDate' value="" />
+                            <@inputGroupItem type='addon'>
+                            <@icon style='calendar' />
+                            </@inputGroupItem>
+                        </@inputGroup>
+                    </@formGroup>
+                    <@formGroup labelFor='endingValidityDate' labelKey='#i18n{create_comment.labelEndingValidityDate}'>
+                        <@inputGroup>
+                            <@input type='text' name='endingValidityDate' id='endingValidityDate' value="" />
+                            <@inputGroupItem type='addon'>
+                            <@icon style='calendar' />
+                            </@inputGroupItem>
+                        </@inputGroup>
+
+                    </@formGroup>   
+                    <@formGroup labelFor='sub' labelKey=''>
+                        <@button type='submit' name='action_doAddComment' buttonIcon='sea' title='Enregistrer' />   
+                        </@formGroup>   
+
+
+                </@tform>
+                </fieldset>
+            </@boxBody>
+        </@box>
+
+</div>
 <script type="text/javascript">
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
@@ -47,49 +93,64 @@
     var idForm = '${id_form}';
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
+        <#if comment_events??>
+        <#list comment_events as comment_event>
+        
+        {
+            "title" : "${comment_event.comment}",
+            "start" : "${comment_event.startingValidityDate?string['yyyy-MM-dd']}",
+            "end" : "${comment_event.endingValidityDate?string['yyyy-MM-dd']}",
+            "id" : "${comment_event.id}",
+            "type": "comment"
+        },
+        
+        </#list>
+        </#if>
         <#if events??>
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
                 {
-                    title : <#if modifDateAppointment>'<a href=' + eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>'
+                    "title" : <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>"
                            
                           <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                               '<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
-                                + '&nbsp;'
-                                + '<a href=' + eventUrl + 'createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}'+'><i class="glyphicon icon-plus-sign"></i></a>'               
+                               "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                + "&nbsp;"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"glyphicon icon-plus-sign\"></i></a>"
                     		<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                                '<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
-                                + '&nbsp;'
-                                + '<a href=' + eventUrl + 'createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}'+'><i class="glyphicon icon-plus-sign"></i></a>'
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                + "&nbsp;"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"glyphicon icon-plus-sign\"></i></a>"
                             <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
-                                '<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
                             <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
                             <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
-                                '<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
-                                + '&nbsp;'
-                                + '#i18n{appointment.manageCalendarSlots.labelEdit}'
-                                + '&nbsp;'
-                                + '<a href=' + eventUrl + 'createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}'+'><i class="glyphicon icon-plus-sign"></i></a>'
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                + "&nbsp;"
+                                + "#i18n{appointment.manageCalendarSlots.labelEdit}"
+                                + "&nbsp;"
+                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"glyphicon icon-plus-sign\"></i></a>"
                             <#elseif event.isOpen>
-                                '<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
                             <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
-                            <#else>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>'</#if>,
-                    start : '${event.startingDateTime}',
-                    end : '${event.endingDateTime}',
-                    id : '${event.idSlot}',
-                    textColor: <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'white'<#else>'#2c2c2d'</#if>,
-                    url : eventUrl + 'manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}',                                                      
-                    backgroundColor : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'#ff6600'
-                    				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>'white'
-                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'red'
-                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>'red'
-                                      <#elseif event.isOpen & event.isPassed>'#bebebe'
-                                      <#else>'#bebebe'
-                                      </#if>,
-                    borderColor : '#bebebe',
+                            <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>"</#if>,
+                    "start" : "${event.startingDateTime}",
+                    "end" : "${event.endingDateTime}",
+                    "id" : "${event.idSlot}",
+                    "textColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"white"<#else>"#2c2c2d"</#if>,
+                    "url" : eventUrl + "manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}",                                                      
+                    "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"#ff6600",
+                    				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>"white",
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>"red",
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>"red",
+                                      <#elseif event.isOpen & event.isPassed>"#bebebe",
+                                      <#else>"#bebebe",
+                                      </#if>
+                    "borderColor" : "#bebebe",
+                    "type" : "appointment"
                 },
             </#list>
         </#if>
+
     ];
     var defaultDate = '${date_of_display}';
     $(document).ready(function() {
@@ -148,7 +209,7 @@
             slotLabelFormat: 'H:mm',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
-            allDaySlot: false,
+            allDaySlot: true,
             minTime: minTime,
             maxTime: maxTime,
             businessHours: {
@@ -201,17 +262,88 @@
             eventRender: function( event, element, view ) {
                 var $title = element.find( '.fc-title' );
                 $title.html( $title.text() );
-                $(element).popover({
-                	container: 'body',
-                    placement : 'bottom',
-                    html : true,
-                    trigger : 'hover',
-                    content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
-                });
+                var json = {
+                        "container": "body",
+                        "placement" : "bottom",
+                        "html" : true,
+                        "trigger" : "hover"
+                    };
+                if( event.type == "comment" ){
+                	json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center></center>" + event.title + "</center>";
+                }else{
+                	json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                }
+                $(element).popover( json );
                 $(element).contextmenu(function() {
                     return false;
                 });
+                if($title.text() != '' && $title.text() != 'undefined' && !$title.text().includes('0 / 3') )
+                {
+	                element.append( "<a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon' style='position: relative; top: 2px; left: 2px; text-decoration: none;'>X</a>" );
+                }
             }
         });
     });
+</script>
+<@getDatePickerBootstrap idField="dateAppointment" language="fr" />
+<script type="text/javascript">
+    $(function () {
+        
+        $('#startingValidityDate').datepicker({
+        language : 'fr',
+        weekStart : 1,
+        todayBtn : true,
+        todayHighLight : true,
+        autoclose : true
+    }),
+    $('#endingValidityDate').datepicker({
+        language : 'fr',
+        weekStart : 1,
+        todayBtn : true,
+        todayHighLight : true,
+        autoclose : true
+    });
+    });      
+</script>
+<script type="text/javascript" src="${webapp_url!}js/editors/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+tinyMCE.init({
+    selector : "textarea.richtext",
+    theme : "modern",
+    document_base_url : "${webapp_url!}",
+    menubar : false,
+    plugins: [
+   "lutece advlist autolink link image lists charmap print preview hr anchor pagebreak ",
+   "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+   "save table contextmenu directionality template paste textcolor"
+    ],
+    paste_as_text: true,
+    // Extended elements
+    extended_valid_elements : "iframe[style|src|width|height|name|align|frameborder|scrolling],script[src|type]",
+    paste_word_valid_elements: "b,strong,i,em,h1,h2,h3,p,br",
+    style_formats: [
+        {title: "H2", format: "h2"},
+        {title: "H3", format: "h3"},
+        {title: "Paragraphe", format: "p"},
+        {title: 'Listes puces', selector: 'ul', classes: 'liste-puces'}
+    ],
+    toolbar: "undo redo | paste | styleselect | bold italic  | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | lutece link media | print preview fullscreen code",
+    contextmenu: "lutece link image | paste copy cut | inserttable | cell row column deletetable",
+});
+</script>
+<script type="text/javascript">
+function viewAddComment()
+{
+    var commentForm = document.getElementById("comment");
+    var currentStyle = window.getComputedStyle(commentForm);
+    var currentDisplay = currentStyle.getPropertyValue("display");
+    if(currentDisplay == "none")
+    {
+        commentForm.style.display = "block";
+    }
+    else
+    {
+        commentForm.style.display = "none";
+    }
+}
 </script>

@@ -453,7 +453,7 @@ id_form int default '0' NOT NULL,
 starting_validity_date date NOT NULL,
 ending_validity_date date NOT NULL,
 comment long varchar NOT NULL,
-comment_creation_date date NOT NULL, comment_user_creator int NOT NULL,
+comment_creation_date date NOT NULL, comment_user_creator VARCHAR(255) NOT NULL,
 PRIMARY KEY (id_comment),
 CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)

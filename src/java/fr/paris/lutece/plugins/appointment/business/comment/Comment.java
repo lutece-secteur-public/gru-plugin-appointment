@@ -36,10 +36,9 @@ package fr.paris.lutece.plugins.appointment.business.comment;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fr.paris.lutece.portal.business.user.AdminUser;
-
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -63,9 +62,9 @@ public class Comment implements Serializable
     private Date _dateCreationDate;
     
     /**
-     * The Admin User who created the comment (if not created by the user himself)
+     * The User who created the comment (if not created by the user himself)
      */
-    private AdminUser _userAdminUserCreate;
+    private String _strCreatorUserConnectId;
 
     /**
      * Returns the Id
@@ -161,7 +160,8 @@ public class Comment implements Serializable
      * Returns the CreationDate
      * @return The CreationDate
      */
-    public Date getCreationDate( ) {
+    public Date getCreationDate( )
+    {
     	return _dateCreationDate;
     }
     
@@ -174,22 +174,21 @@ public class Comment implements Serializable
     	_dateCreationDate = dateCreationDate;
     }
     
-    /**
-     * Returns the AdminUserCreate
-     * @return The AdminUserCreate
+    /**UserConnectId
+     * @return The _strCreatorUserConnectId
      */
-    public AdminUser getUserAdminUserCreate( )
+    public String getCreatorUserName( )
     {
-    	return _userAdminUserCreate;
+    	return _strCreatorUserConnectId;
     }
     
     /**
-     * Sets the AdminUserCreate
-     * @param userAdminUserCreate The AdminUserCreate
+     * Sets the strCreatorUserConnectId
+     * @param creatorUserConnectId The creatorUserConnectId
      */ 
-    public void setUserAdminUserCreate( AdminUser userAdminUserCreate ) 
+    public void setCreatorUserName( String creatorUserConnectId ) 
     {
-    	_userAdminUserCreate = userAdminUserCreate;
+    	_strCreatorUserConnectId = creatorUserConnectId;
     }
 
 }
