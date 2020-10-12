@@ -310,7 +310,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         populate( appointmentForm, request );
         populateAddress( appointmentForm, request );
-        populateDateTime( appointmentForm, request);
         if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
             return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1 );
@@ -408,7 +407,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         }
 
-        populateDateTime( appointmentForm, request );
         Map<String, Object> model = getModel( );
         addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
@@ -440,7 +438,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         populate( appointmentForm, request );
         populateAddress( appointmentForm, request );
-        populateDateTime( appointmentForm, request);
         AppointmentFormDTO appointmentFormDb = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE : request.getParameter( PARAMETER_DELETE_ICON );
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;

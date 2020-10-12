@@ -275,7 +275,6 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         populate( appointmentForm, request );
-        populateDateTime( appointmentForm, request );
         if ( appointmentForm.getDateOfModification( ) == null )
         {
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
