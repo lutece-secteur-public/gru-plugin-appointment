@@ -10,9 +10,6 @@
 					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
-					<input type="hidden" id="timezone" name="timezone">
-					<input type="hidden" id="timeformat" name="timeformat">
-					<input type="hidden" id="dateformat" name="dateformat">					
 					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
@@ -300,9 +297,12 @@ if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
 else return true;
 }
 
-$(function () {
-    $('#timezone').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
-    $('#dateformat').val(moment.localeData().longDateFormat('L'));
-    $('#timeformat').val(moment.localeData().longDateFormat('LT'));
+// Transform datetime from local format to ISO-8601 without UTC for submission
+$('#formid').on('submit', function(e) {
+    $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format());
+    $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format());
+    $('#time_start').val(moment($('#time_start').val(), 'LT').format());
+    $('#time_end').val(moment($('#time_end').val(), 'LT').format());
+    return true;
 });
 </script>
