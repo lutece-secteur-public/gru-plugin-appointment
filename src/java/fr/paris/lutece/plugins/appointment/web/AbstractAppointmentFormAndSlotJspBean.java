@@ -166,32 +166,4 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         return bReturn;
     }
 
-    /**
-     * Set parameters for time format, date format and timezone on the appointmetFormDTO
-     * @param appointmentForm the appointmentFormDTO
-     * @param request the request
-     */
-    void populateDateTime( AppointmentFormDTO appointmentForm, HttpServletRequest request )
-    {
-        String strTimezone = request.getParameter( PARAMETER_TIMEZONE );
-        String strTimeFormat = request.getParameter( PARAMETER_TIME_FORMAT);
-        String strDateFormat = request.getParameter( PARAMETER_DATE_FORMAT);
-
-        if ( StringUtils.isNotBlank( strTimezone)) {
-            appointmentForm.setTimezone( strTimezone);
-        } else {
-            appointmentForm.setTimezone( null );
-        }
-        if ( StringUtils.isNotBlank( strTimeFormat)) {
-            appointmentForm.setTimeFormat( strTimeFormat);
-        } else {
-            appointmentForm.setTimeFormat( null );
-        }
-        if ( StringUtils.isNotBlank( strDateFormat)) {
-            appointmentForm.setTimezone( strDateFormat);
-        } else {
-            appointmentForm.setDateFormat( null );
-        }
-    }
-
 }
