@@ -9,12 +9,12 @@
     <@columns>
         <@appointmentTabs tab="typicalWeek" appointmentform=appointmentform>
 				  <fieldset>
-            </br>
+            <br/>
             <@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
                 <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
                 <input type="hidden" id="timezone" name="timezone">
-		<input type="hidden" id="timeformat" name="timeformat">
-		<input type="hidden" id="dateformat" name="dateformat">
+		        <input type="hidden" id="timeformat" name="timeformat">
+		        <input type="hidden" id="dateformat" name="dateformat">
                 <#if listDateOfModification??>
                     <label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
                         <@select id='id_week-definition' name='id_week_definition'>
