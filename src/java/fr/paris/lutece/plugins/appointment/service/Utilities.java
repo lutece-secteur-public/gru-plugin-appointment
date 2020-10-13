@@ -36,7 +36,6 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
 
 /**
@@ -46,6 +45,8 @@ import java.util.List;
 public final class Utilities
 {
     private static DateTimeFormatter _formatter;
+
+    private static DateTimeFormatter _time_formatter;
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -63,9 +64,25 @@ public final class Utilities
     {
         if( _formatter == null )
         {
-            _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
+           // _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
+            _formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         }
         return _formatter;
+    }
+
+    /**
+     * Getter for the time formatter
+     *
+     * @return the formatter
+     */
+    public static DateTimeFormatter getTimeFormatter( )
+    {
+        if( _formatter == null )
+        {
+            // _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
+            _time_formatter = DateTimeFormatter.ISO_LOCAL_TIME;
+        }
+        return _time_formatter;
     }
 
     /**

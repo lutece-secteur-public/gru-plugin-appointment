@@ -37,11 +37,9 @@ import java.text.ParseException;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
+import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspBean
 {
@@ -105,8 +103,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     {
         boolean bReturn = true;
 
-        LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );;
-        LocalTime endingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        LocalTime startingTime = LocalTime.from( Utilities.getTimeFormatter( ).parse( appointmentForm.getTimeStart( ) ) );
+        LocalTime endingTime = LocalTime.from( Utilities.getTimeFormatter( ).parse( appointmentForm.getTimeEnd( ) ) );
 
         if ( startingTime.isAfter( endingTime ) )
         {
