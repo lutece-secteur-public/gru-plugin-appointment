@@ -47,9 +47,6 @@
 <fieldset>
 <@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
 	<input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
-	<input type="hidden" id="timezone" name="timezone">
-	<input type="hidden" id="timeformat" name="timeformat">
-	<input type="hidden" id="dateformat" name="dateformat">					
 	
 	<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' helpKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 		<@input type='text' name='title' id='title'  value=appointmentform.title!'' maxlength=255 />
@@ -72,7 +69,7 @@
 			<@inputGroupItem type='addon'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='date_start_validity'  class='datetimepicker' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
+			<@input type='text' name='date_start_validity'  class='datetimepicker' id='date_start_validity' />
 		</@inputGroup>
 	</@formGroup>
 	
@@ -81,7 +78,7 @@
 			<@inputGroupItem type='addon'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='date_end_validity'  class='datetimepicker' id='date_end_validity' value=appointmentform.dateEndValidity!''  />
+			<@input type='text' name='date_end_validity'  class='datetimepicker' id='date_end_validity' />
 		</@inputGroup>
 	</@formGroup>
 	
@@ -333,12 +330,23 @@
 	}
 	else return true;
 	};
+  
+       // Transform datetime from local format to ISO-8601 without UTC for submission
+       $('#formid').on('submit', function(e) {
+           $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format());
+           $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format());
+           return true;
+       });
 
-
+       // Convert ISO-8601 datetime from the server to localized format
        $(function () {
-	   $('#timezone').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
-	   $('#dateformat').val(moment.localeData().longDateFormat('L'));
-	   $('#timeformat').val(moment.localeData().longDateFormat('LT'));
-       });  
+           <#if appointmentform.dateStartValidity??>
+               $('#date_start_validity').val(moment('${appointmentform.dateStartValidity}').format('L'));
+	   </#if>
+
+           <#if appointmentform.dateEndValidity??>
+               $('#date_end_validity').val(moment('${appointmentform.dateEndValidity}').format('L'));
+	   </#if>
+       });
 </script>
 </#macro> 
