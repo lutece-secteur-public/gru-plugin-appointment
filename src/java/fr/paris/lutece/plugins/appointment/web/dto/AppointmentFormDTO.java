@@ -40,6 +40,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
@@ -266,6 +267,11 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      */
     private boolean _bIsMultislotAppointment;
 
+    /**
+     * Role FO
+     */
+    private String _strRole;
+    
     /**
      * Get the maximum number of appointments authorized for a same user
      * 
@@ -1108,4 +1114,20 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      {
          _bIsMultislotAppointment = bIsMultislotAppointment;
      }
+     
+     /**
+      * @return the strRole
+      */
+     public String getRole( )
+     {
+         return _strRole;
+     }
+
+     /**
+      * @param strRole the strRole to set
+      */
+     public void setRole( String strRole )
+     {
+         _strRole = strRole;
+      }
 }

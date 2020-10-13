@@ -39,6 +39,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -67,6 +68,9 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      */
     @JsonIgnore
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+    
+    @JsonIgnore
+    public static final String ROLE_NONE = "none";
 
     /**
      * Form Id
@@ -125,6 +129,11 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * 	 _bIsMultislotAppointment
      */
 	private boolean _bIsMultislotAppointment;
+    
+    /**
+     * Role FO
+     */
+    private String _strRole;
 
     /**
      * Get the form Id
@@ -426,6 +435,22 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
      {
          _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
+
+    /**
+     * @return the strRole
+     */
+    public String getRole( )
+    {
+        return _strRole;
+    }
+
+    /**
+     * @param strRole the strRole to set
+     */
+    public void setRole( String strRole )
+    {
+        _strRole = StringUtils.isEmpty( strRole ) ? ROLE_NONE : strRole;
      }
 
 }

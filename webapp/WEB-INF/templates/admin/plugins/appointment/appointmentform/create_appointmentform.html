@@ -176,7 +176,11 @@
 						<@formGroup>
 							<@checkBox name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' />
 						</@formGroup>
-
+						
+						<@formGroup>
+							<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
+						</@formGroup>
+						
 						<@formGroup labelFor='icon' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
 							<@inputGroup>
 								<@input type='file' id='image_resource' name='image_resource' params='accept="image/*"' />

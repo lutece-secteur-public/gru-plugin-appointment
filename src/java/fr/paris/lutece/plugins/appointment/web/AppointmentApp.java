@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.nio.file.AccessDeniedException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,7 +68,6 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
@@ -314,10 +314,12 @@ public class AppointmentApp extends MVCApplication
      * 
      * @param request
      * @return the Xpage
+     * @throws UserNotSignedException 
+     * @throws AccessDeniedException 
      */
     @SuppressWarnings( "unchecked" )
     @View( VIEW_APPOINTMENT_CALENDAR )
-    public XPage getViewAppointmentCalendar( HttpServletRequest request )
+    public XPage getViewAppointmentCalendar( HttpServletRequest request ) throws AccessDeniedException, UserNotSignedException
     {
         Map<String, Object> model = getModel( );
         Locale locale = getLocale( request );
@@ -337,6 +339,7 @@ public class AppointmentApp extends MVCApplication
             addError( ERROR_MESSAGE_FORM_NOT_ACTIVE, locale );
             bError = true;
         }
+        checkMyLuteceAuthentication( appointmentForm, request );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         // Check if the date of display and the endDateOfDisplay are in the
         // validity date range of the form
@@ -587,7 +590,7 @@ public class AppointmentApp extends MVCApplication
      */
     @SuppressWarnings( "unchecked" )
     @View( VIEW_APPOINTMENT_FORM )
-    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException
+    public synchronized XPage getViewAppointmentForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
@@ -833,9 +836,10 @@ public class AppointmentApp extends MVCApplication
      * @return The next URL to redirect to
      * @throws SiteMessageException
      * @throws UserNotSignedException
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_VALIDATE_FORM )
-    public XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException
+    public XPage doValidateForm( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
@@ -908,9 +912,10 @@ public class AppointmentApp extends MVCApplication
      *            The request
      * @return The HTML content to display or the next URL to redirect to
      * @throws UserNotSignedException
+     * @throws AccessDeniedException 
      */
     @View( VIEW_DISPLAY_RECAP_APPOINTMENT )
-    public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException
+    public XPage displayRecapAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
@@ -970,9 +975,10 @@ public class AppointmentApp extends MVCApplication
      *            The request
      * @return The XPage to display
      * @throws UserNotSignedException
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_MAKE_APPOINTMENT )
-    public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException
+    public XPage doMakeAppointment( HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         AppointmentFormDTO form = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         checkMyLuteceAuthentication( form, request );
@@ -1694,21 +1700,28 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      *             exception if the form requires an authentication and the user is not logged
      */
-    private void checkMyLuteceAuthentication( AppointmentFormDTO form, HttpServletRequest request ) throws UserNotSignedException
+    private void checkMyLuteceAuthentication( AppointmentFormDTO form, HttpServletRequest request ) throws UserNotSignedException, AccessDeniedException
     {
         // Try to register the user in case of external authentication
         if ( SecurityService.isAuthenticationEnable( ) )
         {
-            if ( SecurityService.getInstance( ).isExternalAuthentication( ) )
+            SecurityService securityService = SecurityService.getInstance( );
+            if ( securityService.isExternalAuthentication( ) )
             {
-                // The authentication is external
-                // Should register the user if it's not already done
-                if ( SecurityService.getInstance( ).getRegisteredUser( request ) == null )
+                if ( form.getActiveAuthentication( ) )
                 {
-                    if ( ( SecurityService.getInstance( ).getRemoteUser( request ) == null ) && ( form.getActiveAuthentication( ) ) )
+                    // The authentication is external
+                    // Should register the user if it's not already done
+                    if ( securityService.getRegisteredUser( request ) == null && securityService.getRemoteUser( request ) == null )
                     {
                         // Authentication is required to access to the portal
                         throw new UserNotSignedException( );
+                    }
+                    
+                    if ( !Form.ROLE_NONE.equals( form.getRole( ) ) && !securityService.isUserInRole( request, form.getRole( ) ) )
+                    {
+                        // User must have the right role
+                        throw new AccessDeniedException( "Unauthorized" );
                     }
                 }
             }
@@ -1717,8 +1730,8 @@ public class AppointmentApp extends MVCApplication
                 // If portal authentication is enabled and user is null and the
                 // requested URL
                 // is not the login URL, user cannot access to Portal
-                if ( ( form.getActiveAuthentication( ) ) && ( SecurityService.getInstance( ).getRegisteredUser( request ) == null )
-                        && !SecurityService.getInstance( ).isLoginUrl( request ) )
+                if ( form.getActiveAuthentication( ) && securityService.getRegisteredUser( request ) == null
+                        && !securityService.isLoginUrl( request ) )
                 {
                     // Authentication is required to access to the portal
                     throw new UserNotSignedException( );

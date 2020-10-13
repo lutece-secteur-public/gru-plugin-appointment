@@ -130,6 +130,10 @@
 		<@checkBox labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
 	</@formGroup>
 	
+	<@formGroup>
+		<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
+	</@formGroup>
+	
 	<#if listWorkflows??>
 		<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
 			<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />

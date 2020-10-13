@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   id_workflow INT NULL,
   workgroup varchar(255) NULL,
   is_multislot_appointment BOOLEAN NOT NULL DEFAULT FALSE,
+  role_fo varchar(255),
   PRIMARY KEY (id_form),
    CONSTRAINT fk_appointment_form_appointment_category
     FOREIGN KEY (id_category)
