@@ -380,6 +380,28 @@ public final class AppointmentService
         appointment.setUser( user );
         return buildAppointmentDTO( appointment );
     }
+    
+    /**
+     * Build an appointment DTO from the id of an appointment business object
+     * 
+     * @param nIdAppointment
+     *            the id of the appointment
+     * @return the appointment DTO
+     */
+    public static AppointmentDTO buildAppointmentDTOFromRefAppointment( String refAppointment )
+    {
+        Appointment  appointment = AppointmentService.findAppointmentByReference( refAppointment );
+
+        User user = UserService.findUserById( appointment.getIdUser( ) );
+        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+        {
+            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
+
+            appointment.addSlot( slot );
+        }
+        appointment.setUser( user );
+        return buildAppointmentDTO( appointment );
+    }
 
     /**
      * Update an appointment in database

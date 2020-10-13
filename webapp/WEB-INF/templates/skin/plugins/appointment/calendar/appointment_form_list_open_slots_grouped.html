@@ -140,7 +140,7 @@
 					start : '${event.startingDateTime}',
 					end : '${event.endingDateTime}',
 					id : '${event.idSlot}',
-					url : eventUrl + '&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&anchor=step3',
+					url : eventUrl + '&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&modif_date=${modifDateAppointment?c}&anchor=step3',
 				},								
 			</#list>
 		</#if>
@@ -218,9 +218,7 @@
 				if (event.title == eventTitleResult || event.title == '#i18n{appointment.manageCalendarSlots.labelClosed}'
 						|| event.title == '#i18n{appointment.manageCalendarSlots.labelEditFull}') {
 					return false;
-				} else {
-					location.href = event.url;
-				}
+				} 
 			},
 			events: events,
             eventRender: function(event, element) {

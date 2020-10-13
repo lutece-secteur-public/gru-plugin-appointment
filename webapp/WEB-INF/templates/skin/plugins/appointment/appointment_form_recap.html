@@ -43,7 +43,7 @@
                     <#assign i = appointment.slot?size>
 					<p>#i18n{appointment.labelThe} ${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.slot[0].startingDateTime} #i18n{appointment.labelTo} ${appointment.slot[i - 1].endingDateTime}</p></div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
-					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}<#if nbPlacesToTake ?? && nbPlacesToTake != 0  >&nbPlacesToTake=${nbPlacesToTake!}</#if>#step2">
+					<a class="btn btn-primary btn-lg" href="jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${form.idForm}&<#if modifDateAppointment >refAppointment=${appointment.reference!}</#if>&<#if nbPlacesToTake ?? && nbPlacesToTake != 0  >&nbPlacesToTake=${nbPlacesToTake!}</#if>#step2">
 						<i class="fa fa-pencil"></i> #i18n{portal.util.labelModify}
 					</a>
 				</div>
@@ -118,6 +118,8 @@
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-4 col-md-3 stepRecapButtonMargin">
+				<#if modifDateAppointment?? && modifDateAppointment >
+				<#else>
 					<form class="form-horizontal" id="form-validate" action="jsp/site/Portal.jsp" method="post" enctype="multipart/form-data">
 						<input name="page" value="appointment" type="hidden">
 						<input name="action" value="doMakeAppointment" type="hidden">
@@ -129,6 +131,7 @@
 							#i18n{portal.util.labelModify}
 						</button>
 					</form>
+				</#if>
 				</div>
 			</div>
 		</div>

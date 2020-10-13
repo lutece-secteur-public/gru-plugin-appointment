@@ -37,6 +37,9 @@
 								<a class="btn btn-danger btn-small" title="#i18n{appointment.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&refAppointment=${appointment.reference}&fromMyappointments=true">
 									<i class="glyphicon glyphicon-remove">&nbsp;</i>
 								</a>
+								<a class="calendar" title="#i18n{appointment.manageAppointments.labelModifyDateAppointment}" href="=jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${appointment.idForm}&nbPlacesToTake=${appointment.nbBookedSeats}&refAppointment=${appointment.reference}">
+									<i class="calendar">&nbsp;</i>
+								</a>
 							</#if>
 							<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 
 								<#list appointment.listWorkflowActions as action> 

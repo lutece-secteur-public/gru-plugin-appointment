@@ -110,7 +110,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
  */
 public final class AppointmentUtilities
 {
-
+   
     public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     public static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     public static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";

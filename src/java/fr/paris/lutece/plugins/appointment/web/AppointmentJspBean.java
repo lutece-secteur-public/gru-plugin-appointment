@@ -351,6 +351,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             int nIdAppointment = Integer.parseInt( strIdAppointment );
             appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
             AppointmentService.addAppointmentResponses( appointmentDTO );
+            nbPlacesToTake= Integer.toString( appointmentDTO.getNbBookedSeats( ));
         }
         int nIdForm = Integer.parseInt( strIdForm );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
@@ -488,9 +489,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
      */
     @SuppressWarnings( "unchecked" )
     @View( value = VIEW_MANAGE_APPOINTMENTS )
-    public String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
+    public synchronized String getManageAppointments( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
     {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
 
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM, getUser( ) ) )
         {
@@ -1228,7 +1229,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @throws SiteMessageException
      */
     @View( VIEW_CHANGE_DATE_APPOINTMENT )
-    public String getViewChangeDateAppointment( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
+    public synchronized String getViewChangeDateAppointment( HttpServletRequest request ) throws AccessDeniedException, SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         Locale locale = getLocale( );
