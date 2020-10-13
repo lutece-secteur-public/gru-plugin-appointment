@@ -299,10 +299,10 @@ else return true;
 
 // Transform datetime from local format to ISO-8601 without UTC for submission
 $('#formid').on('submit', function(e) {
-    $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format());
-    $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format());
-    $('#time_start').val(moment($('#time_start').val(), 'LT').format());
-    $('#time_end').val(moment($('#time_end').val(), 'LT').format());
+    $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format('YYYY-MM-DD'));
+    $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format('YYYY-MM-DD'));
+    $('#time_start').val(moment($('#time_start').val(), 'LT').format('HH:mm'));
+    $('#time_end').val(moment($('#time_end').val(), 'LT').format('HH:mm'));
     return true;
 });
 </script>
