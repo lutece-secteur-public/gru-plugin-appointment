@@ -68,20 +68,7 @@
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
-
-        <!-- Dozer - Java Bean to Java Bean -->
-        <dependency>
-            <groupId>net.sf.dozer</groupId>
-            <artifactId>dozer</artifactId>
-            <version>5.5.1</version>
-            <exclusions>
-                <exclusion>
-                    <!-- Conflicts with the dozen of dependencies requiring commons-logging:commons-logging -->
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        
     </dependencies>
    
     <scm>
