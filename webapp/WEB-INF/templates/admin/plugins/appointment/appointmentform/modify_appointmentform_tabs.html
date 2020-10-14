@@ -333,8 +333,8 @@
   
        // Transform datetime from local format to ISO-8601 without UTC for submission
        $('#formid').on('submit', function(e) {
-           $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format('YYYY-MM-DD'));
-           $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format('YYYY-MM-DD'));
+           $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format().split('T')[0]);
+           $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format().split('T')[0]);
            return true;
        });
 
