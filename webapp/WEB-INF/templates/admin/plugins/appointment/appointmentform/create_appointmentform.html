@@ -297,12 +297,12 @@ if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
 else return true;
 }
 
-// Transform datetime from local format to ISO-8601 without UTC for submission
+// Transform dates and times on inputs into server format
 $('#formid').on('submit', function(e) {
-    $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format().split('T')[0]);
-    $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format().split('T')[0]);
-    $('#time_start').val(moment($('#time_start').val(), 'LT').format('HH:mm'));
-    $('#time_end').val(moment($('#time_end').val(), 'LT').format('HH:mm'));
+    <@prepareDate idField='date_start_validity' />
+    <@prepareDate idField='date_end_validity' />
+    <@prepareTime idField='time_start' />
+    <@prepareTime idField='time_end' />
     return true;
 });
 </script>

@@ -1,3 +1,5 @@
+<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
+
 <#--
 -- Check if the checkbox must be checked or not
 -- @param code the checkbox code
@@ -111,16 +113,23 @@
 </#function>
 
 
-<#-- Redefine date picker to be localized. Add min and max date support-->
+<#-- Moment date and time formats for user interface -->
+<#assign USER_DATE_FORMAT="L">
+<#assign USER_TIME_FORMAT="LT">
+
+<#-- Moment date and time formats for server -->
+<#assign SERVER_DATE_FORMAT="YYYY-MM-DD">
+<#assign SERVER_TIME_FORMAT="HH:mm">
+
+<#-- Redefine date picker to use appointment plugin version. Add min and max date support-->
 <#macro getDatePickerBootstrap idField language minDate="" maxDate="">
-        <script src='js/plugins/appointment/moment-with-locales.min.js'></script>
         <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
 	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
         <script type='text/javascript' charset='utf-8'>
         $(document).ready( function() {
             $('#${idField}').datetimepicker({
 		locale: '${language}',
-		format: 'L',
+		format: '${USER_DATE_FORMAT}',
 		keepOpen: false,
                 <#if minDate?has_content>
                   minDate: '${minDate}',
@@ -146,14 +155,13 @@
 
 <#-- Provide a localized time picker with 5 minute increments. -->
 <#macro getTimePickerBootstrap idField language >
-        <script src='js/plugins/appointment/moment-with-locales.min.js'></script>
         <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
 	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
         <script type='text/javascript' charset='utf-8'>
         $(document).ready( function() {
             $('#${idField}').datetimepicker({
 		locale: '${language}',
-		format: 'LT',
+		format: '${USER_TIME_FORMAT}',
 		keepOpen: false,
 		stepping: 5,
 		icons: {
@@ -171,3 +179,25 @@
         });
         </script>
 </#macro>
+
+<#-- Transform input field date from user format to server format -->
+<#macro prepareDate idField>
+    $('#${idField}').val(moment($('#${idField}').val(), '${USER_DATE_FORMAT}').format('${SERVER_DATE_FORMAT}'));
+</#macro>
+
+<#-- Transform input field time from user format to server format -->
+<#macro prepareTime idField>
+    $('#${idField}').val(moment($('#${idField}').val(), '${USER_TIME_FORMAT}').format('${SERVER_TIME_FORMAT}'));
+</#macro>
+
+<#-- Transform server date to user date and set to input field -->
+<#macro setDate idField serverDate>
+    $('#${idField}').val(moment(${serverDate}, '${SERVER_DATE_FORMAT}').format('${USER_DATE_FORMAT}'));
+</#macro>
+
+<#-- Transform server time to user time and set to input field -->
+<#macro setTime idField serverTime>
+    $('#${idField}').val(moment(${serverTime}, '${SERVER_TIME_FORMAT}').format('${USER_TIME_FORMAT}'));
+</#macro>
+
+

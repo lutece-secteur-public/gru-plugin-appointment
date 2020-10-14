@@ -330,23 +330,23 @@
 	}
 	else return true;
 	};
-  
-       // Transform datetime from local format to ISO-8601 without UTC for submission
-       $('#formid').on('submit', function(e) {
-           $('#date_start_validity').val(moment($('#date_start_validity').val(), 'L').format().split('T')[0]);
-           $('#date_end_validity').val(moment($('#date_end_validity').val(), 'L').format().split('T')[0]);
-           return true;
-       });
 
-       // Convert ISO-8601 datetime from the server to localized format
-       $(function () {
-           <#if appointmentform.dateStartValidity??>
-               $('#date_start_validity').val(moment('${appointmentform.dateStartValidity}').format('L'));
-	   </#if>
+        // Transform dates and times on inputs into server format
+        $('#formid').on('submit', function(e) {
+            <@prepareDate idField='date_start_validity' />
+            <@prepareDate idField='date_end_validity' />
+            return true;
+        });
 
-           <#if appointmentform.dateEndValidity??>
-               $('#date_end_validity').val(moment('${appointmentform.dateEndValidity}').format('L'));
-	   </#if>
+        // Transform dates and times from server into user format and set inputs
+        $(function () {
+            <#if appointmentform.dateStartValidity??>
+                <@setDate idField='date_start_validity' serverDate=appointmentform.dateStartValidity />
+	    </#if>
+
+            <#if appointmentform.dateEndValidity??>
+                <@setDate idField='date_end_validity' serverDate=appointmentform.dateEndValidity />
+	    </#if>
        });
 </script>
 </#macro> 
