@@ -182,22 +182,22 @@
         </script>
 </#macro>
 
-<#-- Transform input field date from user format to server format -->
-<#macro prepareDate idField>
-    $('#${idField}').val(moment($('#${idField}').val(), '${USER_DATE_FORMAT}', true).format('${SERVER_DATE_FORMAT}'));
+<#-- Field ${idField}_user contains a user formatted date which is transformed into a server formatted date and set on idField. -->
+<#macro setServerDate idField>
+    $('#${idField}').val(moment($('#${idField}_user').val(), '${USER_DATE_FORMAT}', true).format('${SERVER_DATE_FORMAT}'));
 </#macro>
 
-<#-- Transform input field time from user format to server format -->
-<#macro prepareTime idField>
-    $('#${idField}').val(moment($('#${idField}').val(), '${USER_TIME_FORMAT}', true).format('${SERVER_TIME_FORMAT}'));
+<#-- Field ${idField}_user contains a user formatted time which is transformed into a server formatted time and set on idField. -->
+<#macro setServerTime idField>
+    $('#${idField}').val(moment($('#${idField}_user').val(), '${USER_TIME_FORMAT}', true).format('${SERVER_TIME_FORMAT}'));
 </#macro>
 
 <#-- Transform server date to user date and set to input field -->
-<#macro setDate idField serverDate>
+<#macro setUserDate idField serverDate>
     $('#${idField}').val(moment('${serverDate}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}'));
 </#macro>
 
 <#-- Transform server time to user time and set to input field -->
-<#macro setTime idField serverTime>
+<#macro setUserTime idField serverTime>
     $('#${idField}').val(moment('${serverTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}'));
 </#macro>
