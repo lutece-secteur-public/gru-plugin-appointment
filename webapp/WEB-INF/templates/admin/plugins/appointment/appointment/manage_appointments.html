@@ -1,8 +1,5 @@
 <#include "/admin/plugins/appointment/commons.html" />
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-<link href="css/datepicker.css" rel="stylesheet">
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/plugins/appointment/moment.min.js"></script>
 
 <@row>
     <@columns>
@@ -190,11 +187,11 @@
 	</@columns>
 </@row>
 
-<@getDatePickerBootstrap idField="dateAppointment" language=language />
 <@getTimePickerBootstrap idField="startingTimeOfSearch" language=language />
 <@getTimePickerBootstrap idField="endingTimeOfSearch" language=language />
 <@getDatePickerBootstrap idField="startingDateOfSearch" language=language />
 <@getDatePickerBootstrap idField="endingDateOfSearch" language=language />
+
 <script type="text/javascript">
     $('#allCheck').click(function() {
         var etat = this.checked;
@@ -210,5 +207,14 @@
                 $('#eraseAll').prop("disabled", !this.checked);
             }
         });
+    });
+
+    // Transform dates and times on inputs into server format
+    $('#form').on('submit', function(e) {
+        <@prepareDate idField='startingDateOfSearch' />
+        <@prepareDate idField='endingDateOfSearch' />	    
+        <@prepareTime idField='startingTimeOfSearch' />
+        <@prepareTime idField='endingTimeOfSearch' />
+        return true;
     });
 </script>
