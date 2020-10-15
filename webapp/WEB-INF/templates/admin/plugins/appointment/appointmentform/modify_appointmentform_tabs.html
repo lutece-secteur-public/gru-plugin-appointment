@@ -153,7 +153,7 @@
 		<@inputGroup>
 			<@input type='file' name='image_resource' id='image_resource' params='accept="image/*"' />
 			<@inputGroupItem>
-				<@button type='button' name='remove_img' id='remove_img' title='Effacer' size='' color='btn-primary' params='onclick="$(\'#image_resource\').val(\'\')"' buttonIcon='times' />
+				<@button type='button' name='remove_img' id='remove_img' title='#i18n{appointment.labelRemove}' size='' color='btn-primary' params='onclick="$(\'#image_resource\').val(\'\')"' buttonIcon='times' />
 			</@inputGroupItem>
 		</@inputGroup>
 	</@formGroup>
@@ -162,7 +162,7 @@
 		<@inputGroup>
 			<@input type='file' name='fileClosingDays' id='fileClosingDays' params='accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"' />
 			<@inputGroupItem>
-				<@button type='button' name='remove_file' id='remove_file' title='Effacer' size='' color='btn-primary' params='onclick="$(\'#fileClosingDays\').val(\'\')"' buttonIcon='times' />
+				<@button type='button' name='remove_file' id='remove_file' title='#i18n{appointment.labelRemove}' size='' color='btn-primary' params='onclick="$(\'#fileClosingDays\').val(\'\')"' buttonIcon='times' />
 			</@inputGroupItem>
 		</@inputGroup>
 	</@formGroup>
@@ -345,7 +345,7 @@
                 <@setUserDate idField='date_start_validity_user' serverDate=date_start_validity_str />
 	    </#if>
 
-            <#if appointmentform.date_end_validity_str??>
+            <#if date_end_validity_str??>
                 <@setUserDate idField='date_end_validity_user' serverDate=date_end_validity_str />
 	    </#if>
        });
