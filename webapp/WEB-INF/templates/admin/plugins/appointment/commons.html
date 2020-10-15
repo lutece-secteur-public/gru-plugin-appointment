@@ -121,8 +121,10 @@
 <#assign SERVER_DATE_FORMAT="YYYY-MM-DD">
 <#assign SERVER_TIME_FORMAT="HH:mm">
 
-<#-- Redefine date picker to use appointment plugin version. Add min and max date support-->
-<#macro getDatePickerBootstrap idField language minDate="" maxDate="">
+<#-- Redefine date picker to use appointment plugin version. Add min and max date support
+-- The min/maxServerDate parameters should be strings in SERVER_DATE_FORMAT.
+-->
+<#macro getDatePickerBootstrap idField language minServerDate="" maxServerDate="">
         <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
 	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
         <script type='text/javascript' charset='utf-8'>
@@ -131,11 +133,11 @@
 		locale: '${language}',
 		format: '${USER_DATE_FORMAT}',
 		keepOpen: false,
-                <#if minDate?has_content>
-                  minDate: '${minDate}',
+                <#if minServerDate?has_content>
+                  minDate: moment('${minServerDate}', '${SERVER_DATE_FORMAT}'),
                 </#if>
-                <#if maxDate?has_content>
-                  maxDate: '${maxDate}',
+                <#if maxServerDate?has_content>
+                  maxDate: moment('${maxServerDate}', '${SERVER_DATE_FORMAT}'),
                 </#if>
 		icons: {
 		    time: 'fa fa-clock-o',
@@ -147,7 +149,7 @@
 		    today: 'fa fa-screenshot',
 		    clear: 'fa fa-trash',
 		    close: 'fa fa-remove'
-		}		
+		}
 	    });
         });
         </script>
@@ -199,5 +201,3 @@
 <#macro setTime idField serverTime>
     $('#${idField}').val(moment('${serverTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}'));
 </#macro>
-
-
