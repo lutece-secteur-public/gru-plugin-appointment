@@ -258,21 +258,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     private String _strAddress;
 
     /**
-     * timezone
-     */
-    private String _timezone;
-
-    /**
-     * timeformat
-     */
-    private String _timeFormat;
-
-    /**
-     * dateformat
-     */
-    private String _dateFormat;
-
-    /**
      * Get the maximum number of appointments authorized for a same user
      *
      * @return the maximum number
@@ -627,7 +612,7 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      */
     public void setDateEndValidity(Date dateEndValidity) {
         if (dateEndValidity != null) {
-            this._dateEndValidity = (Date) dateEndValidity.clone();
+            this._dateEndValidity = dateEndValidity;
         } else {
             this._dateEndValidity = null;
         }
@@ -947,4 +932,10 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
         _strWorkgroup = workGroup;
     }
 
+    class IsoDate extends Date {
+
+        public IsoDate(long date) {
+            super(date);
+        }
+    }
 }
