@@ -136,8 +136,8 @@
             },
             events: events,
             viewRender: function(view, element) {
-                var minDate = moment(startingDateOfDisplay);
-                var maxDate = moment(endingDateOfDisplay);
+                var minDate = moment(startingDateOfDisplay, '${SERVER_DATE_FORMAT}');
+                var maxDate = moment(endingDateOfDisplay, '${SERVER_DATE_FORMAT}');
                 // Past
                 if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
                     $(".fc-prev-button").prop('disabled', true);
@@ -198,12 +198,12 @@
 </script>
 
 // Initialize the date picker popup
-<@getDatePickerBootstrap idField="hiddenDate" language=language minDate=starting_date_of_display maxDate=ending_date_of_display />
+<@getDatePickerBootstrap idField="hiddenDate" language=language minServerDate=starting_date_of_display maxServerDate=ending_date_of_display />
 
 <script type="text/javascript">
   $(function () {
       $("#hiddenDate").on('dp.change', (function () {
-          $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(), 'L'));
+          $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(), '${USER_DATE_FORMAT}'));
       }));
 
       // Ensure date picker displays under button
