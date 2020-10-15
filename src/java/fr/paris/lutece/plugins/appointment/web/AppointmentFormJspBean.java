@@ -158,6 +158,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
+    private static final String MARK_DATE_START_VALIDITY = "date_start_validity_str";
+    private static final String MARK_DATE_END_VALIDITY = "date_end_validity_str";
 
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -409,6 +411,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
 
         Map<String, Object> model = getModel( );
         addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
+        model.put(MARK_DATE_START_VALIDITY, appointmentForm.getDateStartValidity().toString());
+        model.put(MARK_DATE_END_VALIDITY, appointmentForm.getDateStartValidity().toString());
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
 
