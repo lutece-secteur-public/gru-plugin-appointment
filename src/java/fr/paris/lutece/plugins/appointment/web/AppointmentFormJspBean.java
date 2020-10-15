@@ -411,8 +411,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
 
         Map<String, Object> model = getModel( );
         addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
-        model.put(MARK_DATE_START_VALIDITY, appointmentForm.getDateStartValidity().toString());
-        model.put(MARK_DATE_END_VALIDITY, appointmentForm.getDateStartValidity().toString());
+        model.put( MARK_DATE_START_VALIDITY, appointmentForm.getDateStartValidity( ).toString( ) );
+        model.put( MARK_DATE_END_VALIDITY, appointmentForm.getDateEndValidity( ).toString( ) );
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
 
