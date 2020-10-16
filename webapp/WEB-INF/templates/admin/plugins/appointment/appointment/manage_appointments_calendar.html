@@ -117,7 +117,7 @@
             columnHeaderHtml: function(mom) {
                 return mom.format('dddd') + '</br>' + mom.format('LL');
             },
-            slotLabelFormat: 'H:mm',
+            slotLabelFormat: '${USER_TIME_FORMAT}',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
             allDaySlot: false,
@@ -178,7 +178,7 @@
                     placement : 'bottom',
                     html : true,
                     trigger : 'hover',
-                    content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
+                    content : '<center>'+event.start.format('ddd LL')+'</center>' + '<center><b>' + event.start.format('${USER_TIME_FORMAT}') + '</b> - <b>' + event.end.format('${USER_TIME_FORMAT}')+'</b></center>'
                 });
                 $(element).contextmenu(function() {
                     return false;
