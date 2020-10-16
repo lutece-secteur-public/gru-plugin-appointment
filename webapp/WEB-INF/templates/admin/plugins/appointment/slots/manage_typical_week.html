@@ -1,9 +1,7 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
 <script src="js/jquery/jquery.min.js"></script>
-<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 <@row>
     <@columns>
@@ -12,9 +10,7 @@
             <br/>
             <@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
                 <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-                <input type="hidden" id="timezone" name="timezone">
-		        <input type="hidden" id="timeformat" name="timeformat">
-		        <input type="hidden" id="dateformat" name="dateformat">
+
                 <#if listDateOfModification??>
                     <label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
                         <@select id='id_week-definition' name='id_week_definition'>
@@ -41,22 +37,26 @@
 									<@button style='btn-box-tool' params='data-widget="collapse"' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
 								</@boxHeader>
                 <@boxBody>
-                    <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
-                        <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-                        <@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
+                    <@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
+                      <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
+                      <input type="hidden" id="date_of_modification" name="date_of_modification">
+                      <input type="hidden" id="time_start" name="time_start">
+                      <input type="hidden" id="time_end" name="time_end">
+	      
+                        <@formGroup labelFor='time_start_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
                                     <@icon style='clock-o' />
                                 </@inputGroupItem>
-                                <@input type='text' name='time_start' class='datetimepicker' id='time_start' value=appointmentform.timeStart!'' />
+                                <@input type='text' name='time_start_user' class='datetimepicker' id='time_start_user' />
                             </@inputGroup>
                         </@formGroup>
-                        <@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
+                        <@formGroup labelFor='time_end_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
                                   <@icon style='clock-o' />
                                 </@inputGroupItem>
-                                <@input type='text' name='time_end' class='datetimepicker' id='time_end' value=appointmentform.timeEnd!'' />
+                                <@input type='text' name='time_end_user' class='datetimepicker' id='time_end_user' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
@@ -91,12 +91,12 @@
                             <@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
                         </@formGroup>
                         <legend> &nbsp;&nbsp;#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>
-                        <@formGroup labelFor='date_of_modification' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
+                        <@formGroup labelFor='date_of_modification_user' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
-                                <@input type='text' name='date_of_modification' id='date_of_modification' value=appointmentform.dateOfModification!'' />
+                                <@input type='text' name='date_of_modification_user' id='date_of_modification_user' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup>
@@ -112,9 +112,9 @@
 			</@appointmentTabs>
     </@columns>
 </@row>
-<@getDatePickerBootstrap idField="date_of_modification" language=language />
-<@getTimePickerBootstrap idField="time_start" language=language />
-<@getTimePickerBootstrap idField="time_end" language=language />
+<@getDatePickerBootstrap idField="date_of_modification_user" />
+<@getTimePickerBootstrap idField="time_start_user" />
+<@getTimePickerBootstrap idField="time_end_user" />
 <script type="text/javascript">
 
 function validateQty(event) {
@@ -161,7 +161,7 @@ function validateQty(event) {
             displayEventTime: false,
             defaultView: 'agendaWeek',
             height: 'auto',
-            locale: '${language}',
+            locale: moment.locale(),
             theme: true,
             editable: false,
             header: false,
@@ -196,9 +196,21 @@ function validateQty(event) {
         });
     });
 
-  $(function () {
-    $('#timezone').val(Intl.DateTimeFormat().resolvedOptions().timeZone);
-    $('#dateformat').val(moment.localeData().longDateFormat('L'));
-    $('#timeformat').val(moment.localeData().longDateFormat('LT'));
+    // Transform dates and times on inputs into server format
+  $('#formid').on('submit', function(e) {
+      <@setServerDate idField='date_of_modification' />
+      <@setServerTime idField='time_start' />
+      <@setServerTime idField='time_end' />
+      return true;
   });
+
+    // Transform dates and times from server into user format and set inputs
+  $(function () {
+      <#if appointmentform.timeStart??>
+          <@setUserTime idField='time_start_user' serverTime=appointmentform.timeStart />
+      </#if>
+      <#if appointmentform.timeEnd??>
+          <@setUserTime idField='time_end_user' serverTime=appointmentform.timeEnd />
+      </#if>
+    });
 </script>
