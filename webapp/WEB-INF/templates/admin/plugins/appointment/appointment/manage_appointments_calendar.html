@@ -1,12 +1,10 @@
 <#include "/admin/plugins/appointment/commons.html" />
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
 <link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
 <script src="js/jquery/jquery.min.js"></script>
-<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 
 <@row>
@@ -44,7 +42,6 @@
     var strEndingDateOfDisplay = '${str_ending_date_of_display}';
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
     var idForm = '${id_form}';
-    var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
         <#if events??>
             <#list events as event>
@@ -101,7 +98,7 @@
             defaultDate: defaultDate,
             defaultView: 'agendaWeek',
             height: 'auto',
-            locale: '${language}',
+            locale: moment.locale(),
             theme: true,
             editable: false,
             customButtons: {
@@ -198,7 +195,7 @@
 </script>
 
 // Initialize the date picker popup
-<@getDatePickerBootstrap idField="hiddenDate" language=language minServerDate=starting_date_of_display maxServerDate=ending_date_of_display />
+<@getDatePickerBootstrap idField="hiddenDate" minServerDate=starting_date_of_display maxServerDate=ending_date_of_display />
 
 <script type="text/javascript">
   $(function () {

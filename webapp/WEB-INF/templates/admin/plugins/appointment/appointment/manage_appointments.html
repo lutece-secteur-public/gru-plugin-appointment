@@ -11,6 +11,11 @@
             <@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
                 <input type='hidden' name='view' value='manageAppointments' />    
                 <input type='hidden' name='id_form' value='${form.idForm}' />
+		<input type="hidden" id="startingDateOfSearch" name="startingDateOfSearch">
+		<input type="hidden" id="endingDateOfSearch" name="endingDateOfSearch">
+		<input type="hidden" id="startingTimeOfSearch" name="startingTimeOfSearch">
+		<input type="hidden" id="endingTimeOfSearch" name="endingTimeOfSearch">
+
 				<@box collapsed=true>
 					<@boxHeader title='#i18n{appointment.manageAppointments.labelSearch}'>
 						<@button style='btn-box-tool' params='data-widget="collapse"' buttonIcon='plus' />
@@ -33,35 +38,35 @@
 							<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 						</@formGroup>
 						
-                        <@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
+                        <@formGroup labelFor='startingDateOfSearch_user' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
 							<@inputGroup>
-								<@input type='text' name='startingDateOfSearch' class='datetimepicker' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
+								<@input type='text' name='startingDateOfSearch_user' class='datetimepicker' id='startingDateOfSearch_user' value='${filter.startingDateOfSearch!}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='calendar' />
 								</@inputGroupItem>
 							</@inputGroup>
 						</@formGroup>
-						<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'>
+						<@formGroup labelFor='startingTimeOfSearch_user' labelKey='#i18n{appointment.labelTo}'>
 							<@inputGroup>
-								<@input type='text' name='startingTimeOfSearch' class='datetimepicker' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
+								<@input type='text' name='startingTimeOfSearch_user' class='datetimepicker' id='startingTimeOfSearch_user' value='${filter.startingTimeOfSearch!\'\'}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='clock-o' />
 								</@inputGroupItem>
 							</@inputGroup>
 						</@formGroup>
 
-						<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
+						<@formGroup labelFor='endingDateOfSearch_user' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
 							<@inputGroup>
-								<@input type='text' name='endingDateOfSearch' class='datetimepicker' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
+								<@input type='text' name='endingDateOfSearch_user' class='datetimepicker' id='endingDateOfSearch_user' value='${filter.endingDateOfSearch!}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='calendar' />
 								</@inputGroupItem>
 							</@inputGroup>
 						</@formGroup>
 
-						<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'>
+						<@formGroup labelFor='endingTimeOfSearch_user' labelKey='#i18n{appointment.labelTo}'>
 							<@inputGroup>
-								<@input type='text' name='endingTimeOfSearch' class='datetimepicker' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
+								<@input type='text' name='endingTimeOfSearch_user' class='datetimepicker' id='endingTimeOfSearch_user' value='${filter.endingTimeOfSearch!\'\'}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='clock-o' />
 								</@inputGroupItem>
@@ -187,10 +192,10 @@
 	</@columns>
 </@row>
 
-<@getTimePickerBootstrap idField="startingTimeOfSearch" language=language />
-<@getTimePickerBootstrap idField="endingTimeOfSearch" language=language />
-<@getDatePickerBootstrap idField="startingDateOfSearch" language=language />
-<@getDatePickerBootstrap idField="endingDateOfSearch" language=language />
+<@getTimePickerBootstrap idField="startingTimeOfSearch_user" />
+<@getTimePickerBootstrap idField="endingTimeOfSearch_user" />
+<@getDatePickerBootstrap idField="startingDateOfSearch_user" />
+<@getDatePickerBootstrap idField="endingDateOfSearch_user" />
 
 <script type="text/javascript">
     $('#allCheck').click(function() {
@@ -211,10 +216,10 @@
 
     // Transform dates and times on inputs into server format
     $('#form').on('submit', function(e) {
-        <@prepareDate idField='startingDateOfSearch' />
-        <@prepareDate idField='endingDateOfSearch' />	    
-        <@prepareTime idField='startingTimeOfSearch' />
-        <@prepareTime idField='endingTimeOfSearch' />
+        <@setServerDate idField='startingDateOfSearch' />
+        <@setServerDate idField='endingDateOfSearch' />	    
+        <@setServerTime idField='startingTimeOfSearch' />
+        <@setServerTime idField='endingTimeOfSearch' />
         return true;
     });
 </script>
