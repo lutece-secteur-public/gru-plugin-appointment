@@ -56,14 +56,14 @@ public class UtilitiesTest extends LuteceTestCase
         
         AppointmentPlugin.setPluginLocale( Locale.ENGLISH );
         Utilities.resetFormatter();
-        DateTimeFormatter formatterEn = Utilities.getFormatter();
+        DateTimeFormatter formatterEn = Utilities.getDateFormatter();
         LocalDateTime localDateTimeEn = LocalDateTime.parse( "2018-06-25T00:00" );
         String strDateEn = localDateTimeEn.format(formatterEn);
         assertEquals( "6/25/18" , strDateEn );
 
         AppointmentPlugin.setPluginLocale( Locale.FRENCH );
         Utilities.resetFormatter();
-        DateTimeFormatter formatterFr = Utilities.getFormatter();
+        DateTimeFormatter formatterFr = Utilities.getDateFormatter();
         LocalDateTime localDateTimeFr = LocalDateTime.parse( "2018-06-25T00:00" );
         String strDateFr = localDateTimeFr.format(formatterFr);
         assertEquals( "25/06/2018" , strDateFr );

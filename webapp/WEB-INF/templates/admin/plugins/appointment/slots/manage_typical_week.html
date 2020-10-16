@@ -96,7 +96,7 @@
                                 <@inputGroupItem type='addon'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
-                                <@input type='text' name='date_of_modification_user' id='date_of_modification_user' />
+                                <@input type='text' name='date_of_modification_user' class='datetimepicker' id='date_of_modification_user' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup>
@@ -212,5 +212,8 @@ function validateQty(event) {
       <#if appointmentform.timeEnd??>
           <@setUserTime idField='time_end_user' serverTime=appointmentform.timeEnd />
       </#if>
+      <#if date_of_modification_str??>
+          <@setUserDate idField='date_of_modification_user' serverDate=date_of_modification_str />
+	  </#if>
     });
 </script>

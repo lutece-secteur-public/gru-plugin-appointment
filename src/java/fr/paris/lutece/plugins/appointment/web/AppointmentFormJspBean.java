@@ -799,7 +799,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                     StringJoiner stbListDate = new StringJoiner( StringUtils.SPACE );
                     for ( LocalDate dateWithError : listDateWithError )
                     {
-                        stbListDate.add( Utilities.getFormatter( ).format( dateWithError ) ).add( "," );
+                        stbListDate.add( Utilities.getDateFormatter( ).format( dateWithError ) ).add( "," );
                     }
                     String strListdate = stbListDate.toString( );
                     strListdate = strListdate.substring( 0, strListdate.length( ) - 1 );

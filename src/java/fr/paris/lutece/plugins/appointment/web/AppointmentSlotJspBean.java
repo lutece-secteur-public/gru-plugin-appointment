@@ -146,6 +146,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_TIME_SLOT = "timeSlot";
     private static final String MARK_SLOT = "slot";
     private static final String MARK_LIST_DATE_OF_MODIFICATION = "listDateOfModification";
+    private static final String MARK_DATE_OF_MODIFICATION = "date_of_modification_str";
 
     // Views
     private static final String VIEW_MANAGE_SPECIFIC_WEEK = "manageSpecificWeek";
@@ -251,6 +252,8 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( PARAMETER_ID_WEEK_DEFINITION, nIdWeekDefinition );
         model.put( MARK_LIST_DATE_OF_MODIFICATION, WeekDefinitionService.findAllDateOfWeekDefinition( nIdForm ) );
+        model.put( MARK_DATE_OF_MODIFICATION, appointmentForm.getDateOfModification() != null ?
+                appointmentForm.getDateOfModification().toString( ) : null );
         AppointmentFormJspBean.addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model );
     }
@@ -288,7 +291,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // We can't use the LocalDateTime.MAX value because of the bug of the
         // year 2038 for Timestamp
         // (https://fr.wikipedia.org/wiki/Bug_de_l%27an_2038)
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.of(23, 59) );
         if ( nextWeekDefinition != null )
         {
             endingDateTimeOfSearch = nextWeekDefinition.getDateOfApply( ).atTime( LocalTime.MIN );
