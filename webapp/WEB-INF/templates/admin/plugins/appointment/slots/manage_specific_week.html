@@ -1,10 +1,8 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
 
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
 <script src="js/jquery/jquery.min.js"></script>
-<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
 <script src='js/plugins/appointment/fullcalendar.min.js' ></script>
 
 <@row>
@@ -59,7 +57,7 @@
             defaultDate: defaultDate,
             defaultView: 'agendaWeek',
             height: 'auto',
-            locale: '${language}',
+            locale: moment.locale(),
             theme: true,
             editable: false,
             customButtons: {
@@ -79,7 +77,7 @@
             columnHeaderHtml: function(mom) {
                 return mom.format('dddd') + '</br>' + mom.format('LL');
             },
-            slotLabelFormat: 'H:mm',
+            slotLabelFormat: '${USER_TIME_FORMAT}',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
             allDaySlot: false,
@@ -100,7 +98,7 @@
                     placement : 'bottom',
                     html : true,
                     trigger : 'hover',
-                    content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
+                    content : '<center>'+event.start.format('ddd LL')+'</center>' + '<center><b>' + event.start.format('${USER_TIME_FORMAT}') + '</b> - <b>' + event.end.format('${USER_TIME_FORMAT}')+'</b></center>'
                 });
             },
             viewRender: function(view, element) {
@@ -153,12 +151,12 @@
 
 
 // Initialize the date picker popup
-<@getDatePickerBootstrap idField="hiddenDate" language=language />
+<@getDatePickerBootstrap idField="hiddenDate" />
 
 <script type="text/javascript">
   $(function () {
       $("#hiddenDate").on('dp.change', (function () {
-          $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(), 'L'));
+          $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(), '${USER_DATE_FORMAT}'));
       }));
 
       // Ensure date picker displays under button
