@@ -212,8 +212,5 @@ function validateQty(event) {
       <#if appointmentform.timeEnd??>
           <@setUserTime idField='time_end_user' serverTime=appointmentform.timeEnd />
       </#if>
-      <#if date_of_modification_str??>
-          <@setUserDate idField='date_of_modification_user' serverDate=date_of_modification_str />
-	  </#if>
     });
 </script>
