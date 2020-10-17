@@ -77,7 +77,7 @@ public final class Utilities
      */
     public static DateTimeFormatter getTimeFormatter( )
     {
-        if( _date_formatter == null )
+        if( _time_formatter == null )
         {
             _time_formatter = DateTimeFormatter.ISO_LOCAL_TIME;
         }
