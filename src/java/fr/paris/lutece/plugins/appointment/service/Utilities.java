@@ -96,15 +96,24 @@ public final class Utilities
     {
         _date_formatter = formatter;
     }
-    
+
     /**
      * Reset formatter scope package to be only used by unit tests
      */
-    static void resetFormatter()
+    static void resetDateFormatter()
     {
         _date_formatter = null;
     }
-   
+
+
+    /**
+     * Reset formatter scope package to be only used by unit tests
+     */
+    static void resetTimeFormatter()
+    {
+        _time_formatter = null;
+    }
+
 
     /**
      * Return the closest date in past a list of date with the given date
