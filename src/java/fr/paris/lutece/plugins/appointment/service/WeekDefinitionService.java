@@ -312,7 +312,7 @@ public final class WeekDefinitionService
         List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
-            listDate.addItem( weekDefinition.getIdWeekDefinition( ), weekDefinition.getDateOfApply( ).format( Utilities.getFormatter( ) ) );
+            listDate.addItem( weekDefinition.getIdWeekDefinition( ), weekDefinition.getDateOfApply( ).format( Utilities.getDateFormatter( ) ) );
         }
         return listDate;
     }

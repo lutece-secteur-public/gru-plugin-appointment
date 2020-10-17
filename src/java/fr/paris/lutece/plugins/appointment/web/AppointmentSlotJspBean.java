@@ -288,7 +288,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // We can't use the LocalDateTime.MAX value because of the bug of the
         // year 2038 for Timestamp
         // (https://fr.wikipedia.org/wiki/Bug_de_l%27an_2038)
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.of(23, 59) );
         if ( nextWeekDefinition != null )
         {
             endingDateTimeOfSearch = nextWeekDefinition.getDateOfApply( ).atTime( LocalTime.MIN );

@@ -551,7 +551,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         appointmentForm2.setIsOpenSunday( Boolean.FALSE );
 
         LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.of( 23, 59 ) );
         List<Slot> listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, dateOfModification.atStartOfDay( ), endingDateTimeOfSearch );
         List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
 
@@ -610,7 +610,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         appointmentForm2.setIsOpenSunday( Boolean.FALSE );
 
         LocalDate dateOfModification = LocalDate.parse( "2018-06-26" );
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.of( 23, 59 ) );
         List<Slot> listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, dateOfModification.atStartOfDay( ), endingDateTimeOfSearch );
         List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
 

@@ -58,7 +58,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
-import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -66,7 +65,6 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
@@ -420,9 +418,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay );
-        model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format( Utilities.getFormatter( ) ) );
+        model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format( Utilities.getDateFormatter( ) ) );
         model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
-        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
+        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getDateFormatter( ) ) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listSlot );
@@ -1079,7 +1077,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             slot = SlotService.findSlotById( nIdSlot );
         }
         appointmentDTO.setSlot( slot );
-        appointmentDTO.setDateOfTheAppointment( slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) );
+        appointmentDTO.setDateOfTheAppointment( slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getDateFormatter( ) ) );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
         LocalDate dateOfSlot = slot.getDate( );
         ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfSlot );

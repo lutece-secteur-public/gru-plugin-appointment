@@ -44,7 +44,7 @@ import java.util.List;
  */
 public final class Utilities
 {
-    private static DateTimeFormatter _formatter;
+    private static DateTimeFormatter _date_formatter;
 
     private static DateTimeFormatter _time_formatter;
 
@@ -56,18 +56,18 @@ public final class Utilities
     }
 
     /**
-     * Getter for the formatter
+     * Getter for the date formatter
      * 
      * @return the formatter
      */
-    public static DateTimeFormatter getFormatter( )
+    public static DateTimeFormatter getDateFormatter( )
     {
-        if( _formatter == null )
+        if( _date_formatter == null )
         {
            // _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
-            _formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            _date_formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         }
-        return _formatter;
+        return _date_formatter;
     }
 
     /**
@@ -77,9 +77,8 @@ public final class Utilities
      */
     public static DateTimeFormatter getTimeFormatter( )
     {
-        if( _formatter == null )
+        if( _time_formatter == null )
         {
-            // _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
             _time_formatter = DateTimeFormatter.ISO_LOCAL_TIME;
         }
         return _time_formatter;
@@ -95,17 +94,26 @@ public final class Utilities
     @Deprecated
     public static void setFormatter( DateTimeFormatter formatter )
     {
-        _formatter = formatter;
+        _date_formatter = formatter;
     }
-    
+
     /**
      * Reset formatter scope package to be only used by unit tests
      */
-    static void resetFormatter()
+    static void resetDateFormatter()
     {
-        _formatter = null;
+        _date_formatter = null;
     }
-   
+
+
+    /**
+     * Reset formatter scope package to be only used by unit tests
+     */
+    static void resetTimeFormatter()
+    {
+        _time_formatter = null;
+    }
+
 
     /**
      * Return the closest date in past a list of date with the given date

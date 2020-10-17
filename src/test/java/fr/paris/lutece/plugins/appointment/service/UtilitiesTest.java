@@ -48,25 +48,50 @@ public class UtilitiesTest extends LuteceTestCase
     }
 
     /**
-     * Test of getFormatter method, of class Utilities.
+     * Test of getDateFormatter method, of class Utilities.
+     * Change was made to use ISO formatter - should be the same for any locale
      */
     @Test
-    public void testGetFormatter() {
+    public void testGetDateFormatter() {
         System.out.println("getFormatter");
         
         AppointmentPlugin.setPluginLocale( Locale.ENGLISH );
-        Utilities.resetFormatter();
-        DateTimeFormatter formatterEn = Utilities.getFormatter();
+        Utilities.resetDateFormatter();
+        DateTimeFormatter formatterEn = Utilities.getDateFormatter();
         LocalDateTime localDateTimeEn = LocalDateTime.parse( "2018-06-25T00:00" );
         String strDateEn = localDateTimeEn.format(formatterEn);
-        assertEquals( "6/25/18" , strDateEn );
+        assertEquals( "2018-06-25" , strDateEn );
 
         AppointmentPlugin.setPluginLocale( Locale.FRENCH );
-        Utilities.resetFormatter();
-        DateTimeFormatter formatterFr = Utilities.getFormatter();
+        Utilities.resetDateFormatter();
+        DateTimeFormatter formatterFr = Utilities.getDateFormatter();
         LocalDateTime localDateTimeFr = LocalDateTime.parse( "2018-06-25T00:00" );
         String strDateFr = localDateTimeFr.format(formatterFr);
-        assertEquals( "25/06/2018" , strDateFr );
+        assertEquals( "2018-06-25" , strDateFr );
+
+    }
+
+    /**
+     * Test of getRimeFormatter method, of class Utilities.
+     * Change was made to use ISO formatter - should be the same for any locale
+     */
+    @Test
+    public void testGetTimeFormatter() {
+        System.out.println("getFormatter");
+
+        AppointmentPlugin.setPluginLocale( Locale.ENGLISH );
+        Utilities.resetTimeFormatter();
+        DateTimeFormatter formatterEn = Utilities.getTimeFormatter();
+        LocalDateTime localDateTimeEn = LocalDateTime.parse( "2018-06-25T00:00" );
+        String strDateEn = localDateTimeEn.format(formatterEn);
+        assertEquals( "00:00" , strDateEn );
+
+        AppointmentPlugin.setPluginLocale( Locale.FRENCH );
+        Utilities.resetTimeFormatter();
+        DateTimeFormatter formatterFr = Utilities.getTimeFormatter();
+        LocalDateTime localDateTimeFr = LocalDateTime.parse( "2018-06-25T00:00" );
+        String strDateFr = localDateTimeFr.format(formatterFr);
+        assertEquals( "00:00" , strDateFr );
 
     }
 
