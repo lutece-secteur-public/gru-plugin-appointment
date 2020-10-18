@@ -70,25 +70,25 @@
                         </@formGroup>
                         <legend> &nbsp;&nbsp;#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</legend>
                         <@formGroup labelFor='is_open_monday'>
-                            <@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
+                            <@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' />
                         </@formGroup>
                         <@formGroup labelFor='is_open_tuesday'>
-                            <@checkBox labelFor='is_open_tuesday' labelKey='#i18n{appointment.label.OpenTuesday}' name='is_open_tuesday' id='is_open_tuesday' value='true' checked=appointmentform.isOpenTuesday!false />
+                            <@checkBox labelFor='is_open_tuesday' labelKey='#i18n{appointment.label.OpenTuesday}' name='is_open_tuesday' id='is_open_tuesday' value='true' />
                         </@formGroup>
                         <@formGroup labelFor='is_open_wednesday'>
-                            <@checkBox labelFor='is_open_wednesday' labelKey='#i18n{appointment.label.OpenWednesday}' name='is_open_wednesday' id='is_open_wednesday' value='true' checked=appointmentform.isOpenWednesday!false />
+                            <@checkBox labelFor='is_open_wednesday' labelKey='#i18n{appointment.label.OpenWednesday}' name='is_open_wednesday' id='is_open_wednesday' value='true' />
                         </@formGroup>
                         <@formGroup labelFor='is_open_thursday'>
-                            <@checkBox labelFor='is_open_thursday' labelKey='#i18n{appointment.label.OpenThursday}' name='is_open_thursday' id='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
+                            <@checkBox labelFor='is_open_thursday' labelKey='#i18n{appointment.label.OpenThursday}' name='is_open_thursday' id='is_open_thursday' value='true' />
                         </@formGroup>
                         <@formGroup labelFor='is_open_friday'>
-                            <@checkBox labelFor='is_open_friday' labelKey='#i18n{appointment.label.OpenFriday}' name='is_open_friday' id='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
+                            <@checkBox labelFor='is_open_friday' labelKey='#i18n{appointment.label.OpenFriday}' name='is_open_friday' id='is_open_friday' value='true' />
                         </@formGroup>
                         <@formGroup labelFor='is_open_saturday'>
-                            <@checkBox labelFor='is_open_saturday' labelKey='#i18n{appointment.label.OpenSaturday}' name='is_open_saturday' id='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
+                            <@checkBox labelFor='is_open_saturday' labelKey='#i18n{appointment.label.OpenSaturday}' name='is_open_saturday' id='is_open_saturday' value='true' />
                         </@formGroup>
                         <@formGroup labelFor='is_open_sunday'>
-                            <@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
+                            <@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' />
                         </@formGroup>
                         <legend> &nbsp;&nbsp;#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>
                         <@formGroup labelFor='date_of_modification_user' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
@@ -212,5 +212,29 @@ function validateQty(event) {
       <#if appointmentform.timeEnd??>
           <@setUserTime idField='time_end_user' serverTime=appointmentform.timeEnd />
       </#if>
+    });
+
+   $(document).ready(function() {
+        <#if appointmentform.isOpenMonday!false>
+             document.getElementById("is_open_monday").checked = true;
+        </#if>
+        <#if appointmentform.isOpenTuesday!false>
+            document.getElementById("is_open_tuesday").checked = true;
+        </#if>
+        <#if appointmentform.isOpenWednesday!false>
+            document.getElementById("is_open_wednesday").checked = true;
+        </#if>
+        <#if appointmentform.isOpenThursday!false>
+            document.getElementById("is_open_thursday").checked = true;
+        </#if>
+        <#if appointmentform.isOpenFriday!false>
+            document.getElementById("is_open_friday").checked = true;
+        </#if>
+        <#if appointmentform.isOpenSaturday!false>
+            document.getElementById("is_open_saturday").checked = true;
+        </#if>
+        <#if appointmentform.isOpenSunday!false>
+            document.getElementById("is_open_sunday").checked = true;
+        </#if>
     });
 </script>
