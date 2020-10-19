@@ -122,6 +122,7 @@ public final class CommentHome
     	
     	return  _dao.selectCommentsList( _plugin, startingDate, endingDate, nIdForm );
     }
+    
     /**
      * Load the id of all the comment objects and returns them as a list
      * @return the list which contains the id of all the comment objects
