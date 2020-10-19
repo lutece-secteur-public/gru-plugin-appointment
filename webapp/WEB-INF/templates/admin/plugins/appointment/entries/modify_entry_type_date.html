@@ -7,10 +7,11 @@
 			<@boxBody>
 				<fieldset>
 				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+					<@tform id='entrydateform' action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
 						<input type='hidden' name='id_entry' value='${entry.idEntry}' />
 						<input type='hidden' name='action' value='doModifyEntry' />
-						
+						<input type='hidden' id='date' name='date' />
+
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText>
 								<@tag color='info'>
@@ -27,13 +28,13 @@
 						<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.createEntry.labelHelpMessageComment}'>
 							<@input type='textarea' name='comment' rows=5>${entry.comment}</@input>
 						</@formGroup>
-						<@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
+						<@formGroup labelFor='date_user' labelKey='#i18n{appointment.defaultValue.name}'>
 							<#list entry.fields as field>
 								<@inputGroup>
 									<@inputGroupItem type='addon'>
 										<@icon style='calendar' />
 									</@inputGroupItem>
-									<@input type='text' name='date' class='datetimepicker' id='date' value='${field.valueTypeDate?if_exists}' />
+									<@input type='text' name='date_user' class='datetimepicker' id='date_user' />
 								</@inputGroup>
 							</#list>
 						</@formGroup>
@@ -58,4 +59,19 @@
 </@row>
 
  <@initEditor />
-<@getDatePicker idField="date" language=locale />
+<@getDatePicker idField="date_user" />
+
+<script type="text/javascript">
+        // Transform dates and times on inputs into server format
+        $('#entrydateform').on('submit', function(e) {
+            <@setServerDate idField='date' />
+            return true;
+        });
+
+        // Transform dates and times from server into user format and set inputs
+        $(function () {
+            <#if field.valueTypeDate??>
+                <@setUserDate idField='date_user' serverDate=field.valueTypeDate />
+	    </#if>
+       });
+</script>
