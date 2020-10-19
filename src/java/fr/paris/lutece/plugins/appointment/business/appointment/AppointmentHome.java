@@ -137,6 +137,18 @@ public final class AppointmentHome
     }
 
     /**
+     * Return the appointments of a user by Guid
+     * 
+     * @param nIdUser
+     *            the User Guid
+     * @return a list of the user appointments
+     */
+    public static List<Appointment> findByGuidUser( String strGuidUser )
+    {
+        return _dao.findByGuidUser( strGuidUser, _plugin );
+    }
+
+    /**
      * Return the appointments of a slot
      * 
      * @param nIdSlot

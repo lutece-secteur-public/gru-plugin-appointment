@@ -552,6 +552,7 @@ public final class FormService
         appointmentForm.setWorkgroup( form.getWorkgroup( ) );
         appointmentForm.setIsActive( form.getIsActive( ) );
         appointmentForm.setIsMultislotAppointment( form.getIsMultislotAppointment( ) );
+        appointmentForm.setRole( form.getRole( ) );
     }
 
     /**
@@ -698,7 +699,7 @@ public final class FormService
         form.setIdWorkflow( appointmentForm.getIdWorkflow( ) );
         form.setWorkgroup( appointmentForm.getWorkgroup( ) );
         form.setIsMultislotAppointment(appointmentForm.getIsMultislotAppointment( ));
-        
+        form.setRole( appointmentForm.getRole( ) );
         return form;
     }
 

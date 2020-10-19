@@ -13,7 +13,7 @@
 				<#list list_appointments as appointment>
 					<tr>
 						<td>
-							${appointment.appointmentForm.title}
+							${appointment.idForm}
 						</td>
 						<td>
 							${appointment.dateOfTheAppointment}
@@ -33,11 +33,21 @@
 							</#if>
 						</td>
 						<td>
-							<#if !appointment.isCancelled>
-								<a class="btn btn-danger btn-small" title="#i18n{appointment.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&id_form=${appointment.appointmentForm.idForm}&dateAppointment=${appointment.dateAppointment}&refAppointment=${appointment.refAppointment}&fromMyappointments=true">
+							<#if !appointment.isCancelled >
+								<a class="btn btn-danger btn-small" title="#i18n{appointment.labelCancelAppointment}" href="jsp/site/Portal.jsp?page=appointment&action=doCancelAppointment&refAppointment=${appointment.reference}&fromMyappointments=true">
 									<i class="glyphicon glyphicon-remove">&nbsp;</i>
 								</a>
+								<a class="calendar" title="#i18n{appointment.manageAppointments.labelModifyDateAppointment}" href="=jsp/site/Portal.jsp?page=appointment&view=getViewAppointmentCalendar&id_form=${appointment.idForm}&nbPlacesToTake=${appointment.nbBookedSeats}&refAppointment=${appointment.reference}">
+									<i class="calendar">&nbsp;</i>
+								</a>
 							</#if>
+							<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 
+								<#list appointment.listWorkflowActions as action> 
+										<@aButton href='jsp/site/Portal.jsp?page=appointmentview=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}' size='sm'>
+											<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />
+										</@aButton> 
+							</#list>
+							</#if> 
 						</td>
 					</tr>
 				</#list>

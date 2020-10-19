@@ -51,12 +51,12 @@
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
                 {
-                    title : '<a href=' + eventUrl + 'viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>',
+                    title : '',
                     start : '${event.startingDateTime}',
                     end : '${event.endingDateTime}',
                     id : '${event.idSlot}',
                     textColor: <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'white'<#else>'#2c2c2d'</#if>,
-                    url : eventUrl + 'manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}',                                                      
+                    url : eventUrl + 'manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&modif_date=${modifDateAppointment?c}',                                                      
                     backgroundColor : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'#ff6600'
                     				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>'white'
                                       <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'red'
@@ -137,9 +137,7 @@
                 end: maxTime,
                 dow: dow
             },
-            eventClick: function(event) {
-                    location.href = event.url;
-            },
+           
             events: events,
             viewRender: function(view, element) {
                 var minDate = moment(startingDateOfDisplay);

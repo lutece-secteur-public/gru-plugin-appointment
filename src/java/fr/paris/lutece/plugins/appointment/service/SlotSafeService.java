@@ -308,11 +308,11 @@ public final class SlotSafeService
                 }
             }
 
-            if ( bIsUpdate )
+          /*  if ( bIsUpdate )
             {
 
                 WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE );
-            }
+            }*/
 
             Form form = FormService.findFormLightByPrimaryKey( listSlot.get( 0 ).getIdForm( ) );
             if ( form.getIdWorkflow( ) > 0 )

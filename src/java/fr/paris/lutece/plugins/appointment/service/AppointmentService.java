@@ -119,6 +119,28 @@ public final class AppointmentService
     public static List<Appointment> findListAppointmentByUserId( int nIdUser )
     {
         return AppointmentHome.findByIdUser( nIdUser );
+        
+    }
+    /**
+     * Find the appointments of a user by guid
+     * 
+     * @param nIdUser
+     *            the user guid
+     * @return the appointment of the guid
+     */
+    public static List<Appointment> findListAppointmentByUserGuid( String strGuidUser )
+    {
+        List<Appointment> listAppointment= AppointmentHome.findByGuidUser( strGuidUser );
+        for(Appointment appointment: listAppointment) {
+	        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+	        {
+	            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
+	
+	            appointment.addSlot( slot );
+	        }
+        }
+        return listAppointment;
+        
     }
 
     /**
@@ -348,6 +370,28 @@ public final class AppointmentService
     public static AppointmentDTO buildAppointmentDTOFromIdAppointment( int nIdAppointment )
     {
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
+        User user = UserService.findUserById( appointment.getIdUser( ) );
+        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+        {
+            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
+
+            appointment.addSlot( slot );
+        }
+        appointment.setUser( user );
+        return buildAppointmentDTO( appointment );
+    }
+    
+    /**
+     * Build an appointment DTO from the id of an appointment business object
+     * 
+     * @param nIdAppointment
+     *            the id of the appointment
+     * @return the appointment DTO
+     */
+    public static AppointmentDTO buildAppointmentDTOFromRefAppointment( String refAppointment )
+    {
+        Appointment  appointment = AppointmentService.findAppointmentByReference( refAppointment );
+
         User user = UserService.findUserById( appointment.getIdUser( ) );
         for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
         {

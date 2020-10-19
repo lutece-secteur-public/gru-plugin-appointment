@@ -45,13 +45,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
@@ -110,7 +110,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
  */
 public final class AppointmentUtilities
 {
-
+   
     public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     public static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     public static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
@@ -1174,5 +1174,23 @@ public final class AppointmentUtilities
         }
 
         return null;
+    }
+    /**
+     * return true if all slots are consecutive
+     * @param allSlots the list of slots
+     * @return true if all slots are consecutive
+     */
+    public static boolean isConsecutiveSlots( List<Slot> allSlots )
+    {
+    	Slot slot= null;
+        for ( Slot nextSlot : allSlots )
+        {
+            if ( nextSlot == null || slot != null && !Objects.equals( slot.getEndingDateTime( ), nextSlot.getStartingDateTime( ) )  )
+            {
+              return false;
+            }
+            slot=nextSlot;
+        }
+        return true;
     }
 }
