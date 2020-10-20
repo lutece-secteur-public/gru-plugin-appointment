@@ -59,173 +59,183 @@ import fr.paris.lutece.util.url.UrlItem;
  * 
  */
 @Controller( controllerJsp = CommentJspBean.JSP_MANAGE_COMMENTS, controllerPath = "jsp/admin/plugins/appointment/", right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM )
-public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 9120042889405463752L;
-	public static final String RIGHT_MANAGECOMMENTTFORM = "APPOINTMENT_FORM_MANAGEMENT";
-	/**
-	 * JSP of this JSP Bean
-	 */
-	public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
-	public static final String JSP_MANAGE_COMMENTS = "Comments.jsp";
-	
-	//Templates
-	public static final String TEMPLATE_CREATE_COMMENT= "/admin/plugins/appointment/comment/create_comment.html";
-	public static final String TEMPLATE_MANAGE_COMMENT= "/admin/plugins/appointment/comment/manage_comment.html";
-	private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
-	private static final String JSP_COMMENTS = "jsp/admin/plugins/appointment/Comments.jsp";
-	
-	//Messages
-	private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.pageTitle";
-	private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
-	
-	//Parameters
-	private static final String PARAMETER_ID_COMMENT = "id_comment";
-	private static final String PARAMETER_COMMENT = "comment";
-	private static final String PARAMETER_STARTING_VALIDITY_DATE = "startingValidityDate";
-	private static final String PARAMETER_ENDING_VALIDITY_DATE = "endingValidityDate";
-	private static final String PARAMETER_ID_FORM = "id_form";
-	
-	//Marks
-	private static final String MARK_COMMENT = "comment";
-	private static final String MARK_COMMENT_LIST = "comment_list";
-	
-	//Views
-	private static final String VIEW_ADD_COMMENT = "viewAddComment";
-	private static final String VIEW_MANAGE_COMMENT = "manageComment";
-	private static final String VIEW_CALENDAR_MANAGE_APPOINTMENTS = "viewCalendarManageAppointment";
-	
-	//Actions
-	private static final String ACTION_DO_ADD_COMMENT = "doAddComment";
-	private static final String ACTION_DO_REMOVE_COMMENT = "doRemoveComment";
-	private static final String ACTION_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
-	
-	//Properties
-	private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment-comment.manage_comments.pageTitle";
-	private static final String MESSAGE_CONFIRM_REMOVE_COMMENT = "appointment.message.confirmRemoveComment";
-	
-	//Infos
-	private static final String INFO_COMMENT_CREATED = "appointment.info.comment.created";
-	private static final String INFO_COMMENT_REMOVED = "appointment.info.comment.removed";
+public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
+{
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 9120042889405463752L;
+    public static final String RIGHT_MANAGECOMMENTTFORM = "APPOINTMENT_FORM_MANAGEMENT";
+    /**
+     * JSP of this JSP Bean
+     */
+    public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
+    public static final String JSP_MANAGE_COMMENTS = "Comments.jsp";
 
-	// Session variable to store working values
-	private Comment _comment;
-	
-	/**
-	 * Build the Manage View
-	 * @param request The HTTP request
-	 * @return The page
-	 */
-	@View( VIEW_MANAGE_COMMENT )
-	public String getManageComment( HttpServletRequest request ) {
+    // Templates
+    public static final String TEMPLATE_CREATE_COMMENT = "/admin/plugins/appointment/comment/create_comment.html";
+    public static final String TEMPLATE_MANAGE_COMMENT = "/admin/plugins/appointment/comment/manage_comment.html";
+    private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
+    private static final String JSP_COMMENTS = "jsp/admin/plugins/appointment/Comments.jsp";
 
-		_comment = null;
-		List<Comment> listComments = CommentHome.getCommentsList(  );
-		Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_APPOINTMENT_SLOTS );
+    // Messages
+    private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.pageTitle";
+    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
 
-		return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_COMMENT, model );
-	}
+    // Parameters
+    private static final String PARAMETER_ID_COMMENT = "id_comment";
+    private static final String PARAMETER_COMMENT = "comment";
+    private static final String PARAMETER_STARTING_VALIDITY_DATE = "startingValidityDate";
+    private static final String PARAMETER_ENDING_VALIDITY_DATE = "endingValidityDate";
+    private static final String PARAMETER_ID_FORM = "id_form";
 
-	/**
-	 * Returns the form to create a comment
-	 *
-	 * @param request The Http request
-	 * @return the html code of the comment form
-	 */
-	@View( VIEW_ADD_COMMENT )
-	public String getViewAddComment( HttpServletRequest request )
-	{
-		User user = getUser( );
-		int nIdForm= Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-		_comment = new Comment(  );
-		_comment.setIdForm(nIdForm);
-		_comment.setCreationDate( LocalDate.now() );
-		_comment.setCreatorUserName( user.getAccessCode( ) );
+    // Marks
+    private static final String MARK_COMMENT = "comment";
+    private static final String MARK_COMMENT_LIST = "comment_list";
 
-		Map<String, Object> model = getModel( );
-		model.put( MARK_COMMENT, _comment );
-		return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
+    // Views
+    private static final String VIEW_ADD_COMMENT = "viewAddComment";
+    private static final String VIEW_MANAGE_COMMENT = "manageComment";
+    private static final String VIEW_CALENDAR_MANAGE_APPOINTMENTS = "viewCalendarManageAppointment";
 
-	}
-	/**
-	 * Process the data capture form of a new comment
-	 *
-	 * @param request The Http Request
-	 * @return The Jsp URL of the process result
-	 */
-	@Action( ACTION_DO_ADD_COMMENT )
-	public String doAddComment( HttpServletRequest request )
-	{
-		User user = getUser( );
-		int nIdForm= Integer.parseInt( request.getParameter(PARAMETER_ID_FORM) );
-		_comment = new Comment(  );
-		_comment.setIdForm( nIdForm );
-		_comment.setCreationDate( LocalDate.now( ) );
-		_comment.setCreatorUserName( user.getAccessCode( ) );
-		_comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
-		_comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-		_comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-		//populate( _comment, request, getLocale( ) );
-		
-		UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
+    // Actions
+    private static final String ACTION_DO_ADD_COMMENT = "doAddComment";
+    private static final String ACTION_DO_REMOVE_COMMENT = "doRemoveComment";
+    private static final String ACTION_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
+
+    // Properties
+    private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment-comment.manage_comments.pageTitle";
+    private static final String MESSAGE_CONFIRM_REMOVE_COMMENT = "appointment.message.confirmRemoveComment";
+
+    // Infos
+    private static final String INFO_COMMENT_CREATED = "appointment.info.comment.created";
+    private static final String INFO_COMMENT_REMOVED = "appointment.info.comment.removed";
+
+    // Session variable to store working values
+    private Comment _comment;
+
+    /**
+     * Build the Manage View
+     * 
+     * @param request
+     *            The HTTP request
+     * @return The page
+     */
+    @View( VIEW_MANAGE_COMMENT )
+    public String getManageComment( HttpServletRequest request )
+    {
+
+        _comment = null;
+        List<Comment> listComments = CommentHome.getCommentsList( );
+        Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_APPOINTMENT_SLOTS );
+
+        return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_COMMENT, model );
+    }
+
+    /**
+     * Returns the form to create a comment
+     *
+     * @param request
+     *            The Http request
+     * @return the html code of the comment form
+     */
+    @View( VIEW_ADD_COMMENT )
+    public String getViewAddComment( HttpServletRequest request )
+    {
+        User user = getUser( );
+        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        _comment = new Comment( );
+        _comment.setIdForm( nIdForm );
+        _comment.setCreationDate( LocalDate.now( ) );
+        _comment.setCreatorUserName( user.getAccessCode( ) );
+
+        Map<String, Object> model = getModel( );
+        model.put( MARK_COMMENT, _comment );
+        return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
+
+    }
+
+    /**
+     * Process the data capture form of a new comment
+     *
+     * @param request
+     *            The Http Request
+     * @return The Jsp URL of the process result
+     */
+    @Action( ACTION_DO_ADD_COMMENT )
+    public String doAddComment( HttpServletRequest request )
+    {
+        User user = getUser( );
+        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        _comment = new Comment( );
+        _comment.setIdForm( nIdForm );
+        _comment.setCreationDate( LocalDate.now( ) );
+        _comment.setCreatorUserName( user.getAccessCode( ) );
+        _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
+        _comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
+                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+        _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
+                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+        // populate( _comment, request, getLocale( ) );
+
+        UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
         url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
         String strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_CREATED, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
-		
-		// Check constraints
-		if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
-		{
-			return redirect( request, strMessageUrl);
 
-		}
-		CommentHome.create(_comment);
+        // Check constraints
+        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
+        {
+            return redirect( request, strMessageUrl );
 
-		addInfo( INFO_COMMENT_CREATED, getLocale(  ) );
+        }
+        CommentHome.create( _comment );
 
-		return redirect( request, strMessageUrl );
+        addInfo( INFO_COMMENT_CREATED, getLocale( ) );
 
-	}
-	/**
-	 * Manages the removal form of a comment whose identifier is in the http
-	 * request
-	 *
-	 * @param request The Http request
-	 * @return the html code to confirm
-	 */
-	@Action( ACTION_CONFIRM_REMOVE_COMMENT )
-	public String getConfirmRemoveComment( HttpServletRequest request )
-	{
-		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-		UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
-		url.addParameter( PARAMETER_ID_COMMENT, nId );
+        return redirect( request, strMessageUrl );
 
-		String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl(  ), AdminMessage.TYPE_CONFIRMATION );
+    }
 
-		return redirect( request, strMessageUrl );
-	}
-	/**
-	 * Do remove a comment
-	 * 
-	 * @param request
-	 *            the request
-	 * @return to the page of the comment
-	 */
-	@Action( ACTION_DO_REMOVE_COMMENT )
-	public String doRemoveComment( HttpServletRequest request )
-	{ 
-		int nIdComment= Integer.parseInt(request.getParameter( PARAMETER_ID_COMMENT ));
-		_comment = CommentHome.findByPrimaryKey( nIdComment );
-		UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
-		url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-		CommentHome.remove( nIdComment );
-		
+    /**
+     * Manages the removal form of a comment whose identifier is in the http request
+     *
+     * @param request
+     *            The Http request
+     * @return the html code to confirm
+     */
+    @Action( ACTION_CONFIRM_REMOVE_COMMENT )
+    public String getConfirmRemoveComment( HttpServletRequest request )
+    {
+        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+        UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
+        url.addParameter( PARAMETER_ID_COMMENT, nId );
+
+        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+
+        return redirect( request, strMessageUrl );
+    }
+
+    /**
+     * Do remove a comment
+     * 
+     * @param request
+     *            the request
+     * @return to the page of the comment
+     */
+    @Action( ACTION_DO_REMOVE_COMMENT )
+    public String doRemoveComment( HttpServletRequest request )
+    {
+        int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+        _comment = CommentHome.findByPrimaryKey( nIdComment );
+        UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
+        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
+        CommentHome.remove( nIdComment );
+
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
         String strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_REMOVED, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
-		
-		
-		addInfo( INFO_COMMENT_REMOVED, getLocale(  ) );
-		return redirect( request, strMessageUrl );
-	}
+
+        addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
+        return redirect( request, strMessageUrl );
+    }
 }

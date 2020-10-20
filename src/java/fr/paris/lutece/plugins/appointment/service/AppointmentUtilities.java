@@ -110,7 +110,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
  */
 public final class AppointmentUtilities
 {
-   
+
     public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     public static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     public static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
@@ -140,8 +140,6 @@ public final class AppointmentUtilities
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
     public static final int THIRTY_MINUTES = 30;
-    
-    
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -860,8 +858,8 @@ public final class AppointmentUtilities
         Slot slot = SlotService.findSlotById( nIdSlot );
 
         int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        //int nNbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
-        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment  );
+        // int nNbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
+        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
         int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
 
         if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
@@ -1175,21 +1173,24 @@ public final class AppointmentUtilities
 
         return null;
     }
+
     /**
      * return true if all slots are consecutive
-     * @param allSlots the list of slots
+     * 
+     * @param allSlots
+     *            the list of slots
      * @return true if all slots are consecutive
      */
     public static boolean isConsecutiveSlots( List<Slot> allSlots )
     {
-    	Slot slot= null;
+        Slot slot = null;
         for ( Slot nextSlot : allSlots )
         {
-            if ( nextSlot == null || slot != null && !Objects.equals( slot.getEndingDateTime( ), nextSlot.getStartingDateTime( ) )  )
+            if ( nextSlot == null || slot != null && !Objects.equals( slot.getEndingDateTime( ), nextSlot.getStartingDateTime( ) ) )
             {
-              return false;
+                return false;
             }
-            slot=nextSlot;
+            slot = nextSlot;
         }
         return true;
     }

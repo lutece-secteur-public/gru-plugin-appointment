@@ -432,7 +432,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         int nIdForm = Integer.parseInt( strIdForm );
         AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
-        { 
+        {
             appointmentForm = FormService.buildAppointmentFormLight( nIdForm );
         }
         populate( appointmentForm, request );
@@ -667,7 +667,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
         Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
         model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
-        
+
         ReferenceList listRoles = RoleHome.getRolesList( user );
         model.put( MARK_REF_LIST_ROLES, listRoles );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );

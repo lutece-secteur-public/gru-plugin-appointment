@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2002-2020, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +31,7 @@
  *
  * License 1.0
  */
- package fr.paris.lutece.plugins.appointment.business.comment;
+package fr.paris.lutece.plugins.appointment.business.comment;
 
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -55,14 +54,16 @@ public final class CommentHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private CommentHome(  )
+    private CommentHome( )
     {
     }
 
     /**
      * Create an instance of the comment class
-     * @param comment The instance of the Comment which contains the informations to store
-     * @return The  instance of comment which has been created with its primary key.
+     * 
+     * @param comment
+     *            The instance of the Comment which contains the informations to store
+     * @return The instance of comment which has been created with its primary key.
      */
     public static Comment create( Comment comment )
     {
@@ -73,8 +74,10 @@ public final class CommentHome
 
     /**
      * Update of the comment which is specified in parameter
-     * @param comment The instance of the Comment which contains the data to store
-     * @return The instance of the  comment which has been updated
+     * 
+     * @param comment
+     *            The instance of the Comment which contains the data to store
+     * @return The instance of the comment which has been updated
      */
     public static Comment update( Comment comment )
     {
@@ -85,7 +88,9 @@ public final class CommentHome
 
     /**
      * Remove the comment whose identifier is specified in parameter
-     * @param nKey The comment Id
+     * 
+     * @param nKey
+     *            The comment Id
      */
     public static void remove( int nKey )
     {
@@ -94,7 +99,9 @@ public final class CommentHome
 
     /**
      * Returns an instance of a comment whose identifier is specified in parameter
-     * @param nKey The comment primary key
+     * 
+     * @param nKey
+     *            The comment primary key
      * @return an instance of Comment
      */
     public static Comment findByPrimaryKey( int nKey )
@@ -104,36 +111,44 @@ public final class CommentHome
 
     /**
      * Load the data of all the comment objects and returns them as a list
+     * 
      * @return the list which contains the data of all the comment objects
      */
     public static List<Comment> getCommentsList( )
     {
         return _dao.selectCommentsList( _plugin );
     }
-    
+
     /**
      * Load the data from the table
-     * @param plugin the plugin
-     * @param startingDate the date start
-     * @param endingDate the date end
+     * 
+     * @param plugin
+     *            the plugin
+     * @param startingDate
+     *            the date start
+     * @param endingDate
+     *            the date end
      * @returnThe instance of the comment
      */
-    public static List<Comment> selectCommentsList(  Date startingDate, Date endingDate, int nIdForm ){
-    	
-    	return  _dao.selectCommentsList( _plugin, startingDate, endingDate, nIdForm );
+    public static List<Comment> selectCommentsList( Date startingDate, Date endingDate, int nIdForm )
+    {
+
+        return _dao.selectCommentsList( _plugin, startingDate, endingDate, nIdForm );
     }
-    
+
     /**
      * Load the id of all the comment objects and returns them as a list
+     * 
      * @return the list which contains the id of all the comment objects
      */
     public static List<Integer> getIdCommentsList( )
     {
         return _dao.selectIdCommentsList( _plugin );
     }
-    
+
     /**
      * Load the data of all the comment objects and returns them as a referenceList
+     * 
      * @return the referenceList which contains the data of all the comment objects
      */
     public static ReferenceList getCommentsReferenceList( )
@@ -141,4 +156,3 @@ public final class CommentHome
         return _dao.selectCommentsReferenceList( _plugin );
     }
 }
-

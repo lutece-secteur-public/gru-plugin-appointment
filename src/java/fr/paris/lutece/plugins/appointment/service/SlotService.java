@@ -469,21 +469,20 @@ public final class SlotService
                         }
 
                         if ( sumNbPotentialRemainingPlaces >= nNbPlaces || !slotToAdd.getIsOpen( ) || slotToAdd.getNbPotentialRemainingPlaces( ) <= 0
-                                || slotToAdd.getEndingDateTime( ).isBefore( LocalDateTime.now( ) )
-                                 )
+                                || slotToAdd.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
                         {
 
                             sumNbPotentialRemainingPlaces = 0;
                             sumNbRemainingPlaces = 0;
                             startingDateTime = slotToAdd.getEndingDateTime( );
-                            tempEndingDateTime = slotToAdd.getEndingTime();
+                            tempEndingDateTime = slotToAdd.getEndingTime( );
                         }
                         else
                         {
 
-                           // sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces( );
+                            // sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces( );
                             sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + 1;
-                           // sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces( );
+                            // sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces( );
                             sumNbRemainingPlaces = sumNbRemainingPlaces + 1;
                         }
 
@@ -500,10 +499,10 @@ public final class SlotService
                             slt.setDate( slotToAdd.getDate( ) );
                             slt.setIdForm( slotToAdd.getIdForm( ) );
                             listSlotToShow.add( slt );
-                            //sumNbPotentialRemainingPlaces = 0;
-                            //sumNbRemainingPlaces = 0;
+                            // sumNbPotentialRemainingPlaces = 0;
+                            // sumNbRemainingPlaces = 0;
                             isChanged = true;
-                            timeTemp= tempEndingDateTime;
+                            timeTemp = tempEndingDateTime;
                         }
 
                     }

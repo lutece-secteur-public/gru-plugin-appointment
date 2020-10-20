@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2002-2020, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,14 +42,14 @@ import javax.validation.constraints.NotNull;
 
 /**
  * This is the business class for the object Comment
- */ 
+ */
 public class Comment implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    // Variables declarations 
+    // Variables declarations
     private int _nId;
-    
+
     private int _nIdForm;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private LocalDate _dateStartingValidityDate;
@@ -58,9 +57,9 @@ public class Comment implements Serializable
     private LocalDate _dateEndingValidityDate;
     @NotEmpty( message = "#i18n{appointment.validation.comment.Comment.notEmpty}" )
     private String _strComment;
-    
+
     private LocalDate _dateCreationDate;
-    
+
     /**
      * The User who created the comment (if not created by the user himself)
      */
@@ -68,6 +67,7 @@ public class Comment implements Serializable
 
     /**
      * Returns the Id
+     * 
      * @return The Id
      */
     public int getId( )
@@ -77,15 +77,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the Id
-     * @param nId The Id
-     */ 
+     * 
+     * @param nId
+     *            The Id
+     */
     public void setId( int nId )
     {
         _nId = nId;
     }
-    
+
     /**
      * Returns the IdForm
+     * 
      * @return The IdForm
      */
     public int getIdForm( )
@@ -95,15 +98,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the IdForm
-     * @param nIdForm The IdForm
-     */ 
+     * 
+     * @param nIdForm
+     *            The IdForm
+     */
     public void setIdForm( int nIdForm )
     {
         _nIdForm = nIdForm;
     }
-    
+
     /**
      * Returns the StartingValidityDate
+     * 
      * @return The StartingValidityDate
      */
     public LocalDate getStartingValidityDate( )
@@ -113,15 +119,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the StartingValidityDate
-     * @param dateStartingValidityDate The StartingValidityDate
-     */ 
+     * 
+     * @param dateStartingValidityDate
+     *            The StartingValidityDate
+     */
     public void setStartingValidityDate( LocalDate dateStartingValidityDate )
     {
         _dateStartingValidityDate = dateStartingValidityDate;
     }
-    
+
     /**
      * Returns the EndingValidityDate
+     * 
      * @return The EndingValidityDate
      */
     public LocalDate getEndingValidityDate( )
@@ -131,15 +140,18 @@ public class Comment implements Serializable
 
     /**
      * Sets the EndingValidityDate
-     * @param dateEndingValidityDate The EndingValidityDate
-     */ 
+     * 
+     * @param dateEndingValidityDate
+     *            The EndingValidityDate
+     */
     public void setEndingValidityDate( LocalDate dateEndingValidityDate )
     {
         _dateEndingValidityDate = dateEndingValidityDate;
     }
-    
+
     /**
      * Returns the Comment
+     * 
      * @return The Comment
      */
     public String getComment( )
@@ -149,46 +161,55 @@ public class Comment implements Serializable
 
     /**
      * Sets the Comment
-     * @param strComment The Comment
-     */ 
+     * 
+     * @param strComment
+     *            The Comment
+     */
     public void setComment( String strComment )
     {
         _strComment = strComment;
     }
-    
+
     /**
      * Returns the CreationDate
+     * 
      * @return The CreationDate
      */
     public LocalDate getCreationDate( )
     {
-    	return _dateCreationDate;
+        return _dateCreationDate;
     }
-    
+
     /**
      * Sets the CreationDate
-     * @param dateCreationDate The CreationDate
-     */ 
-    public void setCreationDate( LocalDate dateCreationDate ) 
+     * 
+     * @param dateCreationDate
+     *            The CreationDate
+     */
+    public void setCreationDate( LocalDate dateCreationDate )
     {
-    	_dateCreationDate = dateCreationDate;
+        _dateCreationDate = dateCreationDate;
     }
-    
-    /**UserConnectId
+
+    /**
+     * UserConnectId
+     * 
      * @return The _strCreatorUserConnectId
      */
     public String getCreatorUserName( )
     {
-    	return _strCreatorUserConnectId;
+        return _strCreatorUserConnectId;
     }
-    
+
     /**
      * Sets the strCreatorUserConnectId
-     * @param creatorUserConnectId The creatorUserConnectId
-     */ 
-    public void setCreatorUserName( String creatorUserConnectId ) 
+     * 
+     * @param creatorUserConnectId
+     *            The creatorUserConnectId
+     */
+    public void setCreatorUserName( String creatorUserConnectId )
     {
-    	_strCreatorUserConnectId = creatorUserConnectId;
+        _strCreatorUserConnectId = creatorUserConnectId;
     }
 
 }

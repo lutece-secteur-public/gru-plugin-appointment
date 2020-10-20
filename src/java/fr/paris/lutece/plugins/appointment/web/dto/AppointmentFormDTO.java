@@ -271,7 +271,7 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      * Role FO
      */
     private String _strRole;
-    
+
     /**
      * Get the maximum number of appointments authorized for a same user
      * 
@@ -1099,35 +1099,39 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
 
     /**
      * Returns the IsMultislotAppointment
+     * 
      * @return The IsMultislotAppointment
-     */ 
-     public boolean getIsMultislotAppointment()
-     {
-         return _bIsMultislotAppointment;
-     }
- 
+     */
+    public boolean getIsMultislotAppointment( )
+    {
+        return _bIsMultislotAppointment;
+    }
+
     /**
      * Sets the IsMultislotAppointment
-     * @param bIsMultislotAppointment The IsMultislotAppointment
-     */ 
-     public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
-     {
-         _bIsMultislotAppointment = bIsMultislotAppointment;
-     }
-     
-     /**
-      * @return the strRole
-      */
-     public String getRole( )
-     {
-         return _strRole;
-     }
+     * 
+     * @param bIsMultislotAppointment
+     *            The IsMultislotAppointment
+     */
+    public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
+    {
+        _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
 
-     /**
-      * @param strRole the strRole to set
-      */
-     public void setRole( String strRole )
-     {
-         _strRole = strRole;
-      }
+    /**
+     * @return the strRole
+     */
+    public String getRole( )
+    {
+        return _strRole;
+    }
+
+    /**
+     * @param strRole
+     *            the strRole to set
+     */
+    public void setRole( String strRole )
+    {
+        _strRole = strRole;
+    }
 }

@@ -119,8 +119,9 @@ public final class AppointmentService
     public static List<Appointment> findListAppointmentByUserId( int nIdUser )
     {
         return AppointmentHome.findByIdUser( nIdUser );
-        
+
     }
+
     /**
      * Find the appointments of a user by guid
      * 
@@ -130,17 +131,18 @@ public final class AppointmentService
      */
     public static List<Appointment> findListAppointmentByUserGuid( String strGuidUser )
     {
-        List<Appointment> listAppointment= AppointmentHome.findByGuidUser( strGuidUser );
-        for(Appointment appointment: listAppointment) {
-	        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
-	        {
-	            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
-	
-	            appointment.addSlot( slot );
-	        }
+        List<Appointment> listAppointment = AppointmentHome.findByGuidUser( strGuidUser );
+        for ( Appointment appointment : listAppointment )
+        {
+            for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+            {
+                Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
+
+                appointment.addSlot( slot );
+            }
         }
         return listAppointment;
-        
+
     }
 
     /**
@@ -380,7 +382,7 @@ public final class AppointmentService
         appointment.setUser( user );
         return buildAppointmentDTO( appointment );
     }
-    
+
     /**
      * Build an appointment DTO from the id of an appointment business object
      * 
@@ -390,7 +392,7 @@ public final class AppointmentService
      */
     public static AppointmentDTO buildAppointmentDTOFromRefAppointment( String refAppointment )
     {
-        Appointment  appointment = AppointmentService.findAppointmentByReference( refAppointment );
+        Appointment appointment = AppointmentService.findAppointmentByReference( refAppointment );
 
         User user = UserService.findUserById( appointment.getIdUser( ) );
         for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
@@ -461,10 +463,10 @@ public final class AppointmentService
     {
 
         List<AppointmentSlot> listApptSlot = new ArrayList<>( );
-        //int nbPlaces = appointmentDTO.getNbBookedSeats( );
+        // int nbPlaces = appointmentDTO.getNbBookedSeats( );
         int nIdAppointment = appointmentDTO.getIdAppointment( );
         int nNumberPlace = 1;
-        //int index = 0;
+        // int index = 0;
 
         List<Slot> listSlot = appointmentDTO.getSlot( );
 
@@ -476,46 +478,31 @@ public final class AppointmentService
             AppointmentSlot apptSlot = new AppointmentSlot( );
             apptSlot.setIdAppointment( nIdAppointment );
             apptSlot.setIdSlot( slot.getIdSlot( ) );
-        /*    index = index + 1;
-            if ( nIdAppointment != 0 && appointmentDTO.getListAppointmentSlot( ).stream( ).anyMatch( p -> p.getIdSlot( ) == slot.getIdSlot( ) ) )
-            {
-
-                int nNbUpdatePlaces = appointmentDTO.getListAppointmentSlot( ).stream( ).filter( p -> p.getIdSlot( ) == slot.getIdSlot( ) ).findAny( ).get( )
-                        .getNbPlaces( );
-
-                if ( nbPlaces >= slot.getNbRemainingPlaces( ) + nNbUpdatePlaces )
-                {
-
-                    nNumberPlace = nNbUpdatePlaces;
-
-                }
-                else
-                {
-
-                    nNumberPlace = nNbUpdatePlaces;
-                }
-            }
-            else
-                if ( nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces( ) && index < listSlot.size( ) )
-                {
-
-                    nNumberPlace = slot.getNbRemainingPlaces( );
-
-                }
-                else
-                    if ( nbPlaces > 0 )
-                    {
-
-                        nNumberPlace = nbPlaces;
-
-                    }
-                    else
-                    {
-                        break;
-                    }
-			*/
+            /*
+             * index = index + 1; if ( nIdAppointment != 0 && appointmentDTO.getListAppointmentSlot( ).stream( ).anyMatch( p -> p.getIdSlot( ) ==
+             * slot.getIdSlot( ) ) ) {
+             * 
+             * int nNbUpdatePlaces = appointmentDTO.getListAppointmentSlot( ).stream( ).filter( p -> p.getIdSlot( ) == slot.getIdSlot( ) ).findAny( ).get( )
+             * .getNbPlaces( );
+             * 
+             * if ( nbPlaces >= slot.getNbRemainingPlaces( ) + nNbUpdatePlaces ) {
+             * 
+             * nNumberPlace = nNbUpdatePlaces;
+             * 
+             * } else {
+             * 
+             * nNumberPlace = nNbUpdatePlaces; } } else if ( nbPlaces > 0 && nbPlaces >= slot.getNbRemainingPlaces( ) && index < listSlot.size( ) ) {
+             * 
+             * nNumberPlace = slot.getNbRemainingPlaces( );
+             * 
+             * } else if ( nbPlaces > 0 ) {
+             * 
+             * nNumberPlace = nbPlaces;
+             * 
+             * } else { break; }
+             */
             apptSlot.setNbPlaces( nNumberPlace );
-            //nbPlaces = nbPlaces - nNumberPlace;
+            // nbPlaces = nbPlaces - nNumberPlace;
             listApptSlot.add( apptSlot );
         }
         appointmentDTO.setListAppointmentSlot( listApptSlot );

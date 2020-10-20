@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2002-2020, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +31,6 @@
  *
  * License 1.0
  */
- 
 package fr.paris.lutece.plugins.appointment.business.comment;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -48,22 +46,31 @@ public interface ICommentDAO
 {
     /**
      * Insert a new record in the table.
-     * @param comment instance of the Comment object to insert
-     * @param plugin the Plugin
+     * 
+     * @param comment
+     *            instance of the Comment object to insert
+     * @param plugin
+     *            the Plugin
      */
     void insert( Comment comment, Plugin plugin );
 
     /**
      * Update the record in the table
-     * @param comment the reference of the Comment
-     * @param plugin the Plugin
+     * 
+     * @param comment
+     *            the reference of the Comment
+     * @param plugin
+     *            the Plugin
      */
     void store( Comment comment, Plugin plugin );
 
     /**
      * Delete a record from the table
-     * @param nKey The identifier of the Comment to delete
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the Comment to delete
+     * @param plugin
+     *            the Plugin
      */
     void delete( int nKey, Plugin plugin );
 
@@ -72,39 +79,53 @@ public interface ICommentDAO
 
     /**
      * Load the data from the table
-     * @param nKey The identifier of the comment
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the comment
+     * @param plugin
+     *            the Plugin
      * @return The instance of the comment
      */
     Comment load( int nKey, Plugin plugin );
-    
+
     /**
      * Load the data from the table
-     * @param plugin the plugin
-     * @param startingDate the date start
-     * @param endingDate the date end
-     * @param nIdFrom the id Form
+     * 
+     * @param plugin
+     *            the plugin
+     * @param startingDate
+     *            the date start
+     * @param endingDate
+     *            the date end
+     * @param nIdFrom
+     *            the id Form
      * @returnThe instance of the comment
      */
     List<Comment> selectCommentsList( Plugin plugin, Date startingDate, Date endingDate, int nIdForm );
 
     /**
      * Load the data of all the comment objects and returns them as a list
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return The list which contains the data of all the comment objects
      */
     List<Comment> selectCommentsList( Plugin plugin );
-    
+
     /**
      * Load the id of all the comment objects and returns them as a list
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return The list which contains the id of all the comment objects
      */
     List<Integer> selectIdCommentsList( Plugin plugin );
-    
+
     /**
      * Load the data of all the comment objects and returns them as a referenceList
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return The referenceList which contains the data of all the comment objects
      */
     ReferenceList selectCommentsReferenceList( Plugin plugin );

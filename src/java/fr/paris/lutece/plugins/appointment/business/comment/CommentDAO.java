@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2002-2020, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +31,6 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.appointment.business.comment;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -50,219 +48,217 @@ import java.util.List;
  */
 public final class CommentDAO implements ICommentDAO
 {
-	// Constants
-	private static final String SQL_QUERY_SELECT = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE id_comment = ?";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_comment ( id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
-	private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_comment WHERE id_comment = ? ";
-	private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, ending_validity_date = ?, comment = ?, comment_creation_date = ?,  WHERE id_comment = ?";
-	private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment";
-	private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_comment FROM appointment_comment";
-	private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date >= ? and ending_validity_date <= ? and id_form = ?";
+    // Constants
+    private static final String SQL_QUERY_SELECT = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE id_comment = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_comment ( id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_comment WHERE id_comment = ? ";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, ending_validity_date = ?, comment = ?, comment_creation_date = ?,  WHERE id_comment = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment";
+    private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_comment FROM appointment_comment";
+    private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date >= ? and ending_validity_date <= ? and id_form = ?";
 
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void insert( Comment comment, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS, plugin ) )
+        {
+            int nIndex = 1;
+            daoUtil.setInt( nIndex++, comment.getIdForm( ) );
+            daoUtil.setDate( nIndex++, Date.valueOf( comment.getStartingValidityDate( ) ) );
+            daoUtil.setDate( nIndex++, Date.valueOf( comment.getEndingValidityDate( ) ) );
+            daoUtil.setString( nIndex++, comment.getComment( ) );
+            daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
+            daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public void insert( Comment comment, Plugin plugin )
-	{
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS, plugin ) )
-		{
-			int nIndex = 1;
-			daoUtil.setInt( nIndex++ , comment.getIdForm( ) );
-			daoUtil.setDate( nIndex++ , Date.valueOf( comment.getStartingValidityDate( ) ) );
-			daoUtil.setDate( nIndex++ , Date.valueOf( comment.getEndingValidityDate( ) ) );
-			daoUtil.setString( nIndex++ , comment.getComment( ) );
-			daoUtil.setDate( nIndex++ , Date.valueOf( comment.getCreationDate( ) ) );
-			daoUtil.setString( nIndex++ , comment.getCreatorUserName( ) );
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                comment.setId( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
+        }
 
-			daoUtil.executeUpdate( );
-			if ( daoUtil.nextGeneratedKey( ) ) 
-			{
-				comment.setId( daoUtil.getGeneratedKeyInt( 1 ) );
-			}
-		}
+    }
 
-	}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Comment load( int nKey, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
+        {
+            daoUtil.setInt( 1, nKey );
+            daoUtil.executeQuery( );
+            Comment comment = null;
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public Comment load( int nKey, Plugin plugin )
-	{
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
-		{
-			daoUtil.setInt( 1 , nKey );
-			daoUtil.executeQuery( );
-			Comment comment = null;
+            if ( daoUtil.next( ) )
+            {
+                comment = new Comment( );
+                int nIndex = 1;
 
-			if ( daoUtil.next( ) )
-			{
-				comment = new Comment();
-				int nIndex = 1;
+                comment.setId( daoUtil.getInt( nIndex++ ) );
+                comment.setIdForm( daoUtil.getInt( nIndex++ ) );
+                comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setComment( daoUtil.getString( nIndex++ ) );
+                comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setCreatorUserName( daoUtil.getString( nIndex ) );
 
-				comment.setId( daoUtil.getInt( nIndex++ ) );
-				comment.setIdForm( daoUtil.getInt( nIndex++ ) );            
-				comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate()  );            
-				comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate()  );            
-				comment.setComment( daoUtil.getString( nIndex++ ) );
-				comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate() );            
-				comment.setCreatorUserName( daoUtil.getString( nIndex ) );  
+            }
 
-			}
+            daoUtil.free( );
+            return comment;
+        }
+    }
 
-			daoUtil.free( );
-			return comment;
-		}
-	}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void delete( int nKey, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nKey );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
+    }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public void delete( int nKey, Plugin plugin )
-	{
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
-		{
-			daoUtil.setInt( 1 , nKey );
-			daoUtil.executeUpdate( );
-			daoUtil.free( );
-		}
-	}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void store( Comment comment, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
+        {
+            int nIndex = 1;
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public void store( Comment comment, Plugin plugin )
-	{
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
-		{
-			int nIndex = 1;
+            daoUtil.setInt( nIndex++, comment.getId( ) );
+            daoUtil.setInt( nIndex++, comment.getIdForm( ) );
+            daoUtil.setDate( nIndex++, Date.valueOf( comment.getStartingValidityDate( ) ) );
+            daoUtil.setDate( nIndex++, Date.valueOf( comment.getEndingValidityDate( ) ) );
+            daoUtil.setString( nIndex++, comment.getComment( ) );
+            daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
+            daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
 
-			daoUtil.setInt( nIndex++ , comment.getId( ) );
-			daoUtil.setInt( nIndex++ , comment.getIdForm( ) );
-			daoUtil.setDate( nIndex++ , Date.valueOf( comment.getStartingValidityDate( ) ) );
-			daoUtil.setDate( nIndex++ , Date.valueOf( comment.getEndingValidityDate( ) ) );
-			daoUtil.setString( nIndex++ , comment.getComment( ) );
-			daoUtil.setDate( nIndex++ , Date.valueOf( comment.getCreationDate( ) ) );
-			daoUtil.setString( nIndex++ , comment.getCreatorUserName( ) );
+            daoUtil.executeUpdate( );
+            daoUtil.free( );
+        }
+    }
 
-			daoUtil.executeUpdate( );
-			daoUtil.free( );
-		}
-	}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<Comment> selectCommentsList( Plugin plugin )
+    {
+        List<Comment> commentList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
+        {
+            daoUtil.executeQuery( );
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public List<Comment> selectCommentsList( Plugin plugin )
-	{
-		List<Comment> commentList = new ArrayList<>(  );
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
-		{
-			daoUtil.executeQuery(  );
+            while ( daoUtil.next( ) )
+            {
+                Comment comment = new Comment( );
+                int nIndex = 1;
 
-			while ( daoUtil.next(  ) )
-			{
-				Comment comment = new Comment(  );
-				int nIndex = 1;
+                comment.setId( daoUtil.getInt( nIndex++ ) );
+                comment.setIdForm( daoUtil.getInt( nIndex++ ) );
+                comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setComment( daoUtil.getString( nIndex ) );
+                comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setCreatorUserName( daoUtil.getString( nIndex ) );
 
-				comment.setId( daoUtil.getInt( nIndex++ ) );
-				comment.setIdForm( daoUtil.getInt( nIndex++ ) );
-				comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-				comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-				comment.setComment( daoUtil.getString( nIndex ) );
-				comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );            
-				comment.setCreatorUserName( daoUtil.getString( nIndex ) ); 
+                commentList.add( comment );
+            }
 
-				commentList.add( comment );
-			}
+            daoUtil.free( );
+            return commentList;
+        }
+    }
 
-			daoUtil.free( );
-			return commentList;
-		}
-	}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<Comment> selectCommentsList( Plugin plugin, Date startingDate, Date endingDate, int nIdForm )
+    {
+        List<Comment> commentList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BETWEEN, plugin ) )
+        {
+            daoUtil.setDate( 1, startingDate );
+            daoUtil.setDate( 2, endingDate );
+            daoUtil.setInt( 3, nIdForm );
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public List<Comment> selectCommentsList( Plugin plugin, Date startingDate, Date endingDate, int nIdForm )
-	{
-		List<Comment> commentList = new ArrayList<>(  );
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BETWEEN, plugin ) )
-		{
-			daoUtil.setDate(1, startingDate);
-			daoUtil.setDate(2, endingDate);
-			daoUtil.setInt(3, nIdForm);
+            daoUtil.executeQuery( );
 
+            while ( daoUtil.next( ) )
+            {
+                Comment comment = new Comment( );
+                int nIndex = 1;
 
-			daoUtil.executeQuery(  );
+                comment.setId( daoUtil.getInt( nIndex++ ) );
+                comment.setIdForm( daoUtil.getInt( nIndex++ ) );
+                comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setComment( daoUtil.getString( nIndex++ ) );
+                comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setCreatorUserName( daoUtil.getString( nIndex++ ) );
 
-			while ( daoUtil.next(  ) )
-			{
-				Comment comment = new Comment(  );
-				int nIndex = 1;
+                commentList.add( comment );
+            }
 
-				comment.setId( daoUtil.getInt( nIndex++ ) );
-				comment.setIdForm( daoUtil.getInt( nIndex++ ) );
-				comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-				comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-				comment.setComment( daoUtil.getString( nIndex++ ) );  
-				comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );            
-				comment.setCreatorUserName( daoUtil.getString( nIndex++ ) ); 
+            daoUtil.free( );
+            return commentList;
+        }
+    }
 
-				commentList.add( comment );
-			}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<Integer> selectIdCommentsList( Plugin plugin )
+    {
+        List<Integer> commentList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID, plugin ) )
+        {
+            daoUtil.executeQuery( );
 
-			daoUtil.free( );
-			return commentList;
-		}
-	}
+            while ( daoUtil.next( ) )
+            {
+                commentList.add( daoUtil.getInt( 1 ) );
+            }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public List<Integer> selectIdCommentsList( Plugin plugin )
-	{
-		List<Integer> commentList = new ArrayList<>( );
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID, plugin ) )
-		{
-			daoUtil.executeQuery(  );
+            daoUtil.free( );
+            return commentList;
+        }
+    }
 
-			while ( daoUtil.next(  ) )
-			{
-				commentList.add( daoUtil.getInt( 1 ) );
-			}
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public ReferenceList selectCommentsReferenceList( Plugin plugin )
+    {
+        ReferenceList commentList = new ReferenceList( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
+        {
+            daoUtil.executeQuery( );
 
-			daoUtil.free( );
-			return commentList;
-		}
-	}
+            while ( daoUtil.next( ) )
+            {
+                commentList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
+            }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public ReferenceList selectCommentsReferenceList( Plugin plugin )
-	{
-		ReferenceList commentList = new ReferenceList();
-		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
-		{
-			daoUtil.executeQuery(  );
+            daoUtil.free( );
+            return commentList;
+        }
+    }
 
-			while ( daoUtil.next(  ) )
-			{
-				commentList.addItem( daoUtil.getInt( 1 ) , daoUtil.getString( 2 ) );
-			}
-
-			daoUtil.free( );
-			return commentList;
-		}
-	}
-	
 }

@@ -68,7 +68,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      */
     @JsonIgnore
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
-    
+
     @JsonIgnore
     public static final String ROLE_NONE = "none";
 
@@ -124,12 +124,12 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Workgroup
      */
     private String _strWorkgroup;
-    
+
     /**
-     * 	 _bIsMultislotAppointment
+     * _bIsMultislotAppointment
      */
-	private boolean _bIsMultislotAppointment;
-    
+    private boolean _bIsMultislotAppointment;
+
     /**
      * Role FO
      */
@@ -418,23 +418,26 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     {
         return Integer.toString( getIdForm( ) );
     }
-    
+
     /**
      * Returns the IsMultislotAppointment
+     * 
      * @return The IsMultislotAppointment
-     */ 
-     public boolean getIsMultislotAppointment()
-     {
-         return _bIsMultislotAppointment;
-     }
- 
+     */
+    public boolean getIsMultislotAppointment( )
+    {
+        return _bIsMultislotAppointment;
+    }
+
     /**
      * Sets the IsMultislotAppointment
-     * @param bIsMultislotAppointment The IsMultislotAppointment
-     */ 
-     public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
-     {
-         _bIsMultislotAppointment = bIsMultislotAppointment;
+     * 
+     * @param bIsMultislotAppointment
+     *            The IsMultislotAppointment
+     */
+    public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
+    {
+        _bIsMultislotAppointment = bIsMultislotAppointment;
     }
 
     /**
@@ -446,11 +449,12 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     }
 
     /**
-     * @param strRole the strRole to set
+     * @param strRole
+     *            the strRole to set
      */
     public void setRole( String strRole )
     {
         _strRole = StringUtils.isEmpty( strRole ) ? ROLE_NONE : strRole;
-     }
+    }
 
 }
