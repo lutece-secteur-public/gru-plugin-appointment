@@ -201,25 +201,39 @@ function validateQty(event) {
    // Set the DOW checked indicators to represent the current state of the selected week
    $(document).ready(function() {
         <#if appointmentform.isOpenMonday!false>
-             document.getElementById("is_open_monday").checked = true;
+             $('#is_open_monday').prop("checked", true);
+             <#else>
+             $('#is_open_monday').prop("checked", false);
         </#if>
         <#if appointmentform.isOpenTuesday!false>
-            document.getElementById("is_open_tuesday").checked = true;
+            $('#is_open_tuesday').prop("checked", true);
+            <#else>
+            $('#is_open_tuesday').prop("checked", false);
         </#if>
         <#if appointmentform.isOpenWednesday!false>
-            document.getElementById("is_open_wednesday").checked = true;
+            $('#is_open_wednesday').prop("checked", true);
+            <#else>
+            $('#is_open_wednesday').prop("checked", false);
         </#if>
         <#if appointmentform.isOpenThursday!false>
-            document.getElementById("is_open_thursday").checked = true;
+         $('#is_open_thursday').prop("checked", true);
+            <#else>
+            $('#is_open_thursday').prop("checked", false);
         </#if>
         <#if appointmentform.isOpenFriday!false>
-            document.getElementById("is_open_friday").checked = true;
+         $('#is_open_friday').prop("checked", true);
+            <#else>
+            $('#is_open_friday').prop("checked", false);
         </#if>
         <#if appointmentform.isOpenSaturday!false>
-            document.getElementById("is_open_saturday").checked = true;
+         $('#is_open_saturday').prop("checked", true);
+            <#else>
+            $('#is_open_saturday').prop("checked", false);
         </#if>
         <#if appointmentform.isOpenSunday!false>
-            document.getElementById("is_open_sunday").checked = true;
+            $('#is_open_sunday').prop("checked", true);
+            <#else>
+            $('#is_open_sunday').prop("checked", false);
         </#if>
     });
 </script>
