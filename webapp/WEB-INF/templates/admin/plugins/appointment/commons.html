@@ -130,10 +130,13 @@
 <#assign SERVER_DATE_FORMAT="YYYY-MM-DD">
 <#assign SERVER_TIME_FORMAT="HH:mm">
 
-<#-- Redefine date picker to use appointment plugin version. Add min and max date support
--- The min/maxServerDate parameters should be strings in SERVER_DATE_FORMAT.
+<#-- 
+-- Provide a date picker for a input field of class datetimepicker.
+-- That input field will be in the user date format.
+-- Optionally a separate field will be kept up to date in server date format.
+-- An initial date value as well as min and max date values may be specified in server date format.
 -->
-<#macro getDatePickerBootstrap idField minServerDate="" maxServerDate="">
+<#macro setupDatePicker idField idServerField='' serverDate='' minServerDate='' maxServerDate=''>
         <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
 	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
         <script type='text/javascript' charset='utf-8'>
@@ -160,12 +163,30 @@
 		    close: 'fa fa-remove'
 		}
 	    });
+
+	    <#-- Upate server field when user field changes. -->
+            <#if idServerField?has_content>
+                $('#${idField}').on('dp.change', (function () {
+                    $('#${idServerField}').val(moment($('#${idField}').val(), '${USER_DATE_FORMAT}', true).format('${SERVER_DATE_FORMAT}'));
+                }));
+            </#if>
+
+	    <#-- Initialize fields if given a date -->
+            <#if serverDate?has_content>
+                $('#${idField}').val(moment('${serverDate}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}'));
+                $('#${idServerField}').val('${serverDate}');
+            </#if>
         });
         </script>
 </#macro>
 
-<#-- Provide a time picker with 5 minute increments. -->
-<#macro getTimePickerBootstrap idField >
+<#-- 
+-- Provide a date picker for a input field of class datetimepicker with 5 minute increments.
+-- That input field will be in the user time format.
+-- Optionally a separate field will be kept up to date in server time format.
+-- An initial time value may be specified in server time format.
+-->
+<#macro setupTimePicker idField idServerField='' serverTime=''>
         <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
 	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
         <script type='text/javascript' charset='utf-8'>
@@ -187,26 +208,19 @@
 		    close: 'fa fa-remove'
 		}
 	    });
+
+	    <#-- Upate server field when user field changes. -->
+            <#if idServerField?has_content>
+                $('#${idField}').on('dp.change', (function () {
+                    $('#${idServerField}').val(moment($('#${idField}').val(), '${USER_TIME_FORMAT}', true).format('${SERVER_TIME_FORMAT}'));
+                }));
+            </#if>
+
+	    <#-- Initialize fields if given a time -->
+            <#if serverTime?has_content>
+                $('#${idField}').val(moment('${serverTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}'));
+                $('#${idServerField}').val('${serverTime}');
+            </#if>
         });
         </script>
-</#macro>
-
-<#-- Field ${idField}_user contains a user formatted date which is transformed into a server formatted date and set on idField. -->
-<#macro setServerDate idField>
-    $('#${idField}').val(moment($('#${idField}_user').val(), '${USER_DATE_FORMAT}', true).format('${SERVER_DATE_FORMAT}'));
-</#macro>
-
-<#-- Field ${idField}_user contains a user formatted time which is transformed into a server formatted time and set on idField. -->
-<#macro setServerTime idField>
-    $('#${idField}').val(moment($('#${idField}_user').val(), '${USER_TIME_FORMAT}', true).format('${SERVER_TIME_FORMAT}'));
-</#macro>
-
-<#-- Transform server date to user date and set to input field -->
-<#macro setUserDate idField serverDate>
-    $('#${idField}').val(moment('${serverDate}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}'));
-</#macro>
-
-<#-- Transform server time to user time and set to input field -->
-<#macro setUserTime idField serverTime>
-    $('#${idField}').val(moment('${serverTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}'));
 </#macro>
