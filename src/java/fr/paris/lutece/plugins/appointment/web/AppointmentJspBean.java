@@ -86,6 +86,8 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.addon.AppointmentAddOnManager;
+import fr.paris.lutece.plugins.appointment.service.export.AppointmentExportService;
+import fr.paris.lutece.plugins.appointment.service.export.ExcelAppointmentGenerator;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.lock.SlotEditTask;
 import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
@@ -93,7 +95,9 @@ import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronou
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.filegenerator.service.TemporaryFileGeneratorService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -111,7 +115,6 @@ import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -262,7 +265,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
-    private static final String PROPERTY_NB_MAX_APPOINTMENTS_TO_EXPORT = "appointment.nbMaxAppointmentsToExport";
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTS = "manageAppointments";
     private static final String VIEW_CREATE_APPOINTMENT = "createAppointment";
@@ -293,7 +295,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
     private static final String MESSAGE_UNVAILABLE_SLOT = "appointment.slot.unvailable";
-    private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_FOR_EXPORT = "appointment.manageAppointments.nbMaxAppointmentsForExport";
 
     // Session keys
     private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.currentPageIndex";
@@ -316,7 +317,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String DATE_APPOINTMENT = "date_appointment";
     private static final String ADMIN = "admin";
     private static final String STATUS = "status";
-    private static final int MAX_NB_APPOINTMENTS_TO_EXPORT = 8000;
     // services
     private final transient StateService _stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
     private final transient ITaskService _taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
@@ -835,9 +835,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return nothing.
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
+     * @throws SiteMessageException 
      */
     @SuppressWarnings( "unchecked" )
-    public String getDownloadFileAppointment( HttpServletRequest request, HttpServletResponse response ) throws AccessDeniedException
+    public String getDownloadFileAppointment( HttpServletRequest request, HttpServletResponse response ) throws AccessDeniedException, SiteMessageException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( StringUtils.isEmpty( strIdForm ) || !StringUtils.isNumeric( strIdForm ) )
@@ -850,19 +851,19 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         Locale locale = getLocale( );
         List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );
-        if ( listAppointmentsDTO.size( ) > AppPropertiesService.getPropertyInt( PROPERTY_NB_MAX_APPOINTMENTS_TO_EXPORT, MAX_NB_APPOINTMENTS_TO_EXPORT ) )
-        {
-            addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_FOR_EXPORT, locale );
-            UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTS );
-            urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTS );
-            urlItem.addParameter( PARAMETER_ID_FORM, strIdForm );
-            return redirect( request, urlItem.getUrl( ) );
-        }
-        else
-        {
-            AppointmentUtilities.buildExcelFileWithAppointments( strIdForm, response, locale, listAppointmentsDTO, _stateService );
-        }
-        return null;
+        
+        List<String> defaultColumnList = AppointmentExportService.getDefaultColumnList( );
+        
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
+        List<Integer> entryList = EntryHome.getEntryList( entryFilter ).stream( ).map( Entry::getIdEntry )
+                .collect( Collectors.toList( ) );
+        ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( strIdForm, defaultColumnList, locale, listAppointmentsDTO, entryList );
+        
+        TemporaryFileGeneratorService.getInstance( ).generateFile( generator, getUser( ) );
+        addInfo( "appointment.export.async.message", getLocale( ) );
+        
+        return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, Integer.valueOf( strIdForm ) );
     }
 
     /**
