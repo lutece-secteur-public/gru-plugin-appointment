@@ -34,7 +34,7 @@
 									<@inputGroupItem type='addon'>
 										<@icon style='calendar' />
 									</@inputGroupItem>
-									<@input type='text' name='date_user' class='datetimepicker' id='date_user' />
+									<@input type='text' name='' class='datetimepicker' id='date_user' />
 								</@inputGroup>
 							</#list>
 						</@formGroup>
@@ -59,19 +59,4 @@
 </@row>
 
  <@initEditor />
-<@getDatePicker idField="date_user" />
-
-<script type="text/javascript">
-        // Transform dates and times on inputs into server format
-        $('#entrydateform').on('submit', function(e) {
-            <@setServerDate idField='date' />
-            return true;
-        });
-
-        // Transform dates and times from server into user format and set inputs
-        $(function () {
-            <#if field.valueTypeDate??>
-                <@setUserDate idField='date_user' serverDate=field.valueTypeDate />
-	    </#if>
-       });
-</script>
+<@setupDatePicker idField="date_user" idServerField='date' serverDate=field.valueTypeDate!'' />

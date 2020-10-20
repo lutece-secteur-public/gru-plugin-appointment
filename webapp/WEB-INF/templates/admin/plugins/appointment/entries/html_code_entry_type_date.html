@@ -24,8 +24,10 @@
 			<@inputGroupItem type='addon'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='attribute${entry.idEntry}' class='datetimepicker' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
+			<@input type='text' id='attribute${entry.idEntry}_user' name='' class='datetimepicker' value=value />
+                        <@input type='hidden' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' />			
 		</@inputGroup>
+		
 		<#if list_responses??>
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
@@ -38,4 +40,5 @@
 		</#if>
 	</#list>
 </@formGroup>
-<@getDatePickerBootstrap idField="attribute${entry.idEntry}" language=locale />
+
+<@setupDatePicker idField='attribute${entry.idEntry}_user' serverIdField='attribute${entry.idEntry}' serverDate=value/>

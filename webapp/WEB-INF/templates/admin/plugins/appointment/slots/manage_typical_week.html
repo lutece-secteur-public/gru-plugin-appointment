@@ -48,7 +48,7 @@
                                 <@inputGroupItem type='addon'>
                                     <@icon style='clock-o' />
                                 </@inputGroupItem>
-                                <@input type='text' name='time_start_user' class='datetimepicker' id='time_start_user' />
+                                <@input type='text' name='' class='datetimepicker' id='time_start_user' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup labelFor='time_end_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
@@ -56,7 +56,7 @@
                                 <@inputGroupItem type='addon'>
                                   <@icon style='clock-o' />
                                 </@inputGroupItem>
-                                <@input type='text' name='time_end_user' class='datetimepicker' id='time_end_user' />
+                                <@input type='text' name='' class='datetimepicker' id='time_end_user' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
@@ -96,7 +96,7 @@
                                 <@inputGroupItem type='addon'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
-                                <@input type='text' name='date_of_modification_user' class='datetimepicker' id='date_of_modification_user' />
+                                <@input type='text' name='' class='datetimepicker' id='date_of_modification_user' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup>
@@ -112,9 +112,11 @@
 			</@appointmentTabs>
     </@columns>
 </@row>
-<@getDatePickerBootstrap idField="date_of_modification_user" />
-<@getTimePickerBootstrap idField="time_start_user" />
-<@getTimePickerBootstrap idField="time_end_user" />
+
+<@setupDatePicker idField='date_of_modification_user' idServerField='date_of_modification' />
+<@setupTimePicker idField='time_start_user' idServerField='time_start' serverTime=appointmentform.timeStart!'' />
+<@setupTimePicker idField='time_end_user' idServerField='time_end' serverTime=appointmentform.timeEnd!'' />
+
 <script type="text/javascript">
 
 function validateQty(event) {
@@ -196,25 +198,7 @@ function validateQty(event) {
         });
     });
 
-    // Transform dates and times on inputs into server format
-  $('#formid').on('submit', function(e) {
-      <@setServerDate idField='date_of_modification' />
-      <@setServerTime idField='time_start' />
-      <@setServerTime idField='time_end' />
-      return true;
-  });
-
-    // Transform dates and times from server into user format and set inputs
-  $(function () {
-      <#if appointmentform.timeStart??>
-          <@setUserTime idField='time_start_user' serverTime=appointmentform.timeStart />
-      </#if>
-      <#if appointmentform.timeEnd??>
-          <@setUserTime idField='time_end_user' serverTime=appointmentform.timeEnd />
-      </#if>
-    });
-
-    // Set the DOW checked indicators to represent the current state of the selected week
+   // Set the DOW checked indicators to represent the current state of the selected week
    $(document).ready(function() {
         <#if appointmentform.isOpenMonday!false>
              document.getElementById("is_open_monday").checked = true;

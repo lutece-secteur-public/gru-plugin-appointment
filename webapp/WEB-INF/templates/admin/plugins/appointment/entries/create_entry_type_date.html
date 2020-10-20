@@ -37,7 +37,7 @@
                                 <@inputGroupItem type='addon'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
-                                <@input type='text' class='datetimepicker' id='date_user' name='value_user' />
+                                <@input type='text' class='datetimepicker' id='date_user' name='' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
@@ -65,12 +65,5 @@
 </@row>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
-<@getDatePicker idField="date_user" />
 
-<script type="text/javascript">
-        // Transform dates and times on inputs into server format
-        $('#createentrydate').on('submit', function(e) {
-            <@setServerDate idField='date' />
-            return true;
-        });
-</script>
+<@setupDatePicker idField='date_user' idServerField='date' />

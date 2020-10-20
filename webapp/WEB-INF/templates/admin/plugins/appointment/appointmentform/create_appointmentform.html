@@ -25,21 +25,21 @@
 					</@formGroup>
 					<@formGroup labelFor='time_start_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_start_user' class='datetimepicker' id='time_start_user' />
+							<@input type='text' name='' class='datetimepicker' id='time_start_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getTimePickerBootstrap idField="time_start_user" />
+						<@setupTimePicker idField='time_start_user' idServerField='time_start' />
 					</@formGroup>
 					<@formGroup labelFor='time_end_user' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
 						<@inputGroup>
-							<@input type='text' name='time_end_user' class='datetimepicker' id='time_end_user' />
+							<@input type='text' name='' class='datetimepicker' id='time_end_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getTimePickerBootstrap idField="time_end_user" />		
+						<@setupTimePicker idField='time_end_user' idServerField='time_end' />
 					</@formGroup>
 					<@formGroup labelFor='duration_appointments' labelKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments}' helpKey='#i18n{appointment.createAppointmentForm.labelDurationAppointments.help}' mandatory=true>
 						<@input type='text' name='duration_appointments' id='duration_appointments' value=appointmentform.durationAppointments!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
@@ -49,21 +49,21 @@
 					</@formGroup>
 					<@formGroup labelFor='date_start_validity_user' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
 						<@inputGroup>
-							<@input type='text' name='date_start_validity_user' class='datetimepicker' id='date_start_validity_user' />
+							<@input type='text' name='' class='datetimepicker' id='date_start_validity_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_start_validity_user" />
+						<@setupDatePicker idField='date_start_validity_user' idServerField='date_start_validity'/>
 					</@formGroup>
 					<@formGroup labelFor='date_end_validity_user' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
 						<@inputGroup>
-							<@input type='text' name='date_end_validity_user' class='datetimepicker'  id='date_end_validity_user' />
+							<@input type='text' name='' class='datetimepicker'  id='date_end_validity_user' />
 							<@inputGroupItem type='addon'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
-						<@getDatePickerBootstrap idField="date_end_validity_user" />
+						<@setupDatePicker idField='date_end_validity_user' idServerField='date_end_validity' />
 					</@formGroup>
 					<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
 						<@checkBox name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
@@ -300,13 +300,4 @@ if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
 }
 else return true;
 }
-
-// Transform dates and times provided by user into server format on hidden fields
-$('#formid').on('submit', function(e) {
-    <@setServerDate idField='date_start_validity' />
-    <@setServerDate idField='date_end_validity' />
-    <@setServerTime idField='time_start' />
-    <@setServerTime idField='time_end' />
-    return true;
-});
 </script>

@@ -38,9 +38,9 @@
 							<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
 						</@formGroup>
 						
-                        <@formGroup labelFor='startingDateOfSearch_user' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
+                                                <@formGroup labelFor='startingDateOfSearch_user' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
 							<@inputGroup>
-								<@input type='text' name='startingDateOfSearch_user' class='datetimepicker' id='startingDateOfSearch_user' value='${filter.startingDateOfSearch!}' />
+								<@input type='text' name='' class='datetimepicker' id='startingDateOfSearch_user' value='${filter.startingDateOfSearch!}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='calendar' />
 								</@inputGroupItem>
@@ -48,7 +48,7 @@
 						</@formGroup>
 						<@formGroup labelFor='startingTimeOfSearch_user' labelKey='#i18n{appointment.labelTo}'>
 							<@inputGroup>
-								<@input type='text' name='startingTimeOfSearch_user' class='datetimepicker' id='startingTimeOfSearch_user' value='${filter.startingTimeOfSearch!\'\'}' />
+								<@input type='text' name='' class='datetimepicker' id='startingTimeOfSearch_user' value='${filter.startingTimeOfSearch!\'\'}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='clock-o' />
 								</@inputGroupItem>
@@ -57,7 +57,7 @@
 
 						<@formGroup labelFor='endingDateOfSearch_user' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
 							<@inputGroup>
-								<@input type='text' name='endingDateOfSearch_user' class='datetimepicker' id='endingDateOfSearch_user' value='${filter.endingDateOfSearch!}' />
+								<@input type='text' name='' class='datetimepicker' id='endingDateOfSearch_user' value='${filter.endingDateOfSearch!}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='calendar' />
 								</@inputGroupItem>
@@ -66,7 +66,7 @@
 
 						<@formGroup labelFor='endingTimeOfSearch_user' labelKey='#i18n{appointment.labelTo}'>
 							<@inputGroup>
-								<@input type='text' name='endingTimeOfSearch_user' class='datetimepicker' id='endingTimeOfSearch_user' value='${filter.endingTimeOfSearch!\'\'}' />
+								<@input type='text' name='' class='datetimepicker' id='endingTimeOfSearch_user' value='${filter.endingTimeOfSearch!\'\'}' />
 								<@inputGroupItem type='addon'>
 									<@icon style='clock-o' />
 								</@inputGroupItem>
@@ -192,10 +192,10 @@
 	</@columns>
 </@row>
 
-<@getTimePickerBootstrap idField="startingTimeOfSearch_user" />
-<@getTimePickerBootstrap idField="endingTimeOfSearch_user" />
-<@getDatePickerBootstrap idField="startingDateOfSearch_user" />
-<@getDatePickerBootstrap idField="endingDateOfSearch_user" />
+<@setupTimePicker idField='startingTimeOfSearch_user' idServerField='startingTimeOfSearch' />
+<@setupTimePicker idField='endingTimeOfSearch_user' idServerField='endingTimeOfSearch' />
+<@setupDatePicker idField='startingDateOfSearch_user' idServerField='startingDateOfSearch' />
+<@setupDatePicker idField='endingDateOfSearch_user' idServerField='endingDateOfSearch' />
 
 <script type="text/javascript">
     $('#allCheck').click(function() {
@@ -212,14 +212,5 @@
                 $('#eraseAll').prop("disabled", !this.checked);
             }
         });
-    });
-
-    // Transform dates and times on inputs into server format
-    $('#form').on('submit', function(e) {
-        <@setServerDate idField='startingDateOfSearch' />
-        <@setServerDate idField='endingDateOfSearch' />	    
-        <@setServerTime idField='startingTimeOfSearch' />
-        <@setServerTime idField='endingTimeOfSearch' />
-        return true;
     });
 </script>

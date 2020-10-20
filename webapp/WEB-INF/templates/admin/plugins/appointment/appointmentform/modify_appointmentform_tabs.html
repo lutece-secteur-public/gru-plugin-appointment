@@ -70,7 +70,7 @@
 			<@inputGroupItem type='addon'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='date_start_validity_user'  class='datetimepicker' id='date_start_validity_user' />
+			<@input type='text' name='' class='datetimepicker' id='date_start_validity_user' />
 		</@inputGroup>
 	</@formGroup>
 	
@@ -79,7 +79,7 @@
 			<@inputGroupItem type='addon'>
 				<@icon style='calendar' />
 			</@inputGroupItem>
-			<@input type='text' name='date_end_validity_user'  class='datetimepicker' id='date_end_validity_user' />
+			<@input type='text' name='' class='datetimepicker' id='date_end_validity_user' />
 		</@inputGroup>
 	</@formGroup>
 	
@@ -309,8 +309,9 @@
 </@tform>
 </fieldset>
 
-<@getDatePickerBootstrap idField="date_start_validity_user" />
-<@getDatePickerBootstrap idField="date_end_validity_user" />
+<@setupDatePicker idField='date_start_validity_user' idServerField='date_start_validity' serverDate=date_start_validity_str!''/>
+<@setupDatePicker idField='date_end_validity_user' idServerField='date_end_validity' serverDate=date_end_validity_str!'' />
+
 <script type="text/javascript">
 	$('#formid').on('keyup keypress', function(e) {
 	    var keyCode = e.keyCode || e.which;
@@ -331,23 +332,5 @@
 	}
 	else return true;
 	};
-
-        // Transform dates and times on inputs into server format
-        $('#formid').on('submit', function(e) {
-            <@setServerDate idField='date_start_validity' />
-            <@setServerDate idField='date_end_validity' />
-            return true;
-        });
-
-        // Transform dates and times from server into user format and set inputs
-        $(function () {
-            <#if date_start_validity_str??>
-                <@setUserDate idField='date_start_validity_user' serverDate=date_start_validity_str />
-	    </#if>
-
-            <#if date_end_validity_str??>
-                <@setUserDate idField='date_end_validity_user' serverDate=date_end_validity_str />
-	    </#if>
-       });
 </script>
 </#macro> 
