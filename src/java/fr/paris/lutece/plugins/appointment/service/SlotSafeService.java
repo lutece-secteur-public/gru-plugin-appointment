@@ -187,7 +187,55 @@ public final class SlotSafeService
 
         }
     }
+    /**
+     * Increment max capacity 
+     * @param nIdForm the Id form
+     * @param nIncrementingValue the incrementing value
+     * @param startindDate the starting date
+     * @param endingDate the ending Date
+     */
+    public static void incrementMaxCapacity ( int nIdForm, int nIncrementingValue, LocalDate startindDate, LocalDate endingDate ) {
+    	
+        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
+        List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDate, endingDate );
+        for( Slot slot : listSlot ) {
+        	
+        	incrementMaxCapacity ( nIncrementingValue, slot );
+        }
 
+        
+    }
+    /**
+     * Incrementing max capacity 
+     * @param nIncrementingValue the incrementing value
+     * @param slot the slot
+     */
+    private static void incrementMaxCapacity ( int nIncrementingValue, Slot slot) {
+    	Slot editSlot= null;
+    	
+    	if( slot.getIdSlot( ) == 0) {
+    		
+    		editSlot= createSlot( slot );
+    	}
+    	 Lock lock = getLockOnSlot( editSlot.getIdSlot( ) );
+         lock.lock( );
+         try
+         {
+        	 editSlot = SlotService.findSlotById( editSlot.getIdSlot( ) );
+            
+        	 editSlot.setMaxCapacity( editSlot.getMaxCapacity() + nIncrementingValue);
+        	 editSlot.setNbPotentialRemainingPlaces(editSlot.getNbPotentialRemainingPlaces() + nIncrementingValue );
+        	 editSlot.setNbRemainingPlaces(editSlot.getNbRemainingPlaces() + nIncrementingValue);
+             
+             saveSlot( editSlot );             
+         }
+         finally
+         {
+
+             lock.unlock( );
+         }
+    	
+    }
     /**
      * Update potential remaining places
      * 
