@@ -70,25 +70,25 @@
                         </@formGroup>
                         <legend> &nbsp;&nbsp;#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</legend>
                         <@formGroup labelFor='is_open_monday'>
-                            <@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' />
+                            <@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
                         </@formGroup>
                         <@formGroup labelFor='is_open_tuesday'>
-                            <@checkBox labelFor='is_open_tuesday' labelKey='#i18n{appointment.label.OpenTuesday}' name='is_open_tuesday' id='is_open_tuesday' value='true' />
+                            <@checkBox labelFor='is_open_tuesday' labelKey='#i18n{appointment.label.OpenTuesday}' name='is_open_tuesday' id='is_open_tuesday' value='true'checked=appointmentform.isOpenTuesday!false />
                         </@formGroup>
                         <@formGroup labelFor='is_open_wednesday'>
-                            <@checkBox labelFor='is_open_wednesday' labelKey='#i18n{appointment.label.OpenWednesday}' name='is_open_wednesday' id='is_open_wednesday' value='true' />
+                            <@checkBox labelFor='is_open_wednesday' labelKey='#i18n{appointment.label.OpenWednesday}' name='is_open_wednesday' id='is_open_wednesday' value='true'checked=appointmentform.isOpenWednesday!false />
                         </@formGroup>
                         <@formGroup labelFor='is_open_thursday'>
-                            <@checkBox labelFor='is_open_thursday' labelKey='#i18n{appointment.label.OpenThursday}' name='is_open_thursday' id='is_open_thursday' value='true' />
+                            <@checkBox labelFor='is_open_thursday' labelKey='#i18n{appointment.label.OpenThursday}' name='is_open_thursday' id='is_open_thursday' value='true' checked=appointmentform.isOpenThursday!false />
                         </@formGroup>
                         <@formGroup labelFor='is_open_friday'>
-                            <@checkBox labelFor='is_open_friday' labelKey='#i18n{appointment.label.OpenFriday}' name='is_open_friday' id='is_open_friday' value='true' />
+                            <@checkBox labelFor='is_open_friday' labelKey='#i18n{appointment.label.OpenFriday}' name='is_open_friday' id='is_open_friday' value='true' checked=appointmentform.isOpenFriday!false />
                         </@formGroup>
                         <@formGroup labelFor='is_open_saturday'>
-                            <@checkBox labelFor='is_open_saturday' labelKey='#i18n{appointment.label.OpenSaturday}' name='is_open_saturday' id='is_open_saturday' value='true' />
+                            <@checkBox labelFor='is_open_saturday' labelKey='#i18n{appointment.label.OpenSaturday}' name='is_open_saturday' id='is_open_saturday' value='true' checked=appointmentform.isOpenSaturday!false />
                         </@formGroup>
                         <@formGroup labelFor='is_open_sunday'>
-                            <@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' />
+                            <@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
                         </@formGroup>
                         <legend> &nbsp;&nbsp;#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>
                         <@formGroup labelFor='date_of_modification_user' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
@@ -196,44 +196,5 @@ function validateQty(event) {
                 $('.fc-event').css('cursor', 'pointer');
             },
         });
-    });
-
-   // Set the DOW checked indicators to represent the current state of the selected week
-   $(document).ready(function() {
-        <#if appointmentform.isOpenMonday!false>
-             $('#is_open_monday').prop("checked", true);
-             <#else>
-             $('#is_open_monday').prop("checked", false);
-        </#if>
-        <#if appointmentform.isOpenTuesday!false>
-            $('#is_open_tuesday').prop("checked", true);
-            <#else>
-            $('#is_open_tuesday').prop("checked", false);
-        </#if>
-        <#if appointmentform.isOpenWednesday!false>
-            $('#is_open_wednesday').prop("checked", true);
-            <#else>
-            $('#is_open_wednesday').prop("checked", false);
-        </#if>
-        <#if appointmentform.isOpenThursday!false>
-         $('#is_open_thursday').prop("checked", true);
-            <#else>
-            $('#is_open_thursday').prop("checked", false);
-        </#if>
-        <#if appointmentform.isOpenFriday!false>
-         $('#is_open_friday').prop("checked", true);
-            <#else>
-            $('#is_open_friday').prop("checked", false);
-        </#if>
-        <#if appointmentform.isOpenSaturday!false>
-         $('#is_open_saturday').prop("checked", true);
-            <#else>
-            $('#is_open_saturday').prop("checked", false);
-        </#if>
-        <#if appointmentform.isOpenSunday!false>
-            $('#is_open_sunday').prop("checked", true);
-            <#else>
-            $('#is_open_sunday').prop("checked", false);
-        </#if>
     });
 </script>
