@@ -21,8 +21,8 @@
 <#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
 	<#assign default=getFieldValueByCode( entry, "text_config")>
-	<#assign field_width=getFieldByCode( entry, "width")>
-	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width class='${entry.CSSClass!}' value=default />
+	<#assign field_width=getFieldValueByCode( entry, "width")>
+	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number class='${entry.CSSClass!}' value=default />
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
@@ -39,7 +39,7 @@
 <#assign confirmField=getFieldByCode( entry, "confirm_field")>
 <#if confirmField.value?boolean >
 <@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey=confirmField.title mandatory=entry.mandatory>
-	<#assign field_width=getFieldByCode( entry, "width")>
-	<@input type='text' name='attribute${entry.idEntry}_confirm_field' id='attribute${entry.idEntry}_confirm_field' inputSize=field_width.value value=entry.comment maxlength=field_max_size />
+	<#assign field_width=getFieldValueByCode( entry, "width")>
+	<@input type='text' name='attribute${entry.idEntry}_confirm_field' id='attribute${entry.idEntry}_confirm_field' inputSize=field_width?number value=entry.comment maxlength=field_max_size />
 </@formGroup>
 </#if>
