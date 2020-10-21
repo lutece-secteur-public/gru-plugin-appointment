@@ -13,7 +13,7 @@
 
                 <#if listDateOfModification??>
                     <label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
-                        <@select id='id_week-definition' name='id_week_definition'>
+                        <@select id='id_week_definition' name='id_week_definition'>
                             <#list listDateOfModification as item>
                                 <#if "${id_week_definition}"="${item.code}">
                                     <option selected="selected" value="${item.code}" >${item.name}</option>
@@ -196,5 +196,11 @@ function validateQty(event) {
                 $('.fc-event').css('cursor', 'pointer');
             },
         });
+
+	// Localize display of dates in the select
+        $('#id_week_definition > option').each(function() {
+            $(this).text(moment($(this).text(), '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}'));
+        });
+
     });
 </script>
