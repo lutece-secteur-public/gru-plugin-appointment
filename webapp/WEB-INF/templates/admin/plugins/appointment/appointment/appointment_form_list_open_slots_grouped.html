@@ -22,12 +22,40 @@
         <#else>
             <@tabContent>
                 <fieldset>
+                    <a href="javascript:void(0)" id="toggle-add-comment">+</a>
                     <div id="calendar"></div>
                 </fieldset>
             </@tabContent>
         </#if>
     </@columns>
 </@row>
+
+<!-- comment form -->
+<div id="comment" style="display:none;">
+    <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+            <@boxBody>
+            
+                <fieldset>
+                <legend class="hidden">#i18n{appointment.createField.title}</legend>
+                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+                </fieldset>
+            </@boxBody>
+        </@box>
+</div>
+<!-- modify-comment form -->
+<div id="modify-comment" style="display:none;">
+    <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+            <@boxBody>
+            
+                <fieldset>
+                <legend class="hidden">#i18n{appointment.createField.title}</legend>
+                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+                </fieldset>
+            </@boxBody>
+     </@box>  
+</div>
 <script type="text/javascript">
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
@@ -47,24 +75,40 @@
     var idForm = '${id_form}';
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
+        <#if comment_events??>
+        <#list comment_events as comment_event>
+        
+        {
+            "title" : "${comment_event.comment}",
+            "start" : "${comment_event.startingValidityDate}",
+            "end" : "${comment_event.endingValidityDate}",
+            "id" : "${comment_event.id}",
+            "creator_user" : "${comment_event.creatorUserName!''}",
+            "creation_date" : "${comment_event.creationDate!''}",
+            "type": "comment"
+        },
+        
+        </#list>
+        </#if>
         <#if events??>
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
                 {
-                    title : '',
-                    start : '${event.startingDateTime}',
-                    end : '${event.endingDateTime}',
-                    id : '${event.idSlot}',
-                    textColor: <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'white'<#else>'#2c2c2d'</#if>,
-                    url : eventUrl + 'manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&modif_date=${modifDateAppointment?c}',                                                      
-                    backgroundColor : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>'#ff6600'
-                    				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>'white'
-                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'red'
-                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>'red'
-                                      <#elseif event.isOpen & event.isPassed>'#bebebe'
-                                      <#else>'#bebebe'
+                    "title" : "",
+                    "start" : "${event.startingDateTime}",
+                    "end" : "${event.endingDateTime}",
+                    "id" : "${event.idSlot}",
+                    "textColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"white"<#else>"#2c2c2d"</#if>,
+                    "url" : eventUrl + "manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&modif_date=${modifDateAppointment?c}",                                                      
+                    "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"#ff6600"
+                    				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>"white"
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>"red"
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>"red"
+                                      <#elseif event.isOpen & event.isPassed>"#bebebe"
+                                      <#else>"#bebebe"
                                       </#if>,
-                    borderColor : '#bebebe',
+                    "borderColor" : "#bebebe",
+                    "type": "appointment"
                 },
             </#list>
         </#if>
@@ -88,7 +132,7 @@
             defaultDate: defaultDate,
             defaultView: 'basicWeek',
             height: 'auto',
-            locale: 'fr',
+            locale: "${locale}",
             theme: true,
             editable: false,
             customButtons: {
@@ -99,7 +143,7 @@
                         $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
                         $("#hiddenDate").datepicker({
                             showOn: "button",
-                            language:'fr',
+                            language: "${locale}",
                             autoclose: true,
                             startDate: strStartingDateOfDisplay,
                             endDate: strEndingDateOfDisplay,
@@ -180,17 +224,49 @@
             eventRender: function( event, element, view ) {
                 var $title = element.find( '.fc-title' );
                 $title.html( $title.text() );
-                $(element).popover({
+                var json = {
                 	container: 'body',
                     placement : 'bottom',
                     html : true,
-                    trigger : 'hover',
-                    content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
-                });
+                    trigger : 'hover'
+                };
+                if( event.type == "comment" ){
+                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
+                }else{
+                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                }
+                $(element).popover( json );
                 $(element).contextmenu(function() {
                     return false;
                 });
+                if(event.type == "comment" )
+                {
+                    element.append( "<a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon' style='position: relative; top: 2px; left: 2px; text-decoration: none;'>&#x1F5D1;</a><a href='javascript:void(0)' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.end + "\" }' >&#9998;</a>" );
+                }
             }
         });
     });
+</script>
+<#include "/admin/util/editor/editor.html" />
+<@initEditor />
+<@getDatePickerBootstrap idField="modifyStartingValidityDate" language=locale />
+<@getDatePickerBootstrap idField="modifyEndingValidityDate" language=locale />
+<@getDatePickerBootstrap idField="startingValidityDate" language=locale />
+<@getDatePickerBootstrap idField="endingValidityDate" language=locale />
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#toggle-add-comment").click(function() {
+        $("#comment").toggle();
+    });
+});
+$(document).ready(function() {
+    $(".toggle-modify-comment").click(function( ) {
+        var formValues = JSON.parse( $(this).attr( "data-json" ) );
+        $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
+        tinyMCE.activeEditor.setContent( formValues.comment_text );
+        $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
+        $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_end ) ) );
+        $( "#modify-comment" ).toggle();
+    });
+});
 </script>
