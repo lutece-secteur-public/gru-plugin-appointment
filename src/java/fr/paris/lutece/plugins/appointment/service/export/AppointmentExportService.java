@@ -38,6 +38,7 @@ import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.util.ReferenceList;
 
 public final class AppointmentExportService
 {
@@ -325,5 +326,29 @@ public final class AppointmentExportService
             strValue.append( mapDefaultValueGenAttBackOffice.get( key ) );
         }
         return strValue.toString( );
+    }
+    
+    public static ReferenceList getDefaultColumnList( Locale locale )
+    {
+        ReferenceList refList = new ReferenceList( );
+        for ( String key : DEFAULT_COLUMN_LIST )
+        {
+            refList.addItem( key, I18nService.getLocalizedString( key, locale ) );
+        }
+        return refList;
+    }
+    
+    public static ReferenceList getCustomColumnList( String strIdForm )
+    {
+        EntryFilter entryFilter = new EntryFilter( );
+        entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
+        List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
+        
+        ReferenceList refList = new ReferenceList( );
+        for ( Entry entry : listEntry )
+        {
+            refList.addItem( String.valueOf( entry.getIdEntry( ) ), entry.getTitle( ) );
+        }
+        return refList;
     }
 }

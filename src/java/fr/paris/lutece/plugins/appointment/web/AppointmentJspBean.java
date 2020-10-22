@@ -57,6 +57,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
@@ -97,7 +98,6 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.filegenerator.service.TemporaryFileGeneratorService;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
-import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -223,6 +223,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_MODIF_DATE = "modif_date";
     private static final String PARAMETER_IS_MODIFICATION = "is_modification";
     private static final String PARAMETER_NB_PLACE_TO_TAKE = "nbPlacesToTake";
+    private static final String PARAMETER_SELECTED_DEFAULT_FIELD = "selectedDefaultFieldList";
+    private static final String PARAMETER_SELECTED_CUSTOM_FIELD = "selectedCustomFieldList";
 
     // Markers
     private static final String MARK_TASKS_FORM = "tasks_form";
@@ -254,7 +256,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_LANGUAGE = "language";
     private static final String MARK_ACTIVATE_WORKFLOW = "activateWorkflow";
     private static final String MARK_FORM_OVERBOOKING_ALLOWED = "overbookingAllowed";
-
+    private static final String MARK_DEFAULT_FIELD_LIST = "defaultFieldList";
+    private static final String MARK_CUSTOM_FIELD_LIST = "customFieldList";
+    
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 
@@ -629,6 +633,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, user ) );
         model.put( MARK_RIGHT_CHANGE_DATE, RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
+        model.put( MARK_DEFAULT_FIELD_LIST, AppointmentExportService.getDefaultColumnList( getLocale( ) ) );
+        model.put( MARK_CUSTOM_FIELD_LIST, AppointmentExportService.getCustomColumnList( strIdForm ) );
+        
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS, TEMPLATE_MANAGE_APPOINTMENTS, model );
     }
 
@@ -852,12 +859,18 @@ public class AppointmentJspBean extends MVCAdminJspBean
         Locale locale = getLocale( );
         List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );
         
-        List<String> defaultColumnList = AppointmentExportService.getDefaultColumnList( );
+        List<String> defaultColumnList = new ArrayList<>( );
+        List<Integer> customColumnList = new ArrayList<>( );
+        if ( ArrayUtils.isNotEmpty( request.getParameterValues( PARAMETER_SELECTED_DEFAULT_FIELD ) ) )
+        {
+            defaultColumnList = Arrays.asList( request.getParameterValues( PARAMETER_SELECTED_DEFAULT_FIELD ) );
+        }
+        if ( ArrayUtils.isNotEmpty( request.getParameterValues( PARAMETER_SELECTED_CUSTOM_FIELD ) ) )
+        {
+            customColumnList = Arrays.asList( request.getParameterValues( PARAMETER_SELECTED_CUSTOM_FIELD ) ).stream( ).map( Integer::parseInt ).collect( Collectors.toList() );
+        }
         
-        EntryFilter entryFilter = new EntryFilter( );
-        entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
-        List<Integer> entryList = EntryHome.getEntryList( entryFilter ).stream( ).map( Entry::getIdEntry )
-                .collect( Collectors.toList( ) );
+        ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( strIdForm, defaultColumnList, locale, listAppointmentsDTO, customColumnList );
         ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( strIdForm, defaultColumnList, locale, listAppointmentsDTO, entryList );
         
         TemporaryFileGeneratorService.getInstance( ).generateFile( generator, getUser( ) );

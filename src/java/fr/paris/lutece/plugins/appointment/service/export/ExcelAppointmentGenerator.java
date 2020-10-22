@@ -57,6 +57,7 @@ public class ExcelAppointmentGenerator  implements IFileGenerator
     @Override
     public String getFileName( )
     {
+        
         return _fileName + ( isZippable( ) ? FileUtil.EXTENSION_ZIP : EXCEL_FILE_EXTENSION );
     }
 
