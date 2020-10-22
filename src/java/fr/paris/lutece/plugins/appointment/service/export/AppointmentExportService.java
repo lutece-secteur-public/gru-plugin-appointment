@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
+import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -54,20 +55,16 @@ public final class AppointmentExportService
     private static final String KEY_COLUMN_STATUS = "appointment.labelStatus";
     private static final String KEY_COLUMN_STATE = "appointment.manageAppointments.columnState";
     private static final String KEY_COLUMN_NB_BOOKED_SEATS = "appointment.manageAppointments.columnNumberOfBookedseatsPerAppointment";
-
+    private static final String KEY_DATE_APPOINT_TAKEN = "appointment.model.entity.appointmentform.attribute.dateTaken";
+    private static final String KEY_HOUR_APPOINT_TAKEN = "appointment.model.entity.appointmentform.attribute.hourTaken";
+ 
     private static final String CONSTANT_COMMA = ",";
 
-    private static final List<String> DEFAULT_COLUMN_LIST = Collections
-            .unmodifiableList( Arrays.asList( KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL, KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START,
-                    KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS, KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS ) );
+    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL, KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START,
+            KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS, KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS, KEY_DATE_APPOINT_TAKEN, KEY_HOUR_APPOINT_TAKEN );
 
     private AppointmentExportService( )
     {
-    }
-
-    public static final List<String> getDefaultColumnList( )
-    {
-        return DEFAULT_COLUMN_LIST;
     }
 
     /**
@@ -286,6 +283,14 @@ public final class AppointmentExportService
         if ( defaultColumnList.contains( KEY_COLUMN_NB_BOOKED_SEATS ) )
         {
             strWriter.add( Integer.toString( appointmentDTO.getNbBookedSeats( ) ) );
+        }
+        if ( defaultColumnList.contains( KEY_DATE_APPOINT_TAKEN ) )
+        {
+            strWriter.add( appointmentDTO.getDateAppointmentTaken( ).toLocalDate( ).format( Utilities.getFormatter( ) ) );
+        }
+        if ( defaultColumnList.contains( KEY_HOUR_APPOINT_TAKEN ) )
+        {
+            strWriter.add( appointmentDTO.getDateAppointmentTaken( ).toLocalTime( ).toString( ) );
         }
     }
 

@@ -871,7 +871,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         
         ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( strIdForm, defaultColumnList, locale, listAppointmentsDTO, customColumnList );
-        ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( strIdForm, defaultColumnList, locale, listAppointmentsDTO, entryList );
         
         TemporaryFileGeneratorService.getInstance( ).generateFile( generator, getUser( ) );
         addInfo( "appointment.export.async.message", getLocale( ) );

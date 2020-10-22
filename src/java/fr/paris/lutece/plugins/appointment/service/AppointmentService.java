@@ -300,6 +300,7 @@ public final class AppointmentService
             appointmentDTO.setAdminUser( StringUtils.EMPTY );
         }
         appointmentDTO.setAdminUserCreate( appointment.getAdminUserCreate( ) );
+        appointmentDTO.setDateAppointmentTaken( appointment.getDateAppointmentTaken( ) );
         return appointmentDTO;
     }
 
