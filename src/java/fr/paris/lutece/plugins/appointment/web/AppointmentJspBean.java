@@ -258,7 +258,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_FORM_OVERBOOKING_ALLOWED = "overbookingAllowed";
     private static final String MARK_DEFAULT_FIELD_LIST = "defaultFieldList";
     private static final String MARK_CUSTOM_FIELD_LIST = "customFieldList";
-    
+
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
 
@@ -635,7 +635,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
         model.put( MARK_DEFAULT_FIELD_LIST, AppointmentExportService.getDefaultColumnList( getLocale( ) ) );
         model.put( MARK_CUSTOM_FIELD_LIST, AppointmentExportService.getCustomColumnList( strIdForm ) );
-        
+
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS, TEMPLATE_MANAGE_APPOINTMENTS, model );
     }
 
@@ -842,7 +842,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
      * @return nothing.
      * @throws AccessDeniedException
      *             If the user is not authorized to access this feature
-     * @throws SiteMessageException 
+     * @throws SiteMessageException
      */
     @SuppressWarnings( "unchecked" )
     public String getDownloadFileAppointment( HttpServletRequest request, HttpServletResponse response ) throws AccessDeniedException, SiteMessageException
@@ -858,7 +858,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         Locale locale = getLocale( );
         List<AppointmentDTO> listAppointmentsDTO = (List<AppointmentDTO>) request.getSession( ).getAttribute( SESSION_LIST_APPOINTMENTS );
-        
+
         List<String> defaultColumnList = new ArrayList<>( );
         List<Integer> customColumnList = new ArrayList<>( );
         if ( ArrayUtils.isNotEmpty( request.getParameterValues( PARAMETER_SELECTED_DEFAULT_FIELD ) ) )
@@ -867,14 +867,15 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         if ( ArrayUtils.isNotEmpty( request.getParameterValues( PARAMETER_SELECTED_CUSTOM_FIELD ) ) )
         {
-            customColumnList = Arrays.asList( request.getParameterValues( PARAMETER_SELECTED_CUSTOM_FIELD ) ).stream( ).map( Integer::parseInt ).collect( Collectors.toList() );
+            customColumnList = Arrays.asList( request.getParameterValues( PARAMETER_SELECTED_CUSTOM_FIELD ) ).stream( ).map( Integer::parseInt )
+                    .collect( Collectors.toList( ) );
         }
-        
+
         ExcelAppointmentGenerator generator = new ExcelAppointmentGenerator( strIdForm, defaultColumnList, locale, listAppointmentsDTO, customColumnList );
-        
+
         TemporaryFileGeneratorService.getInstance( ).generateFile( generator, getUser( ) );
         addInfo( "appointment.export.async.message", getLocale( ) );
-        
+
         return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, Integer.valueOf( strIdForm ) );
     }
 

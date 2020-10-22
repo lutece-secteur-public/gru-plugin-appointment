@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2002-2020, City of Paris
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *  1. Redistributions of source code must retain the above copyright notice
+ *     and the following disclaimer.
+ *
+ *  2. Redistributions in binary form must reproduce the above copyright notice
+ *     and the following disclaimer in the documentation and/or other materials
+ *     provided with the distribution.
+ *
+ *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ *
+ * License 1.0
+ */
 package fr.paris.lutece.plugins.appointment.service.export;
 
 import java.io.IOException;
@@ -57,11 +90,12 @@ public final class AppointmentExportService
     private static final String KEY_COLUMN_NB_BOOKED_SEATS = "appointment.manageAppointments.columnNumberOfBookedseatsPerAppointment";
     private static final String KEY_DATE_APPOINT_TAKEN = "appointment.model.entity.appointmentform.attribute.dateTaken";
     private static final String KEY_HOUR_APPOINT_TAKEN = "appointment.model.entity.appointmentform.attribute.hourTaken";
- 
+
     private static final String CONSTANT_COMMA = ",";
 
-    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL, KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START,
-            KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS, KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS, KEY_DATE_APPOINT_TAKEN, KEY_HOUR_APPOINT_TAKEN );
+    private static final List<String> DEFAULT_COLUMN_LIST = Arrays.asList( KEY_COLUMN_LAST_NAME, KEY_COLUMN_FIRST_NAME, KEY_COLUMN_EMAIL,
+            KEY_COLUMN_DATE_APPOINTMENT, KEY_TIME_START, KEY_TIME_END, KEY_COLUMN_ADMIN, KEY_COLUMN_STATUS, KEY_COLUMN_STATE, KEY_COLUMN_NB_BOOKED_SEATS,
+            KEY_DATE_APPOINT_TAKEN, KEY_HOUR_APPOINT_TAKEN );
 
     private AppointmentExportService( )
     {
@@ -75,16 +109,16 @@ public final class AppointmentExportService
      * @param excelFile
      *            the excel file to write
      * @param defaultColumnList
-     *           the default columns to export
+     *            the default columns to export
      * @param entryList
-     *           the entries to export
+     *            the entries to export
      * @param locale
      *            the local
      * @param listAppointmentsDTO
      *            the list of the appointments to input in the excel file
      */
-    public static void buildExcelFileWithAppointments( String strIdForm, List<String> defaultColumnList, List<Integer> entryList, Path excelFile,
-            Locale locale, List<AppointmentDTO> listAppointmentsDTO )
+    public static void buildExcelFileWithAppointments( String strIdForm, List<String> defaultColumnList, List<Integer> entryList, Path excelFile, Locale locale,
+            List<AppointmentDTO> listAppointmentsDTO )
     {
         AppointmentFormDTO tmpForm = FormService.buildAppointmentFormLight( Integer.parseInt( strIdForm ) );
         List<List<Object>> linesValues = new ArrayList<>( );
@@ -100,15 +134,15 @@ public final class AppointmentExportService
 
         linesValues.add( Collections.singletonList( tmpForm.getTitle( ) ) );
         linesValues.add( createHeaderContent( defaultColumnList, listEntry, locale ) );
-        
+
         if ( listAppointmentsDTO != null )
         {
             Map<Integer, String> mapDefaultValueGenAttBackOffice = createDefaultValueMap( listEntry );
             StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
             {
-                linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry,
-                        mapDefaultValueGenAttBackOffice, stateService, locale ) );
+                linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry, mapDefaultValueGenAttBackOffice,
+                        stateService, locale ) );
             }
         }
         writeWorkbook( linesValues, excelFile, locale );
@@ -208,7 +242,7 @@ public final class AppointmentExportService
     {
         List<Object> strWriter = new ArrayList<>( );
         addDefaultColumnValues( appointmentDTO, idWorkflow, defaultColumnList, strWriter, stateService, locale );
-        
+
         List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse( appointmentDTO.getIdAppointment( ) );
         List<Response> listResponses = new ArrayList<>( );
         for ( int nIdResponse : listIdResponse )
@@ -229,8 +263,9 @@ public final class AppointmentExportService
         }
         return strWriter;
     }
-    
-    private static final void addDefaultColumnValues( AppointmentDTO appointmentDTO, int idWorkflow, List<String> defaultColumnList, List<Object> strWriter, StateService stateService, Locale locale )
+
+    private static final void addDefaultColumnValues( AppointmentDTO appointmentDTO, int idWorkflow, List<String> defaultColumnList, List<Object> strWriter,
+            StateService stateService, Locale locale )
     {
         if ( defaultColumnList.contains( KEY_COLUMN_LAST_NAME ) )
         {
@@ -332,7 +367,7 @@ public final class AppointmentExportService
         }
         return strValue.toString( );
     }
-    
+
     public static ReferenceList getDefaultColumnList( Locale locale )
     {
         ReferenceList refList = new ReferenceList( );
@@ -342,13 +377,13 @@ public final class AppointmentExportService
         }
         return refList;
     }
-    
+
     public static ReferenceList getCustomColumnList( String strIdForm )
     {
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
-        
+
         ReferenceList refList = new ReferenceList( );
         for ( Entry entry : listEntry )
         {
