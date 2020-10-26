@@ -191,16 +191,31 @@ public final class SlotSafeService
      * Increment max capacity 
      * @param nIdForm the Id form
      * @param nIncrementingValue the incrementing value
-     * @param startindDate the starting date
-     * @param endingDate the ending Date
+     * @param startindDateTime the starting date Time
+     * @param endingDateTime the ending Date time
+     * @param lace the lace
      */
-    public static void incrementMaxCapacity ( int nIdForm, int nIncrementingValue, LocalDate startindDate, LocalDate endingDate ) {
-    	
+    public static void incrementMaxCapacity ( int nIdForm, int nIncrementingValue, LocalDateTime startindDateTime, LocalDateTime endingDateTime, boolean lace ) {
+    	int index= 0;
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
-        List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDate, endingDate );
+        List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDateTime.toLocalDate(), endingDateTime.toLocalDate() );
+        listSlot= listSlot.stream().filter(slt -> slt.getEndingDateTime().isBefore( endingDateTime ) && slt.getEndingDateTime().isAfter(startindDateTime)).collect( Collectors.toList( )) ;
+        
+       
         for( Slot slot : listSlot ) {
         	
-        	incrementMaxCapacity ( nIncrementingValue, slot );
+        	if( !lace ) {
+        		
+        		incrementMaxCapacity ( nIncrementingValue, slot );
+        	
+        	}else{
+        		
+        		if(  index % 2 == 0 ) {
+        			
+        			incrementMaxCapacity ( nIncrementingValue, slot );
+        		}
+            	index ++;
+        	}
         }
 
         
@@ -216,6 +231,9 @@ public final class SlotSafeService
     	if( slot.getIdSlot( ) == 0) {
     		
     		editSlot= createSlot( slot );
+    	}else {
+    		
+    		editSlot= slot;
     	}
     	 Lock lock = getLockOnSlot( editSlot.getIdSlot( ) );
          lock.lock( );
