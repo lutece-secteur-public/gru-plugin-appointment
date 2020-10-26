@@ -26,8 +26,7 @@ CREATE TABLE appointment_category (
   id_category INT AUTO_INCREMENT,
   label VARCHAR(255) NOT NULL,
   PRIMARY KEY (id_category),
-  UNIQUE KEY unique_label (label))
-ENGINE = InnoDB;
+  UNIQUE KEY unique_label (label));
 
 -- -----------------------------------------------------
 -- Table appointment_user
@@ -41,8 +40,7 @@ CREATE TABLE IF NOT EXISTS appointment_user (
   email VARCHAR(255) NULL,
   phone_number VARCHAR(255) NULL,
   PRIMARY KEY (id_user),
-  UNIQUE KEY unique_index_email (first_name, last_name, email))
-ENGINE = InnoDB;
+  UNIQUE KEY unique_index_email (first_name, last_name, email));
 
 CREATE INDEX email_idx ON appointment_user (email ASC);
 
@@ -67,9 +65,7 @@ CREATE TABLE IF NOT EXISTS appointment_form (
    CONSTRAINT fk_appointment_form_appointment_category
     FOREIGN KEY (id_category)
     REFERENCES appointment_category (id_category)
-    ON DELETE SET NULL
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    );
 
 CREATE INDEX starting_validity_date_idx ON appointment_form (starting_validity_date ASC);
 
@@ -98,9 +94,7 @@ CREATE TABLE IF NOT EXISTS appointment_slot (
   CONSTRAINT fk_appointment_slot_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    );
 
 CREATE INDEX fk_appointment_slot_appointment_form_idx ON appointment_slot (id_form ASC);
 
@@ -127,9 +121,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
   CONSTRAINT fk_appointment_appointment_appointment_user
     FOREIGN KEY (id_user)
     REFERENCES appointment_user (id_user)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+   );
 
 CREATE INDEX fk_appointment_appointment_appointment_user_idx ON appointment_appointment (id_user ASC);
 
@@ -167,11 +159,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment_response (
   CONSTRAINT fk_appointment_appointment_response_appointment_appointment
     FOREIGN KEY (id_appointment)
     REFERENCES appointment_appointment (id_appointment)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_unicode_ci;
+   );
 
 CREATE INDEX fk_appointment_appointment_response_appointment_appointment_idx ON appointment_appointment_response (id_appointment ASC);
 
@@ -184,10 +172,7 @@ CREATE TABLE IF NOT EXISTS appointment_calendar_template (
   title VARCHAR(255) NOT NULL,
   description VARCHAR(255) NOT NULL,
   template_path VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id_calendar_template))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_unicode_ci;
+  PRIMARY KEY (id_calendar_template));
 
 -- -----------------------------------------------------
 -- Table appointment_form_message
@@ -217,11 +202,7 @@ CREATE TABLE IF NOT EXISTS appointment_form_message (
   CONSTRAINT fk_appointment_form_message_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_unicode_ci;
+    );
 
 CREATE INDEX fk_appointment_form_message_appointment_form_idx ON appointment_form_message (id_form ASC);
 
@@ -237,11 +218,7 @@ CREATE TABLE IF NOT EXISTS appointment_form_portlet (
   CONSTRAINT fk_appointment_form_portlet_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_unicode_ci;
+    );
 
 CREATE INDEX fk_appointment_form_portlet_appointment_form_idx ON appointment_form_portlet (id_form ASC);
 
@@ -258,13 +235,9 @@ CREATE TABLE IF NOT EXISTS appointment_week_definition (
   UNIQUE KEY unique_index_date_of_apply (id_form,date_of_apply),
   CONSTRAINT fk_appointment_week_definition_appointment_form
     FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES appointment_form (id_form));
 
 CREATE INDEX fk_appointment_week_type_appointment_form_idx ON appointment_week_definition (id_form ASC);
-
 CREATE INDEX date_of_apply_idx ON appointment_week_definition (date_of_apply ASC);
 
 
@@ -281,9 +254,7 @@ CREATE TABLE IF NOT EXISTS appointment_working_day (
   CONSTRAINT fk_appointment_working_day_appointment_week_definition
     FOREIGN KEY (id_week_definition)
     REFERENCES appointment_week_definition (id_week_definition)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    );
 
 CREATE INDEX fk_appointment_working_day_appointment_week_definition_idx ON appointment_working_day (id_week_definition ASC);
 
@@ -305,9 +276,7 @@ CREATE TABLE IF NOT EXISTS appointment_time_slot (
   CONSTRAINT fk_appointment_time_slot_appointment_working_day
     FOREIGN KEY (id_working_day)
     REFERENCES appointment_working_day (id_working_day)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+   );
 
 CREATE INDEX fk_appointment_time_slot_appointment_working_day_idx ON appointment_time_slot (id_working_day ASC);
 
@@ -330,9 +299,7 @@ CREATE TABLE IF NOT EXISTS appointment_localization (
   CONSTRAINT fk_appointment_localization_appointment_form
     FOREIGN KEY (id_form)
     REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+  );
 
 CREATE INDEX fk_appointment_localization_appointment_form_idx ON appointment_localization (id_form ASC);
 
@@ -354,15 +321,10 @@ CREATE TABLE IF NOT EXISTS appointment_display (
   UNIQUE KEY unique_index (id_form),
   CONSTRAINT fk_appointment_display_appointment_calendar_template
     FOREIGN KEY (id_calendar_template)
-    REFERENCES appointment_calendar_template (id_calendar_template)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    REFERENCES appointment_calendar_template (id_calendar_template),
   CONSTRAINT fk_appointment_display_appointment_form
     FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES appointment_form (id_form));
 
 CREATE INDEX fk_appointment_display_appointment_calendar_template_idx ON appointment_display (id_calendar_template ASC);
 
@@ -389,10 +351,7 @@ CREATE TABLE IF NOT EXISTS appointment_form_rule (
   UNIQUE KEY unique_index (id_form),
   CONSTRAINT fk_appointment_form_rule_appointment_form
     FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES appointment_form (id_form));
 
 CREATE INDEX fk_appointment_form_rule_appointment_form_idx ON appointment_form_rule (id_form ASC);
 
@@ -409,10 +368,7 @@ CREATE TABLE IF NOT EXISTS appointment_closing_day (
   UNIQUE KEY unique_index (id_form,date_of_closing_day),
   CONSTRAINT fk_appointment_closing_day_appointment_form
     FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES appointment_form (id_form));
 
 CREATE INDEX fk_appointment_closing_day_appointment_form_idx ON appointment_closing_day (id_form ASC);
 
@@ -433,10 +389,7 @@ CREATE TABLE IF NOT EXISTS appointment_reservation_rule (
   UNIQUE KEY unique_index_date_of_apply (id_form,date_of_apply),
   CONSTRAINT fk_appointment_reservation_rule_appointment_form
     FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    REFERENCES appointment_form (id_form));
 
 CREATE INDEX fk_appointment_reservation_rule_appointment_form_idx ON appointment_reservation_rule (id_form ASC);
 

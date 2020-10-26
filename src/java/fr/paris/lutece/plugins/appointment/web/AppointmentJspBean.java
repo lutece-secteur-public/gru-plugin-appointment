@@ -322,8 +322,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ADMIN = "admin";
     private static final String STATUS = "status";
     // services
-    private final transient StateService _stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
-    private final transient ITaskService _taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
 
     // Session variable to store working values
     private int _nDefaultItemsPerPage;
@@ -601,12 +599,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
+        	StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             int nIdWorkflow = form.getIdWorkflow( );
             StateFilter stateFilter = new StateFilter( );
             stateFilter.setIdWorkflow( nIdWorkflow );
             for ( AppointmentDTO appointment : paginator.getPageItems( ) )
             {
-                State stateAppointment = _stateService.findByResource( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow );
+                State stateAppointment = stateService.findByResource( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow );
                 if ( stateAppointment != null )
                 {
                     appointment.setState( stateAppointment );
@@ -785,10 +784,11 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
+        	StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             int nIdWorkflow = form.getIdWorkflow( );
             StateFilter stateFilter = new StateFilter( );
             stateFilter.setIdWorkflow( nIdWorkflow );
-            State stateAppointment = _stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow );
+            State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, nIdWorkflow );
             if ( stateAppointment != null )
             {
                 appointmentDTO.setState( stateAppointment );
@@ -1810,7 +1810,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                     }
                     else
                     {
-                        List<ITask> listActionTasks = _taskService.getListTaskByIdAction( nIdAction, getLocale( ) );
+                        ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
+                        List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( ) );
                         for ( ITask task : listActionTasks )
                         {
                             if ( task.getTaskType( ).getKey( ).equals( "taskChangeAppointmentStatus" ) && ( appointment.getIsCancelled( ) ) )

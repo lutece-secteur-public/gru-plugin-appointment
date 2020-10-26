@@ -72,6 +72,7 @@ import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.ReferenceList;
 
 public final class AppointmentExportService
@@ -137,8 +138,13 @@ public final class AppointmentExportService
 
         if ( listAppointmentsDTO != null )
         {
+        	StateService stateService = null;
+
             Map<Integer, String> mapDefaultValueGenAttBackOffice = createDefaultValueMap( listEntry );
-            StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+            if ( WorkflowService.getInstance( ).isAvailable( ) )
+            {
+            	 stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+            }
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
             {
                 linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry, mapDefaultValueGenAttBackOffice,
@@ -306,14 +312,18 @@ public final class AppointmentExportService
         }
         if ( defaultColumnList.contains( KEY_COLUMN_STATE ) )
         {
-            State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, idWorkflow );
-            String strState = StringUtils.EMPTY;
-            if ( stateAppointment != null )
-            {
-                appointmentDTO.setState( stateAppointment );
-                strState = stateAppointment.getName( );
-            }
-            strWriter.add( strState );
+            String strState = StringUtils.EMPTY; 
+        	if( stateService != null) {
+        		
+	            State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, idWorkflow );
+	            if ( stateAppointment != null )
+	            {
+	                appointmentDTO.setState( stateAppointment );
+	                strState = stateAppointment.getName( );
+	            }
+        	}
+	            strWriter.add( strState );
+        	
         }
         if ( defaultColumnList.contains( KEY_COLUMN_NB_BOOKED_SEATS ) )
         {
