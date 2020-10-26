@@ -187,7 +187,9 @@ public final class SlotSafeService
 
         }
     }
+
     /**
+
      * Increment max capacity 
      * @param nIdForm the Id form
      * @param nIncrementingValue the incrementing value
@@ -218,12 +220,15 @@ public final class SlotSafeService
         	}
         }
 
-        
     }
+
     /**
-     * Incrementing max capacity 
-     * @param nIncrementingValue the incrementing value
-     * @param slot the slot
+     * Incrementing max capacity
+     * 
+     * @param nIncrementingValue
+     *            the incrementing value
+     * @param slot
+     *            the slot
      */
     private static void incrementMaxCapacity ( int nIncrementingValue, Slot slot) {
     	Slot editSlot= null;
@@ -254,6 +259,7 @@ public final class SlotSafeService
          }
     	
     }
+
     /**
      * Update potential remaining places
      * 
