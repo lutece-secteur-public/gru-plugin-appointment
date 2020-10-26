@@ -76,6 +76,7 @@ import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
@@ -203,22 +204,32 @@ public final class SlotSafeService
         List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDateTime.toLocalDate(), endingDateTime.toLocalDate() );
         listSlot= listSlot.stream().filter(slt -> slt.getEndingDateTime().isBefore( endingDateTime ) && slt.getEndingDateTime().isAfter(startindDateTime)).collect( Collectors.toList( )) ;
         
-       
-        for( Slot slot : listSlot ) {
-        	
-        	if( !lace ) {
-        		
-        		incrementMaxCapacity ( nIncrementingValue, slot );
-        	
-        	}else{
-        		
-        		if(  index % 2 == 0 ) {
-        			
-        			incrementMaxCapacity ( nIncrementingValue, slot );
-        		}
-            	index ++;
-        	}
+        TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
+        try
+        {
+	        for( Slot slot : listSlot ) {
+	        	
+	        	if( !lace ) {
+	        		
+	        		incrementMaxCapacity ( nIncrementingValue, slot );
+	        	
+	        	}else{
+	        		
+	        		if(  index % 2 == 0 ) {
+	        			
+	        			incrementMaxCapacity ( nIncrementingValue, slot );
+	        		}
+	            	index ++;
+	        	}
+	        }
+	        TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
         }
+	    catch( Exception e )
+	    {
+	            TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
+	            AppLogService.error( "Error update max capacity " + e.getMessage( ), e );
+	            throw new AppException( e.getMessage( ), e );
+	     }
 
     }
 
