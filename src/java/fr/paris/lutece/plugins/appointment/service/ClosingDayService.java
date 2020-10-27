@@ -65,7 +65,6 @@ public final class ClosingDayService
 {
 
     private static final String MARK_EXCEL_EXTENSION_XLSX = "xlsx";
-    private static final String MARK_FORMAT_DATE_REGEX = "([0-9]{2})/([0-9]{2})/([0-9]{4})";
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -238,17 +237,11 @@ public final class ClosingDayService
                                 // The Cell Containing String will is name.
                                 if ( cell.getColumnIndex( ) == 3 )
                                 {
-                                    String strdate = StringUtils.EMPTY;
                                     if ( cell.getCellType( ) == 0 )
                                     {
                                         Instant instant = cell.getDateCellValue( ).toInstant( );
                                         LocalDate localDate = instant.atZone( ZoneId.systemDefault( ) ).toLocalDate( );
-                                        strdate = localDate.format( Utilities.getFormatter( ) );
-                                    }
-                                    if ( StringUtils.isNotEmpty( strdate ) && strdate.matches( MARK_FORMAT_DATE_REGEX ) )
-                                    {
-                                        LocalDate date = LocalDate.parse( strdate, Utilities.getFormatter( ) );
-                                        listDays.add( date );
+                                        listDays.add( localDate );
                                     }
                                 }
                             }
