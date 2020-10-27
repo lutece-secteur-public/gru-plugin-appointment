@@ -142,13 +142,52 @@ function validateQty(event) {
     ];
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_week_definition=${id_week_definition}&id_time_slot=';
     var columnFormat = 'dddd';
-    var events = [
+
+    //adjust days: the backend returns dates for a single calendar week with Monday as the start of week.
+    //this causes wrap-around to adjacent calendar weeks when a different start of week is used with these dates.
+    //this method locates the displaced dates, and adjusts them back into the same day of the current week
+    function adjustDate(dateTimeString) {
+        var eventDateTime = new Date(dateTimeString);
+        var eventDOW =  eventDateTime.getDay();
+        var todayDOW = moment().day();
+        var firstDOW = moment().startOf('week').day();
+        var resultString;
+        if ( firstDOW == 1 ) {
+            return dateTimeString;
+        } else if( firstDOW == 0) {
+            if ( todayDOW == 0 ) {
+                if ( eventDOW != 0 ) {
+                    return moment(dateTimeString).add( 7, 'days').format("YYYY-MM-DDTHH:mm");
+                }
+           } else {// todayDOW not 0
+                if ( eventDOW == 0 ) {
+                  return moment(dateTimeString).subtract( 7, 'days').format("YYYY-MM-DDTHH:mm");
+                }
+            }
+        } else {// firstDOW > 1
+            if( 1 <= todayDOW ) {
+                if ( today < firstDOW ) {
+                    if( eventDOW >= firstDOW || eventDOW == 0 ) {
+                        return moment(dateTimeString).subtract( 7, 'days').format("YYYY-MM-DDTHH:mm");
+                    }
+                }
+            } else { //todayDOW >= firstDOW || todayDOW = 0
+                if (eventDOW < firstDOW && eventDOW > 0 ) {
+                    return moment(dateTimeString).add( 7, 'days').format("YYYY-MM-DDTHH:mm");
+                }
+           }
+        }
+        return(dateTimeString);//date is in current week, no adjustment needed
+    };
+
+
+    events = [
         <#if events??>
             <#list events as event>
                 {
                     title : '#i18n{appointment.manageCalendarSlots.maxCapacity} : ' +  '${event.maxCapacity}',
-                    start : '${event.startingDateTime}',
-                    end : '${event.endingDateTime}',
+                    start : adjustDate('${event.startingDateTime}'),
+                    end : adjustDate('${event.endingDateTime}'),
                     id : '${event.idTimeSlot}',
                     color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
                     textColor: '#2c2c2d',
@@ -158,6 +197,8 @@ function validateQty(event) {
             </#list>
         </#if>
     ];
+
+
     $(document).ready(function() {
         $('#calendar').fullCalendar({
             displayEventTime: false,
@@ -201,6 +242,5 @@ function validateQty(event) {
         $('#id_week_definition > option').each(function() {
             $(this).text(moment($(this).text(), '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}'));
         });
-
     });
 </script>
