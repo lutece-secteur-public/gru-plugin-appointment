@@ -67,7 +67,7 @@ import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.regularexpression.business.RegularExpressionHome;
-import fr.paris.lutece.plugins.workflow.service.WorkflowTraderService;
+import fr.paris.lutece.plugins.appointment.service.WorkflowTraderService;
 import fr.paris.lutece.portal.business.regularexpression.RegularExpression;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
