@@ -40,7 +40,7 @@ public class SlotServiceTest extends LuteceTestCase
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
-        List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, LocalDate.parse( "2022-12-03" ), LocalDate.parse( "2022-12-14" ) );
+        List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, LocalDate.parse( "2022-12-05" ), LocalDate.parse( "2022-12-16" ) );
 
         assertEquals( 180, listSlots.stream( ).filter( s -> s.getIsOpen( ) ).collect( Collectors.toList( ) ).size( ) );
 
@@ -65,19 +65,19 @@ public class SlotServiceTest extends LuteceTestCase
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
 
-        Slot slotSpecificClosed1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-03T09:00" ), LocalDateTime.parse( "2022-12-03T09:30" ), 1, 1, 0,
+        Slot slotSpecificClosed1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-05T09:00" ), LocalDateTime.parse( "2022-12-05T09:30" ), 1, 1, 0,
                 1, Boolean.FALSE, Boolean.TRUE );
         slotSpecificClosed1 = SlotService.saveSlot( slotSpecificClosed1 );
 
-        Slot slotSpecificClosed2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-04T09:00" ), LocalDateTime.parse( "2022-12-04T09:30" ), 1, 1, 0,
+        Slot slotSpecificClosed2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-06T09:00" ), LocalDateTime.parse( "2022-12-06T09:30" ), 1, 1, 0,
                 1, Boolean.FALSE, Boolean.TRUE );
         slotSpecificClosed2 = SlotService.saveSlot( slotSpecificClosed2 );
 
-        Slot slotSpecificClosed3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-05T10:00" ), LocalDateTime.parse( "2022-12-04T10:30" ), 1, 1, 0,
+        Slot slotSpecificClosed3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-07T10:00" ), LocalDateTime.parse( "2022-12-06T10:30" ), 1, 1, 0,
                 1, Boolean.FALSE, Boolean.TRUE );
         slotSpecificClosed3 = SlotService.saveSlot( slotSpecificClosed3 );
 
-        List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, LocalDate.parse( "2022-12-03" ), LocalDate.parse( "2022-12-14" ) );
+        List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, LocalDate.parse( "2022-12-05" ), LocalDate.parse( "2022-12-16" ) );
 
         assertEquals( 177, listSlots.stream( ).filter( s -> s.getIsOpen( ) ).collect( Collectors.toList( ) ).size( ) );
 
@@ -102,15 +102,15 @@ public class SlotServiceTest extends LuteceTestCase
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
 
-        Slot slotSpecific1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-03T09:00" ), LocalDateTime.parse( "2022-12-03T10:00" ), 1, 1, 0, 1,
+        Slot slotSpecific1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-05T09:00" ), LocalDateTime.parse( "2022-12-05T10:00" ), 1, 1, 0, 1,
                 Boolean.TRUE, Boolean.TRUE );
         slotSpecific1 = SlotService.saveSlot( slotSpecific1 );
 
-        Slot slotSpecific2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-04T10:00" ), LocalDateTime.parse( "2022-12-04T11:30" ), 1, 1, 0, 1,
+        Slot slotSpecific2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-12-06T10:00" ), LocalDateTime.parse( "2022-12-06T11:30" ), 1, 1, 0, 1,
                 Boolean.TRUE, Boolean.TRUE );
         slotSpecific2 = SlotService.saveSlot( slotSpecific2 );
 
-        List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, LocalDate.parse( "2022-12-03" ), LocalDate.parse( "2022-12-14" ) );
+        List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, LocalDate.parse( "2022-12-05" ), LocalDate.parse( "2022-12-16" ) );
 
         assertEquals( 177, listSlots.stream( ).filter( s -> s.getIsOpen( ) ).collect( Collectors.toList( ) ).size( ) );
 

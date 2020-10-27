@@ -508,7 +508,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm1.setIdForm( nIdForm );
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-25T10:00" ), LocalDateTime.parse( "2022-06-25T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-27T10:00" ), LocalDateTime.parse( "2022-06-27T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -524,7 +524,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-26T17:00" ), LocalDateTime.parse( "2022-06-26T17:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-28T17:00" ), LocalDateTime.parse( "2022-06-28T17:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
