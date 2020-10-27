@@ -222,7 +222,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     @Override
     public List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
     {
-        List<Appointment> listAppointment = new ArrayList<Appointment>( );
+        List<Appointment> listAppointment = new ArrayList<>();
         DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin );
         addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
         daoUtil.executeQuery( );
@@ -431,7 +431,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     /**
      * Build a daoUtil object with the query and all the attributes of the Appointment
      * 
-     * @param suery
+     * @param query
      *            the query
      * @param appointment
      *            the Appointment
@@ -445,7 +445,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private DAOUtil buildDaoUtil( String query, Appointment appointment, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = null;
+        DAOUtil daoUtil;
         if ( isInsert )
         {
         	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );

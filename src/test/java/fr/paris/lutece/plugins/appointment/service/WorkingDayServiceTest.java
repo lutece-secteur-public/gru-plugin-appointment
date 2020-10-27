@@ -27,7 +27,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setTimeEnd( "20:00" );
-        LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
+        LocalDate dateOfModification = LocalDate.parse( "2022-06-20" );
         FormService.updateAdvancedParameters( appointmentForm2, dateOfModification );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
@@ -122,7 +122,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setTimeStart( "10:00" );
-        LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
+        LocalDate dateOfModification = LocalDate.parse( "2022-06-20" );
         FormService.updateAdvancedParameters( appointmentForm2, dateOfModification );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );

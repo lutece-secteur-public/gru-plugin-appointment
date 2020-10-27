@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+    mysql-test:
+      container_name: mysql-lutece-test
+      image: mysql:8
+      env_file: .env
+      restart: always
+      # The native password plugin is required by the lutece container entrypoint script
+      command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+      ports:
+        - "3306:3306"
+      volumes:
+        - db:/var/lib/mysql
+        - ./.secrets/:/run/secrets/
+
+volumes:
+  db:
+    driver: local
