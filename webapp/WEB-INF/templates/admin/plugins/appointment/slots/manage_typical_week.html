@@ -150,9 +150,9 @@ function validateQty(event) {
         var lastWeek = moment().subtract( 1, 'weeks' ).week();
         var nextWeek = moment().add( 1, 'weeks').week();
         if ( moment( dateTimeString).week() ==  lastWeek ) {
-             return moment( dateTimeString ).add(  7, 'days' ).format( "YYYY-MM-DDTHH:mm" );
+             return moment( dateTimeString ).add(  1, 'weeks' ).format( "YYYY-MM-DDTHH:mm" );
          } else if ( moment( dateTimeString ).week() == nextWeek ) {
-             return moment( dateTimeString ).subtract( 7, 'days' ).format( "YYYY-MM-DDTHH:mm" );
+             return moment( dateTimeString ).subtract( 1, 'weeks' ).format( "YYYY-MM-DDTHH:mm" );
          }
          return dateTimeString;
     };
