@@ -143,43 +143,19 @@ function validateQty(event) {
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_week_definition=${id_week_definition}&id_time_slot=';
     var columnFormat = 'dddd';
 
-    //adjust days: the backend returns dates for a single calendar week with Monday as the start of week.
+    //adjust dates: the backend returns dates for a single calendar week with Monday as the start of week.
     //this causes wrap-around to adjacent calendar weeks when a different start of week is used with these dates.
     //this method locates the displaced dates, and adjusts them back into the same day of the current week
-    function adjustDate(dateTimeString) {
-        var eventDateTime = new Date(dateTimeString);
-        var eventDOW =  eventDateTime.getDay();
-        var todayDOW = moment().day();
-        var firstDOW = moment().startOf('week').day();
-        var resultString;
-        if ( firstDOW == 1 ) {
-            return dateTimeString;
-        } else if( firstDOW == 0) {
-            if ( todayDOW == 0 ) {
-                if ( eventDOW != 0 ) {
-                    return moment(dateTimeString).add( 7, 'days').format("YYYY-MM-DDTHH:mm");
-                }
-           } else {// todayDOW not 0
-                if ( eventDOW == 0 ) {
-                  return moment(dateTimeString).subtract( 7, 'days').format("YYYY-MM-DDTHH:mm");
-                }
-            }
-        } else {// firstDOW > 1
-            if( 1 <= todayDOW ) {
-                if ( today < firstDOW ) {
-                    if( eventDOW >= firstDOW || eventDOW == 0 ) {
-                        return moment(dateTimeString).subtract( 7, 'days').format("YYYY-MM-DDTHH:mm");
-                    }
-                }
-            } else { //todayDOW >= firstDOW || todayDOW = 0
-                if (eventDOW < firstDOW && eventDOW > 0 ) {
-                    return moment(dateTimeString).add( 7, 'days').format("YYYY-MM-DDTHH:mm");
-                }
-           }
-        }
-        return(dateTimeString);//date is in current week, no adjustment needed
+    function adjustDate( dateTimeString ) {
+        var lastWeek = moment().subtract( 1, 'weeks' ).week();
+        var nextWeek = moment().add( 1, 'weeks').week();
+        if ( moment( dateTimeString).week() ==  lastWeek ) {
+             return moment( dateTimeString ).add(  7, 'days' ).format( "YYYY-MM-DDTHH:mm" );
+         } else if ( moment( dateTimeString ).week() == nextWeek ) {
+             return moment( dateTimeString ).subtract( 7, 'days' ).format( "YYYY-MM-DDTHH:mm" );
+         }
+         return dateTimeString;
     };
-
 
     events = [
         <#if events??>
@@ -197,7 +173,6 @@ function validateQty(event) {
             </#list>
         </#if>
     ];
-
 
     $(document).ready(function() {
         $('#calendar').fullCalendar({
