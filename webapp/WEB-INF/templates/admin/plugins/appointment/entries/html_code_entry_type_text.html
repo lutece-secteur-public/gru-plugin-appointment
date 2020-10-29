@@ -11,18 +11,13 @@
 			</#if>
 		</#list>
 	<#else>
-		<#if field.value?exists>
-			<#assign value = field.value />
-		<#else>
-			<#assign value = '' />
-		</#if>
+			<#assign value=getFieldValueByCode( entry, "text_config")>
 	</#if>
 </#list>
 <#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
-	<#assign default=getFieldValueByCode( entry, "text_config")>
 	<#assign field_width=getFieldValueByCode( entry, "width")>
-	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number class='${entry.CSSClass!}' value=default />
+	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number class='${entry.CSSClass!}' value=value />
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
