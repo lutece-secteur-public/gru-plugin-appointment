@@ -52,7 +52,7 @@ public final class CommentDAO implements ICommentDAO
     private static final String SQL_QUERY_SELECT = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE id_comment = ?";
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_comment ( id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_comment WHERE id_comment = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, ending_validity_date = ?, comment = ?, comment_creation_date = ?,  WHERE id_comment = ?";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, ending_validity_date = ?, comment = ?, comment_creation_date = ?, comment_user_creator = ? WHERE id_comment = ?";
     private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_comment FROM appointment_comment";
     private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date >= ? and ending_validity_date <= ? and id_form = ?";
@@ -145,6 +145,7 @@ public final class CommentDAO implements ICommentDAO
             daoUtil.setString( nIndex++, comment.getComment( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
             daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
+            daoUtil.setInt( nIndex++, comment.getId());
 
             daoUtil.executeUpdate( );
             daoUtil.free( );

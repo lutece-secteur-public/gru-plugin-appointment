@@ -1,71 +1,20 @@
-
-
-
-
-    <span class="close">&times;</span>
+<span class="close">&times;</span>
 <@row>
 	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.createField.title}' />
-			<@boxBody>
-			
-				<fieldset>
-				<legend class="hidden">#i18n{appointment.createField.title}</legend>
-				<@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
-				    
-				    <input type='hidden' name='action' value='doAddComment' />
-					<input type='hidden' name='id_form' value='${comment.idForm}' />
-				
-					<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
-						<@input type='textarea' name='comment' id='comment' class='richtext' />
-					</@formGroup>
-					
-					<@formGroup labelFor='startingValidityDate' labelKey='#i18n{create_comment.labelStartingValidityDate}'>
-						<@inputGroup>
-							<@input type='text' name='startingValidityDate' id='startingValidityDate' value="${comment.startingValidityDate!''}" />
-							<@inputGroupItem type='addon'>
-							<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='endingValidityDate' labelKey='#i18n{create_comment.labelEndingValidityDate}'>
-						<@inputGroup>
-							<@input type='text' name='endingValidityDate' id='endingValidityDate' value="${comment.endingValidityDate!''}" />
-							<@inputGroupItem type='addon'>
-							<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-
-					</@formGroup>	
-					<@formGroup labelFor='sub' labelKey=''>
-						<@button type='submit' name='action_doAddComment' buttonIcon='sea' title='Enregistrer' />	
-        				</@formGroup>	
-
-
-				</@tform>
-				</fieldset>
-			</@boxBody>
-		</@box>
+        <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+            <@boxBody>
+            
+                <fieldset>
+                <legend class="hidden">#i18n{appointment.createField.title}</legend>
+                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+                </fieldset>
+            </@boxBody>
+        </@box>
 	</@columns>
 </@row>
 
-<@getDatePickerBootstrap idField="dateAppointment" language="fr" />
-<script type="text/javascript">
-    $(function () {
-        
-        $('#startingValidityDate').datepicker({
-        language : 'fr',
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    }),
-	$('#endingValidityDate').datepicker({
-        language : 'fr',
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    });
-    });      
-</script>
+<@getDatePickerBootstrap idField="startingValidityDate" language=locale />
+<@getDatePickerBootstrap idField="endingValidityDate" language=locale />
+<#include "/admin/util/editor/editor.html" />
+<@initEditor />

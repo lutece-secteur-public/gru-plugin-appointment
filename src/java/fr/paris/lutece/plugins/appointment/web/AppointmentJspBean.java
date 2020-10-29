@@ -467,7 +467,9 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( MARK_FORM_OVERBOOKING_ALLOWED, appointmentForm.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
-                AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) );
+
+        AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) );
+        model.put(MARK_LOCALE, getLocale());
 
         if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake <= 1 )
         {
@@ -632,6 +634,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
         model.put( MARK_DEFAULT_FIELD_LIST, AppointmentExportService.getDefaultColumnList( getLocale( ) ) );
         model.put( MARK_CUSTOM_FIELD_LIST, AppointmentExportService.getCustomColumnList( strIdForm ) );
+        model.put(MARK_LOCALE, getLocale());
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS, TEMPLATE_MANAGE_APPOINTMENTS, model );
     }
@@ -827,6 +830,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
         model.put( MARK_LANGUAGE, getLocale( ) );
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
+        model.put(MARK_LOCALE, getLocale());
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
     }
 
@@ -1167,6 +1171,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM_ADMIN, getLocale( ), model );
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
+        model.put(MARK_LOCALE, getLocale());
         if ( listErrors != null )
         {
             model.put( MARK_FORM_ERRORS, listErrors );
@@ -1356,6 +1361,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( appointmentDTO.getIdAppointment( ), getLocale( ) ) );
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, locale ) );
         model.put( MARK_FORM, form );
+        model.put( MARK_LOCALE, getLocale( ) );
         return getPage( PROPERTY_PAGE_TITLE_RECAP_APPOINTMENT, TEMPLATE_APPOINTMENT_FORM_RECAP, model );
     }
 
@@ -1761,7 +1767,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
             {
                 String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
-                        request, getLocale( ), null );
+                request, getLocale( ), null );
                 Map<String, Object> model = new HashMap<>( );
                 model.put( MARK_TASKS_FORM, strHtmlTasksForm );
                 model.put( PARAMETER_ID_ACTION, nIdAction );

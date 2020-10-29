@@ -139,3 +139,38 @@
         </#list>
     </#if>
 </#function>
+
+<#macro getCommentForm idComment idStartingDate idEndingDate action idForm>
+<@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
+    
+    <input type='hidden' name='action' value="${action}" />
+    <input type='hidden' name='id_form' value="${idForm}" />
+    <input type='hidden' name='id_comment' <#if comment??>value="${comment.id!''}"</#if> />
+
+    <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+        <@input type='textarea' name='comment' id=idComment richtext=true />
+    </@formGroup>
+    
+    <@formGroup labelFor='startingValidityDate' labelKey='#i18n{create_comment.labelStartingValidityDate}'>
+        <@inputGroup>
+            <@input type='text' name='startingValidityDate' id=idStartingDate />
+            <@inputGroupItem type='addon'>
+            <@icon style='calendar' />
+            </@inputGroupItem>
+        </@inputGroup>
+    </@formGroup>
+    
+    <@formGroup labelFor='endingValidityDate' labelKey='#i18n{create_comment.labelEndingValidityDate}'>
+        <@inputGroup>
+            <@input type='text' name='endingValidityDate' id=idEndingDate />
+            <@inputGroupItem type='addon'>
+            <@icon style='calendar' />
+            </@inputGroupItem>
+        </@inputGroup>
+    </@formGroup>
+    
+    <@formGroup labelFor='sub' labelKey=''>
+        <@button type='submit' name='action_${action}' buttonIcon='sea' title='Enregistrer' />   
+    </@formGroup>
+</@tform>
+</#macro>
