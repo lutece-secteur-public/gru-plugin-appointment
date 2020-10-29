@@ -14,13 +14,10 @@
     
     <properties>  
         <componentName>appointment</componentName>
-        <core.version>[6.0.1,)</core.version>    
-        <genericattributes.version>2.1.1</genericattributes.version>
+        <core.version>[7.0.0-RC-03,)</core.version>    
+        <genericattributes.version>[2.1.1,)</genericattributes.version>
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
-        <regularexpression.version>3.0.3</regularexpression.version>                        
-        <workflow.version>4.3.6</workflow.version>    
-        <rest.version>3.1.0</rest.version>
     </properties>
     <repositories>
         <repository>
@@ -43,39 +40,14 @@
             <version>${genericattributes.version}</version>
             <type>lutece-plugin</type>
         </dependency>
+            
         <dependency>
             <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>plugin-workflow</artifactId>
-            <version>${workflow.version}</version>
+            <artifactId>plugin-filegenerator</artifactId>
+            <version>[1.0.0,)</version>
             <type>lutece-plugin</type>
-        </dependency>   
-        <dependency>
-            <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>library-workflow-core</artifactId>
-            <version>1.2.3</version>
-            <type>jar</type>
-        </dependency>          
-        <dependency>
-            <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>plugin-regularexpression</artifactId>
-            <version>${regularexpression.version}</version>
-            <type>lutece-plugin</type>
-        </dependency>
-        <dependency>
-            <groupId>fr.paris.lutece.plugins</groupId>
-            <artifactId>plugin-rest</artifactId>
-            <version>${rest.version}</version>
-            <type>lutece-plugin</type>
-        </dependency>
-
-        <!-- Added for v6 compatibility -->
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-
+         </dependency>
+        
         <!-- Dozer - Java Bean to Java Bean -->
         <dependency>
             <groupId>net.sf.dozer</groupId>

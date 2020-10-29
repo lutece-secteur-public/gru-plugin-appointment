@@ -76,6 +76,7 @@ import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.service.util.CryptoService;
@@ -187,28 +188,58 @@ public final class SlotSafeService
 
         }
     }
+
     /**
+
      * Increment max capacity 
      * @param nIdForm the Id form
      * @param nIncrementingValue the incrementing value
-     * @param startindDate the starting date
-     * @param endingDate the ending Date
+     * @param startindDateTime the starting date Time
+     * @param endingDateTime the ending Date time
+     * @param lace the lace
      */
-    public static void incrementMaxCapacity ( int nIdForm, int nIncrementingValue, LocalDate startindDate, LocalDate endingDate ) {
-    	
+    public static void incrementMaxCapacity ( int nIdForm, int nIncrementingValue, LocalDateTime startindDateTime, LocalDateTime endingDateTime, boolean lace ) {
+    	int index= 0;
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
-        List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDate, endingDate );
-        for( Slot slot : listSlot ) {
-        	
-        	incrementMaxCapacity ( nIncrementingValue, slot );
-        }
-
+        List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDateTime.toLocalDate(), endingDateTime.toLocalDate() );
+        listSlot= listSlot.stream().filter(slt -> slt.getEndingDateTime().isBefore( endingDateTime ) && slt.getEndingDateTime().isAfter(startindDateTime)).collect( Collectors.toList( )) ;
         
+        TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
+        try
+        {
+	        for( Slot slot : listSlot ) {
+	        	
+	        	if( !lace ) {
+	        		
+	        		incrementMaxCapacity ( nIncrementingValue, slot );
+	        	
+	        	}else{
+	        		
+	        		if(  index % 2 == 0 ) {
+	        			
+	        			incrementMaxCapacity ( nIncrementingValue, slot );
+	        		}
+	            	index ++;
+	        	}
+	        }
+	        TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+        }
+	    catch( Exception e )
+	    {
+	            TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
+	            AppLogService.error( "Error update max capacity " + e.getMessage( ), e );
+	            throw new AppException( e.getMessage( ), e );
+	     }
+
     }
+
     /**
-     * Incrementing max capacity 
-     * @param nIncrementingValue the incrementing value
-     * @param slot the slot
+     * Incrementing max capacity
+     * 
+     * @param nIncrementingValue
+     *            the incrementing value
+     * @param slot
+     *            the slot
      */
     private static void incrementMaxCapacity ( int nIncrementingValue, Slot slot) {
     	Slot editSlot= null;
@@ -216,6 +247,9 @@ public final class SlotSafeService
     	if( slot.getIdSlot( ) == 0) {
     		
     		editSlot= createSlot( slot );
+    	}else {
+    		
+    		editSlot= slot;
     	}
     	 Lock lock = getLockOnSlot( editSlot.getIdSlot( ) );
          lock.lock( );
@@ -236,6 +270,7 @@ public final class SlotSafeService
          }
     	
     }
+
     /**
      * Update potential remaining places
      * 

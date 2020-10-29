@@ -1,4 +1,5 @@
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
+<#include "/admin/plugins/appointment/appointment/appointment_export.html" />
 <link href="css/datepicker.css" rel="stylesheet">
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <script src="js/plugins/appointment/moment.min.js"></script>
@@ -81,7 +82,7 @@
 						<#if rightDelete?? && rightDelete>
 							<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='btn-danger' size='sm' />
 						</#if>
-						<@aButton href='jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' size='sm' color='btn-info' />
+						<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' size='sm' color='btn-info' />
 					</@boxHeader>
 					<@boxBody>
 						<div align="right"><@paginationAdmin paginator=paginator form=0 /></div>

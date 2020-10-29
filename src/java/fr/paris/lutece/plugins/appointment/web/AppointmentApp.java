@@ -295,7 +295,6 @@ public class AppointmentApp extends MVCApplication
     private static final String STEP_3 = "step3";
 
     private int nNbPlacesToTake;
-    private final transient ITaskService _taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
 
     /**
      * Get the calendar view
@@ -1563,7 +1562,8 @@ public class AppointmentApp extends MVCApplication
                     }
                     else
                     {
-                        List<ITask> listActionTasks = _taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
+                        ITaskService taskService = SpringContextService.getBean( TaskService.BEAN_SERVICE );
+                        List<ITask> listActionTasks = taskService.getListTaskByIdAction( nIdAction, getLocale( request ) );
                         for ( ITask task : listActionTasks )
                         {
                             if ( task.getTaskType( ).getKey( ).equals( "taskChangeAppointmentStatus" ) && ( appointment.getIsCancelled( ) ) )

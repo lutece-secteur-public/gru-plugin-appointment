@@ -195,10 +195,10 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     @Override
     public void delete( int nIdAppointment, Plugin plugin )
     {
+        deleteAppointmentSlot( nIdAppointment, plugin );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
         daoUtil.setInt( 1, nIdAppointment );
         executeUpdate( daoUtil );
-        deleteAppointmentSlot( nIdAppointment, plugin );
     }
 
     @Override
