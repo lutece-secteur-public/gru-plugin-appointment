@@ -36,3 +36,54 @@ CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form) REFERENCES appointment_f
 )
 ENGINE = InnoDB;
 ALTER TABLE appointment_form ADD role_fo varchar(255);
+
+SET FOREIGN_KEY_CHECKS = 0;
+ALTER TABLE appointment_appointment MODIFY id_appointment INT NOT NULL;
+ALTER TABLE appointment_appointment DROP PRIMARY KEY, ADD PRIMARY KEY (id_appointment);
+ALTER TABLE appointment_appointment MODIFY id_appointment INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_slot MODIFY id_slot INT NOT NULL;
+ALTER TABLE appointment_slot DROP PRIMARY KEY, ADD PRIMARY KEY (id_slot);
+ALTER TABLE appointment_slot MODIFY id_slot INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_appointment_response MODIFY id_appointment_response INT NOT NULL;
+ALTER TABLE appointment_appointment_response DROP PRIMARY KEY, ADD PRIMARY KEY (id_appointment_response);
+ALTER TABLE appointment_appointment_response MODIFY id_appointment_response INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_form_message MODIFY id_form_message INT NOT NULL;
+ALTER TABLE appointment_form_message DROP PRIMARY KEY, ADD PRIMARY KEY (id_form_message);
+ALTER TABLE appointment_form_message MODIFY id_form_message INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_week_definition MODIFY id_week_definition INT NOT NULL;
+ALTER TABLE appointment_week_definition DROP PRIMARY KEY, ADD PRIMARY KEY (id_week_definition);
+ALTER TABLE appointment_week_definition MODIFY id_week_definition INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_working_day MODIFY id_working_day INT NOT NULL;
+ALTER TABLE appointment_working_day DROP PRIMARY KEY, ADD PRIMARY KEY (id_working_day);
+ALTER TABLE appointment_working_day MODIFY id_working_day INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_time_slot MODIFY id_time_slot INT NOT NULL;
+ALTER TABLE appointment_time_slot DROP PRIMARY KEY, ADD PRIMARY KEY (id_time_slot);
+ALTER TABLE appointment_time_slot MODIFY id_time_slot INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_localization MODIFY id_localization INT NOT NULL;
+ALTER TABLE appointment_localization DROP PRIMARY KEY, ADD PRIMARY KEY (id_localization);
+ALTER TABLE appointment_localization MODIFY id_localization INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_display MODIFY id_display INT NOT NULL;
+ALTER TABLE appointment_display DROP PRIMARY KEY, ADD PRIMARY KEY (id_display);
+ALTER TABLE appointment_display MODIFY id_display INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_form_rule MODIFY id_form_rule INT NOT NULL;
+ALTER TABLE appointment_form_rule DROP PRIMARY KEY, ADD PRIMARY KEY (id_form_rule);
+ALTER TABLE appointment_form_rule MODIFY id_form_rule INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_closing_day MODIFY id_closing_day INT NOT NULL;
+ALTER TABLE appointment_closing_day DROP PRIMARY KEY, ADD PRIMARY KEY (id_closing_day);
+ALTER TABLE appointment_closing_day MODIFY id_closing_day INT AUTO_INCREMENT;
+
+ALTER TABLE appointment_reservation_rule MODIFY id_reservation_rule INT NOT NULL;
+ALTER TABLE appointment_reservation_rule DROP PRIMARY KEY, ADD PRIMARY KEY (id_reservation_rule);
+ALTER TABLE appointment_reservation_rule MODIFY id_reservation_rule INT AUTO_INCREMENT;
+
+SET FOREIGN_KEY_CHECKS = 1;
