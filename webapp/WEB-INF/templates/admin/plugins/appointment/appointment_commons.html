@@ -153,7 +153,7 @@
     </#if>
 </#function>
 
-<#macro getCommentForm idComment idStartingDate idEndingDate action idForm locale=locale>
+<#macro getCommentForm idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm locale=locale>
 <@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
     <@input type='hidden' name='action' value='${action}' />
     <@input type='hidden' name='id_form' value='${idForm}' />
@@ -172,6 +172,16 @@
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
+		
+		<@formGroup labelFor='startingValidityTime' labelKey='#i18n{appointment.create_comment.labelStartingValidityTime}' rows=2>
+	        <@inputGroup>
+	            <@input type='text' name='startingValidityTime' id=idStartingTime />
+	            <@inputGroupItem type='addon'>
+	            <@icon style='calendar' />
+	            </@inputGroupItem>
+	        </@inputGroup>
+	    </@formGroup>
+	    
 		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
 			<@inputGroup>
 				<@input type='text' name='endingValidityDate' id=idEndingDate />
@@ -180,14 +190,27 @@
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
+		
+		<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=2>
+	        <@inputGroup>
+	            <@input type='text' name='endingValidityTime' id=idEndingTime />
+	            <@inputGroupItem type='addon'>
+	            <@icon style='calendar' />
+	            </@inputGroupItem>
+	        </@inputGroup>
+	    </@formGroup>
+	    
 		<@formGroup rows=2>
 			<@button type='submit' name='action_${action}' buttonIcon='save' title='Enregistrer' />   
 		</@formGroup>
 	</@fieldSet>
+
 </@tform>
 <script>
 $('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
+$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
+$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 </script>
 </#macro>
 
@@ -243,6 +266,8 @@ $('.content-header > h1 > small').html( "${form.title}" );
 <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="date_start_validity" language=language />
 <@getDatePickerBootstrap idField="date_end_validity"   language=language />
+<@getDatePickerBootstrap idField="time_start_validity" language=language />
+<@getDatePickerBootstrap idField="time_end_validity"   language=language />
 <script type="text/javascript">
 	function validateQty(event) {
 		var key = window.event ? event.keyCode : event.which;
@@ -270,5 +295,15 @@ $('.content-header > h1 > small').html( "${form.title}" );
 	    todayHighLight: true,
 	    autoclose: true
 	});
+	$(function () {
+        $('#time_start').datetimepicker({
+          format: 'HH:mm',
+          stepping: 5
+        });
+        $('#time_end').datetimepicker({
+          format: 'HH:mm',
+          stepping: 5
+        });     
+    });
 </script>
 </#macro> 
