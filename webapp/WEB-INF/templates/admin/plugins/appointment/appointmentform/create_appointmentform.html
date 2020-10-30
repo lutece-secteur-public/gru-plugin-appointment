@@ -69,7 +69,7 @@
 						<@getDatePickerBootstrap idField="date_end_validity" language=language />
 					</@formGroup>
 					<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
-                      <@checkBox labelFor='bo_overbooking' name='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+                      <@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
      				</@formGroup> 
 					<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
 						<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false />

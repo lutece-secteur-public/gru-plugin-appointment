@@ -1,15 +1,15 @@
 <@modal id='export_modal'>
 	<@tform name='export_form' id='export_form' action='jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp'>
-		<input type='hidden' name='id_form' value='${form.idForm}' />
+		<@input type='hidden' name='id_form' value='${form.idForm}' />
 		<@modalHeader modalTitle='#i18n{appointment.export.modal.title}' />
 		<@modalBody>
 			<@formGroup>
 				<#list defaultFieldList as defaultField>
-					<@checkBox name="selectedDefaultFieldList" value=defaultField.code labelKey=defaultField.name checked=true /> 
+					<@checkBox name='selectedDefaultFieldList' id='selectedDefaultFieldList' value=defaultField.code labelKey=defaultField.name checked=true /> 
 				</#list>
 				<hr />
 				<#list customFieldList as customField>
-					<@checkBox name="selectedCustomFieldList" value=customField.code labelKey=customField.name checked=true /> 
+					<@checkBox name='selectedCustomFieldList' id='selectedCustomFieldList' value=customField.code labelKey=customField.name checked=true /> 
 				</#list>
 			</@formGroup>
 		</@modalBody>
