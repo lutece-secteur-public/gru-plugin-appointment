@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,6 +70,7 @@ import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.portal.business.role.RoleHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
@@ -92,6 +93,7 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.Paginator;
 import fr.paris.lutece.util.url.UrlItem;
 
@@ -148,6 +150,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
     private static final String MARK_FORM_MESSAGE = "formMessage";
     private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
+    private static final String MARK_REF_LIST_ROLES = "refListRoles";
     private static final String MARK_LIST_CATEGORIES = "listCategories";
     private static final String MARK_NULL = "NULL";
     private static final String MARK_FALSE = "false";
@@ -242,13 +245,11 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         Map<String, Object> model = getModel( );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put(
-                MARK_APPOINTMENTFORM_LIST,
-                RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                        AdminUserService.getAdminUser( request ) ) );
+        model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
+                AdminUserService.getAdminUser( request ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
-        model.put( MARK_PERMISSION_CREATE, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0",
-                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
+        model.put( MARK_PERMISSION_CREATE, String.valueOf(
+                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
@@ -666,6 +667,9 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
         Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
         model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
+
+        ReferenceList listRoles = RoleHome.getRolesList( user );
+        model.put( MARK_REF_LIST_ROLES, listRoles );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
     }
 
@@ -773,8 +777,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                 {
                     if ( !listClosingDaysDb.contains( closingDate ) )
                     {
-                        listSlotsImpacted = SlotService
-                                .findSlotsByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ), closingDate.atTime( LocalTime.MAX ) );
+                        listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ),
+                                closingDate.atTime( LocalTime.MAX ) );
                         // Check if there is appointments on this slots
                         listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
                         if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
@@ -798,7 +802,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                     String strListdate = stbListDate.toString( );
                     strListdate = strListdate.substring( 0, strListdate.length( ) - 1 );
                     Object [ ] tabEntryErrorDate = {
-                        strListdate
+                            strListdate
                     };
                     String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( MESSAGE_ERROR_OPEN_SLOTS, tabEntryErrorDate, getLocale( ) );
                     addError( strErrorMessageDateWithAppointments );

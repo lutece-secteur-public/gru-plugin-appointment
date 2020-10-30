@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,38 +35,31 @@ package fr.paris.lutece.plugins.appointment.service;
 
 import static java.lang.Math.toIntExact;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
@@ -81,21 +74,14 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.ResponseRecapDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
-import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.plugins.genericattributes.business.Field;
-import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
-import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
-import fr.paris.lutece.plugins.workflowcore.business.state.State;
-import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 
@@ -108,29 +94,13 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 public final class AppointmentUtilities
 {
 
-    private static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
-    private static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
-    private static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
-    private static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
-    private static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
-    private static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
-    private static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
-
-    private static final String KEY_RESOURCE_TYPE = "appointment.appointment.name";
-    private static final String KEY_COLUMN_LAST_NAME = "appointment.manageAppointments.columnLastName";
-    private static final String KEY_COLUMN_FISRT_NAME = "appointment.manageAppointments.columnFirstName";
-    private static final String KEY_COLUMN_EMAIL = "appointment.manageAppointments.columnEmail";
-    private static final String KEY_COLUMN_DATE_APPOINTMENT = "appointment.dateAppointment.title";
-    private static final String KEY_TIME_START = "appointment.model.entity.appointmentform.attribute.timeStart";
-    private static final String KEY_TIME_END = "appointment.model.entity.appointmentform.attribute.timeEnd";
-    private static final String KEY_COLUMN_ADMIN = "appointment.manageAppointments.columnAdmin";
-    private static final String KEY_COLUMN_STATUS = "appointment.labelStatus";
-    private static final String KEY_COLUMN_STATE = "appointment.manageAppointments.columnState";
-    private static final String KEY_COLUMN_NB_BOOKED_SEATS = "appointment.manageAppointments.columnNumberOfBookedseatsPerAppointment";
-
-    private static final String CONSTANT_COMMA = ",";
-    private static final String EXCEL_FILE_EXTENSION = ".xlsx";
-    private static final String EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
+    public static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
+    public static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
+    public static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
+    public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
+    public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
+    public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 
     public static final String SESSION_TIMER_SLOT = "appointment.session.timer.slot";
 
@@ -196,7 +166,7 @@ public final class AppointmentUtilities
      */
     public static void checkDateOfTheAppointmentIsNotBeforeNow( AppointmentDTO appointmentDTO, Locale locale, List<GenericAttributeError> listFormErrors )
     {
-        if ( appointmentDTO.getSlot( ).getStartingDateTime( ).toLocalDate( ).isBefore( LocalDate.now( ) ) )
+        if ( getStartingDateTime( appointmentDTO ).toLocalDate( ).isBefore( LocalDate.now( ) ) )
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_DATE_APPOINTMENT, locale ) );
@@ -233,7 +203,7 @@ public final class AppointmentUtilities
                             .toLocalDate( );
                     // Check the number of days between this appointment and
                     // the last appointment the user has taken
-                    LocalDate dateOfTheAppointment = appointmentDTO.getSlot( ).getStartingDateTime( ).toLocalDate( );
+                    LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
                     if ( Math.abs( dateOfTheLastAppointment.until( dateOfTheAppointment, ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
                     {
                         bCheckPassed = false;
@@ -243,7 +213,7 @@ public final class AppointmentUtilities
         }
         return bCheckPassed;
     }
-    
+
     /**
      * Check that the delay between two appointments for the same use has been respected
      * 
@@ -255,35 +225,36 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the delay is not respected
      */
-    public static boolean checkNbDaysBetweenTwoAppointmentsTaken( AppointmentDTO appointmentDTO, String strEmail,
-            AppointmentFormDTO form )
+    public static boolean checkNbDaysBetweenTwoAppointmentsTaken( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form )
     {
         boolean bCheckPassed = true;
         int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
         if ( nbDaysBetweenTwoAppointments != 0 )
         {
-        	AppointmentFilterDTO filter= new AppointmentFilterDTO();
-        	filter.setEmail(strEmail);
-        	filter.setStatus( 0 );
-        	filter.setIdForm(form.getIdForm());
-        	List<Appointment> listAppointment = AppointmentService.findListAppointmentsByFilter(filter);
-        	 // If we modify an appointment, we remove the
+            AppointmentFilterDTO filter = new AppointmentFilterDTO( );
+            filter.setEmail( strEmail );
+            filter.setStatus( 0 );
+            filter.setIdForm( form.getIdForm( ) );
+            List<Appointment> listAppointment = AppointmentService.findListAppointmentsByFilter( filter );
+            // If we modify an appointment, we remove the
             // appointment that we currently edit
             if ( appointmentDTO.getIdAppointment( ) != 0 )
             {
-                listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) ).collect( Collectors.toList( ) );
+                listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) )
+                        .collect( Collectors.toList( ) );
             }
 
             if ( CollectionUtils.isNotEmpty( listAppointment ) )
             {
 
-            	LocalDateTime dateOfTheLastAppointmentTaken = listAppointment.stream( ).map( Appointment:: getDateAppointmentTaken ).max( LocalDateTime::compareTo ).get( );
-               
-                    if ( Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
-                    {
-                        bCheckPassed = false;
-                    }
-               
+                LocalDateTime dateOfTheLastAppointmentTaken = listAppointment.stream( ).map( Appointment::getDateAppointmentTaken )
+                        .max( LocalDateTime::compareTo ).get( );
+
+                if ( Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                {
+                    bCheckPassed = false;
+                }
+
             }
         }
         return bCheckPassed;
@@ -320,12 +291,12 @@ public final class AppointmentUtilities
                 {
                     listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != idAppointment ).collect( Collectors.toList( ) );
                 }
-                
+
             }
-            }
+        }
         return listAppointment;
     }
-    
+
     /**
      * Get the slot of a user appointment
      * 
@@ -340,23 +311,28 @@ public final class AppointmentUtilities
         List<Slot> listSlots = new ArrayList<>( );
         if ( StringUtils.isNotEmpty( strEmail ) )
         {
-        	    List<Appointment> listAppointment = getAppointmentByEmail( strEmail, idAppointment );
-                if ( CollectionUtils.isNotEmpty( listAppointment ) )
-                {
-                    // I know we could have a join sql query, but I don't
-                    // want to join the appointment table with the slot
-                    // table, it's too big and not efficient
+            List<Appointment> listAppointment = getAppointmentByEmail( strEmail, idAppointment );
+            if ( CollectionUtils.isNotEmpty( listAppointment ) )
+            {
+                // I know we could have a join sql query, but I don't
+                // want to join the appointment table with the slot
+                // table, it's too big and not efficient
 
-                    for ( Appointment appointment : listAppointment )
+                for ( Appointment appointment : listAppointment )
+                {
+                    if ( !appointment.getIsCancelled( ) )
                     {
-                        if ( !appointment.getIsCancelled( ) )
+                        for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
                         {
-                            listSlots.add( SlotService.findSlotById( appointment.getIdSlot( ) ) );
+
+                            listSlots.add( SlotService.findSlotById( apptSlot.getIdSlot( ) ) );
+
                         }
                     }
-
                 }
-            
+
+            }
+
         }
         return listSlots;
     }
@@ -387,20 +363,18 @@ public final class AppointmentUtilities
                 if ( CollectionUtils.isNotEmpty( listSlots ) )
                 {
                     // Get the date of the future appointment
-                    LocalDate dateOfTheAppointment = appointmentDTO.getSlot( ).getStartingDateTime( ).toLocalDate( );
+                    LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
                     // Min starting date of the period
                     LocalDate minStartingDateOfThePeriod = dateOfTheAppointment.minusDays( nbDaysForMaxAppointmentsPerUser );
                     // Max ending date of the period
                     LocalDate maxEndingDateOfThePeriod = dateOfTheAppointment.plusDays( nbDaysForMaxAppointmentsPerUser );
                     // Keep only the slots that are in the min-max period
-                    listSlots = listSlots
-                            .stream( )
-                            .filter(
-                                    s -> s.getStartingDateTime( ).toLocalDate( ).isEqual( minStartingDateOfThePeriod )
-                                            || s.getStartingDateTime( ).toLocalDate( ).isAfter( minStartingDateOfThePeriod ) )
-                            .filter(
-                                    s -> s.getStartingDateTime( ).toLocalDate( ).isEqual( maxEndingDateOfThePeriod )
-                                            || s.getStartingDateTime( ).toLocalDate( ).isBefore( maxEndingDateOfThePeriod ) ).collect( Collectors.toList( ) );
+                    listSlots = listSlots.stream( )
+                            .filter( s -> s.getStartingDateTime( ).toLocalDate( ).isEqual( minStartingDateOfThePeriod )
+                                    || s.getStartingDateTime( ).toLocalDate( ).isAfter( minStartingDateOfThePeriod ) )
+                            .filter( s -> s.getStartingDateTime( ).toLocalDate( ).isEqual( maxEndingDateOfThePeriod )
+                                    || s.getStartingDateTime( ).toLocalDate( ).isBefore( maxEndingDateOfThePeriod ) )
+                            .collect( Collectors.toList( ) );
                     LocalDate startingDateOfThePeriod = null;
                     LocalDate endingDateOfThePeriod = null;
                     // For each slot
@@ -423,13 +397,12 @@ public final class AppointmentUtilities
                         // Check the number of slots on the period
                         final LocalDate startingDateOfPeriodToSearch = startingDateOfThePeriod;
                         final LocalDate endingDateOfPeriodToSearch = endingDateOfThePeriod;
-                        int nbSlots = toIntExact( listSlots
-                                .stream( )
-                                .filter(
-                                        s -> ( s.getStartingDateTime( ).toLocalDate( ).equals( startingDateOfPeriodToSearch ) || s.getStartingDateTime( )
-                                                .toLocalDate( ).isAfter( startingDateOfPeriodToSearch ) )
-                                                && ( s.getStartingDateTime( ).toLocalDate( ).equals( endingDateOfPeriodToSearch ) || s.getStartingDateTime( )
-                                                        .toLocalDate( ).isBefore( endingDateOfPeriodToSearch ) ) ).count( ) );
+                        int nbSlots = toIntExact( listSlots.stream( )
+                                .filter( s -> ( s.getStartingDateTime( ).toLocalDate( ).equals( startingDateOfPeriodToSearch )
+                                        || s.getStartingDateTime( ).toLocalDate( ).isAfter( startingDateOfPeriodToSearch ) )
+                                        && ( s.getStartingDateTime( ).toLocalDate( ).equals( endingDateOfPeriodToSearch )
+                                                || s.getStartingDateTime( ).toLocalDate( ).isBefore( endingDateOfPeriodToSearch ) ) )
+                                .count( ) );
                         if ( nbSlots >= nbMaxAppointmentsPerUser )
                         {
                             bCheckPassed = false;
@@ -485,7 +458,8 @@ public final class AppointmentUtilities
         // if it's a modification, need to check if the new number of booked
         // seats is under or equal to the number of the remaining places + the
         // previous number of booked seats of the appointment
-        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats( ) )
+        if ( nbBookedSeats > appointmentDTO.getNbMaxPotentialBookedSeats( ) && !appointmentDTO.getOverbookingAllowed( ) )
+
         {
             GenericAttributeError genAttError = new GenericAttributeError( );
             genAttError.setErrorMessage( I18nService.getLocalizedString( ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT, locale ) );
@@ -517,7 +491,7 @@ public final class AppointmentUtilities
      */
     public static void fillAppointmentDTO( AppointmentDTO appointmentDTO, int nbBookedSeats, String strEmail, String strFirstName, String strLastName )
     {
-        appointmentDTO.setDateOfTheAppointment( appointmentDTO.getSlot( ).getDate( ).format( Utilities.getFormatter( ) ) );
+        appointmentDTO.setDateOfTheAppointment( appointmentDTO.getSlot( ).get( 0 ).getDate( ).format( Utilities.getFormatter( ) ) );
         appointmentDTO.setNbBookedSeats( nbBookedSeats );
         appointmentDTO.setEmail( strEmail );
         appointmentDTO.setFirstName( strFirstName );
@@ -590,8 +564,8 @@ public final class AppointmentUtilities
             {
                 int nIndex = response.getEntry( ).getPosition( );
                 IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
-                ResponseRecapDTO responseRecapDTO = new ResponseRecapDTO( response, entryTypeService.getResponseValueForRecap( response.getEntry( ), request,
-                        response, locale ) );
+                ResponseRecapDTO responseRecapDTO = new ResponseRecapDTO( response,
+                        entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) );
                 List<ResponseRecapDTO> listResponse = mapResponse.get( nIndex );
                 if ( listResponse == null )
                 {
@@ -609,229 +583,19 @@ public final class AppointmentUtilities
     }
 
     /**
-     * Build the excel fil of the list of the appointments found in the manage appointment viw by filter
-     * 
-     * @param strIdForm
-     *            the form id
-     * @param response
-     *            the response
-     * @param locale
-     *            the local
-     * @param listAppointmentsDTO
-     *            the list of the appointments to input in the excel file
-     * @param stateService
-     *            the state service
-     */
-    public static void buildExcelFileWithAppointments( String strIdForm, HttpServletResponse response, Locale locale, List<AppointmentDTO> listAppointmentsDTO,
-            StateService stateService )
-    {
-        AppointmentFormDTO tmpForm = FormService.buildAppointmentFormLight( Integer.parseInt( strIdForm ) );
-        XSSFWorkbook workbook = new XSSFWorkbook( );
-        XSSFSheet sheet = workbook.createSheet( I18nService.getLocalizedString( KEY_RESOURCE_TYPE, locale ) );
-        List<Object [ ]> tmpObj = new ArrayList<Object [ ]>( );
-        EntryFilter entryFilter = new EntryFilter( );
-        entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
-        List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
-        Map<Integer, String> mapDefaultValueGenAttBackOffice = new HashMap<Integer, String>( );
-        for ( Entry e : listEntry )
-        {
-            if ( e.isOnlyDisplayInBack( ) )
-            {
-                e = EntryHome.findByPrimaryKey( e.getIdEntry( ) );
-                if ( e.getFields( ) != null && e.getFields( ).size( ) == 1 && !StringUtils.isEmpty( e.getFields( ).get( 0 ).getValue( ) ) )
-                {
-                    mapDefaultValueGenAttBackOffice.put( e.getIdEntry( ), e.getFields( ).get( 0 ).getValue( ) );
-                }
-                else
-                    if ( e.getFields( ) != null )
-                    {
-                        for ( Field field : e.getFields( ) )
-                        {
-                            if ( field.isDefaultValue( ) )
-                            {
-                                mapDefaultValueGenAttBackOffice.put( e.getIdEntry( ), field.getValue( ) );
-                            }
-                        }
-                    }
-            }
-        }
-        int nTaille = 10 + ( listEntry.size( ) + 1 );
-        if ( tmpForm != null )
-        {
-            int nIndex = 0;
-            Object [ ] strWriter = new String [ 1];
-            strWriter [0] = tmpForm.getTitle( );
-            tmpObj.add( strWriter );
-            Object [ ] strInfos = new String [ nTaille];
-            strInfos [0] = I18nService.getLocalizedString( KEY_COLUMN_LAST_NAME, locale );
-            strInfos [1] = I18nService.getLocalizedString( KEY_COLUMN_FISRT_NAME, locale );
-            strInfos [2] = I18nService.getLocalizedString( KEY_COLUMN_EMAIL, locale );
-            strInfos [3] = I18nService.getLocalizedString( KEY_COLUMN_DATE_APPOINTMENT, locale );
-            strInfos [4] = I18nService.getLocalizedString( KEY_TIME_START, locale );
-            strInfos [5] = I18nService.getLocalizedString( KEY_TIME_END, locale );
-            strInfos [6] = I18nService.getLocalizedString( KEY_COLUMN_ADMIN, locale );
-            strInfos [7] = I18nService.getLocalizedString( KEY_COLUMN_STATUS, locale );
-            strInfos [8] = I18nService.getLocalizedString( KEY_COLUMN_STATE, locale );
-            strInfos [9] = I18nService.getLocalizedString( KEY_COLUMN_NB_BOOKED_SEATS, locale );
-            nIndex = 1;
-            if ( listEntry.size( ) > 0 )
-            {
-                for ( Entry e : listEntry )
-                {
-                    strInfos [10 + nIndex] = e.getTitle( );
-                    nIndex++;
-                }
-            }
-            tmpObj.add( strInfos );
-        }
-        if ( listAppointmentsDTO != null )
-        {
-            for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
-            {
-                int nIndex = 0;
-                Object [ ] strWriter = new String [ nTaille];
-                strWriter [0] = appointmentDTO.getLastName( );
-                strWriter [1] = appointmentDTO.getFirstName( );
-                strWriter [2] = appointmentDTO.getEmail( );
-                strWriter [3] = appointmentDTO.getDateOfTheAppointment( );
-                strWriter [4] = appointmentDTO.getStartingTime( ).toString( );
-                strWriter [5] = appointmentDTO.getEndingTime( ).toString( );
-                strWriter [6] = appointmentDTO.getAdminUser( );
-                String status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_RESERVED, locale );
-                if ( appointmentDTO.getIsCancelled( ) )
-                {
-                    status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_UNRESERVED, locale );
-                }
-                strWriter [7] = status;
-                State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                        tmpForm.getIdWorkflow( ) );
-                String strState = StringUtils.EMPTY;
-                if ( stateAppointment != null )
-                {
-                    appointmentDTO.setState( stateAppointment );
-                    strState = stateAppointment.getName( );
-                }
-                strWriter [8] = strState;
-                nIndex = 1;
-                strWriter [9] = Integer.toString( appointmentDTO.getNbBookedSeats( ) );
-                List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse( appointmentDTO.getIdAppointment( ) );
-                List<Response> listResponses = new ArrayList<Response>( );
-                for ( int nIdResponse : listIdResponse )
-                {
-                    Response resp = ResponseHome.findByPrimaryKey( nIdResponse );
-                    if ( resp != null )
-                    {
-                        listResponses.add( resp );
-                    }
-                }
-                for ( Entry e : listEntry )
-                {
-                    Integer key = e.getIdEntry( );
-                    StringBuffer strValue = new StringBuffer( StringUtils.EMPTY );
-                    String strPrefix = StringUtils.EMPTY;
-                    for ( Response resp : listResponses )
-                    {
-                        String strRes = StringUtils.EMPTY;
-                        if ( key.equals( resp.getEntry( ).getIdEntry( ) ) )
-                        {
-                            Field f = resp.getField( );
-                            int nfield = 0;
-                            if ( f != null )
-                            {
-                                nfield = f.getIdField( );
-                                Field field = FieldHome.findByPrimaryKey( nfield );
-                                if ( field != null )
-                                {
-                                    strRes = field.getTitle( );
-                                }
-                            }
-                            else
-                            {
-                                strRes = resp.getResponseValue( );
-                            }
-                        }
-                        if ( ( strRes != null ) && !strRes.isEmpty( ) )
-                        {
-                            strValue.append( strPrefix + strRes );
-                            strPrefix = CONSTANT_COMMA;
-                        }
-                    }
-                    if ( strValue.toString( ).isEmpty( ) && mapDefaultValueGenAttBackOffice.containsKey( key ) )
-                    {
-                        strValue.append( mapDefaultValueGenAttBackOffice.get( key ) );
-                    }
-                    if ( !strValue.toString( ).isEmpty( ) )
-                    {
-                        strWriter [10 + nIndex] = strValue.toString( );
-                    }
-                    nIndex++;
-                }
-                tmpObj.add( strWriter );
-            }
-        }
-        int nRownum = 0;
-        for ( Object [ ] myObj : tmpObj )
-        {
-            Row row = sheet.createRow( nRownum++ );
-            int nCellnum = 0;
-            for ( Object strLine : myObj )
-            {
-                Cell cell = row.createCell( nCellnum++ );
-                if ( strLine instanceof String )
-                {
-                    cell.setCellValue( (String) strLine );
-                }
-                else
-                    if ( strLine instanceof Boolean )
-                    {
-                        cell.setCellValue( (Boolean) strLine );
-                    }
-                    else
-                        if ( strLine instanceof Date )
-                        {
-                            cell.setCellValue( (Date) strLine );
-                        }
-                        else
-                            if ( strLine instanceof Double )
-                            {
-                                cell.setCellValue( (Double) strLine );
-                            }
-            }
-        }
-        try
-        {
-            String now = new SimpleDateFormat( "yyyyMMdd-hhmm" ).format( GregorianCalendar.getInstance( locale ).getTime( ) ) + "_"
-                    + I18nService.getLocalizedString( KEY_RESOURCE_TYPE, locale ) + EXCEL_FILE_EXTENSION;
-            response.setContentType( EXCEL_MIME_TYPE );
-            response.setHeader( "Content-Disposition", "attachment; filename=\"" + now + "\";" );
-            response.setHeader( "Pragma", "public" );
-            response.setHeader( "Expires", "0" );
-            response.setHeader( "Cache-Control", "must-revalidate,post-check=0,pre-check=0" );
-            OutputStream os = response.getOutputStream( );
-            workbook.write( os );
-            os.close( );
-            workbook.close( );
-        }
-        catch( IOException e )
-        {
-            AppLogService.error( e );
-        }
-    }
-
-    /**
      * Kill the lock timer on a slot
      * 
      * @param request
      *            the request
      */
-    public static void killTimer( HttpServletRequest request )
+    public static void killTimer( HttpServletRequest request, int idSlot )
     {
-    	TimerForLockOnSlot timer = (TimerForLockOnSlot) request.getSession( ).getAttribute( SESSION_TIMER_SLOT );
+        TimerForLockOnSlot timer = (TimerForLockOnSlot) request.getSession( ).getAttribute( SESSION_TIMER_SLOT + idSlot );
         if ( timer != null )
         {
-        	timer.setIsCancelled(true);
+            timer.setIsCancelled( true );
             timer.cancel( );
-            request.getSession( ).removeAttribute( SESSION_TIMER_SLOT );
+            request.getSession( ).removeAttribute( SESSION_TIMER_SLOT + idSlot );
         }
     }
 
@@ -846,33 +610,35 @@ public final class AppointmentUtilities
      *            the max people per appointment
      * @return the timer
      */
-    public static synchronized  Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
+    public static synchronized Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
     {
-    	Slot slot = SlotService.findSlotById( nIdSlot );
-    	
-       
-        int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
-        
-        if( slot.getNbPotentialRemainingPlaces() > 0 ){
-        	
-        	appointmentDTO.setNbMaxPotentialBookedSeats( nbPotentialPlacesTaken );
-           // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces - nbPotentialPlacesTaken );
-            SlotSafeService.decrementPotentialRemainingPlaces(nbPotentialPlacesTaken, slot.getIdSlot( ));
+        Slot slot = SlotService.findSlotById( nIdSlot );
 
-            //SlotService.updateSlot( slot );
-	     
-	        TimerForLockOnSlot timer = new TimerForLockOnSlot( );
-	        SlotEditTask slotEditTask = new SlotEditTask( timer );
-	        slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
-	        slotEditTask.setIdSlot( slot.getIdSlot( ) );
-	        long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
-	        timer.schedule( slotEditTask, delay );
-	        request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT, timer );
-	        return timer;
-    	}
-        appointmentDTO.setNbMaxPotentialBookedSeats(0);
-    	return null;
+        int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
+        // int nNbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
+        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
+        int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
+
+        if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
+        {
+
+            appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
+            // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces - nbPotentialPlacesTaken );
+            SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
+
+            // SlotService.updateSlot( slot );
+
+            TimerForLockOnSlot timer = new TimerForLockOnSlot( );
+            SlotEditTask slotEditTask = new SlotEditTask( timer );
+            slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
+            slotEditTask.setIdSlot( slot.getIdSlot( ) );
+            long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
+            timer.schedule( slotEditTask, delay );
+            request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT + slotEditTask.getIdSlot( ), timer );
+            return timer;
+        }
+        appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
+        return null;
     }
 
     /**
@@ -882,9 +648,9 @@ public final class AppointmentUtilities
      * @param request
      * @return
      */
-    public static String [ ][ ] getPermissions( List<AppointmentFormDTO> listForms, AdminUser user )
+    public static String [ ] [ ] getPermissions( List<AppointmentFormDTO> listForms, AdminUser user )
     {
-        String [ ][ ] retour = new String [ listForms.size( )] [ 6];
+        String [ ] [ ] retour = new String [ listForms.size( )] [ 6];
         int nI = 0;
 
         for ( AppointmentFormDTO tmpForm : listForms )
@@ -993,12 +759,19 @@ public final class AppointmentUtilities
             boolean bAppointmentOnOpenDays = false;
             for ( Appointment appointment : listAppointment )
             {
-                Slot tempSlot = SlotService.findSlotById( appointment.getIdSlot( ) );
-                if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
+                for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
                 {
-                    bAppointmentOnOpenDays = true;
-                    break;
+
+                    Slot tempSlot = SlotService.findSlotById( appSlot.getIdSlot( ) );
+
+                    if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
+                    {
+                        bAppointmentOnOpenDays = true;
+                        break;
+                    }
                 }
+                if ( bAppointmentOnOpenDays )
+                    break;
             }
             bNoAppointmentsImpacted = !bAppointmentOnOpenDays;
         }
@@ -1108,27 +881,74 @@ public final class AppointmentUtilities
             // until the end of the day
             if ( bShiftSlot )
             {
-                listSlotsImpacted = listSlots
-                        .stream( )
-                        .filter(
-                                slot -> ( ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) ) && ( !slot
-                                        .getStartingTime( ).isBefore( timeSlot.getStartingTime( ) ) || ( slot.getStartingTime( ).isBefore(
-                                        timeSlot.getStartingTime( ) ) && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) ) ) ) )
+                listSlotsImpacted = listSlots.stream( )
+                        .filter( slot -> ( ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
+                                && ( !slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
+                                        || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
+                                                && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) ) ) ) )
                         .collect( Collectors.toList( ) );
             }
             else
             {
-                listSlotsImpacted = listSlots
-                        .stream( )
-                        .filter(
-                                slot -> ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
-                                        && ( slot.getStartingTime( ).equals( timeSlot.getStartingTime( ) )
-                                                || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) ) && ( slot.getEndingTime( )
-                                                        .isAfter( timeSlot.getStartingTime( ) ) ) ) || ( slot.getStartingTime( ).isAfter(
-                                                timeSlot.getStartingTime( ) ) && ( !slot.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ) ) ) )
+                listSlotsImpacted = listSlots.stream( )
+                        .filter( slot -> ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
+                                && ( slot.getStartingTime( ).equals( timeSlot.getStartingTime( ) )
+                                        || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
+                                                && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) )
+                                        || ( slot.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) )
+                                                && ( !slot.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ) ) ) )
                         .collect( Collectors.toList( ) );
             }
         }
         return listSlotsImpacted;
+    }
+
+    public static LocalDateTime getStartingDateTime( Appointment appointmentDTO )
+    {
+
+        List<Slot> listSlot = appointmentDTO.getSlot( );
+        if ( listSlot != null && !listSlot.isEmpty( ) )
+        {
+
+            Slot slot = listSlot.stream( ).min( Comparator.comparing( Slot::getStartingDateTime ) ).orElse( listSlot.get( 0 ) );
+            return slot.getStartingDateTime( );
+        }
+
+        return null;
+    }
+
+    public static LocalDateTime getEndingDateTime( Appointment appointmentDTO )
+    {
+
+        List<Slot> listSlot = appointmentDTO.getSlot( );
+        if ( listSlot != null && !listSlot.isEmpty( ) )
+        {
+
+            Slot slot = listSlot.stream( ).max( Comparator.comparing( Slot::getStartingDateTime ) ).orElse( listSlot.get( 0 ) );
+            return slot.getEndingDateTime( );
+        }
+
+        return null;
+    }
+
+    /**
+     * return true if all slots are consecutive
+     * 
+     * @param allSlots
+     *            the list of slots
+     * @return true if all slots are consecutive
+     */
+    public static boolean isConsecutiveSlots( List<Slot> allSlots )
+    {
+        Slot slot = null;
+        for ( Slot nextSlot : allSlots )
+        {
+            if ( nextSlot == null || slot != null && !Objects.equals( slot.getEndingDateTime( ), nextSlot.getStartingDateTime( ) ) )
+            {
+                return false;
+            }
+            slot = nextSlot;
+        }
+        return true;
     }
 }

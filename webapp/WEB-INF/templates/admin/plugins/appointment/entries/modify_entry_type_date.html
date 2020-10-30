@@ -27,14 +27,13 @@
 							<@input type='textarea' name='comment' rows=5>${entry.comment}</@input>
 						</@formGroup>
 						<@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
-							<#list entry.fields as field>
-								<@inputGroup>
-									<@inputGroupItem type='addon'>
-										<@icon style='calendar' />
-									</@inputGroupItem>
-									<@input type='text' name='date' id='date' value='${field.valueTypeDate?if_exists}' />
-								</@inputGroup>
-							</#list>
+							<#assign field = getFieldByCode( entry, "default_date_value" ) >
+							<@inputGroup>
+								<@inputGroupItem type='addon'>
+									<@icon style='calendar' />
+								</@inputGroupItem>
+								<@input type='text' name='date' id='date' value='${field.valueTypeDate?if_exists}' />
+							</@inputGroup>
 						</@formGroup>
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
 							<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.mandatory />

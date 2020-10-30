@@ -14,7 +14,7 @@
 					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
-					<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
+	<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
 					<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
@@ -68,6 +68,12 @@
 						</@inputGroup>
 						<@getDatePickerBootstrap idField="date_end_validity" language=language />
 					</@formGroup>
+					<@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
+                      <@checkBox labelFor='bo_overbooking' name='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+     				</@formGroup> 
+					<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
+						<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false />
+					</@formGroup>
 					
 					<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
 						<@checkBox name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
@@ -104,7 +110,6 @@
 					<@formGroup labelFor='reference' labelKey='#i18n{appointment.createAppointmentForm.labelReference}' helpKey='#i18n{appointment.createAppointmentForm.labelReference.help}'>
 						<@input type='text' name='reference' id='reference' value=appointmentform.reference!'' maxlength=10 />
 					</@formGroup>
-	
 					</fieldset>
 				</@boxBody>
 			</@box>
@@ -171,7 +176,11 @@
 						<@formGroup>
 							<@checkBox name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' />
 						</@formGroup>
-
+						
+						<@formGroup>
+							<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
+						</@formGroup>
+						
 						<@formGroup labelFor='icon' labelKey='#i18n{appointment.createAppointmentForm.labelIconForm}' helpKey='#i18n{appointment.modifyAppointmentForm.helpFormatIcon}'>
 							<@inputGroup>
 								<@input type='file' id='image_resource' name='image_resource' params='accept="image/*"' />
@@ -224,13 +233,23 @@
 										document.getElementsByTagName("head")[0].appendChild(loadresource);
 								}
 
+<<<<<<< HEAD
+                        $(window).load(function() {
+                            var map = L.map('map_address').setView([48.85632, 2.33272], 12);
+                            var markers_layer = L.featureGroup().addTo(map);
+                            // create the tile layer with correct attribution
+                            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                            var osmAttrib='Map data ï¿½ <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+                            var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
+=======
 								$(window).load(function() {
 										var map = L.map('map_address').setView([48.85632, 2.33272], 12);
 										var markers_layer = L.featureGroup().addTo(map);
 										// create the tile layer with correct attribution
 										var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-										var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+										var osmAttrib='Map data ï¿½ <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 										var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
+>>>>>>> develop
 
 										var jAdresse = $('#address_address');
 										jAdresse.suggestPOI();

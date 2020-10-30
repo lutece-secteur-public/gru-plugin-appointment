@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,19 +31,76 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.web.rs;
+package fr.paris.lutece.plugins.appointment.business.appointment;
 
-public final class Constants
+public class AppointmentSlot
 {
-    public static final String BASE_REST_PATH = "rest/";
-    public static final String FORM_PATH = "form/";
-    public static final String IMPORT_PATH = "import/";
-    public static final String PLUGIN_PATH = "rdv/";
+
+    // Variables declarations
+    private int _nIdAppointment;
+    private int _nIdSlot;
+    private int _nNbPlaces;
 
     /**
-     * Default constructor
+     * Returns the IdAppointment
+     * 
+     * @return The IdAppointment
      */
-    private Constants( )
+    public int getIdAppointment( )
     {
+        return _nIdAppointment;
+    }
+
+    /**
+     * Sets the IdAppointment
+     * 
+     * @param nIdAppointment
+     *            The IdAppointment
+     */
+    public void setIdAppointment( int nIdAppointment )
+    {
+        _nIdAppointment = nIdAppointment;
+    }
+
+    /**
+     * Returns the IdSlot
+     * 
+     * @return The IdSlot
+     */
+    public int getIdSlot( )
+    {
+        return _nIdSlot;
+    }
+
+    /**
+     * Sets the IdSlot
+     * 
+     * @param nIdSlot
+     *            The IdSlot
+     */
+    public void setIdSlot( int nIdSlot )
+    {
+        _nIdSlot = nIdSlot;
+    }
+
+    /**
+     * Returns the NbPlaces
+     * 
+     * @return The NbPlaces
+     */
+    public int getNbPlaces( )
+    {
+        return _nNbPlaces;
+    }
+
+    /**
+     * Sets the NbPlaces
+     * 
+     * @param nNbPlaces
+     *            The NbPlaces
+     */
+    public void setNbPlaces( int nNbPlaces )
+    {
+        _nNbPlaces = nNbPlaces;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,16 +82,14 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
         listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, user );
         listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-        model.put(
-                MARK_APPOINTMENTFORM_LIST,
-                RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                        AdminUserService.getAdminUser( request ) ) );
+        model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
+                AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
-        model.put( MARK_PERMISSION_CREATE, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0",
-                AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
+        model.put( MARK_PERMISSION_CREATE, String.valueOf(
+                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( listAppointmentForm, AdminUserService.getAdminUser( request ) ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, AdminUserService.getLocale( request ), model );
         return template.getHtml( );

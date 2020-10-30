@@ -11,21 +11,13 @@
 			</#if>
 		</#list>
 	<#else>
-		<#if field.value?exists>
-			<#assign value = field.value />
-		<#else>
-			<#assign value = '' />
-		</#if>
-	</#if>
-	<#if field.maxSizeEnter!=-1>
-		<#assign maxlength = field.maxSizeEnter />
+			<#assign value=getFieldValueByCode( entry, "text_config")>
 	</#if>
 </#list>
-	
+<#assign field_max_size=getFieldValueByCode( entry, "max_size")>
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' mandatory=entry.mandatory class=class>
-	<#list entry.fields as field>
-		<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field.width class='${entry.CSSClass!}' value=value />
-	</#list>
+	<#assign field_width=getFieldValueByCode( entry, "width")>
+	<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' inputSize=field_width?number class='${entry.CSSClass!}' value=value />
 	<#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.entry.error??  && response.entry.error.isDisplayableError>
@@ -39,15 +31,10 @@
 </@formGroup>
 
 
-<#if entry.confirmField>
-<@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey='${entry.confirmFieldTitle}' mandatory=entry.mandatory>
-	<#list entry.fields as field>
-		<#assign maxlength = 0 />
-		<#if field.maxSizeEnter!=-1>
-			<#assign maxlength = field.maxSizeEnter />
-		</#if>
-		
-		<@input type='text' name='attribute${entry.idEntry}_confirm_field' id='attribute${entry.idEntry}_confirm_field' inputSize=field.width value=entry.comment maxlength=maxlength />
-	</#list>
+<#assign confirmField=getFieldByCode( entry, "confirm_field")>
+<#if confirmField.value?boolean >
+<@formGroup labelFor='attribute${entry.idEntry}_confirm_field' labelKey=confirmField.title mandatory=entry.mandatory>
+	<#assign field_width=getFieldValueByCode( entry, "width")>
+	<@input type='text' name='attribute${entry.idEntry}_confirm_field' id='attribute${entry.idEntry}_confirm_field' inputSize=field_width?number value=entry.comment maxlength=field_max_size />
 </@formGroup>
 </#if>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -103,6 +103,17 @@ public interface IAppointmentDAO
      * @return a list of the appointments of the user
      */
     List<Appointment> findByIdUser( int nIdUser, Plugin plugin );
+
+    /**
+     * Returns all the appointments of a user by Guid
+     * 
+     * @param strGuidUser
+     *            the User Guid
+     * @param plugin
+     *            the Plugin
+     * @return a list of the appointments of the user by Guid
+     */
+    List<Appointment> findByGuidUser( String strGuidUser, Plugin plugin );
 
     /**
      * Returns the appointments of a slot

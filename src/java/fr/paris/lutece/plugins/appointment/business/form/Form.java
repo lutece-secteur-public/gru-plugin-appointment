@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -67,6 +68,9 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      */
     @JsonIgnore
     public static final String RESOURCE_TYPE = "APPOINTMENT_FORM";
+
+    @JsonIgnore
+    public static final String ROLE_NONE = "none";
 
     /**
      * Form Id
@@ -120,6 +124,16 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Workgroup
      */
     private String _strWorkgroup;
+
+    /**
+     * _bIsMultislotAppointment
+     */
+    private boolean _bIsMultislotAppointment;
+
+    /**
+     * Role FO
+     */
+    private String _strRole;
 
     /**
      * Get the form Id
@@ -403,6 +417,44 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     public String getResourceId( )
     {
         return Integer.toString( getIdForm( ) );
+    }
+
+    /**
+     * Returns the IsMultislotAppointment
+     * 
+     * @return The IsMultislotAppointment
+     */
+    public boolean getIsMultislotAppointment( )
+    {
+        return _bIsMultislotAppointment;
+    }
+
+    /**
+     * Sets the IsMultislotAppointment
+     * 
+     * @param bIsMultislotAppointment
+     *            The IsMultislotAppointment
+     */
+    public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
+    {
+        _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
+
+    /**
+     * @return the strRole
+     */
+    public String getRole( )
+    {
+        return _strRole;
+    }
+
+    /**
+     * @param strRole
+     *            the strRole to set
+     */
+    public void setRole( String strRole )
+    {
+        _strRole = StringUtils.isEmpty( strRole ) ? ROLE_NONE : strRole;
     }
 
 }

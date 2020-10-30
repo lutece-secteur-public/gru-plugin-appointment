@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,8 @@ public abstract class AbstractPortletJspBean extends PortletJspBean
 {
 
     /**
-	 * 
-	 */
+     * 
+     */
     private static final long serialVersionUID = 8507575062494354655L;
 
     /**

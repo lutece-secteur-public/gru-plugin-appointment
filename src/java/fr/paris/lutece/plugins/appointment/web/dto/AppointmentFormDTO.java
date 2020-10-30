@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
@@ -257,6 +258,19 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      * Address
      */
     private String _strAddress;
+    /**
+     * BoOverbooking
+     */
+    private boolean _bBoOverbooking;
+    /**
+     * isMultislotAppointment
+     */
+    private boolean _bIsMultislotAppointment;
+
+    /**
+     * Role FO
+     */
+    private String _strRole;
 
     /**
      * Get the maximum number of appointments authorized for a same user
@@ -1062,4 +1076,62 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
         _strWorkgroup = workGroup;
     }
 
+    /**
+     * Returns the BoOverbooking
+     * 
+     * @return The BoOverbooking
+     */
+    public boolean getBoOverbooking( )
+    {
+        return _bBoOverbooking;
+    }
+
+    /**
+     * Sets the BoOverbooking
+     * 
+     * @param bBoOverbooking
+     *            The BoOverbooking
+     */
+    public void setBoOverbooking( boolean bBoOverbooking )
+    {
+        _bBoOverbooking = bBoOverbooking;
+    }
+
+    /**
+     * Returns the IsMultislotAppointment
+     * 
+     * @return The IsMultislotAppointment
+     */
+    public boolean getIsMultislotAppointment( )
+    {
+        return _bIsMultislotAppointment;
+    }
+
+    /**
+     * Sets the IsMultislotAppointment
+     * 
+     * @param bIsMultislotAppointment
+     *            The IsMultislotAppointment
+     */
+    public void setIsMultislotAppointment( boolean bIsMultislotAppointment )
+    {
+        _bIsMultislotAppointment = bIsMultislotAppointment;
+    }
+
+    /**
+     * @return the strRole
+     */
+    public String getRole( )
+    {
+        return _strRole;
+    }
+
+    /**
+     * @param strRole
+     *            the strRole to set
+     */
+    public void setRole( String strRole )
+    {
+        _strRole = strRole;
+    }
 }

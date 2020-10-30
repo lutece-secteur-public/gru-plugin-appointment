@@ -1,0 +1,347 @@
+<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
+<script src="js/plugins/appointment/moment.min.js" ></script>
+<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
+<link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
+<script src='js/plugins/appointment/jquery.min.js' ></script>
+<script src='js/plugins/appointment/fullcalendar.min.js' ></script>
+<script src='js/plugins/appointment/locale-all.js' ></script>
+<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
+<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
+<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
+<@row>
+    <@columns>
+        <legend>
+            ${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}
+        </legend>
+        <@appointmentTabs tab="calendar" form=form />
+        <@messages errors=errors infos=infos />
+        <#if formCalendarErrors??>
+            <div class="layout-wrapper"></div>
+        <#else>
+            <@tabContent>
+                <fieldset>
+                    <a href="javascript:void(0)" id="toggle-add-comment">+</a>
+                    <div id="calendar">
+                    </div>
+                </fieldset>
+            </@tabContent>
+        </#if>
+    </@columns>
+</@row>
+<!-- The Modal -->
+
+
+<div class="modal fade" id="my_modal" tabindex="-1" role="dialog" aria-labelledby="qModalLabel">
+    <div class="modal-dialog modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="#i18n{blog.create_blog.labelCollapse}">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                <h4 class="modal-title" id="qModalLabel">#i18n{appointment.appointmentApp.defaultTitle}</h4>
+            </div>
+            <div class="modal-body">
+                <p id="loader" class="text-center">
+                    #i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}
+                </p>
+		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
+						
+					<fieldset>
+						<input type="hidden" name="view" value="createAppointment" />
+						<input type="hidden" name="id_form" value="${id_form}" />
+						<input type="hidden" id="starting_date_time" name="starting_date_time" value="" />
+	<@formGroup class='${formGroupClass!}' labelFor='starting_date' labelKey='#i18n{appointment.dateAppointment.title}' helpKey='${formGroupHelpKey!}' mandatory=true>
+<span id="starting_date_time_span" ></span>
+						</@formGroup>
+						<@formGroup class='${formGroupClass!}' labelFor='nbPlacesToTake' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='${formGroupHelpKey!}' mandatory=true>
+								<@input type='number' name='nbPlacesToTake' id='nbPlacesToTake' value='1' maxlength=3 params='onkeypress="return validateQty(event);"' min=1 max=10 />
+						</@formGroup>
+					
+					</fieldset>
+				<@formGroup>
+					<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.displayAppointmentForm.labelValidate}' />
+							
+				</@formGroup>	
+				</@tform>
+					
+            </div>
+         
+        </div>
+    </div>
+</div>
+
+<!-- comment form -->
+<div id="comment" style="display:none;">
+    <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+            <@boxBody>
+            
+                <fieldset>
+                <legend class="hidden">#i18n{appointment.createField.title}</legend>
+                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+                </fieldset>
+            </@boxBody>
+      </@box>
+</div>
+
+<!-- modify-comment form -->
+<div id="modify-comment" style="display:none;">
+    <@box color='primary'>
+            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+            <@boxBody>
+            
+                <fieldset>
+                <legend class="hidden">#i18n{appointment.createField.title}</legend>
+                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+                </fieldset>
+            </@boxBody>
+     </@box>  
+</div>
+
+<script type="text/javascript">
+    var slotDuration = '${min_duration}';
+    var minTime = '${min_time}';
+    var maxTime = '${max_time}';
+    var dow = [
+        <#if dow??>
+            <#list dow as day>
+                '${day}',
+            </#list>
+        </#if>
+    ];
+    var startingDateOfDisplay = '${starting_date_of_display}';
+    var endingDateOfDisplay = '${ending_date_of_display}';
+    var strStartingDateOfDisplay = '${str_starting_date_of_display}';
+    var strEndingDateOfDisplay = '${str_ending_date_of_display}';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
+    var idForm = '${id_form}';
+    var columnFormat = 'dddd DD/MM/YYYY';
+    var events = [
+        <#if comment_events??>
+        <#list comment_events as comment_event>
+        
+        {
+            "title" : "${comment_event.comment}",
+            "start" : "${comment_event.startingValidityDate}",
+            "end" : "${comment_event.endingValidityDate}",
+            "id" : "${comment_event.id}",
+            "creator_user" : "${comment_event.creatorUserName!''}",
+            "creation_date" : "${comment_event.creationDate!''}",
+            "type": "comment"
+        },
+        
+        </#list>
+        </#if>
+        <#if events??>
+            <#list events as event>
+                <#assign nbAppointments = event.nbPlacesTaken>
+                {
+                    "title" : <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                           
+                          <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                               "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                + "&nbsp;"
+                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"Add this item\" class=\"open-AddBookDialog\"><i class=\"glyphicon icon-plus-sign\"></i></a>"
+                    		<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                + "&nbsp;"
+                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.appointmentApp.defaultTitle}\" class=\"open-AddBookDialog\"><i class=\"glyphicon icon-plus-sign\"></i></a>"
+                            <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                            <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
+                            <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                + "&nbsp;"
+                                + "#i18n{appointment.manageCalendarSlots.labelEdit}"
+                                + "&nbsp;"
+                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.appointmentApp.defaultTitle}\" class=\"open-AddBookDialog\"><i class=\"glyphicon icon-plus-sign\"></i></a>"
+                            <#elseif event.isOpen>
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                            <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                            <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>"</#if>,
+                    "start" : "${event.startingDateTime}",
+                    "end" : "${event.endingDateTime}",
+                    "id" : "${event.idSlot}",
+                    "textColor": <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"white"<#else>"#2c2c2d"</#if>,
+                    "url" : eventUrl + "manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}",                                                      
+                    "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"#ff6600"
+                    				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>"white"
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>"red"
+                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>"red"
+                                      <#elseif event.isOpen & event.isPassed>"#bebebe"
+                                      <#else>"#bebebe"
+                                      </#if>,
+                    "borderColor" : "#bebebe",
+                    "type": "appointment"
+                },
+            </#list>
+        </#if>
+    ];
+    var defaultDate = '${date_of_display}';
+    $(document).ready(function() {
+        $('#calendar').fullCalendar({
+            displayEventTime: false,
+            buttonText : {
+                prev : '#i18n{appointment.appointmentApp.previousWeek}',
+                next : '#i18n{appointment.appointmentApp.nextWeek}',
+            },
+            theme: true,
+            navLinks: true,
+            navLinkDayClick: function(date, jsEvent) {
+                location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
+            },
+            defaultDate: defaultDate,
+            defaultView: 'agendaWeek',
+            height: 'auto',
+            locale: "${locale}",
+            theme: true,
+            editable: false,
+            customButtons: {
+                datePicker: {
+                    text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
+                    click: function () {
+                        var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
+                        $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
+                        $("#hiddenDate").datepicker({
+                            showOn: "button",
+                            language: "${locale}",
+                            autoclose: true,
+                            startDate: strStartingDateOfDisplay,
+                            endDate: strEndingDateOfDisplay,
+                            orientation: "bottom"
+                        });
+                        var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
+                        //Below are required for manipulating dynamically created datepicker on custom button click
+                        $("#hiddenDate").focus().hide();
+                        $btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
+                        $btnDatepicker.hide();
+                        $btnDatepicker.remove();
+                        $("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
+                        $("#hiddenDate").change(function () {
+                            $('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
+                        });
+                    }
+                }
+            },
+            header: {
+                left: 'prev',
+                center: 'today, datePicker, title',
+                right: 'next'
+            },
+            columnHeaderHtml: function(mom) {
+                return mom.format('dddd') + '</br>' + mom.format('LL');
+            },
+            slotLabelFormat: 'H:mm',
+            slotLabelInterval: slotDuration,
+            slotDuration: slotDuration,
+            allDaySlot: true,
+            minTime: minTime,
+            maxTime: maxTime,
+            businessHours: {
+                start: minTime,
+                end: maxTime,
+                dow: dow
+            },
+        
+            events: events,
+            viewRender: function(view, element) {
+                var minDate = moment(startingDateOfDisplay);
+                var maxDate = moment(endingDateOfDisplay);
+                // Past
+                if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
+                    $(".fc-prev-button").prop('disabled', true);
+                    $(".fc-prev-button").addClass('fc-state-disabled');
+                } else {
+                    $(".fc-prev-button").removeClass('fc-state-disabled');
+                    $(".fc-prev-button").prop('disabled', false); 
+                }
+                // Future
+                if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
+                    $(".fc-next-button").prop('disabled', true);
+                    $(".fc-next-button").addClass('fc-state-disabled');
+                } else {
+                    $(".fc-next-button").removeClass('fc-state-disabled');
+                    $(".fc-next-button").prop('disabled', false); 
+                }
+            },
+            eventAfterAllRender: function(view) {
+                $('.fc-event').css('cursor', 'pointer');
+                $('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
+                $('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
+                $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
+                $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+            },
+            windowResize: function(view) {
+                if ($(window).width() < 1050){
+                    $('#calendar').fullCalendar( 'changeView', 'agendaDay' );    
+                    $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
+                    $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
+                } else {
+                    $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );                        
+                    $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
+                    $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
+                }
+            },
+            eventRender: function( event, element, view ) {
+                var $title = element.find( '.fc-title' );
+                $title.html( $title.text() );
+                var json = {
+                	container: 'body',
+                    placement : 'bottom',
+                    html : true,
+                    trigger : 'hover'
+                }
+                if( event.type == "comment" ){
+                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
+                }else{
+                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                }
+                $(element).popover( json );
+                $(element).contextmenu(function() {
+                    return false;
+                });
+                if(event.type == "comment" )
+                {
+                    element.append( "<a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon' style='position: relative; top: 2px; left: 2px; text-decoration: none;'>&#x1F5D1;</a><a href='javascript:void(0)' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.end + "\" }' >&#9998;</a>" );
+                }
+            }
+        });
+    });
+
+//triggered when modal is about to be shown
+$(document).ready(function () {
+    $(".open-AddBookDialog").click(function () {
+        $('#starting_date_time').val($(this).data('starting_date_time'));
+	$('#starting_date_time_span').text($(this).data('starting_date_time'));
+        $('#my_modal').modal('show');
+    });
+
+
+ 
+});
+</script>
+<#include "/admin/util/editor/editor.html" />
+<@initEditor />
+<@getDatePickerBootstrap idField="modifyStartingValidityDate" language=locale />
+<@getDatePickerBootstrap idField="modifyEndingValidityDate" language=locale />
+<@getDatePickerBootstrap idField="startingValidityDate" language=locale />
+<@getDatePickerBootstrap idField="endingValidityDate" language=locale />
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#toggle-add-comment").click(function() {
+        $("#comment").toggle();
+    });
+});
+$(document).ready(function() {
+    $(".toggle-modify-comment").click(function( ) {
+        var formValues = JSON.parse( $(this).attr( "data-json" ) );
+        $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
+        tinyMCE.activeEditor.setContent( formValues.comment_text );
+        $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
+        $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_end ) ) );
+        $( "#modify-comment" ).toggle();
+    });
+});
+</script>

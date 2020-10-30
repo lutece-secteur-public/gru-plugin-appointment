@@ -1,6 +1,8 @@
-<#macro getTextAreaContent responseContent entry field>
+<#macro getTextAreaContent responseContent entry>
+	<#assign field_width=getFieldByCode( entry, "width")>
+	<#assign field_height=getFieldByCode( entry, "height")>
 	<#-- 	fieldInLine means use rich text -->
-	<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field.width}" rows="${field.height}" class="form-control ${entry.CSSClass!}<#if entry.fieldInLine> richtext</#if>" >${responseContent}</textarea>
+	<textarea name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" cols="${field_width.value}" rows="${field_height.value}" class="form-control ${entry.CSSClass!}<#if entry.fieldInLine> richtext</#if>" >${responseContent}</textarea>
 </#macro>
 
 <#if list_responses??>
@@ -14,21 +16,16 @@
 <div class="form-group<#if hasError??> has-error</#if>">
 <label class="col-xs-12 control-label" for="attribute${entry.idEntry}">${entry.title}<#if entry.mandatory> *</#if></label>
 <div class=" col-xs-12">
-	<#list entry.fields as field>
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
-					<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry field=field/>
-				</#if>
-			</#list>
-		<#else>
-			<#if field.value?exists>
-				<@getTextAreaContent responseContent=field.value entry=entry field=field/>
-			<#else>
-				<@getTextAreaContent responseContent="" entry=entry field=field/>
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
+				<@getTextAreaContent responseContent=response.toStringValueResponse entry=entry/>
 			</#if>
-		</#if>
-	</#list>
+		</#list>
+	<#else>
+		<#assign default=getFieldValueByCode( entry, "text_config")>
+		<@getTextAreaContent responseContent=default entry=entry />
+	</#if>
 	<#if entry.helpMessage?exists&&entry.helpMessage!=''>
 		<span class="help-block">${entry.helpMessage}</span>
 	</#if>

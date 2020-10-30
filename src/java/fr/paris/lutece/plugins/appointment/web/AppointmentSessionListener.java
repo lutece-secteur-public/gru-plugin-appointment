@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,7 +59,6 @@ public class AppointmentSessionListener implements HttpSessionListener
     @Override
     public void sessionDestroyed( HttpSessionEvent se )
     {
-        String strSessionId = se.getSession( ).getId( );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( strSessionId );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( se.getSession( ) );
     }
 }

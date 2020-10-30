@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service.listeners;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -62,8 +63,8 @@ public interface IAppointmentListener
      *            The locale to display error messages with
      * @return The message to display to the user, if any.
      */
-    String appointmentDateChanged( int nIdAppointment, int nIdSlot, Locale locale );
-    
+    String appointmentDateChanged( int nIdAppointment, List<Integer> listIdSlot, Locale locale );
+
     /**
      * Notify the listener that an appointment has been creates
      * 
@@ -71,7 +72,7 @@ public interface IAppointmentListener
      *            The id of the appointment
      */
     void notifyAppointmentCreated( int nIdAppointment );
-    
+
     /**
      * Notify the listener that an appointment has been update
      * 
@@ -79,5 +80,5 @@ public interface IAppointmentListener
      *            The id of the appointment
      */
     void notifyAppointmentUpdated( int nIdAppointment );
-    
+
 }

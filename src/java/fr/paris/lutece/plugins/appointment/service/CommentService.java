@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,50 +31,26 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.web.rs;
+package fr.paris.lutece.plugins.appointment.service;
 
-import java.io.IOException;
+import java.sql.Date;
+import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import fr.paris.lutece.plugins.appointment.business.comment.Comment;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 
-import fr.paris.lutece.plugins.appointment.service.FormTraderService;
-import net.sf.json.JSONObject;
-
-/**
- * REST service for import form
- */
-@Path( Constants.BASE_REST_PATH + Constants.PLUGIN_PATH + Constants.FORM_PATH )
-public class FormRest
+public class CommentService
 {
 
-    /**
-     * Default constructor
-     */
-    public FormRest( )
+    private CommentService( )
     {
-        super( );
+
     }
 
-    @POST
-    @Path( Constants.IMPORT_PATH )
-    @Consumes( MediaType.APPLICATION_JSON )
-    public Response importForm( String strInputJson )
+    public static List<Comment> finListComments( Date startingDate, Date endingDate, int nIdForm )
     {
-        Response response = Response.ok( ).build( );
-        try
-        {
-            FormTraderService.importFormFromJson( JSONObject.fromObject( strInputJson ) );
-        }
-        catch( IOException e )
-        {
-            response = Response.status( Status.NOT_ACCEPTABLE ).build( );
-        }
-        return response;
+
+        return CommentHome.selectCommentsList( startingDate, endingDate, nIdForm );
     }
 
 }

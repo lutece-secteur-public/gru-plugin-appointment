@@ -1,15 +1,7 @@
 <#if entry.fields?has_content>
-	<#list entry.fields as field>
-		<#if field.title?has_content>
-			<#if field.title == "X">
-				<#assign xField = field />
-			<#elseif field.title == "Y">
-				<#assign yField = field />
-			<#elseif field.title == "address">
-				<#assign addressField = field />
-			</#if>
-		</#if>
-	</#list>
+	<#assign xField = getFieldValueByCode( entry, "X" )>
+	<#assign yField = getFieldValueByCode( entry, "Y" )>
+	<#assign addressField = getFieldValueByCode( entry, "address" )>
 </#if>
 
 <#if list_responses??>
@@ -24,11 +16,11 @@
     <#if list_responses??>
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
-				<#if response.field.title == "X">
+				<#if response.field.code == "X">
 					<input type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' value='${response.toStringValueResponse!}' />
-				<#elseif response.field.title == "Y">
+				<#elseif response.field.code == "Y">
 					<input type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' value='${response.toStringValueResponse!}' />
-				<#elseif response.field.title == "idAddress">
+				<#elseif response.field.code == "idAddress">
 					<input type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' value='${response.toStringValueResponse!}' />
 				<#else>
 					<@input type='text' name='${entry.idEntry}_address' id='${entry.idEntry}_address' value='${response.toStringValueResponse!}' class='${entry.CSSClass!}' />

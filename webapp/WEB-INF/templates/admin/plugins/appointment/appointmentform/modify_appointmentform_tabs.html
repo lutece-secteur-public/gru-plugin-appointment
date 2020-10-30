@@ -40,6 +40,7 @@
 </#macro>
 
 <#macro modifyAppointmentFormLeftColumn appointmentform >
+
 <fieldset>
 <@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
 	<input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
@@ -77,7 +78,12 @@
 			<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!''  />
 		</@inputGroup>
 	</@formGroup>
-	
+	<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
+				<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false />
+	</@formGroup>
+	 <@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
+                      <@checkBox labelFor='bo_overbooking' name='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
+     </@formGroup> 				
 	<@formGroup labelFor='display_title_fo' labelKey='#i18n{appointment.label.displayTitleFo}' helpKey='#i18n{appointment.label.displayTitleFo.help}'>
 		<@checkBox labelFor='display_title_fo' name='display_title_fo' id='display_title_fo' value='true' checked=appointmentform.displayTitleFo!false />
 	</@formGroup>
@@ -122,6 +128,10 @@
 	
 	<@formGroup labelFor='activeAuthentication'>
 		<@checkBox labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
+	</@formGroup>
+	
+	<@formGroup>
+		<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
 	</@formGroup>
 	
 	<#if listWorkflows??>

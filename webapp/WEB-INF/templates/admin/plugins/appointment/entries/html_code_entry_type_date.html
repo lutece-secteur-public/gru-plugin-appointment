@@ -17,24 +17,23 @@
 </#if>
 
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' class=class mandatory=entry.mandatory>
-	<#list entry.fields as field>
-		<@inputGroup>
-			<@inputGroupItem type='addon'>
-				<@icon style='calendar' />
-			</@inputGroupItem>
-			<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
-		</@inputGroup>
-		<#if list_responses??>
-			<#list list_responses as response>
-				<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
-					<@alert class='danger'>
-						<#assign error = response.entry.error>
-						<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
-					</@alert>
-				</#if>
-			</#list>
-		</#if>
-	</#list>
+	<#assign field = getFieldByCode( entry, "default_date_value" ) >
+	<@inputGroup>
+		<@inputGroupItem type='addon'>
+			<@icon style='calendar' />
+		</@inputGroupItem>
+		<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
+	</@inputGroup>
+	<#if list_responses??>
+		<#list list_responses as response>
+			<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
+				<@alert class='danger'>
+					<#assign error = response.entry.error>
+					<#if error.mandatoryError>${error.errorMessage}<#else>#i18n{appointment.message.mandatory.entry}</#if>
+				</@alert>
+			</#if>
+		</#list>
+	</#if>
 </@formGroup>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -93,6 +93,11 @@ public final class AppointmentDTO extends Appointment implements Serializable
     private LocalDateTime _startingDateTime;
 
     /**
+     * The ending date in LocalDateTime
+     */
+    private LocalDateTime _endingDateTime;
+
+    /**
      * The starting time
      */
     private LocalTime _startingTime;
@@ -145,6 +150,10 @@ public final class AppointmentDTO extends Appointment implements Serializable
      * The appointment is saved
      */
     private boolean _bIsSaved;
+    /**
+     * The overbooking is allowed
+     */
+    private boolean _bOverbookingAllowed;
 
     /**
      * Get the name of the admin user
@@ -207,6 +216,27 @@ public final class AppointmentDTO extends Appointment implements Serializable
     public void setStartingDateTime( LocalDateTime startingDateTime )
     {
         this._startingDateTime = startingDateTime;
+    }
+
+    /**
+     * Get the ending date time of the appointment
+     * 
+     * @return the ending date time
+     */
+    public LocalDateTime getEndingDateTime( )
+    {
+        return _endingDateTime;
+    }
+
+    /**
+     * Set the ending date time of the appointment
+     * 
+     * @param endingDateTime
+     *            the ending date time
+     */
+    public void setEndingDateTime( LocalDateTime endingDateTime )
+    {
+        this._endingDateTime = endingDateTime;
     }
 
     /**
@@ -422,24 +452,48 @@ public final class AppointmentDTO extends Appointment implements Serializable
     {
         this._mapResponsesByIdEntry.clear( );
     }
-    
+
     /**
      * Returns the IsSaved
+     * 
      * @return The IsSaved
-     */ 
-     public boolean getIsSaved()
-     {
-         return _bIsSaved;
-     }
- 
+     */
+    public boolean getIsSaved( )
+    {
+        return _bIsSaved;
+    }
+
     /**
      * Sets the IsSaved
-     * @param bIsSaved The IsSaved
-     */ 
-     public void setIsSaved( boolean bIsSaved )
-     {
-         _bIsSaved = bIsSaved;
-     }
+     * 
+     * @param bIsSaved
+     *            The IsSaved
+     */
+    public void setIsSaved( boolean bIsSaved )
+    {
+        _bIsSaved = bIsSaved;
+    }
+
+    /**
+     * Returns the OverbookingAllowed
+     * 
+     * @return The OverbookingAllowed
+     */
+    public boolean getOverbookingAllowed( )
+    {
+        return _bOverbookingAllowed;
+    }
+
+    /**
+     * Sets the OverbookingAllowed
+     * 
+     * @param bOverbookingAllowed
+     *            The OverbookingAllowed
+     */
+    public void setOverbookingAllowed( boolean bOverbookingAllowed )
+    {
+        _bOverbookingAllowed = bOverbookingAllowed;
+    }
 
     /**
      * Get all the possible errors of the form

@@ -13,24 +13,26 @@
 		</#if>"	>
 		<option value="">#i18n{appointment.xpage.form.noValue}</option>
 		<#list entry.fields as field>
-			<option  value="${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if>
-				<#if list_responses??>
-					<#list list_responses as response>
-						<#if response.entry.idEntry == entry.idEntry && response.field??>
-							<#if response.field.idField == field.idField>
-								selected ="selected"
-								<#break>
+			<#if field.code == 'answer_choice'>
+				<option  value="${field.idField}" <#if field.comment?? && field.comment != ''>title="${field.comment}"</#if>
+					<#if list_responses??>
+						<#list list_responses as response>
+							<#if response.entry.idEntry == entry.idEntry && response.field??>
+								<#if response.field.idField == field.idField>
+									selected ="selected"
+									<#break>
+								</#if>
 							</#if>
+						</#list>
+					<#else>
+						<#if field.defaultValue>
+							selected ="selected"
 						</#if>
-					</#list>
-				<#else>
-					<#if field.defaultValue>
-						selected ="selected"
 					</#if>
-				</#if>
-				>
-					${field.title}
-			</option>	
+					>
+						${field.title}
+				</option>
+			</#if>	
 		</#list>
 	</select>
 	<#if entry.helpMessage?exists&&entry.helpMessage!=''>

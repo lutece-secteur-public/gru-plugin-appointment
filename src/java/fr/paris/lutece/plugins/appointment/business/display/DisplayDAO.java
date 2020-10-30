@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,19 +57,20 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
 
     @Override
-    public  void insert( Display display, Plugin plugin )
+    public void insert( Display display, Plugin plugin )
     {
         DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, display, plugin, true );
         try
         {
-            daoUtil.executeUpdate( );       
-	        if ( daoUtil.nextGeneratedKey( ) )
-	        {
-	        	display.setIdDisplay(  daoUtil.getGeneratedKeyInt( 1 ) );
-	        }
-        }finally
+            daoUtil.executeUpdate( );
+            if ( daoUtil.nextGeneratedKey( ) )
+            {
+                display.setIdDisplay( daoUtil.getGeneratedKeyInt( 1 ) );
+            }
+        }
+        finally
         {
-                daoUtil.free();       
+            daoUtil.free( );
         }
     }
 
@@ -179,9 +180,11 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
         DAOUtil daoUtil = null;
         if ( isInsert )
         {
-        	daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
-        }else{
-        	daoUtil = new DAOUtil( query, plugin );
+            daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
+        }
+        else
+        {
+            daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setBoolean( nIndex++, display.isDisplayTitleFo( ) );
         daoUtil.setBytes( nIndex++, display.getIcon( ).getImage( ) );

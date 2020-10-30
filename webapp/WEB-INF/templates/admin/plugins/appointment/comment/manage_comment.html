@@ -1,0 +1,50 @@
+
+<#include "manageappointmentcomment_tabs.html" />
+<@tabs2 tab="comment" />
+
+<@box>
+	<@boxHeader title='#i18n{appointment.manage_comment.title}' boxTools=true>
+		
+	</@boxHeader>
+	<@boxBody>    
+    <@messages infos=infos />
+    <@paginationAdmin paginator=paginator combo=1 />
+    <div class="clearfix"></div>
+    <@table>
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <th>#i18n{appointment.manage_comments.columnIdForm}</th>
+            <th>#i18n{appointment.manage_comments.columnStartingValidityDate}</th>
+            <th>#i18n{appointment.manage_comments.columnEndingValidityDate}</th>
+            <th>#i18n{appointment.manage_comments.columnComment}</th>
+            <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+        <@tableHeadBodySeparator />
+            <#list comment_list as comment >
+        <tr>
+            <input type="hidden" id="id" name="id"/>
+            <td>
+			${comment.idForm}
+			</td>
+            <td>
+			${comment.startingValidityDate}
+			</td>
+            <td>
+			${comment.endingValidityDate}
+			</td>
+            <td>
+			${comment.comment}
+			</td>
+        <td>
+						
+			<@aButton href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=${comment.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='btn-danger'  />
+
+        </td>
+        </tr>
+        </#list>
+    </@table>
+
+    <@paginationAdmin paginator=paginator />
+
+  </@boxBody>
+</@box>

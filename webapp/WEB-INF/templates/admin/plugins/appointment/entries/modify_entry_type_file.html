@@ -1,5 +1,4 @@
 <#include "/admin/util/editor/editor.html" />
-<#include "/admin/plugins/appointment/commons.html" />
 <@row>
 	<@columns>
 		<@box color='primary'>
@@ -31,13 +30,9 @@
 							<@checkBox labelFor='only_display_in_back' labelKey='#i18n{appointment.createEntry.labelOnlyDisplayInBack}' name='only_display_in_back' id='only_display_in_back' value='1' checked=entry.onlyDisplayInBack />
 						</@formGroup>
 						<@formGroup labelFor='width' labelKey='#i18n{appointment.createEntry.labelWidth}' mandatory=true>
-							<#list entry.fields as field>
-								<#if !field.title??>
-									<@input type='text' name='width' id='width' value=field.width />
-									<#assign id_field=field.idField>
-									<#break>
-								</#if> 
-							</#list>
+							<#assign field=getFieldByCode(entry, "width")>
+							<@input type='text' name='width' id='width' value=field.value />
+							<#assign id_field=field.idField>
 						</@formGroup>
 						<@formGroup labelFor='file_max_size' labelKey='#i18n{appointment.createEntry.labelFileMaxSize}' mandatory=true>
 							<@input type='text' name='file_max_size' id='file_max_size' value='${getFileMaxSize(entry)}' />

@@ -1,4 +1,5 @@
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
+<#include "/admin/plugins/appointment/appointment/appointment_export.html" />
 <link href="css/datepicker.css" rel="stylesheet">
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <script src="js/plugins/appointment/moment.min.js"></script>
@@ -81,7 +82,7 @@
 						<#if rightDelete?? && rightDelete>
 							<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='btn-danger' size='sm' />
 						</#if>
-						<@aButton href='jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp?id_form=${form.idForm}' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' size='sm' color='btn-info' />
+						<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' size='sm' color='btn-info' />
 					</@boxHeader>
 					<@boxBody>
 						<div align="right"><@paginationAdmin paginator=paginator form=0 /></div>
@@ -147,10 +148,10 @@
 										</td>
 										<td>
 											<#if rightChangeDate?? && rightChangeDate && !appointment.isCancelled>
-												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelModifyDateAppointment}' buttonIcon='calendar' size='sm' /> 
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}&nbPlacesToTake=${appointment.nbBookedSeats!}' title='#i18n{appointment.manageAppointments.labelModifyDateAppointment}' buttonIcon='calendar' size='sm' /> 
 											</#if> 
 											<#if rightModify?? && rightModify && !appointment.isCancelled> 
-												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelModifyAppointment}' buttonIcon='edit' size='sm' />
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}&starting_date_time=${appointment.startingDateTime}&ending_date_time=${appointment.endingDateTime}&is_modification=true' title='#i18n{appointment.manageAppointments.labelModifyAppointment}' buttonIcon='edit' size='sm' />
 											</#if> 
 											<#if rightView?? && rightView> 
 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelViewAppointment}' buttonIcon='eye' size='sm' />

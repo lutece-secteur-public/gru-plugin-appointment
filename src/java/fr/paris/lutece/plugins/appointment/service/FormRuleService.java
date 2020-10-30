@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,7 @@ public final class FormRuleService
         formRule.setMinTimeBeforeAppointment( appointmentForm.getMinTimeBeforeAppointment( ) );
         formRule.setNbMaxAppointmentsPerUser( appointmentForm.getNbMaxAppointmentsPerUser( ) );
         formRule.setNbDaysForMaxAppointmentsPerUser( appointmentForm.getNbDaysForMaxAppointmentsPerUser( ) );
+        formRule.setBoOverbooking( appointmentForm.getBoOverbooking( ) );
         formRule.setIdForm( nIdForm );
     }
 

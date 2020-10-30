@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2020, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -134,6 +134,18 @@ public final class AppointmentHome
     public static List<Appointment> findByIdUser( int nIdUser )
     {
         return _dao.findByIdUser( nIdUser, _plugin );
+    }
+
+    /**
+     * Return the appointments of a user by Guid
+     * 
+     * @param nIdUser
+     *            the User Guid
+     * @return a list of the user appointments
+     */
+    public static List<Appointment> findByGuidUser( String strGuidUser )
+    {
+        return _dao.findByGuidUser( strGuidUser, _plugin );
     }
 
     /**

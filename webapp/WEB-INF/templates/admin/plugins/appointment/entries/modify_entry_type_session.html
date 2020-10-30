@@ -23,9 +23,8 @@
 						<@checkBox labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}' name='mandatory' id='mandatory' value='1' checked=entry.checked />
 					</@formGroup>
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelAttributeName}' helpKey='#i18n{appointment.createEntry.labelAttributeNameComment}' mandatory=true>
-						<#list entry.fields as field>
-							<@input type='text' name='value' id='value' maxlength=255 value='${field.value}' />
-						</#list>
+						<#assign field=getFieldByCode( entry, "attribute_name")>
+						<@input type='text' name='value' id='value' maxlength=255 value='${field.value}' />
 					</@formGroup>
 					<@formGroup>
 						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
