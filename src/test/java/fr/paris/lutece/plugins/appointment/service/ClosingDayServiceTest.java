@@ -37,6 +37,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
+import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
 public class ClosingDayServiceTest extends LuteceTestCase
@@ -48,7 +50,8 @@ public class ClosingDayServiceTest extends LuteceTestCase
     public void testFindListDateOfClosingDayByIdFormAndDateRange( )
     {
         // Build the form
-        int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
+        AppointmentFormDTO formDto = FormServiceTest.buildAppointmentForm( );
+        int nIdForm = FormService.createAppointmentForm( formDto );
         List<LocalDate> listClosingDays = new ArrayList<>( );
         listClosingDays.add( LocalDate.parse( "2018-05-01" ) );
         listClosingDays.add( LocalDate.parse( "2018-05-08" ) );
@@ -60,7 +63,11 @@ public class ClosingDayServiceTest extends LuteceTestCase
                 LocalDate.parse( "2018-09-01" ) );
         assertEquals( 2, listClosingDaysFound.size( ) );
 
-        FormService.removeForm( nIdForm );
+        for ( ClosingDay cs : ClosingDayService.findListClosingDay( nIdForm ) )
+        {
+            ClosingDayService.removeClosingDay( cs );
+        }
+        FormServiceTest.cleanForm( nIdForm );
     }
 
 }

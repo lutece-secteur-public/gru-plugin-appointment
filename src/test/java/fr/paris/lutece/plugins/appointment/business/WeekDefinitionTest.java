@@ -91,28 +91,6 @@ public final class WeekDefinitionTest extends LuteceTestCase
     }
 
     /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        // Initialize a WeekDefinition
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-        WeekDefinition weekDefinition = buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
-        // Insert the WeekDefinition in database
-        WeekDefinitionHome.create( weekDefinition );
-        // Find the weekDefinition created in database
-        WeekDefinition weekDefinitionStored = WeekDefinitionHome.findByPrimaryKey( weekDefinition.getIdWeekDefinition( ) );
-        assertNotNull( weekDefinitionStored );
-        // Delete the Form and by cascade the weekDefinition
-        FormHome.delete( form.getIdForm( ) );
-        weekDefinitionStored = WeekDefinitionHome.findByPrimaryKey( weekDefinition.getIdWeekDefinition( ) );
-        // Check the weekDefinition has been removed from database
-        assertNull( weekDefinitionStored );
-    }
-
-    /**
      * Test findByIdForm
      */
     public void testFindByIdForm( )
@@ -131,6 +109,7 @@ public final class WeekDefinitionTest extends LuteceTestCase
         checkAsserts( listWeekDefinitionStored.get( 0 ), weekDefinition );
 
         // Clean
+        WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 

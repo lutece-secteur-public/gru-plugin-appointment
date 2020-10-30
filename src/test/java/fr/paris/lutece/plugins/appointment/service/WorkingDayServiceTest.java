@@ -71,8 +71,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         }
 
         assertEquals( LocalTime.parse( "20:00" ), WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -91,8 +90,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         WorkingDay workingDayMonday = listWorkingDay.stream( ).filter( w -> w.getDayOfWeek( ) == DayOfWeek.MONDAY.getValue( ) ).findFirst( ).get( );
 
         assertEquals( LocalTime.parse( "18:00" ), WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDayMonday ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -119,8 +117,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         }
 
         assertEquals( 10, WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -138,8 +135,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         WorkingDay workingDayMonday = listWorkingDay.stream( ).filter( w -> w.getDayOfWeek( ) == DayOfWeek.MONDAY.getValue( ) ).findFirst( ).get( );
 
         assertEquals( 30, WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDayMonday ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -166,8 +162,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         }
 
         assertEquals( LocalTime.parse( "09:00" ), WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -185,8 +180,7 @@ public class WorkingDayServiceTest extends LuteceTestCase
         WorkingDay workingDayMonday = listWorkingDay.stream( ).filter( w -> w.getDayOfWeek( ) == DayOfWeek.MONDAY.getValue( ) ).findFirst( ).get( );
 
         assertEquals( LocalTime.parse( "09:00" ), WorkingDayService.getMinStartingTimeOfAWorkingDay( workingDayMonday ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -206,7 +200,6 @@ public class WorkingDayServiceTest extends LuteceTestCase
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
 
         assertEquals( 5, WorkingDayService.getOpenDays( appointmentForm ).size( ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 }

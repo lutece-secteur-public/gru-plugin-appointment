@@ -71,8 +71,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
 
         foundWeekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
         assertEquals( dateOfModification2, foundWeekDefinition.getDateOfApply( ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -100,8 +99,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         LocalDate givenDate2 = LocalDate.parse( "2028-06-21" );
         foundWeekDefinition = WeekDefinitionService.findNextWeekDefinition( nIdForm, givenDate2 );
         assertNull( foundWeekDefinition );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -128,8 +126,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         assertEquals( LocalTime.parse( "09:00" ), WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -143,8 +140,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         WeekDefinition weekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 );
         assertEquals( LocalTime.parse( "09:00" ), WeekDefinitionService.getMinStartingTimeOfAWeekDefinition( weekDefinition ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -172,9 +168,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         assertEquals( LocalTime.parse( "19:30" ), WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition ) );
-
-        FormService.removeForm( nIdForm );
-
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -188,8 +182,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         WeekDefinition weekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 );
         assertEquals( LocalTime.parse( "19:00" ), WeekDefinitionService.getMaxEndingTimeOfAWeekDefinition( weekDefinition ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -217,8 +210,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
 
         assertEquals( 10, WeekDefinitionService.getMinDurationTimeSlotOfAListOfWeekDefinition( listWeekDefinition ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -240,7 +232,6 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
 
         assertEquals( 5, WeekDefinitionService.getOpenDaysOfWeek( listWeekDefinition ).size( ) );
-
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 }

@@ -109,43 +109,9 @@ public final class TimeSlotTest extends LuteceTestCase
         assertNull( timeSlotStored );
 
         // Clean
+        WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
+        WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
         FormHome.delete( form.getIdForm( ) );
-    }
-
-    /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
-        WeekDefinitionHome.create( weekDefinition );
-
-        WorkingDay workingDay = WorkingDayTest.buildWorkingDay( );
-        workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
-        WorkingDayHome.create( workingDay );
-
-        // Initialize a TimeSlot
-        TimeSlot timeSlot = buildTimeSlot( STARTING_TIME_1, ENDING_TIME_1, IS_OPEN_1, MAX_CAPACITY_1, workingDay.getIdWorkingDay( ) );
-        // Create the TimeSlot in database
-        TimeSlotHome.create( timeSlot );
-
-        // Find the TimeSlot created in database
-        TimeSlot timeSlotStored = TimeSlotHome.findByPrimaryKey( timeSlot.getIdTimeSlot( ) );
-        assertNotNull( timeSlotStored );
-
-        // Delete the Form and by cascade the timeSlot
-        TimeSlotHome.delete( timeSlot.getIdTimeSlot( ) );
-        timeSlotStored = TimeSlotHome.findByPrimaryKey( timeSlot.getIdTimeSlot( ) );
-        // Check the timeSlot has been removed from database
-        assertNull( timeSlotStored );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
-
     }
 
     /**
@@ -175,6 +141,9 @@ public final class TimeSlotTest extends LuteceTestCase
         checkAsserts( listTimeSlotStored.get( 0 ), timeSlot );
 
         // Clean
+        TimeSlotHome.delete( timeSlot.getIdTimeSlot( ) );
+        WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
+        WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
         FormHome.delete( form.getIdForm( ) );
 
     }

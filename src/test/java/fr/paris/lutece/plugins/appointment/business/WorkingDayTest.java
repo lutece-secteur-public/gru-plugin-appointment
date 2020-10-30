@@ -91,32 +91,8 @@ public final class WorkingDayTest extends LuteceTestCase
         assertNull( workingDayStored );
 
         // Clean
+        WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
         FormHome.delete( form.getIdForm( ) );
-    }
-
-    /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        // Initialize a WorkingDay
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
-        WeekDefinitionHome.create( weekDefinition );
-        WorkingDay workingDay = buildWorkingDay( );
-        workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
-        // Insert the WorkingDay in database
-        WorkingDayHome.create( workingDay );
-        // Find the workingDay created in database
-        WorkingDay workingDayStored = WorkingDayHome.findByPrimaryKey( workingDay.getIdWorkingDay( ) );
-        assertNotNull( workingDayStored );
-        // Delete the form and by cascade the workingDay
-        FormHome.delete( form.getIdForm( ) );
-        workingDayStored = WorkingDayHome.findByPrimaryKey( workingDay.getIdWorkingDay( ) );
-        // Check the workingDay has been removed from database
-        assertNull( workingDayStored );
     }
 
     /**
@@ -141,6 +117,8 @@ public final class WorkingDayTest extends LuteceTestCase
         checkAsserts( listWorkingDayStored.get( 0 ), workingDay );
 
         // Clean
+        WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
+        WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 

@@ -63,7 +63,7 @@ public class ReservationRuleServiceTest extends LuteceTestCase
         assertEquals( dateOfModification,
                 ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, LocalDate.parse( "2028-06-21" ) ).getDateOfApply( ) );
 
-        FormService.removeForm( nIdForm );
+        FormServiceTest.cleanForm( nIdForm );
     }
 
 }

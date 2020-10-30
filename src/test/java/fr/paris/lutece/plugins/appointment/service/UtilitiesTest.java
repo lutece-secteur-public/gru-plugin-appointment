@@ -100,7 +100,7 @@ public class UtilitiesTest extends LuteceTestCase
         DateTimeFormatter formatterFr = Utilities.getFormatter( );
         LocalDateTime localDateTimeFr = LocalDateTime.parse( "2018-06-25T00:00" );
         String strDateFr = localDateTimeFr.format( formatterFr );
-        assertEquals( "25/06/2018", strDateFr );
+        assertEquals( "25/06/18", strDateFr );
 
     }
 

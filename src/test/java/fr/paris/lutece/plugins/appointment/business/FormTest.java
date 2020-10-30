@@ -201,6 +201,20 @@ public final class FormTest extends LuteceTestCase
         assertEquals( listWeekDefinition.size( ), 2 );
 
         // Clean
+        TimeSlotHome.delete( timeSlot1.getIdTimeSlot( ) );
+        TimeSlotHome.delete( timeSlot2.getIdTimeSlot( ) );
+        TimeSlotHome.delete( timeSlot3.getIdTimeSlot( ) );
+        TimeSlotHome.delete( timeSlot4.getIdTimeSlot( ) );
+        TimeSlotHome.delete( timeSlot5.getIdTimeSlot( ) );
+        TimeSlotHome.delete( timeSlot6.getIdTimeSlot( ) );
+        TimeSlotHome.delete( timeSlot7.getIdTimeSlot( ) );
+        TimeSlotHome.delete( timeSlot8.getIdTimeSlot( ) );
+        WorkingDayHome.delete( workingDay1.getIdWorkingDay( ) );
+        WorkingDayHome.delete( workingDay2.getIdWorkingDay( ) );
+        WorkingDayHome.delete( workingDay3.getIdWorkingDay( ) );
+        WorkingDayHome.delete( workingDay4.getIdWorkingDay( ) );
+        WeekDefinitionHome.delete( weekDefinition1.getIdWeekDefinition( ) );
+        WeekDefinitionHome.delete( weekDefinition2.getIdWeekDefinition( ) );
         FormHome.delete( form.getIdForm( ) );
 
     }
