@@ -233,15 +233,6 @@
 										document.getElementsByTagName("head")[0].appendChild(loadresource);
 								}
 
-<<<<<<< HEAD
-                        $(window).load(function() {
-                            var map = L.map('map_address').setView([48.85632, 2.33272], 12);
-                            var markers_layer = L.featureGroup().addTo(map);
-                            // create the tile layer with correct attribution
-                            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-                            var osmAttrib='Map data � <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-                            var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
-=======
 								$(window).load(function() {
 										var map = L.map('map_address').setView([48.85632, 2.33272], 12);
 										var markers_layer = L.featureGroup().addTo(map);
@@ -249,7 +240,6 @@
 										var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 										var osmAttrib='Map data � <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 										var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 16, attribution: osmAttrib}).addTo(map);
->>>>>>> develop
 
 										var jAdresse = $('#address_address');
 										jAdresse.suggestPOI();
