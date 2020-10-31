@@ -12,72 +12,59 @@
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
 <@row>
     <@columns>
-        <legend>
-            ${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}
-        </legend>
-        <@appointmentTabs tab="calendar" form=form />
-        <@messages errors=errors infos=infos />
-        <#if formCalendarErrors??>
-            <div class="layout-wrapper"></div>
-        <#else>
-            <@tabContent>
-                <fieldset>
-                    <a href="javascript:void(0)" id="toggle-add-comment">+</a>
-                    <div id="calendar">
-                    </div>
-                </fieldset>
-            </@tabContent>
-        </#if>
+        <@box>
+			<@boxHeader title='${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}' />
+		</@box>
+		
+        <@appointmentTabs tab="calendar" form=form>
+			<@messages errors=errors infos=infos />
+			<#if formCalendarErrors??>
+				<div class="layout-wrapper"></div>
+			<#else>
+				<@tabContent>
+					<fieldset>
+						<a href="javascript:void(0)" id="toggle-add-comment">+</a>
+						<div id="calendar">
+						</div>
+					</fieldset>
+				</@tabContent>
+			</#if>
+		</@appointmentTabs>
     </@columns>
 </@row>
 <!-- The Modal -->
 
 
-<div class="modal fade" id="my_modal" tabindex="-1" role="dialog" aria-labelledby="qModalLabel">
-    <div class="modal-dialog modal-lg" role="document" >
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn btn-link pull-right" data-dismiss="modal" aria-label="#i18n{blog.create_blog.labelCollapse}">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-                <h4 class="modal-title" id="qModalLabel">#i18n{appointment.appointmentApp.defaultTitle}</h4>
-            </div>
-            <div class="modal-body">
-                <p id="loader" class="text-center">
-                    #i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}
-                </p>
+<@modal id='my_modal' params='aria-labelledby="qModalLabel"'>
+    <@modalHeader id='qModalLabel' modalTitle='#i18n{appointment.appointmentApp.defaultTitle}' /><@modalBody>
+		<p id="loader" class="text-center">
+			#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}
+		</p>
 		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
-						
-					<fieldset>
-						<input type="hidden" name="view" value="createAppointment" />
-						<input type="hidden" name="id_form" value="${id_form}" />
-						<input type="hidden" id="starting_date_time" name="starting_date_time" value="" />
-	<@formGroup class='${formGroupClass!}' labelFor='starting_date' labelKey='#i18n{appointment.dateAppointment.title}' helpKey='${formGroupHelpKey!}' mandatory=true>
-<span id="starting_date_time_span" ></span>
-						</@formGroup>
-						<@formGroup class='${formGroupClass!}' labelFor='nbPlacesToTake' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='${formGroupHelpKey!}' mandatory=true>
-								<@input type='number' name='nbPlacesToTake' id='nbPlacesToTake' value='1' maxlength=3 params='onkeypress="return validateQty(event);"' min=1 max=10 />
-						</@formGroup>
-					
-					</fieldset>
-				<@formGroup>
-					<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.displayAppointmentForm.labelValidate}' />
-							
-				</@formGroup>	
-				</@tform>
-					
-            </div>
-         
-        </div>
-    </div>
-</div>
+			<fieldset>
+				<@input type='hidden' name='view' value='createAppointment' />
+				<@input type='hidden' name='id_form' value='${id_form}' />
+				<@input type='hidden' id='starting_date_time' name='starting_date_time' value='' />
+				<@formGroup class='${formGroupClass!}' labelFor='starting_date' labelKey='#i18n{appointment.dateAppointment.title}' helpKey='${formGroupHelpKey!}' mandatory=true>
+					<@input type='text' name='starting_date_time_span' id='starting_date_time_span' disabled=true />
+				</@formGroup>
+				<@formGroup class='${formGroupClass!}' labelFor='nbPlacesToTake' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='${formGroupHelpKey!}' mandatory=true>
+					<@input type='number' name='nbPlacesToTake' id='nbPlacesToTake' value='1' maxlength=3 params='onkeypress="return validateQty(event);"' min=1 max=10 />
+				</@formGroup>
+			</fieldset>
+			<@formGroup>
+				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.displayAppointmentForm.labelValidate}' />
+			</@formGroup>	
+		</@tform>
+	</@modalBody>
+</@modal>
+
 
 <!-- comment form -->
 <div id="comment" style="display:none;">
     <@box color='primary'>
             <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
             <@boxBody>
-            
                 <fieldset>
                 <legend class="hidden">#i18n{appointment.createField.title}</legend>
                     <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
@@ -91,7 +78,6 @@
     <@box color='primary'>
             <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
             <@boxBody>
-            
                 <fieldset>
                 <legend class="hidden">#i18n{appointment.createField.title}</legend>
                     <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
@@ -138,29 +124,29 @@
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
                 {
-                    "title" : <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                    "title" : <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}</a>"
                            
                           <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                               "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                               "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                                 + "&nbsp;"
-                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"Add this item\" class=\"open-AddBookDialog\"><i class=\"glyphicon icon-plus-sign\"></i></a>"
+                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"Add this item\" class=\"open-AddBookDialog\"><i class=\"fa fa-plus\"></i></a>"
                     		<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                                 + "&nbsp;"
-                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.appointmentApp.defaultTitle}\" class=\"open-AddBookDialog\"><i class=\"glyphicon icon-plus-sign\"></i></a>"
+                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.appointmentApp.defaultTitle}\" class=\"open-AddBookDialog\"><i class=\"fa fa-plus-circle\"></i></a>"
                             <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                             <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
                             <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                                 + "&nbsp;"
                                 + "#i18n{appointment.manageCalendarSlots.labelEdit}"
                                 + "&nbsp;"
-                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.appointmentApp.defaultTitle}\" class=\"open-AddBookDialog\"><i class=\"glyphicon icon-plus-sign\"></i></a>"
+                                + "<a href=\"modal\" data-toggle=\"modal\" data-starting_date_time=\"${event.startingDateTime}\" title=\"#i18n{appointment.appointmentApp.defaultTitle}\" class=\"open-AddBookDialog\"><i class=\"fa fa-plus\"></i></a>"
                             <#elseif event.isOpen>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                            <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                            <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>"</#if>,
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
+                            <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
+                            <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}></a>"</#if>,
                     "start" : "${event.startingDateTime}",
                     "end" : "${event.endingDateTime}",
                     "id" : "${event.idSlot}",
@@ -203,7 +189,7 @@
                     text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
                     click: function () {
                         var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
-                        $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
+                        $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker" />');
                         $("#hiddenDate").datepicker({
                             showOn: "button",
                             language: "${locale}",
@@ -314,12 +300,9 @@
 $(document).ready(function () {
     $(".open-AddBookDialog").click(function () {
         $('#starting_date_time').val($(this).data('starting_date_time'));
-	$('#starting_date_time_span').text($(this).data('starting_date_time'));
+		$('#starting_date_time_span').val($(this).data('starting_date_time'));
         $('#my_modal').modal('show');
     });
-
-
- 
 });
 </script>
 <#include "/admin/util/editor/editor.html" />

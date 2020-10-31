@@ -9,43 +9,43 @@
 <script src='js/plugins/appointment/locale-all.js' ></script>
 <@row>
     <@columns>
-        <@appointmentTabs tab="typicalWeek" appointmentform=appointmentform>
-				  <fieldset>
+        <@appointmentTabs tab='typicalWeek' appointmentform=appointmentform>
+		  <fieldset>
             </br>
             <@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
-                <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
+                <@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
                 <#if listDateOfModification??>
                     <label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
                         <@select id='id_week-definition' name='id_week_definition'>
                             <#list listDateOfModification as item>
                                 <#if "${id_week_definition}"="${item.code}">
-                                    <option selected="selected" value="${item.code}" >${item.name}</option>
+                                    <option selected="selected" value="${item.code}">${item.name}</option>
                                 <#else>
-                                    <option value="${item.code}" >${item.name}</option>
+                                    <option value="${item.code}">${item.name}</option>
                                 </#if>
                             </#list>
                         </@select>
-                    <@button type='submit' name='view_manageTypicalWeek' title='#i18n{appointment.labelDisplay}' buttonIcon='check' size='' />
-                    <@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='' />
+                    <@button type='submit' name='view_manageTypicalWeek' title='#i18n{appointment.labelDisplay}' buttonIcon='check' size='sm' />
+                    <@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='sm' />
                 </#if>
             </@tform>
             </br>
-						<@box collapsed=!error_modification??>
-								<#if !error_modification??>
-									<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
-								<#else>
-									<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
-								</#if>
-								<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
-									<@button style='btn-box-tool' params='data-widget="collapse"' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
-								</@boxHeader>
+			<@box collapsed=!error_modification??>
+				<#if !error_modification??>
+					<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
+				<#else>
+					<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
+				</#if>
+				<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
+					<@button style='card-control' params='data-widget="collapse"' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
+				</@boxHeader>
                 <@boxBody>
                     <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
-                        <input type="hidden" id="id_form" name="id_form" value="${appointmentform.idForm}"/>
-                        <input type="hidden" id="bo_overbooking" name="bo_overbooking" value="${appointmentform.boOverbooking?then('true', 'false')}"/>                        
+                        <@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
+                        <@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/>                        
                         <@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
                             <@inputGroup>
-                                <@inputGroupItem type='addon'>
+                                <@inputGroupItem type='text'>
                                     <@icon style='clock-o' />
                                 </@inputGroupItem>
                                 <@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
@@ -53,7 +53,7 @@
                         </@formGroup>
                         <@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
                             <@inputGroup>
-                                <@inputGroupItem type='addon'>
+                                <@inputGroupItem type='text'>
                                   <@icon style='clock-o' />
                                 </@inputGroupItem>
                                 <@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
@@ -93,7 +93,7 @@
                         <legend> &nbsp;&nbsp;#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>
                         <@formGroup labelFor='date_of_modification' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
                             <@inputGroup>
-                                <@inputGroupItem type='addon'>
+                                <@inputGroupItem type='text'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
                                 <@input type='text' name='date_of_modification' id='date_of_modification' value=appointmentform.dateOfModification!'' />
@@ -101,7 +101,7 @@
                         </@formGroup>
                         <@formGroup>
                             <@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
-                            <@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='btn-secondary' />
+                            <@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='default' />
                         </@formGroup>
                     </@tform>
                 </@boxBody>
