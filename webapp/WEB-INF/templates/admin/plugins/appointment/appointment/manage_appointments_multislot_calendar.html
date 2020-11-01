@@ -14,22 +14,46 @@
     <@columns>
         <@box>
 			<@boxHeader title='${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}' />
+			<@boxBody>
+				<@appointmentTabs tab="calendar" form=form>
+					<@messages errors=errors infos=infos />
+					<#if formCalendarErrors??>
+						<div class="layout-wrapper"></div>
+					<#else>
+						<@tabContent>
+							<div align="right"><@aButton href='javascript:void(0)' id='toggle-add-comment' buttonIcon='plus' size='sm' /></div>
+							<div id="calendar"></div>
+						</@tabContent>
+					</#if>
+				</@appointmentTabs>
+				
+				<!-- comment form -->
+				<div id="comment" style="display:none;">
+					<@box color='primary'>
+							<@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+							<@boxBody>
+								<fieldset>
+								<legend class="hidden">#i18n{appointment.createField.title}</legend>
+									<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+								</fieldset>
+							</@boxBody>
+					  </@box>
+				</div>
+
+				<!-- modify-comment form -->
+				<div id="modify-comment" style="display:none;">
+					<@box color='primary'>
+							<@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
+							<@boxBody>
+								<fieldset>
+								<legend class="hidden">#i18n{appointment.createField.title}</legend>
+									<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+								</fieldset>
+							</@boxBody>
+					 </@box>  
+				</div>
+			</@boxBody>
 		</@box>
-		
-        <@appointmentTabs tab="calendar" form=form>
-			<@messages errors=errors infos=infos />
-			<#if formCalendarErrors??>
-				<div class="layout-wrapper"></div>
-			<#else>
-				<@tabContent>
-					<fieldset>
-						<a href="javascript:void(0)" id="toggle-add-comment">+</a>
-						<div id="calendar">
-						</div>
-					</fieldset>
-				</@tabContent>
-			</#if>
-		</@appointmentTabs>
     </@columns>
 </@row>
 <!-- The Modal -->
@@ -59,32 +83,6 @@
 	</@modalBody>
 </@modal>
 
-
-<!-- comment form -->
-<div id="comment" style="display:none;">
-    <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
-            <@boxBody>
-                <fieldset>
-                <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
-                </fieldset>
-            </@boxBody>
-      </@box>
-</div>
-
-<!-- modify-comment form -->
-<div id="modify-comment" style="display:none;">
-    <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
-            <@boxBody>
-                <fieldset>
-                <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
-                </fieldset>
-            </@boxBody>
-     </@box>  
-</div>
 
 <script type="text/javascript">
     var slotDuration = '${min_duration}';
