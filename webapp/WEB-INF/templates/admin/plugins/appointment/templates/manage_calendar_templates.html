@@ -6,7 +6,82 @@
 			</@boxHeader>
 			<@boxBody>
 				<@messages infos=infos errors=errors />
-				<@dataTable dataTableManager=dataTableManager actionMacro="actionColumnCalendarTemplate" />
+
+				<#if 0 < dataTableManager.items?size >
+					<#if dataTableManager.enablePaginator>
+						<@tform type='inline' method='post' action='${dataTableManager.sortUrl}' align='right'>
+							<#if (dataTableManager.paginator.pagesCount > 1) >
+								<@paginationPageLinks paginator=dataTableManager.paginator />
+							</#if>
+							<div class="pull-right">
+								<@paginationItemCount paginator=dataTableManager.paginator combo=1 nb_items_per_page=dataTableManager.paginator.itemsPerPage?string />
+							</div>
+							<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
+						</@tform>
+					</#if>
+					<@table params='summary="data table"'>
+						<caption>&nbsp;</caption>
+						<tr>
+							<#list dataTableManager.listColumn as column>
+								<th scope="col">
+									#i18n{${column.titleKey}}
+									<#if !(column.typeColumn = "ACTION") && column.sortable>
+										<@sort jsp_url=dataTableManager.sortUrl attribute=column.parameterName />
+									</#if>
+								</th>
+							</#list>
+						</tr>
+						<#list dataTableManager.items as item>
+							<tr>
+								<#list dataTableManager.listColumn as column>
+									<#if column.typeColumn = "STRING">
+										<#assign propName = "item." + column.parameterName>
+										<#assign value = propName?eval>
+										<td>${value!}</td>
+									<#elseif column.typeColumn = "LABEL">
+										<#assign propName = "item." + column.parameterName>
+										<#assign value = propName?eval>
+										<td>#i18n{${value!}}</td>
+									<#elseif column.typeColumn = "BOOLEAN">
+										<#assign propName = "item." + column.parameterName>
+										<#assign value = propName?eval>
+										<#if value?? && value>
+											<td><@tag color='success' title='#i18n{${column.labelTrue!}}' tagIcon='check'>#i18n{${column.labelTrue!}}</@tag></td>
+										<#else>
+											<td><@tag color='danger' title='#i18n{${column.labelFalse!}}' tagIcon='times'>#i18n{${column.labelFalse!}}</@tag></td>
+										</#if>
+									<#elseif column.typeColumn = "EMAIL">
+										<#assign propName = "item." + column.parameterName>
+										<#assign value = propName?eval>
+										<td><#if value?? && value != ""><a href="mailto:${value}" title="${value}" >${value}</a></#if></td>
+									<#elseif column.typeColumn = "ACTION">
+										<#if column.parameterName?? && column.parameterName != "">
+											<#assign macroName = column.parameterName>
+										<#else>
+											<#assign macroName = 'actionColumnCalendarTemplate'>
+										</#if>
+										<#if macroName?? && macroName != "">
+											<td><@.vars[macroName] item=item /></td>
+										</#if>
+									</#if>
+								</#list>
+							</tr>
+						</#list>
+					</@table>
+					<#if dataTableManager.enablePaginator>
+						<@tform type='inline' method='post' action='${dataTableManager.sortUrl}'>
+							<#if (dataTableManager.paginator.pagesCount > 1) >
+								<@paginationPageLinks paginator=dataTableManager.paginator />
+							</#if>
+							<div class="pull-right">
+								<@paginationItemCount paginator=dataTableManager.paginator combo=0 nb_items_per_page=dataTableManager.paginator.itemsPerPage?string />
+							</div>
+							<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
+						</@tform>
+					</#if>
+				<#else>
+					#i18n{portal.util.labelNoItem}
+				</#if>
 			</@boxBody>
 		</@box>
 	</@columns>
@@ -14,5 +89,5 @@
 
 <#macro actionColumnCalendarTemplate item>
 	<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getCreateModifyTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='edit' size='sm' />
-	<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='btn-danger' size='sm' />
+	<@aButton href='jsp/admin/plugins/appointment/ManageCalendarTemplates.jsp?view=getConfirmRemoveTemplate&idTemplate=${item.idCalendarTemplate}' buttonIcon='trash' color='danger' size='sm' />
 </#macro>
