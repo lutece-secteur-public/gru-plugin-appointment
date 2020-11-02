@@ -42,7 +42,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
@@ -55,7 +54,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
+public final class AppointmentDAO implements IAppointmentDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (reference, nb_places, is_cancelled, id_action_cancelled, notification, id_admin_user, admin_access_code_create, id_user, date_appointment_create) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -82,9 +81,8 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             + " INNER JOIN appointment_slot slot ON app_slot.id_slot = slot.id_slot WHERE id_form != 0";
 
     private static final String SQL_QUERY_INSERT_APPT_SLT = "INSERT INTO appointment_appointment_slot (id_appointment, id_slot, nb_places) VALUES ( ?, ?, ?)";
-    private static final String SQL_QUERY_UPDATE_APPT_SLT = "UPDATE appointment_appointment SET nb_plcaces = ? WHERE id_appointment = ? and id_slot = ?";
     private static final String SQL_QUERY_DELETE_APPT_SLT = "DELETE FROM appointment_appointment_slot WHERE id_appointment = ?";
-    private static final String SQL_QUERY_SELECT__APPT_SLT = "SELECT id_appointment, id_slot, nb_places FROM appointment_appointment_slot where id_appointment = ?";
+    private static final String SQL_QUERY_SELECT_APPT_SLT = "SELECT id_appointment, id_slot, nb_places FROM appointment_appointment_slot where id_appointment = ?";
 
     private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
     private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
@@ -102,9 +100,8 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     public void insert( Appointment appointment, Plugin plugin )
     {
         appointment.setDateAppointmentTaken( LocalDateTime.now( ) );
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, appointment, plugin, true );
 
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, appointment, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -112,10 +109,6 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
                 appointment.setIdAppointment( daoUtil.getGeneratedKeyInt( 1 ) );
             }
 
-        }
-        finally
-        {
-            daoUtil.free( );
         }
         for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
         {
@@ -128,11 +121,9 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     private List<AppointmentSlot> selectAppointmentSlot( int nIdAppointment, Plugin plugin )
     {
         List<AppointmentSlot> listAppointmentSlot = new ArrayList<>( );
-        DAOUtil daoUtil = null;
         AppointmentSlot appointmentSlot = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_APPT_SLT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT__APPT_SLT, plugin );
             daoUtil.setInt( 1, nIdAppointment );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
@@ -145,48 +136,42 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
                 listAppointmentSlot.add( appointmentSlot );
             }
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-
         return listAppointmentSlot;
     }
 
     private void insertAppointmentSlot( AppointmentSlot apptSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_APPT_SLT, plugin );
-        daoUtil.setInt( 1, apptSlot.getIdAppointment( ) );
-        daoUtil.setInt( 2, apptSlot.getIdSlot( ) );
-        daoUtil.setInt( 3, apptSlot.getNbPlaces( ) );
-
-        executeUpdate( daoUtil );
-
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT_APPT_SLT, plugin ) )
+        {
+            daoUtil.setInt( 1, apptSlot.getIdAppointment( ) );
+            daoUtil.setInt( 2, apptSlot.getIdSlot( ) );
+            daoUtil.setInt( 3, apptSlot.getNbPlaces( ) );
+    
+            daoUtil.executeUpdate( );
+        }
     }
 
     private void deleteAppointmentSlot( int nIdAppointment, Plugin plugin )
     {
-
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_APPT_SLT, plugin );
-        daoUtil.setInt( 1, nIdAppointment );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_APPT_SLT, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdAppointment );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void update( Appointment appointment, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, appointment, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, appointment, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
         if ( appointment.getListAppointmentSlot( ) != null && !appointment.getListAppointmentSlot( ).isEmpty( ) )
         {
-
             deleteAppointmentSlot( appointment.getIdAppointment( ), plugin );
             for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
             {
-
                 insertAppointmentSlot( apptSlot, plugin );
             }
         }
@@ -196,31 +181,24 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     public void delete( int nIdAppointment, Plugin plugin )
     {
         deleteAppointmentSlot( nIdAppointment, plugin );
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdAppointment );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdAppointment );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public Appointment select( int nIdAppointment, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Appointment appointment = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdAppointment );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 appointment = buildAppointment( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         if ( appointment != null )
@@ -234,11 +212,9 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     @Override
     public List<Appointment> findByIdUser( int nIdUser, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Appointment> listAppointment = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_USER, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_USER, plugin );
             daoUtil.setInt( 1, nIdUser );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
@@ -249,24 +225,15 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
                 listAppointment.add( appt );
             }
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
         return listAppointment;
     }
 
     @Override
     public List<Appointment> findByGuidUser( String strGuidUser, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Appointment> listAppointment = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_GUID_USER, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_GUID_USER, plugin );
             daoUtil.setString( 1, strGuidUser );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
@@ -277,24 +244,15 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
                 listAppointment.add( appt );
             }
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
         return listAppointment;
     }
 
     @Override
     public List<Appointment> findByIdSlot( int nIdSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Appointment> listAppointment = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_SLOT, plugin ))
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_SLOT, plugin );
             daoUtil.setInt( 1, nIdSlot );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
@@ -304,37 +262,21 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
                 listAppointment.add( appointment );
             }
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
         return listAppointment;
     }
 
     @Override
     public Appointment findByReference( String strReference, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Appointment appointment = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_REFERENCE, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_REFERENCE, plugin );
             daoUtil.setString( 1, strReference );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 appointment = buildAppointment( daoUtil );
                 appointment.setListAppointmentSlot( selectAppointmentSlot( appointment.getIdAppointment( ), plugin ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return appointment;
@@ -344,34 +286,30 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     public List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
     {
         List<Appointment> listAppointment = new ArrayList<>( );
-        DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin );
-        addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
-        daoUtil.executeQuery( );
-        while ( daoUtil.next( ) )
+        try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin ) )
         {
-
-            Appointment appt = buildAppointment( daoUtil );
-
-            Slot slot = builSlot( daoUtil, 17 );
-            User user = buildUser( daoUtil, 11 );
-            appt.addSlot( slot );
-            appt.setUser( user );
-
-            Appointment apptAdded = listAppointment.stream( ).filter( p -> appt.getIdAppointment( ) == p.getIdAppointment( ) ).findAny( ).orElse( null );
-
-            if ( apptAdded == null )
+            addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
             {
-
-                listAppointment.add( appt );
-
+                Appointment appt = buildAppointment( daoUtil );
+    
+                Slot slot = builSlot( daoUtil, 17 );
+                User user = buildUser( daoUtil, 11 );
+                appt.addSlot( slot );
+                appt.setUser( user );
+    
+                Appointment apptAdded = listAppointment.stream( ).filter( p -> appt.getIdAppointment( ) == p.getIdAppointment( ) ).findAny( ).orElse( null );
+                if ( apptAdded == null )
+                {
+                    listAppointment.add( appt );
+                }
+                else
+                {
+                    apptAdded.addSlot( slot );
+                }
             }
-            else
-            {
-                apptAdded.addSlot( slot );
-            }
-
         }
-        daoUtil.free( );
         return listAppointment;
     }
 
@@ -385,30 +323,30 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
      */
     private void addFilterParametersToDAOUtil( AppointmentFilterDTO appointmentFilter, DAOUtil daoUtil )
     {
-        int nIndex = 1;
+        int nIndex = 0;
         if ( appointmentFilter.getIdForm( ) != 0 )
         {
-            daoUtil.setInt( nIndex++, appointmentFilter.getIdForm( ) );
+            daoUtil.setInt( ++nIndex, appointmentFilter.getIdForm( ) );
         }
         if ( appointmentFilter.getFirstName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getFirstName( ).toUpperCase( ) + CONSTANT_PERCENT );
+            daoUtil.setString( ++nIndex, CONSTANT_PERCENT + appointmentFilter.getFirstName( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getLastName( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getLastName( ).toUpperCase( ) + CONSTANT_PERCENT );
+            daoUtil.setString( ++nIndex, CONSTANT_PERCENT + appointmentFilter.getLastName( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getEmail( ) != null )
         {
-            daoUtil.setString( nIndex++, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
+            daoUtil.setString( ++nIndex, CONSTANT_PERCENT + appointmentFilter.getEmail( ).toUpperCase( ) + CONSTANT_PERCENT );
         }
         if ( appointmentFilter.getGuid( ) != null )
         {
-            daoUtil.setString( nIndex++, appointmentFilter.getGuid( ) );
+            daoUtil.setString( ++nIndex, appointmentFilter.getGuid( ) );
         }
         if ( appointmentFilter.getStatus( ) != -1 )
         {
-            daoUtil.setInt( nIndex++, appointmentFilter.getStatus( ) );
+            daoUtil.setInt( ++nIndex, appointmentFilter.getStatus( ) );
         }
         if ( appointmentFilter.getStartingDateOfSearch( ) != null )
         {
@@ -422,7 +360,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             {
                 startingTimestamp = Timestamp.valueOf( appointmentFilter.getStartingDateOfSearch( ).toLocalDate( ).atStartOfDay( ) );
             }
-            daoUtil.setTimestamp( nIndex++, startingTimestamp );
+            daoUtil.setTimestamp( ++nIndex, startingTimestamp );
         }
         if ( appointmentFilter.getEndingDateOfSearch( ) != null )
         {
@@ -436,7 +374,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
             {
                 endingTimestamp = Timestamp.valueOf( appointmentFilter.getEndingDateOfSearch( ).toLocalDate( ).atTime( LocalTime.MAX ) );
             }
-            daoUtil.setTimestamp( nIndex++, endingTimestamp );
+            daoUtil.setTimestamp( ++nIndex, endingTimestamp );
         }
     }
 
@@ -497,23 +435,14 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     @Override
     public List<Appointment> findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Appointment> listAppointment = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listAppointment.add( buildAppointment( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listAppointment;
@@ -587,52 +516,6 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     }
 
     /**
-     * Build an appointment business object with its complete slot and its complete user
-     * 
-     * @param daoUtil
-     *            the daoutil
-     * @return the appointment
-     */
-    private Appointment buildAppointmentHeavy( DAOUtil daoUtil )
-    {
-
-        int nIndex = 1;
-        Appointment appointment = new Appointment( );
-        appointment.setIdAppointment( daoUtil.getInt( nIndex++ ) );
-        appointment.setReference( daoUtil.getString( nIndex++ ) );
-        appointment.setNbPlaces( daoUtil.getInt( nIndex++ ) );
-        appointment.setIsCancelled( daoUtil.getBoolean( nIndex++ ) );
-        appointment.setIdActionCancelled( daoUtil.getInt( nIndex++ ) );
-        appointment.setNotification( daoUtil.getInt( nIndex++ ) );
-        appointment.setIdAdminUser( daoUtil.getInt( nIndex++ ) );
-        appointment.setAdminUserCreate( daoUtil.getString( nIndex++ ) );
-        appointment.setIdUser( daoUtil.getInt( nIndex++ ) );
-        // appointment.setIdSlot( daoUtil.getInt( nIndex++ ) );
-        appointment.setAppointmentTakenSqlDate( daoUtil.getTimestamp( nIndex++ ) );
-        User user = new User( );
-        user.setIdUser( daoUtil.getInt( nIndex++ ) );
-        user.setGuid( daoUtil.getString( nIndex++ ) );
-        user.setFirstName( daoUtil.getString( nIndex++ ) );
-        user.setLastName( daoUtil.getString( nIndex++ ) );
-        user.setEmail( daoUtil.getString( nIndex++ ) );
-        user.setPhoneNumber( daoUtil.getString( nIndex++ ) );
-        appointment.setUser( user );
-        Slot slot = new Slot( );
-        List<Slot> listSlot = new ArrayList<>( );
-        slot.setIdSlot( daoUtil.getInt( nIndex++ ) );
-        slot.setStartingTimeStampDate( daoUtil.getTimestamp( nIndex++ ) );
-        slot.setEndingTimeStampDate( daoUtil.getTimestamp( nIndex++ ) );
-        slot.setIsOpen( daoUtil.getBoolean( nIndex++ ) );
-        slot.setIsSpecific( daoUtil.getBoolean( nIndex++ ) );
-        slot.setMaxCapacity( daoUtil.getInt( nIndex++ ) );
-        slot.setNbRemainingPlaces( daoUtil.getInt( nIndex++ ) );
-        slot.setIdForm( daoUtil.getInt( nIndex ) );
-        listSlot.add( slot );
-        appointment.setSlot( listSlot );
-        return appointment;
-    }
-
-    /**
      * Build a daoUtil object with the query and all the attributes of the Appointment
      * 
      * @param suery
@@ -674,26 +557,4 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

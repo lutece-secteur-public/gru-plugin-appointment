@@ -37,7 +37,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -47,7 +46,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class CategoryDAO extends UtilDAO implements ICategoryDAO
+public final class CategoryDAO implements ICategoryDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_category ( label) VALUES ( ?)";
@@ -61,8 +60,7 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
     @Override
     public void insert( Category category, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, category, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, category, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -70,47 +68,38 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
                 category.setIdCategory( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( Category category, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, category, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, category, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdCategory, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdCategory );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdCategory );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public Category select( int nIdCategory, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Category category = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdCategory );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 category = buildCategory( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return category;
@@ -119,22 +108,13 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
     @Override
     public List<Category> findAllCategories( Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Category> listCategory = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL, plugin );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listCategory.add( buildCategory( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listCategory;
@@ -143,23 +123,14 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
     @Override
     public Category findByLabel( String strLabel, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Category category = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_LABEL, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_LABEL, plugin );
             daoUtil.setString( 1, strLabel );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 category = buildCategory( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return category;
@@ -174,10 +145,10 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
      */
     private Category buildCategory( DAOUtil daoUtil )
     {
-        int nIndex = 1;
+        int nIndex = 0;
         Category category = new Category( );
-        category.setIdCategory( daoUtil.getInt( nIndex++ ) );
-        category.setLabel( daoUtil.getString( nIndex++ ) );
+        category.setIdCategory( daoUtil.getInt( ++nIndex ) );
+        category.setLabel( daoUtil.getString( ++nIndex ) );
         return category;
     }
 
@@ -216,26 +187,4 @@ public final class CategoryDAO extends UtilDAO implements ICategoryDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

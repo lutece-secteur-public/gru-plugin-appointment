@@ -37,7 +37,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -47,7 +46,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
+public final class TimeSlotDAO implements ITimeSlotDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot ( starting_time, ending_time, is_open, max_capacity, id_working_day) VALUES ( ?, ?, ?, ?, ?)";
@@ -60,9 +59,7 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
     @Override
     public void insert( TimeSlot timeSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, timeSlot, plugin, true );
-
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, timeSlot, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -70,47 +67,38 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
                 timeSlot.setIdTimeSlot( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( TimeSlot timeSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, timeSlot, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, timeSlot, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdTimeSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdTimeSlot );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdTimeSlot );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public TimeSlot select( int nIdTimeSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         TimeSlot timeSlot = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdTimeSlot );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 timeSlot = buildTimeSlot( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return timeSlot;
@@ -119,23 +107,14 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
     @Override
     public List<TimeSlot> findByIdWorkingDay( int nIdWorkingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<TimeSlot> listTimeSLots = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_WORKING_DAY, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_WORKING_DAY, plugin );
             daoUtil.setInt( 1, nIdWorkingDay );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listTimeSLots.add( buildTimeSlot( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listTimeSLots;
@@ -198,26 +177,4 @@ public final class TimeSlotDAO extends UtilDAO implements ITimeSlotDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

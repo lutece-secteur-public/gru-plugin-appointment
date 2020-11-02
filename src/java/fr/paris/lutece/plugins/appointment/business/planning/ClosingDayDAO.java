@@ -39,7 +39,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -49,7 +48,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
+public final class ClosingDayDAO implements IClosingDayDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_closing_day ( date_of_closing_day, id_form) VALUES (?, ?)";
@@ -65,8 +64,7 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
     @Override
     public void insert( ClosingDay closingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, closingDay, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, closingDay, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -74,47 +72,38 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
                 closingDay.setIdClosingDay( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( ClosingDay closingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, closingDay, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, closingDay, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdClosingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdClosingDay );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdClosingDay );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public ClosingDay select( int nIdClosingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         ClosingDay closingDay = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdClosingDay );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 closingDay = buildClosingDay( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return closingDay;
@@ -123,11 +112,9 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
     @Override
     public ClosingDay findByIdFormAndDateOfClosingDay( int nIdForm, LocalDate dateOfCLosingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         ClosingDay closingDay = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_CLOSING_DAY, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.setDate( 2, Date.valueOf( dateOfCLosingDay ) );
             daoUtil.executeQuery( );
@@ -136,36 +123,20 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
                 closingDay = buildClosingDay( daoUtil );
             }
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
         return closingDay;
     }
 
     @Override
     public List<ClosingDay> findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<ClosingDay> listClosingDay = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listClosingDay.add( buildClosingDay( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listClosingDay;
@@ -174,11 +145,9 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
     @Override
     public List<ClosingDay> findByIdFormAndDateRange( int nIdForm, LocalDate startingDate, LocalDate endingDate, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<ClosingDay> listClosingDay = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.setDate( 2, Date.valueOf( startingDate ) );
             daoUtil.setDate( 3, Date.valueOf( endingDate ) );
@@ -186,13 +155,6 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
             while ( daoUtil.next( ) )
             {
                 listClosingDay.add( buildClosingDay( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listClosingDay;
@@ -232,7 +194,7 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
     private DAOUtil buildDaoUtil( String query, ClosingDay closingDay, Plugin plugin, boolean isInsert )
     {
         int nIndex = 1;
-        DAOUtil daoUtil = new DAOUtil( query, plugin );
+        DAOUtil daoUtil = null;
         if ( isInsert )
         {
             daoUtil = new DAOUtil( query, Statement.RETURN_GENERATED_KEYS, plugin );
@@ -249,26 +211,4 @@ public final class ClosingDayDAO extends UtilDAO implements IClosingDayDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

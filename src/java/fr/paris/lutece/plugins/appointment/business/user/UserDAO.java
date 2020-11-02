@@ -37,7 +37,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -47,7 +46,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class UserDAO extends UtilDAO implements IUserDAO
+public final class UserDAO implements IUserDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_user ( guid, first_name, last_name, email, phone_number) VALUES ( ?, ?, ?, ?, ?)";
@@ -62,8 +61,7 @@ public final class UserDAO extends UtilDAO implements IUserDAO
     @Override
     public void insert( User user, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, user, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, user, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -71,47 +69,38 @@ public final class UserDAO extends UtilDAO implements IUserDAO
                 user.setIdUser( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( User user, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, user, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, user, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdUser, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdUser );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdUser );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public User select( int nIdUser, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         User user = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdUser );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 user = buildUser( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return user;
@@ -120,23 +109,14 @@ public final class UserDAO extends UtilDAO implements IUserDAO
     @Override
     public List<User> findByEmail( String strEmail, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<User> listUsers = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_EMAIL, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_EMAIL, plugin );
             daoUtil.setString( 1, strEmail );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listUsers.add( buildUser( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listUsers;
@@ -145,11 +125,9 @@ public final class UserDAO extends UtilDAO implements IUserDAO
     @Override
     public User findByFirstNameLastNameAndEmail( String strFirstName, String strLastName, String strEmail, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         User user = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_FIRSTNAME_LASTNAME_AND_EMAIL, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_FIRSTNAME_LASTNAME_AND_EMAIL, plugin );
             daoUtil.setString( 1, strFirstName.toUpperCase( ) );
             daoUtil.setString( 2, strLastName.toUpperCase( ) );
             daoUtil.setString( 3, strEmail.toUpperCase( ) );
@@ -157,13 +135,6 @@ public final class UserDAO extends UtilDAO implements IUserDAO
             if ( daoUtil.next( ) )
             {
                 user = buildUser( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return user;
@@ -226,26 +197,4 @@ public final class UserDAO extends UtilDAO implements IUserDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

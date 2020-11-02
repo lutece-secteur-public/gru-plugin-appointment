@@ -39,7 +39,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -49,7 +48,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionDAO
+public final class WeekDefinitionDAO implements IWeekDefinitionDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_week_definition ( date_of_apply, id_form) VALUES ( ?, ?)";
@@ -63,8 +62,7 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
     @Override
     public void insert( WeekDefinition weekDefinition, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, weekDefinition, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, weekDefinition, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -72,47 +70,38 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
                 weekDefinition.setIdWeekDefinition( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( WeekDefinition weekDefinition, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, weekDefinition, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, weekDefinition, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdWeekDefinition, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdWeekDefinition );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdWeekDefinition );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public WeekDefinition select( int nIdWeekDefinition, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         WeekDefinition weekDefinition = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdWeekDefinition );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 weekDefinition = buildWeekDefinition( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return weekDefinition;
@@ -121,23 +110,14 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
     @Override
     public List<WeekDefinition> findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<WeekDefinition> listWeekDefinition = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listWeekDefinition.add( buildWeekDefinition( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listWeekDefinition;
@@ -146,24 +126,15 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
     @Override
     public WeekDefinition findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         WeekDefinition weekDefinition = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.setDate( 2, Date.valueOf( dateOfApply ) );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 weekDefinition = buildWeekDefinition( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return weekDefinition;
@@ -220,26 +191,4 @@ public final class WeekDefinitionDAO extends UtilDAO implements IWeekDefinitionD
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

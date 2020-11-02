@@ -37,7 +37,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -47,7 +46,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTemplateDAO
+public final class CalendarTemplateDAO implements ICalendarTemplateDAO
 {
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_calendar_template ( title, description, template_path) VALUES (?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_calendar_template SET title = ?, description = ?, template_path = ? WHERE id_calendar_template = ?";
@@ -58,8 +57,7 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
     @Override
     public void insert( CalendarTemplate calendarTemplate, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, calendarTemplate, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, calendarTemplate, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -67,48 +65,39 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
                 calendarTemplate.setIdCalendarTemplate( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
 
     }
 
     @Override
     public void update( CalendarTemplate calendarTemplate, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, calendarTemplate, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, calendarTemplate, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdCalendarTemplate, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdCalendarTemplate );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdCalendarTemplate );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public CalendarTemplate select( int nIdCalendarTemplate, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         CalendarTemplate calendarTemplate = null;
-        try
+        try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdCalendarTemplate );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 calendarTemplate = buildCalendarTemplate( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return calendarTemplate;
@@ -117,22 +106,13 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
     @Override
     public List<CalendarTemplate> selectAll( Plugin plugin )
     {
-        DAOUtil daoUtil = null;
-        List<CalendarTemplate> listTemplates = new ArrayList<CalendarTemplate>( );
-        try
+        List<CalendarTemplate> listTemplates = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL, plugin );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listTemplates.add( buildCalendarTemplate( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listTemplates;
@@ -192,26 +172,4 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }
