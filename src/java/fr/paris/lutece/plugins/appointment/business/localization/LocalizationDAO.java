@@ -145,16 +145,8 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
         int nIndex = 1;
         Localization localization = new Localization( );
         localization.setIdLocalization( daoUtil.getInt( nIndex++ ) );
-        Float fLongitude = ( (Float) daoUtil.getObject( nIndex++ ) );
-        if ( fLongitude != null )
-        {
-            localization.setLongitude( fLongitude.doubleValue( ) );
-        }
-        Float fLatitude = ( (Float) daoUtil.getObject( nIndex++ ) );
-        if ( fLatitude != null )
-        {
-            localization.setLatitude( fLatitude.doubleValue( ) );
-        }
+        localization.setLongitude( daoUtil.getDouble( nIndex++ ) );
+        localization.setLatitude( daoUtil.getDouble( nIndex++ ) );
         localization.setAddress( daoUtil.getString( nIndex++ ) );
         localization.setIdForm( daoUtil.getInt( nIndex ) );
         return localization;
