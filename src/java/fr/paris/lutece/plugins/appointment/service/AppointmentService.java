@@ -494,11 +494,14 @@ public final class AppointmentService
 
         List<AppointmentSlot> listApptSlot = new ArrayList<>( );
         int nIdAppointment = appointmentDTO.getIdAppointment( );
-        int nNumberPlace = 1;
+        int nNumberPlace = appointmentDTO.getNbBookedSeats( );
         List<Slot> listSlot = appointmentDTO.getSlot( );
-
-        listSlot.sort( ( slot1, slot2 ) -> slot1.getStartingDateTime( ).compareTo( slot2.getStartingDateTime( ) ) );
-
+        
+        if(listSlot.size() > 1 ) {
+        
+        	nNumberPlace = 1;
+           listSlot.sort( ( slot1, slot2 ) -> slot1.getStartingDateTime( ).compareTo( slot2.getStartingDateTime( ) ) );
+        }
         for ( Slot slot : listSlot )
         {
 
