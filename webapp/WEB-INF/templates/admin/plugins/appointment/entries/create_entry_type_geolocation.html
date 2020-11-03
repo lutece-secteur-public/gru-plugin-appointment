@@ -6,11 +6,11 @@
                 <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
                         <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-                        <input type='hidden' name='id_form' value='${form.idForm}' />
-                        <input type='hidden' name='action' value='doCreateEntry' />
-                        <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
+                        <@input type='hidden' name='id_form' value='${form.idForm}' />
+                        <@input type='hidden' name='action' value='doCreateEntry' />
+                        <@input type='hidden' name='id_type' value='${entry.entryType.idType}' />
                         <#if entry.fieldDepend?exists>
-                            <input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
+                            <@input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
                         </#if>
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText>
@@ -41,8 +41,8 @@
                             <@input type='text' name='css_class' value='' maxlength=255 />
                         </@formGroup>
                         <@formGroup>
-                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
-                            <@button type='submit' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' value='cancel' cancel=true size='' color='btn-secondary' />
+                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' />
+                            <@button type='submit' name='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' value='cancel' cancel=true />
                         </@formGroup>
                     </fieldset>
                 </@tform>

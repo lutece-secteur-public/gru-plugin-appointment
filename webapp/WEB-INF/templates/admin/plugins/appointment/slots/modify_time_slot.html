@@ -31,7 +31,7 @@
 					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
 						<@inputGroup id='ending_time'>
 							<@input type='text' id='ending_time' name='ending_time' value='${timeSlot.endingTime!\'\'}' />
-							<@inputGroupItem type='addon'>
+							<@inputGroupItem type='text'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
                         </@inputGroup>

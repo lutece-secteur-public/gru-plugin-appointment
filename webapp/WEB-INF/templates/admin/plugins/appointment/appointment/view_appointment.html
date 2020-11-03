@@ -33,7 +33,7 @@
 								<#if hasFile>
 									<a href="jsp/admin/plugins/appointment/DoDownloadAppointmentsFile.jsp?idResponse=${response.idResponse}">
 								</#if>
-								${response.recapValue}
+								<@staticText>${response.recapValue}</@staticText>
 								<#if hasFile>
 									</a>
 								</#if>
@@ -72,12 +72,12 @@
 														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=false' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' buttonIcon='check' />
 													</#if>								
 													<#if !appointment.isCancelled> 
-														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' buttonIcon='times' color='btn-danger' />
+														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' buttonIcon='times' color='danger' />
 													</#if> 
 												</#if> 
 											</#if>
 											<#if rightDelete?? && rightDelete> 
-												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='btn-danger' />
+												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
 											</#if>							
 										</td>
 									</tr>
@@ -89,7 +89,7 @@
 							${resource_history}
 						</#if>
 						<@formGroup>
-							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' buttonIcon='times' title='#i18n{portal.util.labelBack}' />
+							<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' buttonIcon='times' color='default' title='#i18n{portal.util.labelBack}' />
 						</@formGroup>
 					</div>
 				</fieldset>

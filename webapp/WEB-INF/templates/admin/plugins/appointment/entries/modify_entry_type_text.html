@@ -7,8 +7,8 @@
 				<fieldset>
 				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
-					<input type='hidden' name='action' value='doModifyEntry' type='hidden' />
+					<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
+					<@input type='hidden' name='action' value='doModifyEntry' type='hidden' />
 					
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 						<@staticText>
@@ -82,7 +82,7 @@
 					<@formGroup>
 						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
 						<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
-						<@button type='submit' name='cancel' value='cancel' cancel=true buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-default' />
+						<@button type='submit' name='cancel' value='cancel' cancel=true buttonIcon='times' title='#i18n{appointment.labelCancel}' />
 					</@formGroup>
 				</@tform>
 			</fieldset>
@@ -98,8 +98,8 @@
 			<fieldset> 
 				<legend class="hidden">#i18n{appointment.createEntry.manageRegularExpression.title}</legend>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-					<input type='hidden' name='id_field' value='${id_field}' />
-					<input type='hidden' name='action' value='doInsertRegularExpression' />
+					<@input type='hidden' name='id_field' value='${id_field}' />
+					<@input type='hidden' name='action' value='doInsertRegularExpression' />
 					
 					<@formGroup labelFor='id_expression' labelKey='#i18n{appointment.regularExpression.label}' helpKey='#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}'>
 						<@inputGroup>
@@ -124,7 +124,7 @@
 								<td>${expression.informationMessage}</td>
 								<td>${expression.validExemple}</td>
 								<td>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${id_field}' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='btn-danger' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp?action=doRemoveRegularExpression&id_expression=${expression.idExpression}&id_field=${id_field}' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='danger' />
 								</td>
 							</tr>
 						</#list>

@@ -19,10 +19,10 @@
 <@formGroup labelFor='attribute${entry.idEntry}' labelKey='${entry.title}' helpKey='${entry.helpMessage!}' class=class mandatory=entry.mandatory>
 	<#assign field = getFieldByCode( entry, "default_date_value" ) >
 	<@inputGroup>
-		<@inputGroupItem type='addon'>
+		<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
+		<@inputGroupItem type='text'>
 			<@icon style='calendar' />
 		</@inputGroupItem>
-		<@input type='text' name='attribute${entry.idEntry}' id='attribute${entry.idEntry}' value=value class='${entry.CSSClass!}' />
 	</@inputGroup>
 	<#if list_responses??>
 		<#list list_responses as response>

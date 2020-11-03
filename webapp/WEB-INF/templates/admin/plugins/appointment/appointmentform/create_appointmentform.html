@@ -26,7 +26,7 @@
 					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>
 							<@input type='text' name='time_start' id='time_start' value=appointmentform.timeStart!'' />
-							<@inputGroupItem type='addon'>
+							<@inputGroupItem type='text'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
@@ -35,7 +35,7 @@
 					<@formGroup labelFor='time_end' labelKey='#i18n{appointment.createAppointmentForm.labelTimeEnd}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeEnd.help}' mandatory=true>
 						<@inputGroup>
 							<@input type='text' name='time_end' id='time_end' value=appointmentform.timeEnd!'' />
-							<@inputGroupItem type='addon'>
+							<@inputGroupItem type='text'>
 								<@icon style='clock-o' />
 							</@inputGroupItem>
 						</@inputGroup>
@@ -52,7 +52,7 @@
 					<@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
 						<@inputGroup>
 							<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
-							<@inputGroupItem type='addon'>
+							<@inputGroupItem type='text'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>
@@ -62,7 +62,7 @@
 					<@formGroup labelFor='date_end_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateEndValidity.help}'>
 						<@inputGroup>
 							<@input type='text' name='date_end_validity' id='date_end_validity' value=appointmentform.dateEndValidity!'' />
-							<@inputGroupItem type='addon'>
+							<@inputGroupItem type='text'>
 								<@icon style='calendar' />
 							</@inputGroupItem>
 						</@inputGroup>

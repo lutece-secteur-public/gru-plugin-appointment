@@ -7,8 +7,8 @@
 				<fieldset>
 				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
 					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-						<input type='hidden' name='id_entry' value='${entry.idEntry}' />
-						<input type='hidden' name='action' value='doModifyEntry' />
+						<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
+						<@input type='hidden' name='action' value='doModifyEntry' />
 						
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText>
@@ -29,10 +29,10 @@
 						<@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
 							<#assign field = getFieldByCode( entry, "default_date_value" ) >
 							<@inputGroup>
-								<@inputGroupItem type='addon'>
+								<@input type='text' name='date' id='date' value='${field.valueTypeDate?if_exists}' />
+								<@inputGroupItem type='text'>
 									<@icon style='calendar' />
 								</@inputGroupItem>
-								<@input type='text' name='date' id='date' value='${field.valueTypeDate?if_exists}' />
 							</@inputGroup>
 						</@formGroup>
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelMandatory}'>
@@ -46,7 +46,7 @@
 						</@formGroup>
 						<@formGroup>
 							<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-							<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' cancel=true />
+							<@button type='submit' name='cancel' id='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' cancel=true />
 						</@formGroup>	
 					</@tform>
 				  </fieldset>

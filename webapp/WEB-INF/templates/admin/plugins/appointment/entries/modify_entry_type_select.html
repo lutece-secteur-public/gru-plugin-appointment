@@ -5,8 +5,8 @@
 			<@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
 			<@boxBody>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-					<input type='hidden' name='action' value='doModifyEntry' />
-					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
+					<@input type='hidden' name='action' value='doModifyEntry' />
+					<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
 					
 					<@formGroup labelKey='#i18n{appointment.createEntry.labelType}' rows=2>
 						<@staticText>
@@ -76,7 +76,7 @@
 									<@aButton  href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' buttonIcon='chevron-down' size='sm' />
 									</a>
 								</#if>
-									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='btn-danger' size='sm' />
+									<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='danger' size='sm' />
 								</td>
 							</tr>
 						</#if>

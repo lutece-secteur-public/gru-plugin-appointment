@@ -6,11 +6,11 @@
                 <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
                         <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
-                        <input type='hidden' name='id_form' value='${form.idForm}' />
-                        <input type='hidden' name='action' value='doCreateEntry' />
-                        <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
+                        <@input type='hidden' name='id_form' value='${form.idForm}' />
+                        <@input type='hidden' name='action' value='doCreateEntry' />
+                        <@input type='hidden' name='id_type' value='${entry.entryType.idType}' />
                         <#if entry.fieldDepend?exists>
-						<input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
+						<@input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
                         </#if>
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText>
@@ -56,9 +56,9 @@
                             <@input type='text' name='css_class' value='' maxlength=255 />
                         </@formGroup>
                         <@formGroup>
-                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' size='' />
-                            <@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageVerification}' size='' />
-                            <@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' size='' cancel=true />
+                            <@button type='submit' name='save' buttonIcon='save' title='#i18n{appointment.labelSave}' />
+                            <@button type='submit' name='apply' buttonIcon='check' title='#i18n{appointment.createEntry.buttonApplyAndManageVerification}' />
+                            <@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' cancel=true />
                         </@formGroup>
                     </fieldset>
                 </@tform>

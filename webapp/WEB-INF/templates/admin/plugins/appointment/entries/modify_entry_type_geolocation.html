@@ -5,8 +5,8 @@
 			<@boxHeader title='#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"' />
 			<@boxBody>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' />
-				<input type='hidden' name='action' value='doModifyEntry' />
-				<input type='hidden' name='id_entry' value='${entry.idEntry}' />
+				<@input type='hidden' name='action' value='doModifyEntry' />
+				<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
 
 				<fieldset>
 					<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
@@ -41,7 +41,7 @@
 					</@formGroup>
 					<@formGroup>
 						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-						<@button name='cancel' id='cancel' cancel=true buttonIcon='times' color='btn-default' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' />
+						<@button name='cancel' id='cancel' cancel=true buttonIcon='times' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' />
 					</@formGroup>
 				</fieldset>
 				</@tform>

@@ -6,8 +6,8 @@
 				<fieldset>
 				<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : "${form.title}"</legend>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
-					<input type='hidden' name='id_entry' value='${entry.idEntry}' />
-					<input type='hidden' name='action' value='doModifyEntry' />
+					<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
+					<@input type='hidden' name='action' value='doModifyEntry' />
 					
 					<@formGroup labelFor='' labelKey='#i18n{appointment.createEntry.labelType}'>
 						<@staticText>
@@ -29,7 +29,7 @@
 					<@formGroup>
 						<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
 						<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
-						<@button type='submit' name='cancel' id='cancel' value='cancel' cancel=true buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' />
+						<@button type='submit' name='cancel' id='cancel' value='cancel' cancel=true buttonIcon='times' title='#i18n{appointment.labelCancel}' />
 					</@formGroup>
 				</@tform>
 			</fieldset>

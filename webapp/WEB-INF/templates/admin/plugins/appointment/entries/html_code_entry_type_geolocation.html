@@ -17,11 +17,11 @@
 		<#list list_responses as response>
 			<#if response.entry.idEntry == entry.idEntry && response.toStringValueResponse??>
 				<#if response.field.code == "X">
-					<input type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' value='${response.toStringValueResponse!}' />
+					<@input type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' value='${response.toStringValueResponse!}' />
 				<#elseif response.field.code == "Y">
-					<input type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' value='${response.toStringValueResponse!}' />
+					<@input type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' value='${response.toStringValueResponse!}' />
 				<#elseif response.field.code == "idAddress">
-					<input type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' value='${response.toStringValueResponse!}' />
+					<@input type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' value='${response.toStringValueResponse!}' />
 				<#else>
 					<@input type='text' name='${entry.idEntry}_address' id='${entry.idEntry}_address' value='${response.toStringValueResponse!}' class='${entry.CSSClass!}' />
 				</#if>
@@ -29,9 +29,9 @@
 		</#list>
 	<#else>
 		<@input type='text' value='' name='${entry.idEntry}_address' id='${entry.idEntry}_address' inputSize=50 />
-		<input type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' value='' />
-		<input type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' value='' />
-		<input type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' value='' />
+		<@input type='hidden' name='${entry.idEntry}_x' id='${entry.idEntry}_x' value='' />
+		<@input type='hidden' name='${entry.idEntry}_y' id='${entry.idEntry}_y' value='' />
+		<@input type='hidden' name='${entry.idEntry}_idAddress' id='${entry.idEntry}_idAddress' value='' />
 	</#if>
 	
 	<#if list_responses??>
