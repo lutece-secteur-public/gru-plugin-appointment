@@ -39,7 +39,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -49,7 +48,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class SlotDAO extends UtilDAO implements ISlotDAO
+public final class SlotDAO implements ISlotDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -76,8 +75,7 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     @Override
     public void insert( Slot slot, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, slot, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, slot, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -85,47 +83,38 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
                 slot.setIdSlot( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( Slot slot, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, slot, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, slot, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdSlot );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdSlot );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public Slot select( int nIdSlot, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Slot slot = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdSlot );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 slot = buildSlot( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return slot;
@@ -134,11 +123,9 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     @Override
     public List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Slot> listSlots = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_RANGE, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.setTimestamp( 2, Timestamp.valueOf( startingDateTime ) );
             daoUtil.setTimestamp( 3, Timestamp.valueOf( endingDateTime ) );
@@ -148,36 +135,20 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
                 listSlots.add( buildSlot( daoUtil ) );
             }
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
         return listSlots;
     }
 
     @Override
     public List<Slot> findIsSpecificByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Slot> listSpecificSlots = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_IS_SPECIFIC, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_IS_SPECIFIC, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listSpecificSlots.add( buildSlot( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listSpecificSlots;
@@ -186,23 +157,14 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     @Override
     public List<Slot> findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Slot> listSlot = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listSlot.add( buildSlot( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listSlot;
@@ -211,11 +173,9 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     @Override
     public List<Slot> findOpenSlotsByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Slot> listSLot = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM_AND_DATE_RANGE, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM_AND_DATE_RANGE, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.setTimestamp( 2, Timestamp.valueOf( startingDateTime ) );
             daoUtil.setTimestamp( 3, Timestamp.valueOf( endingDateTime ) );
@@ -225,36 +185,20 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
                 listSLot.add( buildSlot( daoUtil ) );
             }
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
         return listSLot;
     }
 
     @Override
     public List<Slot> findOpenSlotsByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Slot> listSLot = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_OPEN_SLOTS_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listSLot.add( buildSlot( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listSLot;
@@ -263,23 +207,14 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     @Override
     public Slot findSlotWithMaxDate( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Slot slot = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_SLOT_WITH_MAX_DATE, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_SLOT_WITH_MAX_DATE, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 slot = buildSlot( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return slot;
@@ -288,24 +223,12 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
     @Override
     public void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin )
     {
-
-        DAOUtil daoUtil = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE, plugin );
             daoUtil.setInt( 1, nbPotentialRemainingPlaces );
             daoUtil.setInt( 2, nIdSlot );
             daoUtil.executeUpdate( );
-
         }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-
     }
 
     /**
@@ -375,44 +298,12 @@ public final class SlotDAO extends UtilDAO implements ISlotDAO
         return daoUtil;
     }
 
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
     @Override
     public void resetPotentialRemainingPlaces( Plugin plugin )
     {
-        DAOUtil daoUtil = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN, plugin );
             daoUtil.executeUpdate( );
-
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
         }
     }
-
 }

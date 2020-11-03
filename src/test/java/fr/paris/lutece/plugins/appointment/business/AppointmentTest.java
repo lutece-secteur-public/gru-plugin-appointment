@@ -34,10 +34,12 @@
 package fr.paris.lutece.plugins.appointment.business;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
+import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
@@ -67,20 +69,15 @@ public final class AppointmentTest extends LuteceTestCase
         User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
         UserHome.create( user );
 
-        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot );
-
         // Initialize a Appointment
         Appointment appointment = new Appointment( );
         appointment.setIdUser( user.getIdUser( ) );
-        appointment.addSlot( slot );
+        appointment.setListAppointmentSlot( new ArrayList<>( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment );
         // Find the Appointment created in database
         Appointment appointmentStored = AppointmentHome.findByPrimaryKey( appointment.getIdAppointment( ) );
-        // Check Asserts
-        checkAsserts( appointmentStored, appointment );
+        assertEquals( appointmentStored.getIdUser( ), appointment.getIdUser( ) );
 
         // No possible update
         // An appointment is linked to a User and a Slot
@@ -88,41 +85,6 @@ public final class AppointmentTest extends LuteceTestCase
 
         // Delete the appointment
         AppointmentHome.delete( appointment.getIdAppointment( ) );
-        appointmentStored = AppointmentHome.findByPrimaryKey( appointment.getIdAppointment( ) );
-        // Check the Appointment has been removed from database
-        assertNull( appointmentStored );
-
-        // Clean
-        FormHome.delete( form.getIdForm( ) );
-        UserHome.delete( user.getIdUser( ) );
-    }
-
-    /**
-     * Test the delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
-        UserHome.create( user );
-
-        Slot slot = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot );
-
-        // Initialize a Appointment
-        Appointment appointment = new Appointment( );
-        appointment.setIdUser( user.getIdUser( ) );
-        appointment.addSlot( slot );
-        // Create the Appointment in database
-        AppointmentHome.create( appointment );
-        // Find the Appointment created in database
-        Appointment appointmentStored = AppointmentHome.findByPrimaryKey( appointment.getIdAppointment( ) );
-        assertNotNull( appointmentStored );
-        // Delete the form and by cascade the appointment
-        FormHome.delete( form.getIdForm( ) );
         appointmentStored = AppointmentHome.findByPrimaryKey( appointment.getIdAppointment( ) );
         // Check the Appointment has been removed from database
         assertNull( appointmentStored );
@@ -143,25 +105,17 @@ public final class AppointmentTest extends LuteceTestCase
         User user = UserTest.buildUser( Constants.GUID_1, Constants.FIRST_NAME_1, Constants.LAST_NAME_1, Constants.EMAIL_1, Constants.PHONE_NUMBER_1 );
         UserHome.create( user );
 
-        Slot slot1 = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot1 );
-
-        Slot slot2 = SlotTest.buildSlot( form.getIdForm( ), Constants.STARTING_DATE_2, Constants.ENDING_DATE_2, Constants.NB_REMAINING_PLACES_2,
-                Constants.NB_REMAINING_PLACES_2, 0, Constants.NB_REMAINING_PLACES_2, Boolean.TRUE, Boolean.TRUE );
-        SlotHome.create( slot2 );
-
         // Initialize a fist Appointment
         Appointment appointment1 = new Appointment( );
         appointment1.setIdUser( user.getIdUser( ) );
-        appointment1.addSlot( slot1 );
+        appointment1.setListAppointmentSlot( new ArrayList<>( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment1 );
 
         // Initialize a 2nd Appointment
         Appointment appointment2 = new Appointment( );
         appointment2.setIdUser( user.getIdUser( ) );
-        appointment2.addSlot( slot2 );
+        appointment2.setListAppointmentSlot( new ArrayList<>( ) );
         // Create the Appointment in database
         AppointmentHome.create( appointment2 );
         // Find the Appointments created in database
@@ -170,6 +124,8 @@ public final class AppointmentTest extends LuteceTestCase
         assertEquals( listAppointmentStored.size( ), 2 );
 
         // Clean
+        AppointmentHome.delete( appointment1.getIdAppointment( ) );
+        AppointmentHome.delete( appointment2.getIdAppointment( ) );
         FormHome.delete( form.getIdForm( ) );
         UserHome.delete( user.getIdUser( ) );
     }
@@ -193,16 +149,28 @@ public final class AppointmentTest extends LuteceTestCase
         SlotHome.create( slot );
 
         // Initialize a fist Appointment
+        AppointmentSlot appointmentSlot1 = new AppointmentSlot( );
+        appointmentSlot1.setIdSlot( slot.getIdSlot( ) );
+        appointmentSlot1.setNbPlaces( 1 );
+        
         Appointment appointment1 = new Appointment( );
         appointment1.setIdUser( user1.getIdUser( ) );
         appointment1.addSlot( slot );
+        appointment1.setListAppointmentSlot( new ArrayList<>( ) );
+        appointment1.getListAppointmentSlot( ).add( appointmentSlot1 );
         // Create the Appointment in database
         AppointmentHome.create( appointment1 );
 
         // Initialize a 2nd Appointment
+        AppointmentSlot appointmentSlot2 = new AppointmentSlot( );
+        appointmentSlot2.setIdSlot( slot.getIdSlot( ) );
+        appointmentSlot2.setNbPlaces( 1 );
+        
         Appointment appointment2 = new Appointment( );
         appointment2.setIdUser( user2.getIdUser( ) );
         appointment2.addSlot( slot );
+        appointment2.setListAppointmentSlot( new ArrayList<>( ) );
+        appointment2.getListAppointmentSlot( ).add( appointmentSlot2 );
         // Create the Appointment in database
         AppointmentHome.create( appointment2 );
         // Find the Appointments created in database
@@ -211,6 +179,9 @@ public final class AppointmentTest extends LuteceTestCase
         assertEquals( listAppointmentStored.size( ), 2 );
 
         // Clean
+        AppointmentHome.delete( appointment1.getIdAppointment( ) );
+        AppointmentHome.delete( appointment2.getIdAppointment( ) );
+        SlotHome.delete( slot.getIdSlot( ) );
         FormHome.delete( form.getIdForm( ) );
         UserHome.delete( user1.getIdUser( ) );
         UserHome.delete( user2.getIdUser( ) );

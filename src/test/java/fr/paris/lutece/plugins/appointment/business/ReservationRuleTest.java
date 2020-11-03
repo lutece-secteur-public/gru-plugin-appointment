@@ -99,29 +99,6 @@ public final class ReservationRuleTest extends LuteceTestCase
     }
 
     /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        // Initialize a ReservationRule
-        ReservationRule reservationRule = buildReservationRule( );
-        reservationRule.setIdForm( form.getIdForm( ) );
-        // Create the ReservationRule in database
-        ReservationRuleHome.create( reservationRule );
-        // Find the ReservationRule created in database
-        ReservationRule reservationRuleStored = ReservationRuleHome.findByPrimaryKey( reservationRule.getIdReservationRule( ) );
-        assertNotNull( reservationRuleStored );
-        // Delete the form and by cascade the ReservationRule
-        FormHome.delete( form.getIdForm( ) );
-        reservationRuleStored = ReservationRuleHome.findByPrimaryKey( reservationRule.getIdReservationRule( ) );
-        // Check the ReservationRule has been removed from database
-        assertNull( reservationRuleStored );
-    }
-
-    /**
      * Test of findByIdForm method
      */
     public void testFindByIdForm( )
@@ -141,6 +118,7 @@ public final class ReservationRuleTest extends LuteceTestCase
         checkAsserts( listReservationRuleStored.get( 0 ), reservationRule );
 
         // Clean
+        ReservationRuleHome.delete( reservationRule.getIdReservationRule( ) );
         FormHome.delete( form.getIdForm( ) );
 
     }

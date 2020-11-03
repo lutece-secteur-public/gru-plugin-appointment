@@ -92,29 +92,6 @@ public final class FormRuleTest extends LuteceTestCase
     }
 
     /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        // Initialize a FormRule
-        FormRule formRule = buildFormRule( );
-        formRule.setIdForm( form.getIdForm( ) );
-        // Create the FormRule in database
-        FormRuleHome.create( formRule );
-        // Find the FormRule created in database
-        FormRule formRuleStored = FormRuleHome.findByPrimaryKey( formRule.getIdFormRule( ) );
-        assertNotNull( formRuleStored );
-        // Delete the Form and by cascade the Rule
-        FormHome.delete( form.getIdForm( ) );
-        formRuleStored = FormRuleHome.findByPrimaryKey( formRule.getIdFormRule( ) );
-        // Check the FormRule has been removed from database
-        assertNull( formRuleStored );
-    }
-
-    /**
      * Test findByIdFOrm method
      */
     public void testFindByIdForm( )
@@ -133,6 +110,7 @@ public final class FormRuleTest extends LuteceTestCase
         checkAsserts( formRuleStored, formRule );
 
         // Clean
+        FormRuleHome.delete( formRule.getIdFormRule( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 

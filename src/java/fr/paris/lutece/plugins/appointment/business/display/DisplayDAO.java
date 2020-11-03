@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.business.display;
 
 import java.sql.Statement;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
@@ -46,7 +45,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class DisplayDAO extends UtilDAO implements IDisplayDAO
+public final class DisplayDAO implements IDisplayDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display ( display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
@@ -59,8 +58,7 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
     @Override
     public void insert( Display display, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, display, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, display, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -68,47 +66,38 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
                 display.setIdDisplay( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( Display display, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, display, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, display, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdDisplay, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdDisplay );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdDisplay );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public Display select( int nIdDisplay, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Display display = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdDisplay );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 display = buildDisplay( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return display;
@@ -117,23 +106,14 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
     @Override
     public Display findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Display display = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 display = buildDisplay( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return display;
@@ -198,27 +178,6 @@ public final class DisplayDAO extends UtilDAO implements IDisplayDAO
             daoUtil.setInt( nIndex, display.getIdDisplay( ) );
         }
         return daoUtil;
-    }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
     }
 
     /**

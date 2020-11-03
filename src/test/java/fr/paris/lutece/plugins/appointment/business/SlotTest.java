@@ -92,30 +92,6 @@ public final class SlotTest extends LuteceTestCase
     }
 
     /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        // Initialize a Slot
-        Slot slot = buildSlot( form.getIdForm( ), Constants.STARTING_DATE_1, Constants.ENDING_DATE_1, Constants.NB_REMAINING_PLACES_1,
-                Constants.NB_REMAINING_PLACES_1, 0, Constants.NB_REMAINING_PLACES_1, Boolean.TRUE, Boolean.TRUE );
-        slot.setIdForm( form.getIdForm( ) );
-        // Create the Slot in database
-        SlotHome.create( slot );
-        // Find the Slot created in database
-        Slot slotStored = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
-        assertNotNull( slotStored );
-        // Delete the Form and by cascade the Slot
-        FormHome.delete( form.getIdForm( ) );
-        slotStored = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
-        // Check the Slot has been removed from database
-        assertNull( slotStored );
-    }
-
-    /**
      * Test of findByIdFormAndDateRange
      */
     public void testFindByIdFormAndDateRange( )
@@ -140,6 +116,8 @@ public final class SlotTest extends LuteceTestCase
         assertEquals( listSlotStored.size( ), 1 );
 
         // Clean
+        SlotHome.delete( slot1.getIdSlot( ) );
+        SlotHome.delete( slot2.getIdSlot( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 
@@ -167,6 +145,8 @@ public final class SlotTest extends LuteceTestCase
         assertEquals( listSlotStored.size( ), 1 );
 
         // Clean
+        SlotHome.delete( slot1.getIdSlot( ) );
+        SlotHome.delete( slotClosed.getIdSlot( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 
@@ -202,6 +182,9 @@ public final class SlotTest extends LuteceTestCase
         assertEquals( listSlotStored.size( ), 2 );
 
         // Clean
+        SlotHome.delete( slot1.getIdSlot( ) );
+        SlotHome.delete( slot2.getIdSlot( ) );
+        SlotHome.delete( slot3.getIdSlot( ) );
         FormHome.delete( form.getIdForm( ) );
 
     }

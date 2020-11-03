@@ -37,7 +37,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -47,7 +46,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class FormDAO extends UtilDAO implements IFormDAO
+public final class FormDAO implements IFormDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form ( title, description, reference, id_category, starting_validity_date, ending_validity_date, is_active, id_workflow, workgroup,is_multislot_appointment, role_fo ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -64,8 +63,7 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     @Override
     public void insert( Form form, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, form, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, form, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -73,47 +71,38 @@ public final class FormDAO extends UtilDAO implements IFormDAO
                 form.setIdForm( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( Form form, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, form, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, form, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdForm );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public Form select( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Form form = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 form = buildForm( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return form;
@@ -122,22 +111,13 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     @Override
     public List<Form> findActiveForms( Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Form> listForms = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIVE_FORMS, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIVE_FORMS, plugin );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listForms.add( buildForm( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listForms;
@@ -146,22 +126,13 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     @Override
     public List<Form> findActiveAndDisplayedOnPortletForms( Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Form> listForms = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIVE_AND_DISPLAYED_ON_PORTLET_FORMS, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_ACTIVE_AND_DISPLAYED_ON_PORTLET_FORMS, plugin );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listForms.add( buildForm( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listForms;
@@ -170,23 +141,14 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     @Override
     public List<Form> findByTitle( String strTitle, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Form> listForms = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_TITLE, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_TITLE, plugin );
             daoUtil.setString( 1, strTitle );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listForms.add( buildForm( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listForms;
@@ -195,22 +157,13 @@ public final class FormDAO extends UtilDAO implements IFormDAO
     @Override
     public List<Form> findAllForms( Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<Form> listForms = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL, plugin );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listForms.add( buildForm( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listForms;
@@ -294,26 +247,4 @@ public final class FormDAO extends UtilDAO implements IFormDAO
 
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

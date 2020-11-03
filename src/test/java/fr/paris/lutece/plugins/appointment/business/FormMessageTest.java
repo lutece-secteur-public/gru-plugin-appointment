@@ -137,30 +137,6 @@ public final class FormMessageTest extends LuteceTestCase
     }
 
     /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        // Initialize a FormMessage
-        FormMessage formMessage = buildFormMessage( );
-        formMessage.setIdForm( form.getIdForm( ) );
-        // Create the FormMessage in database
-        FormMessageHome.create( formMessage );
-        // Find the FormMessage created in database
-        FormMessage formMessageStored = FormMessageHome.findByPrimaryKey( formMessage.getIdFormMessage( ) );
-        assertNotNull( formMessageStored );
-        // Delete the Form and by cascade the FormMessage
-        FormHome.delete( form.getIdForm( ) );
-        formMessageStored = FormMessageHome.findByPrimaryKey( formMessage.getIdFormMessage( ) );
-        // Check the FormMessage has been removed from database
-        assertNull( formMessageStored );
-
-    }
-
-    /**
      * Test findByIdForm method
      */
     public void testFindByIdForm( )
@@ -179,6 +155,7 @@ public final class FormMessageTest extends LuteceTestCase
         checkAsserts( formMessageStored, formMessage );
 
         // Clean
+        FormMessageHome.delete( formMessage.getIdFormMessage( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 

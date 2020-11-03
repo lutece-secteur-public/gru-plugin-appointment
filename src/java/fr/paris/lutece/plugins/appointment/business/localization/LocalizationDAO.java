@@ -35,11 +35,10 @@ package fr.paris.lutece.plugins.appointment.business.localization;
 
 import java.sql.Statement;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
-public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
+public final class LocalizationDAO implements ILocalizationDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_localization (longitude, latitude, address, id_form) VALUES ( ?, ?, ?, ?)";
@@ -52,9 +51,7 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
     @Override
     public void insert( Localization localization, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, localization, plugin, true );
-
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, localization, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -62,47 +59,38 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
                 localization.setIdLocalization( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( Localization localization, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, localization, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, localization, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdLocalization, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdLocalization );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdLocalization );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public Localization select( int nIdLocalization, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Localization localization = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdLocalization );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 localization = buildLocalization( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return localization;
@@ -111,23 +99,14 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
     @Override
     public Localization findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         Localization localization = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 localization = buildLocalization( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return localization;
@@ -145,16 +124,8 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
         int nIndex = 1;
         Localization localization = new Localization( );
         localization.setIdLocalization( daoUtil.getInt( nIndex++ ) );
-        Float fLongitude = ( (Float) daoUtil.getObject( nIndex++ ) );
-        if ( fLongitude != null )
-        {
-            localization.setLongitude( fLongitude.doubleValue( ) );
-        }
-        Float fLatitude = ( (Float) daoUtil.getObject( nIndex++ ) );
-        if ( fLatitude != null )
-        {
-            localization.setLatitude( fLatitude.doubleValue( ) );
-        }
+        localization.setLongitude( daoUtil.getDouble( nIndex++ ) );
+        localization.setLatitude( daoUtil.getDouble( nIndex++ ) );
         localization.setAddress( daoUtil.getString( nIndex++ ) );
         localization.setIdForm( daoUtil.getInt( nIndex ) );
         return localization;
@@ -210,26 +181,4 @@ public final class LocalizationDAO extends UtilDAO implements ILocalizationDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

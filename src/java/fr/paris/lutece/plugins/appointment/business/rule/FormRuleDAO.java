@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.business.rule;
 
 import java.sql.Statement;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -45,7 +44,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
+public final class FormRuleDAO implements IFormRuleDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule ( is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, bo_overbooking, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -58,8 +57,7 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
     @Override
     public synchronized void insert( FormRule formRule, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formRule, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formRule, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -67,47 +65,38 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
                 formRule.setIdFormRule( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( FormRule formRule, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, formRule, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, formRule, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdFormRule, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdFormRule );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdFormRule );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public FormRule select( int nIdFormRule, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         FormRule formRule = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdFormRule );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 formRule = buildFormRule( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return formRule;
@@ -116,23 +105,14 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
     @Override
     public FormRule findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         FormRule formRule = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 formRule = buildFormRule( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return formRule;
@@ -203,26 +183,4 @@ public final class FormRuleDAO extends UtilDAO implements IFormRuleDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

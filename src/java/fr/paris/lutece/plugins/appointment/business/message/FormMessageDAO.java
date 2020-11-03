@@ -35,7 +35,6 @@ package fr.paris.lutece.plugins.appointment.business.message;
 
 import java.sql.Statement;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -45,7 +44,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
+public final class FormMessageDAO implements IFormMessageDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_message( calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help, field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -58,8 +57,7 @@ public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
     @Override
     public void insert( FormMessage formMessage, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formMessage, plugin, true );
-        try
+        try( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formMessage, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -67,47 +65,38 @@ public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
                 formMessage.setIdFormMessage( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( FormMessage formMessage, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, formMessage, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, formMessage, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdFormMessage, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdFormMessage );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdFormMessage );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public FormMessage select( int nIdFormMessage, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         FormMessage formMessage = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdFormMessage );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 formMessage = buildFormMessage( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return formMessage;
@@ -116,23 +105,14 @@ public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
     @Override
     public FormMessage findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         FormMessage formMessage = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 formMessage = buildFormMessage( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return formMessage;
@@ -221,26 +201,4 @@ public final class FormMessageDAO extends UtilDAO implements IFormMessageDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

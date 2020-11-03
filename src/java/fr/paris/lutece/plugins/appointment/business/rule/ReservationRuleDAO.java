@@ -39,7 +39,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -49,7 +48,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class ReservationRuleDAO extends UtilDAO implements IReservationRuleDAO
+public final class ReservationRuleDAO implements IReservationRuleDAO
 {
 
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_reservation_rule SET date_of_apply = ?, max_capacity_per_slot = ?, max_people_per_appointment =?, id_form = ? WHERE id_reservation_rule = ?";
@@ -63,8 +62,7 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
     @Override
     public void insert( ReservationRule reservationRule, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, reservationRule, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, reservationRule, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -72,47 +70,38 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
                 reservationRule.setIdReservationRule( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( ReservationRule reservationRule, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, reservationRule, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, reservationRule, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdReservationRule, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdReservationRule );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdReservationRule );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public ReservationRule select( int nIdReservationRule, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         ReservationRule reservationRule = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdReservationRule );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 reservationRule = buildReservationRule( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return reservationRule;
@@ -121,23 +110,14 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
     @Override
     public List<ReservationRule> findByIdForm( int nIdForm, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<ReservationRule> listReservationRule = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listReservationRule.add( buildReservationRule( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listReservationRule;
@@ -146,24 +126,15 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
     @Override
     public ReservationRule findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         ReservationRule reservationRule = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY, plugin );
             daoUtil.setInt( 1, nIdForm );
             daoUtil.setDate( 2, Date.valueOf( dateOfApply ) );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 reservationRule = buildReservationRule( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return reservationRule;
@@ -224,26 +195,4 @@ public final class ReservationRuleDAO extends UtilDAO implements IReservationRul
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

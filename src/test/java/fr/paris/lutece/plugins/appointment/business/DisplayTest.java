@@ -103,34 +103,8 @@ public final class DisplayTest extends LuteceTestCase
         assertNull( displayStored );
 
         // Clean
+        CalendarTemplateHome.delete( calendarTemplate.getIdCalendarTemplate( ) );
         FormHome.delete( form.getIdForm( ) );
-    }
-
-    /**
-     * Test delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        CalendarTemplate calendarTemplate = CalendarTemplateTest.buildCalendarTemplate( );
-        CalendarTemplateHome.create( calendarTemplate );
-
-        // Initialize a Display
-        Display display = buildDisplay( );
-        display.setIdForm( form.getIdForm( ) );
-        display.setIdCalendarTemplate( calendarTemplate.getIdCalendarTemplate( ) );
-        // Create the Display in database
-        DisplayHome.create( display );
-        // Find the Display created in database
-        Display displayStored = DisplayHome.findByPrimaryKey( display.getIdDisplay( ) );
-        assertNotNull( displayStored );
-        // Delete the Form and by cascade the Display
-        FormHome.delete( form.getIdForm( ) );
-        displayStored = DisplayHome.findByPrimaryKey( display.getIdDisplay( ) );
-        // Check the Display has been removed from database
-        assertNull( displayStored );
     }
 
     /**
@@ -156,6 +130,8 @@ public final class DisplayTest extends LuteceTestCase
         checkAsserts( displayStored, display );
 
         // Clean
+        DisplayHome.delete( display.getIdDisplay( ) );
+        CalendarTemplateHome.delete( calendarTemplate.getIdCalendarTemplate( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 

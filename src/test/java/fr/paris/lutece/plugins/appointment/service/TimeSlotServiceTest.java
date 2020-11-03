@@ -68,8 +68,7 @@ public class TimeSlotServiceTest extends LuteceTestCase
         assertEquals( 1, listNextTimeSlots.size( ) );
         assertEquals( LocalTime.parse( "17:30" ), listNextTimeSlots.get( 0 ).getStartingTime( ) );
 
-        FormService.removeForm( nIdForm );
-
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -91,9 +90,7 @@ public class TimeSlotServiceTest extends LuteceTestCase
         List<TimeSlot> listNextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( listTimeSlot, LocalTime.parse( "17:10" ) );
 
         assertEquals( 1, listNextTimeSlots.size( ) );
-
-        FormService.removeForm( nIdForm );
-
+        FormServiceTest.cleanForm( nIdForm );
     }
 
     /**
@@ -114,8 +111,6 @@ public class TimeSlotServiceTest extends LuteceTestCase
 
         assertEquals( LocalTime.parse( "17:30" ),
                 TimeSlotService.getTimeSlotInListOfTimeSlotWithStartingTime( listTimeSlot, LocalTime.parse( "17:00" ) ).getEndingTime( ) );
-
-        FormService.removeForm( nIdForm );
-
+        FormServiceTest.cleanForm( nIdForm );
     }
 }

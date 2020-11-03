@@ -108,8 +108,6 @@ public final class CommentDAO implements ICommentDAO
                 comment.setCreatorUserName( daoUtil.getString( nIndex ) );
 
             }
-
-            daoUtil.free( );
             return comment;
         }
     }
@@ -124,7 +122,6 @@ public final class CommentDAO implements ICommentDAO
         {
             daoUtil.setInt( 1, nKey );
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -148,7 +145,6 @@ public final class CommentDAO implements ICommentDAO
             daoUtil.setInt( nIndex++, comment.getId());
 
             daoUtil.executeUpdate( );
-            daoUtil.free( );
         }
     }
 
@@ -179,7 +175,6 @@ public final class CommentDAO implements ICommentDAO
                 commentList.add( comment );
             }
 
-            daoUtil.free( );
             return commentList;
         }
     }
@@ -215,7 +210,6 @@ public final class CommentDAO implements ICommentDAO
                 commentList.add( comment );
             }
 
-            daoUtil.free( );
             return commentList;
         }
     }
@@ -236,7 +230,6 @@ public final class CommentDAO implements ICommentDAO
                 commentList.add( daoUtil.getInt( 1 ) );
             }
 
-            daoUtil.free( );
             return commentList;
         }
     }
@@ -257,7 +250,6 @@ public final class CommentDAO implements ICommentDAO
                 commentList.addItem( daoUtil.getInt( 1 ), daoUtil.getString( 2 ) );
             }
 
-            daoUtil.free( );
             return commentList;
         }
     }

@@ -91,29 +91,6 @@ public final class ClosingDayTest extends LuteceTestCase
     }
 
     /**
-     * Test the delete cascade
-     */
-    public void testDeleteCascade( )
-    {
-        Form form = FormTest.buildForm1( );
-        FormHome.create( form );
-
-        // Initialize a ClosingDay
-        ClosingDay closingDay = buildClosingDay( );
-        closingDay.setIdForm( form.getIdForm( ) );
-        // Create the ClosingDay in database
-        ClosingDayHome.create( closingDay );
-        // Find the ClosingDay created in database
-        ClosingDay closingDayStored = ClosingDayHome.findByPrimaryKey( closingDay.getIdClosingDay( ) );
-        assertNotNull( closingDayStored );
-        // Delete the Form and by cascade the ClosingDay
-        FormHome.delete( form.getIdForm( ) );
-        closingDayStored = ClosingDayHome.findByPrimaryKey( closingDay.getIdClosingDay( ) );
-        // Check the ClosingDay has been removed from database
-        assertNull( closingDayStored );
-    }
-
-    /**
      * Test method for findByIdFormAndDateOfCLosingDay
      */
     public void testFindByIdFormAndDateOfCLosingDay( )
@@ -133,6 +110,7 @@ public final class ClosingDayTest extends LuteceTestCase
         checkAsserts( closingDayStored, closingDay );
 
         // Clean
+        ClosingDayHome.delete( closingDay.getIdClosingDay( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 

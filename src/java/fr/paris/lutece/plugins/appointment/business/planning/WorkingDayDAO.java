@@ -37,7 +37,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.UtilDAO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
 
@@ -47,7 +46,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
  * @author Laurent Payen
  *
  */
-public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
+public final class WorkingDayDAO implements IWorkingDayDAO
 {
 
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_working_day ( day_of_week, id_week_definition) VALUES ( ?, ?)";
@@ -60,8 +59,7 @@ public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
     @Override
     public void insert( WorkingDay workingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, workingDay, plugin, true );
-        try
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, workingDay, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )
@@ -69,47 +67,38 @@ public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
                 workingDay.setIdWorkingDay( daoUtil.getGeneratedKeyInt( 1 ) );
             }
         }
-        finally
-        {
-            daoUtil.free( );
-        }
     }
 
     @Override
     public void update( WorkingDay workingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, workingDay, plugin, false );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_UPDATE, workingDay, plugin, false ) )
+        {
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public void delete( int nIdWorkingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
-        daoUtil.setInt( 1, nIdWorkingDay );
-        executeUpdate( daoUtil );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdWorkingDay );
+            daoUtil.executeUpdate( );
+        }
     }
 
     @Override
     public WorkingDay select( int nIdWorkingDay, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         WorkingDay workingDay = null;
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
             daoUtil.setInt( 1, nIdWorkingDay );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {
                 workingDay = buildWorkingDay( daoUtil );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return workingDay;
@@ -118,23 +107,14 @@ public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
     @Override
     public List<WorkingDay> findByIdWeekDefinition( int nIdWeekDefinition, Plugin plugin )
     {
-        DAOUtil daoUtil = null;
         List<WorkingDay> listWorkingDays = new ArrayList<>( );
-        try
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION, plugin ) )
         {
-            daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION, plugin );
             daoUtil.setInt( 1, nIdWeekDefinition );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
                 listWorkingDays.add( buildWorkingDay( daoUtil ) );
-            }
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
             }
         }
         return listWorkingDays;
@@ -191,26 +171,4 @@ public final class WorkingDayDAO extends UtilDAO implements IWorkingDayDAO
         }
         return daoUtil;
     }
-
-    /**
-     * Execute a safe update (Free the connection in case of error when execute the query)
-     * 
-     * @param daoUtil
-     *            the daoUtil
-     */
-    private void executeUpdate( DAOUtil daoUtil )
-    {
-        try
-        {
-            daoUtil.executeUpdate( );
-        }
-        finally
-        {
-            if ( daoUtil != null )
-            {
-                daoUtil.free( );
-            }
-        }
-    }
-
 }

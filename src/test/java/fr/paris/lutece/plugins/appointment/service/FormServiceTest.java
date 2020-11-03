@@ -40,10 +40,28 @@ import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
+import fr.paris.lutece.plugins.appointment.business.display.Display;
+import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.localization.Localization;
+import fr.paris.lutece.plugins.appointment.business.localization.LocalizationHome;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
+import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
+import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
+import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.test.LuteceTestCase;
+import fr.paris.lutece.util.sql.DAOUtil;
 
 /**
  * Test Class for the Form Service
@@ -68,7 +86,7 @@ public class FormServiceTest extends LuteceTestCase
 
         assertEquals( 1, listForms.size( ) );
 
-        FormService.removeForm( nIdForm );
+        cleanForm( nIdForm );
 
         listForms = FormService.findAllForms( );
 
@@ -137,7 +155,7 @@ public class FormServiceTest extends LuteceTestCase
         calendarTemplate.setDescription( "DESCRIPTION_1" );
         calendarTemplate.setTemplatePath( "TEMPLATE_PATH_1" );
         CalendarTemplateHome.create( calendarTemplate );
-        appointmentForm.setCalendarTemplateId( CalendarTemplateHome.findAll( ).get( 0 ).getIdCalendarTemplate( ) );
+        appointmentForm.setCalendarTemplateId( calendarTemplate.getIdCalendarTemplate( ) );
 
         appointmentForm.setIsActive( Boolean.TRUE );
 
@@ -159,9 +177,72 @@ public class FormServiceTest extends LuteceTestCase
         assertEquals( WorkingDayService.getOpenDays( appointmentForm ), WorkingDayService.getOpenDays( copyAppointmentForm ) );
         assertEquals( "Copie", copyAppointmentForm.getTitle( ) );
 
-        FormService.removeForm( nIdCopyForm );
+        cleanForm( nIdCopyForm );
         assertEquals( listopenDays, WorkingDayService.getOpenDays( appointmentForm ) );
-        FormService.removeForm( nIdForm );
+        cleanForm( nIdForm );
     }
 
+    public static void cleanForm( int nIdForm )
+    {
+        if ( nIdForm != -1 )
+        {
+            for ( Slot s : SlotService.findListSlot( nIdForm ) )
+            {
+                SlotService.deleteSlot( s );
+            }
+            Display display = DisplayHome.findByIdForm( nIdForm );
+            if ( display != null )
+            {
+                DisplayHome.delete( display.getIdDisplay( ) );
+                int nbDisplay = 0;
+                try ( DAOUtil daoUtil = new DAOUtil( "select count(*) FROM appointment_display WHERE id_calendar_template=?" ) )
+                {
+                    daoUtil.setInt( 1, display.getIdCalendarTemplate( ) );
+                    daoUtil.executeQuery( );
+                    if ( daoUtil.next( ) )
+                    {
+                        nbDisplay = daoUtil.getInt( 1 );
+                    }
+                }
+                if ( nbDisplay == 0 )
+                {
+                    CalendarTemplateHome.delete( display.getIdCalendarTemplate( ) );
+                }
+            }
+            FormMessage formMessage = FormMessageHome.findByIdForm( nIdForm );
+            if ( formMessage != null )
+            {
+                FormMessageHome.delete( formMessage.getIdFormMessage( ) );
+            }
+            Localization localization = LocalizationHome.findByIdForm( nIdForm );
+            if ( localization != null )
+            {
+                LocalizationHome.delete( localization.getIdLocalization( ) );
+            }
+            
+            FormRule formRule = FormRuleHome.findByIdForm( nIdForm );
+            if ( formRule != null )
+            {
+                FormRuleHome.delete( formRule.getIdFormRule( ) );
+            }
+            for ( ReservationRule rr : ReservationRuleHome.findByIdForm( nIdForm ) )
+            {
+                ReservationRuleHome.delete( rr.getIdReservationRule( ) );
+            }
+            for ( WeekDefinition wd : WeekDefinitionHome.findByIdForm( nIdForm ) )
+            {
+                for ( WorkingDay wda : WorkingDayHome.findByIdWeekDefinition( wd.getIdWeekDefinition( ) ) )
+                {
+                    for ( TimeSlot ts : TimeSlotHome.findByIdWorkingDay( wda.getIdWorkingDay( ) ) )
+                    {
+                        TimeSlotHome.delete( ts.getIdTimeSlot( ) );
+                    }
+                    WorkingDayHome.delete( wda.getIdWorkingDay( ) );
+                }
+                WeekDefinitionHome.delete( wd.getIdWeekDefinition( ) );
+            }
+            
+            FormService.removeForm( nIdForm );
+        }
+    }
 }
