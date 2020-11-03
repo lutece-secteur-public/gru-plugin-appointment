@@ -37,9 +37,9 @@
 
 				<@box collapsed=!error_modification??>
 					<#if !error_modification??>
-						<#assign appointmentTypicalWeekAdvancedIcon = 'minus' />
-					<#else>
 						<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
+					<#else>
+						<#assign appointmentTypicalWeekAdvancedIcon = 'minus' />
 					</#if>
 					<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
 						<@button style='card-control collapse' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
