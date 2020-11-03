@@ -6,8 +6,8 @@
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp'>
 					<fieldset>
 						<legend class="hidden">#i18n{appointment.modifyField.title} : '${field.parentEntry.title}'</legend>
-						<input type='hidden' name='action' value='doModifyField' />
-						<input type='hidden' name='id_field' value='${field.idField}' />
+						<@input type='hidden' name='action' value='doModifyField' />
+						<@input type='hidden' name='id_field' value='${field.idField}' />
 						<@formGroup labelFor='title' labelKey='#i18n{appointment.labelTitle}' mandatory=true>
 							<@input type='text' name='title' id='title' inputSize=80 value='${field.title}' maxlength=255 />
 						</@formGroup>
@@ -18,11 +18,7 @@
 							<@input type='textarea' name='comment' id='comment'>${field.comment!}</@input>
 						</@formGroup>
 						<@formGroup>
-							<#if field.defaultValue>
-								<@checkBox labelFor='default_value' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' checked=true />
-							<#else>
-								<@checkBox labelFor='default_value' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' />
-							</#if>
+							<@checkBox labelFor='default_value' labelKey='#i18n{appointment.defaultValue.name}' name='default_value' id='default_value' value='1' checked=field.defaultValue />
 						</@formGroup>
 						<@formGroup>
 							<@button type='submit' buttonIcon='check' title='#i18n{appointment.labelSave}' />

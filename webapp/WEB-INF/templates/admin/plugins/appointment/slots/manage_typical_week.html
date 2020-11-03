@@ -12,32 +12,37 @@
 		<@messages infos=infos errors=errors />
 		<@appointmentTabs tab='typicalWeek' appointmentform=appointmentform>
 			<fieldset>
-				<@tform class='form-inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
+				<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
 					<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 					<#if listDateOfModification??>
-						<label for="id_week_definition">#i18n{appointment.modifyAppointmentForm.listDateOfModification} :</label>
-							<@select id='id_week-definition' name='id_week_definition'>
-								<#list listDateOfModification as item>
-									<#if "${id_week_definition}"="${item.code}">
-										<option selected="selected" value="${item.code}">${item.name}</option>
-									<#else>
-										<option value="${item.code}">${item.name}</option>
-									</#if>
-								</#list>
-							</@select>
-						<@button type='submit' name='view_manageTypicalWeek' title='#i18n{appointment.labelDisplay}' buttonIcon='check' size='sm' />
-						<@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' size='sm' />
+						<@formGroup formStyle='inline' labelFor='id_week_definition' labelKey='#i18n{appointment.modifyAppointmentForm.listDateOfModification}'>
+							<@inputGroup>
+								<@select id='id_week-definition' name='id_week_definition' size='sm'>
+									<#list listDateOfModification as item>
+										<#if "${id_week_definition}"="${item.code}">
+											<option selected="selected" value="${item.code}">${item.name}</option>
+										<#else>
+											<option value="${item.code}">${item.name}</option>
+										</#if>
+									</#list>
+								</@select>
+								<@inputGroupItem>
+									<@button type='submit' name='view_manageTypicalWeek' title='#i18n{appointment.labelDisplay}' hideTitle=['xs'] buttonIcon='check' size='sm' />
+									<@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' hideTitle=['xs'] buttonIcon='trash' size='sm' color='danger' />
+								</@inputGroupItem>
+							</@inputGroup>
+						</@formGroup>
 					</#if>
 				</@tform>
 
 				<@box collapsed=!error_modification??>
 					<#if !error_modification??>
-						<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
+						<#assign appointmentTypicalWeekAdvancedIcon = 'minus' />
 					<#else>
 						<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
 					</#if>
 					<@boxHeader title='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
-						<@button style='card-control' params='data-widget="collapse"' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
+						<@button style='card-control collapse' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
 					</@boxHeader>
 					<@boxBody>
 						<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
@@ -68,7 +73,8 @@
 							<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
 								<@input type='text' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 							</@formGroup>
-							<legend> &nbsp;&nbsp;#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</legend>
+							
+							<legend>#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</legend>
 							<@formGroup labelFor='is_open_monday'>
 								<@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
 							</@formGroup>
@@ -90,7 +96,8 @@
 							<@formGroup labelFor='is_open_sunday'>
 								<@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
 							</@formGroup>
-							<legend> &nbsp;&nbsp;#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>
+							
+							<legend>#i18n{appointment.modifyAppointmentForm.startEditForm} </legend>
 							<@formGroup labelFor='date_of_modification' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
 								<@inputGroup>
 									<@inputGroupItem type='text'>
@@ -100,8 +107,8 @@
 								</@inputGroup>
 							</@formGroup>
 							<@formGroup>
-								<@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' size='' />
-								<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' size='' color='default' />
+								<@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
+								<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
 							</@formGroup>
 						</@tform>
 					</@boxBody>

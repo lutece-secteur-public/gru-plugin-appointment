@@ -96,7 +96,7 @@
 													<@inputGroup>
 														<@comboOrders name="order_id_${entry.idEntry!}" default_value=entry.position idParent=entry.parent.idEntry />
 														<@inputGroupItem>
-															<@button type='submit' name='id_entry' value='${entry.idEntry}' title='#i18n{appointment.move.name}' hideTitle=['all'] buttonIcon='check' />
+															<@button type='submit' name='id_entry' value='${entry.idEntry}' title='#i18n{appointment.move.name}' hideTitle=['all'] buttonIcon='check' size='sm' />
 														</@inputGroupItem>
 													</@inputGroup>
 												</@formGroup>
@@ -152,27 +152,27 @@
 </@row>
 
 <#macro comboOrders name default_value idParent >
-		<select id="${name}" name="${name}" class="form-control input-sm">
-			<#if idParent &gt; 0 && lastGroup??>
-				<#assign start_enum = lastGroup.position + 1 >
-				<#assign nb_entries = lastGroup.position + lastGroup.children?size >
-				<#list start_enum..nb_entries as i>
-					<#if default_value == i>
-						<option selected="selected" value="${i}">${i}</option>
-					<#else>
-						<option value="${i}">${i}</option>
-					</#if>
-				</#list>
-			<#else>
-				<#list listOrderFirstLevel as i>
-					<#if default_value == i>
-						<option selected="selected" value="${i}">${i}</option>
-					<#else>
-						<option value="${i}">${i}</option>
-					</#if>
-				</#list>
-			</#if>
-		</select>
+	<@select id='${name}' name='${name}' size='sm'>
+		<#if idParent &gt; 0 && lastGroup??>
+			<#assign start_enum = lastGroup.position + 1 >
+			<#assign nb_entries = lastGroup.position + lastGroup.children?size >
+			<#list start_enum..nb_entries as i>
+				<#if default_value == i>
+					<option selected="selected" value="${i}">${i}</option>
+				<#else>
+					<option value="${i}">${i}</option>
+				</#if>
+			</#list>
+		<#else>
+			<#list listOrderFirstLevel as i>
+				<#if default_value == i>
+					<option selected="selected" value="${i}">${i}</option>
+				<#else>
+					<option value="${i}">${i}</option>
+				</#if>
+			</#list>
+		</#if>
+	</@select>
 </#macro>
 
 <script>

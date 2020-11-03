@@ -46,9 +46,9 @@
 							<@input type='text' name='css_class' id='css_class' value='${entry.CSSClass!}' maxlength=255 />
 						</@formGroup>
 						<@formGroup rows=2>
-							<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-							<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
-							<@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' color='btn-secondary' cancel=true />
+							<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' hideTitle=['xs'] />
+							<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' hideTitle=['xs'] />
+							<@button type='submit' name='cancel' value='cancel' buttonIcon='times' title='#i18n{appointment.labelCancel}' cancel=true hideTitle=['xs'] />
 						</@formGroup>
 					</fieldset>
 				</@tform>
@@ -95,14 +95,14 @@
 										</#if>     	
 									</td>
 									<td>
-										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyFieldCC&id_field=${field.idField}' title='#i18n{portal.util.labelModify}' buttonIcon='edit' size='sm' />
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getModifyFieldCC&id_field=${field.idField}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='edit' size='sm' />
 										<#if cpt!=1>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list' title='#i18n{appointment.moveUp.title}' buttonIcon='chevron-up' size='sm' />
+											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?action=doMoveFieldUp&id_field=${field.idField}#list' title='#i18n{appointment.moveUp.title}' hideTitle=['all'] buttonIcon='chevron-up' size='sm' />
 										</#if>
 										<#if field_has_next>
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' buttonIcon='chevron-down' size='sm' />
+											<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?&action=doMoveFieldDown&id_field=${field.idField}#list' title='#i18n{appointment.moveDown.title}' hideTitle=['all'] hideTitle=['all'] buttonIcon='chevron-down' size='sm' />
 										</#if>
-										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' buttonIcon='trash' color='btn-danger' size='sm' />
+										<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentFormFields.jsp?view=getConfirmRemoveField&id_field=${field.idField}#list' title='#i18n{appointment.delete.title}' hideTitle=['all'] buttonIcon='trash' color='danger' size='sm' />
 									</td>
 								</tr>
 							</#if>
