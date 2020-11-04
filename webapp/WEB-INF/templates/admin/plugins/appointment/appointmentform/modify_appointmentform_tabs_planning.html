@@ -5,6 +5,7 @@
 			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.typicalWeek.pageTitle}' active=active />
 			<#if tab="specificWeek"><#assign active = true /><#else><#assign active = false /></#if>
 			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificWeek.pageTitle}' active=active />  
+			<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificDay.pageTitle}' active=active />  
 		</@tabList>
 		<@tabContent>
 			<#nested>
