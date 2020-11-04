@@ -36,6 +36,8 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.paris.lutece.plugins.appointment.business.AppointmentTest;
 import fr.paris.lutece.plugins.appointment.business.SlotTest;
@@ -73,7 +75,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment = -1;
         try
@@ -104,7 +106,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 2 );
         int nIdAppointment = -1;
         try
@@ -118,7 +120,7 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
-        assertEquals( 1, slot.getNbRemainingPlaces( ) );
+        assertEquals( 0, slot.getNbRemainingPlaces( ) );
         cleanUp( nIdForm, app, appointmentDTO);
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
@@ -134,7 +136,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment = -1;
         try
@@ -164,7 +166,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment = -1;
         try
@@ -194,7 +196,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 2 );
 
         int nIdAppointment = -1;
@@ -209,7 +211,7 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
-        assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
+        assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
         cleanUp( nIdForm, app, appointmentDTO);
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
@@ -225,7 +227,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment = -1;
         try
@@ -255,7 +257,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment = -1;
         try
@@ -285,7 +287,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment = -1;
         try
@@ -315,7 +317,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO( slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "mdp@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 2 );
         int nIdAppointment = -1;
         try
@@ -329,7 +331,7 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
-        assertEquals( 1, slot.getNbPlacesTaken( ) );
+        assertEquals( 2, slot.getNbPlacesTaken( ) );
         cleanUp( nIdForm, app, appointmentDTO);
         assertNull( AppointmentService.findAppointmentById( nIdAppointment ) );
     }
@@ -345,7 +347,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -356,7 +358,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -386,7 +388,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -397,7 +399,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -427,7 +429,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -438,7 +440,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
                 _timeEnd, 2 );
         try
         {
@@ -451,9 +453,9 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
 
-        assertEquals( 2, slot.getNbPlacesTaken( ) );
-        assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
-        assertEquals( 1, slot.getNbRemainingPlaces( ) );
+        assertEquals( 3, slot.getNbPlacesTaken( ) );
+        assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
+        assertEquals( 0, slot.getNbRemainingPlaces( ) );
         cleanUp( nIdForm, app, appointmentDTO1, appointmentDTO2 );
     }
 
@@ -467,7 +469,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment1 = -1;
         try
@@ -503,7 +505,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment1 = -1;
         try
@@ -539,7 +541,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment1 = -1;
         try
@@ -551,7 +553,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -586,7 +588,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 2 );
         int nIdAppointment1 = -1;
         try
@@ -598,7 +600,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -610,9 +612,9 @@ public class AppointmentServiceTest extends LuteceTestCase
         }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
-        assertEquals( 2, slot.getNbPlacesTaken( ) );
-        assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
-        assertEquals( 1, slot.getNbRemainingPlaces( ) );
+        assertEquals( 3, slot.getNbPlacesTaken( ) );
+        assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
+        assertEquals( 0, slot.getNbRemainingPlaces( ) );
 
         AppointmentService.deleteAppointment( nIdAppointment1 );
 
@@ -633,7 +635,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment1 = -1;
         try
@@ -672,7 +674,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 1 );
         int nIdAppointment1 = -1;
         try
@@ -684,7 +686,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -722,7 +724,7 @@ public class AppointmentServiceTest extends LuteceTestCase
                 Boolean.TRUE );
         slot = SlotService.saveSlot( slot );
 
-        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO( slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
+        AppointmentDTO appointmentDTO1 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "jean.dupont@mdp.fr", "Jean", "Dupont", _timeStart,
                 _timeEnd, 2 );
         int nIdAppointment1 = -1;
         try
@@ -734,7 +736,7 @@ public class AppointmentServiceTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO( slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
+        AppointmentDTO appointmentDTO2 = AppointmentTest.buildAppointmentDTO(  nIdForm,slot, "gerard.durand@mdp.fr", "Gérard", "Durand", _timeStart,
                 _timeEnd, 1 );
         try
         {
@@ -746,9 +748,9 @@ public class AppointmentServiceTest extends LuteceTestCase
         }
 
         slot = SlotService.findSlotById( slot.getIdSlot( ) );
-        assertEquals( 2, slot.getNbPlacesTaken( ) );
-        assertEquals( 1, slot.getNbPotentialRemainingPlaces( ) );
-        assertEquals( 1, slot.getNbRemainingPlaces( ) );
+        assertEquals( 3, slot.getNbPlacesTaken( ) );
+        assertEquals( 0, slot.getNbPotentialRemainingPlaces( ) );
+        assertEquals( 0, slot.getNbRemainingPlaces( ) );
 
         Appointment appointmentToCancel = AppointmentService.findAppointmentById( nIdAppointment1 );
         appointmentToCancel.setIsCancelled( true );
@@ -764,14 +766,19 @@ public class AppointmentServiceTest extends LuteceTestCase
 
     private void cleanUp( int nIdForm, AppointmentFormDTO formDto, AppointmentDTO... appDtoArray )
     {
+        Set<Integer> userToDelete = new HashSet<>( );
         for ( AppointmentDTO appDto : appDtoArray )
         {
             AppointmentHome.delete( appDto.getIdAppointment( ) );
             User user = UserHome.findByFirstNameLastNameAndEmail( appDto.getFirstName( ), appDto.getLastName( ), appDto.getEmail( ) );
             if ( user != null )
             {
-                UserHome.delete( user.getIdUser( ) );
+                userToDelete.add( user.getIdUser( ) );
             }
+        }
+        for ( Integer id : userToDelete )
+        {
+            UserHome.delete( id );
         }
         FormServiceTest.cleanForm( nIdForm );
     }

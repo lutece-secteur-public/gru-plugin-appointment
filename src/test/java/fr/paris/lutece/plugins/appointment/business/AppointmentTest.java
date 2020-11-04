@@ -201,10 +201,11 @@ public final class AppointmentTest extends LuteceTestCase
         assertEquals( appointmentStored.getIdUser( ), appointment.getIdUser( ) );
     }
 
-    public static AppointmentDTO buildAppointmentDTO( Slot slot, String strEmail, String strFirstName, String strLastName, LocalTime startingTime,
+    public static AppointmentDTO buildAppointmentDTO( int idForm, Slot slot, String strEmail, String strFirstName, String strLastName, LocalTime startingTime,
             LocalTime endingTime, int nbBookedSeats )
     {
         AppointmentDTO appointmentDTO = new AppointmentDTO( );
+        appointmentDTO.setIdForm( idForm );
         appointmentDTO.addSlot( slot );
         appointmentDTO.setEmail( strEmail );
         appointmentDTO.setFirstName( strFirstName );
