@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -198,7 +199,8 @@ public final class SlotSafeService
      * @param endingDateTime the ending Date time
      * @param lace the lace
      */
-    public static void incrementMaxCapacity ( int nIdForm, int nIncrementingValue, LocalDateTime startindDateTime, LocalDateTime endingDateTime, boolean lace ) {
+    public static void incrementMaxCapacity ( int nIdForm, int nIncrementingValue, LocalDateTime startindDateTime, LocalDateTime endingDateTime, boolean lace )
+    {
     	int index= 0;
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDateTime.toLocalDate(), endingDateTime.toLocalDate() );
@@ -207,16 +209,16 @@ public final class SlotSafeService
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
         try
         {
-	        for( Slot slot : listSlot ) {
-	        	
-	        	if( !lace ) {
-	        		
+	        for( Slot slot : listSlot )
+	        {
+	        	if( !lace )
+	        	{
 	        		incrementMaxCapacity ( nIncrementingValue, slot );
-	        	
-	        	}else{
-	        		
-	        		if(  index % 2 == 0 ) {
-	        			
+	        	}
+	        	else
+	        	{
+	        		if(  index % 2 == 0 )
+	        		{
 	        			incrementMaxCapacity ( nIncrementingValue, slot );
 	        		}
 	            	index ++;
@@ -241,14 +243,16 @@ public final class SlotSafeService
      * @param slot
      *            the slot
      */
-    private static void incrementMaxCapacity ( int nIncrementingValue, Slot slot) {
+    private static void incrementMaxCapacity ( int nIncrementingValue, Slot slot)
+    {
     	Slot editSlot= null;
     	
-    	if( slot.getIdSlot( ) == 0) {
-    		
+    	if( slot.getIdSlot( ) == 0)
+    	{
     		editSlot= createSlot( slot );
-    	}else {
-    		
+    	}
+    	else
+    	{
     		editSlot= slot;
     	}
     	 Lock lock = getLockOnSlot( editSlot.getIdSlot( ) );
@@ -397,12 +401,6 @@ public final class SlotSafeService
                 }
             }
 
-            /*
-             * if ( bIsUpdate ) {
-             * 
-             * WorkflowService.getInstance( ).doRemoveWorkFlowResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE ); }
-             */
-
             Form form = FormService.findFormLightByPrimaryKey( listSlot.get( 0 ).getIdForm( ) );
             if ( form.getIdWorkflow( ) > 0 )
             {
@@ -410,7 +408,7 @@ public final class SlotSafeService
                 WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
                         form.getIdForm( ) );
                 WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
-                        form.getIdWorkflow( ), form.getIdForm( ) );
+                        form.getIdWorkflow( ), form.getIdForm( ), null );
 
             }
 
@@ -567,14 +565,13 @@ public final class SlotSafeService
             {
                 List<TimeSlot> nextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( workingDay.getListTimeSlot( ),
                         slot.getEndingTime( ) );
-                TimeSlot nextTimeSlot = null;
                 if ( CollectionUtils.isNotEmpty( nextTimeSlots ) )
                 {
-                    nextTimeSlot = nextTimeSlots.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
-                }
-                if ( nextTimeSlot != null )
-                {
-                    nextStartingDateTime = nextTimeSlot.getStartingTime( ).atDate( dateOfSlot );
+                   Optional<TimeSlot> optTimeSlot = nextTimeSlots.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) );
+                   if ( optTimeSlot.isPresent( ) )
+                   {
+                       nextStartingDateTime = optTimeSlot.get( ).getStartingTime( ).atDate( dateOfSlot );
+                   }
                 }
             }
             else
@@ -979,7 +976,7 @@ public final class SlotSafeService
         {
 
             lockSlot( appointmentDTO, listLock );
-            int nbRemainingPlaces = listSlotToUpdate.stream( ).map( slot -> slot.getNbRemainingPlaces( ) ).reduce( 0, Integer::sum );
+            int nbRemainingPlaces = listSlotToUpdate.stream( ).map( Slot::getNbRemainingPlaces ).reduce( 0, Integer::sum );
 
             for ( AppointmentSlot appSlot : appointmentDTO.getListAppointmentSlot( ) )
             {
@@ -997,8 +994,8 @@ public final class SlotSafeService
                     slt = listSlotToUpdate.stream( ).filter( s -> s.getIdSlot( ) == appSlot.getIdSlot( ) ).findAny( ).orElse( null );
                 }
                 // update appointment
-                if ( appointmentDTO.getIdAppointment( ) != 0 && ( appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces + oldAppointment.getNbPlaces( )
-                        && !appointmentDTO.getOverbookingAllowed( ) ) || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
+                if ( ( appointmentDTO.getIdAppointment( ) != 0 && ( appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces + oldAppointment.getNbPlaces( )
+                        && !appointmentDTO.getOverbookingAllowed( ) ) ) || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
                 {
 
                     throw new SlotFullException( "ERROR SLOT FULL" );
@@ -1017,7 +1014,7 @@ public final class SlotSafeService
 
                 // if it's an update for modification of the date of the appointment
                 if ( !bIsUpdate && appointmentDTO.getIdAppointment( ) != 0
-                        && !oldAppointment.getListAppointmentSlot( ).stream( ).anyMatch( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ) )
+                        && oldAppointment.getListAppointmentSlot( ).stream( ).noneMatch( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ) )
                 {
 
                     // Need to update the old slot
@@ -1053,7 +1050,7 @@ public final class SlotSafeService
                     newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
                     newNbPlacesTaken = oldNbPlacesTaken - nOldTakenPlaces + effectiveBookedSeats;
                 }
-                else /* if ( !appointmentDTO.getSlot( ).stream().anyMatch(p -> p.getIdSlot() == appSlot.getIdSlot()) ) */
+                else 
                 {
                     newNbRemainingPlaces = oldNbRemainingPLaces - effectiveBookedSeats;
                     newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
