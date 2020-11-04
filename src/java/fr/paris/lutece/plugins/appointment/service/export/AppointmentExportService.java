@@ -138,12 +138,12 @@ public final class AppointmentExportService
 
         if ( listAppointmentsDTO != null )
         {
-        	StateService stateService = null;
+            StateService stateService = null;
 
             Map<Integer, String> mapDefaultValueGenAttBackOffice = createDefaultValueMap( listEntry );
             if ( WorkflowService.getInstance( ).isAvailable( ) )
             {
-            	 stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+                stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             }
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
             {
@@ -307,7 +307,7 @@ public final class AppointmentExportService
         }
         if ( defaultColumnList.contains( KEY_COLUMN_STATE ) )
         {
-	        strWriter.add( getStateValue( appointmentDTO, idWorkflow, stateService ) );
+            strWriter.add( getStateValue( appointmentDTO, idWorkflow, stateService ) );
         }
         if ( defaultColumnList.contains( KEY_COLUMN_NB_BOOKED_SEATS ) )
         {
@@ -322,7 +322,7 @@ public final class AppointmentExportService
             strWriter.add( appointmentDTO.getDateAppointmentTaken( ).toLocalTime( ).withSecond( 0 ).toString( ) );
         }
     }
-    
+
     private static String getStatusValue( AppointmentDTO appointmentDTO, Locale locale )
     {
         String status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_RESERVED, locale );
@@ -332,11 +332,11 @@ public final class AppointmentExportService
         }
         return status;
     }
-    
+
     private static String getStateValue( AppointmentDTO appointmentDTO, int idWorkflow, StateService stateService )
     {
-        String strState = StringUtils.EMPTY; 
-        if( stateService != null)
+        String strState = StringUtils.EMPTY;
+        if ( stateService != null )
         {
             State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, idWorkflow );
             if ( stateAppointment != null )

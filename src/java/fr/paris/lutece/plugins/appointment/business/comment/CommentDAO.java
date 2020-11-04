@@ -142,7 +142,7 @@ public final class CommentDAO implements ICommentDAO
             daoUtil.setString( nIndex++, comment.getComment( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
             daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
-            daoUtil.setInt( nIndex++, comment.getId());
+            daoUtil.setInt( nIndex++, comment.getId( ) );
 
             daoUtil.executeUpdate( );
         }
