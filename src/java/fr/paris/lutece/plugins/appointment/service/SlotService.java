@@ -40,6 +40,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -187,7 +188,7 @@ public final class SlotService
      *            the number of weeks to build
      * @return a list of all the slots built
      */
-    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
+    public static List<Slot> buildListSlot( int nIdForm, Map<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
     {
         List<Slot> listSlot = new ArrayList<>( );
         // Get all the reservation rules
@@ -322,7 +323,7 @@ public final class SlotService
                             }
                             else
                             {
-                                timeTemp = timeTemp.plusMinutes( Long.valueOf( nDuration ) );
+                                timeTemp = timeTemp.plusMinutes( nDuration );
                                 if ( timeTemp.isAfter( maxTimeForThisDay ) )
                                 {
                                     timeTemp = maxTimeForThisDay;
@@ -341,7 +342,7 @@ public final class SlotService
 
     }
 
-    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate,
+    public static List<Slot> buildListSlot( int nIdForm, Map<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate,
             int nNbPlaces )
     {
         List<Slot> listSlotToShow = new ArrayList<>( );
@@ -398,8 +399,6 @@ public final class SlotService
             // date
             closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
             reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
-            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateTemp );
-
             nMaxCapacity = 0;
             if ( reservationRuleToApply != null )
             {
@@ -477,10 +476,7 @@ public final class SlotService
                         }
                         else
                         {
-
-                            // sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces( );
                             sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + 1;
-                            // sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces( );
                             sumNbRemainingPlaces = sumNbRemainingPlaces + 1;
                         }
 
@@ -497,8 +493,6 @@ public final class SlotService
                             slt.setDate( slotToAdd.getDate( ) );
                             slt.setIdForm( slotToAdd.getIdForm( ) );
                             listSlotToShow.add( slt );
-                            // sumNbPotentialRemainingPlaces = 0;
-                            // sumNbRemainingPlaces = 0;
                             isChanged = true;
                             timeTemp = tempEndingDateTime;
                         }

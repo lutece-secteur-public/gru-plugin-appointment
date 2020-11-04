@@ -186,9 +186,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Parameters
     private static final String PARAMETER_ID_RESPONSE = "idResponse";
-    private static final String PARAMETER_IS_OPEN = "is_open";
-    private static final String PARAMETER_IS_SPECIFIC = "is_specific";
-    private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
     private static final String PARAMETER_ENDING_DATE_TIME = "ending_date_time";
     private static final String PARAMETER_STARTING_DATE_OF_DISPLAY = "starting_date_of_display";
@@ -210,7 +207,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_EMAIL_CONFIRMATION = "emailConfirm";
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
-    private static final String PARAMETER_ID_SLOT = "id_slot";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_ORDER_BY = "orderBy";
     private static final String PARAMETER_ORDER_ASC = "orderAsc";
@@ -1279,7 +1275,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
         for ( Slot slot : listSlot )
         {
-
             if ( slot.getIdSlot( ) == 0 )
             {
                 slot = SlotSafeService.createSlot( slot );
@@ -1302,7 +1297,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             if ( bool )
             {
-
                 appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
                 appointmentDTO.setIdForm( nIdForm );
                 LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
