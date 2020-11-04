@@ -175,11 +175,12 @@ public interface ISlotDAO
      * @param plugin
      */
     void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin );
-    
+
     /**
      * update the availabilities metrics
      * 
-     * @param plugin the plugin
+     * @param plugin
+     *            the plugin
      */
     void resetPotentialRemainingPlaces( Plugin plugin );
 

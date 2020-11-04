@@ -57,7 +57,7 @@ public final class FormMessageDAO implements IFormMessageDAO
     @Override
     public void insert( FormMessage formMessage, Plugin plugin )
     {
-        try( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formMessage, plugin, true ) )
+        try ( DAOUtil daoUtil = buildDaoUtil( SQL_QUERY_INSERT, formMessage, plugin, true ) )
         {
             daoUtil.executeUpdate( );
             if ( daoUtil.nextGeneratedKey( ) )

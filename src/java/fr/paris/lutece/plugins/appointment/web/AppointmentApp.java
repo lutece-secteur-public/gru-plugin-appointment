@@ -1270,8 +1270,7 @@ public class AppointmentApp extends MVCApplication
                     {
                         WorkflowService.getInstance( ).doProcessAction( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                                 appointment.getIdActionCancelled( ), appointmentDto.getIdForm( ), request, request.getLocale( ), automaticUpdate, null );
-                        AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ),
-                                appointment.getIdActionCancelled( ) );
+                        AppointmentListenerManager.notifyAppointmentWFActionTriggered( appointment.getIdAppointment( ), appointment.getIdActionCancelled( ) );
                     }
                     catch( Exception e )
                     {
@@ -1661,7 +1660,7 @@ public class AppointmentApp extends MVCApplication
         {
             return;
         }
-        
+
         // Try to register the user in case of external authentication
         SecurityService securityService = SecurityService.getInstance( );
         if ( securityService.isExternalAuthentication( ) )

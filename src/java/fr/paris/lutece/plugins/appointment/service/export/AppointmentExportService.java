@@ -138,12 +138,12 @@ public final class AppointmentExportService
 
         if ( listAppointmentsDTO != null )
         {
-        	StateService stateService = null;
+            StateService stateService = null;
 
             Map<Integer, String> mapDefaultValueGenAttBackOffice = createDefaultValueMap( listEntry );
             if ( WorkflowService.getInstance( ).isAvailable( ) )
             {
-            	 stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+                stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             }
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
             {
@@ -303,27 +303,11 @@ public final class AppointmentExportService
         }
         if ( defaultColumnList.contains( KEY_COLUMN_STATUS ) )
         {
-            String status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_RESERVED, locale );
-            if ( appointmentDTO.getIsCancelled( ) )
-            {
-                status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_UNRESERVED, locale );
-            }
-            strWriter.add( status );
+            strWriter.add( getStatusValue( appointmentDTO, locale ) );
         }
         if ( defaultColumnList.contains( KEY_COLUMN_STATE ) )
         {
-            String strState = StringUtils.EMPTY; 
-        	if( stateService != null) {
-        		
-	            State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, idWorkflow );
-	            if ( stateAppointment != null )
-	            {
-	                appointmentDTO.setState( stateAppointment );
-	                strState = stateAppointment.getName( );
-	            }
-        	}
-	            strWriter.add( strState );
-        	
+            strWriter.add( getStateValue( appointmentDTO, idWorkflow, stateService ) );
         }
         if ( defaultColumnList.contains( KEY_COLUMN_NB_BOOKED_SEATS ) )
         {
@@ -335,8 +319,33 @@ public final class AppointmentExportService
         }
         if ( defaultColumnList.contains( KEY_HOUR_APPOINT_TAKEN ) )
         {
-            strWriter.add( appointmentDTO.getDateAppointmentTaken( ).toLocalTime( ).toString( ) );
+            strWriter.add( appointmentDTO.getDateAppointmentTaken( ).toLocalTime( ).withSecond( 0 ).toString( ) );
         }
+    }
+
+    private static String getStatusValue( AppointmentDTO appointmentDTO, Locale locale )
+    {
+        String status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_RESERVED, locale );
+        if ( appointmentDTO.getIsCancelled( ) )
+        {
+            status = I18nService.getLocalizedString( AppointmentDTO.PROPERTY_APPOINTMENT_STATUS_UNRESERVED, locale );
+        }
+        return status;
+    }
+
+    private static String getStateValue( AppointmentDTO appointmentDTO, int idWorkflow, StateService stateService )
+    {
+        String strState = StringUtils.EMPTY;
+        if ( stateService != null )
+        {
+            State stateAppointment = stateService.findByResource( appointmentDTO.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, idWorkflow );
+            if ( stateAppointment != null )
+            {
+                appointmentDTO.setState( stateAppointment );
+                strState = stateAppointment.getName( );
+            }
+        }
+        return strState;
     }
 
     private static final String getEntryValue( Entry e, List<Response> listResponses, Map<Integer, String> mapDefaultValueGenAttBackOffice )
