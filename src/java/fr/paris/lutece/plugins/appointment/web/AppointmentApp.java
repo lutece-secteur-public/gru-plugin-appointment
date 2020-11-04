@@ -1087,13 +1087,7 @@ public class AppointmentApp extends MVCApplication
         AppointmentFormDTO form = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         String strTimeBegin = firstSlot.getStartingDateTime( ).toLocalTime( ).toString( );
         String strTimeEnd = lastSlot.getEndingDateTime( ).toLocalTime( ).toString( );
-        String strReference = StringUtils.EMPTY;
-        if ( !StringUtils.isEmpty( form.getReference( ) ) )
-        {
-            strReference = Strings.toUpperCase( form.getReference( ).trim( ) ) + " - ";
-        }
-        strReference += appointment.getReference( );
-        formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replaceAll( MARK_REF, strReference )
+        formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replaceAll( MARK_REF, appointment.getReference( ) )
                 .replaceAll( MARK_DATE_APP, firstSlot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) )
                 .replaceAll( MARK_TIME_BEGIN, strTimeBegin ).replaceAll( MARK_TIME_END, strTimeEnd ) );
         Map<String, Object> model = new HashMap<String, Object>( );

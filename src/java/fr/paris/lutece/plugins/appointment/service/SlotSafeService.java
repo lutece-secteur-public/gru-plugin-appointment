@@ -373,6 +373,12 @@ public final class SlotSafeService
                         .encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
                                 AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) )
                         .substring( 0, AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
+                
+                Form form = FormService.findFormLightByPrimaryKey( appointmentDTO.getIdForm( ) );
+                if ( StringUtils.isNotEmpty( form.getReference( ) ) )
+                {
+                    strReference = form.getReference( ) + strReference;
+                }
                 appointment.setReference( strReference );
                 AppointmentHome.update( appointment );
                 AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
