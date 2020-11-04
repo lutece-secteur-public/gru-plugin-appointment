@@ -335,7 +335,7 @@ public final class AppointmentExportService
         }
         if ( defaultColumnList.contains( KEY_HOUR_APPOINT_TAKEN ) )
         {
-            strWriter.add( appointmentDTO.getDateAppointmentTaken( ).toLocalTime( ).toString( ) );
+            strWriter.add( appointmentDTO.getDateAppointmentTaken( ).toLocalTime( ).withSecond( 0 ).toString( ) );
         }
     }
 
