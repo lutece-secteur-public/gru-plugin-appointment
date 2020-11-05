@@ -104,7 +104,7 @@ public final class EntryTypeImage extends EntryTypeFile
         {
             if ( response.getIdResponse( ) > 0 )
             {
-                Map<String, Object> model = new HashMap<String, Object>( );
+                Map<String, Object> model = new HashMap<>( );
                 model.put( MARK_FILE_NAME, response.getFile( ).getTitle( ) );
                 model.put( MARK_IMG_URL, getUrlDownloadFile( response.getIdResponse( ), AppPathService.getBaseUrl( request ) ) );
 

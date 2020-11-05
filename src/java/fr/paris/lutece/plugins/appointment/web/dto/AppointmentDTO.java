@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web.dto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ import fr.paris.lutece.portal.service.i18n.I18nService;
  * @author Laurent Payen
  *
  */
-public final class AppointmentDTO extends Appointment implements Serializable
+public final class AppointmentDTO extends Appointment
 {
 
     private static final String PROPERTY_EMPTY_FIELD_FIRST_NAME = "appointment.validation.appointment.FirstName.notEmpty";
@@ -135,7 +134,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * The Map of the responses for the additional entries of the form
      */
-    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>( );
+    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<>( );
 
     /**
      * The list of the responses for the additional entries of the form
@@ -504,7 +503,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
      */
     public static List<String> getAllErrors( Locale locale )
     {
-        List<String> listAllErrors = new ArrayList<String>( );
+        List<String> listAllErrors = new ArrayList<>( );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_LAST_NAME, locale ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_FIRST_NAME, locale ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_EMAIL, locale ) );

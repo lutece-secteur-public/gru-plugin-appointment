@@ -43,6 +43,7 @@ import javax.validation.ConstraintViolation;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplate;
@@ -159,7 +160,7 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
         if ( _dataTableManager == null )
         {
-            _dataTableManager = new DataTableManager<CalendarTemplate>( getViewFullUrl( VIEW_MANAGE_CALENDAR_TEMPLATES ), null,
+            _dataTableManager = new DataTableManager<>( getViewFullUrl( VIEW_MANAGE_CALENDAR_TEMPLATES ), null,
                     AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 ), true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_TITLE, PROPERTY_TITLE, true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_DESCRIPTION, PROPERTY_DESCRIPTION, true );
@@ -221,17 +222,14 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
         {
             if ( calendarTemplatesFolder.isDirectory( ) )
             {
-                if ( calendarTemplatesFolder != null )
+                File [ ] listFiles = calendarTemplatesFolder.listFiles( );
+                if ( !ArrayUtils.isEmpty( listFiles ) )
                 {
-                    File [ ] listFiles = calendarTemplatesFolder.listFiles( );
-                    if ( listFiles != null && listFiles.length != 0 )
+                    for ( File file : listFiles )
                     {
-                        for ( File file : listFiles )
+                        if ( file != null )
                         {
-                            if ( file != null )
-                            {
-                                refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
-                            }
+                            refListTemplates.addItem( strCalendarTemplatesFolder + file.getName( ), file.getName( ) );
                         }
                     }
                 }

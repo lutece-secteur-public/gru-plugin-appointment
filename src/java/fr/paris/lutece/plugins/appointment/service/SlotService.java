@@ -40,7 +40,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -188,7 +187,7 @@ public final class SlotService
      *            the number of weeks to build
      * @return a list of all the slots built
      */
-    public static List<Slot> buildListSlot( int nIdForm, Map<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
+    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
     {
         List<Slot> listSlot = new ArrayList<>( );
         // Get all the reservation rules
@@ -342,7 +341,7 @@ public final class SlotService
 
     }
 
-    public static List<Slot> buildListSlot( int nIdForm, Map<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate,
+    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate,
             int nNbPlaces )
     {
         List<Slot> listSlotToShow = new ArrayList<>( );

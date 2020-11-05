@@ -45,7 +45,6 @@ import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -205,63 +204,47 @@ public final class ClosingDayService
      */
     public static List<LocalDate> getImportClosingDays( FileItem item ) throws IOException
     {
-        HashSet<LocalDate> listDays = new HashSet<LocalDate>( );
-        FileInputStream fis = null;
-        Workbook workbook = null;
+        HashSet<LocalDate> listDays = new HashSet<>( );
         String strExtension = FilenameUtils.getExtension( item.getName( ) );
-        if ( StringUtils.equals( MARK_EXCEL_EXTENSION_XLSX, strExtension ) )
+        if ( !MARK_EXCEL_EXTENSION_XLSX.equals( strExtension ) )
         {
-            try
+            return new ArrayList<>( );
+        }
+        // Using XSSF for xlsx format, for xls use HSSF
+        try ( FileInputStream fis = (FileInputStream) item.getInputStream( ); 
+                Workbook workbook = new XSSFWorkbook( fis ) )
+        {
+            int numberOfSheets = workbook.getNumberOfSheets( );
+            // looping over each workbook sheet
+            for ( int i = 0; i < numberOfSheets; i++ )
             {
-                fis = (FileInputStream) item.getInputStream( );
-                // Using XSSF for xlsx format, for xls use HSSF
-                workbook = new XSSFWorkbook( fis );
-                int numberOfSheets = workbook.getNumberOfSheets( );
-                // looping over each workbook sheet
-                for ( int i = 0; i < numberOfSheets; i++ )
+                Sheet sheet = workbook.getSheetAt( i );
+                Iterator<Row> rowIterator = sheet.iterator( );
+                // iterating over each row
+                while ( rowIterator.hasNext( ) )
                 {
-                    Sheet sheet = workbook.getSheetAt( i );
-                    Iterator<Row> rowIterator = sheet.iterator( );
-                    // iterating over each row
-                    while ( rowIterator.hasNext( ) )
+                    Row row = rowIterator.next( );
+                    if ( row.getRowNum( ) > 1 )
                     {
-                        Row row = (Row) rowIterator.next( );
-                        if ( row.getRowNum( ) > 1 )
+                        Iterator<Cell> cellIterator = row.cellIterator( );
+                        // Iterating over each cell (column wise) in a
+                        // particular row.
+                        while ( cellIterator.hasNext( ) )
                         {
-                            Iterator<Cell> cellIterator = row.cellIterator( );
-                            // Iterating over each cell (column wise) in a
-                            // particular row.
-                            while ( cellIterator.hasNext( ) )
+                            Cell cell = cellIterator.next( );
+                            // The Cell Containing String will is name.
+                            if ( cell.getColumnIndex( ) == 3 && cell.getCellType( ) == 0 )
                             {
-                                Cell cell = (Cell) cellIterator.next( );
-                                // The Cell Containing String will is name.
-                                if ( cell.getColumnIndex( ) == 3 )
-                                {
-                                    if ( cell.getCellType( ) == 0 )
-                                    {
-                                        Instant instant = cell.getDateCellValue( ).toInstant( );
-                                        LocalDate localDate = instant.atZone( ZoneId.systemDefault( ) ).toLocalDate( );
-                                        listDays.add( localDate );
-                                    }
-                                }
+                                Instant instant = cell.getDateCellValue( ).toInstant( );
+                                LocalDate localDate = instant.atZone( ZoneId.systemDefault( ) ).toLocalDate( );
+                                listDays.add( localDate );
                             }
                         }
                     }
                 }
             }
-            finally
-            {
-                if ( fis != null )
-                {
-                    fis.close( );
-                }
-                if ( workbook != null )
-                {
-                    workbook.close( );
-                }
-            }
         }
-        return new ArrayList<LocalDate>( listDays );
+        return new ArrayList<>( listDays );
     }
 
 }
