@@ -1,5 +1,5 @@
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-<!-- <script src="js/plugins/appointment/jquery.min.js"></script> -->
+<script src="js/plugins/appointment/jquery.min.js"></script>
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <script src="js/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/plugins/appointment/locale-all.js"></script>
@@ -213,6 +213,7 @@ th.fc-day-header {
     var endingDateOfDisplay = '${ending_date_of_display}';
     var strStartingDateOfDisplay = '${str_starting_date_of_display}';
     var strEndingDateOfDisplay = '${str_ending_date_of_display}';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
     var idForm = '${id_form}';
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
