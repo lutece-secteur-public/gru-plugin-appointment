@@ -636,7 +636,7 @@ public final class FormService
     public static Form createForm( AppointmentFormDTO appointmentForm )
     {
         Form form = new Form( );
-        form = fillInFormWithAppointmentForm( form, appointmentForm );
+        fillInFormWithAppointmentForm( form, appointmentForm );
         FormHome.create( form );
         FormListenerManager.notifyListenersFormCreation( form.getIdForm( ) );
         return form;
@@ -652,7 +652,7 @@ public final class FormService
     public static Form updateForm( AppointmentFormDTO appointmentForm )
     {
         Form form = FormService.findFormLightByPrimaryKey( appointmentForm.getIdForm( ) );
-        form = fillInFormWithAppointmentForm( form, appointmentForm );
+        fillInFormWithAppointmentForm( form, appointmentForm );
         FormService.updateForm( form );
         return form;
     }

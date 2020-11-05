@@ -198,8 +198,7 @@ public final class WorkingDayService
      */
     public static WorkingDay findWorkingDayLightById( int nIdWorkingDay )
     {
-        WorkingDay workingDay = WorkingDayHome.findByPrimaryKey( nIdWorkingDay );
-        return workingDay;
+        return WorkingDayHome.findByPrimaryKey( nIdWorkingDay );
     }
 
     /**
@@ -225,7 +224,7 @@ public final class WorkingDayService
      */
     public static LocalTime getMaxEndingTimeOfAWorkingDay( WorkingDay workingDay )
     {
-        return workingDay.getListTimeSlot( ).stream( ).map( TimeSlot::getEndingTime ).max( LocalTime::compareTo ).get( );
+        return workingDay.getListTimeSlot( ).stream( ).map( TimeSlot::getEndingTime ).max( LocalTime::compareTo ).orElse( null );
     }
 
     /**
@@ -238,10 +237,9 @@ public final class WorkingDayService
     public static LocalTime getMaxEndingTimeOfAListOfWorkingDay( List<WorkingDay> listWorkingDay )
     {
         LocalTime maxEndingTime = null;
-        LocalTime endingTimeTemp;
         for ( WorkingDay workingDay : listWorkingDay )
         {
-            endingTimeTemp = getMaxEndingTimeOfAWorkingDay( workingDay );
+            LocalTime endingTimeTemp = getMaxEndingTimeOfAWorkingDay( workingDay );
             if ( maxEndingTime == null || endingTimeTemp.isAfter( maxEndingTime ) )
             {
                 maxEndingTime = endingTimeTemp;
@@ -259,7 +257,7 @@ public final class WorkingDayService
      */
     public static LocalTime getMinStartingTimeOfAWorkingDay( WorkingDay workingDay )
     {
-        return workingDay.getListTimeSlot( ).stream( ).map( TimeSlot::getStartingTime ).min( LocalTime::compareTo ).get( );
+        return workingDay.getListTimeSlot( ).stream( ).map( TimeSlot::getStartingTime ).min( LocalTime::compareTo ).orElse( null );
     }
 
     /**

@@ -69,19 +69,6 @@ public final class AppointmentPlugin extends Plugin
     /**
      * Get the locale used by this plugin
      * 
-     * @param locale
-     *            The locale preferred by the user
-     * @return The locale used by this plugin
-     */
-    @Deprecated
-    public static Locale getPluginLocale( Locale locale )
-    {
-        return getPluginLocale( );
-    }
-
-    /**
-     * Get the locale used by this plugin
-     * 
      * @return The locale used by this plugin
      */
     public static Locale getPluginLocale( )

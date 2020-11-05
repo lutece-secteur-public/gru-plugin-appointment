@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
@@ -80,16 +81,16 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
     public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
-        listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, user );
+        listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, (User) user );
         listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
         Map<String, Object> model = new HashMap<>( );
         Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                AdminUserService.getAdminUser( request ) ) );
+               (User) AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         model.put( MARK_PERMISSION_CREATE, String.valueOf(
-                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
+                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, (User) user ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( listAppointmentForm, AdminUserService.getAdminUser( request ) ) );
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_DASHBOARD, AdminUserService.getLocale( request ), model );
         return template.getHtml( );

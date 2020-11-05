@@ -184,13 +184,12 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private boolean checkStartingAndEndingValidityDate( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
-        if ( ( appointmentForm.getDateStartValidity( ) != null ) && ( appointmentForm.getDateEndValidity( ) != null ) )
+        if ( appointmentForm.getDateStartValidity( ) != null 
+                && appointmentForm.getDateEndValidity( ) != null 
+                && appointmentForm.getDateStartValidity( ).toLocalDate( ).isAfter( appointmentForm.getDateEndValidity( ).toLocalDate( ) ) )
         {
-            if ( appointmentForm.getDateStartValidity( ).toLocalDate( ).isAfter( appointmentForm.getDateEndValidity( ).toLocalDate( ) ) )
-            {
-                bReturn = false;
-                addError( ERROR_MESSAGE_TIME_START_AFTER_DATE_END, getLocale( ) );
-            }
+            bReturn = false;
+            addError( ERROR_MESSAGE_TIME_START_AFTER_DATE_END, getLocale( ) );
         }
         return bReturn;
     }

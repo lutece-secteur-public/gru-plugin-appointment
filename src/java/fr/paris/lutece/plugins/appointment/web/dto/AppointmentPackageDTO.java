@@ -48,7 +48,7 @@ public class AppointmentPackageDTO implements Serializable
      * the number of booked seats for this appointment package
      */
     private int _nNbBookedSeats;
-    private Set<AppointmentDTO> _listAppointmentDTO = new HashSet<AppointmentDTO>( );
+    private Set<AppointmentDTO> _listAppointmentDTO = new HashSet<>( );
 
     /**
      * Get the number of booked seats for the appointment

@@ -87,7 +87,7 @@ public final class AppointmentService
             for ( Appointment tmp : tempAppointment )
             {
 
-                if ( !listAppointment.stream( ).anyMatch( p -> p.getIdAppointment( ) == tmp.getIdAppointment( ) ) )
+                if ( listAppointment.stream( ).noneMatch( p -> p.getIdAppointment( ) == tmp.getIdAppointment( ) ) )
                 {
 
                     listAppointment.add( tmp );
@@ -335,17 +335,7 @@ public final class AppointmentService
         try
         {
             Appointment appointmentToDelete = AppointmentHome.findByPrimaryKey( nIdAppointment );
-            if ( WorkflowService.getInstance( ).isAvailable( ) )
-            {
-                try
-                {
-                    WorkflowService.getInstance( ).doRemoveWorkFlowResource( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE );
-                }
-                catch( Exception e )
-                {
-                    AppLogService.error( "Error Workflow", e );
-                }
-            }
+            deleteWorkflowResource( nIdAppointment );
             if ( !appointmentToDelete.getIsCancelled( ) )
             {
                 for ( AppointmentSlot appSlot : appointmentToDelete.getListAppointmentSlot( ) )
@@ -366,6 +356,21 @@ public final class AppointmentService
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
             AppLogService.error( "Error delete appointment " + e.getMessage( ), e );
             throw new AppException( e.getMessage( ), e );
+        }
+    }
+    
+    private static void deleteWorkflowResource( int nIdAppointment )
+    {
+        if ( WorkflowService.getInstance( ).isAvailable( ) )
+        {
+            try
+            {
+                WorkflowService.getInstance( ).doRemoveWorkFlowResource( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE );
+            }
+            catch( Exception e )
+            {
+                AppLogService.error( "Error Workflow", e );
+            }
         }
     }
 
@@ -458,22 +463,6 @@ public final class AppointmentService
             throw new AppException( e.getMessage( ), e );
         }
         AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
-
-    }
-
-    /**
-     * Set the new number of remaining places (and potential) when an appointment is deleted or cancelled This new value must take in account the capacity of
-     * the slot, in case of the slot was already over booked
-     * 
-     * @param nbPlaces
-     *            the nb places taken of the appointment that we want to delete (or cancel, or move)
-     * @param slot
-     *            the related slot
-     */
-    @Deprecated
-    public static void updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( int nbPlaces, Slot slot )
-    {
-        SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( nbPlaces, slot.getIdSlot( ) );
 
     }
 

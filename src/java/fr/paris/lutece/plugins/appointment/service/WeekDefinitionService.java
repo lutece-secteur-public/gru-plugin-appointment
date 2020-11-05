@@ -215,7 +215,7 @@ public final class WeekDefinitionService
             if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
             {
                 // Get the next week definition in the future
-                weekDefinition = listWeekDefinition.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).get( );
+                weekDefinition = listWeekDefinition.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).orElse( null );
             }
         }
         else
@@ -245,8 +245,7 @@ public final class WeekDefinitionService
      */
     public static WeekDefinition findWeekDefinitionByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
-        WeekDefinition weekDefinition = WeekDefinitionHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );
-        return weekDefinition;
+        return WeekDefinitionHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );
     }
 
     /**
@@ -267,7 +266,7 @@ public final class WeekDefinitionService
             listWeekDefinition = listWeekDefinition.stream( ).filter( x -> x.getDateOfApply( ).isAfter( previousDateOfApply ) ).collect( Collectors.toList( ) );
             if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
             {
-                nextWeekDefinition = listWeekDefinition.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).get( );
+                nextWeekDefinition = listWeekDefinition.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).orElse( null );
             }
         }
         return nextWeekDefinition;

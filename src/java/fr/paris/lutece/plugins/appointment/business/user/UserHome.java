@@ -33,10 +33,8 @@
  */
 package fr.paris.lutece.plugins.appointment.business.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -140,15 +138,4 @@ public final class UserHome
     {
         return _dao.findByEmail( strEmail, _plugin );
     }
-
-    /**
-     * Return the list of the appointments of the User
-     */
-    public List<Appointment> getListAppointments( )
-    {
-        List<Appointment> appointments = new ArrayList<>( );
-
-        return appointments;
-    }
-
 }
