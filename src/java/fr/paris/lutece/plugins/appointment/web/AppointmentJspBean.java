@@ -1151,7 +1151,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         Map<String, Object> model = getModel( );
-        List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), true );
+        List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), false );
         StringBuilder strBuffer = new StringBuilder( );
         for ( Entry entry : listEntryFirstLevel )
         {
