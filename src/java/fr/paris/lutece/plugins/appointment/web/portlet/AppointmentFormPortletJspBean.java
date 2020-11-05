@@ -91,7 +91,7 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
             refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
 
         HtmlTemplate template = getCreateTemplate( strPageId, strPortletTypeId, model );
@@ -118,7 +118,7 @@ public class AppointmentFormPortletJspBean extends AbstractPortletJspBean
             refListAppointmentForm.addItem( form.getIdForm( ), form.getTitle( ) );
         }
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_APPOINTMENT_FORM, refListAppointmentForm );
 
         HtmlTemplate template = getModifyTemplate( portlet, model );
