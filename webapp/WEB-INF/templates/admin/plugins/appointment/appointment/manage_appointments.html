@@ -7,9 +7,7 @@
 
 <@row>
     <@columns>
-        <@box color='primary'>
-            <@boxHeader title='${form.title} - #i18n{appointment.manageAppointments.pageTitle}' />
-			<@boxBody>
+       
 				<@appointmentTabs tab='filter' form=form>
 					<@messages infos=infos errors=errors/>
 					<@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
@@ -188,8 +186,7 @@
 						</@box>
 					</@tform>
 				</@appointmentTabs>
-			</@boxBody>
-		</@box>
+			
 	</@columns>
 </@row>
 <script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>

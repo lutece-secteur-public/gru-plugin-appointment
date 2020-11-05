@@ -1,6 +1,6 @@
 <#macro appointmentTabs tab form>
-  <@tabs>
-		<@tabList type='pills'>
+  <@tabs params=' style="margin-top:15px"'>
+		<@tabList>
 			<#if tab="calendar"><#assign active = true /><#else><#assign active = false /></#if>
 			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active />
 			
