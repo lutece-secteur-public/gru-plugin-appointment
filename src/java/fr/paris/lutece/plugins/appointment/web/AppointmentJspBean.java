@@ -186,9 +186,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
     // Parameters
     private static final String PARAMETER_ID_RESPONSE = "idResponse";
-    private static final String PARAMETER_IS_OPEN = "is_open";
-    private static final String PARAMETER_IS_SPECIFIC = "is_specific";
-    private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
     private static final String PARAMETER_ENDING_DATE_TIME = "ending_date_time";
     private static final String PARAMETER_STARTING_DATE_OF_DISPLAY = "starting_date_of_display";
@@ -210,7 +207,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String PARAMETER_EMAIL_CONFIRMATION = "emailConfirm";
     private static final String PARAMETER_FIRST_NAME = "firstname";
     private static final String PARAMETER_LAST_NAME = "lastname";
-    private static final String PARAMETER_ID_SLOT = "id_slot";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_ORDER_BY = "orderBy";
     private static final String PARAMETER_ORDER_ASC = "orderAsc";
@@ -468,8 +464,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( MARK_FORM_OVERBOOKING_ALLOWED, appointmentForm.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
 
-        AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) );
-        model.put(MARK_LOCALE, getLocale());
+                AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) );
+        model.put( MARK_LOCALE, getLocale( ) );
 
         if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake <= 1 )
         {
@@ -601,7 +597,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
-        	StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+            StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             int nIdWorkflow = form.getIdWorkflow( );
             StateFilter stateFilter = new StateFilter( );
             stateFilter.setIdWorkflow( nIdWorkflow );
@@ -634,7 +630,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
         model.put( MARK_DEFAULT_FIELD_LIST, AppointmentExportService.getDefaultColumnList( getLocale( ) ) );
         model.put( MARK_CUSTOM_FIELD_LIST, AppointmentExportService.getCustomColumnList( strIdForm ) );
-        model.put(MARK_LOCALE, getLocale());
+        model.put( MARK_LOCALE, getLocale( ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS, TEMPLATE_MANAGE_APPOINTMENTS, model );
     }
@@ -771,7 +767,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
         int nIdAppointment = Integer.parseInt( strIdAppointment );
         AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, (User) getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT,
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
         }
@@ -787,7 +784,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
-        	StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
+            StateService stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             int nIdWorkflow = form.getIdWorkflow( );
             StateFilter stateFilter = new StateFilter( );
             stateFilter.setIdWorkflow( nIdWorkflow );
@@ -830,7 +827,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
         model.put( MARK_LANGUAGE, getLocale( ) );
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
-        model.put(MARK_LOCALE, getLocale());
+        model.put( MARK_LOCALE, getLocale( ) );
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
     }
 
@@ -853,7 +850,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         }
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, (User) getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT,
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT );
         }
@@ -971,7 +969,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
         String strNbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT, (User) getUser( ) ) )
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT,
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT );
         }
@@ -1152,7 +1151,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
 
         Map<String, Object> model = getModel( );
-        List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), true );
+        List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), false );
         StringBuilder strBuffer = new StringBuilder( );
         for ( Entry entry : listEntryFirstLevel )
         {
@@ -1171,7 +1170,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
         HtmlTemplate templateForm = AppTemplateService.getTemplate( TEMPLATE_HTML_CODE_FORM_ADMIN, getLocale( ), model );
         model.put( MARK_FORM_HTML, templateForm.getHtml( ) );
-        model.put(MARK_LOCALE, getLocale());
+        model.put( MARK_LOCALE, getLocale( ) );
         if ( listErrors != null )
         {
             model.put( MARK_FORM_ERRORS, listErrors );
@@ -1276,7 +1275,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
         for ( Slot slot : listSlot )
         {
-
             if ( slot.getIdSlot( ) == 0 )
             {
                 slot = SlotSafeService.createSlot( slot );
@@ -1299,7 +1297,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             if ( bool )
             {
-
                 appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
                 appointmentDTO.setIdForm( nIdForm );
                 LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
@@ -1437,8 +1434,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( isEquals( appointmentDTO.getSlot( ), listSlot ) /* appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) */ )
             {
                 List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged( appointmentDTO.getIdAppointment( ),
-                        appointmentDTO.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) ),
-                        getLocale( ) );
+                        appointmentDTO.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) ), getLocale( ) );
                 for ( String strMessage : listMessages )
                 {
                     addInfo( strMessage );
@@ -1767,7 +1763,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( WorkflowService.getInstance( ).isDisplayTasksForm( nIdAction, getLocale( ) ) )
             {
                 String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
-                request, getLocale( ), null );
+                        request, getLocale( ), null );
                 Map<String, Object> model = new HashMap<>( );
                 model.put( MARK_TASKS_FORM, strHtmlTasksForm );
                 model.put( PARAMETER_ID_ACTION, nIdAction );

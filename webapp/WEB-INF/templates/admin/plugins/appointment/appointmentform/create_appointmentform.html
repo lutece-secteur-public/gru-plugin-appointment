@@ -177,7 +177,7 @@
 							<@checkBox name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' />
 						</@formGroup>
 						
-						<@formGroup>
+						<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
 							<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
 						</@formGroup>
 						

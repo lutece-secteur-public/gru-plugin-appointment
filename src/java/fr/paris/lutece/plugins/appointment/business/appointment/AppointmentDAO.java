@@ -146,7 +146,7 @@ public final class AppointmentDAO implements IAppointmentDAO
             daoUtil.setInt( 1, apptSlot.getIdAppointment( ) );
             daoUtil.setInt( 2, apptSlot.getIdSlot( ) );
             daoUtil.setInt( 3, apptSlot.getNbPlaces( ) );
-    
+
             daoUtil.executeUpdate( );
         }
     }
@@ -251,7 +251,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     public List<Appointment> findByIdSlot( int nIdSlot, Plugin plugin )
     {
         List<Appointment> listAppointment = new ArrayList<>( );
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_SLOT, plugin ))
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_SLOT, plugin ) )
         {
             daoUtil.setInt( 1, nIdSlot );
             daoUtil.executeQuery( );
@@ -293,12 +293,12 @@ public final class AppointmentDAO implements IAppointmentDAO
             while ( daoUtil.next( ) )
             {
                 Appointment appt = buildAppointment( daoUtil );
-    
+
                 Slot slot = builSlot( daoUtil, 17 );
                 User user = buildUser( daoUtil, 11 );
                 appt.addSlot( slot );
                 appt.setUser( user );
-    
+
                 Appointment apptAdded = listAppointment.stream( ).filter( p -> appt.getIdAppointment( ) == p.getIdAppointment( ) ).findAny( ).orElse( null );
                 if ( apptAdded == null )
                 {

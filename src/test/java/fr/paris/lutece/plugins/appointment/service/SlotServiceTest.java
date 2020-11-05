@@ -54,7 +54,7 @@ public class SlotServiceTest extends LuteceTestCase
     private LocalDate _sundayTwoWeeks = _nextMonday.plusDays( 13 );
     private LocalTime _startSlot = LocalTime.of( 10, 0 );
     private LocalTime _endSlot = LocalTime.of( 10, 30 );
-    
+
     // Check that there are 180 open slots from the 3/12/2018 to the 14/12/2018
     // With open days from Monday to Friday
     public void testOpenSlots( )
@@ -76,7 +76,7 @@ public class SlotServiceTest extends LuteceTestCase
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
-        
+
         List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, _nextMonday, _sundayTwoWeeks );
 
         assertEquals( 180, listSlots.stream( ).filter( s -> s.getIsOpen( ) ).collect( Collectors.toList( ) ).size( ) );
@@ -101,16 +101,16 @@ public class SlotServiceTest extends LuteceTestCase
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
 
-        Slot slotSpecificClosed1 = SlotTest.buildSlot( nIdForm, _nextMonday.atTime( _startSlot ), _nextMonday.atTime( _endSlot ), 1, 1, 0,
-                1, Boolean.FALSE, Boolean.TRUE );
+        Slot slotSpecificClosed1 = SlotTest.buildSlot( nIdForm, _nextMonday.atTime( _startSlot ), _nextMonday.atTime( _endSlot ), 1, 1, 0, 1, Boolean.FALSE,
+                Boolean.TRUE );
         slotSpecificClosed1 = SlotService.saveSlot( slotSpecificClosed1 );
 
-        Slot slotSpecificClosed2 = SlotTest.buildSlot( nIdForm, _nextMonday.plusDays( 1 ).atTime( _startSlot ), _nextMonday.plusDays( 1 ).atTime( _endSlot ), 1, 1, 0,
-                1, Boolean.FALSE, Boolean.TRUE );
+        Slot slotSpecificClosed2 = SlotTest.buildSlot( nIdForm, _nextMonday.plusDays( 1 ).atTime( _startSlot ), _nextMonday.plusDays( 1 ).atTime( _endSlot ), 1,
+                1, 0, 1, Boolean.FALSE, Boolean.TRUE );
         slotSpecificClosed2 = SlotService.saveSlot( slotSpecificClosed2 );
 
-        Slot slotSpecificClosed3 = SlotTest.buildSlot( nIdForm, _nextMonday.plusDays( 2 ).atTime( _startSlot ), _nextMonday.plusDays( 2 ).atTime( _endSlot ), 1, 1, 0,
-                1, Boolean.FALSE, Boolean.TRUE );
+        Slot slotSpecificClosed3 = SlotTest.buildSlot( nIdForm, _nextMonday.plusDays( 2 ).atTime( _startSlot ), _nextMonday.plusDays( 2 ).atTime( _endSlot ), 1,
+                1, 0, 1, Boolean.FALSE, Boolean.TRUE );
         slotSpecificClosed3 = SlotService.saveSlot( slotSpecificClosed3 );
 
         List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, _nextMonday, _sundayTwoWeeks );
@@ -137,12 +137,12 @@ public class SlotServiceTest extends LuteceTestCase
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
 
-        Slot slotSpecific1 = SlotTest.buildSlot( nIdForm, _nextMonday.atTime( _startSlot ), _nextMonday.atTime( 11, 0 ), 1, 1, 0, 1,
-                Boolean.TRUE, Boolean.TRUE );
+        Slot slotSpecific1 = SlotTest.buildSlot( nIdForm, _nextMonday.atTime( _startSlot ), _nextMonday.atTime( 11, 0 ), 1, 1, 0, 1, Boolean.TRUE,
+                Boolean.TRUE );
         slotSpecific1 = SlotService.saveSlot( slotSpecific1 );
 
-        Slot slotSpecific2 = SlotTest.buildSlot( nIdForm, _nextMonday.plusDays( 1 ).atTime( _startSlot ), _nextMonday.plusDays( 1 ).atTime( 11, 30 ), 1, 1, 0, 1,
-                Boolean.TRUE, Boolean.TRUE );
+        Slot slotSpecific2 = SlotTest.buildSlot( nIdForm, _nextMonday.plusDays( 1 ).atTime( _startSlot ), _nextMonday.plusDays( 1 ).atTime( 11, 30 ), 1, 1, 0,
+                1, Boolean.TRUE, Boolean.TRUE );
         slotSpecific2 = SlotService.saveSlot( slotSpecific2 );
 
         List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, _nextMonday, _sundayTwoWeeks );

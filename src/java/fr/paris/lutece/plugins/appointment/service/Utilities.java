@@ -69,19 +69,6 @@ public final class Utilities
     }
 
     /**
-     * Setter for the formatter
-     * 
-     * @param formatter
-     *            the formatter to set
-     * @deprecated Useless setter
-     */
-    @Deprecated
-    public static void setFormatter( DateTimeFormatter formatter )
-    {
-        _formatter = formatter;
-    }
-
-    /**
      * Reset formatter scope package to be only used by unit tests
      */
     static void resetFormatter( )

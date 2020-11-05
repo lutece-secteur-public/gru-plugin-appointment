@@ -33,14 +33,12 @@
  */
 package fr.paris.lutece.plugins.appointment.web.dto;
 
-import java.io.Serializable;
 import java.sql.Date;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
@@ -55,7 +53,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
-public final class AppointmentFormDTO extends ReservationRule implements RBACResource, AdminWorkgroupResource, Cloneable, Serializable
+public final class AppointmentFormDTO extends ReservationRule implements RBACResource, AdminWorkgroupResource, Cloneable
 {
     /**
      * Name of the resource type of Appointment Forms

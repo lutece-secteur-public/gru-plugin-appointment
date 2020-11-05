@@ -48,7 +48,7 @@ import fr.paris.lutece.util.ReferenceList;
  */
 public final class EntryTypeService
 {
-    private static volatile EntryTypeService _instance;
+    private static EntryTypeService _instance = new EntryTypeService( );
     private Map<Integer, EntryType> _mapEntryTypes;
 
     /**
@@ -66,11 +66,6 @@ public final class EntryTypeService
      */
     public static EntryTypeService getInstance( )
     {
-        if ( _instance == null )
-        {
-            _instance = new EntryTypeService( );
-        }
-
         return _instance;
     }
 
@@ -81,7 +76,7 @@ public final class EntryTypeService
      */
     public Map<Integer, EntryType> getMapEntryTypes( )
     {
-        return new HashMap<Integer, EntryType>( _mapEntryTypes );
+        return new HashMap<>( _mapEntryTypes );
     }
 
     /**
@@ -101,7 +96,7 @@ public final class EntryTypeService
      */
     private void initMapEntryTypes( )
     {
-        _mapEntryTypes = new HashMap<Integer, EntryType>( );
+        _mapEntryTypes = new HashMap<>( );
 
         for ( EntryType entryType : EntryTypeHome.getList( AppointmentPlugin.PLUGIN_NAME ) )
         {

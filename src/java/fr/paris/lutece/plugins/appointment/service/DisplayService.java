@@ -86,8 +86,8 @@ public final class DisplayService
      */
     public static Display createDisplay( AppointmentFormDTO appointmentForm, int nIdForm )
     {
-        Display display = new Display( );
-        display = fillInDisplayWithAppointmentForm( display, appointmentForm, nIdForm );
+        Display display =  new Display( );
+        fillInDisplayWithAppointmentForm( display, appointmentForm, nIdForm );
         DisplayHome.create( display );
         return display;
     }
@@ -115,7 +115,7 @@ public final class DisplayService
     public static Display updateDisplay( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
-        display = fillInDisplayWithAppointmentForm( display, appointmentForm, nIdForm );
+        fillInDisplayWithAppointmentForm( display, appointmentForm, nIdForm );
         DisplayHome.update( display );
         return display;
     }

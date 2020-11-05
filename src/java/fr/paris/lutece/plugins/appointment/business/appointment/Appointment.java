@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
  * @author Laurent Payen
  *
  */
-public class Appointment extends User implements Serializable
+public class Appointment extends User
 {
 
     /**

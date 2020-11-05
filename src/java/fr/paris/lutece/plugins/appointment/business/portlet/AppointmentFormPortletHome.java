@@ -50,18 +50,7 @@ public final class AppointmentFormPortletHome extends PortletHome
     private static IAppointmentFormPortletDAO _dao = SpringContextService.getBean( "appointment.appointmentFormPortletDAO" );
 
     /* This class implements the Singleton design pattern. */
-    private static volatile AppointmentFormPortletHome _singleton;
-
-    /**
-     * Constructor
-     */
-    public AppointmentFormPortletHome( )
-    {
-        if ( _singleton == null )
-        {
-            _singleton = this;
-        }
-    }
+    private static AppointmentFormPortletHome _singleton = new AppointmentFormPortletHome( );
 
     /**
      * {@inheritDoc}
@@ -70,9 +59,7 @@ public final class AppointmentFormPortletHome extends PortletHome
     public String getPortletTypeId( )
     {
         String strCurrentClassName = this.getClass( ).getName( );
-        String strPortletTypeId = PortletTypeHome.getPortletTypeId( strCurrentClassName );
-
-        return strPortletTypeId;
+        return PortletTypeHome.getPortletTypeId( strCurrentClassName );
     }
 
     /**
@@ -82,11 +69,6 @@ public final class AppointmentFormPortletHome extends PortletHome
      */
     public static PortletHome getInstance( )
     {
-        if ( _singleton == null )
-        {
-            _singleton = new AppointmentFormPortletHome( );
-        }
-
         return _singleton;
     }
 

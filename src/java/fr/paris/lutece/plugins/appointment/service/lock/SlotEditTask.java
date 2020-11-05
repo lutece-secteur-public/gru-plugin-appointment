@@ -74,13 +74,7 @@ public final class SlotEditTask extends TimerTask implements Serializable
     @Override
     public void run( )
     {
-        // Slot slot = SlotService.findSlotById( _idSlot );
-        // int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces + _nbPlacesTaken );
-        // SlotService.updateSlot( slot );
-
         SlotSafeService.incrementPotentialRemainingPlaces( _nbPlacesTaken, _idSlot, _timer );
-
     }
 
     /**

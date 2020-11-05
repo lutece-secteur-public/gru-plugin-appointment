@@ -99,7 +99,7 @@ public final class AppointmentResponseHome
     public static List<Response> findListResponse( int nIdAppointment )
     {
         List<Integer> listIdResponse = _dao.findListIdResponse( nIdAppointment, _plugin );
-        List<Response> listResponse = new ArrayList<Response>( listIdResponse.size( ) );
+        List<Response> listResponse = new ArrayList<>( listIdResponse.size( ) );
         for ( Integer nIdResponse : listIdResponse )
         {
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );

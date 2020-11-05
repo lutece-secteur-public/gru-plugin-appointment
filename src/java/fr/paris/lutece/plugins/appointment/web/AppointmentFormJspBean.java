@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -52,6 +51,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
@@ -94,7 +94,7 @@ import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
 import fr.paris.lutece.util.ReferenceList;
-import fr.paris.lutece.util.html.Paginator;
+import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
@@ -223,33 +223,33 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     public String getManageAppointmentForms( HttpServletRequest request )
     {
         AdminUser adminUser = getUser( );
-        String strCurrentPageIndex = Paginator.getPageIndex( request, Paginator.PARAMETER_PAGE_INDEX,
+        String strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX,
                 (String) request.getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
         if ( strCurrentPageIndex == null )
         {
             strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
         }
         request.getSession( ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
-        int nItemsPerPage = Paginator.getItemsPerPage( request, Paginator.PARAMETER_ITEMS_PER_PAGE,
+        int nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE,
                 getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
         request.getSession( ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
         String strUrl = url.getUrl( );
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
-        listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, adminUser );
+        listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, (User) adminUser );
         listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
-        LocalizedPaginator<AppointmentFormDTO> paginator = new LocalizedPaginator<AppointmentFormDTO>( listAppointmentForm, nItemsPerPage, strUrl,
+        LocalizedPaginator<AppointmentFormDTO> paginator = new LocalizedPaginator<>( listAppointmentForm, nItemsPerPage, strUrl,
                 PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
         AdminUser user = AdminUserService.getAdminUser( request );
         Map<String, Object> model = getModel( );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-                AdminUserService.getAdminUser( request ) ) );
+                (User) AdminUserService.getAdminUser( request ) ) );
         model.put( VIEW_PERMISSIONS_FORM, AppointmentUtilities.getPermissions( paginator.getPageItems( ), user ) );
         model.put( MARK_PERMISSION_CREATE, String.valueOf(
-                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, user ) ) );
+                RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM, (User) user ) ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS, TEMPLATE_MANAGE_APPOINTMENTFORMS, model );
     }
 
@@ -266,7 +266,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     public String getCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
@@ -293,13 +293,12 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @return The JSP URL of the process result
      * @throws AccessDeniedException
      *             If the user is not authorized to create appointment forms
-     * @throws FileNotFoundException
      */
     @Action( ACTION_CREATE_APPOINTMENTFORM )
-    public String doCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException, FileNotFoundException
+    public String doCreateAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
@@ -340,7 +339,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
         }
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_DELETE_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_FORM );
         }
@@ -370,7 +369,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
         }
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, request.getParameter( PARAMETER_ID_FORM ),
-                AppointmentResourceIdService.PERMISSION_DELETE_FORM, AdminUserService.getAdminUser( request ) ) )
+                AppointmentResourceIdService.PERMISSION_DELETE_FORM, (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_FORM );
         }
@@ -396,7 +395,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
@@ -425,7 +424,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
@@ -489,7 +488,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
         }
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_STATE,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_STATE );
         }
@@ -506,7 +505,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                 if ( ( form.getEndingValidityDate( ) != null ) && ( form.getEndingValidityDate( ).isBefore( LocalDate.now( ) ) ) )
                 {
                     addError( ERROR_APPOINTMENTFORM_ENDING_VALIDITY_DATE_BEFORE_NOW, getLocale( ) );
-                    if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )
+                    if ( Boolean.TRUE.equals( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) ) )
                     {
                         return redirect( request, AppPathService.getBaseUrl( request ) + AppPathService.getAdminMenuUrl( ) );
                     }
@@ -524,7 +523,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             FormService.updateForm( form );
             AppLogService.info( LogUtilities.buildLog( ACTION_DO_CHANGE_FORM_ACTIVATION, strIdForm, getUser( ) ) );
         }
-        if ( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) )
+        if ( Boolean.TRUE.equals( Boolean.valueOf( request.getParameter( PARAMETER_FROM_DASHBOARD ) ) ) )
         {
             return redirect( request, AppPathService.getBaseUrl( request ) + AppPathService.getAdminMenuUrl( ) );
         }
@@ -543,7 +542,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     public String doCopyAppointmentForm( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE_CREATE, "0", AppointmentResourceIdService.PERMISSION_CREATE_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
@@ -581,13 +580,13 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
         }
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
         int nIdForm = Integer.parseInt( strIdForm );
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         model.put( MARK_FORM_MESSAGE, formMessage );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LOCALE, getLocale( ) );
@@ -611,7 +610,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         if ( StringUtils.isNotEmpty( strIdForm ) && StringUtils.isNumeric( strIdForm ) && ( request.getParameter( PARAMETER_BACK ) == null ) )
         {
             if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                    AdminUserService.getAdminUser( request ) ) )
+                    (User) AdminUserService.getAdminUser( request ) ) )
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
             }
@@ -660,7 +659,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     {
         model.put( MARK_APPOINTMENT_FORM, appointmentForm );
         model.put( MARK_LOCALE, locale );
-        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( user, locale ) );
+        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( (User) user, locale ) );
         model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
         model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
         model.put( MARK_LIST_CATEGORIES, CategoryService.findAllInReferenceList( ) );
@@ -751,66 +750,69 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             strPathFile = item.getName( );
         }
-        if ( StringUtils.isNotEmpty( strPathFile ) )
+        if ( StringUtils.isEmpty( strPathFile ) )
         {
-            List<LocalDate> listClosingDaysDb = ClosingDayService.findListDateOfClosingDayByIdForm( nIdForm );
-            List<LocalDate> listDateImported = new ArrayList<>( );
-            List<LocalDate> listDateToSave = new ArrayList<>( );
-            try
+            return;
+        }
+        
+        List<LocalDate> listClosingDaysDb = ClosingDayService.findListDateOfClosingDayByIdForm( nIdForm );
+        List<LocalDate> listDateImported = new ArrayList<>( );
+        List<LocalDate> listDateToSave = new ArrayList<>( );
+        try
+        {
+            listDateImported = ClosingDayService.getImportClosingDays( item );
+        }
+        catch( IOException e )
+        {
+            AppLogService.error( "Error importing file", e );
+        }
+        if ( CollectionUtils.isEmpty( listDateImported ) )
+        {
+            addError( MESSAGE_ERROR_EMPTY_FILE, getLocale( ) );
+        }
+        else
+        {
+            List<Slot> listSlotsImpacted;
+            List<LocalDate> listDateWithError = new ArrayList<>( );
+            List<Slot> listSlotsToDelete = new ArrayList<>( );
+            List<Appointment> listAppointmentsImpacted;
+            for ( LocalDate closingDate : listDateImported )
             {
-                listDateImported = ClosingDayService.getImportClosingDays( item );
-            }
-            catch( IOException e )
-            {
-            }
-            if ( CollectionUtils.isEmpty( listDateImported ) )
-            {
-                addError( MESSAGE_ERROR_EMPTY_FILE, getLocale( ) );
-            }
-            else
-            {
-                List<Slot> listSlotsImpacted;
-                List<LocalDate> listDateWithError = new ArrayList<>( );
-                List<Slot> listSlotsToDelete = new ArrayList<>( );
-                List<Appointment> listAppointmentsImpacted;
-                for ( LocalDate closingDate : listDateImported )
+                if ( !listClosingDaysDb.contains( closingDate ) )
                 {
-                    if ( !listClosingDaysDb.contains( closingDate ) )
+                    listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ),
+                            closingDate.atTime( LocalTime.MAX ) );
+                    // Check if there is appointments on this slots
+                    listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
+                    if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
                     {
-                        listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, closingDate.atStartOfDay( ),
-                                closingDate.atTime( LocalTime.MAX ) );
-                        // Check if there is appointments on this slots
-                        listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
-                        if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
-                        {
-                            listDateWithError.add( closingDate );
-                        }
-                        else
-                        {
-                            listSlotsToDelete.addAll( listSlotsImpacted );
-                            listDateToSave.add( closingDate );
-                        }
+                        listDateWithError.add( closingDate );
+                    }
+                    else
+                    {
+                        listSlotsToDelete.addAll( listSlotsImpacted );
+                        listDateToSave.add( closingDate );
                     }
                 }
-                if ( CollectionUtils.isNotEmpty( listDateWithError ) )
-                {
-                    StringJoiner stbListDate = new StringJoiner( StringUtils.SPACE );
-                    for ( LocalDate dateWithError : listDateWithError )
-                    {
-                        stbListDate.add( Utilities.getFormatter( ).format( dateWithError ) ).add( "," );
-                    }
-                    String strListdate = stbListDate.toString( );
-                    strListdate = strListdate.substring( 0, strListdate.length( ) - 1 );
-                    Object [ ] tabEntryErrorDate = {
-                            strListdate
-                    };
-                    String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( MESSAGE_ERROR_OPEN_SLOTS, tabEntryErrorDate, getLocale( ) );
-                    addError( strErrorMessageDateWithAppointments );
-                }
-                SlotService.deleteListSlots( listSlotsToDelete );
-                ClosingDayService.saveListClosingDay( nIdForm, listDateToSave );
-                addInfo( MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale( ) );
             }
+            if ( CollectionUtils.isNotEmpty( listDateWithError ) )
+            {
+                StringJoiner stbListDate = new StringJoiner( StringUtils.SPACE );
+                for ( LocalDate dateWithError : listDateWithError )
+                {
+                    stbListDate.add( Utilities.getFormatter( ).format( dateWithError ) ).add( "," );
+                }
+                String strListdate = stbListDate.toString( );
+                strListdate = strListdate.substring( 0, strListdate.length( ) - 1 );
+                Object [ ] tabEntryErrorDate = {
+                        strListdate
+                };
+                String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( MESSAGE_ERROR_OPEN_SLOTS, tabEntryErrorDate, getLocale( ) );
+                addError( strErrorMessageDateWithAppointments );
+            }
+            SlotService.deleteListSlots( listSlotsToDelete );
+            ClosingDayService.saveListClosingDay( nIdForm, listDateToSave );
+            addInfo( MESSAGE_INFO_IMPORTED_CLOSING_DAYS, getLocale( ) );
         }
     }
 

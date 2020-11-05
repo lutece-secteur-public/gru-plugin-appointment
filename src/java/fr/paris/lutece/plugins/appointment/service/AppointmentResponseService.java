@@ -129,7 +129,7 @@ public final class AppointmentResponseService
     public static List<Response> findAndBuildListResponse( int nIdAppointment, HttpServletRequest request )
     {
         List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse( nIdAppointment );
-        List<Response> listResponses = new ArrayList<Response>( listIdResponse.size( ) );
+        List<Response> listResponses = new ArrayList<>( listIdResponse.size( ) );
         for ( int nIdResponse : listIdResponse )
         {
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );
@@ -167,11 +167,7 @@ public final class AppointmentResponseService
         for ( Response response : listResponse )
         {
             Integer nIdEntry = response.getEntry( ).getIdEntry( );
-            if ( mapResponse.get( nIdEntry ) == null )
-            {
-                mapResponse.put( nIdEntry, new ArrayList<>( ) );
-            }
-            List<Response> listResponseForThisEntry = mapResponse.get( nIdEntry );
+            List<Response> listResponseForThisEntry = mapResponse.computeIfAbsent( nIdEntry, ArrayList::new );
             listResponseForThisEntry.add( response );
         }
         return mapResponse;

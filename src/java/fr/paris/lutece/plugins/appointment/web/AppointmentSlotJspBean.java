@@ -48,6 +48,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
@@ -185,10 +187,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @param request
      *            the request
      * @return the page
-     * @throws AccessDeniedException
      */
     @View( value = VIEW_MANAGE_TYPICAL_WEEK )
-    public String getViewManageTypicalWeek( HttpServletRequest request ) throws AccessDeniedException
+    public String getViewManageTypicalWeek( HttpServletRequest request )
     {
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
@@ -271,7 +272,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
@@ -365,7 +366,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                getUser( ) ) )
+                (User) getUser( ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
@@ -498,7 +499,6 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                     // Error, the time slot can't be changed
                     addError( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
                     addError( listAppointmentsImpacted.size( ) + " rendez-vous impacté(s)" );
-                    // addError( "dont un le " + SlotService.findSlotById( listAppointmentsImpacted.get( 0 ).getIdSlot( ) ).getStartingDateTime( ) );
                     Map<String, String> additionalParameters = new HashMap<>( );
                     additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
                     additionalParameters.put( PARAMETER_ID_WEEK_DEFINITION, strIdWeekDefinition );
@@ -508,7 +508,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 }
                 // Get the validated appointment (the appointments that are not
                 // cancelled)
-                List<Appointment> listValidatedAppointments = listAppointmentsImpacted.stream( ).filter( appointment -> appointment.getIsCancelled( ) == false )
+                List<Appointment> listValidatedAppointments = listAppointmentsImpacted.stream( ).filter( appointment -> !appointment.getIsCancelled( ) )
                         .collect( Collectors.toList( ) );
                 if ( bOpeningHasChanged && CollectionUtils.isNotEmpty( listValidatedAppointments ) )
                 {
@@ -537,10 +537,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @param request
      *            the request
      * @return the page
-     * @throws AccessDeniedException
      */
     @View( defaultView = true, value = VIEW_MANAGE_SPECIFIC_WEEK )
-    public String getViewManageSpecificWeek( HttpServletRequest request ) throws AccessDeniedException
+    public String getViewManageSpecificWeek( HttpServletRequest request )
     {
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
@@ -560,12 +559,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         LocalDate endingDateOfDisplay = LocalDate.now( ).plusWeeks( nNbWeeksToDisplay );
         LocalDate endingValidityDate = form.getEndingValidityDate( );
-        if ( endingValidityDate != null )
+        if ( endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate ) )
         {
-            if ( endingDateOfDisplay.isAfter( endingValidityDate ) )
-            {
-                endingDateOfDisplay = endingValidityDate;
-            }
+            endingDateOfDisplay = endingValidityDate;
         }
         // Get all the week definitions
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
@@ -706,8 +702,8 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 slotFromSessionOrFromDb.setEndingDateTime( slotFromSessionOrFromDb.getDate( ).atTime( endingTime ) );
                 bEndingTimeHasChanged = true;
             }
-            if ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slotFromSessionOrFromDb, bShiftSlot )
-                    || bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, slotFromSessionOrFromDb ) )
+            if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slotFromSessionOrFromDb, bShiftSlot ) )
+                    || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, slotFromSessionOrFromDb ) ) )
             {
                 request.getSession( ).setAttribute( SESSION_ATTRIBUTE_SLOT, slotFromSessionOrFromDb );
                 return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, slotFromSessionOrFromDb.getIdForm( ) );

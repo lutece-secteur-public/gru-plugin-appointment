@@ -322,7 +322,7 @@ public final class SlotService
                             }
                             else
                             {
-                                timeTemp = timeTemp.plusMinutes( Long.valueOf( nDuration ) );
+                                timeTemp = timeTemp.plusMinutes( nDuration );
                                 if ( timeTemp.isAfter( maxTimeForThisDay ) )
                                 {
                                     timeTemp = maxTimeForThisDay;
@@ -398,8 +398,6 @@ public final class SlotService
             // date
             closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
             reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
-            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateTemp );
-
             nMaxCapacity = 0;
             if ( reservationRuleToApply != null )
             {
@@ -477,10 +475,7 @@ public final class SlotService
                         }
                         else
                         {
-
-                            // sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + slotToAdd.getNbPotentialRemainingPlaces( );
                             sumNbPotentialRemainingPlaces = sumNbPotentialRemainingPlaces + 1;
-                            // sumNbRemainingPlaces = sumNbRemainingPlaces + slotToAdd.getNbRemainingPlaces( );
                             sumNbRemainingPlaces = sumNbRemainingPlaces + 1;
                         }
 
@@ -497,8 +492,6 @@ public final class SlotService
                             slt.setDate( slotToAdd.getDate( ) );
                             slt.setIdForm( slotToAdd.getIdForm( ) );
                             listSlotToShow.add( slt );
-                            // sumNbPotentialRemainingPlaces = 0;
-                            // sumNbRemainingPlaces = 0;
                             isChanged = true;
                             timeTemp = tempEndingDateTime;
                         }

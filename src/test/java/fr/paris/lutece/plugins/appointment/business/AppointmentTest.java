@@ -152,7 +152,7 @@ public final class AppointmentTest extends LuteceTestCase
         AppointmentSlot appointmentSlot1 = new AppointmentSlot( );
         appointmentSlot1.setIdSlot( slot.getIdSlot( ) );
         appointmentSlot1.setNbPlaces( 1 );
-        
+
         Appointment appointment1 = new Appointment( );
         appointment1.setIdUser( user1.getIdUser( ) );
         appointment1.addSlot( slot );
@@ -165,7 +165,7 @@ public final class AppointmentTest extends LuteceTestCase
         AppointmentSlot appointmentSlot2 = new AppointmentSlot( );
         appointmentSlot2.setIdSlot( slot.getIdSlot( ) );
         appointmentSlot2.setNbPlaces( 1 );
-        
+
         Appointment appointment2 = new Appointment( );
         appointment2.setIdUser( user2.getIdUser( ) );
         appointment2.addSlot( slot );
@@ -201,10 +201,11 @@ public final class AppointmentTest extends LuteceTestCase
         assertEquals( appointmentStored.getIdUser( ), appointment.getIdUser( ) );
     }
 
-    public static AppointmentDTO buildAppointmentDTO( Slot slot, String strEmail, String strFirstName, String strLastName, LocalTime startingTime,
+    public static AppointmentDTO buildAppointmentDTO( int idForm, Slot slot, String strEmail, String strFirstName, String strLastName, LocalTime startingTime,
             LocalTime endingTime, int nbBookedSeats )
     {
         AppointmentDTO appointmentDTO = new AppointmentDTO( );
+        appointmentDTO.setIdForm( idForm );
         appointmentDTO.addSlot( slot );
         appointmentDTO.setEmail( strEmail );
         appointmentDTO.setFirstName( strFirstName );

@@ -85,7 +85,7 @@ public final class LocalizationService
     public static Localization createLocalization( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         Localization localization = new Localization( );
-        localization = fillInLocalizationWithAppointmentForm( localization, appointmentForm, nIdForm );
+        fillInLocalizationWithAppointmentForm( localization, appointmentForm, nIdForm );
         LocalizationHome.create( localization );
         return localization;
     }
@@ -113,7 +113,7 @@ public final class LocalizationService
     public static Localization updateLocalization( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         Localization localization = LocalizationService.findLocalizationWithFormId( nIdForm );
-        localization = fillInLocalizationWithAppointmentForm( localization, appointmentForm, nIdForm );
+        fillInLocalizationWithAppointmentForm( localization, appointmentForm, nIdForm );
         LocalizationHome.update( localization );
         return localization;
     }

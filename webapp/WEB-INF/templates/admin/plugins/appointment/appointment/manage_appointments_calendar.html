@@ -1,71 +1,214 @@
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
+<script src="js/plugins/appointment/jquery.min.js"></script>
 <script src="js/plugins/appointment/moment.min.js" ></script>
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
-<script src='js/plugins/appointment/jquery.min.js' ></script>
-<script src='js/plugins/appointment/fullcalendar.min.js' ></script>
-<script src='js/plugins/appointment/locale-all.js' ></script>
+<script src="js/plugins/appointment/fullcalendar.min.js"></script>
+<script src="js/plugins/appointment/locale-all.js"></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
-<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
+<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
+
+<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" />
+
+<style>
+#toggle-add-comment{
+    position: absolute;
+    z-index: 999;
+    top: 197px;
+    left: 33px;
+    background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0);
+    color: rgb(0, 0, 0);
+}
+
+th.fc-day-header {
+    height: auto !important;
+   padding: 5px 20px !important;
+}
+
+.btn-comments{ 
+    position:absolute; right:5px; top: 0 ;z-index:99; 
+}
+
+.fc-content{ 
+    text-align:center;
+}
+
+.fc-content .fc-title i.fa-plus-circle{
+    position: absolute;
+    right: 15px;
+    top: 6px;
+    z-index: 1;
+    display: none;
+}
+
+.fc-content:hover .fc-title  i.fa-plus-circle{
+    display: block;
+} 
+
+/* Begin From fullcalendar_ow_bo.css */
+td.fc-axis.fc-time {
+    width: 80px ;
+    height: 40px ;
+    padding: 8px 4px;
+    text-align: center;
+    line-height: 1.42857143;
+    width: 130px;
+    margin: 0;
+    border-top: 0px solid transparent;   
+    border-right: solid 1px rgb(190, 190, 190); 
+}
+
+.fc-day-grid-event.fc-h-event.fc-event.fc-start.fc-end{
+    background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0);
+    color: rgb(0, 0, 0);
+}
+
+th.fc-day-header {    
+    height: 40px ;
+    padding: 15px 20px;
+    text-align: center;
+    line-height: 1.42857143;
+    margin: 0;
+    border-top: 0px solid transparent;
+	font-weight: normal;
+	vertical-align: middle;
+}
+
+.fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
+	padding: 5px; 
+}
+
+.fc-title p{
+    width: 80%;
+    white-space: nowrap;
+  	overflow: hidden;
+  	text-overflow: ellipsis;
+    margin: 0;
+    text-align: left;
+}
+
+.fc-title p:not(:first-child){
+   display: none;
+}
+
+/* End fullcalendar_ow_bo.css         */
+/*** NEW                            ***/
+.tab-content{ margin-bottom: 5rem ;}
+
+/*** Overbooked                     ***/
+.overbooked.bg-full{ 
+    background: rgba(255, 165, 0, 1) !important 
+}
+
+.overbooked.bordered{ 
+    border-right: 15px solid rgba(255, 165, 0, 1) !important 
+}
+
+.overbooked.bordered .fc-title a > i.fa-plus-circle::before{
+    right: 17px;
+}
+
+.overbooked.dotted .fc-title::after{
+    content: "\f111";
+    font-family: "FontAwesome";
+    color: rgba(255, 165, 0, 1);
+    position: absolute;
+    right: 15px;
+    top: 0;
+    display: inline-block;
+}
+
+/*** FILLED         ***/
+.filled.bg-full{ 
+ background:  rgba(255,0,0,1) !important;
+}
+
+.filled.bordered{ 
+    border-right: 15px solid  rgba(255,0,0,1)  !important;
+}
+
+.filled.bordered .fc-title a > i.fa-plus-circle::before{
+    right: 17px;
+}
+
+.filled.dotted .fc-title::after{
+    content: '\f111';
+    font-family: 'FontAwesome';
+    color:  rgba(255,0,0,1);
+    position: absolute;
+    right: 15px;
+    top: 0;
+    display: inline-block;
+}
+</style>
 <@row>
     <@columns>
-        <legend>
-            ${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}
-        </legend>
-        <@appointmentTabs tab="calendar" form=form />
+        <!-- <h2>${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}</h2> -->
+        <@appointmentTabs tab="calendar" form=form >
         <@messages errors=errors infos=infos />
         <#if formCalendarErrors??>
             <div class="layout-wrapper"></div>
         <#else>
-            <@tabContent>
-                <fieldset>
-                    <a href="javascript:void(0)" id="toggle-add-comment">+</a>
-                    <div id="calendar">
-                    </div>
-                </fieldset>
-            </@tabContent>
+            <div id="btn-comment-main">
+                <button type="button" data-toggle="modal" data-target="#commentModal" title="#i18n{appointment.create_comment.pageTitle}" id="toggle-add-comment" class="btn btn-link">
+                    <i class="fa fa-commenting-o"></i> 
+                </button>
+            </div>
+            <div id="calendar"></div>
         </#if>
+        </@appointmentTabs>
     </@columns>
 </@row>
-<div id="comment" style="display:none;">
-    <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
-            <@boxBody>
-            
-                <fieldset>
-                <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
-                </fieldset>
-            </@boxBody>
-     </@box>
+
+<div class="modal fade"  id="commentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">#i18n{appointment.create_comment.pageTitle}</h4>
+            </div>
+            <div class="modal-body">
+                <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">#i18n{portal.util.labelCancel}</button></div>
+
+        </div>
+    </div>
 </div>
-<!-- modify-comment form -->
-<div id="modify-comment" style="display:none;">
-    <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
-            <@boxBody>
-            
-                <fieldset>
-                <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
-                </fieldset>
-            </@boxBody>
-     </@box>
+
+<div class="modal fade"  id="modify-comment" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">#i18n{appointment.create_comment.pageTitle}</h4>
+            </div>
+            <div class="modal-body">
+                <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">#i18n{portal.util.labelCancel}</button></div>
+        </div>
+    </div>
 </div>
-<script type="text/javascript">
+
+<#assign typeClass='bg-grad'>
+<#assign titleSlot=true >
+<script>
+    /* ********************************************************* */
+    /*
+        TODO : Add style def to model
+        Possible values: dotted, bordered , bg-full,  bg-grad    
+    */
+    
+    var bgOpenColor = '#fff;'
+    var bgClosedColor = '#bebebe;'
+
+    /* ********************************************************* */
+
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
-    var dow = [
-        <#if dow??>
-            <#list dow as day>
-                '${day}',
-            </#list>
-        </#if>
-    ];
+    var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
     var startingDateOfDisplay = '${starting_date_of_display}';
     var endingDateOfDisplay = '${ending_date_of_display}';
     var strStartingDateOfDisplay = '${str_starting_date_of_display}';
@@ -75,75 +218,98 @@
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
         <#if comment_events??>
-        <#list comment_events as comment_event>
-        
-        {
-            "title" : "${comment_event.comment}",
-            "start" : "${comment_event.startingValidityDate}",
-            "end" : "${comment_event.endingValidityDate}",
-            "id" : "${comment_event.id}",
-            "creator_user" : "${comment_event.creatorUserName!''}",
-            "creation_date" : "${comment_event.creationDate!''}",
-            "type": "comment"
-        },
-        
-        </#list>
+            <#list comment_events as comment_event>
+            {
+                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
+                "start" : "${comment_event.startingValidityDate}",
+                "end" : "${comment_event.endingValidityDate}",
+                "id" : "${comment_event.id}",
+                "creator_user" : "${comment_event.creatorUserName!''}",
+                "creation_date" : "${comment_event.creationDate!''}",
+                "type": "comment"
+            },
+            </#list>
         </#if>
         <#if events??>
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
+                <#assign maxCap = event.maxCapacity>
+                <#assign nbFull = nbAppointments / maxCap * 100 >
+                <#assign eventTitle='${nbAppointments} / ${maxCap}'>
+                <#if modifDateAppointment>
+                    <#assign eventUrl='viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap}'>
+                    <#assign eventCreate=''>
+                <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                    <#assign eventUrl='manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap} <i class="fa fa-plus-circle"></i>'>
+                    <#-- assign eventTitle='${nbAppointments} / ${maxCap}' -->
+                    <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>
+                <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
+                    <#assign eventUrl='manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap} <i class="fa fa-plus-circle"></i>'>
+                    <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>                            
+                <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
+                    <#assign eventUrl='manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap} <i class="fa fa-plus-circle"></i>'>
+                    <#assign eventCreate=''>                            
+                <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>
+                    <#assign eventUrl='' >
+                    <#assign eventTitle='#i18n{appointment.manageCalendarSlots.labelEditFull}'>
+                    <#assign eventCreate=''>
+                <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
+                    <#assign eventUrl='manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap} - #i18n{appointment.manageCalendarSlots.labelEdit}'>
+                    <#assign eventCreate='createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${maxCap}'>                            
+                <#elseif event.isOpen>
+                    <#assign eventUrl='manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap}'>
+                    <#assign eventCreate=''>
+                <#elseif !event.isOpen & ((maxCap - event.nbRemainingPlaces) > 0)>
+                    <#assign eventUrl='manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap}'>
+                    <#assign eventCreate=''>
+                <#else>
+                    <#assign eventUrl='manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}' >
+                    <#assign eventTitle='${nbAppointments} / ${maxCap}'>
+                    <#assign eventCreate=''>
+                </#if>
+                <#assign strEventClass><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>overbooked ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>filled ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>filled ${typeClass}</#if></#assign>
+                <#assign strCustomColor><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>rgba(255,165,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>rgba(255,0,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>rgba(255,0,0,1)<#else>rgba(222,222,222,1)</#if></#assign>
                 {
-                    "title" : <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                           
-                          <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                               "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                                + "&nbsp;"
-                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"fa fa-plus\"></i></a>"
-                    		<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                                + "&nbsp;"
-                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"fa fa-plus\"></i></a>"
-                            <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                            <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
-                            <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                                + "&nbsp;"
-                                + "#i18n{appointment.manageCalendarSlots.labelEdit}"
-                                + "&nbsp;"
-                                + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"glyphicon icon-plus-sign\"></i></a>"
-                            <#elseif event.isOpen>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                            <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
-                            <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>"</#if>,
-                    "start" : "${event.startingDateTime}",
-                    "end" : "${event.endingDateTime}",
-                    "id" : "${event.idSlot}",
-                    "textColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"white"<#else>"#2c2c2d"</#if>,
-                    "url" : eventUrl + "manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}",                                                      
-                    "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>"#ff6600",
-                    				  <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>"white",
-                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>"red",
-                                      <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>"red",
-                                      <#elseif event.isOpen & event.isPassed>"#bebebe",
-                                      <#else>"#bebebe",
-                                      </#if>
-                    "borderColor" : "#bebebe",
+                    "title" : '${eventTitle}',  
+                    "start" : '${event.startingDateTime}',
+                    "end" : '${event.endingDateTime}',
+                    "id" : '${event.idSlot}',
+                    "textColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
+                    <#if nbAppointments !=0>"url" : 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventUrl}',<#elseif eventCreate !=''>"url" : 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}',</#if>
+                    "createUrl" : '<#if eventCreate !='' && nbAppointments !=0>jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}</#if>',
+                    "customClass" : '${strEventClass!}',
+                    <#if typeClass='bg-grad'>"customStyle" : <#if nbFull != 0>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if></#if>
+                    "backgroundColor":<#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
+                                    <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
+                                    <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>bgOpenColor
+                                    <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>bgOpenColor
+                                    <#elseif event.isOpen & event.isPassed>bgClosedColor
+                                    <#else>bgClosedColor
+                                    </#if>,
+                    "borderColor" : bgClosedColor,
                     "type" : "appointment"
                 },
             </#list>
         </#if>
-
     ];
+    
     var defaultDate = '${date_of_display}';
-    $(document).ready(function() {
+    $( function() {
         $('#calendar').fullCalendar({
             displayEventTime: false,
             buttonText : {
                 prev : '#i18n{appointment.appointmentApp.previousWeek}',
                 next : '#i18n{appointment.appointmentApp.nextWeek}',
             },
-            theme: true,
+            // themeSystem: '',
+            // themeSystem: 'bootstrap4',
             navLinks: true,
             navLinkDayClick: function(date, jsEvent) {
                 location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
@@ -151,8 +317,9 @@
             defaultDate: defaultDate,
             defaultView: 'agendaWeek',
             height: 'auto',
-            locale: "${locale}",
-            theme: true,
+           
+            locale: 'fr',
+            nowIndicator: true,
             editable: false,
             customButtons: {
                 datePicker: {
@@ -162,7 +329,7 @@
                         $btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
                         $("#hiddenDate").datepicker({
                             showOn: "button",
-                            language: "${locale}",
+                            language:'fr',
                             autoclose: true,
                             startDate: strStartingDateOfDisplay,
                             endDate: strEndingDateOfDisplay,
@@ -192,7 +359,6 @@
             slotLabelFormat: 'H:mm',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
-            allDaySlot: true,
             minTime: minTime,
             maxTime: maxTime,
             businessHours: {
@@ -200,7 +366,6 @@
                 end: maxTime,
                 dow: dow
             },
-
             events: events,
             viewRender: function(view, element) {
                 var minDate = moment(startingDateOfDisplay);
@@ -229,20 +394,40 @@
                 $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
             },
-            windowResize: function(view) {
-                if ($(window).width() < 1050){
-                    $('#calendar').fullCalendar( 'changeView', 'agendaDay' );    
-                    $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
-                    $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
-                } else {
-                    $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );                        
-                    $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
-                    $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
-                }
-            },
+            // windowResize: function(view) {
+            //     if ($(window).width() < 1050){
+            //         $('#calendar').fullCalendar( 'changeView', 'agendaDay' );    
+            //         $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
+            //         $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
+            //     } else {
+            //         $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );                        
+            //         $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
+            //         $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
+            //     }
+            // },
             eventRender: function( event, element, view ) {
-                var $title = element.find( '.fc-title' );
-                $title.html( $title.text() );
+                var $title = element.find( '.fc-title' ), createSlot='';
+                $(element).addClass( event.customClass );
+                <#if typeClass='bg-grad'>
+                if ( event.customStyle !='' ){
+                    $(element).css( 'background', event.customStyle );
+                }
+                </#if>
+                // console.log( event.createUrl.trim() );
+                if ( event.createUrl !==undefined && event.createUrl.trim() !='' && event.type != "comment" ){
+                    createSlot ='<a href="' + event.createUrl  + '"><span>' + $title.text() + '</span>   <i class="fa fa-plus-circle"></i></a>';
+                } else {
+                    createSlot=$title.text() ;
+                }
+                <#if titleSlot>
+                    $title.html( createSlot );
+                <#else>
+                    $title.html( $title.text() );
+                </#if>
+
+                $(element).contextmenu(function() {
+                    return false;
+                });
                 var json = {
                         "container": "body",
                         "placement" : "bottom",
@@ -250,42 +435,38 @@
                         "trigger" : "hover"
                     };
                 if( event.type == "comment" ){
-                	json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
-                }else{
-                	json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                	json.content = '<p>Du ' + event.start.format('ddd DD/MM') + ' au ' + event.end.format('ddd DD/MM') +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
+                } else {
+                	json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
                 }
                 $(element).popover( json );
-                $(element).contextmenu(function() {
-                    return false;
-                });
+                
                 if(event.type == "comment" )
                 {
-                    element.append( "<a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon' style='position: relative; top: 2px; left: 2px; text-decoration: none;'>&#x1F5D1;</a><a href='javascript:void(0)' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.end + "\" }' >&#9998;</a>" );
+                    var fcTitle = element.find('.fc-title p');
+                    fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
+                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
                 }
             }
         });
+
+        $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .fc-widget-content .fc-day-grid .fc-bg .fc-axis.fc-widget-content").html( '' );
+        var modComment = $('body').find('#toggle-add-comment');
+        modComment.click(function(ev) {
+            ev.preventDefault();
+            var formValues = JSON.parse( $(this).attr( "data-json" ) );
+            $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
+            tinyMCE.activeEditor.setContent( formValues.comment_text );
+            $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
+            $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_end ) ) );
+            $( "#modify-comment" ).modal('show');
+        });
     });
 </script>
+
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
 <@getDatePickerBootstrap idField="modifyStartingValidityDate" language=locale />
 <@getDatePickerBootstrap idField="modifyEndingValidityDate" language=locale />
 <@getDatePickerBootstrap idField="startingValidityDate" language=locale />
 <@getDatePickerBootstrap idField="endingValidityDate" language=locale />
-<script type="text/javascript">
-$(document).ready(function() {
-    $("#toggle-add-comment").click(function() {
-        $("#comment").toggle();
-    });
-});
-$(document).ready(function() {
-    $(".toggle-modify-comment").click(function( ) {
-        var formValues = JSON.parse( $(this).attr( "data-json" ) );
-        $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
-        tinyMCE.activeEditor.setContent( formValues.comment_text );
-        $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
-        $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_end ) ) );
-        $( "#modify-comment" ).toggle();
-    });
-});
-</script>

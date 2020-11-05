@@ -91,7 +91,7 @@ public final class CalendarTemplateDAO implements ICalendarTemplateDAO
     public CalendarTemplate select( int nIdCalendarTemplate, Plugin plugin )
     {
         CalendarTemplate calendarTemplate = null;
-        try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
             daoUtil.setInt( 1, nIdCalendarTemplate );
             daoUtil.executeQuery( );

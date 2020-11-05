@@ -219,7 +219,7 @@ public class FormServiceTest extends LuteceTestCase
             {
                 LocalizationHome.delete( localization.getIdLocalization( ) );
             }
-            
+
             FormRule formRule = FormRuleHome.findByIdForm( nIdForm );
             if ( formRule != null )
             {
@@ -241,7 +241,7 @@ public class FormServiceTest extends LuteceTestCase
                 }
                 WeekDefinitionHome.delete( wd.getIdWeekDefinition( ) );
             }
-            
+
             FormService.removeForm( nIdForm );
         }
     }

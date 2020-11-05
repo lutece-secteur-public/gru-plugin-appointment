@@ -532,12 +532,11 @@ public final class AppointmentUtilities
         Map<Integer, List<Response>> mapResponses = appointmentDTO.getMapResponsesByIdEntry( );
         if ( mapResponses != null && !mapResponses.isEmpty( ) )
         {
-            List<Response> listResponse = new ArrayList<Response>( );
+            List<Response> listResponse = new ArrayList<>( );
             for ( List<Response> listResponseByEntry : mapResponses.values( ) )
             {
                 listResponse.addAll( listResponseByEntry );
             }
-            // appointmentDTO.clearMapResponsesByIdEntry();
             appointmentDTO.setListResponse( listResponse );
         }
     }
@@ -555,23 +554,20 @@ public final class AppointmentUtilities
      */
     public static List<ResponseRecapDTO> buildListResponse( AppointmentDTO appointment, HttpServletRequest request, Locale locale )
     {
-        List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( );
+        List<ResponseRecapDTO> listResponseRecapDTO = new ArrayList<>( );
         HashMap<Integer, List<ResponseRecapDTO>> mapResponse = new HashMap<>( );
         if ( CollectionUtils.isNotEmpty( appointment.getListResponse( ) ) )
         {
-            listResponseRecapDTO = new ArrayList<ResponseRecapDTO>( appointment.getListResponse( ).size( ) );
+            listResponseRecapDTO = new ArrayList<>( appointment.getListResponse( ).size( ) );
             for ( Response response : appointment.getListResponse( ) )
             {
                 int nIndex = response.getEntry( ).getPosition( );
                 IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
                 ResponseRecapDTO responseRecapDTO = new ResponseRecapDTO( response,
                         entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) );
-                List<ResponseRecapDTO> listResponse = mapResponse.get( nIndex );
-                if ( listResponse == null )
-                {
-                    listResponse = new ArrayList<>( );
-                    mapResponse.put( nIndex, listResponse );
-                }
+                
+                
+                List<ResponseRecapDTO> listResponse = mapResponse.computeIfAbsent( nIndex, ArrayList::new );
                 listResponse.add( responseRecapDTO );
             }
         }
@@ -615,7 +611,6 @@ public final class AppointmentUtilities
         Slot slot = SlotService.findSlotById( nIdSlot );
 
         int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        // int nNbMaxPotentialBookedSeats = appointmentDTO.getNbMaxPotentialBookedSeats( );
         int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
         int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
 
@@ -623,10 +618,7 @@ public final class AppointmentUtilities
         {
 
             appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
-            // slot.setNbPotentialRemainingPlaces( nbPotentialRemainingPlaces - nbPotentialPlacesTaken );
             SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
-
-            // SlotService.updateSlot( slot );
 
             TimerForLockOnSlot timer = new TimerForLockOnSlot( );
             SlotEditTask slotEditTask = new SlotEditTask( timer );
@@ -655,19 +647,20 @@ public final class AppointmentUtilities
 
         for ( AppointmentFormDTO tmpForm : listForms )
         {
+            
             String [ ] strRetour = new String [ 7];
             strRetour [0] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, user ) );
+                    AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, (fr.paris.lutece.api.user.User) user ) );
             strRetour [1] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, user ) );
+                    AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM, (fr.paris.lutece.api.user.User) user ) );
             strRetour [2] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, (fr.paris.lutece.api.user.User) user ) );
             strRetour [3] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, user ) );
+                    AppointmentResourceIdService.PERMISSION_MODIFY_FORM, (fr.paris.lutece.api.user.User) user ) );
             strRetour [4] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_CHANGE_STATE, user ) );
+                    AppointmentResourceIdService.PERMISSION_CHANGE_STATE, (fr.paris.lutece.api.user.User) user ) );
             strRetour [5] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
-                    AppointmentResourceIdService.PERMISSION_DELETE_FORM, user ) );
+                    AppointmentResourceIdService.PERMISSION_DELETE_FORM, (fr.paris.lutece.api.user.User) user ) );
             retour [nI++] = strRetour;
         }
 
@@ -763,7 +756,6 @@ public final class AppointmentUtilities
                 {
 
                     Slot tempSlot = SlotService.findSlotById( appSlot.getIdSlot( ) );
-
                     if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
                     {
                         bAppointmentOnOpenDays = true;
@@ -771,7 +763,9 @@ public final class AppointmentUtilities
                     }
                 }
                 if ( bAppointmentOnOpenDays )
+                {
                     break;
+                }
             }
             bNoAppointmentsImpacted = !bAppointmentOnOpenDays;
         }
@@ -807,7 +801,7 @@ public final class AppointmentUtilities
         List<Appointment> listAppointmentsOnThisSlot = AppointmentService.findListAppointmentBySlot( slot.getIdSlot( ) );
         if ( CollectionUtils.isNotEmpty( listAppointmentsOnThisSlot ) )
         {
-            listAppointmentsOnThisSlot = listAppointmentsOnThisSlot.stream( ).filter( a -> a.getIsCancelled( ) == false ).collect( Collectors.toList( ) );
+            listAppointmentsOnThisSlot = listAppointmentsOnThisSlot.stream( ).filter( a -> !a.getIsCancelled( ) ).collect( Collectors.toList( ) );
         }
         if ( CollectionUtils.isNotEmpty( listAppointmentsOnThisSlot ) )
         {
@@ -907,9 +901,8 @@ public final class AppointmentUtilities
     {
 
         List<Slot> listSlot = appointmentDTO.getSlot( );
-        if ( listSlot != null && !listSlot.isEmpty( ) )
+        if ( CollectionUtils.isNotEmpty( listSlot ) )
         {
-
             Slot slot = listSlot.stream( ).min( Comparator.comparing( Slot::getStartingDateTime ) ).orElse( listSlot.get( 0 ) );
             return slot.getStartingDateTime( );
         }
@@ -943,7 +936,7 @@ public final class AppointmentUtilities
         Slot slot = null;
         for ( Slot nextSlot : allSlots )
         {
-            if ( nextSlot == null || slot != null && !Objects.equals( slot.getEndingDateTime( ), nextSlot.getStartingDateTime( ) ) )
+            if ( nextSlot == null || ( slot != null && !Objects.equals( slot.getEndingDateTime( ), nextSlot.getStartingDateTime( ) ) ) )
             {
                 return false;
             }

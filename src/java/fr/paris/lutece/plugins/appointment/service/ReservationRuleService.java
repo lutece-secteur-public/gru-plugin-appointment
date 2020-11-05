@@ -178,7 +178,7 @@ public final class ReservationRuleService
             if ( CollectionUtils.isNotEmpty( listReservationRule ) )
             {
                 // Get the next week definition in future
-                reservationRule = listReservationRule.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).get( );
+                reservationRule = listReservationRule.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).orElse( null );
             }
         }
         else
@@ -204,8 +204,7 @@ public final class ReservationRuleService
      */
     public static ReservationRule findReservationRuleByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
-        ReservationRule reservationRule = ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );
-        return reservationRule;
+        return ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );
     }
 
     /**
@@ -217,8 +216,7 @@ public final class ReservationRuleService
      */
     public static ReservationRule findReservationRuleById( int nIdReservationRule )
     {
-        ReservationRule reservationRule = ReservationRuleHome.findByPrimaryKey( nIdReservationRule );
-        return reservationRule;
+        return ReservationRuleHome.findByPrimaryKey( nIdReservationRule );
     }
 
     /**

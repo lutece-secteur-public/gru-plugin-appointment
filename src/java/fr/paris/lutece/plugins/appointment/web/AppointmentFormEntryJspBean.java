@@ -42,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.EntryTypeService;
@@ -161,7 +162,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_FORM,
-                AdminUserService.getAdminUser( request ) ) )
+                (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
@@ -211,7 +212,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         entry.setIdResource( nIdForm );
         entry.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
         AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>( );
         model.put( MARK_ENTRY, entry );
         model.put( MARK_FORM, appointmentForm );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
@@ -307,7 +308,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
             }
             Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
-            List<Field> listField = new ArrayList<Field>( entry.getFields( ).size( ) );
+            List<Field> listField = new ArrayList<>( entry.getFields( ).size( ) );
             for ( Field field : entry.getFields( ) )
             {
                 field = FieldHome.findByPrimaryKey( field.getIdField( ) );
@@ -315,7 +316,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             }
             entry.setFields( listField );
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
-            Map<String, Object> model = new HashMap<String, Object>( );
+            Map<String, Object> model = new HashMap<>( );
             model.put( MARK_ENTRY, entry );
             model.put( MARK_FORM, FormService.buildAppointmentForm( entry.getIdResource( ), 0, 0 ) );
             UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + getViewUrl( VIEW_GET_MODIFY_ENTRY ) );
@@ -443,7 +444,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 return redirect( request, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
             }
             Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
-            List<String> listErrors = new ArrayList<String>( );
+            List<String> listErrors = new ArrayList<>( );
             if ( !_entryService.checkForRemoval( strIdEntry, listErrors, getLocale( ) ) )
             {
                 String strCause = AdminMessageService.getFormattedList( listErrors, getLocale( ) );

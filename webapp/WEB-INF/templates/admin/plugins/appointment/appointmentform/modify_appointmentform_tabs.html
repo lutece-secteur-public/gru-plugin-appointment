@@ -71,7 +71,9 @@
 		</@inputGroup>
 	</@formGroup>
 	<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
-		<@checkBox name='is_multislot_appointment' id='is_multislot_appointment' value='true' checked=appointmentform.isMultislotAppointment!false />
+		<@checkBox name='is_multislot_appointment_display' value='true' checked=appointmentform.isMultislotAppointment!false disabled=true />
+		<#assign multislotvalue=appointmentform.isMultislotAppointment!false />
+		<@input type='hidden' name="is_multislot_appointment" value=multislotvalue?string />
 	</@formGroup>
 	 <@formGroup labelFor='bo_overbooking' labelKey='#i18n{appointment.label.BoOverbooking}' helpKey='#i18n{appointment.label.BoOverbooking.help}'>
 		<@checkBox labelFor='bo_overbooking' name='bo_overbooking' id='bo_overbooking' value='true' checked=appointmentform.boOverbooking!false />
@@ -122,7 +124,7 @@
 		<@checkBox labelFor='activeAuthentication' labelKey='#i18n{appointment.createAppointmentForm.labelActiveAuthentication}' name='activeAuthentication' id='activeAuthentication' value='true' checked=appointmentform.activeAuthentication!false />
 	</@formGroup>
 	
-	<@formGroup labelKey='&nbsp;'>
+	<@formGroup labelFor='role' labelKey='#i18n{appointment.createAppointmentForm.labelRole}'>
 		<@select name='role' id='role' items=refListRoles default_value='${appointmentform.role!}' />
 	</@formGroup>
 	
