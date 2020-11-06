@@ -54,6 +54,7 @@ public final class UserDAO implements IUserDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_user WHERE id_user = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_user, guid, first_name, last_name, email, phone_number FROM appointment_user";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_user = ?";
+    private static final String SQL_QUERY_SELECT_BY_GUID = SQL_QUERY_SELECT_COLUMNS + " WHERE guid = ?";
     private static final String SQL_QUERY_SELECT_BY_EMAIL = SQL_QUERY_SELECT_COLUMNS + " WHERE email = ?";
     private static final String SQL_QUERY_SELECT_BY_FIRSTNAME_LASTNAME_AND_EMAIL = SQL_QUERY_SELECT_COLUMNS
             + " WHERE UPPER(first_name) = ? and UPPER(last_name) = ? and UPPER(email) = ?";
@@ -97,6 +98,22 @@ public final class UserDAO implements IUserDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin ) )
         {
             daoUtil.setInt( 1, nIdUser );
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                user = buildUser( daoUtil );
+            }
+        }
+        return user;
+    }
+    
+    @Override
+    public User selectByGuid ( String strGuid , Plugin plugin )
+    {
+        User user = null;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_GUID, plugin ) )
+        {
+            daoUtil.setString( 1, strGuid );
             daoUtil.executeQuery( );
             if ( daoUtil.next( ) )
             {

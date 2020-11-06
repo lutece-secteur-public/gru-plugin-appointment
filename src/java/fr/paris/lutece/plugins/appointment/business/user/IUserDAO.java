@@ -91,6 +91,17 @@ public interface IUserDAO
      * @return The instance of the user
      */
     User select( int nIdUser, Plugin plugin );
+    
+    /**
+     * Load the data from the table
+     * 
+     * @param strGuid
+     *            The identifier of the user
+     * @param plugin
+     *            the Plugin
+     * @return The instance of the user
+     */
+    User selectByGuid( String strGuid, Plugin plugin );
 
     /**
      * Return the users by its email

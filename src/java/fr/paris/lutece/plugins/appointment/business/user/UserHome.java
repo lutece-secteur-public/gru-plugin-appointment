@@ -112,6 +112,18 @@ public final class UserHome
     }
 
     /**
+     * Returns an instance of the User whose identifier is specified in parameter
+     * 
+     * @param strGuid
+     *            The User guid key
+     * @return an instance of the User
+     */
+    public static User findByGuid( String strGuid )
+    {
+        return _dao.selectByGuid( strGuid, _plugin );
+    }
+
+    /**
      * return a user by its firstname, lastname and email
      * 
      * @param strFirstName
