@@ -1473,7 +1473,7 @@ public class AppointmentApp extends MVCApplication
 
             return doProcessWorkflowAction( request );
         }
-        return redirect( request, VIEW_GET_MY_APPOINTMENTS );
+        return getMyAppointments( request );
     }
 
     /**
@@ -1515,14 +1515,14 @@ public class AppointmentApp extends MVCApplication
                             {
                                 AppLogService.error( "Error Workflow:" + strError );
                                 addError( strError, getLocale( request ) );
-                                return redirect( request, VIEW_GET_MY_APPOINTMENTS );
+                                return getMyAppointments( request );
                             }
                         }
                         else
                         {
 
                             AppLogService.error( "Error Workflow can not process Action" );
-                            return redirect( request, VIEW_GET_MY_APPOINTMENTS );
+                            return getMyAppointments( request );
                         }
                     }
                     else
@@ -1542,7 +1542,7 @@ public class AppointmentApp extends MVCApplication
                                     {
                                         AppLogService.error( "Error Workflow:" + ERROR_MESSAGE_SLOT_FULL );
                                         addError( ERROR_MESSAGE_SLOT_FULL, getLocale( request ) );
-                                        return redirect( request, VIEW_GET_MY_APPOINTMENTS );
+                                        return getMyAppointments( request );
 
                                     }
                                 }
@@ -1561,7 +1561,7 @@ public class AppointmentApp extends MVCApplication
 
             }
         }
-        return redirect( request, VIEW_GET_MY_APPOINTMENTS );
+        return getMyAppointments( request );
     }
 
     /**
