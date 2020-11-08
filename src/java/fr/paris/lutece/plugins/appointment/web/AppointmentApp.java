@@ -1450,7 +1450,7 @@ public class AppointmentApp extends MVCApplication
      * @return The HTML content to display, or the next URL to redirect the user to
      */
     @View( VIEW_WORKFLOW_ACTION_FORM )
-    public XPage getWorkflowActionForm( HttpServletRequest request )
+    public XPage getWorkflowActionForm( HttpServletRequest request ) throws UserNotSignedException
     {
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
         String strIdAppointment = request.getParameter( PARAMETER_ID_APPOINTMENT );
@@ -1484,7 +1484,7 @@ public class AppointmentApp extends MVCApplication
      * @return The next URL to redirect to
      */
     @Action( ACTION_DO_PROCESS_WORKFLOW_ACTION )
-    public XPage doProcessWorkflowAction( HttpServletRequest request )
+    public XPage doProcessWorkflowAction( HttpServletRequest request ) throws UserNotSignedException
     {
         LuteceUser luteceUser = SecurityService.getInstance( ).getRegisteredUser( request );
         String strIdAction = request.getParameter( PARAMETER_ID_ACTION );
