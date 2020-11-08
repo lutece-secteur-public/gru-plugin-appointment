@@ -1298,16 +1298,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             if ( bool )
             {
                 appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
-                appointmentDTO.setIdForm( nIdForm );
-                LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
-                if ( user != null )
-                {
-                    Map<String, String> map = user.getUserInfos( );
-                    appointmentDTO.setEmail( map.get( PROPERTY_USER_EMAIL ) );
-                    appointmentDTO.setFirstName( map.get( PROPERTY_USER_FIRST_NAME ) );
-                    appointmentDTO.setLastName( map.get( PROPERTY_USER_LAST_NAME ) );
-                }
-
                 ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
                 WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
                 form = FormService.buildAppointmentForm( nIdForm, reservationRule.getIdReservationRule( ), weekDefinition.getIdWeekDefinition( ) );

@@ -69,17 +69,9 @@ public final class UserService
     	User user= null;
         String strFirstName = appointment.getFirstName( );
         String strLastName = appointment.getLastName( );
-        String strEmail = appointment.getEmail( );
-        String strGuid = appointment.getGuid( );
+        String strEmail = appointment.getEmail( );       
+        user = UserHome.findByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
         
-        if( StringUtils.isEmpty( strGuid  ) ) {
-        	
-        	user = UserHome.findByGuid( strGuid );
-        	
-        }else {
-        	
-           user = UserHome.findByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
-        }
         if ( user == null )
         {
             user = new User( );
