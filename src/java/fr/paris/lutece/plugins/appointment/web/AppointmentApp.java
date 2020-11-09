@@ -756,7 +756,7 @@ public class AppointmentApp extends MVCApplication
         List<Entry> listEntryFirstLevel = EntryService.getFilter( form.getIdForm( ), true );
         for ( Entry entry : listEntryFirstLevel )
         {
-            EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, true, request );
+            EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, true, appointmentDTO );
         }
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         List<GenericAttributeError> listErrors = (List<GenericAttributeError>) request.getSession( ).getAttribute( SESSION_APPOINTMENT_FORM_ERRORS );

@@ -1155,7 +1155,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         StringBuilder strBuffer = new StringBuilder( );
         for ( Entry entry : listEntryFirstLevel )
         {
-            EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, false, request );
+            EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, false, appointmentDTO );
         }
         model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
         model.put( MARK_FORM, form );

@@ -508,7 +508,7 @@ public final class EntryService extends RemovalListenerService implements Serial
      * @param request
      */
     public static void getHtmlEntry( Map<String, Object> model, int nIdEntry, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
-            HttpServletRequest request )
+             AppointmentDTO appointmentDTO )
     {
         StringBuilder strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
@@ -518,7 +518,7 @@ public final class EntryService extends RemovalListenerService implements Serial
             StringBuilder strGroupStringBuffer = new StringBuilder( );
             for ( Entry entryChild : entry.getChildren( ) )
             {
-                getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );
+                getHtmlEntry( model, entryChild.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
             }
             model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
         }
@@ -542,7 +542,7 @@ public final class EntryService extends RemovalListenerService implements Serial
                     StringBuilder strGroupStringBuffer = new StringBuilder( );
                     for ( Entry entryConditional : field.getConditionalQuestions( ) )
                     {
-                        getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, request );
+                        getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO);
                     }
                     model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
                     model.put( MARK_FIELD, field );
@@ -554,14 +554,11 @@ public final class EntryService extends RemovalListenerService implements Serial
         }
         model.put( MARK_ENTRY, entry );
         model.put( MARK_LOCALE, locale );
-        if ( request != null )
+        if ( ( appointmentDTO != null ) && ( appointmentDTO.getMapResponsesByIdEntry( ) != null ) )
         {
-            AppointmentDTO appointmentDTO = (AppointmentDTO) request.getSession( ).getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
-            if ( ( appointmentDTO != null ) && ( appointmentDTO.getMapResponsesByIdEntry( ) != null ) )
-            {
-                List<Response> listResponses = appointmentDTO.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
-                model.put( MARK_LIST_RESPONSES, listResponses );
-            }
+            List<Response> listResponses = appointmentDTO.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
+            model.put( MARK_LIST_RESPONSES, listResponses );
+        
         }
         IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
         // If the entry type is a file, we add the
