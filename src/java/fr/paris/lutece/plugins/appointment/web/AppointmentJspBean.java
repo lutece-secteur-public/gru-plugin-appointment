@@ -1219,7 +1219,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         AppointmentUtilities.fillAppointmentDTO( appointmentDTO, nbBookedSeats, strEmail, request.getParameter( PARAMETER_FIRST_NAME ),
                 request.getParameter( PARAMETER_LAST_NAME ) );
-        AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
+        AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors, true );
         AppointmentUtilities.fillInListResponseWithMapResponse( appointmentDTO );
         if ( CollectionUtils.isNotEmpty( listFormErrors ) )
         {
