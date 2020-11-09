@@ -74,11 +74,13 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.ResponseRecapDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.genericattributes.service.entrytype.IEntryTypeService;
+import fr.paris.lutece.plugins.genericattributes.util.GenericAttributesUtils;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -503,7 +505,7 @@ public final class AppointmentUtilities
      * @param listFormErrors
      *            the list of errors that can be fill with the errors found at the validation
      */
-    public static void validateFormAndEntries( AppointmentDTO appointmentDTO, HttpServletRequest request, List<GenericAttributeError> listFormErrors )
+    public static void validateFormAndEntries( AppointmentDTO appointmentDTO, HttpServletRequest request, List<GenericAttributeError> listFormErrors, boolean allEntries )
     {
         Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointmentDTO );
         if ( CollectionUtils.isNotEmpty( listErrors ) )
@@ -515,7 +517,12 @@ public final class AppointmentUtilities
                 listFormErrors.add( genAttError );
             }
         }
-        List<Entry> listEntryFirstLevel = EntryHome.getEntryList( EntryService.buildEntryFilter( appointmentDTO.getIdForm( ) ) );
+        EntryFilter filter = EntryService.buildEntryFilter( appointmentDTO.getIdForm( ) );
+        if ( allEntries )
+        {
+            filter.setIsOnlyDisplayInBack( GenericAttributesUtils.CONSTANT_ID_NULL );
+        }
+        List<Entry> listEntryFirstLevel = EntryHome.getEntryList( filter );
         for ( Entry entry : listEntryFirstLevel )
         {
             listFormErrors.addAll( EntryService.getResponseEntry( request, entry.getIdEntry( ), request.getLocale( ), appointmentDTO ) );

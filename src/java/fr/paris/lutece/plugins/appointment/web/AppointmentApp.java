@@ -826,7 +826,7 @@ public class AppointmentApp extends MVCApplication
 
         }
         AppointmentUtilities.fillAppointmentDTO( appointmentDTO, nbBookedSeats, strEmail, strFirstName, strLastName );
-        AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors );
+        AppointmentUtilities.validateFormAndEntries( appointmentDTO, request, listFormErrors, false );
         AppointmentUtilities.fillInListResponseWithMapResponse( appointmentDTO );
         boolean bErrors = false;
         if ( !AppointmentUtilities.checkNbDaysBetweenTwoAppointmentsTaken( appointmentDTO, strEmail, form ) )
