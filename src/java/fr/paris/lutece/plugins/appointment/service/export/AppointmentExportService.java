@@ -56,6 +56,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResponseService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
+import fr.paris.lutece.plugins.appointment.service.entrytype.EntryTypeGroup;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
@@ -124,7 +125,9 @@ public final class AppointmentExportService
         List<List<Object>> linesValues = new ArrayList<>( );
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
-        List<Entry> listEntry = EntryHome.getEntryList( entryFilter ).stream( ).filter( e -> entryList.contains( e.getIdEntry( ) ) )
+        List<Entry> listEntry = EntryHome.getEntryList( entryFilter )
+                .stream( )
+                .filter( e -> entryList.contains( e.getIdEntry( ) ) )
                 .map( Entry::getIdEntry ).map( EntryHome::findByPrimaryKey )
                 .collect( Collectors.toList( ) );
         
@@ -362,7 +365,10 @@ public final class AppointmentExportService
         ReferenceList refList = new ReferenceList( );
         for ( Entry entry : listEntry )
         {
-            refList.addItem( String.valueOf( entry.getIdEntry( ) ), entry.getTitle( ) );
+            if ( !( EntryTypeServiceManager.getEntryTypeService( entry ) instanceof EntryTypeGroup ) )
+            {
+                refList.addItem( String.valueOf( entry.getIdEntry( ) ), entry.getTitle( ) );
+            }
         }
         return refList;
     }
