@@ -41,10 +41,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -67,6 +65,7 @@ import fr.paris.lutece.plugins.genericattributes.business.Field;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
+import fr.paris.lutece.plugins.genericattributes.service.entrytype.EntryTypeServiceManager;
 import fr.paris.lutece.plugins.workflowcore.business.state.State;
 import fr.paris.lutece.plugins.workflowcore.service.state.StateService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -126,8 +125,9 @@ public final class AppointmentExportService
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter ).stream( ).filter( e -> entryList.contains( e.getIdEntry( ) ) )
+                .map( Entry::getIdEntry ).map( EntryHome::findByPrimaryKey )
                 .collect( Collectors.toList( ) );
-
+        
         if ( tmpForm == null )
         {
             return;
@@ -139,48 +139,17 @@ public final class AppointmentExportService
         if ( listAppointmentsDTO != null )
         {
             StateService stateService = null;
-
-            Map<Integer, String> mapDefaultValueGenAttBackOffice = createDefaultValueMap( listEntry );
             if ( WorkflowService.getInstance( ).isAvailable( ) )
             {
                 stateService = SpringContextService.getBean( StateService.BEAN_SERVICE );
             }
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
             {
-                linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry, mapDefaultValueGenAttBackOffice,
+                linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry,
                         stateService, locale ) );
             }
         }
         writeWorkbook( linesValues, excelFile, locale );
-    }
-
-    private static final Map<Integer, String> createDefaultValueMap( List<Entry> listEntry )
-    {
-        Map<Integer, String> mapDefaultValueGenAttBackOffice = new HashMap<>( );
-        for ( Entry e : listEntry )
-        {
-            if ( !e.isOnlyDisplayInBack( ) )
-            {
-                continue;
-            }
-            e = EntryHome.findByPrimaryKey( e.getIdEntry( ) );
-            if ( e.getFields( ) != null && e.getFields( ).size( ) == 1 && StringUtils.isNotEmpty( e.getFields( ).get( 0 ).getValue( ) ) )
-            {
-                mapDefaultValueGenAttBackOffice.put( e.getIdEntry( ), e.getFields( ).get( 0 ).getValue( ) );
-            }
-            else
-                if ( e.getFields( ) != null )
-                {
-                    for ( Field field : e.getFields( ) )
-                    {
-                        if ( field.isDefaultValue( ) )
-                        {
-                            mapDefaultValueGenAttBackOffice.put( e.getIdEntry( ), field.getValue( ) );
-                        }
-                    }
-                }
-        }
-        return mapDefaultValueGenAttBackOffice;
     }
 
     private static final void writeWorkbook( List<List<Object>> linesValues, Path excelFile, Locale locale )
@@ -244,7 +213,7 @@ public final class AppointmentExportService
     }
 
     private static final List<Object> createLineContent( AppointmentDTO appointmentDTO, int idWorkflow, List<String> defaultColumnList, List<Entry> listEntry,
-            Map<Integer, String> mapDefaultValueGenAttBackOffice, StateService stateService, Locale locale )
+            StateService stateService, Locale locale )
     {
         List<Object> strWriter = new ArrayList<>( );
         addDefaultColumnValues( appointmentDTO, idWorkflow, defaultColumnList, strWriter, stateService, locale );
@@ -261,11 +230,8 @@ public final class AppointmentExportService
         }
         for ( Entry e : listEntry )
         {
-            String value = getEntryValue( e, listResponses, mapDefaultValueGenAttBackOffice );
-            if ( StringUtils.isNotEmpty( value ) )
-            {
-                strWriter.add( value );
-            }
+            String value = getEntryValue( e, listResponses, locale );
+            strWriter.add( value );
         }
         return strWriter;
     }
@@ -348,41 +314,31 @@ public final class AppointmentExportService
         return strState;
     }
 
-    private static final String getEntryValue( Entry e, List<Response> listResponses, Map<Integer, String> mapDefaultValueGenAttBackOffice )
+    private static final String getEntryValue( Entry e, List<Response> listResponses, Locale locale )
     {
         Integer key = e.getIdEntry( );
         StringBuilder strValue = new StringBuilder( );
         String strPrefix = StringUtils.EMPTY;
-        for ( Response resp : listResponses )
+        
+        List<Response> listResponsesForEntry = listResponses.stream( ).filter( resp -> key.equals( resp.getEntry( ).getIdEntry( ) ) )
+                .filter( resp -> StringUtils.isNotEmpty( resp.getResponseValue( ) ) )
+                .collect( Collectors.toList( ) );
+        
+        for ( Response resp : listResponsesForEntry )
         {
-            String strRes = StringUtils.EMPTY;
-            if ( key.equals( resp.getEntry( ).getIdEntry( ) ) )
+            Field f = resp.getField( );
+            if ( f != null )
             {
-                Field f = resp.getField( );
-                int nfield = 0;
-                if ( f != null )
-                {
-                    nfield = f.getIdField( );
-                    Field field = FieldHome.findByPrimaryKey( nfield );
-                    if ( field != null )
-                    {
-                        strRes = field.getTitle( );
-                    }
-                }
-                else
-                {
-                    strRes = resp.getResponseValue( );
-                }
+                resp.setField( FieldHome.findByPrimaryKey( f.getIdField( ) ) );
             }
-            if ( StringUtils.isNotEmpty( strRes ) )
+            
+            String valueExport = EntryTypeServiceManager.getEntryTypeService( e ).getResponseValueForExport( e, null, resp,
+                    locale );
+            if ( StringUtils.isNotEmpty( valueExport ) )
             {
-                strValue.append( strPrefix + strRes );
+                strValue.append( strPrefix + valueExport );
                 strPrefix = CONSTANT_COMMA;
             }
-        }
-        if ( StringUtils.isEmpty( strValue.toString( ) ) && mapDefaultValueGenAttBackOffice.containsKey( key ) )
-        {
-            strValue.append( mapDefaultValueGenAttBackOffice.get( key ) );
         }
         return strValue.toString( );
     }
