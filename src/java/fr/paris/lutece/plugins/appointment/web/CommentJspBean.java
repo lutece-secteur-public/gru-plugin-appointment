@@ -251,7 +251,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         // when directly loading from calendar templates
-        if ( _comment == null )
+        if ( _comment == null || _comment.getId( ) != nIdComment)
         {
             _comment = CommentHome.findByPrimaryKey( nIdComment );
         }
