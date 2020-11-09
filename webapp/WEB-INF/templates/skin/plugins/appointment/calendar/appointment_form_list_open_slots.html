@@ -131,7 +131,7 @@
 					title : <#if event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces) & ('${day_view}' == 'agendaDay' || '${week_view}' == 'agendaWeek')>'${formMessages.calendarReserveLabel}'
 							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>'#i18n{appointment.manageCalendarSlots.labelEdit}'							
 							<#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
-							<#elseif event.isOpen & (event.nbRemainingPlaces = 0)>'${formMessages.calendarFullLabel}'
+							<#elseif event.isOpen & (event.nbRemainingPlaces <= 0)>'${formMessages.calendarFullLabel}'
 							<#elseif !event.isOpen>'#i18n{appointment.manageCalendarSlots.labelClosed}'
                             <#else>''</#if>,		
 					className : <#if event.isOpen & (event.nbRemainingPlaces > 0) >''
