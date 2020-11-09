@@ -134,12 +134,9 @@ public final class AppointmentService
         List<Appointment> listAppointment = AppointmentHome.findByGuidUser( strGuidUser );
         for ( Appointment appointment : listAppointment )
         {
-            for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
-            {
-                Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
-
-                appointment.addSlot( slot );
-            }
+                List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
+                appointment.setSlot( listSlot );
+            
         }
         return listAppointment;
 
@@ -398,12 +395,8 @@ public final class AppointmentService
     {
         Appointment appointment = AppointmentService.findAppointmentById( nIdAppointment );
         User user = UserService.findUserById( appointment.getIdUser( ) );
-        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
-        {
-            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
-
-            appointment.addSlot( slot );
-        }
+        List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
+        appointment.setSlot( listSlot );
         appointment.setUser( user );
         return buildAppointmentDTO( appointment );
     }
@@ -420,13 +413,10 @@ public final class AppointmentService
         Appointment appointment = AppointmentService.findAppointmentByReference( refAppointment );
 
         User user = UserService.findUserById( appointment.getIdUser( ) );
-        for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
-        {
-            Slot slot = SlotService.findSlotById( appSlot.getIdSlot( ) );
-
-            appointment.addSlot( slot );
-        }
+        List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
+        appointment.setSlot( listSlot );
         appointment.setUser( user );
+        
         return buildAppointmentDTO( appointment );
     }
 

@@ -43,6 +43,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -286,6 +287,7 @@ public final class AppointmentDAO implements IAppointmentDAO
     public List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
     {
         List<Appointment> listAppointment = new ArrayList<>( );
+        boolean isFirst= true;
         try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin ) )
         {
             addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
@@ -296,7 +298,15 @@ public final class AppointmentDAO implements IAppointmentDAO
 
                 Slot slot = builSlot( daoUtil, 17 );
                 User user = buildUser( daoUtil, 11 );
-                appt.addSlot( slot );
+                
+                if( isFirst || daoUtil.isLast( ) ) {
+                	
+                	appt.setSlot(SlotHome.findByIdAppointment( appt.getIdAppointment() ));
+                	
+                }else {
+                
+                	appt.addSlot( slot );
+                }
                 appt.setUser( user );
 
                 Appointment apptAdded = listAppointment.stream( ).filter( p -> appt.getIdAppointment( ) == p.getIdAppointment( ) ).findAny( ).orElse( null );
@@ -308,6 +318,8 @@ public final class AppointmentDAO implements IAppointmentDAO
                 {
                     apptAdded.addSlot( slot );
                 }
+                
+                isFirst= false;
             }
         }
         return listAppointment;

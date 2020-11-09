@@ -193,6 +193,17 @@ public final class SlotHome
     }
 
     /**
+     * Returns a list of slots of a form
+     * 
+     * @param nIdAppointment
+     *            the appointment id
+     * @return a list of all the slots of the form
+     */
+    public static List<Slot> findByIdAppointment( int nIdAppointment )
+    {
+        return _dao.findByIdAppointment( nIdAppointment, _plugin );
+    }
+    /**
      * Update Potential Remaining Places
      * 
      * @param nbPotentialRemainingPlaces

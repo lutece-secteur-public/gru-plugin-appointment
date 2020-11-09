@@ -1388,6 +1388,7 @@ public class AppointmentApp extends MVCApplication
 
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
+        model.put( MARK_FORM_LIST, FormService.findAllInReferenceList( ));
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
         return template.getHtml( );
     }

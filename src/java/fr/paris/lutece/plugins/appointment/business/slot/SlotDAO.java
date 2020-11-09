@@ -71,6 +71,9 @@ public final class SlotDAO implements ISlotDAO
             + " WHERE id_form = ? AND is_open = 1";
     private static final String SQL_QUERY_SELECT_SLOT_WITH_MAX_DATE = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_slot slot"
             + " WHERE slot.id_form = ? ORDER BY slot.starting_date_time DESC LIMIT 1";
+    private static final String SQL_QUERY_SELECT_BY_ID_APPOINTMENT = "SELECT slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form " 
+    		+ " FROM appointment_slot slot INNER JOIN appointment_appointment_slot appt_slot ON (slot.id_slot = appt_slot.id_slot) "
+    		+ " INNER JOIN appointment_appointment appt ON (appt_slot.id_appointment = appt.id_appointment ) WHERE appt.id_appointment = ?";
 
     @Override
     public void insert( Slot slot, Plugin plugin )
@@ -202,6 +205,22 @@ public final class SlotDAO implements ISlotDAO
             }
         }
         return listSLot;
+    }
+
+    @Override
+    public List<Slot> findByIdAppointment( int nIdAppointment, Plugin plugin )
+    {
+        List<Slot> listSlot = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_APPOINTMENT, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdAppointment );
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
+            {
+                listSlot.add( buildSlot( daoUtil ) );
+            }
+        }
+        return listSlot;
     }
 
     @Override

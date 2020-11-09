@@ -140,6 +140,18 @@ public final class SlotService
     {
         return SlotHome.findByIdForm( nIdForm );
     }
+    
+    /**
+     * Fins all the slots of a form
+     * 
+     * @param nIdAppointment
+     *            the appointment id
+     * @return a list of all the slots of a form
+     */
+    public static List<Slot> findListSlotByIdAppointment( int nIdAppointment )
+    {
+        return SlotHome.findByIdAppointment( nIdAppointment );
+    }
 
     /**
      * Find the open slots of a form on a given period of time
@@ -173,6 +185,7 @@ public final class SlotService
         }
         return slot;
     }
+    
 
     /**
      * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot

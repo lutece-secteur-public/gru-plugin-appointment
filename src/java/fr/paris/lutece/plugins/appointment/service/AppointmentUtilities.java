@@ -322,12 +322,7 @@ public final class AppointmentUtilities
                 {
                     if ( !appointment.getIsCancelled( ) )
                     {
-                        for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
-                        {
-
-                            listSlots.add( SlotService.findSlotById( apptSlot.getIdSlot( ) ) );
-
-                        }
+                    	   listSlots = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
                     }
                 }
 

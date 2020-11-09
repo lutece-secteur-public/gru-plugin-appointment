@@ -166,7 +166,18 @@ public interface ISlotDAO
      * @return the slot
      */
     Slot findSlotWithMaxDate( int nIdForm, Plugin plugin );
-
+    
+    /**
+     * Returns all the slots of a form
+     * 
+     * @param nIdAppointment
+     *            the appointment id
+     * @param plugin
+     *            the plugin
+     * @return a list of all the slots of the form
+     */
+    List<Slot> findByIdAppointment( int nIdAppointment, Plugin plugin );
+   
     /**
      * update Potential Remaining Places
      * 
