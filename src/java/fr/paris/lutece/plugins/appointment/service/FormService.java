@@ -54,6 +54,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
+import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -175,9 +176,14 @@ public final class FormService
         for ( Slot specificSlot : listSpecificSlots )
         {
             copySpecificSlot = specificSlot;
+            
             copySpecificSlot.setIdSlot( 0 );
             copySpecificSlot.setIdForm( nIdNewForm );
-            SlotService.saveSlot( copySpecificSlot );
+            copySpecificSlot.setNbPotentialRemainingPlaces( specificSlot.getMaxCapacity( ) );
+        	copySpecificSlot.setNbRemainingPlaces( specificSlot.getMaxCapacity( ) );
+        	copySpecificSlot.setNbPlacestaken( 0 );
+        	
+        	SlotHome.create( copySpecificSlot );
         }
         // Copy the entries of the original form
         EntryFilter entryFilter = new EntryFilter( );

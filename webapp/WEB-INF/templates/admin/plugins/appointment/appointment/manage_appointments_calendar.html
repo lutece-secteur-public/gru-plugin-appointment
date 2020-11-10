@@ -3,12 +3,13 @@
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <script src="js/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/plugins/appointment/locale-all.js"></script>
-<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
+<!-- <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script> -->
+<!-- <script src="js/locales/bootstrap-datepicker.fr.js" ></script> -->
 
 <link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" />
 
 <style>
+
 .ui-widget-header {
     border: 1px solid #aaa;
     background: none;
@@ -16,12 +17,11 @@
     font-weight: normal;
 }
 
-
 #toggle-add-comment{
     position: absolute;
     z-index: 999;
-    top: 197px;
-    left: 33px;
+    top: 192px;
+    left: 28px;
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);
@@ -66,7 +66,7 @@ td.fc-axis.fc-time {
     border-right: solid 1px rgb(190, 190, 190); 
 }
 
-.fc-day-grid-event.fc-h-event.fc-event.fc-start.fc-end{
+.fc-event, .fc-event p{
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);
@@ -113,19 +113,20 @@ th.fc-day-header {
 /*** Overbooked                     ***/
 .overbooked.bg-full{ 
     background: rgba(255, 165, 0, 1) !important; 
-    
 }
+
 .overbooked{ 
-    background: none !important;
+    background: rgba(255, 165, 0, 1) !important;
 }
+
 .overbooked.bordered{ 
-    border-right: 15px solid rgba(255, 165, 0, 1) !important 
+    border-right: 15px solid #ffa500 !important 
 }
 
 .overbooked.bordered .fc-title a > i.fa-plus-circle::before{
     right: 17px;
 }
-
+/* 
 .overbooked.dotted .fc-title::after{
     content: "\f111";
     font-family: "FontAwesome";
@@ -134,18 +135,15 @@ th.fc-day-header {
     right: 15px;
     top: 5px;
     display: inline-block;
-    
-}
+} */
 
 /*** FILLED         ***/
-
 .filled{ 
-    background: none !important;
+    background: rgba(222,222,222,1) !important;
 }
 
-
 .filled.bg-full{ 
- background:  rgba(255,0,0,1) !important;
+    background:  rgba(255,0,0,1) !important;
 }
 
 .filled.bordered{ 
@@ -166,6 +164,7 @@ th.fc-day-header {
     display: inline-block;
 }
 </style>
+
 <@row>
     <@columns>
         <!-- <h2>${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}</h2> -->
@@ -176,9 +175,27 @@ th.fc-day-header {
         <#else>
             <div id="btn-comment-main">
                 <button type="button" data-toggle="modal" data-target="#commentModal" title="#i18n{appointment.create_comment.pageTitle}" id="toggle-add-comment" class="btn btn-link">
-                    <i class="fa fa-commenting-o"></i> 
+                    <span class="fa-stack fa-md">
+                        <i class="fa fa-comment-o fa-stack-2x"></i>
+                        <i class="fa fa-plus fa-stack-1x"></i>
+                      </span>
                 </button>
             </div>
+            <!-- 
+            <#if comment_events??>
+            <#list comment_events as comment_event>
+            <p>
+                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
+                "start" : "${comment_event.startingValidityDate}",
+                "end" : "${comment_event.endingValidityDate}",
+                "id" : "${comment_event.id}",
+                "creator_user" : "${comment_event.creatorUserName!''}",
+                "creation_date" : "${comment_event.creationDate!''}",
+                "type": "comment"
+            </p>
+            </#list>
+            </#if> 
+            -->
             <div id="calendar"></div>
         </#if>
         </@appointmentTabs>
@@ -216,7 +233,6 @@ th.fc-day-header {
     </div>
 </div>
 
-
 <script>
     /* ********************************************************* */
     /*
@@ -229,7 +245,6 @@ th.fc-day-header {
     var bgClosedColor = '#bebebe;'
 
     /* ********************************************************* */
-
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
@@ -329,6 +344,7 @@ th.fc-day-header {
     var defaultDate = '${date_of_display}';
     $( function() {
         $('#calendar').fullCalendar({
+            // allDaySlot: false,
             displayEventTime: false,
             buttonText : {
                 prev : '#i18n{appointment.appointmentApp.previousWeek}',
@@ -454,17 +470,18 @@ th.fc-day-header {
                 $(element).contextmenu(function() {
                     return false;
                 });
+
                 var json = {
                         "container": "body",
                         "placement" : "bottom",
                         "html" : true,
                         "trigger" : "hover"
                     };
-                if( event.type == "comment" ){
-                	json.content = '<p>Du ' + event.start.format('ddd DD/MM') + ' au ' + event.end.format('ddd DD/MM') +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
-                } else {
-                	json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-                }
+                 if( event.type == "comment" ){
+                 	json.content = '<p>Du ' + event.start.format('ddd DD/MM') + ' au ' + event.end.format('ddd DD/MM') +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
+                 } else {
+                 	json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                 }
                 $(element).popover( json );
                 
                 if(event.type == "comment" )
