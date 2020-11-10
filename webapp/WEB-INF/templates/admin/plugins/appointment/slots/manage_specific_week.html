@@ -423,7 +423,8 @@ th.fc-day-header {
                         eventData ='{' + $(this).data('event') + '}';                       
                         const evt = JSON.parse(eventData); 
                         $('#id_slot').val( evt.slotId );
-                        $('#is_open').prop( "checked", evt.open );
+                        const isOpen = JSON.parse( evt.open )
+                        $('#is_open').prop( "checked", isOpen );
                         $('#max_capacity').val( evt.maxcapacity );
                         $('#dtSlot').text( evt.startDate );
                         $('#timeStart').text( evt.startTime );
