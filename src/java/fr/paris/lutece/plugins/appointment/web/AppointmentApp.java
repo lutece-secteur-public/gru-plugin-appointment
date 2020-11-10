@@ -205,6 +205,7 @@ public class AppointmentApp extends MVCApplication
     // Mark
     private static final String MARK_INFOS = "infos";
     private static final String MARK_LOCALE = "locale";
+    private static final String MARK_LANGUAGE = "language";
     private static final String MARK_FORM = "form";
     private static final String MARK_USER = "user";
     private static final String MARK_FORM_MESSAGES = "formMessages";
@@ -435,7 +436,7 @@ public class AppointmentApp extends MVCApplication
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
-        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
+        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getDateFormatter( ) ) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listStrBase0OpenDaysOfWeek );
         model.put( PARAMETER_MIN_TIME, AppointmentUtilities.getMinTimeToDisplay( minStartingTime ) );
@@ -635,7 +636,7 @@ public class AppointmentApp extends MVCApplication
             
 	            appointmentDTO.setSlot( slot );
 	            appointmentDTO.setIdSlot( slot.getIdSlot( ) );
-	            appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
+	            appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getDateFormatter( ) ) );
 	            appointmentDTO.setIdForm( nIdForm );
 	            LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 	            if ( user != null )
@@ -686,7 +687,8 @@ public class AppointmentApp extends MVCApplication
         model.put( MARK_FORM, form );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
-        model.put( MARK_LOCALE, locale );
+	model.put( MARK_LANGUAGE, locale.getLanguage( ) );
+        model.put( MARK_LOCALE, locale );	
         model.put( MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats( ) );
         model.put( MARK_FORM_ERRORS, listErrors );
         model.put( MARK_LIST_ERRORS, AppointmentDTO.getAllErrors( locale ) );
@@ -884,7 +886,7 @@ public class AppointmentApp extends MVCApplication
 		}
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), null ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         XPage xPage = null;
         String anchor = request.getParameter( PARAMETER_ANCHOR );
         if ( StringUtils.isNotEmpty( anchor ) )
@@ -928,14 +930,14 @@ public class AppointmentApp extends MVCApplication
         }
         strReference += appointment.getReference( );
         formMessages.setTextAppointmentCreated( formMessages.getTextAppointmentCreated( ).replaceAll( MARK_REF, strReference )
-                .replaceAll( MARK_DATE_APP, slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) )
+                .replaceAll( MARK_DATE_APP, slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getDateFormatter( ) ) )
                 .replaceAll( MARK_TIME_BEGIN, strTimeBegin ).replaceAll( MARK_TIME_END, strTimeEnd ) );
         Map<String, Object> model = new HashMap<String, Object>( );
         AppointmentDTO appointmentDTO = AppointmentService.buildAppointmentDTOFromIdAppointment( nIdAppointment );
         appointmentDTO.setListResponse( AppointmentResponseService.findAndBuildListResponse( nIdAppointment, request ) );
         appointmentDTO.setMapResponsesByIdEntry( AppointmentResponseService.buildMapFromListResponse( appointmentDTO.getListResponse( ) ) );
         model.put( MARK_LIST_RESPONSE_RECAP_DTO, AppointmentUtilities.buildListResponse( appointmentDTO, request, getLocale( request ) ) );
-        model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
+        model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getDateFormatter( ) ) );
         model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
         model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
         model.put( MARK_USER, UserService.findUserById( appointment.getIdUser( ) ) );
@@ -996,7 +998,7 @@ public class AppointmentApp extends MVCApplication
             {
                 model.put( MARK_APPOINTMENT_PASSED, Boolean.TRUE );
             }
-            model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getFormatter( ) ) );
+            model.put( MARK_DATE_APPOINTMENT, slot.getDate( ).format( Utilities.getDateFormatter( ) ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, slot.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, slot.getEndingTime( ) );
             model.put( MARK_PLACES, appointment.getNbPlaces( ) );

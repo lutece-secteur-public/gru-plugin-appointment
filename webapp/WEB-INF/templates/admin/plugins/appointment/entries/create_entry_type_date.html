@@ -4,19 +4,20 @@
         <@box color='primary'>
             <@boxHeader title='#i18n{appointment.createEntry.titleQuestion} : ${form.title}' />
             <@boxBody>
-                <@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
+                <@tform id='createentrydate' action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp' method='post'>
                     <fieldset>
                         <legend class="hidden">#i18n{appointment.createEntry.titleQuestion} : '${form.title}'</legend>
                         <input type='hidden' name='id_form' value='${form.idForm}' />
                         <input type='hidden' name='action' value='doCreateEntry' />
                         <input type='hidden' name='id_type' value='${entry.entryType.idType}' />
+			<input type='hidden' id='date' name='value' />
                         <#if entry.fieldDepend?exists>
                             <input type='hidden' name='id_field' value='${entry.fieldDepend.idField}' />
                         </#if>
                         <@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
                             <@staticText>
                                 <@tag color='info'>
-                                    ${entry.entryType.title}
+                                    #i18n{${entry.entryType.beanName}}
                                 </@tag>
                             </@staticText>
                         </@formGroup>
@@ -31,12 +32,12 @@
                         <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
                             <@input type='textarea' name='comment' rows=2 />
                         </@formGroup>
-                        <@formGroup labelFor='date' labelKey='#i18n{appointment.defaultValue.name}'>
+                        <@formGroup labelFor='date_user' labelKey='#i18n{appointment.defaultValue.name}'>
                             <@inputGroup>
                                 <@inputGroupItem type='addon'>
                                     <@icon style='calendar' />
                                 </@inputGroupItem>
-                                <@input type='text' name='value' id='date' value='' />
+                                <@input type='text' class='datetimepicker' id='date_user' name='' />
                             </@inputGroup>
                         </@formGroup>
                         <@formGroup labelFor='mandatory' labelKey='#i18n{appointment.createEntry.labelMandatory}'>
@@ -64,6 +65,5 @@
 </@row>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePicker idField="date" language=locale />
+
+<@setupDatePicker idField='date_user' idServerField='date' />

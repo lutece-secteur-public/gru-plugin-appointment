@@ -59,7 +59,6 @@ public class AppointmentSessionListener implements HttpSessionListener
     @Override
     public void sessionDestroyed( HttpSessionEvent se )
     {
-        String strSessionId = se.getSession( ).getId( );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( strSessionId );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( se.getSession( ) );
     }
 }

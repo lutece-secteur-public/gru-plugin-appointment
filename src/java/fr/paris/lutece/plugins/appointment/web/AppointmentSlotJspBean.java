@@ -287,8 +287,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         WeekDefinition nextWeekDefinition = WeekDefinitionService.findNextWeekDefinition( nIdForm, dateOfModification );
         // We can't use the LocalDateTime.MAX value because of the bug of the
         // year 2038 for Timestamp
+        // also can't use LocalTime.MAX with our own max date because mysql will round the fractional second up - this will cause
+        // 9999-12-31 23:59:59.99999999  to produce an illegal Timestamp 10000:01:01 00:00:00
         // (https://fr.wikipedia.org/wiki/Bug_de_l%27an_2038)
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.of(23, 59, 59) );
         if ( nextWeekDefinition != null )
         {
             endingDateTimeOfSearch = nextWeekDefinition.getDateOfApply( ).atTime( LocalTime.MIN );
@@ -383,13 +385,13 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Check if there are appointments on this week definition
         LocalDate beginDateOfApply = weekDefinitionToRemove.getDateOfApply( );
         WeekDefinition nextWeekDefinition = WeekDefinitionService.findNextWeekDefinition( nIdForm, beginDateOfApply );
-        LocalDate endDateOfApply = LocalDate.MAX;
+        LocalDate endDateOfApply = LocalDate.of( 9999,12,31 );
         if ( nextWeekDefinition != null )
         {
             endDateOfApply = nextWeekDefinition.getDateOfApply( );
         }
         List<Slot> listSlotImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, beginDateOfApply.atTime( LocalTime.MIN ),
-                endDateOfApply.atTime( LocalTime.MAX ) );
+                endDateOfApply.atTime( LocalTime.of(23,59,59) ) );
         List<Appointment> listAppointment = AppointmentService.findListAppointmentByListSlot( listSlotImpacted );
         if ( CollectionUtils.isNotEmpty( listAppointment ) )
         {

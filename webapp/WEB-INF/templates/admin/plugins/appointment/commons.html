@@ -1,3 +1,14 @@
+<script src='js/plugins/appointment/moment-with-locales.min.js'></script>
+
+<#-- Initialize moment library with locale if available -->
+<script type='text/javascript' charset='utf-8'>
+    <#if locale??>
+        moment.locale('${locale}');
+    <#elseif language??>
+        moment.locale('${language}');
+    </#if>
+</script>
+
 <#--
 -- Check if the checkbox must be checked or not
 -- @param code the checkbox code
@@ -109,3 +120,108 @@
 	</#if>
 	<#return false />
 </#function>
+
+
+<#-- Moment date and time formats for user interface -->
+<#assign USER_DATE_FORMAT="L">
+<#assign USER_TIME_FORMAT="LT">
+
+<#-- Moment date and time formats for server -->
+<#assign SERVER_DATE_FORMAT="YYYY-MM-DD">
+<#assign SERVER_TIME_FORMAT="HH:mm">
+<#assign SERVER_DATETIME_FORMAT="YYYY-MM-DDTHH:mm">
+
+<#-- 
+-- Provide a date picker for a input field of class datetimepicker.
+-- That input field will be in the user date format.
+-- Optionally a separate field will be kept up to date in server date format.
+-- An initial date value as well as min and max date values may be specified in server date format.
+-->
+<#macro setupDatePicker idField idServerField='' serverDate='' minServerDate='' maxServerDate=''>
+        <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
+	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+        <script type='text/javascript' charset='utf-8'>
+        $(document).ready( function() {
+            $('#${idField}').datetimepicker({
+		locale: moment.locale(),
+		format: '${USER_DATE_FORMAT}',
+		keepOpen: false,
+                <#if minServerDate?has_content>
+                  minDate: moment('${minServerDate}', '${SERVER_DATE_FORMAT}'),
+                </#if>
+                <#if maxServerDate?has_content>
+                  maxDate: moment('${maxServerDate}', '${SERVER_DATE_FORMAT}'),
+                </#if>
+		icons: {
+		    time: 'fa fa-clock-o',
+		    date: 'fa fa-calendar',
+		    up: 'fa fa-chevron-up',
+		    down: 'fa fa-chevron-down',
+		    previous: 'fa fa-chevron-left',
+		    next: 'fa fa-chevron-right',
+		    today: 'fa fa-screenshot',
+		    clear: 'fa fa-trash',
+		    close: 'fa fa-remove'
+		}
+	    });
+
+	    <#-- Upate server field when user field changes. -->
+            <#if idServerField?has_content>
+                $('#${idField}').on('dp.change', (function () {
+                    $('#${idServerField}').val(moment($('#${idField}').val(), '${USER_DATE_FORMAT}', true).format('${SERVER_DATE_FORMAT}'));
+                }));
+            </#if>
+
+	    <#-- Initialize fields if given a date -->
+            <#if serverDate?has_content>
+                $('#${idField}').val(moment('${serverDate}', '${SERVER_DATE_FORMAT}', true).format('${USER_DATE_FORMAT}'));
+                $('#${idServerField}').val('${serverDate}');
+            </#if>
+        });
+        </script>
+</#macro>
+
+<#-- 
+-- Provide a date picker for a input field of class datetimepicker with 5 minute increments.
+-- That input field will be in the user time format.
+-- Optionally a separate field will be kept up to date in server time format.
+-- An initial time value may be specified in server time format.
+-->
+<#macro setupTimePicker idField idServerField='' serverTime=''>
+        <script src='js/plugins/appointment/bootstrap-datetimepicker.js'></script>
+	<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+        <script type='text/javascript' charset='utf-8'>
+        $(document).ready( function() {
+            $('#${idField}').datetimepicker({
+		locale: moment.locale(),
+		format: '${USER_TIME_FORMAT}',
+		keepOpen: false,
+		stepping: 5,
+		icons: {
+		    time: 'fa fa-clock-o',
+		    date: 'fa fa-calendar',
+		    up: 'fa fa-chevron-up',
+		    down: 'fa fa-chevron-down',
+		    previous: 'fa fa-chevron-left',
+		    next: 'fa fa-chevron-right',
+		    today: 'fa fa-screenshot',
+		    clear: 'fa fa-trash',
+		    close: 'fa fa-remove'
+		}
+	    });
+
+	    <#-- Upate server field when user field changes. -->
+            <#if idServerField?has_content>
+                $('#${idField}').on('dp.change', (function () {
+                    $('#${idServerField}').val(moment($('#${idField}').val(), '${USER_TIME_FORMAT}', true).format('${SERVER_TIME_FORMAT}'));
+                }));
+            </#if>
+
+	    <#-- Initialize fields if given a time -->
+            <#if serverTime?has_content>
+                $('#${idField}').val(moment('${serverTime}', '${SERVER_TIME_FORMAT}', true).format('${USER_TIME_FORMAT}'));
+                $('#${idServerField}').val('${serverTime}');
+            </#if>
+        });
+        </script>
+</#macro>

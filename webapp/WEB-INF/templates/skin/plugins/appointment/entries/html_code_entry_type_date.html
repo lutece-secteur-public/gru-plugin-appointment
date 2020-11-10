@@ -1,3 +1,5 @@
+<#include "/admin/plugins/appointment/commons.html" />
+
 <#if list_responses??>
 	<#list list_responses as response>
 		<#if response.entry.idEntry == entry.idEntry && response.entry.error?? && response.entry.error.isDisplayableError>
@@ -12,15 +14,15 @@
 	<div class=" col-xs-12">
 		<div class="input-group">
 			<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-			<input type="text" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" class="form-control ${entry.CSSClass!} 
+			<input type="text" name="" id="attribute${entry.idEntry}_user" class="datetimepicker" /> 
+			<input type="hidden" name="attribute${entry.idEntry}" id="attribute${entry.idEntry}" /> 			
 			<#if list_responses??>
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry>
 					<#if response.entry.error??>error</#if>" <#if response.toStringValueResponse??>value="${response.toStringValueResponse}"</#if>
 				</#if>
 			</#list>
-		<#else>
-			<#if field.valueTypeDate?exists>" value="${field.valueTypeDate}" <#else>" value="" 	</#if></#if>/>
+		        </#if>/>
 		</#list>
 		</div>
 		<#if entry.helpMessage?exists&&entry.helpMessage!=''>
@@ -42,6 +44,5 @@
 		</#if>
 	</div>
 </div>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<@getDatePickerBootstrap idField="attribute${entry.idEntry}" language=locale />
+
+<@setupDatePicker idField="attribute${entry.idEntry}_user" serverIdField='attribute${entry.idEntry}' serverDate=field.valueTypeDate!'' />

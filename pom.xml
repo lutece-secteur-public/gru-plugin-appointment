@@ -14,11 +14,11 @@
     <properties>  
         <componentName>appointment</componentName>
         <core.version>[6.0.1,)</core.version>    
-        <genericattributes.version>1.2.1</genericattributes.version>
+        <genericattributes.version>[2.1.0,)</genericattributes.version>
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
         <regularexpression.version>3.0.3</regularexpression.version>                        
-        <workflow.version>4.3.6</workflow.version>    
+        <workflow.version>[5.0.0,)</workflow.version>
         <rest.version>3.1.0</rest.version>
     </properties>
     <repositories>
@@ -68,20 +68,13 @@
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
-
-        <!-- Dozer - Java Bean to Java Bean -->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
         <dependency>
-            <groupId>net.sf.dozer</groupId>
-            <artifactId>dozer</artifactId>
-            <version>5.5.1</version>
-            <exclusions>
-                <exclusion>
-                    <!-- Conflicts with the dozen of dependencies requiring commons-logging:commons-logging -->
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.11.3</version>
         </dependency>
+
     </dependencies>
    
     <scm>

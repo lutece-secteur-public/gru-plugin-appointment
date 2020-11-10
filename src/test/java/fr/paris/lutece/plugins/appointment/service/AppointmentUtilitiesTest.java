@@ -37,15 +37,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
 
         appointmentForm.setNbDaysBeforeNewAppointment( 2 );
 
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -60,7 +60,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-05T10:00" ), LocalDateTime.parse( "2018-06-05T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-05T10:00" ), LocalDateTime.parse( "2022-06-05T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -79,15 +79,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
 
         appointmentForm.setNbDaysBeforeNewAppointment( 2 );
 
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -102,7 +102,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-15T10:00" ), LocalDateTime.parse( "2022-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -121,15 +121,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments3( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
 
         appointmentForm.setNbDaysBeforeNewAppointment( 2 );
 
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -144,7 +144,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-15T10:00" ), LocalDateTime.parse( "2022-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -159,7 +159,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-16T10:00" ), LocalDateTime.parse( "2018-06-16T10:30" ), 3, 3, 0, 3,
+        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-16T10:00" ), LocalDateTime.parse( "2022-06-16T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot3 = SlotService.saveSlot( slot3 );
 
@@ -178,15 +178,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments4( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
 
         appointmentForm.setNbDaysBeforeNewAppointment( 2 );
 
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -201,7 +201,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-15T10:00" ), LocalDateTime.parse( "2022-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -216,7 +216,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-07T10:00" ), LocalDateTime.parse( "2018-06-07T10:30" ), 3, 3, 0, 3,
+        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-07T10:00" ), LocalDateTime.parse( "2022-06-07T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot3 = SlotService.saveSlot( slot3 );
 
@@ -235,8 +235,8 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testNbDaysBetweenTwoAppointments5( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
 
         appointmentForm.setNbDaysBeforeNewAppointment( 2 );
 
@@ -244,7 +244,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
 
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -259,7 +259,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-15T10:00" ), LocalDateTime.parse( "2018-06-15T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-15T10:00" ), LocalDateTime.parse( "2022-06-15T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -274,7 +274,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-14T10:00" ), LocalDateTime.parse( "2018-06-14T10:30" ), 3, 3, 0, 3,
+        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-14T10:00" ), LocalDateTime.parse( "2022-06-14T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot3 = SlotService.saveSlot( slot3 );
 
@@ -293,15 +293,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckNbMaxAppointmentsOnAGivenPeriod( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         appointmentForm.setNbMaxAppointmentsPerUser( 2 );
         appointmentForm.setNbDaysForMaxAppointmentsPerUser( 7 );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
 
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -316,7 +316,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-05T10:00" ), LocalDateTime.parse( "2018-06-05T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-05T10:00" ), LocalDateTime.parse( "2022-06-05T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -331,7 +331,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-07T10:00" ), LocalDateTime.parse( "2018-06-07T10:30" ), 3, 3, 0, 3,
+        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-07T10:00" ), LocalDateTime.parse( "2022-06-07T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot3 = SlotService.saveSlot( slot3 );
 
@@ -349,15 +349,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckNbMaxAppointmentsOnAGivenPeriod2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         appointmentForm.setNbMaxAppointmentsPerUser( 3 );
         appointmentForm.setNbDaysForMaxAppointmentsPerUser( 7 );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
 
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -372,7 +372,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-05T10:00" ), LocalDateTime.parse( "2018-06-05T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-05T10:00" ), LocalDateTime.parse( "2022-06-05T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -387,7 +387,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-07T10:00" ), LocalDateTime.parse( "2018-06-07T10:30" ), 3, 3, 0, 3,
+        Slot slot3 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-07T10:00" ), LocalDateTime.parse( "2022-06-07T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot3 = SlotService.saveSlot( slot3 );
 
@@ -405,15 +405,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckAndReturnNbBookedSeats( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         appointmentForm.setMaxPeoplePerAppointment( 2 );
         appointmentForm.setMaxCapacityPerSlot( 3 );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
 
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -445,15 +445,15 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckAndReturnNbBookedSeats2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         appointmentForm.setMaxPeoplePerAppointment( 2 );
         appointmentForm.setMaxCapacityPerSlot( 3 );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
 
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-04T10:00" ), LocalDateTime.parse( "2018-06-04T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-04T10:00" ), LocalDateTime.parse( "2022-06-04T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -503,12 +503,12 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckNoAppointmentsImpacted( )
     {
         AppointmentFormDTO appointmentForm1 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm1.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm1.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm1.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm1.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm1.setIdForm( nIdForm );
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-25T10:00" ), LocalDateTime.parse( "2018-06-25T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-27T10:00" ), LocalDateTime.parse( "2022-06-27T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -524,7 +524,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-26T17:00" ), LocalDateTime.parse( "2018-06-26T17:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-28T17:00" ), LocalDateTime.parse( "2022-06-28T17:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -540,8 +540,8 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         }
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm2.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm2.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm2.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         appointmentForm2.setIsOpenMonday( Boolean.FALSE );
         appointmentForm2.setIsOpenTuesday( Boolean.TRUE );
         appointmentForm2.setIsOpenWednesday( Boolean.TRUE );
@@ -550,8 +550,8 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         appointmentForm2.setIsOpenSaturday( Boolean.FALSE );
         appointmentForm2.setIsOpenSunday( Boolean.FALSE );
 
-        LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
+        LocalDate dateOfModification = LocalDate.parse( "2022-06-20" );
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.of( 23, 59 ) );
         List<Slot> listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, dateOfModification.atStartOfDay( ), endingDateTimeOfSearch );
         List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
 
@@ -563,12 +563,12 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckNoAppointmentsImpacted2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-24T10:00" ), LocalDateTime.parse( "2018-06-24T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-24T10:00" ), LocalDateTime.parse( "2022-06-24T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -583,7 +583,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
             fail( e.getLocalizedMessage( ) );
         }
 
-        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-25T10:00" ), LocalDateTime.parse( "2018-06-25T10:30" ), 3, 3, 0, 3,
+        Slot slot2 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-25T10:00" ), LocalDateTime.parse( "2022-06-25T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot2 = SlotService.saveSlot( slot2 );
 
@@ -599,8 +599,8 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         }
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm2.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm2.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm2.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         appointmentForm2.setIsOpenMonday( Boolean.FALSE );
         appointmentForm2.setIsOpenTuesday( Boolean.TRUE );
         appointmentForm2.setIsOpenWednesday( Boolean.TRUE );
@@ -609,8 +609,8 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
         appointmentForm2.setIsOpenSaturday( Boolean.FALSE );
         appointmentForm2.setIsOpenSunday( Boolean.FALSE );
 
-        LocalDate dateOfModification = LocalDate.parse( "2018-06-26" );
-        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.MAX );
+        LocalDate dateOfModification = LocalDate.parse( "2022-06-26" );
+        LocalDateTime endingDateTimeOfSearch = LocalDateTime.of( LocalDate.of( 9999, 12, 31 ), LocalTime.of( 23, 59 ) );
         List<Slot> listSlotsImpacted = SlotService.findSlotsByIdFormAndDateRange( nIdForm, dateOfModification.atStartOfDay( ), endingDateTimeOfSearch );
         List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
 
@@ -625,13 +625,13 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckNoValidatedAppointmentsOnThisSlot( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
 
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-25T10:00" ), LocalDateTime.parse( "2018-06-25T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-25T10:00" ), LocalDateTime.parse( "2022-06-25T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -657,13 +657,13 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testCheckNoValidatedAppointmentsOnThisSlot2( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
-        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2018-06-30" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2022-06-30" ) ) );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );
         appointmentForm.setIdForm( nIdForm );
 
-        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2018-06-25T10:00" ), LocalDateTime.parse( "2018-06-25T10:30" ), 3, 3, 0, 3,
+        Slot slot1 = SlotTest.buildSlot( nIdForm, LocalDateTime.parse( "2022-06-25T10:00" ), LocalDateTime.parse( "2022-06-25T10:30" ), 3, 3, 0, 3,
                 Boolean.TRUE, Boolean.TRUE );
         slot1 = SlotService.saveSlot( slot1 );
 
@@ -693,7 +693,7 @@ public class AppointmentUtilitiesTest extends LuteceTestCase
     public void testFindSlotsImpactedByThisTimeSlot( )
     {
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
-        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2018-06-04" ) ) );
+        appointmentForm.setDateStartValidity( Date.valueOf( LocalDate.parse( "2022-06-04" ) ) );
         appointmentForm.setDateEndValidity( Date.valueOf( LocalDate.parse( "2025-06-30" ) ) );
         // Build the form
         int nIdForm = FormService.createAppointmentForm( FormServiceTest.buildAppointmentForm( ) );

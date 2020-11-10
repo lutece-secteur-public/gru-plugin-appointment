@@ -132,6 +132,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String PARAMETER_GEOLOC_LATITUDE = "geoloc_latitude";
     private static final String PARAMETER_GEOLOC_LONGITUDE = "geoloc_longitude";
 
+
     // Properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTFORMS = "appointment.manage.appointmentforms.title";
     private static final String PROPERTY_PAGE_TITLE_GENERAL_SETTINGS = "appointment.modifyAppointmentForm.titleAlterablesParameters";
@@ -151,12 +152,14 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_LIST_CATEGORIES = "listCategories";
     private static final String MARK_NULL = "NULL";
     private static final String MARK_FALSE = "false";
-    private static final String MARK_LOCALE = "language";
-    private static final String MARK_LOCALE_TINY = "locale";
+    private static final String MARK_LANGUAGE = "language";
+    private static final String MARK_LOCALE = "locale";
     private static final String MARK_FILE_CLOSING_DAYS = "fileClosingDays";
     private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
+    private static final String MARK_DATE_START_VALIDITY = "date_start_validity_str";
+    private static final String MARK_DATE_END_VALIDITY = "date_end_validity_str";
 
     // Jsp
     private static final String JSP_MANAGE_APPOINTMENTFORMS = "jsp/admin/plugins/appointment/ManageAppointmentForms.jsp";
@@ -405,8 +408,11 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
         }
+
         Map<String, Object> model = getModel( );
         addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
+        model.put( MARK_DATE_START_VALIDITY, appointmentForm.getDateStartValidity( ).toString( ) );
+        model.put( MARK_DATE_END_VALIDITY, appointmentForm.getDateEndValidity( ).toString( ) );
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
 
@@ -589,8 +595,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         Map<String, Object> model = new HashMap<String, Object>( );
         model.put( MARK_FORM_MESSAGE, formMessage );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-        model.put( MARK_LOCALE, getLocale( ) );
-        model.put( MARK_LOCALE_TINY, getLocale( ) );
+        model.put(MARK_LANGUAGE, getLocale( ).getLanguage() );
+        model.put(MARK_LOCALE, getLocale( ) );
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_APPOINTMENTFORM_MESSAGES, TEMPLATE_MODIFY_APPOINTMENTFORM_MESSAGES, model );
     }
 
@@ -658,7 +664,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             Map<String, Object> model )
     {
         model.put( MARK_APPOINTMENT_FORM, appointmentForm );
-        model.put( MARK_LOCALE, locale );
+        model.put( MARK_LANGUAGE, locale.getLanguage() );
         model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( user, locale ) );
         model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
         model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
@@ -793,7 +799,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
                     StringJoiner stbListDate = new StringJoiner( StringUtils.SPACE );
                     for ( LocalDate dateWithError : listDateWithError )
                     {
-                        stbListDate.add( Utilities.getFormatter( ).format( dateWithError ) ).add( "," );
+                        stbListDate.add( Utilities.getDateFormatter( ).format( dateWithError ) ).add( "," );
                     }
                     String strListdate = stbListDate.toString( );
                     strListdate = strListdate.substring( 0, strListdate.length( ) - 1 );

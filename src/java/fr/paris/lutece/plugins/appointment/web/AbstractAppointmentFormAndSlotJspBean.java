@@ -37,6 +37,7 @@ import java.text.ParseException;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
+import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 
@@ -53,6 +54,10 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE = "appointment.message.error.formatDaysBeforeAppointmentMiddleSuperior";
     static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
+
+    static final String PARAMETER_TIMEZONE = "timezone";
+    static final String PARAMETER_TIME_FORMAT = "timeformat";
+    static final String PARAMETER_DATE_FORMAT = "dateformat";
 
     /**
      * Check Constraints
@@ -97,8 +102,10 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private boolean checkStartingAndEndingTime( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
-        LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
-        LocalTime endingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+
+        LocalTime startingTime = LocalTime.from( Utilities.getTimeFormatter( ).parse( appointmentForm.getTimeStart( ) ) );
+        LocalTime endingTime = LocalTime.from( Utilities.getTimeFormatter( ).parse( appointmentForm.getTimeEnd( ) ) );
+
         if ( startingTime.isAfter( endingTime ) )
         {
             bReturn = false;
@@ -156,4 +163,5 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         }
         return bReturn;
     }
+
 }

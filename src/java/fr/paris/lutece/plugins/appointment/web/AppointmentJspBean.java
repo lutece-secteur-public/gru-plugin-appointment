@@ -58,7 +58,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
-import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -66,7 +65,6 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
@@ -420,14 +418,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( PARAMETER_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay );
-        model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format( Utilities.getFormatter( ) ) );
+        model.put( PARAMETER_STR_STARTING_DATE_OF_DISPLAY, startingDateOfDisplay.format( Utilities.getDateFormatter( ) ) );
         model.put( PARAMETER_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay );
-        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getFormatter( ) ) );
+        model.put( PARAMETER_STR_ENDING_DATE_OF_DISPLAY, endingDateOfDisplay.format( Utilities.getDateFormatter( ) ) );
         model.put( PARAMETER_DATE_OF_DISPLAY, dateOfDisplay );
         model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
         model.put( PARAMETER_EVENTS, listSlot );
         model.put( PARAMETER_MIN_TIME, minStartingTime );
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
+        model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
+        model.put( MARK_LOCALE, getLocale( ) );	
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR, model );
     }
@@ -455,7 +455,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             return getViewChangeDateAppointment( request );
         }
         // Clean session
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         request.getSession( ).removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
 
@@ -538,7 +538,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( nIdForm ) );
         model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
-        model.put( MARK_LANGUAGE, getLocale( ) );
+        model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
+        model.put( MARK_LOCALE, getLocale( ) );		
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
@@ -765,7 +766,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS, user ) );
         model.put( MARK_RIGHT_CHANGE_DATE,
                 RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_DATE, user ) );
-        model.put( MARK_LANGUAGE, getLocale( ) );
+        model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
+        model.put( MARK_LOCALE, getLocale( ) );		
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         return getPage( PROPERTY_PAGE_TITLE_VIEW_APPOINTMENT, TEMPLATE_VIEW_APPOINTMENT, model );
     }
@@ -1075,7 +1077,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             slot = SlotService.findSlotById( nIdSlot );
         }
         appointmentDTO.setSlot( slot );
-        appointmentDTO.setDateOfTheAppointment( slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getFormatter( ) ) );
+        appointmentDTO.setDateOfTheAppointment( slot.getStartingDateTime( ).toLocalDate( ).format( Utilities.getDateFormatter( ) ) );
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
         LocalDate dateOfSlot = slot.getDate( );
         ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfSlot );
@@ -1217,7 +1219,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MAKE_APPOINTMENT, Integer.toString( nIdAppointment ), getUser( ) ) );
         request.getSession( ).removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         addInfo( INFO_APPOINTMENT_CREATED, getLocale( ) );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ).getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( request.getSession( ) );
         Map<String, String> additionalParameters = new HashMap<>( );
         additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( form.getIdForm( ) ) );
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, slot.getDate( ).toString( ) );
@@ -1371,7 +1373,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         session.removeAttribute( SESSION_NOT_VALIDATED_APPOINTMENT );
         session.removeAttribute( SESSION_VALIDATED_APPOINTMENT );
         session.removeAttribute( SESSION_APPOINTMENT_FORM_ERRORS );
-        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
+        AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session );
     }
 
     /**
@@ -1385,7 +1387,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         // If we do not reload an appointment, we clear uploaded files.
         if ( session.getAttribute( SESSION_NOT_VALIDATED_APPOINTMENT ) == null && session.getAttribute( SESSION_VALIDATED_APPOINTMENT ) == null )
         {
-            AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session.getId( ) );
+            AppointmentAsynchronousUploadHandler.getHandler( ).removeSessionFiles( session );
         }
     }
 
