@@ -359,7 +359,7 @@ th.fc-day-header {
                     animation: false,
                     content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
                 });
-                $(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('hh:mm') + '","endTime":"' + event.end.format('hh:mm') + '","open":"' + event.isOpen + '","specific":"' + event.isSpecific + '","maxcapacity":"' + event.maxCapacity + '"' )
+                $(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('hh:mm') + '","endDate":"' + event.end.format('DD-MM-YYYY') + '","endTime":"' + event.end.format('hh:mm') + '","open":"' + event.isOpen + '","specific":"' + event.isSpecific + '","maxcapacity":"' + event.maxCapacity + '"' )
                 
             },
             viewRender: function(view, element) {
