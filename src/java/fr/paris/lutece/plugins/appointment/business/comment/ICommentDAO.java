@@ -99,9 +99,24 @@ public interface ICommentDAO
      *            the date end
      * @param nIdFrom
      *            the id Form
-     * @returnThe instance of the comment
+     * @returnThe list of the comments
      */
     List<Comment> selectCommentsList( Plugin plugin, Date startingDate, Date endingDate, int nIdForm );
+    
+    /**
+     * Load the data from the table
+     * 
+     * @param plugin
+     *            the plugin
+     * @param startingDate
+     *            the date start
+     * @param endingDate
+     *            the date end
+     * @param nIdFrom
+     *            the id Form
+     * @returnThe list of the comments
+     */
+    List<Comment> selectCommentsListInclusive( Plugin plugin, Date startingDate, Date endingDate, int nIdForm );
 
     /**
      * Load the data of all the comment objects and returns them as a list
