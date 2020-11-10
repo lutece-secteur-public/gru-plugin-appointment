@@ -270,7 +270,8 @@ var events = [
     {
         "title" : "${comment_event.comment}",
         "start" : "${comment_event.startingValidityDate}",
-        "end" : "${comment_event.endingValidityDate}",
+        "end" : "${comment_event.calendarAllDaySlotEnd}",
+        "validity_end" : "${comment_event.endingValidityDate}",
         "id" : "${comment_event.id}",
         "creator_user" : "${comment_event.creatorUserName!''}",
         "creation_date" : "${comment_event.creationDate!''}",
@@ -438,7 +439,7 @@ $( function() {
                 $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
                 tinyMCE.activeEditor.setContent( formValues.comment_text );
                 $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
-                $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_end ) ) );
+                $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
                 $( "#modify-comment" ).modal('show');
             });
         },
@@ -474,7 +475,7 @@ $( function() {
             {
                 var fcTitle = element.find('.fc-title p');
                 fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
             }
         }
     });

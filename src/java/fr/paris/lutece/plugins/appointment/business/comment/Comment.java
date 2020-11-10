@@ -212,4 +212,13 @@ public class Comment implements Serializable
         _strCreatorUserConnectId = creatorUserConnectId;
     }
 
+    /**
+     * Gets the DateCalendarAllDaySlotEnd
+     * 
+     * @return The DateCalendarAllDaySlotEnd
+     */
+    public LocalDate getCalendarAllDaySlotEnd(  )
+    {
+    	 return _dateEndingValidityDate.plusDays( 1 );
+    }
 }

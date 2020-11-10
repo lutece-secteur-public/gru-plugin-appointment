@@ -262,7 +262,8 @@ th.fc-day-header {
             {
                 "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
                 "start" : "${comment_event.startingValidityDate}",
-                "end" : "${comment_event.endingValidityDate}",
+                "end" : "${comment_event.calendarAllDaySlotEnd}",
+                "validity_end" : "${comment_event.endingValidityDate}",
                 "id" : "${comment_event.id}",
                 "creator_user" : "${comment_event.creatorUserName!''}",
                 "creation_date" : "${comment_event.creationDate!''}",
@@ -398,6 +399,7 @@ th.fc-day-header {
             slotLabelFormat: 'H:mm',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
+            allDaySlot: true,
             minTime: minTime,
             maxTime: maxTime,
             businessHours: {
@@ -441,7 +443,7 @@ th.fc-day-header {
                     $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
                     tinyMCE.activeEditor.setContent( formValues.comment_text );
                     $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
-                    $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_end ) ) );
+                    $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
                     $( "#modify-comment" ).modal('show');
                 });
             },
@@ -475,19 +477,19 @@ th.fc-day-header {
                         "html" : true,
                         "trigger" : "hover"
                     };
-                // if( event.type == "comment" ){
-                // 	json.content = '<p>Du ' + event.start.format('ddd DD/MM') + ' au ' + event.end.format('ddd DD/MM') +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
-                // } else {
-                // 	json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-                // }
-               // $(element).popover( json );
+                 if( event.type == "comment" ){
+                 	json.content = '<p>Du ' + event.start.format('ddd DD/MM') + ' au ' + event.end.format('ddd DD/MM') +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
+                 } else {
+                 	json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                 }
+                $(element).popover( json );
                 
-                // if(event.type == "comment" )
-                // {
-                //     var fcTitle = element.find('.fc-title p');
-                //     fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-                //     element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
-                // }
+                if(event.type == "comment" )
+                {
+                    var fcTitle = element.find('.fc-title p');
+                    fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
+                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+                }
             }
         });
 
