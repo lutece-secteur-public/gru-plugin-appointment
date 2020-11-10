@@ -1,13 +1,14 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<script src="js/plugins/appointment/jquery.min.js"></script>
+<script src="js/jquery/jquery-1.11.3.min.js"></script>
+<script src="js/query/jquery-ui.min.js"></script>
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <script src="js/plugins/appointment/fullcalendar.min.js"></script>
 <script src="js/plugins/appointment/locale-all.js"></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
 <script src="js/locales/bootstrap-datepicker.fr.js" ></script>
-
-<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" />
-
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" >
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <style>
 .ui-widget-header {
     border: 1px solid #aaa;
@@ -15,7 +16,6 @@
     color: #222;
     font-weight: normal;
 }
-
 
 #toggle-add-comment{
     position: absolute;
@@ -55,9 +55,9 @@ th.fc-day-header {
 
 /* Begin From fullcalendar_ow_bo.css */
 td.fc-axis.fc-time {
-    width: 80px ;
-    height: 40px ;
-    padding: 8px 4px;
+    width: 100px ;
+    height: 30px ;
+    padding: 4px auto;
     text-align: center;
     line-height: 1.42857143;
     width: 130px;
@@ -73,7 +73,7 @@ td.fc-axis.fc-time {
 }
 
 th.fc-day-header {    
-    height: 40px ;
+    height: 30px ;
     padding: 15px 20px;
     text-align: center;
     line-height: 1.42857143;
@@ -93,6 +93,7 @@ th.fc-day-header {
     font-weight: 700;
     color: #000
 }
+
 .fc-title p{
     width: 80%;
     white-space: nowrap;
@@ -120,9 +121,11 @@ th.fc-day-header {
     background: rgba(255, 165, 0, 1) !important; 
     
 }
+
 .overbooked{ 
     background: none !important;
 }
+
 .overbooked.bordered{ 
     border-right: 15px solid rgba(255, 165, 0, 1) !important 
 }
@@ -167,10 +170,18 @@ th.fc-day-header {
     top: 5px;
     display: inline-block;
 }
+
+/* SELECTABLE */
+.ui-selectable-helper{
+    border: 4px dotted rgba( 0, 248, 41, 1);
+    border-radius: 0;
+    background-color: rgba(0, 248, 41, 0.5);    
+}
 </style>
+
 <@row>
     <@columns>
-		<@appointmentTabs tab="specificWeek" appointmentform=appointmentform>
+        <@appointmentTabs tab="specificWeek" appointmentform=appointmentform>
             <div id="calendar"></div>
         </@appointmentTabs>
     </@columns>
@@ -178,73 +189,74 @@ th.fc-day-header {
 
 <@modal id='updatePlanningSlot'>
     <@modalBody>
-        <@formGroup rows=2>
-            <@checkBox id='doOpenSlot' name='doManageSlot' value='0' labelKey='Ouvrir' /> 
-        </@formGroup>
-        <@formGroup rows=1 labelKey='Nouvelle capacité' labelFor='hourBeginSlot'>
-            <@input type='number' id='newMaxCapacity' name='newMaxCapacity' value='1' min=1 max=99 />
-        </@formGroup>
-        <@row>
-            <@columns>
-                <@formGroup rows=1 labelKey='Début de créneau' labelFor='hourBeginSlot'>
-                    <@input type='text' id='hourBeginSlot' name='hourBeginSlot' value='' />
-                </@formGroup>
-            </@columns>
-        </@row>
-        <@row>
-            <@columns>
-                <@formGroup rows=1 labelKey='Fin de créneau' labelFor='hourEndSlot'>
-                    <@input type='text' id='hourEndSlot' name='hourEndSlot' value='' />
-                </@formGroup>
-            </@columns>
-        </@row>
-        <@formGroup rows=2>
-		    <@radioButton id='doNotShiftSlotB' name='doManageSlotShift' value='1' labelKey='Ne pas décaler les créneaux suivants' checked=true /> 
-		    <@radioButton id='doShiftSlotB' name='doManageSlotShift'  value='0' labelKey='Décaler les créneaux suivants' /> 
-        </@formGroup>
-        <@formGroup rows=2>
-            <@radioButton id='doApplySlotsOnlyB' name='doManageApplySlots' params=' class="showDays"' value='1' labelKey='Appliquer à ce créneaux uniquement' checked=true /> 
-            <@radioButton id='doApplySlotsB'  name='doManageApplySlots' params=' class="showDays"' value='0' labelKey='Appliquer aux créneaux ' /> 
-        </@formGroup>
-        <@formGroup rows=2 class="dayList">
-            <@checkBox id='slotMondayB' name='daySlot' value='1' labelKey='Lundi' /> 
-            <@checkBox id='slotTuedayB' name='daySlot' value='2' labelKey='Mardi' /> 
-            <@checkBox id='slotWednesdayB' name='daySlot' value='3' labelKey='Mercredi' /> 
-            <@checkBox id='slotThursdayB' name='daySlot' value='4' labelKey='Jeudi' /> 
-            <@checkBox id='slotFridayB' name='daySlot' value='5' labelKey='Vendredi' /> 
-            <@checkBox id='slotSaturdayB' name='daySlot' value='6' labelKey='Samedi' /> 
-            <@checkBox id='slotSundayB' name='daySlot' value='7' labelKey='Dimanche' /> 
-        </@formGroup>
-        <@row>
-            <@columns>
-                <@button id='saveSlotStateB' color='primary' title='Enregistrer' />
-		        <@button id='cancelSlotStateB' color='secondary' title='Annuler' params=' data-dismiss="modal" aria-label="Close"' />
-            </@columns>
-        </@row>
+        <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>					
+            <!-- <@messages errors=errors infos=infos/>					 -->
+            <input type="hidden" name="action" value="doModifySlot" >
+            <input type="hidden" id="id_slot" name="id_slot" value="" >						
+            <input type="hidden" name="date_of_display" value='${date_of_display}' >						
+            <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
+                <@staticText id="dtSlot"></@staticText>
+            </@formGroup>
+            <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
+                <@checkBox name='is_open' id='is_open' value='true' checked=true />
+            </@formGroup>
+            <@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
+                <@input type='text' id='max_capacity' name='max_capacity' value='' params='onkeypress="return validateQty(event);"' maxlength=3 />	
+            </@formGroup>
+            <@formGroup labelFor='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
+                <@staticText id="timeStart"></@staticText>
+            </@formGroup>
+            <@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
+                <@inputGroup>
+                    <@input type='text' name='ending_time' id='ending_time' value='' />
+                    <@inputGroupItem type='addon'>
+                        <@icon style='clock-o' />
+                    </@inputGroupItem>
+                </@inputGroup>
+            </@formGroup>
+            <@formGroup labelFor='shift_slot'>
+                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot' checked=true value='false' />
+                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' value='true' />
+            </@formGroup>
+            <@formGroup>
+                <@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
+                <@button color='secondary' title='#i18n{portal.util.labelBack}' params=' data-dismiss="modal" aria-label="Close"' />
+            </@formGroup>
+        </@tform>
     </@modalBody>
 </@modal>
 
 <@modal id='updatePlanningMultiSlot'>
-	<@modalBody>
-        <@formGroup rows=1 labelKey='Variation capacité max' labelFor='newVarCapacity'>
-            <@input type='number' id='newVarCapacity' name='newMaxCapacity' value='1' min=-99 max=99 />
-        </@formGroup>
-        <@formGroup rows=2>
-            <@radioButton id='doApplyOnlySlotA' name='doManageSlotShift' params=' class="showDays"' checked=true value='1' labelKey='Appliquer à ce créneaux uniquement' /> 
-            <@radioButton id='doApplySlotsA' params=' class="showDays"' name='doManageSlotShift'  value='0' labelKey='Appliquer aux créneaux ' /> 
-        </@formGroup>
-        <@formGroup rows=2 class="dayList">
-            <@checkBox id='slotMondayA' name='daySlot' value='1' labelKey='Lundi' /> 
-            <@checkBox id='slotTuedayA' name='daySlot' value='2' labelKey='Mardi' /> 
-            <@checkBox id='slotWednesdayA' name='daySlot' value='3' labelKey='Mercredi' /> 
-            <@checkBox id='slotThursdayA' name='daySlot' value='4' labelKey='Jeudi' /> 
-            <@checkBox id='slotFridayA' name='daySlot' value='5' labelKey='Vendredi' /> 
-            <@checkBox id='slotSaturdayA' name='daySlot' value='6' labelKey='Samedi' /> 
-            <@checkBox id='slotSundayA' name='daySlot' value='7' labelKey='Dimanche' /> 
-        </@formGroup>
-		<@button id='saveSlotStateA' color='primary' title='Enregistrer' />
-		<@button id='cancelSlotStateA' color='secondary' title='Annuler' params=' data-dismiss="modal" aria-label="Close"' />
-	</@modalBody>
+    <@modalBody>
+        <@tform action="">
+            <input type="hidden" name="id_form" value="${appointmentform.idForm}">
+            <input type="hidden" id="slotsData" name="slotsData" value="">
+            <@row>
+            <@columns>
+            <@formGroup rows=1 labelKey='Nouvelle capacité' labelFor='newMaxCapacity'>
+                <@input type='number' id='newMaxCapacity' name='newMaxCapacity' value='1' min=1 max=99 />
+            </@formGroup>
+            </@columns>
+            </@row>
+            <@row>
+            <@columns>
+            <@formGroup rows=1 labelKey='Variation capacité max' labelFor='newVarCapacity'>
+                <@input type='number' id='newVarCapacity' name='newVarCapacity' value='1' min=-99 max=99 />
+            </@formGroup>
+            </@columns>
+            </@row>
+            <@formGroup rows=2>
+                <@radioButton id='doApplyOnlySlots' name='doManageSlotShift' params=' class="showDays"' checked=true value='1' labelKey='Appliquer à ce créneaux uniquement' /> 
+                <@radioButton id='doApplySlots' params=' class="showDays"' name='doManageSlotShift'  value='0' labelKey='Appliquer aux créneaux ' /> 
+            </@formGroup>
+            <@row>
+                <@columns>
+                    <@button type='submit' color='primary' title='Enregistrer' />
+                    <@button color='secondary' title='Annuler' params=' data-dismiss="modal" aria-label="Close"' />
+                </@columns>
+            </@row>
+        </@tform>
+    </@modalBody>
 </@modal> 
 
 <script type="text/javascript">
@@ -267,6 +279,9 @@ th.fc-day-header {
                 url     : eventUrl + '&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}',
                 backgroundColor : <#if event.isOpen & !event.isPassed>'white'<#else>'#bebebe'</#if>,
                 borderColor : '#bebebe',
+                isOpen : '${event.isOpen?c}',
+                isSpecific : '${event.isSpecific?c}',
+                maxCapacity: '${event.maxCapacity}',
             },
         </#list>
     </#if>
@@ -284,27 +299,6 @@ th.fc-day-header {
             height: 'auto',
             locale: 'fr',
             themeSystem: 'jquery-ui',
-            selectable: true,
-            unselectAuto: true,
-            selectHelper: true,
-            selectMinDistance: 0,
-           // theme: true,
-			themeSystem: 'jquery-ui',
-            editable: false,
-            select: function(startDate, endDate) {
-               var isMore = endDate.diff(startDate, 'minutes') - ${min_duration[3..]};
-               console.log( isMore );
-               if (( isMore > 0 )){
-                   $('#updatePlanningMultiSlot').modal('show');
-                } else {
-                    $('#updatePlanningSlot').modal('show');
-                }
-            },
-            // selectOverlap: function(event) {
-            //     // console.log( event.start,event.end,event.url );
-            //     return true;
-            // },
-            
             customButtons: {
                 datePicker: {
                     text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
@@ -353,6 +347,7 @@ th.fc-day-header {
             },
             eventClick: function(calEvent, jsEvent, view) {
                 location.href = calEvent.url;
+                //return false;
             },
             events: events,
             eventRender: function(event, element) {
@@ -361,8 +356,11 @@ th.fc-day-header {
                     placement : 'bottom',
                     html : true,
                     trigger : 'hover',
+                    animation: false,
                     content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
                 });
+                $(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('hh:mm') + '","endTime":"' + event.end.format('hh:mm') + '","open":"' + event.isOpen + '","specific":"' + event.isSpecific + '","maxcapacity":"' + event.maxCapacity + '"' )
+                
             },
             viewRender: function(view, element) {
                 var minDate = moment();
@@ -391,23 +389,68 @@ th.fc-day-header {
                 $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
             },
-            windowResize: function(view) {
-                if ($(window).width() < 1050){
-                    $('#calendar').fullCalendar( 'changeView', 'agendaDay' );
-                    $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextDay}</span>");
-                    $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousDay}</span>");
-                } else {
-                    $('#calendar').fullCalendar( 'changeView', 'agendaWeek' );                        
-                    $('.spanNextButton').replaceWith("<span class='spanNextButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.nextWeek}</span>");
-                    $('.spanPrevButton').replaceWith("<span class='spanPrevButton' style='margin-right: 5px;'>#i18n{appointment.appointmentApp.previousWeek}</span>");
-                }
-            },
         });
 
-        $('.dayList').toggle();
-        $('.showDays').click(function(e){
-            $('.dayList').toggle();
+        $('#newMaxCapacity').change(function() {
+            $('#newVarCapacity').val('0');
+        })
+
+        $('#newVarCapacity').change(function() {
+            $('#newMaxCapacity').val('0');
         });
-        
-    });
+
+        /* Event selection          */ 
+        var eventIdx=0, eventData='';
+
+        $( ".fc-content-skeleton" ).selectable({
+            filter: ".fc-time-grid-event.fc-v-event",
+            selecting: function( event, ui ) {
+                eventIdx++;
+            },
+            unselecting: function( event, ui ) {
+                eventIdx--;
+            },
+            stop: function() {
+                console.log(  eventIdx  );   
+                $( ".ui-selected", this ).each( function() {
+                    console.log( eventData );
+                    if ( eventIdx > 1 ){
+                        eventData += '{' + $(this).data('event') + '};' ;
+                        const events =  JSON.stringify( eventData );
+                        $('#slotsData').val( '[' + events + ']' );
+                        $('#updatePlanningMultiSlot').modal('show');
+                    } else {
+                        eventData ='{' + $(this).data('event') + '}';                       
+                        const evt = JSON.parse(eventData); 
+                        $('#id_slot').val( evt.slotId );
+                        $('#is_open').prop( "checked", evt.open );
+                        $('#max_capacity').val( evt.maxcapacity );
+                        $('#dtSlot').text( evt.startDate );
+                        $('#timeStart').text( evt.startTime );
+                        $('#ending_time').val( evt.endTime );
+                        $('#updatePlanningSlot').modal('show');
+                        
+                    }
+                });
+                eventData='';
+            }
+        });
+  });
+  		
+function validateQty(event) {
+    var key = window.event ? event.keyCode : event.which;
+
+if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+    || event.keyCode == 37 || event.keyCode == 39) {
+    return true;
+}
+else if ( key < 48 || key > 57 ) {
+    return false;
+}
+else return true;
+};
+$('#ending_time').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
 </script>
