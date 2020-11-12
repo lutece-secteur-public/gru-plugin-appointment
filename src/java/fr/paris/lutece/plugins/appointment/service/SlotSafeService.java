@@ -475,10 +475,10 @@ public final class SlotSafeService
                 // - the minimal value between the potentially new max capacity and the old remaining places plus the number of places released by the
                 // appointment
                 // - and the capacity of the slot minus the new places taken on the slot (0 if negative)
-                int nNewRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldRemainingPlaces + nbPlaces ), Math.max( 0, nMaxCapacity - nNewPlacesTaken ) );
+                int nNewRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldRemainingPlaces + nbPlaces ), ( nMaxCapacity - nNewPlacesTaken ) );
 
                 int nNewPotentialRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldPotentialRemaningPlaces + nbPlaces ),
-                        Math.max( 0, nMaxCapacity - nNewPlacesTaken ) );
+                        ( nMaxCapacity - nNewPlacesTaken ) );
 
                 slot.setNbRemainingPlaces( nNewRemainingPlaces );
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
@@ -843,8 +843,8 @@ public final class SlotSafeService
                 // !!!! If there are appointments on this slot and if the
                 // slot is already full, the slot will be surbooked !!!!
                 int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                slot.setNbPotentialRemainingPlaces( Math.max( 0, oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract ) );
-                slot.setNbRemainingPlaces( Math.max( 0, oldSlot.getNbRemainingPlaces( ) - nValueToSubstract ) );
+                slot.setNbPotentialRemainingPlaces(  oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract  );
+                slot.setNbRemainingPlaces(  oldSlot.getNbRemainingPlaces( ) - nValueToSubstract  );
             }
         }
     }

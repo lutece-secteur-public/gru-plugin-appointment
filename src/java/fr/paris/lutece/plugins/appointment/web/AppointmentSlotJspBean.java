@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
@@ -48,6 +50,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
@@ -76,6 +83,7 @@ import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -118,13 +126,19 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_INFO_SLOT_UPDATED = "appointment.modifyCalendarSlots.messageSlotUpdated";
     private static final String MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED = "appointment.modifyCalendarSlots.messageValidatedAppointmentsImpacted";
     private static final String MESSAGE_INFO_SURBOOKING = "appointment.modifyCalendarSlots.messageSurbooking";
+    private static final String MESSAGE_INFO_MULTI_SURBOOKING = "appointment.modifyCalendarMultiSlots.messageSurbooking";
+
     private static final String MESSAGE_INFO_OVERLOAD = "appointment.modifyCalendarSlots.messageOverload";
     private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
     private static final String MESSAGE_CONFIRM_REMOVE_WEEK_DEFINITION = "appointment.message.confirmRemoveWeekDefinition";
+    private static final String MESSAGE_ERROR_PARSING_JSON = "appointment.message.error.parsing.json";
+
 
     // Parameters
+    private static final String PARAMETER_ENDING_DATE_TO_APPLY = "ending_date_apply";
+    private static final String PARAMETER_STARTING_DATE_TO_APPLY = "starting_date_apply";
     private static final String PARAMETER_ENDING_DATE_OF_DISPLAY = "ending_date_of_display";
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
     private static final String PARAMETER_ERROR_MODIFICATION = "error_modification";
@@ -144,6 +158,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
     private static final String PARAMETER_ID_WEEK_DEFINITION = "id_week_definition";
     private static final String PARAMETER_SHIFT_SLOT = "shift_slot";
+    private static final String PARAMETER_DATA = "slotsData";
+    private static final String PARAMETER_IDENTICAL = "identical";
+    private static final String PARAMETER_CAPACITY_MOD = "capacity";
 
     // Marks
     private static final String MARK_TIME_SLOT = "timeSlot";
@@ -162,6 +179,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String ACTION_MODIFY_ADVANCED_PARAMETERS = "modifyAdvancedParameters";
     private static final String ACTION_CONFIRM_REMOVE_PARAMETER = "confirmRemoveParameter";
     private static final String ACTION_REMOVE_PARAMETER = "doRemoveParameter";
+    private static final String ACTION_DO_MODIFY_LIST_SLOT = "doModifyListSlot";
 
     // Templates
     private static final String TEMPLATE_MANAGE_SPECIFIC_WEEK = "admin/plugins/appointment/slots/manage_specific_week.html";
@@ -701,7 +719,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 slotFromSessionOrFromDb.setEndingTime( endingTime );
                 slotFromSessionOrFromDb.setEndingDateTime( slotFromSessionOrFromDb.getDate( ).atTime( endingTime ) );
                 bEndingTimeHasChanged = true;
-            }
+            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
             if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slotFromSessionOrFromDb, bShiftSlot ) )
                     || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, slotFromSessionOrFromDb ) ) )
             {
@@ -734,7 +752,82 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, slotFromSessionOrFromDb.getDate( ).toString( ) );
         return redirect( request, VIEW_MANAGE_SPECIFIC_WEEK, additionalParameters );
     }
+  
+    /**
+     * Do modify a list of slot selected
+     * 
+     * @param request
+     *            the request
+     * @return to the page of the specific week
+     */
+    @Action( ACTION_DO_MODIFY_LIST_SLOT )
+    public String doModifyListSlots( HttpServletRequest request )
+    {        
+        int nVarMaxCapacity= 0;
+        int nMaxCapacity= -1; 
+        boolean bShiftSlot = false;       
+        LocalTime endingTime = null;
+        		
+        String strIdForm =  request.getParameter( PARAMETER_ID_FORM ) ;
+        String strShiftSlot= request.getParameter( PARAMETER_SHIFT_SLOT );
+        String strEndingTime = request.getParameter( PARAMETER_ENDING_TIME );
+        String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
+        String strApplyOnIdentical = request.getParameter( PARAMETER_IDENTICAL );
 
+        boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );        
+        String strCap = request.getParameter(PARAMETER_CAPACITY_MOD);
+        
+        if( strCap.equals("var_cap")) {     	
+        
+        	nVarMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+       
+        }else if ( strCap.equals("new_cap")){
+        	
+            nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+
+        }
+        
+        if( !StringUtils.isEmpty( strShiftSlot ) && !StringUtils.isEmpty( strEndingTime )) {
+        	
+        	 bShiftSlot = Boolean.parseBoolean( request.getParameter( PARAMETER_SHIFT_SLOT ) );
+        	 endingTime= LocalTime.parse( strEndingTime );
+        }
+          
+        
+        String strJson= request.getParameter( PARAMETER_DATA );
+        AppLogService.debug( "slot - Received strJson : " + strJson); 
+   	    ObjectMapper mapper = new ObjectMapper( );
+   		mapper.registerModule(new JavaTimeModule( ));
+        mapper.configure( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false );
+        
+        List<Slot> listSlot = new ArrayList< >();
+		try {
+			
+			listSlot = mapper.readValue(strJson, new TypeReference<List<Slot>>(){});
+			
+			if( !StringUtils.isEmpty( strApplyOnIdentical ) && Boolean.parseBoolean( strApplyOnIdentical ) ) {
+
+      			 LocalDate startingDate = LocalDate.parse( request.getParameter( PARAMETER_STARTING_DATE_TO_APPLY ) );
+	             LocalDate endingDate = LocalDate.parse( request.getParameter( PARAMETER_ENDING_DATE_TO_APPLY ) );
+				
+				listSlot = buildListSlotsToUpdate( listSlot, Integer.parseInt( strIdForm ) ,  startingDate,  endingDate );
+	        }
+		
+		} catch (  IOException e ) {
+
+	    	AppLogService.error( MESSAGE_ERROR_PARSING_JSON + e.getMessage(), e );
+            addError( MESSAGE_ERROR_PARSING_JSON, getLocale( ) );
+
+		}
+		           	
+		updateListSlots( listSlot, nVarMaxCapacity, nMaxCapacity, bIsOpen, bShiftSlot, endingTime );
+        
+        Map<String, String> additionalParameters = new HashMap<>( );
+        additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
+        additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, strDateOfDisplay );
+        return redirect( request, VIEW_MANAGE_SPECIFIC_WEEK, additionalParameters );
+    }
+ 
     /**
      * Check the ending time of a time slot
      * 
@@ -893,5 +986,150 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
             }
         }
     }
+    /**
+     * Update a list of slot
+     * @param listSlot the list of slot to update
+     * @param nVarMaxCapacity the var capacity
+     * @param nMaxCapacity the Max capacity
+     * @param bIsOpen he new boolean opening value
+     * @param bShiftSlot The shift 
+     * @param endingTime rhe Ending time
+     */
+    private void updateListSlots( List< Slot > listSlot, int nVarMaxCapacity, int nMaxCapacity, boolean bIsOpen, boolean bShiftSlot, LocalTime endingTime ){
+    	
+    	 int nNewMaxCapacity= 0;
+         boolean bOpeningHasChanged = false;
+         boolean appointmentsImpacted = false;
+         boolean bEndingTimeHasChanged = false;
+     	 StringBuilder sbAlert = new StringBuilder( );
 
+
+    	 for(Slot slot: listSlot ){
+    		 
+	    	 Lock lock = SlotSafeService.getLockOnSlot( slot.getIdSlot( ) );
+		        lock.lock( );
+		        try
+		        {
+		            
+		            if ( bIsOpen != slot.getIsOpen( ) )
+		            {
+		            	slot.setIsOpen( bIsOpen );
+		            	bOpeningHasChanged = true;
+		            }
+		
+		            // If we edit the slot, we need to check if this slot is not a closing
+		            // day
+		            ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( slot.getIdForm( ),
+		            		slot.getDate( ) );
+		            if ( closingDay != null )
+		            {
+		                // If the slot is a closing day, we need to remove it from the table
+		                // closing day so that the slot is not in conflict with the
+		                // definition of the closing days
+		                ClosingDayService.removeClosingDay( closingDay );
+		            }
+		            if ( nVarMaxCapacity != 0 || ( nMaxCapacity >= 0 && nMaxCapacity != slot.getMaxCapacity( )) )
+		            {
+		            	nNewMaxCapacity= (nVarMaxCapacity != 0)? slot.getMaxCapacity() + nVarMaxCapacity : nMaxCapacity;
+		            	if( nNewMaxCapacity < 0) {
+		            		
+		            		nNewMaxCapacity= 0;
+		            	}
+		            	
+		            	
+		            	slot.setMaxCapacity( nNewMaxCapacity );
+		                // Need to set also the nb remaining places and the nb potential
+		                // remaining places
+		                // If the slot already exist, the good values will be set at the
+		                // update of the slot with taking the old values
+		                // If it is a new slot, the value set here will be good
+		            	slot.setNbRemainingPlaces( nNewMaxCapacity );
+		            	slot.setNbPotentialRemainingPlaces( nNewMaxCapacity );
+		            }
+		            LocalTime previousEndingTime = slot.getEndingTime( );
+		            if ( endingTime != null && !endingTime.equals( previousEndingTime ) )
+		            {
+		                slot.setEndingTime( endingTime );
+		                slot.setEndingDateTime( slot.getDate( ).atTime( endingTime ) );
+		                bEndingTimeHasChanged = true;
+		            }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+		            if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slot, bShiftSlot ) )
+		                    || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, slot ) ) )
+		            {
+		                addWarning( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
+	
+		            }else {
+		            	
+		                SlotSafeService.updateSlot( slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
+		                if( !appointmentsImpacted ) {
+		                	
+		                	appointmentsImpacted= !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slot );
+		                }
+			            AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, String.valueOf( slot.getIdSlot( )), getUser( ) ) );
+		
+			            if( slot.getMaxCapacity( ) < slot.getNbPlacesTaken( ) ) {
+			            	
+			            	sbAlert.append( slot.getStartingDateTime() );
+			            	sbAlert.append( "-" );
+			            	sbAlert.append( slot.getEndingDateTime() );
+			            	sbAlert.append( ", " );
+		
+			            }
+		            }
+		           
+		        }
+		        finally
+		        {
+		
+		            lock.unlock( );
+		        }
+    	 }
+    	 
+         if( CollectionUtils.isNotEmpty( listSlot ) ) {
+         	
+         	addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
+         }
+         
+         if ( appointmentsImpacted && bOpeningHasChanged )
+         {
+             addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+         }
+         
+         if ( !StringUtils.isEmpty( sbAlert.toString( )) )
+         { 
+             Object [ ] args = {
+             		sbAlert.toString( )
+             };            
+             addInfo( I18nService.getLocalizedString( MESSAGE_INFO_MULTI_SURBOOKING, args, getLocale( ) ) );
+         }
+    }
+    /**
+     * Build list of slot 
+     * @param listSlotSelected the list of slot builded
+     * @param nIdForm the id form
+     * @param startingDate the starting date
+     * @param endingDate the ending date
+     * @return the list builded
+     */
+    private List<Slot> buildListSlotsToUpdate( List<Slot> listSlotSelected, int nIdForm, LocalDate startingDate, LocalDate endingDate ) {
+    	
+    	List<Slot> listBuilded= new ArrayList< >( );
+    	listBuilded.addAll(listSlotSelected);
+        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
+        List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDate, endingDate );
+
+        for(Slot slot: listSlotSelected ) {
+        	
+        	listBuilded.addAll( listSlots.stream().filter(slt -> slt.getStartingTime().equals(slot.getStartingTime( ))  
+        			&& slt.getEndingTime().equals(slot.getEndingTime() )
+        			&& slt.getDate().getDayOfWeek().getValue()== slot.getDate().getDayOfWeek().getValue())
+        			.collect( Collectors.toList( )));
+        }
+    	
+        return listBuilded;
+    }
 }
+
+
+
+

@@ -47,7 +47,12 @@
             <version>[1.0.0,)</version>
             <type>lutece-plugin</type>
          </dependency>
-        
+         
+          <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.11.0</version>
+        </dependency>
         <!-- Dozer - Java Bean to Java Bean -->
         <dependency>
             <groupId>net.sf.dozer</groupId>

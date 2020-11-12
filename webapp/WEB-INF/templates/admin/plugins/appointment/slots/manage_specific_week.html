@@ -189,6 +189,7 @@ th.fc-day-header {
 <@row>
     <@columns>
         <@appointmentTabs tab="specificWeek" appointmentform=appointmentform>
+            <@messages errors=errors warnings=warnings infos=infos/>
             <div id="calendar"></div>
         </@appointmentTabs>
     </@columns>
@@ -197,10 +198,12 @@ th.fc-day-header {
 <@modal id='updatePlanningSlot'>
     <@modalBody>
         <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>					
-            <!-- <@messages errors=errors infos=infos/>					 -->
-            <input type="hidden" name="action" value="doModifySlot" >
+            <input type="hidden" name="action" value="doModifyListSlot" >
+            <input type="hidden" name="id_form" value="${appointmentform.idForm}">
             <input type="hidden" name="date_of_display" value="${date_of_display}" >
-            <input type="hidden" id="slotData" name="slotsData" value="">						
+            <input type="hidden" id="slotData" name="slotsData" value=''>	
+            <input type="hidden" id="capacity" name="capacity" value="new_cap">						
+            					
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
             </@formGroup>
@@ -235,18 +238,22 @@ th.fc-day-header {
 
 <@modal id='updatePlanningMultiSlot'>
     <@modalBody>
-        <@tform action="">
+        <@tform action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
+            
+            <input type="hidden" name="action" value="doModifyListSlot" >
             <input type="hidden" name="id_form" value="${appointmentform.idForm}">
-            <input type="hidden" id="slotsData" name="slotsData" value="">
+            <input type="hidden" id="slotsData" name="slotsData" value=''>
+            <input type="hidden" name="date_of_display" value="${date_of_display}" >						
+            
             <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
                 <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
             </@formGroup>
             <@row>
             <@columns>
                 <@formGroup labelFor='shift_slot'>
-                    <@radioButton labelFor='var_cap' labelKey='Variation de capacité}' name='cap' id='var_cap' checked=true value='var' />
-                    <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='cap' id='new_cap' value='new' />
-                    <@input type='number' id='newCapacity' name='newCapacity' value='1' min=-99 max=99 />
+                    <@radioButton labelFor='var_cap' labelKey='Variation de capacité}' name='capacity' id='var_cap' checked=true value='var_cap' />
+                    <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
+                    <@input type='number' id='newCapacity' name='max_capacity' value='1' min=-99 max=99 />
                 </@formGroup>
 
             </@columns>
@@ -282,6 +289,8 @@ th.fc-day-header {
                 isOpen : '${event.isOpen?c}',
                 isSpecific : '${event.isSpecific?c}',
                 maxCapacity: '${event.maxCapacity}',
+                idForm: '${event.idForm}',
+                date: '${event.date}',
             },
         </#list>
     </#if>
@@ -359,7 +368,7 @@ th.fc-day-header {
                     animation: false,
                     content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
                 });
-                $(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('HH:mm') + '","endDate":"' + event.end.format('DD-MM-YYYY') + '","endTime":"' + event.end.format('HH:mm') + '","open":"' + event.isOpen + '","specific":"' + event.isSpecific + '","maxcapacity":"' + event.maxCapacity + '"' )
+                $(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
                 
             },
             viewRender: function(view, element) {
@@ -403,11 +412,11 @@ th.fc-day-header {
         });
 
         /* Event selection          */ 
-        var eventIdx=0, eventData='';
+        var eventIdx=0, eventData='',evtData='';
 
         $( ".fc-content-skeleton" ).selectable({
             filter: ".fc-time-grid-event.fc-v-event",
-            selecting: function( event, ui ) {
+            selecting: function( eveyevent, ui ) {
                 eventIdx++;
             },
             unselecting: function( event, ui ) {
@@ -418,21 +427,23 @@ th.fc-day-header {
                 $( ".ui-selected", this ).each( function() {
                     console.log( eventData );
                     if ( eventIdx > 1 ){
-                        eventData += '{' + $(this).data('event') + '};' ;
+                        eventData += '{' + $(this).data('event') + '},' ;
                         const events =  JSON.stringify( eventData );
-                        $('#slotsData').val( '[' + events + ']' );
+                        evtData='['+eventData.slice(0, -1)+']'
+                        $('#slotsData').val( evtData);
                         $('#updatePlanningMultiSlot').modal('show');
                     } else {
-                        eventData ='{' + $(this).data('event') + '}';                       
+                        eventData ='{' + $(this).data('event') + '}';  
                         const events = JSON.stringify(eventData); 
-                        $('#slotData').val( '[' + events + ']' );
+			evtData= '['+eventData+']';
+                        $('#slotData').val( evtData );
                         const evt = JSON.parse(eventData); 
-                        const isOpen = JSON.parse( evt.open )
+                        const isOpen = JSON.parse( evt.isOpen )
                         $('#is_open').prop( "checked", isOpen );
                         $('#max_capacity').val( evt.maxcapacity );
-                        $('#dtSlot').text( evt.startDate );
-                        $('#timeStart').text( evt.startTime );
-                        $('#ending_time').val( evt.endTime );
+                        $('#dtSlot').text( evt.startingDateTime );
+                        $('#timeStart').text( evt.startingTime );
+                        $('#ending_time').val( evt.endingTime );
                         $('#updatePlanningSlot').modal('show');
                         
                     }
