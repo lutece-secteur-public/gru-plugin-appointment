@@ -442,7 +442,7 @@ th.fc-day-header {
                         const evt = JSON.parse(eventData); 
                         const isOpen = JSON.parse( evt.isOpen )
                         $('#is_open').prop( "checked", isOpen );
-                        $('#max_capacity').val( evt.maxcapacity );
+                        $('#max_capacity').val( evt.maxCapacity );
                         $('#dtSlot').text( evt.startingDateTime );
                         $('#timeStart').text( evt.startingTime );
                         $('#ending_time').val( evt.endingTime );
