@@ -199,8 +199,8 @@ th.fc-day-header {
         <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>					
             <!-- <@messages errors=errors infos=infos/>					 -->
             <input type="hidden" name="action" value="doModifySlot" >
-            <input type="hidden" id="id_slot" name="id_slot" value="" >						
-            <input type="hidden" name="date_of_display" value="${date_of_display}" >						
+            <input type="hidden" name="date_of_display" value="${date_of_display}" >
+            <input type="hidden" id="slotData" name="slotsData" value="">						
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
             </@formGroup>
@@ -359,7 +359,7 @@ th.fc-day-header {
                     animation: false,
                     content : '<center>'+event.start.format('ddd DD/MM')+'</center>' + '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
                 });
-                $(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('hh:mm') + '","endDate":"' + event.end.format('DD-MM-YYYY') + '","endTime":"' + event.end.format('hh:mm') + '","open":"' + event.isOpen + '","specific":"' + event.isSpecific + '","maxcapacity":"' + event.maxCapacity + '"' )
+                $(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('HH:mm') + '","endDate":"' + event.end.format('DD-MM-YYYY') + '","endTime":"' + event.end.format('HH:mm') + '","open":"' + event.isOpen + '","specific":"' + event.isSpecific + '","maxcapacity":"' + event.maxCapacity + '"' )
                 
             },
             viewRender: function(view, element) {
@@ -424,8 +424,9 @@ th.fc-day-header {
                         $('#updatePlanningMultiSlot').modal('show');
                     } else {
                         eventData ='{' + $(this).data('event') + '}';                       
+                        const events = JSON.stringify(eventData); 
+                        $('#slotData').val( '[' + events + ']' );
                         const evt = JSON.parse(eventData); 
-                        $('#id_slot').val( evt.slotId );
                         const isOpen = JSON.parse( evt.open )
                         $('#is_open').prop( "checked", isOpen );
                         $('#max_capacity').val( evt.maxcapacity );
