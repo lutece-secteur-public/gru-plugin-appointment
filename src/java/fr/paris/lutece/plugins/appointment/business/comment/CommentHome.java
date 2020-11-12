@@ -128,12 +128,29 @@ public final class CommentHome
      *            the date start
      * @param endingDate
      *            the date end
-     * @returnThe instance of the comment
+     * @returnThe list of the comments
      */
     public static List<Comment> selectCommentsList( Date startingDate, Date endingDate, int nIdForm )
     {
 
         return _dao.selectCommentsList( _plugin, startingDate, endingDate, nIdForm );
+    }
+    
+    /**
+     * Load the data from the table
+     * 
+     * @param plugin
+     *            the plugin
+     * @param startingDate
+     *            the date start
+     * @param endingDate
+     *            the date end
+     * @returnThe list of the comments
+     */
+    public static List<Comment> selectCommentsListInclusive( Date startingDate, Date endingDate, int nIdForm )
+    {
+
+        return _dao.selectCommentsListInclusive( _plugin, startingDate, endingDate, nIdForm );
     }
 
     /**
