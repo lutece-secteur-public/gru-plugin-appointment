@@ -175,6 +175,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public String doAddComment( HttpServletRequest request )
     {
         User user = getUser( );
+        String strReferrer = request.getHeader("referer");
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         _comment = new Comment( );
         _comment.setIdForm( nIdForm );
@@ -191,6 +192,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
         url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
         String strMessageUrl;
+        
+        
 
         // Check constraints
         if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -201,9 +204,18 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         else
         {
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_CREATED, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
-            CommentHome.create( _comment );
+        	//check if the view is directly loaded from the plugin or not
+            if (strReferrer.contains( JSP_MANAGE_APPOINTMENTS ) )
+            {
+            	strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_CREATED, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+            }
+            else
+            {
+            	strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_CREATED, strReferrer, AdminMessage.TYPE_CONFIRMATION );
+            }
 
+            CommentHome.create( _comment );
+            
             return redirect( request, strMessageUrl );
         }
 
