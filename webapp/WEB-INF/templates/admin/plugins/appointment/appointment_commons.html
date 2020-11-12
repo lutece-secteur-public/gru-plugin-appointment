@@ -140,37 +140,36 @@
     </#if>
 </#function>
 
-<#macro getCommentForm idComment idStartingDate idEndingDate action idForm>
+<#macro getCommentForm idComment idStartingDate idEndingDate action idForm locale=locale>
 <@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
-    
     <input type='hidden' name='action' value="${action}" />
     <input type='hidden' name='id_form' value="${idForm}" />
     <input type='hidden' name='id_comment' <#if comment??>value="${comment.id!''}"</#if> />
-
-    <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}'>
+    <@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' rows=2>
         <@input type='textarea' name='comment' id=idComment richtext=true />
     </@formGroup>
-    
-    <@formGroup labelFor='startingValidityDate' labelKey='#i18n{create_comment.labelStartingValidityDate}'>
+    <@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}'>
         <@inputGroup>
             <@input type='text' name='startingValidityDate' id=idStartingDate />
-            <@inputGroupItem type='text'>
-				<@icon style='calendar' />
+            <@inputGroupItem type='addon'>
+            <@icon style='calendar' />
             </@inputGroupItem>
         </@inputGroup>
     </@formGroup>
-    
-    <@formGroup labelFor='endingValidityDate' labelKey='#i18n{create_comment.labelEndingValidityDate}'>
+    <@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}'>
         <@inputGroup>
             <@input type='text' name='endingValidityDate' id=idEndingDate />
-            <@inputGroupItem type='text'>
-				<@icon style='calendar' />
+            <@inputGroupItem type='addon'>
+            <@icon style='calendar' />
             </@inputGroupItem>
         </@inputGroup>
     </@formGroup>
-    
     <@formGroup labelFor='sub' labelKey=''>
-        <@button type='submit' name='action_${action}' buttonIcon='sea' title='Enregistrer' />   
+        <@button type='submit' name='action_${action}' buttonIcon='check' title='Enregistrer' />   
     </@formGroup>
 </@tform>
+<script>
+$('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
+$('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
+</script>
 </#macro>
