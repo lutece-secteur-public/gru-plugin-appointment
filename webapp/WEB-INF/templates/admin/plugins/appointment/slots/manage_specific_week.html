@@ -54,9 +54,17 @@ th.fc-day-header {
 } 
 
 /* Begin From fullcalendar_ow_bo.css */
-td.fc-axis.fc-time {
+.fc-ltr .fc-time-grid .fc-event-container {
+	margin: 0 2px;
+    padding:0;
+}
+
+th.fc-day-header, .fc-axis.fc-time {    
+    height: 40px ;
+}
+
+.fc-axis.fc-time {
     width: 100px ;
-    height: 30px ;
     padding: 4px auto;
     text-align: center;
     line-height: 1.42857143;
@@ -73,7 +81,6 @@ td.fc-axis.fc-time {
 }
 
 th.fc-day-header {    
-    height: 30px ;
     padding: 15px 20px;
     text-align: center;
     line-height: 1.42857143;
@@ -193,7 +200,7 @@ th.fc-day-header {
             <!-- <@messages errors=errors infos=infos/>					 -->
             <input type="hidden" name="action" value="doModifySlot" >
             <input type="hidden" id="id_slot" name="id_slot" value="" >						
-            <input type="hidden" name="date_of_display" value='${date_of_display}' >						
+            <input type="hidden" name="date_of_display" value="${date_of_display}" >						
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
             </@formGroup>
@@ -231,30 +238,23 @@ th.fc-day-header {
         <@tform action="">
             <input type="hidden" name="id_form" value="${appointmentform.idForm}">
             <input type="hidden" id="slotsData" name="slotsData" value="">
+            <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
+                <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
+            </@formGroup>
             <@row>
             <@columns>
-            <@formGroup rows=1 labelKey='Nouvelle capacité' labelFor='newMaxCapacity'>
-                <@input type='number' id='newMaxCapacity' name='newMaxCapacity' value='1' min=1 max=99 />
-            </@formGroup>
+                <@formGroup labelFor='shift_slot'>
+                    <@radioButton labelFor='var_cap' labelKey='Variation de capacité}' name='cap' id='var_cap' checked=true value='var' />
+                    <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='cap' id='new_cap' value='new' />
+                    <@input type='number' id='newCapacity' name='newCapacity' value='1' min=-99 max=99 />
+                </@formGroup>
+
             </@columns>
             </@row>
-            <@row>
-            <@columns>
-            <@formGroup rows=1 labelKey='Variation capacité max' labelFor='newVarCapacity'>
-                <@input type='number' id='newVarCapacity' name='newVarCapacity' value='1' min=-99 max=99 />
+            <@formGroup rows=1>
+                <@button type='submit' color='primary' title='Enregistrer' />
+                <@button color='secondary' title='Annuler' params=' data-dismiss="modal" aria-label="Close"' />
             </@formGroup>
-            </@columns>
-            </@row>
-            <@formGroup rows=2>
-                <@radioButton id='doApplyOnlySlots' name='doManageSlotShift' params=' class="showDays"' checked=true value='1' labelKey='Appliquer à ce créneaux uniquement' /> 
-                <@radioButton id='doApplySlots' params=' class="showDays"' name='doManageSlotShift'  value='0' labelKey='Appliquer aux créneaux ' /> 
-            </@formGroup>
-            <@row>
-                <@columns>
-                    <@button type='submit' color='primary' title='Enregistrer' />
-                    <@button color='secondary' title='Annuler' params=' data-dismiss="modal" aria-label="Close"' />
-                </@columns>
-            </@row>
         </@tform>
     </@modalBody>
 </@modal> 
@@ -390,13 +390,16 @@ th.fc-day-header {
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
             },
         });
+       
+        $('#new_cap').click(function(){
+            $('#newCapacity').attr('min','0');
+            if( $('#newCapacity').val() < 0 ){
+                $('#newCapacity').val(0);
+            }
+        });
 
-        $('#newMaxCapacity').change(function() {
-            $('#newVarCapacity').val('0');
-        })
-
-        $('#newVarCapacity').change(function() {
-            $('#newMaxCapacity').val('0');
+        $('#var_cap').click(function(){
+            $('#newCapacity').attr('min','-99');
         });
 
         /* Event selection          */ 
