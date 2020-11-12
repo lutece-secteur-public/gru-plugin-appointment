@@ -1,18 +1,197 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
-<script src="js/jquery/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js"></script>
+<script src="js/jquery/jquery-1.11.3.min.js"></script>
+<script src="js/query/jquery-ui.min.js"></script>
+<script src="js/plugins/appointment/moment.min.js" ></script>
+<script src="js/plugins/appointment/fullcalendar.min.js"></script>
+<script src="js/plugins/appointment/locale-all.js"></script>
+<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
+<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
 <script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-<script src='js/plugins/appointment/fullcalendar.min.js' ></script>
-<script src='js/plugins/appointment/locale-all.js' ></script>
+<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" >
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+<style>
+.ui-widget-header {
+    border: 1px solid #aaa;
+    background: none;
+    color: #222;
+    font-weight: normal;
+}
+
+#toggle-add-comment{
+    position: absolute;
+    z-index: 999;
+    top: 197px;
+    left: 33px;
+    background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0);
+    color: rgb(0, 0, 0);
+}
+
+th.fc-day-header {
+    height: auto !important;
+   padding: 5px 20px !important;
+}
+
+.btn-comments{ 
+    position:absolute; right:5px; top: 0 ;z-index:99; 
+}
+
+.fc-content{ 
+    text-align:center;
+}
+
+.fc-content .fc-title i.fa-plus{
+    position: absolute;
+    right: 30px;
+    top: 8px;
+    z-index: 1;
+    display: none;
+    width: 15px
+}
+
+.fc-content:hover .fc-title  i.fa-plus{
+    display: block;
+} 
+
+/* Begin From fullcalendar_ow_bo.css */
+/* Line size */
+.fc-time-grid .fc-slats td, th.fc-day-header, .fc-axis.fc-time {    
+    height: 50px ; 
+}
+
+
+.fc-ltr .fc-time-grid .fc-event-container {
+	margin: 0 2px;
+    padding:0;
+}
+
+.fc-axis.fc-time {
+    width: 100px ;
+    padding: 4px auto;
+    text-align: center;
+    line-height: 1.42857143;
+    width: 130px;
+    margin: 0;
+    border-top: 0px solid transparent;   
+    border-right: solid 1px rgb(190, 190, 190); 
+}
+
+.fc-day-grid-event.fc-h-event.fc-event.fc-start.fc-end{
+    background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0);
+    color: rgb(0, 0, 0);
+}
+
+th.fc-day-header {    
+    padding: 15px 20px;
+    text-align: center;
+    line-height: 1.42857143;
+    margin: 0;
+    border-top: 0px solid transparent;
+	font-weight: normal;
+	vertical-align: middle;
+}
+
+.fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
+	padding: 5px; 
+}
+
+.fc-title a{
+    display: inline-block;
+    padding-top: 5px;
+    font-weight: 700;
+    color: #000
+}
+
+.fc-title p{
+    width: 80%;
+    white-space: nowrap;
+  	overflow: hidden;
+  	text-overflow: ellipsis;
+    margin: 0;
+    text-align: left;
+}
+
+.fc-title p:not(:first-child){
+   display: none;
+}
+
+.fc-helper{ 
+    background-color: rgba(0, 250, 54, .5);
+    border: 2px solid  rgb(2, 145, 33);
+}
+
+/* End fullcalendar_ow_bo.css         */
+/*** NEW                            ***/
+.tab-content{ margin-bottom: 5rem ;}
+
+/*** Overbooked                     ***/
+.overbooked.bg-full{ 
+    background: rgba(255, 165, 0, 1) !important; 
+    
+}
+
+.overbooked{ 
+    background: none !important;
+}
+
+.overbooked.bordered{ 
+    border-right: 15px solid rgba(255, 165, 0, 1) !important 
+}
+
+.overbooked.bordered .fc-title a > i.fa-plus-circle::before{
+    right: 17px;
+}
+
+.overbooked.dotted .fc-title::after{
+    content: "\f111";
+    font-family: "FontAwesome";
+    color: rgba(255, 165, 0, 1);
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    display: inline-block;
+}
+
+/*** FILLED         ***/
+.filled{ 
+    background: none !important;
+}
+
+.filled.bg-full{ 
+ background:  rgba(255,0,0,1) !important;
+}
+
+.filled.bordered{ 
+    border-right: 15px solid  rgba(255,0,0,1)  !important;
+}
+
+.filled.bordered .fc-title a > i.fa-plus-circle::before{
+    right: 17px;
+} 
+
+.filled.dotted .fc-title::after{
+    content: '\f111';
+    font-family: 'FontAwesome';
+    color:  rgba(255,0,0,1);
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    display: inline-block;
+}
+
+/* SELECTABLE */
+.ui-selectable-helper{
+    border: 4px dotted rgba( 0, 248, 41, 1);
+    border-radius: 0;
+    background-color: rgba(0, 248, 41, 0.5);    
+}
+</style>
 <@row>
 	<@columns>
 		<@messages infos=infos errors=errors />
 		<@appointmentTabs tab='typicalWeek' appointmentform=appointmentform>
-			<fieldset>
-				<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
+			<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
 					<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 					<#if listDateOfModification??>
 						<@formGroup formStyle='inline' labelFor='id_week_definition' labelKey='#i18n{appointment.modifyAppointmentForm.listDateOfModification}'>
@@ -115,7 +294,6 @@
 				</@box>
 				<hr color="black">
 				<div id="calendar"></div>
-			</fieldset>
 		</@appointmentTabs>
     </@columns>
 </@row>
@@ -178,24 +356,25 @@ function validateQty(event) {
                     textColor: '#2c2c2d',
                     backgroundColor : <#if event.isOpen>'white'<#else>'#bebebe'</#if>,
                     borderColor : '#bebebe',
+					
                 },
             </#list>
         </#if>
     ];
-    $(document).ready(function() {
+    $( function() {
         $('#calendar').fullCalendar({
             displayEventTime: false,
             defaultView: 'agendaWeek',
             height: 'auto',
             locale: 'fr',
-            theme: true,
+            themeSystem: 'jquery-ui',
             editable: false,
             header: false,
             columnFormat: columnFormat,
             slotLabelFormat: 'H:mm',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
-            allDaySlot: false,
+            //allDaySlot: false,
             minTime: minTime,
             maxTime: maxTime,
             businessHours: {
@@ -215,10 +394,49 @@ function validateQty(event) {
                     trigger : 'hover',
                     content : '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
                 });
+				$(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('HH:mm') + '","endDate":"' + event.end.format('DD-MM-YYYY') + '","endTime":"' + event.end.format('HH:mm') + '"' )
+         
             },
             eventAfterAllRender: function(view) {
                 $('.fc-event').css('cursor', 'pointer');
             },
         });
+		
+		/* Event selection          */ 
+        var eventIdx=0, eventData='';
+		
+        $( ".fc-content-skeleton" ).selectable({
+            filter: ".fc-time-grid-event.fc-v-event",
+            selecting: function( event, ui ) {
+                eventIdx++;
+            },
+            unselecting: function( event, ui ) {
+                eventIdx--;
+            },
+            stop: function() {
+                console.log(  eventIdx  );   
+                $( ".ui-selected", this ).each( function() {
+                    console.log( eventData );
+                    if ( eventIdx > 1 ){
+						
+						/*
+                        eventData += '{' + $(this).data('event') + '};' ;
+                        const events =  JSON.stringify( eventData );
+                        $('#slotsData').val( '[' + events + ']' );
+                        $('#updatePlanningMultiSlot').modal('show');
+						*/
+                    } else {
+                        eventData ='{' + $(this).data('event') + '}';                       
+						const evt = JSON.parse(eventData); 
+                        const idSlot = JSON.parse( evt.slotId );
+                
+                        location.href = eventUrl + idSlot;
+                    }
+				
+                });
+                eventData='';
+            }
+        });
+		
     });
 </script>
