@@ -56,7 +56,8 @@ public final class CommentDAO implements ICommentDAO
     private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_comment FROM appointment_comment";
     private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date >= ? and ending_validity_date <= ? and id_form = ?";
-
+    private static final String SQL_QUERY_SELECT_INCLUSIVE = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date <= ? and ending_validity_date >= ? and id_form = ?";
+    
     /**
      * {@inheritDoc }
      */
@@ -187,6 +188,41 @@ public final class CommentDAO implements ICommentDAO
     {
         List<Comment> commentList = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BETWEEN, plugin ) )
+        {
+            daoUtil.setDate( 1, startingDate );
+            daoUtil.setDate( 2, endingDate );
+            daoUtil.setInt( 3, nIdForm );
+
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+                Comment comment = new Comment( );
+                int nIndex = 1;
+
+                comment.setId( daoUtil.getInt( nIndex++ ) );
+                comment.setIdForm( daoUtil.getInt( nIndex++ ) );
+                comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setComment( daoUtil.getString( nIndex++ ) );
+                comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                comment.setCreatorUserName( daoUtil.getString( nIndex++ ) );
+
+                commentList.add( comment );
+            }
+
+            return commentList;
+        }
+    }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public List<Comment> selectCommentsListInclusive( Plugin plugin, Date startingDate, Date endingDate, int nIdForm )
+    {
+        List<Comment> commentList = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_INCLUSIVE, plugin ) )
         {
             daoUtil.setDate( 1, startingDate );
             daoUtil.setDate( 2, endingDate );

@@ -52,5 +52,10 @@ public class CommentService
 
         return CommentHome.selectCommentsList( startingDate, endingDate, nIdForm );
     }
+    
+    public static List<Comment> findListCommentsInclusive( Date startingDate, Date endingDate, int nIdForm )
+    {
 
+        return CommentHome.selectCommentsListInclusive( startingDate, endingDate, nIdForm );
+    }
 }
