@@ -1,0 +1,163 @@
+/* 12/11/2020 - CUSTOM styles for fullCalendar in appointment plugin */
+.ui-widget-header {
+    border: 1px solid #aaa;
+    background: none;
+    color: #222;
+    font-weight: normal;
+}
+
+#toggle-add-comment{
+    position: absolute;
+    z-index: 999;
+    top: 192px;
+    left: 28px;
+    background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0);
+    color: rgb(0, 0, 0);
+}
+
+th.fc-day-header {
+    height: auto !important;
+    padding: 5px 20px !important;
+}
+
+.btn-comments{ 
+    position:absolute; right:5px; top: 0 ;z-index:99; 
+}
+
+.fc-content{ 
+    text-align:center;
+}
+
+.fc-content .fc-title i.fa-plus{
+    position: absolute;
+    right: 30px;
+    top: 8px;
+    z-index: 1;
+    display: none;
+    width: 15px
+}
+
+.fc-content:hover .fc-title  i.fa-plus{
+    display: block;
+} 
+
+/* Begin From fullcalendar_ow_bo.css */
+.fc-time-grid .fc-slats td, th.fc-day-header, .fc-axis.fc-time {    
+    height: 40px ; 
+}
+td.fc-axis.fc-time {
+    width: 80px ;
+    padding: 8px 4px;
+    text-align: center;
+    line-height: 1.42857143;
+    width: 130px;
+    margin: 0;
+    border-top: 0px solid transparent;   
+    border-right: solid 1px rgb(190, 190, 190); 
+}
+
+.fc-event, .fc-event p{
+    background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0);
+    color: rgb(0, 0, 0);
+}
+
+th.fc-day-header {    
+    padding: 15px 20px;
+    text-align: center;
+    line-height: 1.42857143;
+    margin: 0;
+    border-top: 0px solid transparent;
+	font-weight: normal;
+	vertical-align: middle;
+}
+
+.fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
+	padding: 5px; 
+}
+
+.fc-title a{
+    display: inline-block;
+    padding-top: 5px;
+    font-weight: 700;
+    color: #000
+}
+.fc-title p{
+    width: 80%;
+    white-space: nowrap;
+  	overflow: hidden;
+  	text-overflow: ellipsis;
+    margin: 0;
+    text-align: left;
+}
+
+.fc-title p:not(:first-child){
+   display: none;
+}
+
+/* End fullcalendar_ow_bo.css         */
+/*** NEW                            ***/
+.tab-content{ margin-bottom: 5rem ;}
+
+/*** Overbooked                     ***/
+.overbooked.bg-full{ 
+    background: rgba(255, 165, 0, 1) !important; 
+}
+
+.overbooked{ 
+    background: rgba(255, 165, 0, 1) !important;
+}
+
+.overbooked.bordered{ 
+    border-right: 15px solid #ffa500 !important 
+}
+
+.overbooked.bordered .fc-title a > i.fa-plus-circle::before{
+    right: 17px;
+}
+
+/* 
+.overbooked.dotted .fc-title::after{
+    content: "\f111";
+    font-family: "FontAwesome";
+    color: rgba(255, 165, 0, 1);
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    display: inline-block;
+} */
+
+/*** FILLED         ***/
+.filled{ 
+    background: rgba(222,222,222,1) !important;
+}
+
+.filled.bg-full{ 
+    background:  rgba(255,0,0,1) !important;
+}
+
+.filled.bordered{ 
+    border-right: 15px solid  rgba(255,0,0,1)  !important;
+}
+
+.filled.bordered .fc-title a > i.fa-plus-circle::before{
+    right: 17px;
+} 
+
+.filled.dotted .fc-title::after{
+    content: '\f111';
+    font-family: 'FontAwesome';
+    color:  rgba(255,0,0,1);
+    position: absolute;
+    right: 15px;
+    top: 5px;
+    display: inline-block;
+}
+
+/* SELECTABLE */
+.ui-selectable-helper{
+    border: 4px dotted rgba( 0, 248, 41, 1);
+    border-radius: 0;
+    background-color: rgba(0, 248, 41, 0.5);    
+}
