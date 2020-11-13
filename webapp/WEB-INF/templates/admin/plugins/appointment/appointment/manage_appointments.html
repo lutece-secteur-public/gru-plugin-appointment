@@ -147,10 +147,7 @@
 												<td>
 													<#if rightChangeDate?? && rightChangeDate && !appointment.isCancelled>
 														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}&nbPlacesToTake=${appointment.nbBookedSeats!}' title='#i18n{appointment.manageAppointments.labelModifyDateAppointment}' hideTitle=['all'] buttonIcon='calendar' size='sm' /> 
-													</#if> 
-													<#if rightModify?? && rightModify && !appointment.isCancelled> 
-														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=modifyAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}&starting_date_time=${appointment.startingDateTime}&ending_date_time=${appointment.endingDateTime}&is_modification=true' title='#i18n{appointment.manageAppointments.labelModifyAppointment}' hideTitle=['all'] buttonIcon='edit' size='sm' />
-													</#if> 
+													</#if>  
 													<#if rightView?? && rightView> 
 														<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelViewAppointment}' hideTitle=['all'] buttonIcon='eye' size='sm' />
 													</#if> 
