@@ -111,7 +111,8 @@ var events = [
     {
         "title" : "${comment_event.comment}",
         "start" : "${comment_event.startingValidityDate}",
-        "end" : "${comment_event.endingValidityDate}",
+        "end" : "${comment_event.calendarAllDaySlotEnd}",
+        "validity_end" : "${comment_event.endingValidityDate}",
         "id" : "${comment_event.id}",
         "creator_user" : "${comment_event.creatorUserName!''}",
         "creation_date" : "${comment_event.creationDate?date.xs!''}",
@@ -276,7 +277,7 @@ $( function() {
                 $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
                 tinyMCE.activeEditor.setContent( formValues.comment_text );
                 $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
-                $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_end ) ) );
+                $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
                 $( "#modify-comment" ).modal('show');
             });
         },
