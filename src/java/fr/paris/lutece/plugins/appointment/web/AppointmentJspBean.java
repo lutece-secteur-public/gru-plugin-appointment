@@ -769,7 +769,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
             model.put( MARK_RESOURCE_HISTORY, WorkflowService.getInstance( ).getDisplayDocumentHistory( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE,
-                    form.getIdWorkflow( ), request, getLocale( ), null ) );
+                    form.getIdWorkflow( ), request, getLocale( )) );
         }
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {

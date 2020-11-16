@@ -61,6 +61,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     static final String ERROR_MESSAGE_APPOINTMENT_SUPERIOR_MIDDLE = "appointment.message.error.formatDaysBeforeAppointmentMiddleSuperior";
     static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
+    private static final String MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.multiSlot.numberOfSeatsBookedAndConcurrentAppointments";
+
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "appointment.listItems.itemsPerPage";
@@ -86,7 +88,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     protected boolean checkConstraints( AppointmentFormDTO appointmentForm )
     {
         return checkStartingAndEndingTime( appointmentForm ) && checkStartingAndEndingValidityDate( appointmentForm )
-                && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm );
+                && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm ) && checkMultiSlotFormTypeBookablePlaces( appointmentForm );
     }
 
     /**
@@ -198,7 +200,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      * Check the slot capacity and the max people per appointment of the appointmentForm DTO
      * 
      * @param appointmentForm
-     *            athe appointmentForm DTO
+     *            the appointmentForm DTO
      * @return false if the maximum number of people per appointment is bigger than the maximum capacity of the slot
      */
     private boolean checkSlotCapacityAndPeoplePerAppointment( AppointmentFormDTO appointmentForm )
@@ -208,6 +210,21 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         {
             bReturn = false;
             addError( MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) );
+        }
+        return bReturn;
+    }
+    /**
+     * check the number of bookable places will be set to 1 and cann't be modified, when creating a "multi-slot form" 
+     * @param appointmentForm the appointmentForm DTO
+     * @return false if the form type is "multi-slot" and Max people Per Slot is not set to 1
+     */
+    private boolean checkMultiSlotFormTypeBookablePlaces( AppointmentFormDTO appointmentForm )
+    {
+        boolean bReturn = true;
+        if ( appointmentForm.getIsMultislotAppointment( ) && appointmentForm.getMaxPeoplePerAppointment( ) != 1 )
+        {
+            bReturn = false;
+            addError( MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) );
         }
         return bReturn;
     }

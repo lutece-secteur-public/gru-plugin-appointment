@@ -193,6 +193,9 @@ th.fc-day-header {
 		<@appointmentTabs tab='typicalWeek' appointmentform=appointmentform>
 			<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
 					<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
+
+
+
 					<#if listDateOfModification??>
 						<@formGroup formStyle='inline' labelFor='id_week_definition' labelKey='#i18n{appointment.modifyAppointmentForm.listDateOfModification}'>
 							<@inputGroup>
@@ -226,7 +229,8 @@ th.fc-day-header {
 					<@boxBody>
 						<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
 							<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
-							<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/>                        
+							<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
+							<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>                        
 							<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 								<@inputGroup>
 									<@inputGroupItem type='text'>
@@ -249,10 +253,11 @@ th.fc-day-header {
 							<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
 								<@input type='text' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 							</@formGroup>
-							<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
-								<@input type='text' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-							</@formGroup>
-							
+							<#if !appointmentform.isMultislotAppointment >
+								<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
+									<@input type='text' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+								</@formGroup>
+							</#if>	
 							<legend>#i18n{appointment.createAppointmentForm.labelTitleDaysOpen}</legend>
 							<@formGroup labelFor='is_open_monday'>
 								<@checkBox labelFor='is_open_monday' labelKey='#i18n{appointment.label.OpenMonday}' name='is_open_monday' id='is_open_monday' value='true' checked=appointmentform.isOpenMonday!false />
