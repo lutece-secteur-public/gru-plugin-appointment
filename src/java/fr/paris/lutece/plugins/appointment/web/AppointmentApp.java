@@ -1511,7 +1511,7 @@ public class AppointmentApp extends MVCApplication
                         {
 
                             String strError = WorkflowService.getInstance( ).doSaveTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
-                                    slot.getIdForm( ), request, getLocale( request ), null );
+                                    slot.getIdForm( ), request, getLocale( request ), luteceUser );
                             if ( strError != null )
                             {
                                 AppLogService.error( "Error Workflow:" + strError );
