@@ -187,4 +187,22 @@ public final class AppointmentResponseService
             AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
         }
     }
+    
+    /**
+     * Remove all the response of an appointment
+     * 
+     * @param nIdAppointment
+     *            the id of the appointment
+     */
+    public static void removeResponsesByIdAppointmentAndListEntryId( int nIdAppointment, List<Integer> listIdEntry )
+    {
+        List<Response> listResponse = AppointmentResponseService.findListResponse( nIdAppointment );
+        for ( Response response : listResponse )
+        {
+            if ( listIdEntry.contains( response.getEntry( ).getIdEntry( ) ) )
+            {
+                AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
+            }
+        }
+    }
 }
