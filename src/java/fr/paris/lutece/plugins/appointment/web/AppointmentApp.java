@@ -1632,7 +1632,7 @@ public class AppointmentApp extends MVCApplication
 
             if ( user != null )
             {
-                appointment.setGuid( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_GUID, StringUtils.EMPTY ) ) );
+                appointment.setGuid( user.getName( ) );
                 appointment.setFirstName( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_FIRST_NAME, StringUtils.EMPTY ) ) );
                 appointment.setEmail( user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_EMAIL, StringUtils.EMPTY ) ) );
                 String lastName = user.getUserInfo( AppPropertiesService.getProperty( PROPERTY_USER_ATTRIBUTE_PREFERED_NAME, StringUtils.EMPTY ) );
