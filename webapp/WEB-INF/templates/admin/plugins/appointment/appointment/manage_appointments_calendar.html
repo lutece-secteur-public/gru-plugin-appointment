@@ -31,36 +31,25 @@
     </@columns>
 </@row>
 
-<div class="modal fade"  id="commentModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">#i18n{appointment.create_comment.pageTitle}</h4>
-            </div>
-            <div class="modal-body">
-                <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
-            </div>
-            <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">#i18n{portal.util.labelCancel}</button></div>
+<@modal id='commentModal'>
+	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
+	<@modalBody>
+		<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+	</@modalBody>
+	<@modalFooter>
+		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+	</@modalFooter>
+</@modal>
 
-        </div>
-    </div>
-</div>
-
-<div class="modal fade"  id="modify-comment" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">#i18n{appointment.create_comment.pageTitle}</h4>
-            </div>
-            <div class="modal-body">
-                <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
-            </div>
-            <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">#i18n{portal.util.labelCancel}</button></div>
-        </div>
-    </div>
-</div>
+<@modal id='modify-comment'>
+	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
+	<@modalBody>
+		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+	</@modalBody>
+	<@modalFooter>
+        <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+	</@modalFooter>
+</@modal>
 
 <script>
     /* ********************************************************* */

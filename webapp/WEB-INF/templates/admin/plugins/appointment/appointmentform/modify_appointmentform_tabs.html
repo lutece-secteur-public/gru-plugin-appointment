@@ -1,17 +1,6 @@
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
 <link href="css/datepicker.css" rel="stylesheet">
 
-<@row>
-	<@columns>
-		<@box color='primary'>
-			<@boxHeader title='#i18n{appointment.modifyAppointmentForm.title} : ${appointmentform.title}' />
-		</@box>
-		<@boxBody>
-			<@messages infos=infos errors=errors />
-		</@boxBody>
-	</@columns>
-</@row>
-
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
 		<@tabList>
@@ -26,6 +15,8 @@
 			</#if>
 		</@tabList>
 		<@tabContent>
+			<@messages infos=infos errors=errors />
+			<h3>#i18n{appointment.modifyAppointmentForm.title} : <strong>${appointmentform.title}</strong></h3>
 			<#nested>
 		</@tabContent>
 	</@tabs>
@@ -71,7 +62,7 @@
 		</@inputGroup>
 	</@formGroup>
 	<@formGroup labelFor='is_multislot_appointment' labelKey='#i18n{appointment.label.isMultislotAppointment}' helpKey='#i18n{appointment.label.isMultislotAppointment.help}'>
-		<@checkBox name='is_multislot_appointment_display' value='true' checked=appointmentform.isMultislotAppointment!false disabled=true />
+		<@checkBox name='is_multislot_appointment_display' id='is_multislot_appointment_display' value='true' checked=appointmentform.isMultislotAppointment!false disabled=true />
 		<#assign multislotvalue=appointmentform.isMultislotAppointment!false />
 		<@input type='hidden' name="is_multislot_appointment" value=multislotvalue?string />
 	</@formGroup>
