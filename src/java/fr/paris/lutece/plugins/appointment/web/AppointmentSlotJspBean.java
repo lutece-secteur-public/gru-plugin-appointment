@@ -1028,7 +1028,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 		                // definition of the closing days
 		                ClosingDayService.removeClosingDay( closingDay );
 		            }
-		            if ( nVarMaxCapacity != 0 || ( nMaxCapacity >= 0 && nMaxCapacity != slot.getMaxCapacity( )) )
+		            if ( nVarMaxCapacity != 0 || ( nMaxCapacity >= 0 && nMaxCapacity != slot.getMaxCapacity( )) || slot.getIdSlot() == 0 )
 		            {
 		            	nNewMaxCapacity= (nVarMaxCapacity != 0)? slot.getMaxCapacity() + nVarMaxCapacity : nMaxCapacity;
 		            	if( nNewMaxCapacity < 0) {

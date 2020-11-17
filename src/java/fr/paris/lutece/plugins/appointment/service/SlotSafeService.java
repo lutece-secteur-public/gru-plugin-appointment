@@ -846,6 +846,10 @@ public final class SlotSafeService
                 slot.setNbPotentialRemainingPlaces(  oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract  );
                 slot.setNbRemainingPlaces(  oldSlot.getNbRemainingPlaces( ) - nValueToSubstract  );
             }
+        }else {
+        	
+        	slot.setNbPotentialRemainingPlaces(  oldSlot.getNbPotentialRemainingPlaces( )  );
+            slot.setNbRemainingPlaces(  oldSlot.getNbRemainingPlaces( ) );
         }
     }
 
