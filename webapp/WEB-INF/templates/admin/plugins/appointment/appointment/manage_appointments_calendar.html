@@ -17,12 +17,7 @@
             <div class="layout-wrapper"></div>
         <#else>
             <div id="btn-comment-main">
-                <button type="button" data-toggle="modal" data-target="#commentModal" title="#i18n{appointment.create_comment.pageTitle}" id="toggle-add-comment" class="btn btn-link">
-                    <span class="fa-stack fa-md">
-                        <i class="fa fa-comment-o fa-stack-2x"></i>
-                        <i class="fa fa-plus fa-stack-1x"></i>
-                      </span>
-                </button>
+                <@button type='button' params='data-toggle="modal"' buttonTargetId='#commentModal' title='#i18n{appointment.create_comment.pageTitle}' id='toggle-add-comment' hideTitle=['all'] buttonIcon='comment-o' />
             </div>
            
             <div id="calendar"></div>

@@ -4,9 +4,8 @@
 			<@boxHeader title='#i18n{appointment.modify.category.title}' />
 			<@boxBody>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp' params='enctype="multipart/form-data"'>
-					<input type='hidden' name='id_category' value='${category.idCategory}' />
-					<fieldset>
-						<legend class="hidden">#i18n{appointment.modify.category.title}</legend>
+					<@input type='hidden' name='id_category' value='${category.idCategory}' />
+					<@fieldSet legend='#i18n{appointment.modify.category.title}' hideLegend=['all']>
 						<@messages errors=errors />										
 						<@formGroup labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
 							<@input type='text' name='label' id='label' value=category.label!'' maxlength=255 />
@@ -15,10 +14,9 @@
 							<@button name='action_modifyCategory' type='submit' buttonIcon='check' title='#i18n{portal.util.labelModify}' />
 							<@button name='view_manageCategory' type='submit' buttonIcon='times' title='#i18n{portal.util.labelCancel}' color='btn-default' cancel=true/>
 						</@formGroup>
-					</fieldset>
+					</@fieldSet>
 				</@tform>
 			</@boxBody>
 		</@box>
 	</@columns>
 </@row>
-
