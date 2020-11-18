@@ -52,7 +52,7 @@
         TODO : Add style def to model
         Possible values: dotted, bordered , bg-full,  bg-grad    
     */
-    <#assign typeClass='dotted'>
+    <#assign typeClass=''>
     <#assign titleSlot=true >
     var bgOpenColor = '#fff;'
     var bgClosedColor = '#bebebe;'
@@ -70,20 +70,7 @@
     var columnFormat = 'dddd DD/MM/YYYY';
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
     var events = [
-        <#if comment_events??>
-            <#list comment_events as comment_event>
-            {
-                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
-                "start" : "${comment_event.startingValidityDate}",
-                "end" : "${comment_event.calendarAllDaySlotEnd}",
-                "validity_end" : "${comment_event.endingValidityDate}",
-                "id" : "${comment_event.id}",
-                "creator_user" : "${comment_event.creatorUserName!''}",
-                "creation_date" : "${comment_event.creationDate?date.xs!''}",
-                "type": "comment"
-            },
-            </#list>
-        </#if>
+        
         <#if events??>
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
@@ -150,6 +137,20 @@
                     "borderColor" : bgClosedColor,
                     "type" : "appointment"
                 },
+            </#list>
+        </#if>
+		<#if comment_events??>
+            <#list comment_events as comment_event>
+            {
+                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
+                "start" : "${comment_event.startingValidityDate}",
+                "end" : "${comment_event.calendarAllDaySlotEnd}",
+                "validity_end" : "${comment_event.endingValidityDate}",
+                "id" : "${comment_event.id}",
+                "creator_user" : "${comment_event.creatorUserName!''}",
+                "creation_date" : "${comment_event.creationDate?date.xs!''}",
+                "type": "comment"
+            },
             </#list>
         </#if>
     ];
