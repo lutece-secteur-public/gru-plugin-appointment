@@ -285,6 +285,7 @@ $( function() {
                 if ( event.end == null || event.end == undefined ){
                     labelEventDate='Le ' + event.start.format('ddd DD/MM');
                 } else {
+                	moment.locale("${locale}");
                     labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
                 }
                 json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
