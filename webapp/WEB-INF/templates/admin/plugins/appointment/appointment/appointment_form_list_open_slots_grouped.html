@@ -232,7 +232,8 @@
                     trigger : 'hover'
                 };
                 if( event.type == "comment" ){
-                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
+                	moment.locale("${locale}");
+                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + moment(event.validity_end).format('ddd DD/MM')+"</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
                 }else{
                     json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
                 }

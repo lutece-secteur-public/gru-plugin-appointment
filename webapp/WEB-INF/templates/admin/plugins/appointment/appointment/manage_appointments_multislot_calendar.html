@@ -293,10 +293,11 @@ $( function() {
                     "trigger" : "hover"
                 };
             if( event.type == "comment" ){
-                if ( event.end == null || event.end == undefined ){
+                if ( event.validity_end == null || event.validity_end == undefined ){
                     labelEventDate='Le ' + event.start.format('ddd DD/MM');
                 } else {
-                    labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ event.end.format('ddd DD/MM');
+                	moment.locale("${locale}");
+                    labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
                 }
                 json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
             } else {
@@ -308,7 +309,7 @@ $( function() {
             {
                 var fcTitle = element.find('.fc-title p');
                 fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start.format('DD/MM/YYYY') + "\", \"comment_end\":\"" + event.end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start.format('DD/MM/YYYY') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
             }
         }
     });
