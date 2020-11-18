@@ -399,6 +399,46 @@ th.fc-day-header {
                 $('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
                 $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+                
+                /* Event selection          */ 
+                var eventIdx=0, eventData='',evtData='';
+                $( ".fc-content-skeleton" ).selectable({
+                    filter: ".fc-time-grid-event.fc-v-event",
+                    selecting: function( eveyevent, ui ) {
+                        eventIdx++;
+                    },
+                    unselecting: function( event, ui ) {
+                        eventIdx--;
+                    },
+                    stop: function() {
+                        console.log(  eventIdx  );   
+                        $( ".ui-selected", this ).each( function() {
+                            console.log( eventData );
+                            if ( eventIdx > 1 ){
+                                eventData += '{' + $(this).data('event') + '},' ;
+                                const events =  JSON.stringify( eventData );
+                                evtData='['+eventData.slice(0, -1)+']'
+                                $('#slotsData').val( evtData);
+                                $('#updatePlanningMultiSlot').modal('show');
+                            } else {
+                                eventData ='{' + $(this).data('event') + '}';  
+                                const events = JSON.stringify(eventData); 
+                    evtData= '['+eventData+']';
+                                $('#slotData').val( evtData );
+                                const evt = JSON.parse(eventData); 
+                                const isOpen = JSON.parse( evt.isOpen )
+                                $('#is_open').prop( "checked", isOpen );
+                                $('#max_capacity').val( evt.maxCapacity );
+                                $('#dtSlot').text( evt.startingDateTime );
+                                $('#timeStart').text( evt.startingTime );
+                                $('#ending_time').val( evt.endingTime );
+                                $('#updatePlanningSlot').modal('show');
+                                
+                            }
+                        });
+                        eventData='';
+                    }
+                });
             },
         });
        
@@ -413,46 +453,6 @@ th.fc-day-header {
             $('#newCapacity').attr('min','-99');
         });
 
-        /* Event selection          */ 
-        var eventIdx=0, eventData='',evtData='';
-
-        $( ".fc-content-skeleton" ).selectable({
-            filter: ".fc-time-grid-event.fc-v-event",
-            selecting: function( eveyevent, ui ) {
-                eventIdx++;
-            },
-            unselecting: function( event, ui ) {
-                eventIdx--;
-            },
-            stop: function() {
-                console.log(  eventIdx  );   
-                $( ".ui-selected", this ).each( function() {
-                    console.log( eventData );
-                    if ( eventIdx > 1 ){
-                        eventData += '{' + $(this).data('event') + '},' ;
-                        const events =  JSON.stringify( eventData );
-                        evtData='['+eventData.slice(0, -1)+']'
-                        $('#slotsData').val( evtData);
-                        $('#updatePlanningMultiSlot').modal('show');
-                    } else {
-                        eventData ='{' + $(this).data('event') + '}';  
-                        const events = JSON.stringify(eventData); 
-			evtData= '['+eventData+']';
-                        $('#slotData').val( evtData );
-                        const evt = JSON.parse(eventData); 
-                        const isOpen = JSON.parse( evt.isOpen )
-                        $('#is_open').prop( "checked", isOpen );
-                        $('#max_capacity').val( evt.maxCapacity );
-                        $('#dtSlot').text( evt.startingDateTime );
-                        $('#timeStart').text( evt.startingTime );
-                        $('#ending_time').val( evt.endingTime );
-                        $('#updatePlanningSlot').modal('show');
-                        
-                    }
-                });
-                eventData='';
-            }
-        });
   });
   		
 function validateQty(event) {
