@@ -40,16 +40,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.comment.Comment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
+import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.util.date.DateUtil;
+import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
@@ -76,8 +80,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public static final String TEMPLATE_CREATE_COMMENT = "/admin/plugins/appointment/comment/create_comment.html";
     public static final String TEMPLATE_MANAGE_COMMENT = "/admin/plugins/appointment/comment/manage_comment.html";
     public static final String TEMPLATE_MODIFY_COMMENT = "/admin/plugins/appointment/comment/modify_comment.html";
-    private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
-    private static final String JSP_COMMENTS = "jsp/admin/plugins/appointment/Comments.jsp";
+    public static final String TEMPLATE_COMMENT_INFO = "/admin/plugins/appointment/comment/comment_infos.html";
+
 
     // Messages
     private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.pageTitle";
@@ -89,6 +93,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PARAMETER_STARTING_VALIDITY_DATE = "startingValidityDate";
     private static final String PARAMETER_ENDING_VALIDITY_DATE = "endingValidityDate";
     private static final String PARAMETER_ID_FORM = "id_form";
+    private static final String REFERER = "referer";
+
 
     // Marks
     private static final String MARK_COMMENT = "comment";
@@ -149,12 +155,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @View( VIEW_ADD_COMMENT )
     public String getViewAddComment( HttpServletRequest request )
     {
-        User user = getUser( );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         _comment = new Comment( );
-        _comment.setIdForm( nIdForm );
-        _comment.setCreationDate( LocalDate.now( ) );
-        _comment.setCreatorUserName( user.getAccessCode( ) );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_COMMENT, _comment );
@@ -174,9 +176,12 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @Action( ACTION_DO_ADD_COMMENT )
     public String doAddComment( HttpServletRequest request )
     {
-        User user = getUser( );
+        User user = (User) getUser( );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        _comment = new Comment( );
+        String strReferer = request.getHeader( REFERER );
+
+       _comment= (_comment == null )? new Comment():_comment;
+      
         _comment.setIdForm( nIdForm );
         _comment.setCreationDate( LocalDate.now( ) );
         _comment.setCreatorUserName( user.getAccessCode( ) );
@@ -185,28 +190,25 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
         _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        // populate( _comment, request, getLocale( ) );
 
-        UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
-        url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
-        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-        String strMessageUrl;
 
         // Check constraints
         if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_ERROR, url.getUrl( ), AdminMessage.TYPE_STOP );
-            return redirect( request, strMessageUrl );
+            addError( INFO_COMMENT_ERROR, getLocale( ) );
+            
+        }else {
 
+        	addInfo( INFO_COMMENT_CREATED, getLocale( ) );
+        	CommentHome.create( _comment );
         }
-        else
+
+        if ( StringUtils.isNotBlank( strReferer ) )
         {
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_CREATED, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
-            CommentHome.create( _comment );
-
-            return redirect( request, strMessageUrl );
+            return redirect( request, strReferer);
         }
-
+        
+        return redirect( request, VIEW_MANAGE_COMMENT); 
     }
 
     /**
@@ -219,7 +221,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @View( VIEW_MODIFY_COMMENT )
     public String getViewModifyComment( HttpServletRequest request )
     {
-        User user = getUser( );
+        User user = (User) getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         _comment = CommentHome.findByPrimaryKey( nIdComment );
 
@@ -231,10 +233,9 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
             model.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
             return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT, model );
         }
-        else
-        {
-            return getPage( MESSAGE_COMMENT_PAGE_TITLE, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
-        }
+       
+        return getPage( MESSAGE_COMMENT_PAGE_TITLE, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
+       
 
     }
 
@@ -244,13 +245,15 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            The Http Request
      * @return The Jsp URL of the process result
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_MODIFY_COMMENT )
-    public String doModifyComment( HttpServletRequest request )
+    public String doModifyComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = getUser( );
+        User user = (User) getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        // when directly loading from calendar templates
+        String strReferer = request.getHeader( REFERER );
+
         if ( _comment == null || _comment.getId( ) != nIdComment)
         {
             _comment = CommentHome.findByPrimaryKey( nIdComment );
@@ -261,30 +264,29 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
         _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        // populate( _comment, request, getLocale( ) );
-
-        UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
-        url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
-        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-        String strMessageUrl;
 
         // Check constraints
         if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
         {
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_ERROR, url.getUrl( ), AdminMessage.TYPE_STOP );
-            return redirect( request, strMessageUrl );
+            addError( INFO_COMMENT_ERROR, getLocale( ) );
         }
 
-        if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+        else if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
         {
             CommentHome.update( _comment );
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_UPDATED, url.getUrl( ), AdminMessage.TYPE_INFO );
+            addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
+        }else {
+        
+        	throw new AccessDeniedException( INFO_COMMENT_RIGHTS );
+         
         }
-        else
+      
+        if ( StringUtils.isNotBlank( strReferer ) )
         {
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_RIGHTS, url.getUrl( ), AdminMessage.TYPE_STOP );
+            return redirect( request, strReferer);
         }
-        return redirect( request, strMessageUrl );
+        
+        return redirect( request, VIEW_MANAGE_COMMENT); 
 
     }
 
@@ -299,8 +301,12 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public String getConfirmRemoveComment( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+        String strReferer = request.getHeader( REFERER );
+
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
         url.addParameter( PARAMETER_ID_COMMENT, nId );
+        url.addParameter( REFERER, strReferer );
+
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
 
@@ -313,28 +319,44 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param request
      *            the request
      * @return to the page of the comment
+     * @throws AccessDeniedException 
      */
     @Action( ACTION_DO_REMOVE_COMMENT )
-    public String doRemoveComment( HttpServletRequest request )
+    public String doRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = getUser( );
+        User user = (User) getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        _comment = CommentHome.findByPrimaryKey( nIdComment );
-        UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTS );
+        String strReferer = request.getParameter( REFERER );
+        UrlItem url = new UrlItem(  strReferer  );
         url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-        String strMessageUrl;
+        
+        _comment = CommentHome.findByPrimaryKey( nIdComment );
 
         if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
         {
             CommentHome.remove( nIdComment );
-
-            url.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_REMOVED, url.getUrl( ), AdminMessage.TYPE_INFO );
+            addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
         }
         else
         {
-            strMessageUrl = AdminMessageService.getMessageUrl( request, INFO_COMMENT_RIGHTS, url.getUrl( ), AdminMessage.TYPE_STOP );
+        	throw new AccessDeniedException( INFO_COMMENT_RIGHTS );
         }
-        return redirect( request, strMessageUrl );
+        if ( StringUtils.isNotBlank( strReferer ) )
+        {
+            return redirect( request, url.getUrl( ) );
+        }
+        
+        return redirect( request, VIEW_MANAGE_COMMENT); 
+    }
+    /**
+     * build The infos/warnings/Errors
+     * @return The infos/warnings/Errors
+     */
+    public String getCommentInfos() {
+    	
+        Map<String, Object> model = getModel( );
+        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_COMMENT_INFO , getLocale( ), model );
+        
+    	return template.getHtml( );
     }
 }
