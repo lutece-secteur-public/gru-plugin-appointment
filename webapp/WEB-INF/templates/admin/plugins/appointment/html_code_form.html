@@ -106,11 +106,14 @@
 							<@input type='email' name='emailConfirm' id='emailConfirm' value='${appointment.email!}' maxlength=255 />
 						</@formGroup>
 						
-
-						<#if nbplaces != 0 >
-							<#assign formGroupHelpKey = '${nbplaces!} place(s) maximum' />
+						
+						<#if nbplaces != 0 && isOverbooking>
+							<#assign nbplaces= 999 >
+							<#assign formGroupHelpKey = '#i18n{appointment.message.appointmentForm.placesMax}' />
+					    <#elseif nbplaces != 0 >
+					    	<#assign formGroupHelpKey = '${nbplaces!} place(s) maximum' />
 						</#if>
-						<#if form.maxPeoplePerAppointment &gt; 1>				
+						<#if form.maxPeoplePerAppointment &gt; 1 || isOverbooking >				
 							<#assign formGroupError = '' />
 							<#if form_errors??>
 								<#list form_errors as form_error>	

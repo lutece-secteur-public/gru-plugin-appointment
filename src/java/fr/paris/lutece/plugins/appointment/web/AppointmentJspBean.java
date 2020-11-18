@@ -244,6 +244,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_FORM_OVERBOOKING_ALLOWED = "overbookingAllowed";
     private static final String MARK_DEFAULT_FIELD_LIST = "defaultFieldList";
     private static final String MARK_CUSTOM_FIELD_LIST = "customFieldList";
+    private static final String MARK_IS_OVERBOOKING = "isOverbooking";
 
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -884,6 +885,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         clearUploadFilesIfNeeded( request.getSession( ) );
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
+        
         String strNbPlacesToTake = request.getParameter( PARAMETER_NB_PLACE_TO_TAKE );
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_CREATE_APPOINTMENT,
                 (User) getUser( ) ) )
@@ -1064,11 +1066,16 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             EntryService.getHtmlEntry( model, entry.getIdEntry( ), strBuffer, locale, false, appointmentDTO );
         }
+        
+        boolean isOverbooking = !form.getIsMultislotAppointment( ) && formRule.getBoOverbooking( ) && RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm,
+                AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) );
+        
         model.put( MARK_STR_ENTRY, strBuffer.toString( ) );
         model.put( MARK_FORM, form );
         model.put( MARK_APPOINTMENT, appointmentDTO );
         model.put( PARAMETER_DATE_OF_DISPLAY, appointmentDTO.getSlot( ).get( 0 ).getDate( ) );
-        model.put( MARK_PLACES, ( formRule.getBoOverbooking( ) ) ? 20 : appointmentDTO.getNbMaxPotentialBookedSeats( ) );
+        model.put( MARK_PLACES, appointmentDTO.getNbMaxPotentialBookedSeats( ) );
+        model.put( MARK_IS_OVERBOOKING,  isOverbooking );
         FormMessage formMessages = FormMessageService.findFormMessageByIdForm( nIdForm );
         model.put( MARK_FORM_MESSAGES, formMessages );
         model.put( MARK_LOCALE, locale );
