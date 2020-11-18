@@ -99,7 +99,7 @@ var events = [
 <#if comment_events??>
     <#list comment_events as comment_event>
     {
-        "title" : "${comment_event.comment}",
+        "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
         "start" : "${comment_event.startingValidityDate}",
         "end" : "${comment_event.calendarAllDaySlotEnd}",
         "validity_end" : "${comment_event.endingValidityDate}",
