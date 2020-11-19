@@ -149,11 +149,11 @@
 	
 	<@fieldSet>
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' rows=2>
-			<@input type='textarea' name='comment' id=idComment richtext=true />
+			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true />
 		</@formGroup>
 		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' rows=2>
 			<@inputGroup>
-				<@input type='text' name='startingValidityDate' id=idStartingDate />
+				<@input type='text' name='startingValidityDate' id=idStartingDate mandatory=true />
 				<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 				</@inputGroupItem>
@@ -161,7 +161,7 @@
 		</@formGroup>
 		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' rows=2>
 			<@inputGroup>
-				<@input type='text' name='endingValidityDate' id=idEndingDate />
+				<@input type='text' name='endingValidityDate' id=idEndingDate mandatory=true />
 				<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 				</@inputGroupItem>
