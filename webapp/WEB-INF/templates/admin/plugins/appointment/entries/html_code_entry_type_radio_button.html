@@ -14,9 +14,10 @@ ${entry.CSSClass!}
 			<#else>
 				<#assign orientation = 'vertical' />
 			</#if>
-	
+	        <#assign checked = false />
 			<#if list_responses??>
 				<#list list_responses as response>
+				
 					<#if response.entry.idEntry == entry.idEntry && response.field??>
 						<#if response.field.idField == field.idField><#assign checked = true /><#break></#if>
 					</#if>
