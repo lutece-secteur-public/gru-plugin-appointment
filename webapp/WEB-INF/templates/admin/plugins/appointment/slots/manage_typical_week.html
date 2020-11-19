@@ -192,40 +192,39 @@ th.fc-day-header {
 		<@messages infos=infos errors=errors />
 		<@appointmentTabs tab='typicalWeek' appointmentform=appointmentform>
 		
-			<@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
-					<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
-
-
-
-					<#if listDateOfModification??>
-						<@formGroup formStyle='inline' labelFor='id_week_definition' labelKey='#i18n{appointment.modifyAppointmentForm.listDateOfModification}'>
-							<@inputGroup>
-								<@select id='id_week-definition' name='id_week_definition' size='sm'>
-									<#list listDateOfModification as item>
-										<#if "${id_week_definition}"="${item.code}">
-											<option selected="selected" value="${item.code}">${item.name}</option>
-										<#else>
-											<option value="${item.code}">${item.name}</option>
-										</#if>
-									</#list>
-								</@select>
-								<@inputGroupItem>
-									<@button type='submit' name='view_manageTypicalWeek' title='#i18n{appointment.labelDisplay}' hideTitle=['xs'] buttonIcon='check' size='sm' />
-									<@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' hideTitle=['xs'] buttonIcon='trash' size='sm' color='danger' />
-								</@inputGroupItem>
-							</@inputGroup>
-						</@formGroup>
-					</#if>
-				</@tform>
-
-				<#if !error_modification??>
-					<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
-				<#else>
-					<#assign appointmentTypicalWeekAdvancedIcon = 'minus' />
-				</#if>
-				<@button style='card-control collapse' buttonTargetId='#appointment_search' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' />
+			<@tform type='inline' align='right' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
+				<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 				
-				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' id='appointment_search'>
+				<#if listDateOfModification??>
+					<@formGroup formStyle='inline' labelFor='id_week_definition' labelKey='#i18n{appointment.modifyAppointmentForm.listDateOfModification}'>
+						<@inputGroup>
+							<@select id='id_week-definition' name='id_week_definition' size='sm'>
+								<#list listDateOfModification as item>
+									<#if "${id_week_definition}"="${item.code}">
+										<option selected="selected" value="${item.code}">${item.name}</option>
+									<#else>
+										<option value="${item.code}">${item.name}</option>
+									</#if>
+								</#list>
+							</@select>
+							<@inputGroupItem>
+								<@button type='submit' name='view_manageTypicalWeek' title='#i18n{appointment.labelDisplay}' hideTitle=['xs'] buttonIcon='check' size='sm' />
+								<@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' hideTitle=['xs'] buttonIcon='trash' size='sm' color='danger' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+				</#if>
+			<#if !error_modification??>
+				<#assign appointmentTypicalWeekAdvancedIcon = 'plus' />
+			<#else>
+				<#assign appointmentTypicalWeekAdvancedIcon = 'minus' />
+			</#if>
+			<@button style='card-control collapse' buttonTargetId='#appointment_search' buttonIcon='${appointmentTypicalWeekAdvancedIcon}' size='sm' title='#i18n{appointment.typicalWeek.buttonLabelCreate}' />
+			</@tform>
+			<div style="clear:both;"></div>
+
+				
+			<@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' id='appointment_search'>
 				<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 				<@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
 				<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
@@ -292,7 +291,7 @@ th.fc-day-header {
 						</@inputGroup>
 					</@formGroup>
 					<@formGroup>
-						<@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
+						<@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
 						<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
 					</@formGroup>
 				</@fieldSet>
