@@ -804,7 +804,17 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 		try {
 			
 			listSlot = mapper.readValue(strJson, new TypeReference<List<Slot>>(){});
-			
+			for(Slot slt: listSlot) {
+				
+				if( slt.getIdSlot() != 0 ) {
+					
+	                Slot slot = SlotService.findSlotById( slt.getIdSlot( ) );
+	                slt.setNbPlacestaken( slot.getNbPlacesTaken( ) );
+	                slt.setNbRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) );
+	                slt.setNbPotentialRemainingPlaces(slot.getNbPotentialRemainingPlaces( ));
+				}
+
+			}
 			if( !StringUtils.isEmpty( strApplyOnIdentical ) && Boolean.parseBoolean( strApplyOnIdentical ) ) {
 
       			 LocalDate startingDate = LocalDate.parse( request.getParameter( PARAMETER_STARTING_DATE_TO_APPLY ) );
