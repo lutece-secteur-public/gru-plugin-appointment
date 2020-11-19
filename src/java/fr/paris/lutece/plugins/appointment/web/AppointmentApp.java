@@ -272,6 +272,8 @@ public class AppointmentApp extends MVCApplication
     // Messages
     private static final String MESSAGE_CANCEL_APPOINTMENT_PAGE_TITLE = "appointment.cancelAppointment.pageTitle";
     private static final String MESSAGE_MY_APPOINTMENTS_PAGE_TITLE = "appointment.myAppointments.name";
+    private static final String MESSAGE_WF_ACTION_SUCESS = "appointment.wf.action.success";
+
 
     // Local variables
     private transient CaptchaSecurityService _captchaSecurityService;
@@ -281,7 +283,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PROPERTY_USER_ATTRIBUTE_LAST_NAME = "appointment.userAttribute.lastName";
     private static final String PROPERTY_USER_ATTRIBUTE_PREFERED_NAME = "appointment.userAttribute.preferred_username";
     private static final String PROPERTY_USER_ATTRIBUTE_EMAIL = "appointment.userAttribute.email";
-    private static final String PROPERTY_USER_ATTRIBUTE_GUID = "appointment.userAttribute.guid";
 
     private static final String AGENDA_WEEK = "agendaWeek";
     private static final String BASIC_WEEK = "basicWeek";
@@ -1344,7 +1345,7 @@ public class AppointmentApp extends MVCApplication
         }
         XPage xpage = new XPage( );
         Locale locale = getLocale( request );
-        xpage.setContent( getMyAppointmentsXPage( request, locale ) );
+        xpage.setContent( getMyAppointmentsXPage( request, locale, getModel( ) ) );
         xpage.setTitle( I18nService.getLocalizedString( MESSAGE_MY_APPOINTMENTS_PAGE_TITLE, locale ) );
         return xpage;
     }
@@ -1360,7 +1361,7 @@ public class AppointmentApp extends MVCApplication
      * @throws UserNotSignedException
      *             If the user has not signed in
      */
-    public static String getMyAppointmentsXPage( HttpServletRequest request, Locale locale ) throws UserNotSignedException
+    public static String getMyAppointmentsXPage( HttpServletRequest request, Locale locale,  Map<String, Object> model ) throws UserNotSignedException
     {
         if ( !SecurityService.isAuthenticationEnable( ) )
         {
@@ -1386,7 +1387,7 @@ public class AppointmentApp extends MVCApplication
             }
         }
 
-        Map<String, Object> model = new HashMap<>( );
+        model= ( model == null )? new HashMap<>( ): model;
         model.put( MARK_LIST_APPOINTMENTS, listAppointmentDTO );
         model.put( MARK_FORM_LIST, FormService.findAllInReferenceList( ));
         HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MY_APPOINTMENTS, locale, model );
@@ -1464,7 +1465,7 @@ public class AppointmentApp extends MVCApplication
             {
                 String strHtmlTasksForm = WorkflowService.getInstance( ).getDisplayTasksForm( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction,
                         request, getLocale( request ), null );
-                Map<String, Object> model = new HashMap<>( );
+                Map<String, Object> model = getModel( );
                 model.put( MARK_TASKS_FORM, strHtmlTasksForm );
                 model.put( PARAMETER_ID_ACTION, nIdAction );
                 model.put( PARAMETER_ID_APPOINTMENT, nIdAppointment );
@@ -1515,14 +1516,15 @@ public class AppointmentApp extends MVCApplication
                             if ( strError != null )
                             {
                                 AppLogService.error( "Error Workflow:" + strError );
-                                addError( strError, getLocale( request ) );
-                                return getMyAppointments( request );
+                                addError( strError );
+                                return getWorkflowActionForm( request );
                             }
                         }
                         else
                         {
 
                             AppLogService.error( "Error Workflow can not process Action" );
+                            addError( "Error Workflow can not process Action" );
                             return getMyAppointments( request );
                         }
                     }
@@ -1553,7 +1555,9 @@ public class AppointmentApp extends MVCApplication
                         WorkflowService.getInstance( ).doProcessAction( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE, nIdAction, slot.getIdForm( ),
                                 request, getLocale( request ), false, luteceUser );
                         AppointmentListenerManager.notifyAppointmentWFActionTriggered( nIdAppointment, nIdAction );
+                      
                     }
+                    addInfo(MESSAGE_WF_ACTION_SUCESS, getLocale( request ));
                 }
                 catch( Exception e )
                 {

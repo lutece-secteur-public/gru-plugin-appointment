@@ -3,6 +3,7 @@
 			<@tform action='jsp/site/Portal.jsp?page=appointment' params='enctype="multipart/form-data"'>
 				<fieldset>
 					<legend> #i18n{appointment.taskFormWorkflow.pageTitle}</legend>
+					<@messages infos=infos errors=errors/>
 					<input type='hidden' name='action' value='doProcessWorkflowAction' />
 					<input type='hidden' name='id_action' value='${id_action}' />
 					<input type='hidden' name='id_appointment' value='${id_appointment}' />
