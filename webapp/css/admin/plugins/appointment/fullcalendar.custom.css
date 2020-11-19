@@ -5,16 +5,19 @@
     color: #222;
     font-weight: normal;
 }
+#btn-comment-main{
+    display: none;
+}
 
 #toggle-add-comment{
-    position: absolute;
+    /* position: absolute; */
     z-index: 999;
-    top: 192px;
-    left: 28px;
+    /* top: 192px;
+    left: 28px; */
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);
-    padding:5px;
+    /* padding:5px; */
 }
 
 th.fc-day-header {
