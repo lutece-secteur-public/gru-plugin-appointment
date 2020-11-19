@@ -179,7 +179,7 @@
 							autoclose: true,
                             language:'fr',
 							startDate: "today",
-							endDate: strEndingDateOfDisplay
+							endDate: moment(endingDateOfDisplay).format('DD-MM-YYYY')
 						});
 						var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
 						//Below are required for manipulating dynamically created datepicker on custom button click
