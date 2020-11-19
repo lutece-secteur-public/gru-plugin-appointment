@@ -1,13 +1,15 @@
-<@box color='primary' style='solid'>
+<@box color='primary' style='solid' id='appointment_dashboard_card'>
 	<@boxHeader title='#i18n{appointment.manage.appointmentforms.title}'>
 		<#if permission_create=="true">
-			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' hideTitle=['all'] buttonIcon='plus' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' hideTitle=['all'] buttonIcon='plus' size='sm' />
 		</#if>
+		<@button type='button' style='card-control collapse' buttonIcon='minus' buttonTargetId='#appointment_dashboard_card_body' size='sm' />
+		<@button style='card-control remove' buttonTargetId='#appointment_dashboard_card' buttonIcon='times' size='sm' />
 	</@boxHeader>
 
     
 	
-	<@boxBody>
+	<@boxBody class='table-responsive' id='appointment_dashboard_card_body'>
 	<@table>
 		<tr>
 			<th>#i18n{appointment.labelTitle}</th>
@@ -59,7 +61,7 @@
 		</#list>
 	</@table>
 	</@boxBody>
-	<@boxFooter params='style="text-align:center;"'>
+	<@boxFooter align='center'>
 		<a href="${url}" title="#i18n{form.dashboard.formList}">
 			#i18n{appointment.dashboard.formList} <@icon style='arrow-circle-right' />
 		</a>
