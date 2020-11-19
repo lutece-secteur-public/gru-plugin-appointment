@@ -5,8 +5,11 @@
 <script src="js/plugins/appointment/locale-all.js"></script>
 <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
 <script src="js/locales/bootstrap-datepicker.fr.js" ></script>
+
 <link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" />
+
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
+
 <@row>
     <@columns>
         <@appointmentTabs tab="calendar" form=form >
@@ -27,6 +30,7 @@
         </@appointmentTabs>
     </@columns>
 </@row>
+
 <@modal id='commentModal'>
     <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
 	<@modalBody>
@@ -36,8 +40,9 @@
 		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
 	</@modalFooter>
 </@modal>
+
 <@modal id='modify-comment'>
-	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
+	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
 	<@modalBody>
 		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
 	</@modalBody>
@@ -45,6 +50,7 @@
 		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
 	</@modalFooter>
 </@modal>
+
 <@modal id='addbook_modal' params='aria-labelledby="qModalLabel"'>
     <@modalHeader id='qModalLabel' modalTitle='#i18n{appointment.appointmentApp.defaultTitle}' />
     <@modalBody>
@@ -67,6 +73,7 @@
 		</@tform>
 	</@modalBody>
 </@modal>
+
 <script type="text/javascript">
 /* ********************************************************* */
 /*  TODO : Add style def to model
@@ -140,20 +147,21 @@ var events = [
     </#list>
 </#if>
 <#if comment_events??>
-    <#list comment_events as comment_event>
-    {
-        "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
-        "start" : "${comment_event.startingValidityDate}",
-        "end" : "${comment_event.calendarAllDaySlotEnd}",
-        "validity_end" : "${comment_event.endingValidityDate}",
-        "id" : "${comment_event.id}",
-        "creator_user" : "${comment_event.creatorUserName!''}",
-        "creation_date" : "${comment_event.creationDate?date.xs!''}",
-        "type": "comment"
-    },
-    </#list>
-</#if>
+            <#list comment_events as comment_event>
+            {
+                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
+                "start" : "${comment_event.startingValidityDate}",
+                "end" : "${comment_event.calendarAllDaySlotEnd}",
+                "validity_end" : "${comment_event.endingValidityDate}",
+                "id" : "${comment_event.id}",
+                "creator_user" : "${comment_event.creatorUserName!''}",
+                "creation_date" : "${comment_event.creationDate?date.xs!''}",
+                "type": "comment"
+            },
+            </#list>
+        </#if>
 ];
+
 var defaultDate = '${date_of_display}';
 $( function() {
     $('#calendar').fullCalendar({
@@ -217,7 +225,6 @@ $( function() {
             end: maxTime,
             dow: dow
         },
-    
         events: events,
         viewRender: function(view, element) {
             var minDate = moment(startingDateOfDisplay);
@@ -245,12 +252,15 @@ $( function() {
             $('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
             $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
             $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+
             $(".open-AddBookDialog").click( function () {
                 $('#starting_date_time').val($(this).data('starting_date_time'));
                 $('#starting_date_time_span').val($(this).data('starting_date_time'));
                 $('#addbook_modal').modal('show');
             });
+
             $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+
             $('.toggle-modify-comment').click(function(ev) {
                 ev.preventDefault();
                 var formValues = JSON.parse( $(this).attr( "data-json" ) );
@@ -275,6 +285,7 @@ $( function() {
             $(element).contextmenu(function() {
                 return false;
             });
+
             var json = {
                     "container": "body",
                     "placement" : "bottom",
@@ -285,10 +296,11 @@ $( function() {
                 if ( event.end == null || event.end == undefined ){
                     labelEventDate='Le ' + event.start.format('ddd DD/MM');
                 } else {
-                	moment.locale("${locale}");
+                    moment.locale("${locale}");
                     labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
+                    
                 }
-                json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
+                json.content = '<p>' + labelEventDate +'<p>' + '<p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title  ;
             } else {
                 json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
             }
@@ -298,11 +310,14 @@ $( function() {
             {
                 var fcTitle = element.find('.fc-title p');
                 fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start.format('DD/MM/YYYY') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
             }
         }
     });
+
 });
 </script>
+
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
+

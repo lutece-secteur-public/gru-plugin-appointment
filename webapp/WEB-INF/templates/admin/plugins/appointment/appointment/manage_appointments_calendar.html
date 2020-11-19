@@ -17,9 +17,13 @@
             <div class="layout-wrapper"></div>
         <#else>
             <div id="btn-comment-main">
-                <@button type='button' params='data-toggle="modal"' buttonTargetId='#commentModal' title='#i18n{appointment.create_comment.pageTitle}' id='toggle-add-comment' hideTitle=['all'] buttonIcon='comment-o' />
+                <button type="button" data-toggle="modal" data-target="#commentModal" title="#i18n{appointment.create_comment.pageTitle}" id="toggle-add-comment" class="btn btn-link">
+                    <span class="fa-stack fa-md">
+                        <i class="fa fa-comment-o fa-stack-2x"></i>
+                        <i class="fa fa-plus fa-stack-1x"></i>
+                    </span>
+                </button>
             </div>
-           
             <div id="calendar"></div>
         </#if>
         </@appointmentTabs>
@@ -271,21 +275,22 @@
                 });
 
                 var json = {
-                        "container": "body",
-                        "placement" : "bottom",
-                        "html" : true,
-                        "trigger" : "hover"
-                    };
+                    "container": "body",
+                    "placement" : "bottom",
+                    "html" : true,
+                    "trigger" : "hover"
+                };
                 if( event.type == "comment" ){
-                    if ( event.validity_end == null || event.validity_end == undefined ){
+                    if ( event.end == null || event.end == undefined ){
                         labelEventDate='Le ' + event.start.format('ddd DD/MM');
                     } else {
-                    	moment.locale("${locale}");
+                        moment.locale("${locale}");
                         labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
+                        
                     }
-                    json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
+                    json.content = '<p>' + labelEventDate +'<p>' + '<p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title  ;
                 } else {
-                	json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                    json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
                 }
 
                 $(element).popover( json );

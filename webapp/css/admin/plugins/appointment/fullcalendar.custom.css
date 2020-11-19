@@ -14,6 +14,7 @@
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);
+    padding:5px;
 }
 
 th.fc-day-header {
@@ -29,14 +30,22 @@ th.fc-day-header {
     text-align:center;
 }
 
+.fc-time-grid-event .fc-content{ 
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
 .fc-content .fc-title i.fa-plus{
     position: absolute;
     right: 30px;
-    top: 8px;
+    top: 46%;
     z-index: 1;
     display: none;
     width: 15px
-}
+} 
 
 .fc-content:hover .fc-title  i.fa-plus{
     display: block;
@@ -46,6 +55,7 @@ th.fc-day-header {
 .fc-time-grid .fc-slats td, th.fc-day-header, .fc-axis.fc-time {    
     height: 40px ; 
 }
+
 td.fc-axis.fc-time {
     width: 80px ;
     padding: 8px 4px;
@@ -53,8 +63,8 @@ td.fc-axis.fc-time {
     line-height: 1.42857143;
     width: 130px;
     margin: 0;
-    border-top: 0px solid transparent;   
-    border-right: solid 1px rgb(190, 190, 190); 
+    /* border-top: 0px solid transparent;   
+    border-right: solid 1px rgb(190, 190, 190);  */
 }
 
 .fc-event, .fc-event p{
@@ -83,6 +93,7 @@ th.fc-day-header {
     font-weight: 700;
     color: #000
 }
+
 .fc-title p{
     width: 80%;
     white-space: nowrap;
