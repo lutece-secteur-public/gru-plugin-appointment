@@ -1,32 +1,9 @@
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-<script src="js/plugins/appointment/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/fullcalendar.min.js"></script>
-<script src="js/plugins/appointment/locale-all.js"></script>
-<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
-
-<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" />
-<link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
-
+<@commonsAppJS />
 <@row>
     <@columns>
-        <@appointmentTabs tab="calendar" form=form >
-        <@messages errors=errors infos=infos />
-        <#if formCalendarErrors??>
-            <div class="layout-wrapper"></div>
-        <#else>
-            <div id="btn-comment-main">
-                <button type="button" data-toggle="modal" data-target="#commentModal" title="#i18n{appointment.create_comment.pageTitle}" id="toggle-add-comment" class="btn btn-link">
-                    <span class="fa-stack fa-md">
-                        <i class="fa fa-comment-o fa-stack-2x"></i>
-                        <i class="fa fa-plus fa-stack-1x"></i>
-                    </span>
-                </button>
-            </div>
-            <div id="calendar"></div>
-        </#if>
-        </@appointmentTabs>
+        
+        <@appointmentTabs tab="calendar" form=form />
     </@columns>
 </@row>
 
@@ -126,27 +103,27 @@
                                  "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
                                 <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
                                 <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>"</#if>,
-                    "start"     :  '${event.startingDateTime}',
-                    "end"       : '${event.endingDateTime}',
-                    "id"        : '${event.idSlot}',
-                    "textColor" :  <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
-                    "createUrl" : '<#if eventCreate !='' && nbAppointments !=0>jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}</#if>',
-                    "customClass" : '${strEventClass!}',
-                    "customStyle" : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
+                    "start"         :  '${event.startingDateTime}',
+                    "end"           : '${event.endingDateTime}',
+                    "id"            : '${event.idSlot}',
+                    "textColor"     :  <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
+                    "createUrl"     : '<#if eventCreate !='' && nbAppointments !=0>jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}</#if>',
+                    "customClass"   : '${strEventClass!}',
+                    "customStyle"   : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
                     "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
                                         <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
                                         <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>bgOpenColor
                                         <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>bgOpenColor
                                         <#elseif event.isOpen & event.isPassed>bgClosedColor<#else>bgClosedColor</#if>,
-                    "borderColor" : bgClosedColor,
-                    "type" : "appointment"
+                    "borderColor"   : bgClosedColor,
+                    "type"          : "appointment"
                 },
             </#list>
         </#if>
 		<#if comment_events??>
             <#list comment_events as comment_event>
             {
-                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
+                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
                 "start" : "${comment_event.startingValidityDate}",
                 "end" : "${comment_event.calendarAllDaySlotEnd}",
                 "validity_end" : "${comment_event.endingValidityDate}",
@@ -256,10 +233,34 @@
                     var formValues = JSON.parse( $(this).attr( "data-json" ) );
                     $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
                     tinyMCE.activeEditor.setContent( formValues.comment_text );
-                    $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
+                    $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
                     $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
                     $( "#modify-comment" ).modal('show');
                 });
+            },
+            eventMouseover: function ( event, jsEvent, view) {
+                console.log( event.start.format('HH:mm:ss') )
+                var line='',hours=event.start.format('HH'), minutes = parseInt( event.start.format('mm') );
+                if( minutes==15 || minutes==45 ){
+                    minutes = minutes - 15;
+                    line = 'tr[data-time="' + hours + ':' + minutes + ':00"]';
+                } else {
+                    line = 'tr[data-time="' + event.start.format('HH:mm:ss') + '"]';     
+                }
+                console.log( line );
+                $(line).children('td').addClass('hover')
+            },
+            eventMouseout: function ( event, jsEvent, view) {
+                var line='',hours=event.start.format('HH'), minutes = parseInt( event.start.format('mm') );
+            
+                if( minutes==15 || minutes==45 ){
+                    minutes = minutes - 15;
+                    console.log( minutes );
+                    line = 'tr[data-time="' + hours + ':' + minutes + ':00"]';
+                } else {
+                    line = 'tr[data-time="' + event.start.format('HH:mm:ss') + '"]';     
+                }
+                $(line).children('td').removeClass('hover');
             },
             eventRender: function( event, element, view ) {
                 var $title = element.find( '.fc-title' ), createSlot='';
@@ -275,22 +276,21 @@
                 });
 
                 var json = {
-                    "container": "body",
-                    "placement" : "bottom",
-                    "html" : true,
-                    "trigger" : "hover"
-                };
+                        "container": "body",
+                        "placement" : "bottom",
+                        "html" : true,
+                        "trigger" : "hover"
+                    };
                 if( event.type == "comment" ){
-                    if ( event.end == null || event.end == undefined ){
+                    if ( event.validity_end == null || event.validity_end == undefined ){
                         labelEventDate='Le ' + event.start.format('ddd DD/MM');
                     } else {
-                        moment.locale("${locale}");
+                    	moment.locale("${locale}");
                         labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
-                        
                     }
-                    json.content = '<p>' + labelEventDate +'<p>' + '<p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title  ;
+                    json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
                 } else {
-                    json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                	json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
                 }
 
                 $(element).popover( json );
@@ -298,13 +298,12 @@
                 if(event.type == "comment" ){
                     var fcTitle = element.find('.fc-title p');
                     fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
                 }
             }
         });
-    
+       
     });
 </script>
-
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />

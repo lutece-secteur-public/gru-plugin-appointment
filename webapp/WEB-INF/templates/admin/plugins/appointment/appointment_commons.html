@@ -1,3 +1,16 @@
+<#macro commonsAppJS>
+<script src="js/plugins/appointment/jquery.min.js"></script>
+<script src="js/plugins/appointment/moment.min.js" ></script>
+<script src="js/plugins/appointment/fullcalendar.min.js"></script>
+<script src="js/plugins/appointment/locale-all.js"></script>
+<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
+<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
+<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" />
+<link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
+</#macro>
+
 <#--
 -- Check if the checkbox must be checked or not
 -- @param code the checkbox code
@@ -176,4 +189,15 @@
 $('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
 </script>
+</#macro>
+
+<#macro btnComment >
+<div id="btn-comment-main">
+	<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=['all'] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
+		<@iconStack class='fa-sm'>
+			<@icon style='comment-o' class='fa-stack-2x' />
+			<@icon style='plus' class='fa-stack-1x' />
+		</@iconStack>
+	</@button>
+</div>
 </#macro>

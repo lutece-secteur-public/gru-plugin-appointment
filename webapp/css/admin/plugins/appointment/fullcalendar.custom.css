@@ -1,19 +1,23 @@
 /* 12/11/2020 - CUSTOM styles for fullCalendar in appointment plugin */
+
 .ui-widget-header {
     border: 1px solid #aaa;
     background: none;
     color: #222;
     font-weight: normal;
 }
+
 #btn-comment-main{
     display: none;
 }
 
 #toggle-add-comment{
-    /* position: absolute; */
+    /* 
+    position: absolute;
     z-index: 999;
-    /* top: 192px;
-    left: 28px; */
+    top: 194px;
+    left: 38px;  
+    */
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);
@@ -61,13 +65,18 @@ th.fc-day-header {
 
 td.fc-axis.fc-time {
     width: 80px ;
-    padding: 8px 4px;
+    padding: 0 4px 16px 4px;
     text-align: center;
     line-height: 1.42857143;
     width: 130px;
     margin: 0;
-    /* border-top: 0px solid transparent;   
-    border-right: solid 1px rgb(190, 190, 190);  */
+    vertical-align: top
+}
+
+.hover{
+    background-color: rgba(255, 136, 0, 0.295) !important;
+    /* background-color:rgb(233, 250, 0) !important; */
+    /* border-color: #000 !important; */
 }
 
 .fc-event, .fc-event p{
@@ -88,6 +97,10 @@ th.fc-day-header {
 
 .fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
 	padding: 5px; 
+}
+
+.fc-time-grid .fc-bgevent, .fc-time-grid .fc-event {
+    opacity: .7;
 }
 
 .fc-title a{
