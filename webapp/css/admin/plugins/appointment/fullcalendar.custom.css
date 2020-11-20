@@ -8,20 +8,19 @@
 }
 
 #btn-comment-main{
-    display: none;
+    /* display: none; */
 }
 
 #toggle-add-comment{
-    /* 
+    
     position: absolute;
     z-index: 999;
-    top: 194px;
-    left: 38px;  
-    */
+    top: 192px;
+    left: 34px;  
+   
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);
-    /* padding:5px; */
 }
 
 th.fc-day-header {
