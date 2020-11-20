@@ -161,20 +161,20 @@
     <@input type='hidden' name='id_comment' value=value />
 	
 	<@fieldSet>
-		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' rows=2>
-			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true />
+		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
+			<@input type='textarea' name='comment' id=idComment richtext=true />
 		</@formGroup>
-		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' rows=2>
+		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' mandatory=true rows=2>
 			<@inputGroup>
-				<@input type='text' name='startingValidityDate' id=idStartingDate mandatory=true />
+				<@input type='text' name='startingValidityDate' id=idStartingDate />
 				<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
-		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' rows=2>
+		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
 			<@inputGroup>
-				<@input type='text' name='endingValidityDate' id=idEndingDate mandatory=true />
+				<@input type='text' name='endingValidityDate' id=idEndingDate />
 				<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 				</@inputGroupItem>
