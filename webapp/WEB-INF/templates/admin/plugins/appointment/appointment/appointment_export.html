@@ -1,5 +1,5 @@
 <@modal id='export_modal'>
-	<@tform name='export_form' id='export_form' action='jsp/admin/plugins/appointment/DoDownloadAllAppointments.jsp'>
+	<@tform name='export_form' id='export_form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
 		<@input type='hidden' name='id_form' value='${form.idForm}' />
 		<@modalHeader modalTitle='#i18n{appointment.export.modal.title}' />
 		<@modalBody>
@@ -15,7 +15,7 @@
 		</@modalBody>
 		<@modalFooter>
 	        <@button type='cancel' title='#i18n{appointment.export.modal.button.ko}' params='data-dismiss="modal"'  />
-	        <@button type='submit' title='#i18n{appointment.export.modal.button.ok}' />
+	        <@button type='submit' id='action_doExportResponses' name='action_doExportAppointments' title='#i18n{appointment.export.modal.button.ok}' />
 	    </@modalFooter>
     </@tform>
 </@modal>

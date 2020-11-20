@@ -274,6 +274,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String ACTION_DO_MAKE_APPOINTMENT = "doMakeAppointment";
     private static final String ACTION_DO_PROCESS_WORKFLOW_ACTION = "doProcessWorkflowAction";
     private static final String ACTION_DO_CHANGE_APPOINTMENT_STATUS = "doChangeAppointmentStatus";
+    private static final String ACTION_EXPORT_APPOINTMENTS = "doExportAppointments";
 
     // Infos
     private static final String INFO_APPOINTMENT_CREATED = "appointment.info.appointment.created";
@@ -833,7 +834,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
      *             If the user is not authorized to access this feature
      */
     @SuppressWarnings( "unchecked" )
-    public String getDownloadFileAppointment( HttpServletRequest request, HttpServletResponse response ) throws AccessDeniedException
+    @Action( ACTION_EXPORT_APPOINTMENTS )
+    public String doExportAppointments( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         if ( StringUtils.isEmpty( strIdForm ) || !StringUtils.isNumeric( strIdForm ) )
@@ -865,7 +867,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         TemporaryFileGeneratorService.getInstance( ).generateFile( generator, getUser( ) );
         addInfo( "appointment.export.async.message", getLocale( ) );
 
-        return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, Integer.valueOf( strIdForm ) );
+        return getManageAppointments( request );
     }
 
     
