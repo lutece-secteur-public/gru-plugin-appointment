@@ -1,17 +1,5 @@
 <#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<script src="js/jquery/jquery-1.11.3.min.js"></script>
-<!-- <script src="js/query/jquery-ui.min.js"></script> -->
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/fullcalendar.min.js"></script>
-<script src="js/plugins/appointment/locale-all.js"></script>
-<!-- <script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" ></script> -->
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-
-<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
-
+<@commonsAppJS />
 <@row>
 	<@columns>
 		<@messages infos=infos errors=errors />
@@ -126,6 +114,25 @@
 		</@appointmentTabs>
     </@columns>
 </@row>
+
+<@modal id='commentModal'>
+    <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
+	<@modalBody>
+	</@modalBody>
+	<@modalFooter>
+		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+	</@modalFooter>
+</@modal>
+
+<@modal id='modify-comment'>
+	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
+	<@modalBody>
+	</@modalBody>
+	<@modalFooter>
+		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+	</@modalFooter>
+</@modal>
+
 <@getDatePickerBootstrap idField="date_of_modification" language=language />
 <script type="text/javascript">
 $('#date_of_modification').datepicker({
@@ -189,6 +196,20 @@ function validateQty(event) {
                 },
             </#list>
         </#if>
+        <#if comment_events??>
+            <#list comment_events as comment_event>
+            {
+                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
+                "start" : "${comment_event.startingValidityDate}",
+                "end" : "${comment_event.calendarAllDaySlotEnd}",
+                "validity_end" : "${comment_event.endingValidityDate}",
+                "id" : "${comment_event.id}",
+                "creator_user" : "${comment_event.creatorUserName!''}",
+                "creation_date" : "${comment_event.creationDate?date.xs!''}",
+                "type": "comment"
+            },
+            </#list>
+        </#if>
     ];
     $( function() {
         $('#calendar').fullCalendar({
@@ -204,7 +225,6 @@ function validateQty(event) {
             slotLabelFormat: 'H:mm',
             slotLabelInterval: slotDuration,
             slotDuration: slotDuration,
-            //allDaySlot: false,
             minTime: minTime,
             maxTime: maxTime,
             businessHours: {
@@ -216,58 +236,116 @@ function validateQty(event) {
                 location.href = eventUrl + calEvent.id;
             },
             events: events,
+            eventMouseover: function ( event, jsEvent, view) {
+                var line='',hours=event.start.format('HH'), minutes = parseInt( event.start.format('mm') );
+                if( minutes==15 || minutes==45 ){
+                    minutes = minutes - 15;
+                    line = 'tr[data-time="' + hours + ':' + minutes + ':00"]';
+                } else {
+                    line = 'tr[data-time="' + event.start.format('HH:mm:ss') + '"]';     
+                }
+                $(line).children('td').addClass('hover')
+            },
+            eventMouseout: function ( event, jsEvent, view) {
+                var line='',hours=event.start.format('HH'), minutes = parseInt( event.start.format('mm') );
+                if( minutes==15 || minutes==45 ){
+                    minutes = minutes - 15;
+                    console.log( minutes );
+                    line = 'tr[data-time="' + hours + ':' + minutes + ':00"]';
+                } else {
+                    line = 'tr[data-time="' + event.start.format('HH:mm:ss') + '"]';     
+                }
+                $(line).children('td').removeClass('hover')
+            },
             eventRender: function(event, element) {
-                $(element).popover({
-                	container: 'body',
-                    placement : 'bottom',
-                    html : true,
-                    trigger : 'hover',
-                    content : '<center><b>' + event.start.format('HH:mm') + '</b> - <b>' + event.end.format('HH:mm')+'</b></center>'
+                var $title = element.find( '.fc-title' );
+                $(element).addClass( event.customClass );
+                
+                if ( event.customStyle !='' ){
+                    $(element).css( 'background', event.customStyle );
+                }
+                
+                $title.html( $title.text() );
+                
+                $(element).contextmenu(function() {
+                    return false;
                 });
-				$(element).attr( 'data-event', '"slotId":"' + event.id +'","startDate":"' + event.start.format('DD-MM-YYYY') + '","startTime":"' + event.start.format('HH:mm') + '","endDate":"' + event.end.format('DD-MM-YYYY') + '","endTime":"' + event.end.format('HH:mm') + '"' )
-         
+
+                var json = {
+                    "container": "body",
+                    "placement" : "bottom",
+                    "html" : true,
+                    "trigger" : "hover"
+                };
+
+                if( event.type == "comment" ){
+                    if ( event.validity_end == null || event.validity_end == undefined ){
+                        labelEventDate='Le ' + event.start.format('ddd DD/MM');
+                    } else {
+                        moment.locale("fr");
+                        labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
+                    }
+                    json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
+                } else {
+                    json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+                }
+
+                $(element).popover( json );
+                
+                if(event.type == "comment" ){
+                    var fcTitle = element.find('.fc-title p');
+                    fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
+                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+                }
             },
             eventAfterAllRender: function(view) {
                 $('.fc-event').css('cursor', 'pointer');
                 $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-
-            },
-        });
-		
-		/* Event selection          */ 
-        var eventIdx=0, eventData='';
-		
-        $( ".fc-content-skeleton" ).selectable({
-            filter: ".fc-time-grid-event.fc-v-event",
-            selecting: function( event, ui ) {
-                eventIdx++;
-            },
-            unselecting: function( event, ui ) {
-                eventIdx--;
-            },
-            stop: function() {
-                console.log(  eventIdx  );   
-                $( ".ui-selected", this ).each( function() {
-                    console.log( eventData );
-                    if ( eventIdx > 1 ){
-						
-						/*
-                        eventData += '{' + $(this).data('event') + '};' ;
-                        const events =  JSON.stringify( eventData );
-                        $('#slotsData').val( '[' + events + ']' );
-                        $('#updatePlanningMultiSlot').modal('show');
-						*/
-                    } else {
-                        eventData ='{' + $(this).data('event') + '}';                       
-						const evt = JSON.parse(eventData); 
-                        const idSlot = JSON.parse( evt.slotId );
                 
-                        location.href = eventUrl + idSlot;
-                    }
-				
+                $('.toggle-modify-comment').click(function(ev) {
+                    ev.preventDefault();
+                    var formValues = JSON.parse( $(this).attr( "data-json" ) );
+                    $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
+                    tinyMCE.activeEditor.setContent( formValues.comment_text );
+                    $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
+                    $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
+                    $( "#modify-comment" ).modal('show');
                 });
-                eventData='';
-            }
+                
+                /* Event selection          */ 
+                var eventIdx=0, eventData='';
+                
+                $( ".fc-content-skeleton" ).selectable({
+                    filter: ".fc-time-grid-event.fc-v-event",
+                    selecting: function( event, ui ) {
+                        eventIdx++;
+                    },
+                    unselecting: function( event, ui ) {
+                        eventIdx--;
+                    },
+                    stop: function() {
+                        console.log(  eventIdx  );   
+                        $( ".ui-selected", this ).each( function() {
+                            console.log( eventData );
+                            if ( eventIdx > 1 ){
+                                eventData += '{' + $(this).data('event') + '};' ;
+                                const events =  JSON.stringify( eventData );
+                                $('#slotsData').val( '[' + events + ']' );
+                                $('#updatePlanningMultiSlot').modal('show');
+                                
+                            } else {
+                                eventData ='{' + $(this).data('event') + '}';                       
+                                const evt = JSON.parse(eventData); 
+                                const idSlot = JSON.parse( evt.slotId );
+                        
+                                location.href = eventUrl + idSlot;
+                            }
+                        
+                        });
+                        eventData='';
+                    }
+                });
+            },
         });
 		
     });
