@@ -230,7 +230,14 @@ $( function() {
                 $('#starting_date_time_span').val($(this).data('starting_date_time'));
                 $('#addbook_modal').modal('show');
             });
+
             $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+            $('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
+            $('#toggle-add-comment').remove();
+            var tgc = $('#toggle-add-comment').find('body');
+            tgc.click(function(ev) {
+                $( "#modify-comment" ).modal('show');
+            });
             $('.toggle-modify-comment').click(function(ev) {
                 ev.preventDefault();
                 var formValues = JSON.parse( $(this).attr( "data-json" ) );

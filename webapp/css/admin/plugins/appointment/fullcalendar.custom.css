@@ -12,12 +12,7 @@
 }
 
 #toggle-add-comment{
-    
-     position: relative;
-    z-index: 999;
-    /*top: 192px;
-    left: 34px;   */
-   
+    margin: 5px 5px -5px  5px;
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);

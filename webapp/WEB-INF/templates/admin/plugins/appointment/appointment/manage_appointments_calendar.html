@@ -49,7 +49,6 @@
     var columnFormat = 'dddd DD/MM/YYYY';
     var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
     var events = [
-        
         <#if events??>
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
@@ -225,13 +224,10 @@
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
                 
                 $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-                $('#toggle-add-comment').clone().appendTo(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content");
-               
+                $('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
                 $('#toggle-add-comment').remove();
                 var tgc = $('#toggle-add-comment').find('body');
-               // $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-                
-               tgc.click(function(ev) {
+                tgc.click(function(ev) {
                     $( "#modify-comment" ).modal('show');
                 });
                 
