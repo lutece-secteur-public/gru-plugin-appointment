@@ -1,7 +1,7 @@
 <@box color='primary' style='solid' id='appointment_dashboard_card'>
 	<@boxHeader title='#i18n{appointment.manage.appointmentforms.title}'>
 		<#if permission_create=="true">
-			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' hideTitle=['all'] buttonIcon='plus' size='sm' />
+			<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=createAppointmentForm' title='#i18n{appointment.manageAppointmentForms.buttonAdd}' hideTitle=['all'] buttonIcon='plus-square' size='sm' />
 		</#if>
 		<@button type='button' style='card-control collapse' buttonIcon='minus' buttonTargetId='#appointment_dashboard_card_body' size='sm' />
 		<@button style='card-control remove' buttonTargetId='#appointment_dashboard_card' buttonIcon='times' size='sm' />
