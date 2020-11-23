@@ -1,9 +1,7 @@
-<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<@commonsAppJS />
 <@row>
 	<@columns>
 		<@messages infos=infos errors=errors />
-		<@appointmentTabs tab='typicalWeek' appointmentform=appointmentform>
+		<@appointmentTabs tab='typicalWeek' form=appointmentform>
 		
 			<@tform type='inline' align='right' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
 				<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
