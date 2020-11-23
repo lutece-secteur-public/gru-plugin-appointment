@@ -8,15 +8,15 @@
 }
 
 #btn-comment-main{
-    /* display: none; */
+    display: none;
 }
 
 #toggle-add-comment{
     
-    position: absolute;
+     position: relative;
     z-index: 999;
-    top: 192px;
-    left: 34px;  
+    /*top: 192px;
+    left: 34px;   */
    
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
@@ -44,16 +44,19 @@ th.fc-day-header {
     position: relative;
 }
 
-.fc-content .fc-title i.fa-plus{
+.fc-content .fc-title .badge{
     position: absolute;
     right: 30px;
-    top: 46%;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 1;
+    padding: 6px;
     display: none;
-    width: 15px
+    width: 14px;
+    border-radius: 50%;
 } 
 
-.fc-content:hover .fc-title  i.fa-plus{
+.fc-content:hover .fc-title .badge{
     display: block;
 } 
 
@@ -104,7 +107,7 @@ th.fc-day-header {
 
 .fc-title a{
     display: inline-block;
-    padding-top: 5px;
+    /* padding-top: 5px; */
     font-weight: 700;
     color: #000
 }

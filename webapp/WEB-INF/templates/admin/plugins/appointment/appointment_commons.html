@@ -161,20 +161,20 @@
     <@input type='hidden' name='id_comment' value=value />
 	
 	<@fieldSet>
-		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
-			<@input type='textarea' name='comment' id=idComment richtext=true />
+		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' rows=2>
+			<@input type='textarea' name='comment' id=idComment richtext=true mandatory=true />
 		</@formGroup>
-		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' mandatory=true rows=2>
+		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' rows=2>
 			<@inputGroup>
-				<@input type='text' name='startingValidityDate' id=idStartingDate />
+				<@input type='text' name='startingValidityDate' id=idStartingDate mandatory=true />
 				<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
-		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
+		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' rows=2>
 			<@inputGroup>
-				<@input type='text' name='endingValidityDate' id=idEndingDate />
+				<@input type='text' name='endingValidityDate' id=idEndingDate mandatory=true />
 				<@inputGroupItem type='text'>
 				<@icon style='calendar' />
 				</@inputGroupItem>
@@ -201,3 +201,70 @@ $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
 	</@button>
 </div>
 </#macro>
+
+<#macro appointmentTabs tab form>
+<@commonsAppJS />
+<@tabs params=' style="margin-top:15px"'>
+	<@tabList>
+		<#if tab?ends_with("Week")>
+			<#if tab="typicalWeek"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.typicalWeek.pageTitle}' active=active />
+			<#if tab="specificWeek"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificWeek.pageTitle}' active=active />  
+			<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+		<#else>
+			<#if tab="calendar"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active />
+			<#if tab="filter"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' title='#i18n{appointment.manageAppointments.pageTitle}' active=active />
+		</#if>
+	</@tabList>
+	<@tabContent>
+	<@messages errors=errors infos=infos />
+	<#if formCalendarErrors??>
+		<div class="layout-wrapper"></div>
+	<#else>
+		<@btnComment />
+		<div id="calendar"></div>
+	</#if>
+	</@tabContent>
+</@tabs>
+<script>
+/* Add Form title */
+$('.content-header > h1 > small').html( "${form.title}" );
+</script>
+</#macro>
+
+<#macro modifyAppointmentFormLeftColumn appointmentform >
+<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
+<@getDatePickerBootstrap idField="date_start_validity" language=language />
+<@getDatePickerBootstrap idField="date_end_validity"   language=language />
+<script type="text/javascript">
+	function validateQty(event) {
+		var key = window.event ? event.keyCode : event.which;
+	
+	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	 || event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	}
+	else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
+	};
+	$('#date_start_validity').datepicker({
+    	language:		"${language}",
+    	weekStart: 1,
+    	todayBtn: true,
+    	todayHighLight: true,
+    	autoclose: true
+	});
+	$('#date_end_validity').datepicker({
+	    language:		"${language}",
+	    weekStart: 1,
+	    todayBtn: true,
+	    todayHighLight: true,
+	    autoclose: true
+	});
+</script>
+</#macro> 

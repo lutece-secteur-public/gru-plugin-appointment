@@ -1,8 +1,6 @@
-<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-<@commonsAppJS />
+
 <@row>
     <@columns>
-        
         <@appointmentTabs tab="calendar" form=form />
     </@columns>
 </@row>
@@ -81,28 +79,28 @@
                 <#assign strEventClass><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>overbooked ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>filled ${typeClass}<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>filled ${typeClass}</#if></#assign>
                 <#assign strCustomColor><#if event.isOpen & !event.isPassed & (nbAppointments > event.maxCapacity)>rgba(255,165,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>rgba(255,0,0,1)<#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>rgba(255,0,0,1)<#else>rgba(222,222,222,1)</#if></#assign>
                 {
-                    "title" :   <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                    "title" :   <#if modifDateAppointment>"<a href=" + eventUrl + "viewChangeDateAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}>${nbAppointments} / ${event.maxCapacity}</a>"
                                 <#elseif event.isOpen & !event.isPassed & overbookingAllowed && (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                                  + "&nbsp;"
-                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"fa fa-plus\"></i></a>"
+                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
                                 <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                                  + "&nbsp;"
-                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"fa fa-plus\"></i></a>"
+                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
                                 <#elseif event.isOpen & (event.nbRemainingPlaces = 0)>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                                 <#elseif event.isOpen & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>'#i18n{appointment.manageCalendarSlots.labelEditFull}'
                                 <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces > 0) & (event.nbRemainingPlaces > event.nbPotentialRemainingPlaces)>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
+                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
                                  + "&nbsp;"
                                  + "#i18n{appointment.manageCalendarSlots.labelEdit}"
                                  + "&nbsp;"
-                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}"+"><i class=\"glyphicon icon-plus-sign\"></i></a>"
+                                 + "<a href=" + eventUrl + "createAppointment&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}\"><span class=\"badge badge-primary\"><i class=\"fa fa-plus\"></i></span></a>"
                                 <#elseif event.isOpen>
-                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>"
-                                <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}<a/>'
-                                <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}><a/>"</#if>,
+                                 "<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>"
+                                <#elseif !event.isOpen & ((event.maxCapacity - event.nbRemainingPlaces) > 0)>'<a href=' + eventUrl + 'manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}>${nbAppointments} / ${event.maxCapacity}</a>'
+                                <#else>"<a href=" + eventUrl + "manageAppointments&id_form=${event.idForm}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}></a>"</#if>,
                     "start"         :  '${event.startingDateTime}',
                     "end"           : '${event.endingDateTime}',
                     "id"            : '${event.idSlot}',
@@ -227,6 +225,15 @@
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
                 
                 $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+                $('#toggle-add-comment').clone().appendTo(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content");
+               
+                $('#toggle-add-comment').remove();
+                var tgc = $('#toggle-add-comment').find('body');
+               // $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+                
+               tgc.click(function(ev) {
+                    $( "#modify-comment" ).modal('show');
+                });
                 
                 $('.toggle-modify-comment').click(function(ev) {
                     ev.preventDefault();
@@ -302,7 +309,6 @@
                 }
             }
         });
-       
     });
 </script>
 <#include "/admin/util/editor/editor.html" />
