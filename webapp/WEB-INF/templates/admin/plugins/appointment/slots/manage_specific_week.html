@@ -1,8 +1,7 @@
-<#include "/admin/plugins/appointment/appointmentform/modify_appointmentform_tabs_planning.html" />
-<@commonsAppJS />
+
 <@row>
     <@columns>
-        <@appointmentTabs tab="specificWeek" appointmentform=appointmentform>
+        <@appointmentTabs tab="specificWeek" form=appointmentform>
             <@messages errors=errors warnings=warnings infos=infos/>
             <@btnComment />
             <div id="calendar"></div>
@@ -234,7 +233,9 @@
             eventRender: function(event, element) {
                 var $title = element.find( '.fc-title' );
                 $(element).addClass( event.customClass );
+                $(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
                 
+           
                 if ( event.customStyle !='' ){
                     $(element).css( 'background', event.customStyle );
                 }
@@ -313,7 +314,7 @@
                 var eventIdx=0, eventData='',evtData='';
                 $( ".fc-content-skeleton" ).selectable({
                     filter: ".fc-time-grid-event.fc-v-event",
-                    selecting: function( eveyevent, ui ) {
+                    selecting: function( event, ui ) {
                         eventIdx++;
                     },
                     unselecting: function( event, ui ) {
