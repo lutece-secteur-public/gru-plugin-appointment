@@ -1,14 +1,13 @@
-<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <#include "/admin/plugins/appointment/appointment/appointment_export.html" />
-<link href="css/datepicker.css" rel="stylesheet">
+<!-- <link href="css/datepicker.css" rel="stylesheet">
 <link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
 <script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script> -->
 
 <@row>
     <@columns>
 		<@appointmentTabs tab='filter' form=form>
-			<@messages infos=infos errors=errors/>
+			
 			<@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
 				<@input type='hidden' name='view' value='manageAppointments' />    
 				<@input type='hidden' name='id_form' value='${form.idForm}' />
@@ -76,7 +75,7 @@
 					<@actionButtons button1Name='Search' i18nValue1Key='appointment.manageAppointments.labelSearch' icon1='fa fa-search' button2Name='Reset' i18nValue2Key='appointment.displayAppointmentForm.labelReset' url2='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' icon2='fa fa-refresh' />
 					<!-- button title : title='#i18n{appointment.manageAppointments.labelSearch}' -->
 					<!-- aButton title : title='#i18n{appointment.displayAppointmentForm.labelReset}' -->
-					<hr></hr>
+					<hr>
 				</@fieldSet>
 
 				<@div align='right'>

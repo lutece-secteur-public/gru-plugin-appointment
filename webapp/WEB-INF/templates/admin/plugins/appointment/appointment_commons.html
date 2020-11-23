@@ -220,13 +220,17 @@ $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
 		</#if>
 	</@tabList>
 	<@tabContent>
-	<@messages errors=errors infos=infos />
-	<#if formCalendarErrors??>
-		<div class="layout-wrapper"></div>
-	<#else>
-		<@btnComment />
-		<div id="calendar"></div>
-	</#if>
+		<@messages errors=errors infos=infos />
+		<#if tab='filter'>
+			<#nested>
+		<#else>
+			<#if formCalendarErrors??>
+				<div class="layout-wrapper"></div>
+			<#else>
+				<@btnComment />
+				<div id="calendar"></div>
+			</#if>
+		</#if>
 	</@tabContent>
 </@tabs>
 <script>
