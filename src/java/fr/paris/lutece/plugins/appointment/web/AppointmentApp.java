@@ -90,9 +90,11 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.GenericAttributeError;
+import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
+import fr.paris.lutece.portal.business.file.FileHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
@@ -1160,6 +1162,14 @@ public class AppointmentApp extends MVCApplication
         {
             addError( ERROR_MESSAGE_SLOT_FULL, locale );
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, nIdForm );
+        }
+        
+        for ( Response response : appointmentDTO.getListResponse( ) )
+        {
+            if ( response.getFile( ) != null )
+            {
+                response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
+            }
         }
 
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
