@@ -10,8 +10,8 @@
 			<#if response.entry.error??>
 				<#assign class = 'has-error' />
 			</#if>
-			<#if response.toStringValueResponse??>
-				<#assign value = response.toStringValueResponse />
+			<#if response.responseValue??>
+				<#assign value = response.responseValue?number?number_to_date?string("dd/MM/yyyy") />
 			</#if>
 		</#if>
 	</#list>
