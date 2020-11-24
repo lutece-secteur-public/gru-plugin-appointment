@@ -11,7 +11,7 @@
 				<#assign class = 'has-error' />
 			</#if>
 			<#if response.toStringValueResponse??>
-				<#assign value = response.toStringValueResponse?number?number_to_date?string("dd/MM/yyyy") />
+				<#assign value = response.toStringValueResponse />
 			</#if>
 		</#if>
 	</#list>
