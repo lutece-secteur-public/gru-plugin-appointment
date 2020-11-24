@@ -16,15 +16,13 @@
 		</@tabList>
 		<@tabContent>
 			<@messages infos=infos errors=errors />
-			<h3>#i18n{appointment.modifyAppointmentForm.title} : <strong>${appointmentform.title}</strong></h3>
+			<!-- <h3>#i18n{appointment.modifyAppointmentForm.title} : <strong>${appointmentform.title}</strong></h3> -->
 			<#nested>
 		</@tabContent>
 	</@tabs>
 </#macro>
 
 <#macro modifyAppointmentFormLeftColumn appointmentform >
-
-<fieldset>
 <@tform id='formid' action='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp' params='enctype="multipart/form-data"'>
 	<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 	

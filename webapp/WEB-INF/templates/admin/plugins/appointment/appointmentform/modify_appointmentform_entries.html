@@ -6,8 +6,7 @@
 		<@appointmentTabs tab="entries" appointmentform=appointmentform>
 			<@row>
 				<@columns md=9>
-					<fieldset>
-						<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
+					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
 							<@input type='hidden' name='action' value='doChangeOrderEntry' />
 							<@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
 							<#if entry_group_list?has_content>
@@ -21,7 +20,7 @@
 									</@inputGroup>
 								</@formGroup>
 							</#if>
-							<hr></hr>
+							<hr/>
 						<@table>
 							<thead>
 								<tr>
@@ -128,7 +127,6 @@
 								</tbody>
 							</@table>
 						</@tform>
-					</fieldset>
 				</@columns>
 				<@columns md=3>
 					<@listGroup>
@@ -176,6 +174,8 @@
 </#macro>
 
 <script>
+/* Add Form title */
+$('.content-header > h1 > small').html( "${appointmentform.title}" );
 $("#selectAll").click(function(event) {  //on click
 	if ( this.checked ){ // check select status
 			$("input[name='entry_id_move']").each(function() { //loop through each checkbox

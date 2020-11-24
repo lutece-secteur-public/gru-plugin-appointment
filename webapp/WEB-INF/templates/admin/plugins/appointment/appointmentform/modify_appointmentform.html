@@ -3,3 +3,7 @@
 <@appointmentTabs tab="params" appointmentform=appointmentform>
 	<@modifyAppointmentFormLeftColumn appointmentform=appointmentform />
 </@appointmentTabs>
+<script>
+/* Add Form title */
+$('.content-header > h1 > small').html( "${appointmentform.title}" );
+</script>
