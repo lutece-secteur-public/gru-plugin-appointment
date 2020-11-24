@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.web;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -59,6 +60,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
@@ -147,6 +149,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
     private static final String PARAMETER_ENDING_DATE_TIME = "ending_date_time";
     private static final String PARAMETER_ID_TIME_SLOT = "id_time_slot";
+    private static final String PARAMETER_EVENTS_COMMENTS = "comment_events";
     private static final String PARAMETER_DAY_OF_WEEK = "dow";
     private static final String PARAMETER_EVENTS = "events";
     private static final String PARAMETER_MIN_DURATION = "min_duration";
@@ -166,6 +169,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_TIME_SLOT = "timeSlot";
     private static final String MARK_SLOT = "slot";
     private static final String MARK_LIST_DATE_OF_MODIFICATION = "listDateOfModification";
+    private static final String MARK_LOCALE_TINY = "locale";
 
     // Views
     private static final String VIEW_MANAGE_SPECIFIC_WEEK = "manageSpecificWeek";
@@ -608,7 +612,10 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
+        model.put( PARAMETER_EVENTS_COMMENTS,
+                CommentHome.selectCommentsList( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) );
         AppointmentFormJspBean.addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
+        model.put(MARK_LOCALE_TINY, getLocale( ) );
         return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, model );
     }
 
