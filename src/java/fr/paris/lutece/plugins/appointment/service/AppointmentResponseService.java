@@ -44,6 +44,8 @@ import org.apache.commons.fileupload.FileItem;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentResponseHome;
 import fr.paris.lutece.plugins.appointment.service.upload.AppointmentAsynchronousUploadHandler;
+import fr.paris.lutece.plugins.genericattributes.business.Entry;
+import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
 import fr.paris.lutece.plugins.genericattributes.business.FieldHome;
 import fr.paris.lutece.plugins.genericattributes.business.GenAttFileItem;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
@@ -189,17 +191,19 @@ public final class AppointmentResponseService
     }
     
     /**
-     * Remove all the response of an appointment
+     * Remove the response of an appointment
      * 
+     * @param deleteBoOnly 
      * @param nIdAppointment
      *            the id of the appointment
      */
-    public static void removeResponsesByIdAppointmentAndListEntryId( int nIdAppointment, List<Integer> listIdEntry )
+    public static void removeResponsesByIdAppointmentAndBoOnly( int nIdAppointment, boolean deleteBoOnly )
     {
         List<Response> listResponse = AppointmentResponseService.findListResponse( nIdAppointment );
         for ( Response response : listResponse )
         {
-            if ( listIdEntry.contains( response.getEntry( ).getIdEntry( ) ) )
+            Entry entry = EntryHome.findByPrimaryKey( response.getEntry( ).getIdEntry( ) );
+            if ( !entry.isOnlyDisplayInBack( ) || deleteBoOnly )
             {
                 AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
             }
