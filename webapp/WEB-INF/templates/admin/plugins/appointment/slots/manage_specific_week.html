@@ -9,6 +9,26 @@
     </@columns>
 </@row>
 
+<@modal id='commentModal'>
+    <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
+    <@modalBody>
+        <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+    </@modalBody>
+    <@modalFooter>
+        <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+    </@modalFooter>
+</@modal>
+
+<@modal id='modify-comment'>
+    <@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
+    <@modalBody>
+        <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+    </@modalBody>
+    <@modalFooter>
+        <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+    </@modalFooter>
+</@modal>
+
 <@modal id='updatePlanningSlot'>
     <@modalBody>
         <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>					
@@ -201,8 +221,11 @@
                 dow: dow
             },
             eventClick: function(calEvent, jsEvent, view) {
-                location.href = calEvent.url;
-                //return false;
+            	if(calEvent.type != "comment")
+            	{
+            	    location.href = calEvent.url;
+            	    //return false;
+            	}
             },
             events: events,
             eventMouseover: function ( event, jsEvent, view) {
@@ -257,7 +280,7 @@
                     if ( event.validity_end == null || event.validity_end == undefined ){
                         labelEventDate='Le ' + event.start.format('ddd DD/MM');
                     } else {
-                        moment.locale("fr");
+                        moment.locale("${locale}");
                         labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
                     }
                     json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
@@ -299,9 +322,15 @@
                 $('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
                 $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+                $('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
+                $('#toggle-add-comment').remove();
+                var tgc = $('#toggle-add-comment').find('body');
+                tgc.click(function(ev) {
+                    $( "#commentModal" ).modal('show');
+                });
 
-                $('.toggle-modify-comment').click(function(ev) {
-                    ev.preventDefault();
+                $('.toggle-modify-comment').click(function(event) {
+                    event.preventDefault();
                     var formValues = JSON.parse( $(this).attr( "data-json" ) );
                     $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
                     tinyMCE.activeEditor.setContent( formValues.comment_text );
@@ -312,7 +341,7 @@
 
                 /* Event selection          */ 
                 var eventIdx=0, eventData='',evtData='';
-                $( ".fc-content-skeleton" ).selectable({
+                $( ".fc-content-skeleton" ).not(":has(.btn-comments)").selectable({
                     filter: ".fc-time-grid-event.fc-v-event",
                     selecting: function( event, ui ) {
                         eventIdx++;
@@ -385,3 +414,5 @@ $('#ending_time').datetimepicker({
     stepping: 5
 });
 </script>
+<#include "/admin/util/editor/editor.html" />
+<@initEditor />
