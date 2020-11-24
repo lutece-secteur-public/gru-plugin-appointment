@@ -16,7 +16,7 @@
 			<#if list_responses??>
 			<#list list_responses as response>
 				<#if response.entry.idEntry == entry.idEntry>
-					<#if response.entry.error??>error</#if>" <#if response.toStringValueResponse??>value="${response.toStringValueResponse}"</#if>
+					<#if response.entry.error??>error</#if>" <#if response.toStringValueResponse??>value="${response.toStringValueResponse?number?number_to_date?string("dd/MM/yyyy")}"</#if>
 				</#if>
 			</#list>
 		<#else>
