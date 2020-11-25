@@ -1175,7 +1175,7 @@ public class AppointmentApp extends MVCApplication
         {
             if ( response.getFile( ) != null )
             {
-                response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) 
+                response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
                 
                 response.getFile( ).setPhysicalFile( PhysicalFileHome.findByPrimaryKey( response.getFile( ).getPhysicalFile( ).getIdPhysicalFile( ) ) );
                 
