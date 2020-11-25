@@ -451,6 +451,7 @@ public class AppointmentApp extends MVCApplication
             }
 
             LocalDate firstDateOfFreeOpenSlot = null;
+            _firstDateTimeOfFreeOpenSlot = null;
             if ( CollectionUtils.isNotEmpty( listSlots ) )
             {
                 // Need to find the first available slot from now (with time)
