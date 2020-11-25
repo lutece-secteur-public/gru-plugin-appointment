@@ -122,6 +122,16 @@ public class Appointment extends User
      * The appointment slots
      */
     private List<AppointmentSlot> _listAppointmentSlot;
+    
+    /**
+     * The first slot available 
+     */
+    private LocalDateTime _dateFirstSlotAvailable;
+
+    /**
+     * Tell if the appointment is surbooked or not
+     */
+    private boolean _bIsSurbooked;
 
     /**
      * Get the reference of the appointment
@@ -453,5 +463,59 @@ public class Appointment extends User
         {
             this._dateAppointmentTaken = null;
         }
+    }
+
+    /**
+     * Get the time of the first available slot
+     * 
+     * @return The first slot available date
+     */
+    public Timestamp getAppointmentFirstSlotAvailableSqlDate( )
+    {
+        Timestamp date = null;
+        if ( _dateFirstSlotAvailable != null )
+        {
+            date = Timestamp.valueOf( _dateFirstSlotAvailable );
+        }
+        return date;
+    }
+
+    /**
+     * Set the time of the first available slot
+     * 
+     * @param dateAppointmentFirstSlotAvailable
+     *            The DateAppointmentTaken to set (in sql Date format)
+     */
+    public void setAppointmentFirstSlotAvailableSqlDate( Timestamp dateAppointmentFirstSlotAvailable )
+    {
+        if ( dateAppointmentFirstSlotAvailable != null )
+        {
+            this._dateFirstSlotAvailable = dateAppointmentFirstSlotAvailable.toLocalDateTime( );
+        }
+        else
+        {
+            this._dateFirstSlotAvailable = null;
+        }
+    }
+
+    /**
+     * Get if the appointment is surbooked
+     * 
+     * @return true if the appointment is surbooked
+     */
+    public boolean getIsSurbooked( )
+    {
+        return _bIsSurbooked;
+    }
+
+    /**
+     * Set if the appointment is surbooked
+     * 
+     * @param bIsSurbooked
+     *            the boolean value to set
+     */
+    public void setIsSurbooked( boolean bIsSurbooked )
+    {
+        this._bIsSurbooked = bIsSurbooked;
     }
 }

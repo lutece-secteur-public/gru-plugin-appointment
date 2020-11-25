@@ -1372,6 +1372,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
             AdminUser adminLuteceUser = AdminAuthenticationService.getInstance( ).getRegisteredUser( request );
             appointmentDTO.setAdminUserCreate( adminLuteceUser.getAccessCode( ) );
         }
+        if( appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces && overbookingAllowed )
+        {
+            appointmentDTO.setIsSurbooked( true );
+        }
         try
         {
             appointmentDTO.setOverbookingAllowed( overbookingAllowed );

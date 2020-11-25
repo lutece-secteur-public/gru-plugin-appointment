@@ -41,6 +41,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 ALTER TABLE appointment_appointment MODIFY id_appointment INT NOT NULL;
 ALTER TABLE appointment_appointment DROP PRIMARY KEY, ADD PRIMARY KEY (id_appointment);
 ALTER TABLE appointment_appointment MODIFY id_appointment INT AUTO_INCREMENT;
+ALTER TABLE appointment_appointment date_appointment_first_slot_available TIMESTAMP NULL;
+ALTER TABLE appointment_appointment is_surbooked BOOLEAN DEFAULT FALSE NOT NULL;
+
+
 
 ALTER TABLE appointment_slot MODIFY id_slot INT NOT NULL;
 ALTER TABLE appointment_slot DROP PRIMARY KEY, ADD PRIMARY KEY (id_slot);

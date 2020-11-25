@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -95,8 +96,6 @@ import fr.paris.lutece.plugins.workflowcore.service.task.ITask;
 import fr.paris.lutece.plugins.workflowcore.service.task.ITaskService;
 import fr.paris.lutece.plugins.workflowcore.service.task.TaskService;
 import fr.paris.lutece.portal.business.file.FileHome;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFile;
-import fr.paris.lutece.portal.business.physicalfile.PhysicalFileHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
@@ -296,6 +295,7 @@ public class AppointmentApp extends MVCApplication
     private static final String STEP_3 = "step3";
 
     private int _nNbPlacesToTake;
+    private LocalDateTime _firstDateTimeOfFreeOpenSlot;
 
     /**
      * Get the calendar view
@@ -458,6 +458,8 @@ public class AppointmentApp extends MVCApplication
                 {
                     firstDateOfFreeOpenSlot = listAvailableSlots.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) )
                             .get( ).getDate( );
+                    _firstDateTimeOfFreeOpenSlot = listAvailableSlots.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) )
+                    .get( ).getStartingDateTime( );
                 }
             }
             if ( firstDateOfFreeOpenSlot == null )
@@ -1000,6 +1002,7 @@ public class AppointmentApp extends MVCApplication
             return redirect( request, VIEW_APPOINTMENT_CALENDAR, PARAMETER_ID_FORM, appointment.getIdForm( ) );
         }
         appointment.setSlot( listSlot );
+        appointment.setAppointmentFirstSlotAvailableSqlDate( Timestamp.valueOf( _firstDateTimeOfFreeOpenSlot ) );
         int nIdAppointment;
         try
         {
@@ -1171,9 +1174,6 @@ public class AppointmentApp extends MVCApplication
             if ( response.getFile( ) != null )
             {
                 response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
-                
-                response.getFile( ).setPhysicalFile( PhysicalFileHome.findByPrimaryKey( response.getFile( ).getPhysicalFile( ).getIdPhysicalFile( ) ) );
-                
             }
         }
 

@@ -186,6 +186,8 @@ public final class AppointmentService
 
         appointment.setIdUser( user.getIdUser( ) );
 
+        appointment.setAppointmentFirstSlotAvailableSqlDate( appointmentDTO.getAppointmentFirstSlotAvailableSqlDate( ) );
+        appointment.setIsSurbooked( appointmentDTO.getIsSurbooked( ) );
         if ( appointment.getIdAppointment( ) == 0 )
         {
             appointment = AppointmentHome.create( appointment );
