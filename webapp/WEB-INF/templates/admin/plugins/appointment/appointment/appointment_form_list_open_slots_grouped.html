@@ -1,3 +1,4 @@
+<@coreAdminCSSLinks />
 <#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <script src="js/plugins/appointment/moment.min.js" ></script>
 <link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
@@ -38,7 +39,7 @@
             
                 <fieldset>
                 <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form />
                 </fieldset>
             </@boxBody>
         </@box>
@@ -51,7 +52,7 @@
             
                 <fieldset>
                 <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form />
                 </fieldset>
             </@boxBody>
      </@box>  
@@ -83,6 +84,8 @@
             "start" : "${comment_event.startingValidityDate}",
             "end" : "${comment_event.calendarAllDaySlotEnd}",
             "validity_end" : "${comment_event.endingValidityDate}",
+            "start_time" : "${comment_event.endingValidityTime}",
+            "end_time" : "${comment_event.startingValidityTime}",
             "id" : "${comment_event.id}",
             "creator_user" : "${comment_event.creatorUserName!''}",
             "creation_date" : "${comment_event.creationDate!''}",
@@ -233,7 +236,7 @@
                 };
                 if( event.type == "comment" ){
                 	moment.locale("${locale}");
-                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + moment(event.validity_end).format('ddd DD/MM')+"</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
+                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start_time + "</b> - <b>" + moment(event.validity_end).format('ddd DD/MM')+ " " + event.end_time + "</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
                 }else{
                     json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
                 }
@@ -243,7 +246,7 @@
                 });
                 if(event.type == "comment" )
                 {
-                    element.append( "<a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon' style='position: relative; top: 2px; left: 2px; text-decoration: none;'>&#x1F5D1;</a><a href='javascript:void(0)' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title + "\", \"comment_start\":\"" + event.start + "\", \"comment_end\":\"" + event.validity_end + "\" }' >&#9998;</a>" );
+                	element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
                 }
             }
         });
@@ -253,8 +256,6 @@
 <@initEditor />
 <@getDatePickerBootstrap idField="modifyStartingValidityDate" language=locale />
 <@getDatePickerBootstrap idField="modifyEndingValidityDate" language=locale />
-<@getDatePickerBootstrap idField="startingValidityDate" language=locale />
-<@getDatePickerBootstrap idField="endingValidityDate" language=locale />
 <script type="text/javascript">
 $(document).ready(function() {
     $("#toggle-add-comment").click(function() {
@@ -268,6 +269,8 @@ $(document).ready(function() {
         tinyMCE.activeEditor.setContent( formValues.comment_text );
         $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
         $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
+        $( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
+        $( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
         $( "#modify-comment" ).toggle();
     });
 });

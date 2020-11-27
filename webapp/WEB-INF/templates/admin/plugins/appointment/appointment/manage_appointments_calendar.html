@@ -1,4 +1,4 @@
-
+<@coreAdminCSSLinks />
 <@row>
     <@columns>
         <@appointmentTabs tab="calendar" form=form />
@@ -8,7 +8,7 @@
 <@modal id='commentModal'>
 	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
 	<@modalBody>
-		<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "doAddComment" id_form />
+		<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form />
 	</@modalBody>
 	<@modalFooter>
 		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
@@ -18,7 +18,7 @@
 <@modal id='modify-comment'>
 	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
 	<@modalBody>
-		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "doModifyComment" id_form />
+		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form />
 	</@modalBody>
 	<@modalFooter>
         <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
@@ -124,6 +124,8 @@
                 "start" : "${comment_event.startingValidityDate}",
                 "end" : "${comment_event.calendarAllDaySlotEnd}",
                 "validity_end" : "${comment_event.endingValidityDate}",
+                "start_time" : "${comment_event.startingValidityTime}",
+                "end_time" : "${comment_event.endingValidityTime}",
                 "id" : "${comment_event.id}",
                 "creator_user" : "${comment_event.creatorUserName!''}",
                 "creation_date" : "${comment_event.creationDate?date.xs!''}",
@@ -238,6 +240,8 @@
                     tinyMCE.activeEditor.setContent( formValues.comment_text );
                     $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
                     $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
+                    $( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
+                    $( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
                     $( "#modify-comment" ).modal('show');
                 });
             },
@@ -289,7 +293,7 @@
                         labelEventDate='Le ' + event.start.format('ddd DD/MM');
                     } else {
                     	moment.locale("${locale}");
-                        labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
+                        labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
                     }
                     json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
                 } else {
@@ -301,7 +305,7 @@
                 if(event.type == "comment" ){
                     var fcTitle = element.find('.fc-title p');
                     fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
                 }
             }
         });
