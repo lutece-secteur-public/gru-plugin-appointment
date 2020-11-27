@@ -2,7 +2,6 @@
 <@row>
     <@columns>
         <@appointmentTabs tab="specificWeek" form=appointmentform>
-            <@messages errors=errors warnings=warnings infos=infos/>
             <@btnComment />
             <div id="calendar"></div>
         </@appointmentTabs>
@@ -419,4 +418,4 @@ $('#ending_time').datetimepicker({
 });
 </script>
 <#include "/admin/util/editor/editor.html" />
-<@initEditor />
+<@initEditor type='comment' />
