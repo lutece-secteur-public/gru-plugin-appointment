@@ -1228,6 +1228,17 @@ public class AppointmentJspBean extends MVCAdminJspBean
             addError( ERROR_MESSAGE_SLOT_FULL, locale );
             return redirect( request, VIEW_CALENDAR_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, nIdForm );
         }
+        
+        for ( Response response : appointmentDTO.getListResponse( ) )
+        {
+            if ( response.getFile( ) != null )
+            {
+                response.setFile( FileHome.findByPrimaryKey( response.getFile( ).getIdFile( ) ) );
+                
+                response.getFile( ).setPhysicalFile( PhysicalFileHome.findByPrimaryKey( response.getFile( ).getPhysicalFile( ).getIdPhysicalFile( ) ) );
+                
+            }
+        }
 
         request.getSession( ).setAttribute( SESSION_VALIDATED_APPOINTMENT, appointmentDTO );
         request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, form );
