@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.appointment.web;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PARAMETER_COMMENT = "comment";
     private static final String PARAMETER_STARTING_VALIDITY_DATE = "startingValidityDate";
     private static final String PARAMETER_ENDING_VALIDITY_DATE = "endingValidityDate";
+    private static final String PARAMETER_STARTING_VALIDITY_TIME = "startingValidityTime";
+    private static final String PARAMETER_ENDING_VALIDITY_TIME = "endingValidityTime";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String REFERER = "referer";
 
@@ -180,7 +183,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         String strReferer = request.getHeader( REFERER );
 
-       _comment= (_comment == null )? new Comment():_comment;
+       _comment = (_comment == null )? new Comment():_comment;
       
         _comment.setIdForm( nIdForm );
         _comment.setCreationDate( LocalDate.now( ) );
@@ -190,6 +193,15 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
         _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+        if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) ) 
+        {
+        	_comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
+        }
+        
+        if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
+        {
+        	_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
+        }
 
 
         // Check constraints
@@ -264,6 +276,15 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
         _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
                 .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+        if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) ) 
+        {
+        	_comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
+        }
+        
+        if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
+        {
+        	_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
+        }
 
         // Check constraints
         if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
@@ -359,4 +380,5 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         
     	return template.getHtml( );
     }
+    
 }

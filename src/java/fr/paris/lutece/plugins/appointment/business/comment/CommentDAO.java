@@ -39,7 +39,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.sql.Date;
 import java.sql.Statement;
-
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,15 +49,15 @@ import java.util.List;
 public final class CommentDAO implements ICommentDAO
 {
     // Constants
-    private static final String SQL_QUERY_SELECT = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE id_comment = ?";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_comment ( id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator ) VALUES ( ?, ?, ?, ?, ?, ? ) ";
+    private static final String SQL_QUERY_SELECT = "SELECT id_comment, id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE id_comment = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_comment ( id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) ";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_comment WHERE id_comment = ? ";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, ending_validity_date = ?, comment = ?, comment_creation_date = ?, comment_user_creator = ? WHERE id_comment = ?";
-    private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_comment SET id_comment = ?, id_form = ?, starting_validity_date = ?, starting_validity_time = ?, ending_validity_date = ?, ending_validity_time = ?, comment = ?, comment_creation_date = ?, comment_user_creator = ? WHERE id_comment = ?";
+    private static final String SQL_QUERY_SELECTALL = "SELECT id_comment, id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator FROM appointment_comment";
     private static final String SQL_QUERY_SELECTALL_ID = "SELECT id_comment FROM appointment_comment";
-    private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date >= ? and ending_validity_date <= ? and id_form = ?";
-    private static final String SQL_QUERY_SELECT_INCLUSIVE = "SELECT id_comment, id_form, starting_validity_date, ending_validity_date, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date <= ? and ending_validity_date >= ? and id_form = ?";
-    
+    private static final String SQL_QUERY_SELECT_BETWEEN = "SELECT id_comment, id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date >= ? and ending_validity_date <= ? and id_form = ?";
+    private static final String SQL_QUERY_SELECT_INCLUSIVE = "SELECT id_comment, id_form, starting_validity_date, starting_validity_time, ending_validity_date, ending_validity_time, comment, comment_creation_date, comment_user_creator FROM appointment_comment WHERE starting_validity_date <= ? and ending_validity_date >= ? and id_form = ?";
+
     /**
      * {@inheritDoc }
      */
@@ -69,7 +69,23 @@ public final class CommentDAO implements ICommentDAO
             int nIndex = 1;
             daoUtil.setInt( nIndex++, comment.getIdForm( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getStartingValidityDate( ) ) );
+            if (comment.getStartingValidityTime() != null)
+            {
+            	daoUtil.setTime( nIndex++, Time.valueOf( comment.getStartingValidityTime( ) ) );
+            }
+            else
+            {
+            	daoUtil.setTime( nIndex++, null );
+            }
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getEndingValidityDate( ) ) );
+            if (comment.getEndingValidityTime() != null)
+            {
+            	daoUtil.setTime( nIndex++, Time.valueOf( comment.getEndingValidityTime( ) ) );
+            }
+            else
+            {
+            	daoUtil.setTime( nIndex++, null );
+            }
             daoUtil.setString( nIndex++, comment.getComment( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
             daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
@@ -103,7 +119,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex ) );
@@ -139,7 +165,9 @@ public final class CommentDAO implements ICommentDAO
             daoUtil.setInt( nIndex++, comment.getId( ) );
             daoUtil.setInt( nIndex++, comment.getIdForm( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getStartingValidityDate( ) ) );
+            daoUtil.setTime( nIndex++, Time.valueOf( comment.getStartingValidityTime( ) ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getEndingValidityDate( ) ) );
+            daoUtil.setTime( nIndex++, Time.valueOf( comment.getEndingValidityTime( ) ) );
             daoUtil.setString( nIndex++, comment.getComment( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
             daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
@@ -168,7 +196,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex ) );
@@ -203,7 +241,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex++ ) );
@@ -238,7 +286,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex++ ) );

@@ -37,6 +37,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.validation.constraints.NotNull;
 
@@ -55,6 +56,8 @@ public class Comment implements Serializable
     private LocalDate _dateStartingValidityDate;
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     private LocalDate _dateEndingValidityDate;
+    private LocalTime _timeStartingValidityTime;
+    private LocalTime _timeEndingValidityTime;
     @NotEmpty( message = "#i18n{appointment.validation.comment.Comment.notEmpty}" )
     private String _strComment;
 
@@ -210,6 +213,48 @@ public class Comment implements Serializable
     public void setCreatorUserName( String creatorUserConnectId )
     {
         _strCreatorUserConnectId = creatorUserConnectId;
+    }
+    
+    /**
+     * Returns the StartingValidityTime
+     * 
+     * @return The StartingValidityTime
+     */
+    public LocalTime getStartingValidityTime( )
+    {
+        return _timeStartingValidityTime;
+    }
+
+    /**
+     * Sets the StartingValidityTime
+     * 
+     * @param timeStartingValidityTime
+     *            The StartingValidityTime
+     */
+    public void setStartingValidityTime( LocalTime timeStartingValidityTime )
+    {
+        _timeStartingValidityTime = timeStartingValidityTime;
+    }
+
+    /**
+     * Returns the EndingValidityTime
+     * 
+     * @return The EndingValidityTime
+     */
+    public LocalTime getEndingValidityTime( )
+    {
+        return _timeEndingValidityTime;
+    }
+
+    /**
+     * Sets the EndingValidityTime
+     * 
+     * @param timeEndingValidityTime
+     *            The EndingValidityTime
+     */
+    public void setEndingValidityTime( LocalTime timeEndingValidityTime )
+    {
+        _timeEndingValidityTime = timeEndingValidityTime;
     }
 
     /**
