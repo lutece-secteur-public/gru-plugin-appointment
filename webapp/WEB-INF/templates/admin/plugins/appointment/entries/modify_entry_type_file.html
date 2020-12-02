@@ -7,10 +7,6 @@
 					<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp'>
 						<@input type='hidden' name='id_entry' value='${entry.idEntry}' />
 						<@input type='hidden' name='action' value='doModifyEntry' />
-						
-						<fieldset>
-						<legend class="hidden">#i18n{appointment.modifyEntry.titleQuestion} : '${form.title}'</legend>
-						
 						<@formGroup labelKey='#i18n{appointment.createEntry.labelType}'>
 							<@staticText><@tag color='info'>${entry.entryType.title}</@tag></@staticText>
 						</@formGroup>
@@ -43,21 +39,16 @@
 							<@button type='submit' name='apply' id='apply' buttonIcon='check' title='#i18n{appointment.modifyEntry.buttonApply}' />
 							<@button name='cancel' id='cancel' cancel=true buttonIcon='times' params='onclick="javascript:window.history.back();"' title='#i18n{appointment.labelCancel}' />
 						</@formGroup>
-					</fieldset>
 				</@tform>
 			</@boxBody>
 		</@box>
-	
 	<#if regular_expression_list?exists>
 		<@box>
 			<@boxHeader title='#i18n{appointment.createEntry.manageRegularExpression.title}' />
 			<@boxBody>
 				<@tform action='jsp/admin/plugins/appointment/ManageAppointmentFormEntries.jsp#list'>
-					<@input type='hidden' name='id_field' value='${id_field}' />
+					<@input type='hidden' name='id_field' value='${field.idField!}' />
 					<@input type='hidden' name='action' value='doInsertRegularExpression' />
-					<fieldset>
-					<legend class="hidden">#i18n{appointment.createEntry.manageRegularExpression.title}</legend>
-					
 					<@formGroup labelFor='id_expression' labelKey='#i18n{appointment.regularExpression.label}' helpKey='#i18n{appointment.createEntry.manageRegularExpression.labelInsertComment}'>
 						<@inputGroup>
 							<@select name='id_expression' items=regular_expression_list default_value='-1' />
@@ -66,7 +57,6 @@
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-					
 					<a name="list" id="list"></a>
 					<@table>
 						<tr> 
@@ -88,7 +78,6 @@
 							</#list>
 						</#list>
 					</@table>
-					</fieldset>
 				</@tform>
 			</@boxBody>
 		</@box>
