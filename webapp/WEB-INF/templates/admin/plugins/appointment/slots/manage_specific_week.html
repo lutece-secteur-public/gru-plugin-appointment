@@ -33,10 +33,9 @@
         <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>					
             <input type="hidden" name="action" value="doModifyListSlot" >
             <input type="hidden" name="id_form" value="${appointmentform.idForm}">
-            <input type="hidden" name="date_of_display" value="${date_of_display}" >
+            <input type="hidden" id="date_of_display" name="date_of_display" value="${date_of_display}" >
             <input type="hidden" id="slotData" name="slotsData" value=''>	
-            <input type="hidden" id="capacity" name="capacity" value="new_cap">						
-            					
+            <input type="hidden" id="capacity" name="capacity" value="new_cap">			
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
             </@formGroup>
@@ -72,12 +71,10 @@
 <@modal id='updatePlanningMultiSlot'>
     <@modalBody>
         <@tform action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
-            
             <input type="hidden" name="action" value="doModifyListSlot" >
             <input type="hidden" name="id_form" value="${appointmentform.idForm}">
             <input type="hidden" id="slotsData" name="slotsData" value=''>
-            <input type="hidden" name="date_of_display" value="${date_of_display}" >						
-            
+            <input type="hidden" id="date_of_display" name="date_of_display" value="${date_of_display}" >
             <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
                 <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
             </@formGroup>
@@ -88,7 +85,6 @@
                     <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
                     <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
                 </@formGroup>
-
             </@columns>
             </@row>
             <@formGroup rows=1>
@@ -342,7 +338,8 @@
                                 const isOpen = JSON.parse( evt.isOpen )
                                 $('#is_open').prop( "checked", isOpen );
                                 $('#max_capacity').val( evt.maxCapacity );
-                                $('#dtSlot').text( evt.startingDateTime );
+                                $('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+                                $('#date_of_display').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
                                 $('#timeStart').text( evt.startingTime );
                                 $('#ending_time').val( evt.endingTime );
                                 $('#updatePlanningSlot').modal('show');
