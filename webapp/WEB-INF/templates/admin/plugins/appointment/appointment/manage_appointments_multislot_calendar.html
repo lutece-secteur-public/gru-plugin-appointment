@@ -27,9 +27,7 @@
 <@modal id='addbook_modal' params='aria-labelledby="qModalLabel"'>
     <@modalHeader id='qModalLabel' modalTitle='#i18n{appointment.appointmentApp.defaultTitle}' />
     <@modalBody>
-		<p id="loader" class="text-center">
-			#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}
-		</p>
+		<p id="loader" class="text-center">#i18n{appointment.createAppointmentForm.labelAppointmentTitlesAsked}</p>
 		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAppointments.jsp' params='enctype="multipart/form-data"'>
 			<@input type='hidden' name='view' value='createAppointment' />
             <@input type='hidden' name='id_form' value='${id_form}' />
@@ -37,7 +35,7 @@
             <@formGroup class='${formGroupClass!}' labelFor='starting_date' labelKey='#i18n{appointment.dateAppointment.title}' helpKey='${formGroupHelpKey!}' mandatory=true>
                 <@input type='text' name='starting_date_time_span' id='starting_date_time_span' disabled=true />
             </@formGroup>
-            <@formGroup class='${formGroupClass!}' labelFor='nbPlacesToTake' labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='${formGroupHelpKey!}' mandatory=true>
+            <@formGroup class='${formGroupClass!}' labelFor='nbPlacesToTake' labelKey='#i18n{appointment.createAppointmentForm.labelAppointmentTitlesAsked}' helpKey='${formGroupHelpKey!}' mandatory=true>
                 <@input type='number' name='nbPlacesToTake' id='nbPlacesToTake' value='1' maxlength=3 params='onkeypress="return validateQty(event);"' min=1 max=10 />
             </@formGroup>
 			<@formGroup>
