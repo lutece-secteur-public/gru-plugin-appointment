@@ -227,31 +227,6 @@
             	}
             },
             events: events,
-            eventMouseover: function ( event, jsEvent, view) {
-                var line='',hours=event.start.format('HH'), minutes = parseInt( event.start.format('mm') );
-            
-                if( minutes==15 || minutes==45 ){
-                    minutes = minutes - 15;
-                    line = 'tr[data-time="' + hours + ':' + minutes + ':00"]';
-                } else {
-                    line = 'tr[data-time="' + event.start.format('HH:mm:ss') + '"]';     
-                }
-                console.log( line );
-
-                $(line).children('td').addClass('hover')
-            },
-            eventMouseout: function ( event, jsEvent, view) {
-                var line='',hours=event.start.format('HH'), minutes = parseInt( event.start.format('mm') );
-            
-                if( minutes==15 || minutes==45 ){
-                    minutes = minutes - 15;
-                    console.log( minutes );
-                    line = 'tr[data-time="' + hours + ':' + minutes + ':00"]';
-                } else {
-                    line = 'tr[data-time="' + event.start.format('HH:mm:ss') + '"]';     
-                }
-                $(line).children('td').removeClass('hover')
-            },
             eventRender: function(event, element) {
                 var $title = element.find( '.fc-title' );
                 $(element).addClass( event.customClass );
