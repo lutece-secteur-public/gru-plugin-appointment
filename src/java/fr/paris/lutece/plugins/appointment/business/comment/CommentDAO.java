@@ -69,9 +69,23 @@ public final class CommentDAO implements ICommentDAO
             int nIndex = 1;
             daoUtil.setInt( nIndex++, comment.getIdForm( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getStartingValidityDate( ) ) );
-            daoUtil.setTime( nIndex++, Time.valueOf( comment.getStartingValidityTime( ) ) );
+            if (comment.getStartingValidityTime() != null)
+            {
+            	daoUtil.setTime( nIndex++, Time.valueOf( comment.getStartingValidityTime( ) ) );
+            }
+            else
+            {
+            	daoUtil.setTime( nIndex++, null );
+            }
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getEndingValidityDate( ) ) );
-            daoUtil.setTime( nIndex++, Time.valueOf( comment.getEndingValidityTime( ) ) );
+            if (comment.getEndingValidityTime() != null)
+            {
+            	daoUtil.setTime( nIndex++, Time.valueOf( comment.getEndingValidityTime( ) ) );
+            }
+            else
+            {
+            	daoUtil.setTime( nIndex++, null );
+            }
             daoUtil.setString( nIndex++, comment.getComment( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
             daoUtil.setString( nIndex++, comment.getCreatorUserName( ) );
@@ -105,9 +119,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-                comment.setStartingValidityTime( daoUtil.getTime( nIndex++ ).toLocalTime( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-                comment.setEndingValidityTime( daoUtil.getTime( nIndex++ ).toLocalTime( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex ) );
@@ -174,9 +196,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-                comment.setStartingValidityTime( daoUtil.getTime( nIndex++ ).toLocalTime( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-                comment.setEndingValidityTime( daoUtil.getTime( nIndex++ ).toLocalTime( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex ) );
@@ -211,9 +241,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-                comment.setStartingValidityTime( daoUtil.getTime( nIndex++ ).toLocalTime( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-                comment.setEndingValidityTime( daoUtil.getTime( nIndex++ ).toLocalTime( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex++ ) );
@@ -248,7 +286,17 @@ public final class CommentDAO implements ICommentDAO
                 comment.setId( daoUtil.getInt( nIndex++ ) );
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time startingTime = daoUtil.getTime( nIndex++ );
+                if (startingTime != null )
+                {
+                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
+                Time endingTime = daoUtil.getTime( nIndex++ );
+                if ( endingTime != null )
+                {
+                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 comment.setCreatorUserName( daoUtil.getString( nIndex++ ) );
