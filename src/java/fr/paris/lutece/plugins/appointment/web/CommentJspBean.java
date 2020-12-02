@@ -197,18 +197,10 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
         	_comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
         }
-        else
-        {
-        	_comment.setStartingValidityTime( LocalTime.parse( "00:00") );
-        }
         
         if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
         {
         	_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
-        }
-        else
-        {
-        	_comment.setEndingValidityTime( LocalTime.parse( "00:00" ) );
         }
 
 
@@ -288,18 +280,10 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
         	_comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
         }
-        else
-        {
-        	_comment.setStartingValidityTime( LocalTime.parse( "00:00") );
-        }
         
         if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
         {
         	_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
-        }
-        else
-        {
-        	_comment.setEndingValidityTime( LocalTime.parse( "00:00" ) );
         }
 
         // Check constraints
