@@ -293,36 +293,36 @@ function validateQty(event) {
                 /* Event selection          */ 
                 var eventIdx=0, eventData='';
                 
-                $( ".fc-content-skeleton" ).selectable({
-                    filter: ".fc-time-grid-event.fc-v-event",
-                    selecting: function( event, ui ) {
-                        eventIdx++;
-                    },
-                    unselecting: function( event, ui ) {
-                        eventIdx--;
-                    },
-                    stop: function() {
-                        console.log(  eventIdx  );   
-                        $( ".ui-selected", this ).each( function() {
-                            console.log( eventData );
-                            if ( eventIdx > 1 ){
-                                eventData += '{' + $(this).data('event') + '};' ;
-                                const events =  JSON.stringify( eventData );
-                                $('#slotsData').val( '[' + events + ']' );
-                                $('#updatePlanningMultiSlot').modal('show');
+                // $( ".fc-content-skeleton" ).selectable({
+                //     filter: ".fc-time-grid-event.fc-v-event",
+                //     selecting: function( event, ui ) {
+                //         eventIdx++;
+                //     },
+                //     unselecting: function( event, ui ) {
+                //         eventIdx--;
+                //     },
+                //     stop: function() {
+                //         console.log(  eventIdx  );   
+                //         $( ".ui-selected", this ).each( function() {
+                //             console.log( eventData );
+                //             if ( eventIdx > 1 ){
+                //                 eventData += '{' + $(this).data('event') + '};' ;
+                //                 const events =  JSON.stringify( eventData );
+                //                 $('#slotsData').val( '[' + events + ']' );
+                //                 $('#updatePlanningMultiSlot').modal('show');
                                 
-                            } else {
-                                eventData ='{' + $(this).data('event') + '}';                       
-                                const evt = JSON.parse(eventData); 
-                                const idSlot = JSON.parse( evt.slotId );
+                //             } else {
+                //                 eventData ='{' + $(this).data('event') + '}';                       
+                //                 const evt = JSON.parse(eventData); 
+                //                 const idSlot = JSON.parse( evt.slotId );
                         
-                                location.href = eventUrl + idSlot;
-                            }
+                //                 location.href = eventUrl + idSlot;
+                //             }
                         
-                        });
-                        eventData='';
-                    }
-                });
+                //         });
+                //         eventData='';
+                //     }
+                // });
             },
         });
 		
