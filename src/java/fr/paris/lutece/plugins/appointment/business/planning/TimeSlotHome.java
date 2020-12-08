@@ -98,6 +98,16 @@ public final class TimeSlotHome
     {
         _dao.delete( nKey, _plugin );
     }
+    /**
+     * Delete TimeSlot whose id working day is specified in parameter
+     * 
+     * @param nIdWorkingDay
+     *            identifier of the working day 
+     */
+    public static void deleteByIdWorkingDay( int nIdWorkingDay ) {
+    	
+    	_dao.deleteByIdWorkingDay( nIdWorkingDay, _plugin );
+    }
 
     /**
      * Returns an instance of the TimeSlot whose identifier is specified in parameter

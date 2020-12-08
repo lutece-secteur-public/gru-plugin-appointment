@@ -137,5 +137,21 @@ public final class ReservationRuleHome
     {
         return _dao.findByIdFormAndDateOfApply( nIdForm, dateOfApply, _plugin );
     }
+    
+    /**
+     * Find in database a reservation rule of a form closest to a date
+     * 
+     * @param nIdForm
+     *            the Form Id
+     * @param dateOfApply
+     *            the date of apply
+     * @param plugin
+     *            the plugin
+     * @return the reservation rule that matches
+     */
+    public static ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
+    {
+        return _dao.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply, _plugin );
+    }
 
 }

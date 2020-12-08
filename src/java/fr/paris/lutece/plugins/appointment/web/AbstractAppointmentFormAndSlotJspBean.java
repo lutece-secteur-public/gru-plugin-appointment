@@ -228,4 +228,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         }
         return bReturn;
     }
+    
+    
+    
 }

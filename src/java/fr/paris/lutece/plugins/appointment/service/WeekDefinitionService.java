@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -46,8 +47,13 @@ import org.apache.commons.collections.CollectionUtils;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.sql.TransactionManager;
 
 /**
  * Service class of a week definition
@@ -68,16 +74,16 @@ public final class WeekDefinitionService
     /**
      * Create a week definition in database
      * 
-     * @param nIdForm
-     *            the form Id
+     * @param nIdReservationRule
+     *            the nIdReservationRule
      * @param dateOfApply
      *            the date of the week definition
      * @return the week definition created
      */
-    public static WeekDefinition createWeekDefinition( int nIdForm, LocalDate dateOfApply )
+    public static WeekDefinition createWeekDefinition( int nIdReservationRule, LocalDate dateOfApply,  LocalDate endingDateOfApply )
     {
         WeekDefinition weekDefinition = new WeekDefinition( );
-        fillInWeekDefinition( weekDefinition, nIdForm, dateOfApply );
+        fillInWeekDefinition( weekDefinition, nIdReservationRule, dateOfApply, endingDateOfApply );
         WeekDefinitionHome.create( weekDefinition );
         WeekDefinitionManagerListener.notifyListenersWeekDefinitionCreation( weekDefinition.getIdWeekDefinition( ) );
         return weekDefinition;
@@ -110,22 +116,22 @@ public final class WeekDefinitionService
     /**
      * Update in database a week definition
      * 
-     * @param nIdForm
-     *            the form Id
+     * @param nIdReservationRule
+     *            the ReservationRule id
      * @param dateOfApply
      *            the date of the week definition
      * @return the week definition updated
      */
-    public static WeekDefinition updateWeekDefinition( int nIdForm, LocalDate dateOfApply )
+    public static WeekDefinition updateWeekDefinition( int nIdReservationRule, LocalDate dateOfApply,  LocalDate endingDateOfApply )
     {
-        WeekDefinition weekDefinition = WeekDefinitionHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );
+        WeekDefinition weekDefinition = WeekDefinitionHome.findByIdReservationRuleAndDateOfApply( nIdReservationRule, dateOfApply );
         if ( weekDefinition == null )
         {
-            weekDefinition = createWeekDefinition( nIdForm, dateOfApply );
+            weekDefinition = createWeekDefinition( nIdReservationRule, dateOfApply, endingDateOfApply );
         }
         else
         {
-            fillInWeekDefinition( weekDefinition, nIdForm, dateOfApply );
+            fillInWeekDefinition( weekDefinition, nIdReservationRule, dateOfApply, endingDateOfApply );
             WeekDefinitionHome.update( weekDefinition );
             WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( weekDefinition.getIdWeekDefinition( ) );
         }
@@ -142,10 +148,11 @@ public final class WeekDefinitionService
      * @param dateOfApply
      *            the date of the week definition
      */
-    public static void fillInWeekDefinition( WeekDefinition weekDefinition, int nIdForm, LocalDate dateOfApply )
+    public static void fillInWeekDefinition( WeekDefinition weekDefinition,  int nIdReservationRule, LocalDate dateOfApply, LocalDate endingDateOfApply )
     {
         weekDefinition.setDateOfApply( dateOfApply );
-        weekDefinition.setIdForm( nIdForm );
+        weekDefinition.setEndingDateOfApply( endingDateOfApply );
+        weekDefinition.setIdReservationRule( nIdReservationRule );
     }
 
     /**
@@ -157,36 +164,10 @@ public final class WeekDefinitionService
      */
     public static List<WeekDefinition> findListWeekDefinition( int nIdForm )
     {
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
-        fillInListWeekDefinition( listWeekDefinition );
-        return listWeekDefinition;
-    }
+        return WeekDefinitionHome.findByIdForm( nIdForm );
 
-    /**
-     * Fill all the week definitions with their working days
-     * 
-     * @param listWeekDefinition
-     *            the list of week definition
-     */
-    private static void fillInListWeekDefinition( List<WeekDefinition> listWeekDefinition )
-    {
-        for ( WeekDefinition weekDefinition : listWeekDefinition )
-        {
-            fillInWeekDefinition( weekDefinition );
-        }
     }
-
-    /**
-     * Fill a week definition with its working days
-     * 
-     * @param weekDefinition
-     *            the week definition to fill in
-     */
-    private static void fillInWeekDefinition( WeekDefinition weekDefinition )
-    {
-        weekDefinition.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinition( weekDefinition.getIdWeekDefinition( ) ) );
-    }
-
+   
     /**
      * Find a week definition of a form and a date of apply
      * 
@@ -227,10 +208,7 @@ public final class WeekDefinitionService
                 weekDefinition = listWeekDefinition.stream( ).filter( x -> closestDate.isEqual( x.getDateOfApply( ) ) ).findAny( ).orElse( null );
             }
         }
-        if ( weekDefinition != null )
-        {
-            weekDefinition.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinition( weekDefinition.getIdWeekDefinition( ) ) );
-        }
+
         return weekDefinition;
     }
 
@@ -293,9 +271,7 @@ public final class WeekDefinitionService
      */
     public static WeekDefinition findWeekDefinitionById( int nIdWeekDefinition )
     {
-        WeekDefinition weekDefinition = WeekDefinitionHome.findByPrimaryKey( nIdWeekDefinition );
-        weekDefinition.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinition( weekDefinition.getIdWeekDefinition( ) ) );
-        return weekDefinition;
+        return WeekDefinitionHome.findByPrimaryKey( nIdWeekDefinition );
     }
 
     /**
@@ -325,11 +301,10 @@ public final class WeekDefinitionService
      */
     public static HashMap<LocalDate, WeekDefinition> findAllWeekDefinition( int nIdForm )
     {
-        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = new HashMap<>( );
+    	HashMap<LocalDate, WeekDefinition> mapWeekDefinition = new HashMap<>( );
         List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
-            weekDefinition.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinition( weekDefinition.getIdWeekDefinition( ) ) );
             mapWeekDefinition.put( weekDefinition.getDateOfApply( ), weekDefinition );
         }
         return mapWeekDefinition;
@@ -342,13 +317,13 @@ public final class WeekDefinitionService
      *            the list of week definitions
      * @return the mini starting time
      */
-    public static LocalTime getMinStartingTimeOfAListOfWeekDefinition( List<WeekDefinition> listWeekDefinition )
+    public static LocalTime getMinStartingTimeOfAListOfWeekDefinition( List<ReservationRule> listReservationRules )
     {
         LocalTime minStartingTime = null;
         LocalTime startingTimeTemp;
-        for ( WeekDefinition weekDefinition : listWeekDefinition )
+        for ( ReservationRule reservation : listReservationRules )
         {
-            startingTimeTemp = getMinStartingTimeOfAWeekDefinition( weekDefinition );
+            startingTimeTemp = getMinStartingTimeOfAWeekDefinition( reservation );
             if ( minStartingTime == null || startingTimeTemp.isBefore( minStartingTime ) )
             {
                 minStartingTime = startingTimeTemp;
@@ -364,9 +339,9 @@ public final class WeekDefinitionService
      *            the week definition
      * @return the min starting time of the week definition
      */
-    public static LocalTime getMinStartingTimeOfAWeekDefinition( WeekDefinition weekDefinition )
+    public static LocalTime getMinStartingTimeOfAWeekDefinition( ReservationRule reservationRule )
     {
-        return WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+        return WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
     }
 
     /**
@@ -376,13 +351,13 @@ public final class WeekDefinitionService
      *            the list of week definitions
      * @return the max ending time of the list of week definitions
      */
-    public static LocalTime getMaxEndingTimeOfAListOfWeekDefinition( List<WeekDefinition> listWeekDefinition )
+    public static LocalTime getMaxEndingTimeOfAListOfWeekDefinition( List<ReservationRule> listReservationRules )
     {
         LocalTime maxEndingTime = null;
         LocalTime endingTimeTemp;
-        for ( WeekDefinition weekDefinition : listWeekDefinition )
+        for ( ReservationRule reservationRule : listReservationRules )
         {
-            endingTimeTemp = getMaxEndingTimeOfAWeekDefinition( weekDefinition );
+            endingTimeTemp = getMaxEndingTimeOfAWeekDefinition( reservationRule );
             if ( maxEndingTime == null || endingTimeTemp.isAfter( maxEndingTime ) )
             {
                 maxEndingTime = endingTimeTemp;
@@ -398,9 +373,9 @@ public final class WeekDefinitionService
      *            the week definition
      * @return the max ending time of the week definition
      */
-    public static LocalTime getMaxEndingTimeOfAWeekDefinition( WeekDefinition weekDefinition )
+    public static LocalTime getMaxEndingTimeOfAWeekDefinition( ReservationRule reservationRule )
     {
-        return WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+        return WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
     }
 
     /**
@@ -410,13 +385,13 @@ public final class WeekDefinitionService
      *            the list of the week definitions
      * @return the min duration time slot
      */
-    public static int getMinDurationTimeSlotOfAListOfWeekDefinition( List<WeekDefinition> listWeekDefinition )
+    public static int getMinDurationTimeSlotOfAListOfWeekDefinition( List<ReservationRule> listReservationRules )
     {
         int nMinDuration = 0;
         int nDurationTemp;
-        for ( WeekDefinition weekDefinition : listWeekDefinition )
+        for ( ReservationRule reservationRule : listReservationRules )
         {
-            nDurationTemp = getMinDurationTimeSlotOfAWeekDefinition( weekDefinition );
+            nDurationTemp = getMinDurationTimeSlotOfAWeekDefinition( reservationRule );
             if ( nMinDuration == 0 || nMinDuration > nDurationTemp )
             {
                 nMinDuration = nDurationTemp;
@@ -432,9 +407,9 @@ public final class WeekDefinitionService
      *            the week definition
      * @return the min duration time slot
      */
-    public static int getMinDurationTimeSlotOfAWeekDefinition( WeekDefinition weekDefinition )
+    public static int getMinDurationTimeSlotOfAWeekDefinition( ReservationRule reservationRule )
     {
-        return WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+        return WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
     }
 
     /**
@@ -444,12 +419,12 @@ public final class WeekDefinitionService
      *            the list of week definitions
      * @return a set of the working days (integer value in a week : 1-> Monday ...) // The fullCalendar library is zero-base (Sunday=0)
      */
-    public static HashSet<String> getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar( List<WeekDefinition> listWeekDefinition )
+    public static Set< String > getSetDaysOfWeekOfAListOfWeekDefinitionForFullCalendar(  List<ReservationRule> listReservationRules )
     {
-        HashSet<String> setDayOfWeek = new HashSet<>( );
-        for ( WeekDefinition weekDefinition : listWeekDefinition )
-        {
-            setDayOfWeek.addAll( WorkingDayService.getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( weekDefinition.getListWorkingDay( ) ) );
+        Set<String> setDayOfWeek = new HashSet<>( );
+        for ( ReservationRule reservationRule : listReservationRules )
+        {	
+        	setDayOfWeek.addAll( WorkingDayService.getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( reservationRule.getListWorkingDay( ) ) );	
         }
         return setDayOfWeek;
     }
@@ -461,17 +436,112 @@ public final class WeekDefinitionService
      *            the list of week definitions
      * @return the set of the open days
      */
-    public static HashSet<Integer> getOpenDaysOfWeek( List<WeekDefinition> listWeekDefinition )
+    public static Set<Integer> getOpenDaysOfWeek( List<ReservationRule> listReservationRules )
     {
         HashSet<Integer> setOpenDays = new HashSet<>( );
-        for ( WeekDefinition weekDefinition : listWeekDefinition )
+        for ( ReservationRule reservation : listReservationRules )
         {
-            for ( WorkingDay workingDay : weekDefinition.getListWorkingDay( ) )
+            for ( WorkingDay workingDay : reservation.getListWorkingDay( ) )
             {
                 setOpenDays.add( workingDay.getDayOfWeek( ) );
             }
         }
         return setOpenDays;
+    }
+    /**
+     * Get  the week definitions of a form for reservation rule
+     * @param nIdReservationRule
+     * @return list of week definition
+     */
+    public static List<WeekDefinition> findByReservationRule( int nIdReservationRule )
+    {
+        return WeekDefinitionHome.findByReservationRule( nIdReservationRule );
+    }
+
+    /**
+     * Assign a week to the calendar 
+     * @param nIdForm the id from
+     * @param newWeek the week to assign
+     */
+    public static void assignWeekDefinition(int nIdForm, WeekDefinition newWeek) {
+    	
+
+    	LocalDate startingDate= newWeek.getDateOfApply( );
+        LocalDate endingDate=	newWeek.getEndingDateOfApply( );	
+        List<WeekDefinition> listWeek= WeekDefinitionService.findListWeekDefinition( nIdForm );
+        
+        List<WeekDefinition> listWeekTodRemove= listWeek.stream().filter(week -> week.getDateOfApply().isAfter( startingDate ) || week.getDateOfApply().isEqual( startingDate )
+       		                   &&( week.getEndingDateOfApply().isBefore( endingDate ) && week.getEndingDateOfApply().isEqual( endingDate ) )).collect( Collectors.toList( ));
+      
+        listWeek.removeAll( listWeekTodRemove );
+        
+        listWeek = listWeek.stream().filter(p -> ( (p.getDateOfApply( ).isBefore( startingDate) || p.getDateOfApply( ).isEqual( startingDate))
+       		&& p.getEndingDateOfApply().isAfter( startingDate ) ||  p.getEndingDateOfApply().isEqual( startingDate ) ) ||        		
+       		( p.getDateOfApply( ).isBefore( endingDate ) || p.getDateOfApply( ).isEqual( endingDate)) 
+       		&& p.getEndingDateOfApply().isAfter( endingDate ) ||  p.getEndingDateOfApply().isEqual( endingDate ) ).collect( Collectors.toList( ) );
+        List<WeekDefinition> buildListWeekToEdit= new ArrayList<>();
+            
+       for( WeekDefinition week: listWeek) {
+       	
+	       	if( week.getDateOfApply().isBefore( startingDate ) && week.getEndingDateOfApply().isAfter( endingDate )) {
+	       		
+	       		week.setEndingDateOfApply(startingDate.minusDays( 1 ));
+	       		
+	       		WeekDefinition weekToAdd= new WeekDefinition( );
+	       		weekToAdd.setDateOfApply(endingDate.plusDays( 1 ));
+	       		weekToAdd.setEndingDateOfApply(week.getEndingDateOfApply( ));
+	       		weekToAdd.setIdReservationRule(week.getIdReservationRule( ));
+	       		
+	       		buildListWeekToEdit.add( weekToAdd );
+	               
+	       	}else if( week.getDateOfApply().isEqual( startingDate ) || ( week.getDateOfApply().isAfter( startingDate ) && week.getEndingDateOfApply().isAfter( endingDate ) )) {
+	       		
+	       		week.setDateOfApply( endingDate.plusDays( 1 ) ); 
+	       		
+	       	
+	       	}else if (week.getEndingDateOfApply().isEqual( endingDate ) ||  (week.getDateOfApply().isBefore( startingDate )  && week.getEndingDateOfApply().isBefore( endingDate )) ) {
+	       		
+	       		week.setEndingDateOfApply(startingDate.minusDays( 1 ));
+	       		
+	       	}
+       	
+       	buildListWeekToEdit.add( week );
+
+       }
+       buildListWeekToEdit.add( newWeek );
+
+       assignWeekDefintion( listWeekTodRemove, buildListWeekToEdit );
+    }
+    
+    
+    private static void assignWeekDefintion( List<WeekDefinition> listWeekTodRemove , List<WeekDefinition> listWeekToEdit) {
+    	
+
+        TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
+        try
+	    {
+	    	for(WeekDefinition week: listWeekTodRemove) {
+	    		
+	    		WeekDefinitionHome.delete( week.getIdWeekDefinition( ));
+	    	}
+	    	for( WeekDefinition week: listWeekToEdit ) {
+	    		if( week.getIdWeekDefinition() != 0 ) {
+	    			
+	    			WeekDefinitionHome.delete( week.getIdWeekDefinition( ));
+	    		}
+	    		WeekDefinitionHome.create( week );
+	
+	    	}
+            TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+
+        }
+        catch( Exception e )
+        {
+            TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
+            AppLogService.error( "Error assign week " + e.getMessage( ), e );
+       	    throw new AppException( e.getMessage( ), e );
+
+        }
     }
 
 }

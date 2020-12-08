@@ -52,6 +52,7 @@ public final class TimeSlotDAO implements ITimeSlotDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_time_slot ( starting_time, ending_time, is_open, max_capacity, id_working_day) VALUES ( ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_time_slot SET starting_time = ?, ending_time = ?, is_open = ?, max_capacity = ?, id_working_day = ? WHERE id_time_slot = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_time_slot WHERE id_time_slot = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_DAY = "DELETE FROM appointment_time_slot WHERE id_working_day = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_time_slot, starting_time, ending_time, is_open, max_capacity, id_working_day FROM appointment_time_slot";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_time_slot = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_WORKING_DAY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
@@ -84,6 +85,15 @@ public final class TimeSlotDAO implements ITimeSlotDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
             daoUtil.setInt( 1, nIdTimeSlot );
+            daoUtil.executeUpdate( );
+        }
+    }
+    @Override
+    public void deleteByIdWorkingDay( int nIdWorkingDay, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_DAY, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdWorkingDay );
             daoUtil.executeUpdate( );
         }
     }

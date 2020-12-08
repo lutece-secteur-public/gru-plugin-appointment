@@ -80,6 +80,15 @@ public interface ITimeSlotDAO
      *            the plugin
      */
     void delete( int nIdTimeSlot, Plugin plugin );
+    /**
+     * Delete a record from the table  by working day
+     * 
+     * @param nIdTimeSlot
+     *            identifier of the timeSlot to delete
+     * @param plugin
+     *            the plugin
+     */
+    void deleteByIdWorkingDay( int nIdWorkingDay, Plugin plugin );
 
     /**
      * Load the data from the table

@@ -123,6 +123,18 @@ public final class WeekDefinitionHome
     {
         return _dao.findByIdForm( nIdForm, _plugin );
     }
+    
+    /**
+     * Get  the week definitions of a form for reservation rule
+     * @param nIdReservationRule
+     * @param plugin
+     *             the plugin  
+     * @return list of week definition
+     */
+    public static List<WeekDefinition> findByReservationRule( int nIdReservationRule )
+    {
+        return _dao.findByReservationRule( nIdReservationRule, _plugin );
+    }
 
     /**
      * Get week definition for the form id and the date of apply given
@@ -136,6 +148,19 @@ public final class WeekDefinitionHome
     public static WeekDefinition findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
         return _dao.findByIdFormAndDateOfApply( nIdForm, dateOfApply, _plugin );
+    }
+    /**
+     * Get week definition for the form id and the date of apply given
+     * 
+     * @param nIdReservationRule
+     *            the ReservationRule id
+     * @param dateOfApply
+     *            the date of apply
+     * @return the week definition
+     */
+    public static WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply ) 
+    {
+    	return _dao.findByIdReservationRuleAndDateOfApply( nIdReservationRule, dateOfApply, _plugin);
     }
 
 }

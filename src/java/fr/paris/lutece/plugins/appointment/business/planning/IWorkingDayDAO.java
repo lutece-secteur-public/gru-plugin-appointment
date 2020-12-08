@@ -80,6 +80,13 @@ public interface IWorkingDayDAO
      *            the plugin
      */
     void delete( int nIdWorkingDay, Plugin plugin );
+    
+    /**
+     * Delete a working day by id reservation rule
+     * @param nIdReservationRule the reservation rule id
+     * @param plugin the plugin
+     */
+    void deleteByIdReservationRule( int nIdReservationRule, Plugin plugin );
 
     /**
      * Load the data from the table
@@ -95,12 +102,12 @@ public interface IWorkingDayDAO
     /**
      * Get all the working days of the weekdefinition given
      * 
-     * @param nIdWeekDefinition
-     *            the WeekDefinition id
+     * @param nIdWeekDefinitionRule
+     *            the WeekDefinitionRule id
      * @param plugin
      *            the Plugin
      * @return the list of all the working days of the weekdefinition
      */
-    List<WorkingDay> findByIdWeekDefinition( int nIdWeekDefinition, Plugin plugin );
+    List<WorkingDay> findByIdWeekDefinitionRule( int nIdWeekDefinitionRule, Plugin plugin );
 
 }

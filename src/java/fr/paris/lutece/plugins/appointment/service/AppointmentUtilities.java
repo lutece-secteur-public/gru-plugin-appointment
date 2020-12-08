@@ -41,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +97,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 public final class AppointmentUtilities
 {
 
-    public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
+	public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     public static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     public static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
     public static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
@@ -727,15 +728,29 @@ public final class AppointmentUtilities
     public static boolean checkNoAppointmentsImpacted( List<Appointment> listAppointment, int nIdForm, LocalDate dateOfModification,
             AppointmentFormDTO appointmentForm )
     {
+    	ReservationRule previousReservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
+    	return checkNoAppointmentsImpacted (listAppointment, nIdForm,previousReservationRule.getIdReservationRule( ), appointmentForm );
+    }
+    /**
+     * Check if there are appointments impacted by the new week definition
+     * 
+     * @param listAppointment
+     *            the list of appointments
+     * @param nIdForm
+     *            the form Id
+     * @param nIdreservationRule
+     *            the reservationRule id
+     * @param appointmentForm
+     *            the appointment form
+     * @return true if there are appointments impacted
+     */
+    public static boolean checkNoAppointmentsImpacted( List<Appointment> listAppointment, int nIdForm,int nIdreservationRule,
+            AppointmentFormDTO appointmentForm )
+    {
         boolean bNoAppointmentsImpacted = true;
-        // Find the previous WeekDefinition
-        WeekDefinition previousWeekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
-        // Find the previous reservation rule
-        ReservationRule previousReservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
         // Build the previous appointment form with the previous week
         // definition and the previous reservation rule
-        AppointmentFormDTO previousAppointmentForm = FormService.buildAppointmentForm( nIdForm, previousReservationRule.getIdReservationRule( ),
-                previousWeekDefinition.getIdWeekDefinition( ) );
+        AppointmentFormDTO previousAppointmentForm = FormService.buildAppointmentForm( nIdForm, nIdreservationRule );
         // Need to check if the new definition week has more open days.
         List<DayOfWeek> previousOpenDays = WorkingDayService.getOpenDays( previousAppointmentForm );
         List<DayOfWeek> newOpenDays = WorkingDayService.getOpenDays( appointmentForm );
@@ -780,16 +795,43 @@ public final class AppointmentUtilities
         {
             bNoAppointmentsImpacted = false;
         }
-        // We have change the open hours
-        // if the time slot is reduced
-        if ( newStartingTime.isAfter( oldStartingTime ) || newEndingTime.isBefore( oldEndingTime ) )
+        // If we have change the open hours
+    
+        if ( !newStartingTime.equals( oldStartingTime )  || !newEndingTime.equals( oldEndingTime )  )
         {
             bNoAppointmentsImpacted = false;
         }
 
         return bNoAppointmentsImpacted;
     }
+    
+    /**
+     * Check if there are appointments impacted by the new week definition
+     * @param listSlotsImpacted the list of slot impacted
+     * @param newReservationRule the reservation rule
+     * @param newWeekDef the week definition
+     * @return true if there are no appointments impacted
+     */
+    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotsImpacted, ReservationRule newReservationRule, WeekDefinition newWeekDef )
+    {
+    	
+    	Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( newReservationRule.getIdForm( ),  Arrays.asList(newWeekDef));    	
+        List <Slot> listSlots = SlotService.buildListSlot( newReservationRule.getIdForm( ), mapReservationRule, newWeekDef.getDateOfApply( ), newWeekDef.getEndingDateOfApply( ) );
+        listSlots = listSlots.stream( ).filter( s ->  s.getIsOpen( )  ).collect( Collectors.toList( ) );
+        
+          for ( Slot slot : listSlotsImpacted )
+          {
+        	  
+        	  if(listSlots.stream().noneMatch(slt -> slt.getEndingDateTime().isEqual(slot.getEndingDateTime() ) && slt.getStartingDateTime().isEqual(slot.getStartingDateTime( )))) {
+        		  
+        		  return false;
+        	  }   
+          }
 
+       
+        return true;
+    }
+   
     /**
      * Check that there is no validated appointments on a slot
      * 

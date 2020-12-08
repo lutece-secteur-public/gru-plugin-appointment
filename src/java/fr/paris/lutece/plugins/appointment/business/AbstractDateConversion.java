@@ -45,6 +45,10 @@ public class AbstractDateConversion
     private LocalDate _dateOfApply;
 
     /**
+     * Ending date of apply
+     */
+    private LocalDate _endingDateOfApply;
+    /**
      * Get the date from which the week definition has to be applied
      * 
      * @return the date from which the week definition has to be applied
@@ -62,7 +66,7 @@ public class AbstractDateConversion
     public Date getSqlDateOfApply( )
     {
         Date date = null;
-        if ( this._dateOfApply != null )
+        if ( _dateOfApply != null )
         {
             date = Date.valueOf( _dateOfApply );
         }
@@ -77,7 +81,7 @@ public class AbstractDateConversion
      */
     public void setDateOfApply( LocalDate dateOfApply )
     {
-        this._dateOfApply = dateOfApply;
+        _dateOfApply = dateOfApply;
     }
 
     /**
@@ -90,11 +94,59 @@ public class AbstractDateConversion
     {
         if ( dateOfApply != null )
         {
-            this._dateOfApply = dateOfApply.toLocalDate( );
+            _dateOfApply = dateOfApply.toLocalDate( );
         }
         else
         {
-            this._dateOfApply = null;
+            _dateOfApply = null;
         }
     }
+    
+    /**
+     * Returns the EndingDateOfApply
+     * @return The EndingDateOfApply
+     */ 
+     public LocalDate getEndingDateOfApply()
+     {
+         return _endingDateOfApply;
+     }
+     
+     /**
+      * Returns the EndingDateOfApply
+      * @return The EndingDateOfApply
+      */ 
+      public Date getSqlEndingDateOfApply()
+      {
+    	  Date date = null;
+          if ( _endingDateOfApply != null )
+          {
+              date = Date.valueOf( _endingDateOfApply );
+          }
+          return date;
+      }
+ 
+    /**
+     * Sets the EndingDateOfApply
+     * @param endingDateOfApply The EndingDateOfApply
+     */ 
+     public void setEndingDateOfApply( LocalDate endingDateOfApply )
+     {
+         _endingDateOfApply = endingDateOfApply;
+     }
+     
+     /**
+      * Sets the EndingDateOfApply
+      * @param endingDateOfApply The EndingDateOfApply
+      */ 
+      public void setSqlEndingDateOfApply( Date endingDateOfApply )
+      {
+    	  if ( endingDateOfApply != null )
+          {
+              _endingDateOfApply = endingDateOfApply.toLocalDate( );
+          }
+          else
+          {
+              _endingDateOfApply = null;
+          }
+      }
 }

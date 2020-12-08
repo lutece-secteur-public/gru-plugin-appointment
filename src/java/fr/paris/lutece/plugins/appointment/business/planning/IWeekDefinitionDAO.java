@@ -103,6 +103,15 @@ public interface IWeekDefinitionDAO
      * @return a list of all the weekdefinitions of the form given
      */
     List<WeekDefinition> findByIdForm( int nIdForm, Plugin plugin );
+   
+    /**
+     * Get  the week definitions of a form for reservation rule
+     * @param nIdReservationRule
+     * @param plugin
+     *             the plugin  
+     * @return list of week definition
+     */
+    List<WeekDefinition> findByReservationRule( int nIdReservationRule, Plugin plugin );
 
     /**
      * Get the week definitions of a form for the date of apply
@@ -116,5 +125,17 @@ public interface IWeekDefinitionDAO
      * @return the week definition
      */
     WeekDefinition findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin );
+    /**
+    * Get the week definitions of a form for the date of apply
+    * 
+    * @param nIdReservationRule
+    *            the reservationRule id
+    * @param dateOfApply
+    *            the date of apply
+    * @param plugin
+    *            the plugin
+    * @return the week definition
+    */
+   WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply, Plugin plugin );
 
 }

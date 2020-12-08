@@ -33,13 +33,22 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
@@ -73,12 +82,65 @@ public final class ReservationRuleService
      *            the date of the reservation rule
      * @return the Reservation Rule object created
      */
-    public static ReservationRule createReservationRule( AppointmentFormDTO appointmentForm, int nIdForm, LocalDate dateOfApply )
+    public static ReservationRule createReservationRule( AppointmentFormDTO appointmentForm, int nIdForm )
     {
         ReservationRule reservationRule = new ReservationRule( );
-        fillInReservationRule( reservationRule, appointmentForm, nIdForm, dateOfApply );
+        fillInReservationRule( reservationRule, appointmentForm, nIdForm );
         ReservationRuleHome.create( reservationRule );
         return reservationRule;
+    }
+    
+    /**
+     * Create in database a reservation rule object from an appointmentForm DTO
+     * 
+     * @param appointmentForm
+     *            the appointmentForm DTO
+    
+     * @return the Reservation Rule id
+     */
+    public static int createAdvancedParameters( AppointmentFormDTO appointmentForm )
+    {
+       
+        int nIdForm = appointmentForm.getIdForm( );
+        ReservationRule reservationRule = createReservationRule( appointmentForm, nIdForm );
+        int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
+        LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
+        LocalTime endingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        int nDuration = appointmentForm.getDurationAppointments( );
+        for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
+        {
+            WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingTime, endingTime, nDuration, nMaxCapacity );
+        }
+        return reservationRule.getIdReservationRule( );
+    }
+    /**
+     * Update a form with the new values of an appointmentForm DTO Advanced Parameters (with a date of application) --> new Typical Week
+     * 
+     * @param appointmentForm
+     *            the appointmentForm DTO
+     */
+    public static void updateAdvancedParameters( AppointmentFormDTO appointmentForm  )
+    {
+        int nIdForm = appointmentForm.getIdForm( );
+        ReservationRule reservationRule = updateReservationRule( appointmentForm, nIdForm );
+        int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
+        List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) );
+
+        if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
+        {
+        	for ( WorkingDay workingDay : listWorkingDay )
+            {
+            	TimeSlotHome.deleteByIdWorkingDay(workingDay.getIdWorkingDay( ));
+            }
+        	WorkingDayHome.deleteByIdReservationRule(reservationRule.getIdReservationRule( ));
+        }
+        LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
+        LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        int nDuration = appointmentForm.getDurationAppointments( );
+        for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
+        {
+            WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
+        }
     }
 
     /**
@@ -87,10 +149,18 @@ public final class ReservationRuleService
      * @param reservationRule
      *            the reservation rule to delete
      */
-    public static void removeReservationRule( ReservationRule reservationRule )
+    public static void removeReservationRule( int nIdReservationRule )
     {
-        FormListenerManager.notifyListenersFormChange( reservationRule.getIdForm( ) );
-        ReservationRuleHome.delete( reservationRule.getIdReservationRule( ) );
+        //FormListenerManager.notifyListenersFormChange( reservationRule.getIdForm( ) );
+        ReservationRule rule= findReservationRuleById( nIdReservationRule );
+        for( WorkingDay day: rule.getListWorkingDay( ) ) {
+        	
+            TimeSlotHome.deleteByIdWorkingDay( day.getIdWorkingDay( ) );
+            WorkingDayHome.delete(day.getIdWorkingDay( ));
+
+        }
+        ReservationRuleHome.delete( rule.getIdReservationRule( ) );
+        
     }
 
     /**
@@ -111,20 +181,18 @@ public final class ReservationRuleService
      *            the appointmentForm DTO
      * @param nIdForm
      *            the form Id
-     * @param dateOfApply
-     *            the date of the update
      * @return the reservation rule object updated
      */
-    public static ReservationRule updateReservationRule( AppointmentFormDTO appointmentForm, int nIdForm, LocalDate dateOfApply )
+    public static ReservationRule updateReservationRule( AppointmentFormDTO appointmentForm, int nIdForm )
     {
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndDateOfApply( nIdForm, dateOfApply );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleById( appointmentForm.getIdReservationRule( )  );
         if ( reservationRule == null )
         {
-            reservationRule = createReservationRule( appointmentForm, nIdForm, dateOfApply );
+            reservationRule = createReservationRule( appointmentForm, nIdForm );
         }
         else
         {
-            fillInReservationRule( reservationRule, appointmentForm, nIdForm, dateOfApply );
+            fillInReservationRule( reservationRule, appointmentForm, nIdForm );
             ReservationRuleHome.update( reservationRule );
         }
         return reservationRule;
@@ -139,14 +207,14 @@ public final class ReservationRuleService
      *            the appointmentForm DTO
      * @param nIdForm
      *            the form Id
-     * @param dateOfApply
-     *            the date of the reservation rule
      */
-    public static void fillInReservationRule( ReservationRule reservationRule, AppointmentFormDTO appointmentForm, int nIdForm, LocalDate dateOfApply )
+    public static void fillInReservationRule( ReservationRule reservationRule, AppointmentFormDTO appointmentForm, int nIdForm )
     {
-        reservationRule.setDateOfApply( dateOfApply );
         reservationRule.setMaxCapacityPerSlot( appointmentForm.getMaxCapacityPerSlot( ) );
         reservationRule.setMaxPeoplePerAppointment( appointmentForm.getMaxPeoplePerAppointment( ) );
+        reservationRule.setName( appointmentForm.getName( ));
+        reservationRule.setDescriptionRule( appointmentForm.getDescriptionRule( ));
+        reservationRule.setColor( appointmentForm.getColor( ));
         reservationRule.setIdForm( nIdForm );
     }
 
@@ -159,38 +227,17 @@ public final class ReservationRuleService
      *            the date
      * @return the reservation rule to apply at this date
      */
-    public static ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
+   public static ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
-        // Get all the reservation rules
-        List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
-        List<LocalDate> listDate = new ArrayList<>( );
-        for ( ReservationRule reservationRule : listReservationRule )
-        {
-            listDate.add( reservationRule.getDateOfApply( ) );
-        }
-        // Try to get the closest date in past of the dateOfApply
-        LocalDate closestDate = Utilities.getClosestDateInPast( listDate, dateOfApply );
-        ReservationRule reservationRule = null;
-        // If there is no closest date in past
-        if ( closestDate == null )
-        {
-            // if the list of reservation rules is not empty
-            if ( CollectionUtils.isNotEmpty( listReservationRule ) )
-            {
-                // Get the next week definition in future
-                reservationRule = listReservationRule.stream( ).min( ( w1, w2 ) -> w1.getDateOfApply( ).compareTo( w2.getDateOfApply( ) ) ).orElse( null );
-            }
-        }
-        else
-        {
-            // The closest date in past is not null
-            if ( CollectionUtils.isNotEmpty( listReservationRule ) )
-            {
-                // Get the corresponding reservation rule
-                reservationRule = listReservationRule.stream( ).filter( x -> closestDate.isEqual( x.getDateOfApply( ) ) ).findAny( ).orElse( null );
-            }
-        }
-        return reservationRule;
+	   ReservationRule reservationRule= ReservationRuleHome.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply);
+      /* if( reservationRule == null ) {
+    	   
+    	   WeekDefinition weekDef=  WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply);
+       	   reservationRule= ReservationRuleHome.findByPrimaryKey(weekDef.getIdReservationRule( ));
+       }*/
+	   reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+
+	   return reservationRule;
     }
 
     /**
@@ -204,7 +251,13 @@ public final class ReservationRuleService
      */
     public static ReservationRule findReservationRuleByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
-        return ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );
+    	
+    	ReservationRule reservationRule = ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );  
+    	if( reservationRule != null ) {
+    		   
+    		reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+    	}
+        return reservationRule;
     }
 
     /**
@@ -216,27 +269,31 @@ public final class ReservationRuleService
      */
     public static ReservationRule findReservationRuleById( int nIdReservationRule )
     {
-        return ReservationRuleHome.findByPrimaryKey( nIdReservationRule );
+         ReservationRule reservationRule= ReservationRuleHome.findByPrimaryKey( nIdReservationRule );
+         if( reservationRule != null ) {
+  		   
+     		reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+     	 }
+         return reservationRule;
     }
 
     /**
-     * Build a reference list of all the dates of all the reservation rules of a form
+     * Build a reference list of all reservation rules of a form
      * 
      * @param nIdForm
      *            the form Id
      * @return the reference list (id reservation rule / date of apply of the reservation rule)
      */
-    public static ReferenceList findAllDateOfReservationRule( int nIdForm )
+    public static ReferenceList findAllReservationRule( int nIdForm )
     {
-        ReferenceList listDate = new ReferenceList( );
+        ReferenceList listRule = new ReferenceList( );
         List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         for ( ReservationRule reservationRule : listReservationRule )
         {
-            listDate.addItem( reservationRule.getIdReservationRule( ), reservationRule.getDateOfApply( ).format( Utilities.getFormatter( ) ) );
+        	listRule.addItem( reservationRule.getIdReservationRule( ), reservationRule.getName( ) );
         }
-        return listDate;
+        return listRule;
     }
-
     /**
      * Find all the reservation rule of a form
      * 
@@ -244,13 +301,17 @@ public final class ReservationRuleService
      *            the form Id
      * @return an HashMap with the date of apply in key and the reservation rule in value
      */
-    public static HashMap<LocalDate, ReservationRule> findAllReservationRule( int nIdForm )
+    public static Map<WeekDefinition, ReservationRule> findAllReservationRule( int nIdForm,  Collection<WeekDefinition> listWeekDefinition )
     {
-        HashMap<LocalDate, ReservationRule> mapReservationRule = new HashMap<>( );
-        List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
-        for ( ReservationRule reservationRule : listReservationRule )
+    	
+        Map<WeekDefinition, ReservationRule> mapReservationRule = new HashMap<>( );
+        List<ReservationRule> listReservationRule= ReservationRuleHome.findByIdForm( nIdForm );
+        for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
-            mapReservationRule.put( reservationRule.getDateOfApply( ), reservationRule );
+        	 	ReservationRule reservationRule = listReservationRule.stream().filter( p ->p.getIdReservationRule() == weekDefinition.getIdReservationRule( )).findAny().orElse( null );        	 	
+        	    reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+        		mapReservationRule.put(weekDefinition , reservationRule);
+        	
         }
         return mapReservationRule;
     }
@@ -264,7 +325,38 @@ public final class ReservationRuleService
      */
     public static List<ReservationRule> findListReservationRule( int nIdForm )
     {
-        return ReservationRuleHome.findByIdForm( nIdForm );
+    	
+    	List<ReservationRule> listReservationRule= ReservationRuleHome.findByIdForm( nIdForm );
+        for ( ReservationRule reservationRule : listReservationRule )
+        {
+        	reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+        }
+        return listReservationRule;
     }
+    /**
+     * Returns a list of the reservation rules of a form
+     * 
+     * @param nIdForm
+     *            the form id
+     * @param listWeekDefinition
+     * 			  the week definition list
+     * @return a list of reservation rules of the form
+     */
+    public static List<ReservationRule> findListReservationRule( int nIdForm, Collection<WeekDefinition> listWeekDefinition )
+    {
+    	
+    	List<ReservationRule> listReservationRule= new ArrayList<>( );
+        for ( ReservationRule reservationRule : ReservationRuleHome.findByIdForm( nIdForm ) )
+        {
+        	if( listWeekDefinition.stream().anyMatch( p -> p.getIdReservationRule() == reservationRule.getIdReservationRule( ))) {
+        		
+        		reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+        		listReservationRule.add(reservationRule);
+        	}
+        }
+        return listReservationRule;
+    }
+    
+    
 
 }

@@ -98,6 +98,16 @@ public final class WorkingDayHome
     {
         _dao.delete( nKey, _plugin );
     }
+    /**
+     * Delete the working day  whose id reservation rule is specified in parameter
+     * 
+     * @param nIdReservationRule the reservation rule id
+     */
+    public static void deleteByIdReservationRule( int nIdReservationRule ) {
+    	
+    	_dao.deleteByIdReservationRule(nIdReservationRule, _plugin);
+    }
+
 
     /**
      * Returns an instance of the WorkingDay whose identifier is specified in parameter
@@ -114,13 +124,13 @@ public final class WorkingDayHome
     /**
      * Find the Working Day of the weekDefinition
      * 
-     * @param nIdWeekDefinition
-     *            the WeekDefinition Id
-     * @return a list of the workingDay defined
+     * @param nIdWeekDefinitionRule
+     *            the WeekDefinition Id Rule
+     * @return a list of the workingDay defined rule
      */
-    public static List<WorkingDay> findByIdWeekDefinition( int nIdWeekDefinition )
+    public static List<WorkingDay> findByIdWeekDefinitionRule( int nIdWeekDefinitionRule )
     {
-        return _dao.findByIdWeekDefinition( nIdWeekDefinition, _plugin );
+        return _dao.findByIdWeekDefinitionRule( nIdWeekDefinitionRule, _plugin );
     }
 
 }

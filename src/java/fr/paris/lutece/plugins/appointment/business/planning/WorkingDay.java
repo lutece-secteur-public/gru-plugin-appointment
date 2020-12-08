@@ -61,9 +61,9 @@ public final class WorkingDay implements Serializable
     private int _nDayOfWeek;
 
     /**
-     * Week id the working day belongs to
+     * Id of the reservation rule.
      */
-    private int _nIdWeekDefinition;
+    private int _nIdReservationRule;
 
     /**
      * List of the time slots of the working day
@@ -113,26 +113,25 @@ public final class WorkingDay implements Serializable
     }
 
     /**
-     * Get the id of the week definition the working day belongs to
+     * Get the id of the rule of the reservation
      * 
-     * @return the id of the week definition the working day belongs to
+     * @return the id of the rule of the reservation
      */
-    public int getIdWeekDefinition( )
+    public int getIdReservationRule( )
     {
-        return _nIdWeekDefinition;
+        return _nIdReservationRule;
     }
 
     /**
-     * Set the id of the week definition the working day belongs to
+     * Set the id of the rule of the reservation
      * 
-     * @param nIdWeekDefinition
+     * @param nIdReservationRule
      *            the id to set
      */
-    public void setIdWeekDefinition( int nIdWeekDefinition )
+    public void setIdReservationRule( int nIdReservationRule )
     {
-        this._nIdWeekDefinition = nIdWeekDefinition;
+        this._nIdReservationRule = nIdReservationRule;
     }
-
     /**
      * Get the time slots of the working day
      * 

@@ -208,8 +208,9 @@ public final class SlotSafeService
     public static void incrementMaxCapacity( int nIdForm, int nIncrementingValue, LocalDateTime startindDateTime, LocalDateTime endingDateTime, boolean lace )
     {
         int index = 0;
-        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
-        List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startindDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+        Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
+           List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startindDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
         listSlot = listSlot.stream( )
                 .filter( slt -> slt.getEndingDateTime( ).isBefore( endingDateTime ) && slt.getEndingDateTime( ).isAfter( startindDateTime ) )
                 .collect( Collectors.toList( ) );
@@ -564,8 +565,8 @@ public final class SlotSafeService
         else
         {
             LocalDate dateOfSlot = slot.getDate( );
-            WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
-            WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
+            ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+            WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRule.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
             // No slot after this one.
             // Need to compute between the end of this slot and the next
             // time slot
@@ -618,9 +619,11 @@ public final class SlotSafeService
     {
         // We want to shift all the next slots
         LocalDate dateOfSlot = slot.getDate( );
-        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( slot.getIdForm( ) );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( slot.getIdForm( ) );
+        Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( slot.getIdForm( ), listWeekDefinition );
+       
         // Build or get all the slots of the day
-        List<Slot> listAllSlotsOfThisDayToBuildOrInDb = SlotService.buildListSlot( slot.getIdForm( ), mapWeekDefinition, dateOfSlot, dateOfSlot );
+        List<Slot> listAllSlotsOfThisDayToBuildOrInDb = SlotService.buildListSlot( slot.getIdForm( ), mapReservationRule, dateOfSlot, dateOfSlot );
         // Remove the current slot and all the slot before it
         listAllSlotsOfThisDayToBuildOrInDb = listAllSlotsOfThisDayToBuildOrInDb.stream( )
                 .filter( slotToKeep -> slotToKeep.getStartingDateTime( ).isAfter( slot.getStartingDateTime( ) ) ).collect( Collectors.toList( ) );
@@ -653,8 +656,8 @@ public final class SlotSafeService
         boolean bNewEndingTimeIsAfterThePreviousTime = false;
         // Need to know the ending time of the day
         LocalDateTime endingDateTimeOfTheDay = null;
-        WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
-        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRule.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
         LocalTime endingTimeOfTheDay;
         if ( workingDay != null )
         {
@@ -662,7 +665,7 @@ public final class SlotSafeService
         }
         else
         {
-            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
         }
         endingDateTimeOfTheDay = endingTimeOfTheDay.atDate( dateOfSlot );
         long timeToAdd = 0;
@@ -768,8 +771,8 @@ public final class SlotSafeService
         LocalDate dateOfCreation = dateTimeToStartCreation.toLocalDate( );
         ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfCreation );
         int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
-        WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfCreation );
-        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfCreation.getDayOfWeek( ) );
+
+        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRule.getListWorkingDay( ), dateOfCreation.getDayOfWeek( ) );
         LocalTime endingTimeOfTheDay = null;
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         int nDurationSlot = 0;
@@ -781,8 +784,8 @@ public final class SlotSafeService
         }
         else
         {
-            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
-            nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( weekDefinition.getListWorkingDay( ) );
+            endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
+            nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
         }
         LocalDateTime endingDateTimeOfTheDay = endingTimeOfTheDay.atDate( dateOfCreation );
         LocalDateTime startingDateTime = dateTimeToStartCreation;

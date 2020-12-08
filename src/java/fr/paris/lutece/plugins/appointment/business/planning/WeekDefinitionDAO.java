@@ -51,14 +51,16 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class WeekDefinitionDAO implements IWeekDefinitionDAO
 {
 
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_week_definition ( date_of_apply, id_form) VALUES ( ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_week_definition SET date_of_apply = ?, id_form = ? WHERE id_week_definition = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_week_definition ( date_of_apply, ending_date_of_apply, id_reservation_rule) VALUES ( ?, ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_week_definition SET date_of_apply = ?, ending_date_of_apply = ?,  id_reservation_rule = ? WHERE id_week_definition = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_week_definition WHERE id_week_definition = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_week_definition, date_of_apply, id_form FROM appointment_week_definition";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_week_definition, date_of_apply, ending_date_of_apply, id_reservation_rule FROM appointment_week_definition ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND date_of_apply = ?";
-
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = " SELECT appw.id_week_definition, appw.date_of_apply, appw.ending_date_of_apply, appw.id_reservation_rule FROM appointment_week_definition appw INNER JOIN appointment_reservation_rule rule on ( rule.id_reservation_rule = appw.id_reservation_rule ) where rule.id_form= ? ";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND appw.date_of_apply = ? ";
+    private static final String SQL_QUERY_SELECT_BY_ID_RESERVATION_RULE_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_COLUMNS + " where id_reservation_rule = ? AND date_of_apply = ? ";
+    private static final String SQL_SELECT_BY_RULE = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
+    
     @Override
     public void insert( WeekDefinition weekDefinition, Plugin plugin )
     {
@@ -122,6 +124,21 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
         }
         return listWeekDefinition;
     }
+    @Override
+    public List<WeekDefinition> findByReservationRule( int nIdReservationRule, Plugin plugin )
+    {
+        List<WeekDefinition> listWeekDefinition = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_SELECT_BY_RULE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdReservationRule );
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
+            {
+                listWeekDefinition.add( buildWeekDefinition( daoUtil ) );
+            }
+        }
+        return listWeekDefinition;
+    }
 
     @Override
     public WeekDefinition findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin )
@@ -139,6 +156,24 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
         }
         return weekDefinition;
     }
+    
+    @Override
+    public WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply, Plugin plugin ) {
+    	
+    	WeekDefinition weekDefinition = null;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_RESERVATION_RULE_AND_DATE_OF_APPLY, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdReservationRule );
+            daoUtil.setDate( 2, Date.valueOf( dateOfApply ) );
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                weekDefinition = buildWeekDefinition( daoUtil );
+            }
+        }
+        return weekDefinition;
+    	
+    }
 
     /**
      * Build a WeekDefinition business object from the resultset
@@ -153,7 +188,8 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
         WeekDefinition weekDefinition = new WeekDefinition( );
         weekDefinition.setIdWeekDefinition( daoUtil.getInt( nIndex++ ) );
         weekDefinition.setSqlDateOfApply( daoUtil.getDate( nIndex++ ) );
-        weekDefinition.setIdForm( daoUtil.getInt( nIndex ) );
+        weekDefinition.setSqlEndingDateOfApply( daoUtil.getDate( nIndex++ ) );
+        weekDefinition.setIdReservationRule( daoUtil.getInt( nIndex ) );
         return weekDefinition;
     }
 
@@ -184,7 +220,8 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
             daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setDate( nIndex++, weekDefinition.getSqlDateOfApply( ) );
-        daoUtil.setInt( nIndex++, weekDefinition.getIdForm( ) );
+        daoUtil.setDate( nIndex++, weekDefinition.getSqlEndingDateOfApply( ) );
+        daoUtil.setInt( nIndex++, weekDefinition.getIdReservationRule( ) );
         if ( !isInsert )
         {
             daoUtil.setInt( nIndex, weekDefinition.getIdWeekDefinition( ) );

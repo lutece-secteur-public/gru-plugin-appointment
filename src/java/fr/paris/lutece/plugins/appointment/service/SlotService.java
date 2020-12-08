@@ -40,6 +40,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -52,6 +53,9 @@ import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.util.sql.TransactionManager;
 
 /**
  * Service class of a slot
@@ -121,7 +125,7 @@ public final class SlotService
     public static HashMap<LocalDateTime, Slot> buildMapSlotsByIdFormAndDateRangeWithDateForKey( int nIdForm, LocalDateTime startingDateTime,
             LocalDateTime endingDateTime )
     {
-        HashMap<LocalDateTime, Slot> mapSlots = new HashMap<>( );
+    	HashMap<LocalDateTime, Slot> mapSlots = new HashMap<>( );
         for ( Slot slot : findSlotsByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime ) )
         {
             mapSlots.put( slot.getStartingDateTime( ), slot );
@@ -185,8 +189,6 @@ public final class SlotService
         }
         return slot;
     }
-    
-
     /**
      * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot
      * 
@@ -202,15 +204,30 @@ public final class SlotService
      */
     public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
     {
+        Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, mapWeekDefinition.values( ) );
+
+    	return buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate );
+    }
+
+    /**
+     * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @param mapReservationRule
+     *            the map of the rule week definition
+     * @param startingDate
+     *            the starting date of the period
+     * @param nNbWeeksToDisplay
+     *            the number of weeks to build
+     * @return a list of all the slots built
+     */
+    public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate )
+    {
         List<Slot> listSlot = new ArrayList<>( );
-        // Get all the reservation rules
-        final HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm );
-        final List<LocalDate> listDateWeekDefinition = new ArrayList<>( mapWeekDefinition.keySet( ) );
-        final List<LocalDate> listDateReservationTule = new ArrayList<>( mapReservationRule.keySet( ) );
-        LocalDate closestDateWeekDefinition;
-        LocalDate closestDateReservationRule;
-        WeekDefinition weekDefinitionToApply;
-        ReservationRule reservationRuleToApply;
+        final List<WeekDefinition> listDateReservationRule = new ArrayList<>( mapReservationRule.keySet( ) );
+        WeekDefinition closestweeDef;
+        ReservationRule reservationRuleToApply= null;
         LocalDate dateTemp = startingDate;
         int nMaxCapacity;
         DayOfWeek dayOfWeek;
@@ -223,7 +240,8 @@ public final class SlotService
         TimeSlot timeSlot;
         LocalDate dateToCompare;
         // Need to check if this date is not before the form date creation
-        final LocalDate firstDateOfReservationRule = new ArrayList<>( mapReservationRule.keySet( ) ).stream( ).sorted( ).findFirst( ).orElse( null );
+        WeekDefinition firsWeek =listDateReservationRule.stream().sorted( (week1, week2) -> week1.getDateOfApply().compareTo(week2.getDateOfApply( ))).findFirst().orElse(null);
+        final LocalDate firstDateOfReservationRule = firsWeek.getDateOfApply();
         LocalDate startingDateToUse = startingDate;
         if ( firstDateOfReservationRule != null && startingDate.isBefore( firstDateOfReservationRule ) )
         {
@@ -232,33 +250,32 @@ public final class SlotService
         // Get all the closing day of this period
         List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange( nIdForm, startingDateToUse, endingDate );
         // Get all the slot between these two dates
-        HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateToUse.atStartOfDay( ),
+        Map<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateToUse.atStartOfDay( ),
                 endingDate.atTime( LocalTime.MAX ) );
 
         // Get or build all the event for the period
         while ( !dateTemp.isAfter( endingDate ) )
         {
             dateToCompare = dateTemp;
-            // Find the closest date of apply of week definition with the given
-            // date
-            closestDateWeekDefinition = Utilities.getClosestDateInPast( listDateWeekDefinition, dateToCompare );
-            weekDefinitionToApply = mapWeekDefinition.get( closestDateWeekDefinition );
             // Find the closest date of apply of reservation rule with the given
             // date
-            closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
-            reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
-            nMaxCapacity = 0;
-            if ( reservationRuleToApply != null )
-            {
-                nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot( );
+             
+            closestweeDef = Utilities.getClosestWeekDefinitionInPast( listDateReservationRule, dateToCompare );
+            if( closestweeDef != null ) {
+            	
+                reservationRuleToApply = mapReservationRule.get( closestweeDef );
+
             }
-            // Get the day of week of the date
+            nMaxCapacity = 0;
+         // Get the day of week of the date
             dayOfWeek = dateTemp.getDayOfWeek( );
             // Get the working day of this day of week
             workingDay = null;
-            if ( weekDefinitionToApply != null )
+            if ( reservationRuleToApply != null )
             {
-                workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinitionToApply.getListWorkingDay( ), dayOfWeek );
+                nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot( );
+                workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRuleToApply.getListWorkingDay( ), dayOfWeek );
+
             }
             if ( workingDay != null )
             {
@@ -313,11 +330,11 @@ public final class SlotService
             {
                 // This is not a working day
                 // We build all the slots closed for this day
-                if ( reservationRuleToApply != null && weekDefinitionToApply != null )
+                if ( reservationRuleToApply != null  )
                 {
-                    minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( weekDefinitionToApply.getListWorkingDay( ) );
-                    maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( weekDefinitionToApply.getListWorkingDay( ) );
-                    int nDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( weekDefinitionToApply.getListWorkingDay( ) );
+                    minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( reservationRuleToApply.getListWorkingDay( ) );
+                    maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( reservationRuleToApply.getListWorkingDay( ) );
+                    int nDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( reservationRuleToApply.getListWorkingDay( ) );
                     if ( minTimeForThisDay != null && maxTimeForThisDay != null )
                     {
                         timeTemp = minTimeForThisDay;
@@ -354,19 +371,14 @@ public final class SlotService
 
     }
 
-    public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate,
+    public static List<Slot> buildListSlot( int nIdForm, Map<WeekDefinition, ReservationRule> mapReservationRule, LocalDate startingDate, LocalDate endingDate,
             int nNbPlaces )
     {
         List<Slot> listSlotToShow = new ArrayList<>( );
 
-        // Get all the reservation rules
-        final HashMap<LocalDate, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm );
-        final List<LocalDate> listDateWeekDefinition = new ArrayList<>( mapWeekDefinition.keySet( ) );
-        final List<LocalDate> listDateReservationTule = new ArrayList<>( mapReservationRule.keySet( ) );
-        LocalDate closestDateWeekDefinition;
-        LocalDate closestDateReservationRule;
-        WeekDefinition weekDefinitionToApply;
-        ReservationRule reservationRuleToApply;
+        final List<WeekDefinition> listDateReservationRule = new ArrayList<>( mapReservationRule.keySet( ) );
+        WeekDefinition closestweeDef;        
+        ReservationRule reservationRuleToApply = null;
         LocalDate dateTemp = startingDate;
         int nMaxCapacity;
         DayOfWeek dayOfWeek;
@@ -387,7 +399,8 @@ public final class SlotService
         TimeSlot timeSlot;
         LocalDate dateToCompare;
         // Need to check if this date is not before the form date creation
-        final LocalDate firstDateOfReservationRule = new ArrayList<>( mapReservationRule.keySet( ) ).stream( ).sorted( ).findFirst( ).orElse( null );
+        WeekDefinition firsWeek =listDateReservationRule.stream().sorted( (week1, week2) -> week1.getDateOfApply().compareTo(week2.getDateOfApply( ))).findFirst().orElse(null);
+        final LocalDate firstDateOfReservationRule = firsWeek.getDateOfApply();
         LocalDate startingDateToUse = startingDate;
         if ( firstDateOfReservationRule != null && startingDate.isBefore( firstDateOfReservationRule ) )
         {
@@ -396,34 +409,33 @@ public final class SlotService
         // Get all the closing day of this period
         List<LocalDate> listDateOfClosingDay = ClosingDayService.findListDateOfClosingDayByIdFormAndDateRange( nIdForm, startingDateToUse, endingDate );
         // Get all the slot between these two dates
-        HashMap<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateToUse.atStartOfDay( ),
+        Map<LocalDateTime, Slot> mapSlot = SlotService.buildMapSlotsByIdFormAndDateRangeWithDateForKey( nIdForm, startingDateToUse.atStartOfDay( ),
                 endingDate.atTime( LocalTime.MAX ) );
 
         // Get or build all the event for the period
         while ( !dateTemp.isAfter( endingDate ) )
         {
             dateToCompare = dateTemp;
-            // Find the closest date of apply of week definition with the given
-            // date
-            closestDateWeekDefinition = Utilities.getClosestDateInPast( listDateWeekDefinition, dateToCompare );
-            weekDefinitionToApply = mapWeekDefinition.get( closestDateWeekDefinition );
             // Find the closest date of apply of reservation rule with the given
             // date
-            closestDateReservationRule = Utilities.getClosestDateInPast( listDateReservationTule, dateToCompare );
-            reservationRuleToApply = mapReservationRule.get( closestDateReservationRule );
-            nMaxCapacity = 0;
-            if ( reservationRuleToApply != null )
-            {
-                nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot( );
+            closestweeDef = Utilities.getClosestWeekDefinitionInPast( listDateReservationRule, dateToCompare );
+            if( closestweeDef != null ) {
+            	
+                reservationRuleToApply = mapReservationRule.get( closestweeDef );
+
             }
+            nMaxCapacity = 0;
             // Get the day of week of the date
             dayOfWeek = dateTemp.getDayOfWeek( );
             // Get the working day of this day of week
             workingDay = null;
-            if ( weekDefinitionToApply != null )
+            if ( reservationRuleToApply != null )
             {
-                workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinitionToApply.getListWorkingDay( ), dayOfWeek );
-            }
+                nMaxCapacity = reservationRuleToApply.getMaxCapacityPerSlot( );
+                workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRuleToApply.getListWorkingDay( ), dayOfWeek );
+
+            }        
+        
             if ( workingDay != null )
             {
                 minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAWorkingDay( workingDay );
@@ -564,9 +576,9 @@ public final class SlotService
     public static boolean isSpecificSlot( Slot slot )
     {
         LocalDate dateOfSlot = slot.getDate( );
-        WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm( ), slot.getDate( ) );
-        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( weekDefinition.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
+        //WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+        WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRule.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
         List<TimeSlot> listTimeSlot = null;
         if ( workingDay != null )
         {
@@ -706,10 +718,21 @@ public final class SlotService
      */
     public static void deleteListSlots( List<Slot> listSlotToDelete )
     {
-        for ( Slot slotToDelete : listSlotToDelete )
-        {
-            SlotService.deleteSlot( slotToDelete );
-        }
+    	 TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
+         try
+         {
+	        for ( Slot slotToDelete : listSlotToDelete )
+	        {
+	            SlotService.deleteSlot( slotToDelete );
+	        }
+           TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+         }
+         catch( Exception e )
+         {
+        	 TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
+        	 AppLogService.error( "Error delete slot " + e.getMessage( ), e );
+        	 throw new AppException( e.getMessage( ), e );
+         }
     }
 
     /**

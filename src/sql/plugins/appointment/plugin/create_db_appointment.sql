@@ -211,6 +211,26 @@ CREATE TABLE IF NOT EXISTS appointment_form_portlet (
     REFERENCES appointment_form (id_form)
     );
 CREATE INDEX fk_appointment_form_portlet_appointment_form_idx ON appointment_form_portlet (id_form ASC);
+-- -----------------------------------------------------
+-- Table appointment_reservation_rule
+-- -----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS appointment_reservation_rule (
+
+  id_reservation_rule INT AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  color VARCHAR(255),
+  enable BOOLEAN DEFAULT TRUE NOT NULL, 
+  max_capacity_per_slot INT DEFAULT 0 NOT NULL,
+  max_people_per_appointment INT DEFAULT 0 NOT NULL,
+  id_form INT NOT NULL,
+  PRIMARY KEY (id_reservation_rule),
+  CONSTRAINT fk_appointment_reservation_rule_appointment_form
+    FOREIGN KEY (id_form)
+    REFERENCES appointment_form (id_form)
+);
+CREATE INDEX fk_appointment_reservation_rule_appointment_form_idx ON appointment_reservation_rule (id_form ASC);
 
 -- -----------------------------------------------------
 -- Table appointment_week_definition
@@ -218,16 +238,18 @@ CREATE INDEX fk_appointment_form_portlet_appointment_form_idx ON appointment_for
 
 CREATE TABLE IF NOT EXISTS appointment_week_definition (
   id_week_definition INT AUTO_INCREMENT,
+  id_reservation_rule INT NOT NULL,
   date_of_apply DATE NOT NULL,
-  id_form INT NOT NULL,
+  ending_date_of_apply DATE NOT NULL,
+  
   PRIMARY KEY (id_week_definition),
-  CONSTRAINT fk_appointment_week_definition_appointment_form
-    FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
+  CONSTRAINT fk_appointment_week_definition_appointment_reservation_rule
+    FOREIGN KEY (id_reservation_rule)
+    REFERENCES appointment_reservation_rule (id_reservation_rule)
+  
     );
-CREATE INDEX fk_appointment_week_type_appointment_form_idx ON appointment_week_definition (id_form ASC);
 CREATE INDEX date_of_apply_idx ON appointment_week_definition (date_of_apply ASC);
-CREATE UNIQUE INDEX appointment_week_definition_unique_date ON appointment_week_definition (id_form,date_of_apply);
+CREATE UNIQUE INDEX appointment_week_definition_unique_date ON appointment_week_definition (id_reservation_rule,date_of_apply);
 
 -- -----------------------------------------------------
 -- Table appointment_working_day
@@ -236,15 +258,14 @@ CREATE UNIQUE INDEX appointment_week_definition_unique_date ON appointment_week_
 CREATE TABLE IF NOT EXISTS appointment_working_day (
   id_working_day INT AUTO_INCREMENT,
   day_of_week INT NOT NULL,
-  id_week_definition INT NOT NULL,
+  id_reservation_rule INT NOT NULL,
   PRIMARY KEY (id_working_day),
-  CONSTRAINT fk_appointment_working_day_appointment_week_definition
-    FOREIGN KEY (id_week_definition)
-    REFERENCES appointment_week_definition (id_week_definition)
+  CONSTRAINT fk_appointment_working_day_appointment_reservation_rule
+    FOREIGN KEY (id_reservation_rule)
+    REFERENCES appointment_reservation_rule (id_reservation_rule)
 );
-CREATE INDEX fk_appointment_working_day_appointment_week_definition_idx ON appointment_working_day (id_week_definition ASC);
-CREATE UNIQUE INDEX appointment_working_day_unique ON appointment_working_day (id_week_definition,day_of_week);
-
+CREATE INDEX fk_appointment_working_day_appointment_reservation_rule_idx ON appointment_reservation_rule (id_reservation_rule ASC);
+CREATE UNIQUE INDEX appointment_working_day_unique ON appointment_working_day (id_reservation_rule,day_of_week);
 -- -----------------------------------------------------
 -- Table appointment_time_slot
 -- -----------------------------------------------------
@@ -343,25 +364,6 @@ CREATE TABLE IF NOT EXISTS appointment_closing_day (
 CREATE INDEX fk_appointment_closing_day_appointment_form_idx ON appointment_closing_day (id_form ASC);
 CREATE INDEX date_of_closing_day ON appointment_closing_day (date_of_closing_day ASC);
 CREATE UNIQUE INDEX appointment_closing_day_unique ON appointment_closing_day (id_form,date_of_closing_day);
-
--- -----------------------------------------------------
--- Table appointment_reservation_rule
--- -----------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS appointment_reservation_rule (
-  id_reservation_rule INT AUTO_INCREMENT,
-  date_of_apply DATE NOT NULL,
-  max_capacity_per_slot INT DEFAULT 0 NOT NULL,
-  max_people_per_appointment INT DEFAULT 0 NOT NULL,
-  id_form INT NOT NULL,
-  PRIMARY KEY (id_reservation_rule),
-  CONSTRAINT fk_appointment_reservation_rule_appointment_form
-    FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
-);
-CREATE INDEX fk_appointment_reservation_rule_appointment_form_idx ON appointment_reservation_rule (id_form ASC);
-CREATE INDEX appointment_reservation_rule_date_idx ON appointment_reservation_rule (date_of_apply ASC);
-CREATE UNIQUE INDEX appointment_reservation_rule_unique ON appointment_reservation_rule (id_form,date_of_apply);
 
 --
 -- Structure for table appointment_comment

@@ -34,10 +34,13 @@
 package fr.paris.lutece.plugins.appointment.business.rule;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
-import fr.paris.lutece.plugins.appointment.business.AbstractDateConversion;
+import org.hibernate.validator.constraints.NotBlank;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 
 /**
  * Business class of the rules of the reservation
@@ -45,7 +48,7 @@ import fr.paris.lutece.plugins.appointment.business.AbstractDateConversion;
  * @author Laurent Payen
  *
  */
-public class ReservationRule extends AbstractDateConversion implements Serializable
+public class ReservationRule  implements Serializable
 {
 
     /**
@@ -57,6 +60,20 @@ public class ReservationRule extends AbstractDateConversion implements Serializa
      * Id of the reservation rule.
      */
     private int _nIdReservationRule;
+    
+    @NotBlank( message = "#i18n{appointment.validation.week.name.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.week.Title.size}" )
+    private String _strName;
+    
+    @NotBlank( message = "#i18n{appointment.validation.week.description.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.week.description.size}" )
+    private String _strDescriptionRule;
+    
+    @NotBlank( message = "#i18n{appointment.validation.week.color.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.week.color.size}" )
+    private String _strColor;
+    
+    private boolean _bEnable = true;
 
     /**
      * Maximum capacity for a slot
@@ -74,6 +91,11 @@ public class ReservationRule extends AbstractDateConversion implements Serializa
      * The Form Id the Reservation Rule belongs to (foreign key)
      */
     private int _nIdForm;
+    
+    /**
+     * List of the working days that define the week definition
+     */
+    private List<WorkingDay> _listWorkingDays;
 
     /**
      * Get the id of the rule of the reservation
@@ -95,6 +117,78 @@ public class ReservationRule extends AbstractDateConversion implements Serializa
     {
         this._nIdReservationRule = nIdReservationRule;
     }
+    
+    /**
+     * Returns the Name
+     * @return The Name
+     */ 
+     public String getName()
+     {
+         return _strName;
+     }
+ 
+    /**
+     * Sets the Name
+     * @param strName The Name
+     */ 
+     public void setName( String strName )
+     {
+         _strName = strName;
+     }
+ 
+    /**
+     * Returns the Description
+     * @return The Description
+     */ 
+     public String getDescriptionRule()
+     {
+         return _strDescriptionRule;
+     }
+ 
+    /**
+     * Sets the Description
+     * @param strDescription The Description
+     */ 
+     public void setDescriptionRule( String strDescription )
+     {
+    	 _strDescriptionRule = strDescription;
+     }
+ 
+    /**
+     * Returns the Color
+     * @return The Color
+     */ 
+     public String getColor()
+     {
+         return _strColor;
+     }
+ 
+    /**
+     * Sets the Color
+     * @param strColor The Color
+     */ 
+     public void setColor( String strColor )
+     {
+         _strColor = strColor;
+     }
+ 
+    /**
+     * Returns the Enable
+     * @return The Enable
+     */ 
+     public boolean getEnable()
+     {
+         return _bEnable;
+     }
+ 
+    /**
+     * Sets the Enable
+     * @param bEnable The Enable
+     */ 
+     public void setEnable( boolean bEnable )
+     {
+         _bEnable = bEnable;
+     }
 
     /**
      * Get the maximum capacity for a slot
@@ -157,6 +251,26 @@ public class ReservationRule extends AbstractDateConversion implements Serializa
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
+    }  
+    /**
+     * Get the list of the working days of the week
+     * 
+     * @return the list of the working days for the week
+     */
+    public List<WorkingDay> getListWorkingDay( )
+    {
+        return _listWorkingDays;
+    }
+
+    /**
+     * Set the working days for the week
+     * 
+     * @param _listWorkingDays
+     *            the list o f working days to set
+     */
+    public void setListWorkingDay( List<WorkingDay> listWorkingDays )
+    {
+        this._listWorkingDays = listWorkingDays;
     }
 
 }

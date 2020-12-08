@@ -48,8 +48,10 @@ import org.apache.commons.collections.CollectionUtils;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 
 /**
@@ -206,9 +208,9 @@ public final class TimeSlotService
     public static void updateTimeSlot( TimeSlot timeSlot, boolean bEndingTimeHasChanged, LocalTime previousEndingTime, boolean bShifSlot )
     {
         WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
-        WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionLightById( workingDay.getIdWeekDefinition( ) );
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( weekDefinition.getIdForm( ),
-                weekDefinition.getDateOfApply( ) );
+        ReservationRule reservationRule = ReservationRuleHome.findByPrimaryKey( workingDay.getIdReservationRule( ) );
+        List<WeekDefinition> listWeek= WeekDefinitionHome.findByReservationRule( reservationRule.getIdReservationRule( ) );
+
         int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
         if ( bEndingTimeHasChanged )
         {
@@ -227,7 +229,10 @@ public final class TimeSlotService
             saveTimeSlot( timeSlot );
         }
 
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( workingDay.getIdWeekDefinition( ) );
+        for( WeekDefinition week:listWeek ) {
+        	
+        	WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( week.getIdWeekDefinition( ) );
+        }
     }
 
     /**

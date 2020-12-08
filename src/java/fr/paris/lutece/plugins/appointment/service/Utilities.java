@@ -39,6 +39,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+
 /**
  * Class of utilities
  * 
@@ -88,6 +90,21 @@ public final class Utilities
     public static LocalDate getClosestDateInPast( List<LocalDate> listDate, LocalDate dateToSearch )
     {
         return listDate.stream( ).filter( x -> x.isBefore( dateToSearch ) || x.isEqual( dateToSearch ) ).max( LocalDate::compareTo ).orElse( null );
+    }
+    /**
+     * Return the closest Week in past a list of date with the given date
+     * 
+     * @param listDate
+     *            the list of date
+     * @param dateToSearch
+     *            the date to search
+     * @return the closest week in past
+     */
+    public static WeekDefinition getClosestWeekDefinitionInPast( List<WeekDefinition> listWeek, LocalDate dateToSearch )
+    {
+    	return listWeek.stream().filter(p -> (p.getDateOfApply( ).isAfter( dateToSearch) || p.getDateOfApply().isEqual( dateToSearch )) 
+        		&& (p.getEndingDateOfApply().isBefore( dateToSearch ) || p.getEndingDateOfApply().isEqual( dateToSearch ))).findFirst().orElse( null );
+        
     }
 
     /**

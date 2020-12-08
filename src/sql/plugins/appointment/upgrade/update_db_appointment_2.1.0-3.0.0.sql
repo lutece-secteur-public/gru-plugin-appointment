@@ -87,5 +87,37 @@ ALTER TABLE appointment_closing_day MODIFY id_closing_day INT AUTO_INCREMENT;
 ALTER TABLE appointment_reservation_rule MODIFY id_reservation_rule INT NOT NULL;
 ALTER TABLE appointment_reservation_rule DROP PRIMARY KEY, ADD PRIMARY KEY (id_reservation_rule);
 ALTER TABLE appointment_reservation_rule MODIFY id_reservation_rule INT AUTO_INCREMENT;
+--------------------------------------------------
+-- week type
+---------------------------------------------------
+
+ALTER  TABLE appointment_week_definition  ADD ending_date_of_apply DATE NOT NULL;
+ALTER  TABLE appointment_week_definition  ADD id_reservation_rule INT NOT NULL;
+ALTER  TABLE appointment_week_definition ADD CONSTRAINT CONSTRAINT fk_appointment_week_definition_appointment_form
+    FOREIGN KEY (id_form)
+    REFERENCES appointment_form (id_form);
+ALTER  TABLE appointment_week_definition DROP CONSTRAINT fk_appointment_week_definition_appointment_form;
+ALTER  TABLE appointment_week_definition DROP INDEX fk_appointment_week_type_appointment_form_idx;
+ALTER  TABLE appointment_week_definition DROP INDEX appointment_week_definition_unique_date;
+ALTER  TABLE appointment_week_definition DROP COLUMN id_form;
+CREATE UNIQUE INDEX appointment_week_definition_unique_date ON appointment_week_definition (id_reservation_rule,date_of_apply);
+
+
+ALTER  TABLE appointment_reservation_rule  ADD name VARCHAR(255) NOT NULL;
+ALTER  TABLE appointment_reservation_rule  ADD description VARCHAR(255) NOT NULL;
+ALTER  TABLE appointment_reservation_rule  ADD color VARCHAR(255) NOT NULL;
+ALTER  TABLE appointment_reservation_rule  ADD is_actif BOOLEAN DEFAULT TRUE NOT NULL; 
+ALTER  TABLE appointment_reservation_rule  DROP COLUMN date_of_apply;
+
+ALTER  TABLE appointment_working_day DROP CONSTRAINT fk_appointment_working_day_appointment_week_definition;
+ALTER  TABLE appointment_working_day DROP INDEX fk_appointment_working_day_appointment_week_definition_idx;
+ALTER  TABLE appointment_working_day DROP INDEX appointment_working_day_unique;
+ALTER  TABLE appointment_working_day DROP COLUMN id_reservation_rule;
+ALTER  TABLE appointment_working_day ADD COLUMN id_reservation_rule INT NOT NULL;
+ALTER  TABLE appointment_working_day ADD CONSTRAINT fk_appointment_working_day_appointment_reservation_rule FOREIGN KEY (id_reservation_rule) REFERENCES appointment_reservation_rule (id_reservation_rule);
+CREATE INDEX fk_appointment_working_day_appointment_reservation_rule_idx ON appointment_reservation_rule (id_reservation_rule ASC);
+CREATE UNIQUE INDEX appointment_working_day_unique ON appointment_working_day (id_reservation_rule,day_of_week);
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;

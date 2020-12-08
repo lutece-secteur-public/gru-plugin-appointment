@@ -403,7 +403,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
         {
-            appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
+            appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
         }
         Map<String, Object> model = getModel( );
         addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
@@ -436,7 +436,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         populate( appointmentForm, request );
         populateAddress( appointmentForm, request );
-        AppointmentFormDTO appointmentFormDb = FormService.buildAppointmentForm( nIdForm, 0, 0 );
+        AppointmentFormDTO appointmentFormDb = FormService.buildAppointmentForm( nIdForm, 0 );
         String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE : request.getParameter( PARAMETER_DELETE_ICON );
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
         if ( Boolean.parseBoolean( strDeleteIcon ) && ( appointmentForm.getIcon( ).getImage( ) != null ) )

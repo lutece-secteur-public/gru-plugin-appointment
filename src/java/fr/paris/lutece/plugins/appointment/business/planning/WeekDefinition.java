@@ -34,7 +34,6 @@
 package fr.paris.lutece.plugins.appointment.business.planning;
 
 import java.io.Serializable;
-import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.AbstractDateConversion;
 
@@ -47,6 +46,7 @@ import fr.paris.lutece.plugins.appointment.business.AbstractDateConversion;
 public final class WeekDefinition extends AbstractDateConversion implements Serializable
 {
 
+	
     /**
      * Serial version UID
      */
@@ -55,17 +55,12 @@ public final class WeekDefinition extends AbstractDateConversion implements Seri
     /**
      * Id of the week definition
      */
-    private int _nIdWeekDefinition;
-
+    private int _nIdWeekDefinition;   
     /**
-     * Id of the form the week definition belongs to
+     * Id of the reservation rule.
      */
-    private int _nIdForm;
-
-    /**
-     * List of the working days that define the week definition
-     */
-    private List<WorkingDay> _listWorkingDays;
+    private int _nIdReservationRule;
+ 
 
     /**
      * Get the id of the week definition
@@ -89,45 +84,25 @@ public final class WeekDefinition extends AbstractDateConversion implements Seri
     }
 
     /**
-     * Get the form id the week definition belongs to
+     * Get the id of the rule of the reservation
      * 
-     * @return the form id
+     * @return the id of the rule of the reservation
      */
-    public int getIdForm( )
+    public int getIdReservationRule( )
     {
-        return _nIdForm;
+        return _nIdReservationRule;
     }
 
     /**
-     * Set the form id the week definition belongs to
+     * Set the id of the rule of the reservation
      * 
-     * @param nIdForm
-     *            the form id to set
+     * @param nIdReservationRule
+     *            the id to set
      */
-    public void setIdForm( int nIdForm )
+    public void setIdReservationRule( int nIdReservationRule )
     {
-        this._nIdForm = nIdForm;
+        this._nIdReservationRule = nIdReservationRule;
     }
-
-    /**
-     * Get the list of the working days of the week
-     * 
-     * @return the list of the working days for the week
-     */
-    public List<WorkingDay> getListWorkingDay( )
-    {
-        return _listWorkingDays;
-    }
-
-    /**
-     * Set the working days for the week
-     * 
-     * @param _listWorkingDays
-     *            the list o f working days to set
-     */
-    public void setListWorkingDay( List<WorkingDay> listWorkingDays )
-    {
-        this._listWorkingDays = listWorkingDays;
-    }
+    
 
 }

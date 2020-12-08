@@ -6,12 +6,12 @@
 			<@tform type='inline' align='right' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params='enctype="multipart/form-data"'>
 				<@input type='hidden' id='id_form' name='id_form' value='${appointmentform.idForm}' />
 				
-				<#if listDateOfModification??>
-					<@formGroup formStyle='inline' labelFor='id_week_definition' labelKey='#i18n{appointment.modifyAppointmentForm.listDateOfModification}'>
+				<#if listReservationRule??>
+					<@formGroup formStyle='inline' labelFor='id_reservation_rule' labelKey='#i18n{appointment.modifyAppointmentForm.listDateOfModification}'>
 						<@inputGroup>
-							<@select id='id_week-definition' name='id_week_definition' size='sm'>
-								<#list listDateOfModification as item>
-									<#if "${id_week_definition}"="${item.code}">
+							<@select id='id_reservation_rule' name='id_reservation_rule' size='sm'>
+								<#list listReservationRule as item>
+									<#if "${id_reservation_rule}"="${item.code}">
 										<option selected="selected" value="${item.code}">${item.name}</option>
 									<#else>
 										<option value="${item.code}">${item.name}</option>
@@ -41,6 +41,13 @@
 				<@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
 				
 				<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
+					<@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
+						<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
+					</@formGroup>
+					<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
+						<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
+					</@formGroup>
+ 					
 					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>
 							<@inputGroupItem type='text'>
@@ -92,18 +99,20 @@
 						<@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
 					</@formGroup>
 				</@fieldSet>
+				<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
+
+						<input type="color" id="color" name="color" value="${appointmentform.color!'#FFFFFF'}"> 
+				</@formGroup>
+
 				<@fieldSet legend='#i18n{appointment.modifyAppointmentForm.startEditForm}'>
-					<@formGroup labelFor='date_of_modification' labelKey='#i18n{appointment.modifyAppointmentForm.startDate}' helpKey='#i18n{appointment.modifyAppointmentForm.helpDateMin}' mandatory=true>
-						<@inputGroup>
-							<@inputGroupItem type='text'>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-							<@input type='text' name='date_of_modification' id='date_of_modification' value=appointmentform.dateOfModification!'' />
-						</@inputGroup>
-					</@formGroup>
+
 					<@formGroup>
-						<@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
-						<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
+						<#if id_reservation_rule != 0 >
+							<@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
+						<#else>
+							<@button type='submit' name='action_createAdvancedParameters' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
+						</#if>
+							<@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
 					</@formGroup>
 				</@fieldSet>
 			</@tform>
@@ -176,7 +185,7 @@ function validateQty(event) {
             </#list>
         </#if>
     ];
-    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_week_definition=${id_week_definition}&id_time_slot=';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}&id_time_slot=';
     var columnFormat = 'dddd';
     var events = [
         <#if events??>

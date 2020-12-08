@@ -14,14 +14,23 @@
 					<legend class="hidden">#i18n{appointment.createAppointmentForm.title}</legend>
 					<@messages errors=errors />
 					<input type="hidden" id="id_form" name="id_form">
-	<@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
+	                                 <@formGroup labelFor='title' labelKey='#i18n{appointment.createAppointmentForm.labelTitle}' mandatory=true>
 						<@input type='text' name='title' id='title' value='${appointmentform.title!\'\'}' maxlength=255 />
 					</@formGroup>
 					<@formGroup labelFor='idCategory' labelKey='#i18n{appointment.createAppointmentForm.labelCategory}'>
 						<@select name='idCategory' id='idCategory' items=listCategories default_value='${appointmentform.idCategory!}' />
 					</@formGroup>
 					<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' mandatory=true>
-						<@input type='textarea' id='description' name='description' value='${appointmentform.description!\'\'}' maxlength=255 />
+						<@input type='textarea' name='description' id='description' maxlength=255 >${appointmentform.description!}</@input>
+					</@formGroup>
+                                        <@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
+						<@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
+					</@formGroup>
+					<@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
+						<@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
+					</@formGroup>
+ 					<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
+						<input type="color" id="color" name="color" value="${appointmentform.color!'#FFFFFF'}"> 
 					</@formGroup>
 					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>

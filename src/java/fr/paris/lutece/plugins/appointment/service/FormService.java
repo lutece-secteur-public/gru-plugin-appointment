@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
@@ -61,6 +62,7 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -71,6 +73,8 @@ import fr.paris.lutece.util.ReferenceList;
  */
 public final class FormService
 {
+
+    private static final String PROPERTY_DEFAULT_ENDING_DATE_TYPICAL_WEEK = "appointment.endingDateTypical.week";
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -91,7 +95,7 @@ public final class FormService
     public static int copyForm( int nIdForm, String newNameForCopy )
     {
         // Build the simple form to copy with the values of the original form
-        AppointmentFormDTO appointmentForm = buildAppointmentForm( nIdForm, 0, 0 );
+        AppointmentFormDTO appointmentForm = buildAppointmentForm( nIdForm, 0 );
         appointmentForm.setTitle( newNameForCopy );
         appointmentForm.setIsActive( Boolean.FALSE );
         appointmentForm.setDateStartValidity( null );
@@ -109,26 +113,31 @@ public final class FormService
         // original form and set the new id
         // of the copy of the form and save them
         WeekDefinition copyWeekDefinition;
-        int idCopyWeekDefinition;
+        int idCopyReservationRule;
         WorkingDay copyWorkingDay;
         int idCopyWorkingDay;
         TimeSlot copyTimeSlot;
         List<WeekDefinition> listWeekDefinitions = WeekDefinitionService.findListWeekDefinition( nIdForm );
         List<WorkingDay> listWorkingDays;
         List<TimeSlot> listTimeSlots;
-        for ( WeekDefinition weekDefinition : listWeekDefinitions )
+        
+        // Get all the reservation rules of the original form and set the new id
+        // of the copy of the form and save them
+        ReservationRule copyReservationRule;
+        List<ReservationRule> listReservationRules = ReservationRuleService.findListReservationRule( nIdForm );
+        for ( ReservationRule reservationRule : listReservationRules )
         {
-            copyWeekDefinition = weekDefinition;
-            copyWeekDefinition.setIdWeekDefinition( 0 );
-            copyWeekDefinition.setIdForm( nIdNewForm );
-            copyWeekDefinition = WeekDefinitionService.saveWeekDefinition( copyWeekDefinition );
-            listWorkingDays = weekDefinition.getListWorkingDay( );
-            idCopyWeekDefinition = copyWeekDefinition.getIdWeekDefinition( );
+            copyReservationRule = reservationRule;
+            copyReservationRule.setIdReservationRule( 0 );
+            copyReservationRule.setIdForm( nIdNewForm );
+            ReservationRuleService.saveReservationRule( copyReservationRule );
+            listWorkingDays = copyReservationRule.getListWorkingDay( );
+            idCopyReservationRule = copyReservationRule.getIdReservationRule( );
             for ( WorkingDay workingDay : listWorkingDays )
             {
                 copyWorkingDay = workingDay;
                 copyWorkingDay.setIdWorkingDay( 0 );
-                copyWorkingDay.setIdWeekDefinition( idCopyWeekDefinition );
+                copyWorkingDay.setIdReservationRule( idCopyReservationRule );
                 copyWorkingDay = WorkingDayService.saveWorkingDay( copyWorkingDay );
                 idCopyWorkingDay = copyWorkingDay.getIdWorkingDay( );
                 listTimeSlots = workingDay.getListTimeSlot( );
@@ -141,16 +150,12 @@ public final class FormService
                 }
             }
         }
-        // Get all the reservation rules of the original form and set the new id
-        // of the copy of the form and save them
-        ReservationRule copyReservationRule;
-        List<ReservationRule> listReservationRules = ReservationRuleService.findListReservationRule( nIdForm );
-        for ( ReservationRule reservationRule : listReservationRules )
+        for ( WeekDefinition weekDefinition : listWeekDefinitions )
         {
-            copyReservationRule = reservationRule;
-            copyReservationRule.setIdReservationRule( 0 );
-            copyReservationRule.setIdForm( nIdNewForm );
-            ReservationRuleService.saveReservationRule( copyReservationRule );
+            copyWeekDefinition = weekDefinition;
+            copyWeekDefinition.setIdWeekDefinition( 0 );
+            WeekDefinitionService.saveWeekDefinition( copyWeekDefinition );
+            
         }
         // Copy the messages of the original form and add them to the copy
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
@@ -228,16 +233,16 @@ public final class FormService
         DisplayService.createDisplay( appointmentForm, nIdForm );
         LocalizationService.createLocalization( appointmentForm, nIdForm );
         FormRuleService.createFormRule( appointmentForm, nIdForm );
-        ReservationRule reservationRule = ReservationRuleService.createReservationRule( appointmentForm, nIdForm, dateNow );
+        ReservationRule reservationRule = ReservationRuleService.createReservationRule( appointmentForm, nIdForm );
         int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
-        WeekDefinition weekDefinition = WeekDefinitionService.createWeekDefinition( nIdForm, dateNow );
-        int nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
+        String strEndingDateOfApply= AppPropertiesService.getProperty( PROPERTY_DEFAULT_ENDING_DATE_TYPICAL_WEEK, "2050-12-31");
+        WeekDefinitionService.createWeekDefinition( reservationRule.getIdReservationRule( ), dateNow,  LocalDate.parse( strEndingDateOfApply ));        
         LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
         LocalTime endingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
         int nDuration = appointmentForm.getDurationAppointments( );
         for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
         {
-            WorkingDayService.generateWorkingDayAndListTimeSlot( nIdWeekDefinition, dayOfWeek, startingTime, endingTime, nDuration, nMaxCapacity );
+            WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingTime, endingTime, nDuration, nMaxCapacity );
         }
         return nIdForm;
     }
@@ -258,35 +263,7 @@ public final class FormService
         FormRuleService.updateFormRule( appointmentForm, nIdForm );
     }
 
-    /**
-     * Update a form with the new values of an appointmentForm DTO Advanced Parameters (with a date of application) --> new Typical Week
-     * 
-     * @param appointmentForm
-     *            the appointmentForm DTO
-     * @param dateOfModification
-     *            the date of the update
-     */
-    public static void updateAdvancedParameters( AppointmentFormDTO appointmentForm, LocalDate dateOfModification )
-    {
-        int nIdForm = appointmentForm.getIdForm( );
-        ReservationRule reservationRule = ReservationRuleService.updateReservationRule( appointmentForm, nIdForm, dateOfModification );
-        int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
-        WeekDefinition weekDefinition = WeekDefinitionService.updateWeekDefinition( nIdForm, dateOfModification );
-        int nIdWeekDefinition = weekDefinition.getIdWeekDefinition( );
-        List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinition( nIdWeekDefinition );
-        if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
-        {
-            WorkingDayService.deleteListWorkingDay( listWorkingDay );
-        }
-        LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
-        LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
-        int nDuration = appointmentForm.getDurationAppointments( );
-        for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
-        {
-            WorkingDayService.generateWorkingDayAndListTimeSlot( nIdWeekDefinition, dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
-        }
-    }
-
+    
     /**
      * Build all the active forms
      * 
@@ -297,7 +274,7 @@ public final class FormService
         List<AppointmentFormDTO> listActiveAppointmentForm = new ArrayList<>( );
         for ( Form form : FormHome.findActiveForms( ) )
         {
-            listActiveAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
+            listActiveAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0) );
         }
         return listActiveAppointmentForm;
     }
@@ -345,7 +322,7 @@ public final class FormService
         List<AppointmentFormDTO> listAppointmentForm = new ArrayList<>( );
         for ( Form form : FormService.findAllActiveAndDisplayedOnPortletForms( ) )
         {
-            listAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0, 0 ) );
+            listAppointmentForm.add( buildAppointmentForm( form.getIdForm( ), 0 ) );
         }
         return listAppointmentForm;
     }
@@ -387,113 +364,62 @@ public final class FormService
      *            the Form Id
      * @param nIdReservationRule
      *            the Reservation Rule Id
-     * @param nIdWeekDefinition
-     *            the WeekDefinition Id
+
      * @return the apointmentForm DTO built
      */
-    public static AppointmentFormDTO buildAppointmentForm( int nIdForm, int nIdReservationRule, int nIdWeekDefinition )
+    public static AppointmentFormDTO buildAppointmentForm( int nIdForm, int nIdReservationRule )
+    {
+        ReservationRule reservationRule= null;
+        if ( nIdReservationRule > 0 )
+        {
+            reservationRule = ReservationRuleService.findReservationRuleById( nIdReservationRule );
+        }        
+        return buildAppointmentForm( nIdForm, reservationRule );
+    }
+    /**
+     * Build an appointmentForm DTO
+     * 
+     * @param form
+     *            the Form object
+     * @param ReservationRule
+     *            the Reservation Rule object
+
+     * @return the apointmentForm DTO built
+     */
+    public static AppointmentFormDTO buildAppointmentForm( int nIdForm, ReservationRule reservationRule )
     {
         AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         fillAppointmentFormWithFormPart( appointmentForm, form );
-        Display display = DisplayService.findDisplayWithFormId( nIdForm );
+        Display display = DisplayService.findDisplayWithFormId( form.getIdForm( ) );
         if ( display != null )
         {
             fillAppointmentFormWithDisplayPart( appointmentForm, display );
         }
-        Localization localization = LocalizationService.findLocalizationWithFormId( nIdForm );
+        Localization localization = LocalizationService.findLocalizationWithFormId( form.getIdForm( )  );
         if ( localization != null )
         {
             fillAppointmentFormWithLocalizationPart( appointmentForm, localization );
         }
-        FormRule formRule = FormRuleService.findFormRuleWithFormId( nIdForm );
+        FormRule formRule = FormRuleService.findFormRuleWithFormId( form.getIdForm( )  );
         if ( formRule != null )
         {
             fillAppointmentFormWithFormRulePart( appointmentForm, formRule );
         }
-        ReservationRule reservationRule = null;
-        WeekDefinition weekDefinition = null;
-        LocalDate dateOfApply = LocalDate.now( );
-        if ( nIdReservationRule > 0 )
-        {
-            reservationRule = ReservationRuleService.findReservationRuleById( nIdReservationRule );
-            dateOfApply = reservationRule.getDateOfApply( );
-        }
-        if ( nIdWeekDefinition > 0 )
-        {
-            weekDefinition = WeekDefinitionService.findWeekDefinitionById( nIdWeekDefinition );
-            dateOfApply = weekDefinition.getDateOfApply( );
-        }
+        LocalDate dateOfApply = LocalDate.now( );   
         if ( reservationRule == null )
         {
-            reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
+            reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( form.getIdForm( ) , dateOfApply );
         }
-        if ( weekDefinition == null )
-        {
-            weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
-        }
+       
         if ( reservationRule != null )
         {
             fillAppointmentFormWithReservationRulePart( appointmentForm, reservationRule );
         }
-        if ( weekDefinition != null )
-        {
-            fillAppointmentFormWithWeekDefinitionPart( appointmentForm, weekDefinition );
-        }
+       
         return appointmentForm;
     }
 
-    /**
-     * Fill the appointmentForm DTO with the WeekDefinition
-     * 
-     * @param appointmentForm
-     *            the appointmentForm DTO
-     * @param weekDefinition
-     *            the week definition
-     */
-    private static void fillAppointmentFormWithWeekDefinitionPart( AppointmentFormDTO appointmentForm, WeekDefinition weekDefinition )
-    {
-        List<WorkingDay> listWorkingDay = weekDefinition.getListWorkingDay( );
-        if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
-        {
-            for ( WorkingDay workingDay : listWorkingDay )
-            {
-                DayOfWeek dayOfWeek = DayOfWeek.of( workingDay.getDayOfWeek( ) );
-                switch( dayOfWeek )
-                {
-                    case MONDAY:
-                        appointmentForm.setIsOpenMonday( Boolean.TRUE );
-                        break;
-                    case TUESDAY:
-                        appointmentForm.setIsOpenTuesday( Boolean.TRUE );
-                        break;
-                    case WEDNESDAY:
-                        appointmentForm.setIsOpenWednesday( Boolean.TRUE );
-                        break;
-                    case THURSDAY:
-                        appointmentForm.setIsOpenThursday( Boolean.TRUE );
-                        break;
-                    case FRIDAY:
-                        appointmentForm.setIsOpenFriday( Boolean.TRUE );
-                        break;
-                    case SATURDAY:
-                        appointmentForm.setIsOpenSaturday( Boolean.TRUE );
-                        break;
-                    case SUNDAY:
-                        appointmentForm.setIsOpenSunday( Boolean.TRUE );
-                        break;
-                }
-            }
-            // We suppose that all the days have the same opening and closing
-            // hours (it can be modified after)
-            LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
-            LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
-            int nDurationAppointment = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay );
-            appointmentForm.setTimeStart( minStartingTime.toString( ) );
-            appointmentForm.setTimeEnd( maxEndingTime.toString( ) );
-            appointmentForm.setDurationAppointments( nDurationAppointment );
-        }
-    }
 
     /**
      * Fill the appointmentForm DTO with the Reservation Rule
@@ -505,9 +431,52 @@ public final class FormService
      */
     private static void fillAppointmentFormWithReservationRulePart( AppointmentFormDTO appointmentForm, ReservationRule reservationRule )
     {
+    	 List<WorkingDay> listWorkingDay = reservationRule.getListWorkingDay( );
+         if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
+         {
+             for ( WorkingDay workingDay : listWorkingDay )
+             {
+                 DayOfWeek dayOfWeek = DayOfWeek.of( workingDay.getDayOfWeek( ) );
+                 switch( dayOfWeek )
+                 {
+                     case MONDAY:
+                         appointmentForm.setIsOpenMonday( Boolean.TRUE );
+                         break;
+                     case TUESDAY:
+                         appointmentForm.setIsOpenTuesday( Boolean.TRUE );
+                         break;
+                     case WEDNESDAY:
+                         appointmentForm.setIsOpenWednesday( Boolean.TRUE );
+                         break;
+                     case THURSDAY:
+                         appointmentForm.setIsOpenThursday( Boolean.TRUE );
+                         break;
+                     case FRIDAY:
+                         appointmentForm.setIsOpenFriday( Boolean.TRUE );
+                         break;
+                     case SATURDAY:
+                         appointmentForm.setIsOpenSaturday( Boolean.TRUE );
+                         break;
+                     case SUNDAY:
+                         appointmentForm.setIsOpenSunday( Boolean.TRUE );
+                         break;
+                 }
+             }
+             // We suppose that all the days have the same opening and closing
+             // hours (it can be modified after)
+             LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
+             LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
+             int nDurationAppointment = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay );
+             appointmentForm.setTimeStart( minStartingTime.toString( ) );
+             appointmentForm.setTimeEnd( maxEndingTime.toString( ) );
+             appointmentForm.setDurationAppointments( nDurationAppointment );
+         }
         appointmentForm.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         appointmentForm.setMaxCapacityPerSlot( reservationRule.getMaxCapacityPerSlot( ) );
         appointmentForm.setMaxPeoplePerAppointment( reservationRule.getMaxPeoplePerAppointment( ) );
+        appointmentForm.setName( reservationRule.getName( ));
+        appointmentForm.setDescriptionRule( reservationRule.getDescriptionRule( ));
+        appointmentForm.setColor(reservationRule.getColor( ));
     }
 
     /**

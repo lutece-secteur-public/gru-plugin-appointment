@@ -211,7 +211,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
         }
         entry.setIdResource( nIdForm );
         entry.setResourceType( AppointmentFormDTO.RESOURCE_TYPE );
-        AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0, 0 );
+        AppointmentFormDTO appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
         Map<String, Object> model = new HashMap<>( );
         model.put( MARK_ENTRY, entry );
         model.put( MARK_FORM, appointmentForm );
@@ -318,7 +318,7 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
             IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
             Map<String, Object> model = new HashMap<>( );
             model.put( MARK_ENTRY, entry );
-            model.put( MARK_FORM, FormService.buildAppointmentForm( entry.getIdResource( ), 0, 0 ) );
+            model.put( MARK_FORM, FormService.buildAppointmentForm( entry.getIdResource( ), 0 ) );
             UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + getViewUrl( VIEW_GET_MODIFY_ENTRY ) );
             urlItem.addParameter( PARAMETER_ID_ENTRY, strIdEntry );
             model.put( MARK_LIST, entry.getFields( ) );

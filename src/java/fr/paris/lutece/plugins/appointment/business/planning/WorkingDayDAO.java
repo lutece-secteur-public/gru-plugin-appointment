@@ -49,12 +49,13 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class WorkingDayDAO implements IWorkingDayDAO
 {
 
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_working_day ( day_of_week, id_week_definition) VALUES ( ?, ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_working_day SET day_of_week = ?, id_week_definition = ? WHERE id_working_day = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_working_day ( day_of_week, id_reservation_rule) VALUES ( ?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_working_day SET day_of_week = ?, id_reservation_rule = ? WHERE id_working_day = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_working_day WHERE id_working_day = ? ";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_working_day, day_of_week, id_week_definition FROM appointment_working_day";
+    private static final String SQL_QUERY_DELETE_BY_RESERVATION_RULE = "DELETE FROM appointment_working_day WHERE id_reservation_rule = ? ";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_working_day, day_of_week, id_reservation_rule FROM appointment_working_day";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_working_day = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
+    private static final String SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION_RULE = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
 
     @Override
     public void insert( WorkingDay workingDay, Plugin plugin )
@@ -87,6 +88,16 @@ public final class WorkingDayDAO implements IWorkingDayDAO
             daoUtil.executeUpdate( );
         }
     }
+    
+    @Override
+    public void deleteByIdReservationRule( int nIdReservationRule, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_RESERVATION_RULE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdReservationRule );
+            daoUtil.executeUpdate( );
+        }
+    }
 
     @Override
     public WorkingDay select( int nIdWorkingDay, Plugin plugin )
@@ -105,12 +116,12 @@ public final class WorkingDayDAO implements IWorkingDayDAO
     }
 
     @Override
-    public List<WorkingDay> findByIdWeekDefinition( int nIdWeekDefinition, Plugin plugin )
+    public List<WorkingDay> findByIdWeekDefinitionRule( int nIdWeekDefinitionRule, Plugin plugin )
     {
         List<WorkingDay> listWorkingDays = new ArrayList<>( );
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION_RULE, plugin ) )
         {
-            daoUtil.setInt( 1, nIdWeekDefinition );
+            daoUtil.setInt( 1, nIdWeekDefinitionRule );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {
@@ -133,7 +144,7 @@ public final class WorkingDayDAO implements IWorkingDayDAO
         WorkingDay workingDay = new WorkingDay( );
         workingDay.setIdWorkingDay( daoUtil.getInt( nIndex++ ) );
         workingDay.setDayOfWeek( daoUtil.getInt( nIndex++ ) );
-        workingDay.setIdWeekDefinition( daoUtil.getInt( nIndex ) );
+        workingDay.setIdReservationRule( daoUtil.getInt( nIndex ) );
         return workingDay;
     }
 
@@ -164,7 +175,7 @@ public final class WorkingDayDAO implements IWorkingDayDAO
             daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setInt( nIndex++, workingDay.getDayOfWeek( ) );
-        daoUtil.setInt( nIndex++, workingDay.getIdWeekDefinition( ) );
+        daoUtil.setInt( nIndex++, workingDay.getIdReservationRule( )  );
         if ( !isInsert )
         {
             daoUtil.setInt( nIndex, workingDay.getIdWorkingDay( ) );

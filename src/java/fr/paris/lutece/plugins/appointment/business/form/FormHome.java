@@ -35,12 +35,6 @@ package fr.paris.lutece.plugins.appointment.business.form;
 
 import java.util.List;
 
-import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
-import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
-import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
-import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
-import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
-import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentPlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
@@ -162,26 +156,5 @@ public final class FormHome
 
     }
 
-    /**
-     * Get all the week definitions of the form
-     * 
-     * @param nIdForm
-     *            the FOrm Id
-     * @return the list of all the week definitions of the form
-     */
-    public static List<WeekDefinition> getListWeekDefinition( int nIdForm )
-    {
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
-        for ( WeekDefinition weekDefinition : listWeekDefinition )
-        {
-            List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
-            for ( WorkingDay workingDay : listWorkingDay )
-            {
-                List<TimeSlot> listTimeSlot = TimeSlotHome.findByIdWorkingDay( workingDay.getIdWorkingDay( ) );
-                workingDay.setListTimeSlot( listTimeSlot );
-            }
-            weekDefinition.setListWorkingDay( listWorkingDay );
-        }
-        return listWeekDefinition;
-    }
+    
 }

@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -66,16 +67,16 @@ public final class WorkingDayService
     /**
      * Create in database a working day object with the given parameters
      * 
-     * @param nIdWeekDefinition
-     *            the week definition Id
+     * @param nIdReservationRule
+     *            the week rule Id
      * @param dayOfWeek
      *            the day of week
      * @return the working day object built
      */
-    public static WorkingDay generateWorkingDay( int nIdWeekDefinition, DayOfWeek dayOfWeek )
+    public static WorkingDay generateWorkingDay( int nIdReservationRule, DayOfWeek dayOfWeek )
     {
         WorkingDay workingDay = new WorkingDay( );
-        workingDay.setIdWeekDefinition( nIdWeekDefinition );
+        workingDay.setIdReservationRule( nIdReservationRule );
         workingDay.setDayOfWeek( dayOfWeek.getValue( ) );
         WorkingDayHome.create( workingDay );
         return workingDay;
@@ -96,8 +97,8 @@ public final class WorkingDayService
     /**
      * Create in database a working day and its time slots
      * 
-     * @param nIdWeekDefinition
-     *            the week definition Id
+     * @param nIdReservationRule
+     *            the week rule Id
      * @param dayOfWeek
      *            the day of week of the woking day
      * @param startingTime
@@ -109,10 +110,10 @@ public final class WorkingDayService
      * @param nMaxCapacity
      *            the max capacity for the slots of the working day
      */
-    public static void generateWorkingDayAndListTimeSlot( int nIdWeekDefinition, DayOfWeek dayOfWeek, LocalTime startingTime, LocalTime endingTime,
+    public static void generateWorkingDayAndListTimeSlot( int nIdReservationRule, DayOfWeek dayOfWeek, LocalTime startingTime, LocalTime endingTime,
             int nDuration, int nMaxCapacity )
     {
-        WorkingDay workingDay = generateWorkingDay( nIdWeekDefinition, dayOfWeek );
+        WorkingDay workingDay = generateWorkingDay( nIdReservationRule, dayOfWeek );
         TimeSlotService.createListTimeSlot(
                 TimeSlotService.generateListTimeSlot( workingDay.getIdWorkingDay( ), startingTime, endingTime, nDuration, nMaxCapacity, Boolean.FALSE ) );
     }
@@ -165,9 +166,9 @@ public final class WorkingDayService
      *            the week definition Id
      * @return a list of the working days of the week definition
      */
-    public static List<WorkingDay> findListWorkingDayByWeekDefinition( int nIdWeekDefinition )
+    public static List<WorkingDay> findListWorkingDayByWeekDefinitionRule( int nIdWeekDefinitionRule )
     {
-        List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdWeekDefinition( nIdWeekDefinition );
+        List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdWeekDefinitionRule( nIdWeekDefinitionRule );
         for ( WorkingDay workingDay : listWorkingDay )
         {
             workingDay.setListTimeSlot( TimeSlotService.findListTimeSlotByWorkingDay( workingDay.getIdWorkingDay( ) ) );
@@ -185,9 +186,11 @@ public final class WorkingDayService
     {
         for ( WorkingDay workingDay : listWorkingDay )
         {
+        	TimeSlotHome.deleteByIdWorkingDay(workingDay.getIdWorkingDay( ));
             WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
         }
     }
+
 
     /**
      * Find a working day with its primary key

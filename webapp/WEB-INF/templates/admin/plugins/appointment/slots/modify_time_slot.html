@@ -14,7 +14,7 @@
 					<input type='hidden' name='action' value='doModifyTimeSlot' />
 					<input type='hidden' name='id_time_slot' value='${timeSlot.idTimeSlot}' />
 					<input type='hidden' name='id_form' value='${id_form}' />
-					<input type='hidden' name='id_week_definition' value='${id_week_definition}' />
+					<input type='hidden' name='id_reservation_rule' value='${id_reservation_rule}' />
 					
 					<@formGroup labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
 						<@checkBox labelFor='is_open' name='is_open' id='is_open' value='true' checked=timeSlot.isOpen />
@@ -42,7 +42,7 @@
 					</@formGroup>
 					<@formGroup>
 						<@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
-						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_week_definition=${id_week_definition}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
+						<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${id_reservation_rule}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='btn-default' />
 					</@formGroup>
 				</fieldset>
 				</@tform>
