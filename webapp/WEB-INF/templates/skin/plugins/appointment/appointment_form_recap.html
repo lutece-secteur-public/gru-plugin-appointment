@@ -160,14 +160,6 @@
 					<#if form.maxPeoplePerAppointment &gt; 1>
 						<input name="nbSeat" value="${appointment.nbBookedSeats}" type="hidden" />
 					</#if>
-					<#list listResponseRecapDTO as response>
-						<#if response.recapValue?? && response.recapValue?has_content>
-							<#if !entrySave?exists||entrySave.idEntry!=response.entry.idEntry>
-								<#assign entrySave=response.entry>
-							</#if>
-							<input name="" value="${response.recapValue}" type="hidden" />
-						</#if>
-					</#list>						
 					<fieldset>
 						<div class="row">
 							<div class="col-xs-12 col-sm-4 col-sm-push-8 col-md-3 col-md-push-9">
