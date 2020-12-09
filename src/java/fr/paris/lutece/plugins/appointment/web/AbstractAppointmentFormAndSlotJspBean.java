@@ -82,8 +82,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      * Check Constraints
      * 
      * @param appointmentForm
-     * @return
-     * @throws ParseException
+     * @return the boolean
      */
     protected boolean checkConstraints( AppointmentFormDTO appointmentForm )
     {

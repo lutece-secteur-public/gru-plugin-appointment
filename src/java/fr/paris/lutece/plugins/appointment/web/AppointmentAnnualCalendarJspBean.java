@@ -33,7 +33,9 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.text.ParseException;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +66,7 @@ import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.util.date.DateUtil;
 
 /**
  * JspBean to manage calendar slots
@@ -96,6 +99,11 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_WEEK_DEFINITION = "id_week_definition";
+    private static final String PARAMETER_DATE_OF_APPLY = "date_of_apply";
+    private static final String PARAMETER_DATE_END_OF_APPLY = "ending_date_of_apply";
+    private static final String PARAMETER_ID_RESERVATION_RULE = "id_reservation_rule";
+
+
 
     private static final String MARK_LIST_RESERVATION_RULE = "listReservationRule";
     private static final String MARK_LIST_WEEK_DEFINITION = "listWeekDefinition";
@@ -148,6 +156,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     public String doAssignWeek( HttpServletRequest request ) throws AccessDeniedException
     {
     	 String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+    	 
          int nIdForm = Integer.parseInt( strIdForm );
          List<Slot> listSlotsImpacted= new ArrayList<>();        
 
@@ -157,9 +166,10 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
     	WeekDefinition newWeek= new WeekDefinition( );
+    	
         populate(newWeek, request);
      	
-        if ( !validateBean( newWeek, VALIDATION_ATTRIBUTES_PREFIX )  )
+        if ( !validateBean( newWeek, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( newWeek )  )
         {
         	
         	addError( MESSAGE_ERROR_MODIFICATION, getLocale( ) );
@@ -283,5 +293,35 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
                 lock.unlock( );
             }
         }
-    }             
+    }  
+	/**
+	 * Check Constraints
+	 * @param week the week 
+	 * @return boolean
+	 */
+    private boolean checkConstraints( WeekDefinition week )
+    {
+        
+    	if( week.getDateOfApply().isAfter( week.getEndingDateOfApply( ) )) {
+        	
+    		addError( MESSAGE_ERROR_MODIFICATION, getLocale( ) );
+    		return false;
+    	}
+    
+    	return true;
+    }
+    private void populate(WeekDefinition week, HttpServletRequest request) {
+    	
+   	 	String dateOfApplay = request.getParameter( PARAMETER_DATE_OF_APPLY );
+   	 	String dateEndOfApplay = request.getParameter( PARAMETER_DATE_END_OF_APPLY );
+   	 	String idReservationRule = request.getParameter( PARAMETER_ID_RESERVATION_RULE );
+   	 
+     
+   	 	week.setDateOfApply(DateUtil.formatDate( dateOfApplay , getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ));
+   	 	week.setEndingDateOfApply(DateUtil.formatDate( dateEndOfApplay , getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ));
+   	 	week.setIdReservationRule(Integer.parseInt( idReservationRule ));
+
+    }
+    
+    
 }

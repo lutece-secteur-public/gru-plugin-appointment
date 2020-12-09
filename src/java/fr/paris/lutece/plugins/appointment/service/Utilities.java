@@ -102,8 +102,8 @@ public final class Utilities
      */
     public static WeekDefinition getClosestWeekDefinitionInPast( List<WeekDefinition> listWeek, LocalDate dateToSearch )
     {
-    	return listWeek.stream().filter(p -> (p.getDateOfApply( ).isAfter( dateToSearch) || p.getDateOfApply().isEqual( dateToSearch )) 
-        		&& (p.getEndingDateOfApply().isBefore( dateToSearch ) || p.getEndingDateOfApply().isEqual( dateToSearch ))).findFirst().orElse( null );
+    	return listWeek.stream().filter(p -> (p.getDateOfApply( ).isBefore( dateToSearch) || p.getDateOfApply().isEqual( dateToSearch )) 
+        		&& (p.getEndingDateOfApply().isAfter( dateToSearch ) || p.getEndingDateOfApply().isEqual( dateToSearch ))).findFirst().orElse( null );
         
     }
 

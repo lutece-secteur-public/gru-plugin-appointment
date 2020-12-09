@@ -1,6 +1,30 @@
 <@row>
-	<@columns>
-		<@messages infos=infos errors=errors />	
 Calendrier Annuel
+	<@columns>
+		<@messages infos=infos errors=errors />
+
+<div>
+Assigner une semaine dans le calendrier
+
+         <@tform action='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp'>
+		 id_form <input type='text' name='id_form' id='id_form' value='1'/></br>
+ 		date debut <input type='text' name='date_of_apply' id='date_of_apply' value="20/12/2020"/></br>
+		date fin <input type='text' name='ending_date_of_apply' id='date_of_apply' value="30/12/2020"/></br>
+		id rule <input type='text' name='id_reservation_rule' id='id_reservation_rule' /></br>
+		<@button type='submit' name='action_doAssignWeek' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />
+
+	</@tform>
+</div>
+<div>
+Supprimer une semaine du calendrier
+
+          <@tform action='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp'>
+		id_form <input type='text' name='id_form' id='id_form' value='1'/></br>
+		id week <input type='text' name='id_week_definition' id='id_week_definition' /></br>
+		<@button type='submit' name='action_doUnssignWeek' buttonIcon='check' title='#i18n{portal.util.labelDelete}' />
+
+	</@tform>
+</div>
+
     </@columns>
 </@row>

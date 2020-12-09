@@ -230,12 +230,10 @@ public final class ReservationRuleService
    public static ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
 	   ReservationRule reservationRule= ReservationRuleHome.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply);
-      /* if( reservationRule == null ) {
+      if( reservationRule != null ) {
     	   
-    	   WeekDefinition weekDef=  WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply);
-       	   reservationRule= ReservationRuleHome.findByPrimaryKey(weekDef.getIdReservationRule( ));
-       }*/
-	   reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+   	   	reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+     }
 
 	   return reservationRule;
     }

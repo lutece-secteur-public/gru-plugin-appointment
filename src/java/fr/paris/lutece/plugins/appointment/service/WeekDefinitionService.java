@@ -485,14 +485,15 @@ public final class WeekDefinitionService
        	
 	       	if( week.getDateOfApply().isBefore( startingDate ) && week.getEndingDateOfApply().isAfter( endingDate )) {
 	       		
-	       		week.setEndingDateOfApply(startingDate.minusDays( 1 ));
 	       		
 	       		WeekDefinition weekToAdd= new WeekDefinition( );
 	       		weekToAdd.setDateOfApply(endingDate.plusDays( 1 ));
 	       		weekToAdd.setEndingDateOfApply(week.getEndingDateOfApply( ));
-	       		weekToAdd.setIdReservationRule(week.getIdReservationRule( ));
-	       		
+	       		weekToAdd.setIdReservationRule(week.getIdReservationRule( ));	       		
 	       		buildListWeekToEdit.add( weekToAdd );
+	       		
+	       		week.setEndingDateOfApply(startingDate.minusDays( 1 ));
+
 	               
 	       	}else if( week.getDateOfApply().isEqual( startingDate ) || ( week.getDateOfApply().isAfter( startingDate ) && week.getEndingDateOfApply().isAfter( endingDate ) )) {
 	       		
