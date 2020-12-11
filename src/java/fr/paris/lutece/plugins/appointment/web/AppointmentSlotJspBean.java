@@ -238,11 +238,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         Map<String, Object> model = getModel( );
         AppointmentFormDTO appointmentForm = null;
-        if ( request.getParameter( PARAMETER_ERROR_MODIFICATION ) != null )
-        {
-            appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-            model.put( PARAMETER_ERROR_MODIFICATION, Boolean.TRUE );
-        }
+       
         List<String> listDayOfWeek = new ArrayList<>( );
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         LocalTime minStartingTime = LocalTime.MIN;
@@ -269,7 +265,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( PARAMETER_MAX_TIME, maxEndingTime );
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( MARK_ID_RULE, nIdReservationRule );
-        model.put( MARK_LIST_RESERVATION_RULE, ReservationRuleService.findAllReservationRule( nIdForm ));
+        model.put( MARK_LIST_RESERVATION_RULE, ReservationRuleService.findListReservationRule( nIdForm ));
         AppointmentFormJspBean.addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
         return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model );
     }
@@ -340,7 +336,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 {
                     request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
                     addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
-                    return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ERROR_MODIFICATION, 1 );
+                    return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, appointmentForm.getIdReservationRule( ) );
                 }
                 manageTheSlotsAndAppointmentsImpacted( listAppointmentsImpacted, listSlotsImpacted, Boolean.TRUE, appointmentForm.getMaxCapacityPerSlot( ),
                         Boolean.FALSE, Boolean.FALSE );

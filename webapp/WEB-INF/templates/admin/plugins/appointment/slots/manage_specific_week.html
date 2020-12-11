@@ -1,10 +1,7 @@
 
 <@row>
     <@columns>
-        <@appointmentTabs tab="specificWeek" form=appointmentform>
-            <@btnComment />
-            <div id="calendar"></div>
-        </@appointmentTabs>
+        <@appointmentTabs tab="specificWeek" form=appointmentform />
     </@columns>
 </@row>
 
@@ -293,8 +290,10 @@
                 $('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
                 $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+                
                 $('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
                 $('#toggle-add-comment').remove();
+                $('#toggle-add-comment > span').removeClass('hidden');
                 var tgc = $('#toggle-add-comment').find('body');
                 tgc.click(function(ev) {
                     $( "#commentModal" ).modal('show');
