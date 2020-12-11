@@ -470,8 +470,8 @@ public final class WeekDefinitionService
         LocalDate endingDate=	newWeek.getEndingDateOfApply( );	
         List<WeekDefinition> listWeek= WeekDefinitionService.findListWeekDefinition( nIdForm );
         
-        List<WeekDefinition> listWeekTodRemove= listWeek.stream().filter(week -> week.getDateOfApply().isAfter( startingDate ) || week.getDateOfApply().isEqual( startingDate )
-       		                   &&( week.getEndingDateOfApply().isBefore( endingDate ) && week.getEndingDateOfApply().isEqual( endingDate ) )).collect( Collectors.toList( ));
+        List<WeekDefinition> listWeekTodRemove= listWeek.stream().filter(week -> (week.getDateOfApply().isAfter( startingDate ) || week.getDateOfApply().isEqual( startingDate ))
+       		                   &&( week.getEndingDateOfApply().isBefore( endingDate ) || week.getEndingDateOfApply().isEqual( endingDate ) )).collect( Collectors.toList( ));
       
         listWeek.removeAll( listWeekTodRemove );
         

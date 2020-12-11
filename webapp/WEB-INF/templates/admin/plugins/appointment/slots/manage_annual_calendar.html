@@ -1,132 +1,19 @@
-<!-- 
-
-    TODO : Manque objet Form
-
--->
+<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <link rel="stylesheet" href="js/plugins/appointment/js-year-calendar.min.css">
 <style>  
-/* Eventuels thèmes */
-/* THEME MATERIAL   */
-/* .calendar .calendar-header {
-  background-color: #f5f5f5;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-  border: 0;
-}
-
-.calendar .calendar-header .year-title {
-  font-size: 18px;
-}
-
-.calendar .calendar-header .year-title:not(.year-neighbor):not(.year-neighbor2) {
-  border-bottom: 2px solid #2196f3;
-}
-
-.calendar .months-container .month-container {
-  height: 260px;
-  margin-bottom: 25px;
-}
-
-.calendar table.month {
-  background-color: white;
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
-  height: 100%;
-}
-
-.calendar table.month th.month-title {
-  background-color: #2196F3;
-  color: white;
-  padding: 12px;
-  font-weight: 400;
-}
-
-.calendar table.month th.day-header {
-  padding-top: 10px;
-  color: #CDCDCD;
-  font-weight: 400;
-  font-size: 12px;
-}
-
-.calendar table.month td.day .day-content {
-  padding: 8px;
-  border-radius: 100%;
-} 
-*/
-
-/* THEME Light */
-/* 
-.calendar .calendar-header {
-  background-color: white;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
-  border: 0;
-}
-
-.calendar .calendar-header .year-title:hover,
-.calendar .calendar-header .prev:hover,
-.calendar .calendar-header .next:hover{
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.calendar .calendar-header .year-title:not(.year-neighbor):not(.year-neighbor2) {
-  border-bottom: 2px solid #ccc;
-}
-
-.calendar .calendar-header .year-neighbor {
-  color: inherit;
-  opacity: 0.7;
-}
-
-.calendar .calendar-header .year-neighbor2 {
-  color: inherit;
-  opacity: 0.4;
-}
-
-.calendar .months-container .month-container {
-  height: 235px;
-  margin-bottom: 45px;
-}
-
-.calendar table.month {
-  background-color: white;
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
-  height: 100%;
-}
-
-.calendar table.month th.month-title {
-  background-color: #f0f0f0;
-  color: #888;
-  padding: 6px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.calendar table.month th.day-header {
-  padding-top: 8px;
-  padding-bottom: 5px;
-  color: #666;
-  font-weight: 500;
-}
-
-.calendar table.month td.day .day-content {
-  color: #666;
-  padding: 9px 7px;
-  border-radius: 2px;
-}
-
-*/
-
 .calendar-context-menu .item .content {
    min-height: auto;
 }
 </style>
 <@row>
 	<@columns>
-        <@messages infos=infos errors=errors />	
+        <@messages infos=infos errors=errors />
         <@tabs params=' style="margin-top:15px"'>
             <@tabList>
-                <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=1' title='#i18n{appointment.typicalWeek.pageTitle}' active=false />
-                <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=1' title='#i18n{appointment.specificWeek.pageTitle}' active=false /> 			 
-                <@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=1' title='#i18n{appointment.annual.calendar.pageTitle}' active=true />  			
-                <@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=1' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+                <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}' title='#i18n{appointment.typicalWeek.pageTitle}' active=false />
+                <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageSpecificWeek&id_form=${id_form}' title='#i18n{appointment.specificWeek.pageTitle}' active=false /> 			 
+                <@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${id_form}' title='#i18n{appointment.annual.calendar.pageTitle}' active=true />  			
+                <@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${id_form}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
             </@tabList>
             <@tabContent>
                 <@row>
@@ -154,57 +41,49 @@
         </@tabs>
     </@columns>
 </@row>
+
+
 <div id="context-menu"></div>
-<div class="modal fade" id="event-modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Semaine type</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" name="event-index">
-            <form class="form-horizontal">
-            <div class="form-group row">
-                <label for="event-name" class="col-sm-4 control-label">Nom</label>
-                <div class="col-sm-8">
-                    <input id="event-name" name="event-name" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="event-location" class="col-sm-4 control-label">Description</label>
-                <div class="col-sm-8">
-                    <input id="event-location" name="event-location" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="min-date" class="col-sm-4 control-label">Dates</label>
-                <div class="col-sm-8">
-                    <div class="input-group input-daterange" data-provide="datepicker">
-                        <input id="min-date" name="event-start-date" type="text" class="form-control">
-                        <div class="input-group-prepend input-group-append">
-                            <div class="input-group-text">Au</div>
-                        </div>
-                        <input name="event-end-date" type="text" class="form-control">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="color" class="col-sm-4 control-label">Couleur</label>
-                <div class="col-sm-2">
-                    <input type="color" id="color" name="event-color" value="" class="form-control"> 
-                </div>
-            </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-            <button type="button" class="btn btn-primary" id="save-event"> Enregister</button>
-        </div>
-        </div>
-    </div>
+<@modal id='event-modal'>
+	<@modalHeader modalTitle='#i18n{appointment.assign.typicalWeek.defaultTitle}' />
+	<@modalBody>
+		<p id="loader" class="text-center">#i18n{appointment.assign.typicalWeek.defaultTitle}</p>
+		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp' params='enctype="multipart/form-data"'>
+			<@input type='hidden' name='action' value='doAssignWeek' />
+			<@input type='hidden' name='id_form' value='${id_form}' />
+			<@formGroup labelFor='date_of_apply' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
+				<@inputGroup>
+					<@input type='text' name='date_of_apply' id='date_of_apply' value="" />
+					<@inputGroupItem type='text'>
+						<@icon style='calendar' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>
+	
+			<@formGroup labelFor='endingDate' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
+				<@inputGroup>
+					<@input type='text' name='ending_date_of_apply' id='ending_date_of_apply' value="" />
+					<@inputGroupItem type='text'>
+						<@icon style='calendar' />
+					</@inputGroupItem>
+				</@inputGroup>
+			</@formGroup>	
+			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}'>
+				<select name="id_reservation_rule" id="id_reservation_rule">
+				    <#list listReservationRule as rule>
+				    <option value="${rule.idReservationRule}">${rule.name}</option>
+				    </#list>
+				</select>
+			</@formGroup>		
+			<@formGroup>
+				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+		                <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+
+			</@formGroup>	
+		</@tform>
+	</@modalBody>
+</@modal>
+
 </div>
 
 <script src="js/plugins/appointment/js-year-calendar.js"></script>
@@ -215,79 +94,21 @@
 let calendar = null;
 
 function editEvent(event) {
-    $('#event-modal input[name="event-index"]').val(event ? event.id : '');
-    $('#event-modal input[name="event-name"]').val(event ? event.name : '');
-    $('#event-modal input[name="event-location"]').val(event ? event.location : '');
-    $('#event-modal input[name="event-color"]').val(event ? event.color : '');
-    $('#event-modal input[name="event-start-date"]').datepicker({'language':'fr'}).datepicker('update', event ? event.startDate : '');
-    $('#event-modal input[name="event-end-date"]').datepicker({'language':'fr'}).datepicker('update', event ? event.endDate : '');
+  
+    $('#event-modal input[name="date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.startDate : '');
+    $('#event-modal input[name="ending_date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.endDate : '');
     $('#event-modal').modal();
 }
 
 function deleteEvent(event) {
-    var dataSource = calendar.getDataSource();
-    // Supprimer un event
-    // url : jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp
-    // action : action_doUnssignWeek
-    // id_form 1 ?? TODO
-    alert( 'Id Week Definition = ' + event.idweekdef );
-    calendar.setDataSource(dataSource.filter(item => item.id == event.id));
+   location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doUnssignWeek&id_week_definition='+event.idweekdef+'&id_form=${id_form}';
 }
 
-function saveEvent() {
-    var event = {
-        id: $('#event-modal input[name="event-index"]').val(),
-        name: $('#event-modal input[name="event-name"]').val(),
-        location: $('#event-modal input[name="event-location"]').val(),
-        startDate: $('#event-modal input[name="event-start-date"]').datepicker('getDate'),
-        endDate: $('#event-modal input[name="event-end-date"]').datepicker('getDate'),
-        color: $('#event-modal input[name="event-color"]').val(),
-    }
-    // Assigner une semaine dans le calendrier
-    // url : jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp
-    // action : action_doAssignWeek
-    // id_form : 1 ?? TODO
-    // date_of_apply = event.startDate
-    // ending_date_of_apply  = event.endDate
-    // id_reservation_rule = event.id
-    alert( )   
-    var dataSource = calendar.getDataSource();
-
-    if (event.id) {
-        for (var i in dataSource) {
-            if (dataSource[i].id == event.id) {
-                dataSource[i].name = event.name;
-                dataSource[i].location = event.location;
-                dataSource[i].startDate = event.startDate;
-                dataSource[i].endDate = event.endDate;
-                dataSource[i].color = event.color;
-            }
-        }
-    }
-    else
-    {
-        var newId = 0;
-        for(var i in dataSource) {
-            if(dataSource[i].id > newId) {
-                newId = dataSource[i].id;
-            }
-        }
-        
-        newId++;
-        event.id = newId;
-    
-        dataSource.push(event);
-    }
-    
-    calendar.setDataSource(dataSource);
-    $('#event-modal').modal('hide');
-}
 
 $(function() {
-    var currentYear = new Date().getFullYear();
-
     calendar = new Calendar('#calendar', { 
         language: 'fr',
+         startYear: ${start_year},
          enableContextMenu: true,
         enableRangeSelection: true,
         contextMenuItems:[
@@ -303,6 +124,7 @@ $(function() {
         selectRange: function(e) {
             editEvent({ startDate: e.startDate, endDate: e.endDate });
         },
+
         mouseOnDay: function(e) {
             if(e.events.length > 0) {
                 var content = '';
@@ -339,18 +161,14 @@ $(function() {
                         id: ${rule.idReservationRule},
                         name: '${rule.name}',
                         location: '${rule.descriptionRule}',
-                        startDate: new Date(currentYear, ${weekdef.dateOfApply.monthValue - 1}, ${weekdef.dateOfApply.dayOfMonth}),
-                        endDate: new Date(currentYear, ${weekdef.endingDateOfApply.monthValue! - 1}, ${weekdef.endingDateOfApply.dayOfMonth!}),
+                        startDate: new Date(${weekdef.dateOfApply.year}, ${weekdef.dateOfApply.monthValue -1}, ${weekdef.dateOfApply.dayOfMonth}),
+                        endDate: new Date(${weekdef.endingDateOfApply.year}, ${weekdef.endingDateOfApply.monthValue -1}, ${weekdef.endingDateOfApply.dayOfMonth!}),
                         color: '${rule.color}',
                         idweekdef: ${weekdef.idWeekDefinition},
                     },
                 </#list>
             </#list>
         ]
-    });
-
-    $('#save-event').click(function() {
-        saveEvent();
     });
 });
 </script>

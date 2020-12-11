@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
@@ -62,7 +61,6 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.ReferenceList;
 
 /**
@@ -73,8 +71,6 @@ import fr.paris.lutece.util.ReferenceList;
  */
 public final class FormService
 {
-
-    private static final String PROPERTY_DEFAULT_ENDING_DATE_TYPICAL_WEEK = "appointment.endingDateTypical.week";
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -235,8 +231,9 @@ public final class FormService
         FormRuleService.createFormRule( appointmentForm, nIdForm );
         ReservationRule reservationRule = ReservationRuleService.createReservationRule( appointmentForm, nIdForm );
         int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
-        String strEndingDateOfApply= AppPropertiesService.getProperty( PROPERTY_DEFAULT_ENDING_DATE_TYPICAL_WEEK, "2050-12-31");
-        WeekDefinitionService.createWeekDefinition( reservationRule.getIdReservationRule( ), dateNow,  LocalDate.parse( strEndingDateOfApply ));        
+        LocalDate startWeek=( appointmentForm.getDateStartValidity( ) != null )?appointmentForm.getDateStartValidity().toLocalDate( ):dateNow;
+        LocalDate endWeek= ( appointmentForm.getDateEndValidity( ) != null )?appointmentForm.getDateEndValidity( ).toLocalDate( ):startWeek.plusYears( 1 );
+        WeekDefinitionService.createWeekDefinition( reservationRule.getIdReservationRule( ), startWeek,  endWeek );        
         LocalTime startingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
         LocalTime endingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
         int nDuration = appointmentForm.getDurationAppointments( );

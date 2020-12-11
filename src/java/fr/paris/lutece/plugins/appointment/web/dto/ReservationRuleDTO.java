@@ -31,10 +31,15 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.business.rule;
+package fr.paris.lutece.plugins.appointment.web.dto;
 
 import java.io.Serializable;
 import java.util.List;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 
 /**
@@ -43,7 +48,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
  * @author Laurent Payen
  *
  */
-public class ReservationRule  implements Serializable
+public class ReservationRuleDTO  implements Serializable
 {
 
     /**
@@ -55,34 +60,31 @@ public class ReservationRule  implements Serializable
      * Id of the reservation rule.
      */
     private int _nIdReservationRule;
-
-    /**
-     * Name of the rule
-     */
+    
+    @NotBlank( message = "#i18n{appointment.validation.week.name.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.week.Title.size}" )
     private String _strName;
-   
-    /**
-     * description of the rule
-     */
+    
+    @NotBlank( message = "#i18n{appointment.validation.week.description.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.week.description.size}" )
     private String _strDescriptionRule;
-
-    /**
-     * the color of the rule
-     */
+    
+    @NotBlank( message = "#i18n{appointment.validation.week.color.notEmpty}" )
+    @Size( max = 255, message = "#i18n{appointment.validation.week.color.size}" )
     private String _strColor;
-    /**
-     * enable rule
-     */
+    
     private boolean _bEnable = true;
 
     /**
      * Maximum capacity for a slot
      */
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nMaxCapacityPerSlot = 1;
 
     /**
      * Maximum number of people authorized for an appointment
      */
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nMaxPeoplePerAppointment = 1;
 
     /**

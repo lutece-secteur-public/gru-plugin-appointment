@@ -70,6 +70,7 @@ import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.ReservationRuleDTO;
 import fr.paris.lutece.portal.business.role.RoleHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
@@ -309,7 +310,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         populate( appointmentForm, request );
         populateAddress( appointmentForm, request );
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
+        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX )|| !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
             return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1 );
         }
@@ -457,7 +458,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Import of the closing days file
         importClosingDayFile( mRequest, nIdForm );
         setParametersDays( appointmentForm, appointmentFormDb );
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
+        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkStartingAndEndingValidityDate( appointmentForm ) )
         {
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );

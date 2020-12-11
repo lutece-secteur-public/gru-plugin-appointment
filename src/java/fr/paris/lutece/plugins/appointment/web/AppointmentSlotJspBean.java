@@ -286,7 +286,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         populate( appointmentForm, request );
         appointmentForm.setCalendarTemplateId( 1 );
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
+        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX )|| !checkConstraints( appointmentForm ) )
         {
         	addError( PARAMETER_ERROR_MODIFICATION );
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
@@ -314,7 +314,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         populate( appointmentForm, request );
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
+        if ( !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX ) ||!validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
         {
         	addError( PARAMETER_ERROR_MODIFICATION );
             request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
