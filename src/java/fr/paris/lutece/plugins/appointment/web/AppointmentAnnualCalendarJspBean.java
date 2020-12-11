@@ -209,7 +209,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         {
             // if there are appointments impacted
             
-            if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) && !AppointmentUtilities.checkNoAppointmentsImpacted( listSlotsImpactedWithAppointment, reservationRule, newWeek  ) )
+            if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) && !AppointmentUtilities.checkNoAppointmentsImpacted( listSlotsImpactedWithAppointment, reservationRule ) )
             {
                 addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
                 return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
@@ -278,15 +278,15 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      *            the max capacity
      */
   
-    protected void updateSlotImpacted( List<Slot> listSlotsImpacted, int nMaxCapacity )
+    private void updateSlotImpacted( List<Slot> listSlotsImpacted, int nMaxCapacity )
     {
         // Need to delete the slots that are impacted but with no appointments
 
         List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
-                .filter( slot -> slot.getNbPotentialRemainingPlaces() == 0 ).collect( Collectors.toList( ) );
+                .filter( slot -> slot.getNbPlacesTaken( ) == 0 ).collect( Collectors.toList( ) );
        
         List<Slot> listSlotsImpactedWithAppointments =listSlotsImpacted.stream( )
-                .filter( slot -> slot.getNbPotentialRemainingPlaces() > 0 ).collect( Collectors.toList( ) );
+                .filter( slot -> slot.getNbPlacesTaken( ) > 0 ).collect( Collectors.toList( ) );
 
         SlotService.deleteListSlots( listSlotsImpactedWithoutAppointments );
 

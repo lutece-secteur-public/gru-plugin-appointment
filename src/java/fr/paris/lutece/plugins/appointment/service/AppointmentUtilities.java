@@ -65,6 +65,7 @@ import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -809,23 +810,26 @@ public final class AppointmentUtilities
      * Check if there are appointments impacted by the new week definition
      * @param listSlotsImpacted the list of slot impacted
      * @param newReservationRule the reservation rule
-     * @param newWeekDef the week definition
      * @return true if there are no appointments impacted
      */
-    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotsImpacted, ReservationRule newReservationRule, WeekDefinition newWeekDef )
+    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotsImpacted, ReservationRule newReservationRule  )
     {
     	
-    	Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( newReservationRule.getIdForm( ),  Arrays.asList(newWeekDef));    	
-        List <Slot> listSlots = SlotService.buildListSlot( newReservationRule.getIdForm( ), mapReservationRule, newWeekDef.getDateOfApply( ), newWeekDef.getEndingDateOfApply( ) );
-        listSlots = listSlots.stream( ).filter( s ->  s.getIsOpen( )  ).collect( Collectors.toList( ) );
-        
+    	  List<WorkingDay> listWorkingDay=  WorkingDayService.findListWorkingDayByWeekDefinitionRule( newReservationRule.getIdReservationRule( ) );
           for ( Slot slot : listSlotsImpacted )
-          {
+          {        	  
+        	  WorkingDay workingDay= listWorkingDay.stream().filter(day -> day.getDayOfWeek() == slot.getDate().getDayOfWeek().getValue( ) ).findFirst().orElse(null);
+        	  if (workingDay != null ) {
+        		  
+        		 if( !workingDay.getListTimeSlot().stream().anyMatch(  time -> slot.getStartingTime().equals(time.getStartingTime()) && slot.getEndingTime().equals(time.getEndingTime()))){
+        	  		  
+        		  return false;
+        		 }
         	  
-        	  if(listSlots.stream().noneMatch(slt -> slt.getEndingDateTime().isEqual(slot.getEndingDateTime() ) && slt.getStartingDateTime().isEqual(slot.getStartingDateTime( )))) {
+        	  }else {
         		  
         		  return false;
-        	  }   
+        	  }         	 
           }
 
        
