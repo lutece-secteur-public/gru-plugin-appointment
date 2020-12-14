@@ -78,7 +78,15 @@ public interface IDisplayDAO
      *            the Plugin
      */
     void delete( int nIdDisplay, Plugin plugin );
-
+    /**
+     * Delete a record from the table
+     * 
+     * @param nIdForm
+     *            identifier of the form
+     * @param plugin
+     *            the Plugin
+     */
+    void deleteByIdForm( int nIdForm, Plugin plugin );
     /**
      * Load the data from the table
      * 

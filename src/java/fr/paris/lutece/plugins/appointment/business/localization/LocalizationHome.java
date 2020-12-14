@@ -96,6 +96,16 @@ public final class LocalizationHome
     {
         _dao.delete( nKey, _plugin );
     }
+    /**
+     * Delete the Localization whose id form is specified in parameter
+     * 
+     * @param nIdForm
+     *            The form Id
+     */
+    public static void deleteByIdForm( int nIdForm )
+    {
+        _dao.deleteByIdForm( nIdForm, _plugin);
+    }
 
     /**
      * Returns an instance of the Localization whose identifier is specified in parameter

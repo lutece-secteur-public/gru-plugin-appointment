@@ -43,16 +43,24 @@ import org.apache.commons.collections.CollectionUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
+import fr.paris.lutece.plugins.appointment.business.display.DisplayHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.localization.Localization;
+import fr.paris.lutece.plugins.appointment.business.localization.LocalizationHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
+import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.FormRule;
+import fr.paris.lutece.plugins.appointment.business.rule.FormRuleHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
@@ -61,7 +69,10 @@ import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
 import fr.paris.lutece.plugins.genericattributes.business.EntryHome;
+import fr.paris.lutece.portal.service.util.AppException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.sql.TransactionManager;
 
 /**
  * Service class for a form
@@ -683,14 +694,49 @@ public final class FormService
      */
     public static void removeForm( int nIdForm )
     {
-        // Delete all the responses linked to all the appointments of the form
-        for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
+    	TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
+        try
+	    {
+	        // Delete all the responses linked to all the appointments of the form
+	        for ( Appointment appointment : AppointmentService.findListAppointmentByIdForm( nIdForm ) )
+	        {
+	            AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
+	        }
+	
+	        SlotHome.deleteByIdForm( nIdForm );
+	        
+	        for( ReservationRule rule: ReservationRuleHome.findByIdForm( nIdForm ) ) {
+	        	
+		        List<WorkingDay> listWorkingDay= WorkingDayService.findListWorkingDayByWeekDefinitionRule(rule.getIdReservationRule( ));	       
+		        for(WorkingDay workingDay: listWorkingDay) {
+		        
+		        	TimeSlotHome.deleteByIdWorkingDay(workingDay.getIdWorkingDay( ));
+		            WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
+		        	
+		        }
+		        WeekDefinitionHome.deleteByIdReservationRule(rule.getIdReservationRule( ));
+		        ReservationRuleHome.delete( rule.getIdReservationRule( ) );
+	        }
+	
+	        FormRuleHome.deleteByIdFom( nIdForm );      
+	        DisplayHome.deleteByIdForm( nIdForm );       
+	        LocalizationHome.deleteByIdForm( nIdForm );
+	        FormMessageHome.deleteByIdForm( nIdForm );
+	        FormHome.delete( nIdForm );
+	
+	        FormListenerManager.notifyListenersFormRemoval( nIdForm );
+	        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
+	        
+            TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+
+	    }
+        catch( Exception e )
         {
-            AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
+            TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
+            AppLogService.error( "Error delete form: " + nIdForm + e.getMessage( ), e );
+       	    throw new AppException( e.getMessage( ), e );
+
         }
-        FormListenerManager.notifyListenersFormRemoval( nIdForm );
-        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
-        FormHome.delete( nIdForm );
     }
 
     /**

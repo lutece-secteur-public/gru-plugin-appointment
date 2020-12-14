@@ -99,6 +99,18 @@ public final class WeekDefinitionHome
     {
         _dao.delete( nKey, _plugin );
     }
+    /**
+     * Delete the WeekDefinition whose identifier is specified in parameter
+     * 
+     * @param nIdReservationRule
+     *            The reservation rule Id
+     */
+   public static void deleteByIdReservationRule( int nIdReservationRule ) {
+	
+       _dao.deleteByIdReservationRule(nIdReservationRule, _plugin);
+
+   }
+
 
     /**
      * Returns an instance of the WeekDefinition whose identifier is specified in parameter

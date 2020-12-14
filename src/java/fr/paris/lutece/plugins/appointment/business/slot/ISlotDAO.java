@@ -73,7 +73,7 @@ public interface ISlotDAO
     void update( Slot slot, Plugin plugin );
 
     /**
-     * Delete a record from the table
+     * Delete a appointment from the table
      * 
      * @param nIdSlot
      *            identifier of the Slot to delete
@@ -81,6 +81,16 @@ public interface ISlotDAO
      *            the plugin
      */
     void delete( int nIdSlot, Plugin plugin );
+
+    /**
+     * Delete a appointment from the table
+     * 
+     * @param nIdForm
+     *            identifier of the form
+     * @param plugin
+     *            the plugin
+     */
+    public void deleteByIdForm( int nIdForm, Plugin plugin );
 
     /**
      * Load the data from the table

@@ -90,6 +90,16 @@ public final class FormMessageHome
     {
         _dao.delete( nFormMessageId, _plugin );
     }
+    /**
+     * Delete a form message whose id from is specified in the param
+     * 
+     * @param nIForm
+     *            The id of the form 
+     */
+    public static void deleteByIdForm( int nForm )
+    {
+        _dao.deleteByIdForm( nForm, _plugin );
+    }
 
     /**
      * Get a form message from its primary key

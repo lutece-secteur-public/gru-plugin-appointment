@@ -83,6 +83,16 @@ public interface IWeekDefinitionDAO
     void delete( int nIdWeekDefinition, Plugin plugin );
 
     /**
+     * Delete a record from the table
+     * 
+     * @param nIdReservationRule
+     *            identifier of the reservation rule
+     * @param plugin
+     *            the plugin
+     */
+    void deleteByIdReservationRule( int nIdReservationRule, Plugin plugin );
+
+    /**
      * Load the data from the table
      * 
      * @param nIdWeekDefinition

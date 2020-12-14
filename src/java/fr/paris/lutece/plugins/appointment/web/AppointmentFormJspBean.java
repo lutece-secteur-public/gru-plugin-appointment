@@ -55,6 +55,7 @@ import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
@@ -175,6 +176,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
     private static final String MESSAGE_ERROR_OPEN_SLOTS = "appointment.message.error.openSlots";
     private static final String MESSAGE_INFO_IMPORTED_CLOSING_DAYS = "appointment.info.appointmentform.closingDayImport";
+    private static final String MESSAGE_ERROR_CANT_REMOVE_FORM="appointment.message.cantRemove.form";
+    private static final String MESSAGE_ERROR_CANT_REMOVE_ACTIVE_FORM="appointment.message.cantRemove.activate.form";
 
     // Views
     private static final String VIEW_MANAGE_APPOINTMENTFORMS = "manageAppointmentForms";
@@ -369,12 +372,25 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
         }
+        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        Form form= FormHome.findByPrimaryKey( nIdForm );
+
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, request.getParameter( PARAMETER_ID_FORM ),
                 AppointmentResourceIdService.PERMISSION_DELETE_FORM, (User) AdminUserService.getAdminUser( request ) ) )
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_FORM );
         }
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        
+        if(form.getIsActive( )) {
+        	
+        	addError( MESSAGE_ERROR_CANT_REMOVE_ACTIVE_FORM, getLocale( ));
+            return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+        }
+        if( CollectionUtils.isNotEmpty( AppointmentService.findListAppointmentByIdForm( nIdForm ))) {
+        	addError( MESSAGE_ERROR_CANT_REMOVE_FORM, getLocale( ));
+            return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
+        }
+        
         FormService.removeForm( nIdForm );
         AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENTFORM, strIdForm, getUser( ) ) );
         _entryService.removeEntriesByIdAppointmentForm( nIdForm );

@@ -50,6 +50,7 @@ public final class FormMessageDAO implements IFormMessageDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_message( calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help, field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_message SET calendar_title = ?, field_firstname_title = ?, field_firstname_help = ?, field_lastname_title = ?, field_lastname_help = ?, field_email_title = ?, field_email_help = ?, field_confirmationEmail_title = ?, field_confirmationEmail_help = ?, text_appointment_created = ?, url_redirect_after_creation = ?, text_appointment_canceled = ?, label_button_redirection = ?, no_available_slot = ?, calendar_description = ?, calendar_reserve_label = ?, calendar_full_label = ?, id_form = ? WHERE id_form_message = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_message WHERE id_form_message = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_form_message WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_message, calendar_title, field_firstname_title, field_firstname_help, field_lastname_title, field_lastname_help, field_email_title, field_email_help,field_confirmationEmail_title, field_confirmationEmail_help, text_appointment_created, url_redirect_after_creation, text_appointment_canceled, label_button_redirection, no_available_slot, calendar_description, calendar_reserve_label, calendar_full_label, id_form FROM appointment_form_message";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_message = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
@@ -82,6 +83,15 @@ public final class FormMessageDAO implements IFormMessageDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
             daoUtil.setInt( 1, nIdFormMessage );
+            daoUtil.executeUpdate( );
+        }
+    }
+    @Override
+    public void deleteByIdForm( int nIdForm, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
             daoUtil.executeUpdate( );
         }
     }

@@ -96,6 +96,16 @@ public final class FormRuleHome
     {
         _dao.delete( nKey, _plugin );
     }
+    /**
+     * Delete the FormRule whose id form is specified in parameter
+     * 
+     * @param nIdForm
+     *            The Form Id
+     */
+    public static void deleteByIdFom( int nIdForm )
+    {
+        _dao.deleteByIdFom(nIdForm, _plugin);
+    }
 
     /**
      * Returns an instance of the FormRule whose identifier is specified in parameter

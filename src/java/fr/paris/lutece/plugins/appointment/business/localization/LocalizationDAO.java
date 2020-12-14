@@ -44,6 +44,7 @@ public final class LocalizationDAO implements ILocalizationDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_localization (longitude, latitude, address, id_form) VALUES ( ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_localization SET longitude = ?, latitude = ?, address = ?, id_form = ? WHERE id_localization = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_localization WHERE id_localization = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_localization WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_localization, longitude, latitude, address, id_form FROM appointment_localization";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_localization = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
@@ -76,6 +77,15 @@ public final class LocalizationDAO implements ILocalizationDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
             daoUtil.setInt( 1, nIdLocalization );
+            daoUtil.executeUpdate( );
+        }
+    }
+    @Override
+    public void deleteByIdForm( int nIdForm, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
             daoUtil.executeUpdate( );
         }
     }

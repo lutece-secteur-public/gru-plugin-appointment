@@ -54,10 +54,9 @@ public final class SlotDAO implements ISlotDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_slot (starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_slot SET starting_date_time = ?, ending_date_time = ?, is_open = ?, is_specific = ?, max_capacity = ?, nb_remaining_places = ?, nb_potential_remaining_places = ?, nb_places_taken = ?, id_form = ? WHERE id_slot = ?";
     private static final String SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE = "UPDATE appointment_slot SET nb_potential_remaining_places = ? WHERE id_slot = ?";
-
     private static final String SQL_QUERY_UPDATE_POTENTIAL_REMAINING_PLACE_IF_SHUTDOWN = "UPDATE appointment_slot SET nb_potential_remaining_places = nb_remaining_places WHERE nb_potential_remaining_places < nb_remaining_places ";
-
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_slot WHERE id_slot = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_slot WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_slot, starting_date_time, ending_date_time, is_open, is_specific, max_capacity, nb_remaining_places, nb_potential_remaining_places, nb_places_taken, id_form ";
     private static final String SQL_FROM_APPOINTMENT_SLOT = "FROM appointment_slot";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + SQL_FROM_APPOINTMENT_SLOT + " WHERE id_slot = ?";
@@ -103,6 +102,15 @@ public final class SlotDAO implements ISlotDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
             daoUtil.setInt( 1, nIdSlot );
+            daoUtil.executeUpdate( );
+        }
+    }
+    @Override
+    public void deleteByIdForm( int nIdForm, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
             daoUtil.executeUpdate( );
         }
     }

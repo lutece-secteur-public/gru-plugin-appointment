@@ -78,6 +78,15 @@ public interface IFormRuleDAO
      *            the plugin
      */
     void delete( int nIdFormRule, Plugin plugin );
+    /**
+     * Delete a record from the table
+     * 
+     * @param nIdForm
+     *            identifier of the Form
+     * @param plugin
+     *            the plugin
+     */
+    void deleteByIdFom( int nIdForm, Plugin plugin );
 
     /**
      * Load the data from the table

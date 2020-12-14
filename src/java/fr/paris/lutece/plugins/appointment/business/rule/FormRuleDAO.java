@@ -50,6 +50,7 @@ public final class FormRuleDAO implements IFormRuleDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_form_rule ( is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, bo_overbooking, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_form_rule SET is_captcha_enabled = ?, is_mandatory_email_enabled = ?, is_active_authentication = ?, nb_days_before_new_appointment = ?, min_time_before_appointment = ?, nb_max_appointments_per_user = ?, nb_days_for_max_appointments_per_user = ?, bo_overbooking=? , id_form = ? WHERE id_form_rule = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_form_rule WHERE id_form_rule = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_form_rule WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_form_rule, is_captcha_enabled, is_mandatory_email_enabled, is_active_authentication, nb_days_before_new_appointment, min_time_before_appointment, nb_max_appointments_per_user, nb_days_for_max_appointments_per_user, bo_overbooking, id_form FROM appointment_form_rule";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form_rule = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
@@ -82,6 +83,15 @@ public final class FormRuleDAO implements IFormRuleDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
             daoUtil.setInt( 1, nIdFormRule );
+            daoUtil.executeUpdate( );
+        }
+    }
+    @Override
+    public void deleteByIdFom( int nIdForm, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
             daoUtil.executeUpdate( );
         }
     }

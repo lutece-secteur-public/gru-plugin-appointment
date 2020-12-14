@@ -78,6 +78,15 @@ public interface ILocalizationDAO
      *            the Plugin
      */
     void delete( int nIdLocalization, Plugin plugin );
+    /**
+     * Delete a record from the table
+     * 
+     * @param nIdForm
+     *            identifier of the id form 
+     * @param plugin
+     *            the Plugin
+     */
+    void deleteByIdForm( int nIdForm, Plugin plugin );
 
     /**
      * Load the data from the table

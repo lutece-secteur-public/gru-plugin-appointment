@@ -51,6 +51,7 @@ public final class DisplayDAO implements IDisplayDAO
     private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_display ( display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_display SET display_title_fo = ?, icon_form_content = ?, icon_form_mime_type = ?, nb_weeks_to_display = ?, is_displayed_on_portlet = ?, id_calendar_template = ?, id_form = ? WHERE id_display = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_display WHERE id_display = ?";
+    private static final String SQL_QUERY_DELETE_BY_ID_FORM = "DELETE FROM appointment_display WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_display, display_title_fo, icon_form_content, icon_form_mime_type, nb_weeks_to_display, is_displayed_on_portlet, id_calendar_template, id_form FROM appointment_display";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_display = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
@@ -83,6 +84,15 @@ public final class DisplayDAO implements IDisplayDAO
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin ) )
         {
             daoUtil.setInt( 1, nIdDisplay );
+            daoUtil.executeUpdate( );
+        }
+    }
+    @Override
+    public void deleteByIdForm( int nIdForm, Plugin plugin )
+    {
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_BY_ID_FORM, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
             daoUtil.executeUpdate( );
         }
     }

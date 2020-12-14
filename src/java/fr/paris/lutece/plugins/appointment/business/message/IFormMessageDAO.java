@@ -77,6 +77,16 @@ public interface IFormMessageDAO
      *            The plugin
      */
     void delete( int nAppointmentFormId, Plugin plugin );
+    /**
+     * Remove a form message from 
+     * 
+     * @param nFormId
+     *            The id of the form
+     * @param plugin
+     *            The plugin
+     */
+    void deleteByIdForm( int nIdForm, Plugin plugin );
+
 
     /**
      * Get a form message from its primary key

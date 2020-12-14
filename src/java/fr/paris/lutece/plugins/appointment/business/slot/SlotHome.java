@@ -99,6 +99,17 @@ public final class SlotHome
     {
         _dao.delete( nKey, _plugin );
     }
+    
+    /**
+     * Delete a appointment from the table
+     * 
+     * @param nIdForm
+     *            identifier of the form
+     */
+    public static void deleteByIdForm( int nIdForm ) {
+    	
+    	_dao.deleteByIdForm( nIdForm, _plugin );
+    }
 
     /**
      * Returns an instance of the Slot whose identifier is specified in parameter
