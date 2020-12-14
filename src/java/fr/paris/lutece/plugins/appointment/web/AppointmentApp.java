@@ -520,6 +520,11 @@ public class AppointmentApp extends MVCApplication
         switch( calendarTemplate.getTitle( ) )
         {
             case CalendarTemplate.FREE_SLOTS:
+            	 // Keep only the available slots
+                listSlots = listSlots.stream( ).filter( s -> ( ( s.getNbRemainingPlaces( ) > 0 ) && ( s.getIsOpen( ) ) ) ).collect( Collectors.toList( ) );
+                listHiddenDays.clear( );
+                dayView = BASIC_DAY;
+                weekView = BASIC_WEEK;
             case CalendarTemplate.FREE_SLOTS_GROUPED:
                 // Keep only the available slots
                 listHiddenDays.clear( );
