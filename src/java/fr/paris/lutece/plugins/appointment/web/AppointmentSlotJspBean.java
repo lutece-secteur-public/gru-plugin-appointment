@@ -124,14 +124,12 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_ERROR_TIME_END_BEFORE_TIME_START = "appointment.modifyCalendarSlots.errorTimeEndBeforeTimeStart";
     private static final String MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM = "appointment.message.error.slotCanNotEndAfterDayOrForm";
     private static final String MESSAGE_ERROR_APPOINTMENT_ON_SLOT = "appointment.message.error.appointmentOnSlot";
-    private static final String MESSAGE_ERROR_LAST_WEEK_DEFINITION = "appointment.message.error.lastWeekDefinition";
     private static final String MESSAGE_INFO_SLOT_UPDATED = "appointment.modifyCalendarSlots.messageSlotUpdated";
     private static final String MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED = "appointment.modifyCalendarSlots.messageValidatedAppointmentsImpacted";
     private static final String MESSAGE_INFO_SURBOOKING = "appointment.modifyCalendarSlots.messageSurbooking";
     private static final String MESSAGE_INFO_MULTI_SURBOOKING = "appointment.modifyCalendarMultiSlots.messageSurbooking";
 
     private static final String MESSAGE_INFO_OVERLOAD = "appointment.modifyCalendarSlots.messageOverload";
-    private static final String MESSAGE_ERROR_START_DATE_EMPTY = "appointment.message.error.startDateEmpty";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
     private static final String MESSAGE_CONFIRM_REMOVE_WEEK_DEFINITION = "appointment.message.confirmRemoveWeekDefinition";
@@ -170,7 +168,6 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     // Marks
     private static final String MARK_TIME_SLOT = "timeSlot";
     private static final String MARK_SLOT = "slot";
-    private static final String MARK_LIST_DATE_OF_MODIFICATION = "listDateOfModification";
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_LIST_RESERVATION_RULE = "listReservationRule";
     private static final String MARK_ID_RULE = "id_reservation_rule";

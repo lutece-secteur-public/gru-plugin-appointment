@@ -309,11 +309,7 @@ public final class SlotService
                             if ( timeSlot != null )
                             {
                                 timeTemp = timeSlot.getEndingTime( );
-                                int nMaxCapacityToPut = nMaxCapacity;
-                                if ( timeSlot.getMaxCapacity( ) != 0 )
-                                {
-                                    nMaxCapacityToPut = timeSlot.getMaxCapacity( );
-                                }
+                                int nMaxCapacityToPut = timeSlot.getMaxCapacity( );                               
                                 slotToAdd = buildSlot( nIdForm, new Period( dateTimeTemp, dateTemp.atTime( timeTemp ) ), nMaxCapacityToPut, nMaxCapacityToPut,
                                         nMaxCapacityToPut, 0, timeSlot.getIsOpen( ), Boolean.FALSE );
                                 listSlot.add( slotToAdd );
@@ -474,11 +470,7 @@ public final class SlotService
                             if ( timeSlot != null )
                             {
                                 timeTemp = timeSlot.getEndingTime( );
-                                int nMaxCapacityToPut = nMaxCapacity;
-                                if ( timeSlot.getMaxCapacity( ) != 0 )
-                                {
-                                    nMaxCapacityToPut = timeSlot.getMaxCapacity( );
-                                }
+                                int nMaxCapacityToPut = timeSlot.getMaxCapacity( );                               
                                 slotToAdd = buildSlot( nIdForm, new Period( dateTimeTemp, dateTemp.atTime( timeTemp ) ), nMaxCapacityToPut, nMaxCapacityToPut,
                                         nMaxCapacityToPut, 0, timeSlot.getIsOpen( ), Boolean.FALSE );
 
