@@ -566,6 +566,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+
         // Get the nb weeks to display
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
