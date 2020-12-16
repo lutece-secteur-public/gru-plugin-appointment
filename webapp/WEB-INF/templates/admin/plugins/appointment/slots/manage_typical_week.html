@@ -97,7 +97,6 @@
                     <@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
                         <input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}"> 
                     </@formGroup>
-                    <@fieldSet legend='#i18n{appointment.modifyAppointmentForm.startEditForm}'>
                         <@formGroup>
                             <#if id_reservation_rule != 0 >
                                 <@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
@@ -106,10 +105,11 @@
                             </#if>
                                 <@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
                         </@formGroup>
-                    </@fieldSet>
-                    </@tform>
                    
-                    <div id="calendar"></div>
+                    </@tform>
+                    <@fieldSet legend=''>
+                         <div id="calendar"></div>                        
+                    </@fieldSet>
                 </@tabContent>
             </@tabs>
 		</@appointmentTabs>

@@ -24,7 +24,7 @@
                         <ul class="list-unstyled">
                             <#list listReservationRule as rule>
                                 <li>
-                                    <span style="display:inline-block; background-color: ${rule.color};width:20px;height:12px"></span> ${rule.name} <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=1&id_reservation_rule=${rule.idReservationRule}"><i class="fas fa-eye fa-fw"></i></a> 
+                                    <span style="display:inline-block; background-color: ${rule.color};width:20px;height:12px"></span> ${rule.name} <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}"><i class="fas fa-eye fa-fw"></i></a> 
                                 </li>
                             </#list>
                         </ul>
