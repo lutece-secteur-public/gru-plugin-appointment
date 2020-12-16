@@ -37,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -48,6 +49,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
+import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
@@ -55,6 +58,7 @@ import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
+import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
@@ -203,7 +207,10 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         ReservationRule reservationRule= ReservationRuleService.findReservationRuleById( newWeek.getIdReservationRule( ));
 
         listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));
-        List<Slot> listSlotsImpactedWithAppointment= listSlotsImpacted.stream().filter(slot -> slot.getNbPlacesTaken() > 0 ).collect( Collectors.toList( ) );    	
+      
+        List<Slot> listSlotsImpactedWithAppointment= new ArrayList< >( );
+        List<Slot> listSlotsImpactedWithoutAppointments= new ArrayList< >( );
+        splitAndBuildDifferentListSlot(listSlotsImpacted, listSlotsImpactedWithoutAppointments, listSlotsImpactedWithAppointment);
 
         if ( CollectionUtils.isNotEmpty( listSlotsImpacted ) )
         {
@@ -215,7 +222,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
                 return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
             }
    
-            updateSlotImpacted( listSlotsImpacted, reservationRule.getMaxCapacityPerSlot( ) );
+            updateSlotImpacted( listSlotsImpactedWithoutAppointments, listSlotsImpactedWithAppointment,reservationRule.getMaxCapacityPerSlot( ) );
         }
         
         WeekDefinitionService.assignWeekDefinition( nIdForm, newWeek );
@@ -253,8 +260,10 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
 
         }
         listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));
-        List<Slot> listSlotsImpactedWithAppointment= listSlotsImpacted.stream().filter(slot -> slot.getNbPlacesTaken() > 0 ).collect( Collectors.toList( ) );    	
-
+        List<Slot> listSlotsImpactedWithAppointment= new ArrayList< >( );
+        List<Slot> listSlotsImpactedWithoutAppointments= new ArrayList< >( );
+        splitAndBuildDifferentListSlot(listSlotsImpacted, listSlotsImpactedWithoutAppointments, listSlotsImpactedWithAppointment);
+        
         if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ))
         {
             addError( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale() );
@@ -278,16 +287,9 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      *            the max capacity
      */
   
-    private void updateSlotImpacted( List<Slot> listSlotsImpacted, int nMaxCapacity )
+    private void updateSlotImpacted( List<Slot> listSlotsImpactedWithoutAppointments, List<Slot> listSlotsImpactedWithAppointments,int nMaxCapacity )
     {
         // Need to delete the slots that are impacted but with no appointments
-
-        List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
-                .filter( slot -> slot.getNbPlacesTaken( ) == 0 ).collect( Collectors.toList( ) );
-       
-        List<Slot> listSlotsImpactedWithAppointments =listSlotsImpacted.stream( )
-                .filter( slot -> slot.getNbPlacesTaken( ) > 0 ).collect( Collectors.toList( ) );
-
         SlotService.deleteListSlots( listSlotsImpactedWithoutAppointments );
 
         for ( Slot slotImpacted : listSlotsImpactedWithAppointments )
@@ -359,5 +361,27 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
 
     }
     
+    private void splitAndBuildDifferentListSlot(List<Slot> listSlotsImpacted, List<Slot> listSlotsImpactedWithoutAppointments, List<Slot> listSlotsImpactedWithAppointments){
+    
+    	//listSlotsImpacted.stream().filter(slot -> slot.getNbPlacesTaken() > 0 ).collect( Collectors.toList( ) );    	
+
+    	HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
+        List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
+
+        for ( Appointment appointment : listAppointmentsImpacted )
+        {
+            for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
+            {
+                setSlotsImpactedWithAppointments.add( apptSlot.getIdSlot( ) );
+            }
+        }
+
+        listSlotsImpactedWithAppointments.addAll( listSlotsImpacted.stream( )
+                .filter( slot -> setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) ));
+        listSlotsImpactedWithoutAppointments.addAll(listSlotsImpacted.stream( )
+                .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) ));
+    
+    	
+    }
     
 }

@@ -419,6 +419,11 @@ function validateQty(event) {
         });
 		
     });
+
+    $('#ending_time').datetimepicker({
+        format: 'HH:mm',
+        stepping: 5
+    });
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />
