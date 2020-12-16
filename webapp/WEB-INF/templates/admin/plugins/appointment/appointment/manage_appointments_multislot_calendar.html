@@ -8,7 +8,7 @@
 <@modal id='commentModal'>
     <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
 	<@modalBody>
-		<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form />
+		<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form min_time!0 max_time!23 />
 	</@modalBody>
 	<@modalFooter>
 		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
@@ -18,7 +18,7 @@
 <@modal id='modify-comment'>
 	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
 	<@modalBody>
-		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form />
+		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form min_time!0 max_time!23 />
 	</@modalBody>
 	<@modalFooter>
 		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />

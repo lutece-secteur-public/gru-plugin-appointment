@@ -36,9 +36,10 @@ package fr.paris.lutece.plugins.appointment.web;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +47,8 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.comment.Comment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -66,319 +69,365 @@ import fr.paris.lutece.util.url.UrlItem;
 @Controller( controllerJsp = CommentJspBean.JSP_MANAGE_COMMENTS, controllerPath = "jsp/admin/plugins/appointment/", right = CommentJspBean.RIGHT_MANAGECOMMENTTFORM )
 public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 9120042889405463752L;
-    public static final String RIGHT_MANAGECOMMENTTFORM = "APPOINTMENT_FORM_MANAGEMENT";
-    /**
-     * JSP of this JSP Bean
-     */
-    public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
-    public static final String JSP_MANAGE_COMMENTS = "Comments.jsp";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9120042889405463752L;
+	public static final String RIGHT_MANAGECOMMENTTFORM = "APPOINTMENT_FORM_MANAGEMENT";
+	/**
+	 * JSP of this JSP Bean
+	 */
+	public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
+	public static final String JSP_MANAGE_COMMENTS = "Comments.jsp";
 
-    // Templates
-    public static final String TEMPLATE_CREATE_COMMENT = "/admin/plugins/appointment/comment/create_comment.html";
-    public static final String TEMPLATE_MANAGE_COMMENT = "/admin/plugins/appointment/comment/manage_comment.html";
-    public static final String TEMPLATE_MODIFY_COMMENT = "/admin/plugins/appointment/comment/modify_comment.html";
-    public static final String TEMPLATE_COMMENT_INFO = "/admin/plugins/appointment/comment/comment_infos.html";
-
-
-    // Messages
-    private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.pageTitle";
-    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute";
-
-    // Parameters
-    private static final String PARAMETER_ID_COMMENT = "id_comment";
-    private static final String PARAMETER_COMMENT = "comment";
-    private static final String PARAMETER_STARTING_VALIDITY_DATE = "startingValidityDate";
-    private static final String PARAMETER_ENDING_VALIDITY_DATE = "endingValidityDate";
-    private static final String PARAMETER_STARTING_VALIDITY_TIME = "startingValidityTime";
-    private static final String PARAMETER_ENDING_VALIDITY_TIME = "endingValidityTime";
-    private static final String PARAMETER_ID_FORM = "id_form";
-    private static final String REFERER = "referer";
+	// Templates
+	public static final String TEMPLATE_CREATE_COMMENT = "/admin/plugins/appointment/comment/create_comment.html";
+	public static final String TEMPLATE_MANAGE_COMMENT = "/admin/plugins/appointment/comment/manage_comment.html";
+	public static final String TEMPLATE_MODIFY_COMMENT = "/admin/plugins/appointment/comment/modify_comment.html";
+	public static final String TEMPLATE_COMMENT_INFO = "/admin/plugins/appointment/comment/comment_infos.html";
 
 
-    // Marks
-    private static final String MARK_COMMENT = "comment";
-    private static final String MARK_COMMENT_LIST = "comment_list";
-    private static final String MARK_LOCALE = "locale";
+	// Messages
+	private static final String MESSAGE_COMMENT_PAGE_TITLE = "appointment.comment.pageTitle";
+	private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute";
 
-    // Views
-    private static final String VIEW_ADD_COMMENT = "viewAddComment";
-    private static final String VIEW_MODIFY_COMMENT = "viewModifyComment";
-    private static final String VIEW_MANAGE_COMMENT = "manageComment";
-    private static final String VIEW_CALENDAR_MANAGE_APPOINTMENTS = "viewCalendarManageAppointment";
-
-    // Actions
-    private static final String ACTION_DO_ADD_COMMENT = "doAddComment";
-    private static final String ACTION_DO_REMOVE_COMMENT = "doRemoveComment";
-    private static final String ACTION_DO_MODIFY_COMMENT = "doModifyComment";
-    private static final String ACTION_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
-
-    // Properties
-    private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment-comment.manage_comments.pageTitle";
-    private static final String MESSAGE_CONFIRM_REMOVE_COMMENT = "appointment.message.confirmRemoveComment";
-
-    // Infos
-    private static final String INFO_COMMENT_CREATED = "appointment.info.comment.created";
-    private static final String INFO_COMMENT_UPDATED = "appointment.info.comment.updated";
-    private static final String INFO_COMMENT_REMOVED = "appointment.info.comment.removed";
-    private static final String INFO_COMMENT_ERROR = "appointment.info.comment.error";
-    private static final String INFO_COMMENT_RIGHTS = "info.comment.rights";
-
-    // Session variable to store working values
-    private Comment _comment;
-
-    /**
-     * Build the Manage View
-     * 
-     * @param request
-     *            The HTTP request
-     * @return The page
-     */
-    @View( VIEW_MANAGE_COMMENT )
-    public String getManageComment( HttpServletRequest request )
-    {
-
-        _comment = null;
-        List<Comment> listComments = CommentHome.getCommentsList( );
-        Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_APPOINTMENT_SLOTS );
-
-        return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_COMMENT, model );
-    }
-
-    /**
-     * Returns the form to create a comment
-     *
-     * @param request
-     *            The Http request
-     * @return the html code of the comment form
-     */
-    @View( VIEW_ADD_COMMENT )
-    public String getViewAddComment( HttpServletRequest request )
-    {
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        _comment = new Comment( );
-
-        Map<String, Object> model = getModel( );
-        model.put( MARK_COMMENT, _comment );
-        model.put( MARK_LOCALE, getLocale( ) );
-        model.put( PARAMETER_ID_FORM, nIdForm );
-        return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
-
-    }
-
-    /**
-     * Process the data capture form of a new comment
-     *
-     * @param request
-     *            The Http Request
-     * @return The Jsp URL of the process result
-     */
-    @Action( ACTION_DO_ADD_COMMENT )
-    public String doAddComment( HttpServletRequest request )
-    {
-        User user = (User) getUser( );
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        String strReferer = request.getHeader( REFERER );
-
-       _comment = (_comment == null )? new Comment():_comment;
-      
-        _comment.setIdForm( nIdForm );
-        _comment.setCreationDate( LocalDate.now( ) );
-        _comment.setCreatorUserName( user.getAccessCode( ) );
-        _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
-        _comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) ) 
-        {
-        	_comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
-        }
-        
-        if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
-        {
-        	_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
-        }
+	// Parameters
+	private static final String PARAMETER_ID_COMMENT = "id_comment";
+	private static final String PARAMETER_COMMENT = "comment";
+	private static final String PARAMETER_STARTING_VALIDITY_DATE = "startingValidityDate";
+	private static final String PARAMETER_ENDING_VALIDITY_DATE = "endingValidityDate";
+	private static final String PARAMETER_STARTING_VALIDITY_TIME = "startingValidityTime";
+	private static final String PARAMETER_ENDING_VALIDITY_TIME = "endingValidityTime";
+	private static final String PARAMETER_ID_FORM = "id_form";
+	private static final String REFERER = "referer";
+    private static final String PARAMETER_MIN_TIME = "min_time";
+    private static final String PARAMETER_MAX_TIME = "max_time";
 
 
-        // Check constraints
-        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
-        {
-            addError( INFO_COMMENT_ERROR, getLocale( ) );
-            
-        }else {
+	// Marks
+	private static final String MARK_COMMENT = "comment";
+	private static final String MARK_COMMENT_LIST = "comment_list";
+	private static final String MARK_LOCALE = "locale";
 
-        	addInfo( INFO_COMMENT_CREATED, getLocale( ) );
-        	CommentHome.create( _comment );
-        }
+	// Views
+	private static final String VIEW_ADD_COMMENT = "viewAddComment";
+	private static final String VIEW_MODIFY_COMMENT = "viewModifyComment";
+	private static final String VIEW_MANAGE_COMMENT = "manageComment";
+	private static final String VIEW_CALENDAR_MANAGE_APPOINTMENTS = "viewCalendarManageAppointment";
 
-        if ( StringUtils.isNotBlank( strReferer ) )
-        {
-            return redirect( request, strReferer);
-        }
-        
-        return redirect( request, VIEW_MANAGE_COMMENT); 
-    }
+	// Actions
+	private static final String ACTION_DO_ADD_COMMENT = "doAddComment";
+	private static final String ACTION_DO_REMOVE_COMMENT = "doRemoveComment";
+	private static final String ACTION_DO_MODIFY_COMMENT = "doModifyComment";
+	private static final String ACTION_CONFIRM_REMOVE_COMMENT = "confirmRemoveComment";
 
-    /**
-     * Returns the form to modify a comment
-     *
-     * @param request
-     *            The Http request
-     * @return the html code of the comment form
-     */
-    @View( VIEW_MODIFY_COMMENT )
-    public String getViewModifyComment( HttpServletRequest request )
-    {
-        User user = (User) getUser( );
-        int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        _comment = CommentHome.findByPrimaryKey( nIdComment );
+	// Properties
+	private static final String PROPERTY_PAGE_TITLE_MANAGE_COMMENTS = "appointment-comment.manage_comments.pageTitle";
+	private static final String MESSAGE_CONFIRM_REMOVE_COMMENT = "appointment.message.confirmRemoveComment";
 
-        if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
-        {
-            Map<String, Object> model = getModel( );
-            model.put( MARK_COMMENT, _comment );
-            model.put( MARK_LOCALE, getLocale( ) );
-            model.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-            return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT, model );
-        }
-       
-        return getPage( MESSAGE_COMMENT_PAGE_TITLE, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
-       
+	// Infos
+	private static final String INFO_COMMENT_CREATED = "appointment.info.comment.created";
+	private static final String INFO_COMMENT_UPDATED = "appointment.info.comment.updated";
+	private static final String INFO_COMMENT_REMOVED = "appointment.info.comment.removed";
+	private static final String INFO_COMMENT_ERROR = "appointment.info.comment.error";
+	private static final String INFO_COMMENT_RIGHTS = "info.comment.rights";
 
-    }
+	// Session variable to store working values
+	private Comment _comment;
 
-    /**
-     * Process the data capture form of comment modification
-     *
-     * @param request
-     *            The Http Request
-     * @return The Jsp URL of the process result
-     * @throws AccessDeniedException 
-     */
-    @Action( ACTION_DO_MODIFY_COMMENT )
-    public String doModifyComment( HttpServletRequest request ) throws AccessDeniedException
-    {
-        User user = (User) getUser( );
-        int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String strReferer = request.getHeader( REFERER );
+	/**
+	 * Build the Manage View
+	 * 
+	 * @param request
+	 *            The HTTP request
+	 * @return The page
+	 */
+	@View( VIEW_MANAGE_COMMENT )
+	public String getManageComment( HttpServletRequest request )
+	{
 
-        if ( _comment == null || _comment.getId( ) != nIdComment)
-        {
-            _comment = CommentHome.findByPrimaryKey( nIdComment );
-        }
+		_comment = null;
+		List<Comment> listComments = CommentHome.getCommentsList( );
+		Map<String, Object> model = getPaginatedListModel( request, MARK_COMMENT_LIST, listComments, JSP_MANAGE_APPOINTMENT_SLOTS );
 
-        _comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
-        _comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        _comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
-                .atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
-        if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) ) 
-        {
-        	_comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
-        }
-        
-        if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
-        {
-        	_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
-        }
+		return getPage( PROPERTY_PAGE_TITLE_MANAGE_COMMENTS, TEMPLATE_MANAGE_COMMENT, model );
+	}
 
-        // Check constraints
-        if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
-        {
-            addError( INFO_COMMENT_ERROR, getLocale( ) );
-        }
+	/**
+	 * Returns the form to create a comment
+	 *
+	 * @param request
+	 *            The Http request
+	 * @return the html code of the comment form
+	 */
+	@View( VIEW_ADD_COMMENT )
+	public String getViewAddComment( HttpServletRequest request )
+	{
+		int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+		_comment = new Comment( );
+		// Get all the week definitions
+        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
+        List<WeekDefinition> listWeekDefinition = new ArrayList<>( mapWeekDefinition.values( ) );
+		// Get the min time of all the week definitions
+        LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
+        // Get the max time of all the week definitions
+        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
 
-        else if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
-        {
-            CommentHome.update( _comment );
-            addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
-        }else {
-        
-        	throw new AccessDeniedException( INFO_COMMENT_RIGHTS );
-         
-        }
-      
-        if ( StringUtils.isNotBlank( strReferer ) )
-        {
-            return redirect( request, strReferer);
-        }
-        
-        return redirect( request, VIEW_MANAGE_COMMENT); 
+		Map<String, Object> model = getModel( );
+		model.put( MARK_COMMENT, _comment );
+		model.put( MARK_LOCALE, getLocale( ) );
+		model.put( PARAMETER_ID_FORM, nIdForm );
+		model.put( PARAMETER_MIN_TIME, minStartingTime );
+		model.put( PARAMETER_MAX_TIME, maxEndingTime);
+		return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
 
-    }
+	}
 
-    /**
-     * Manages the removal form of a comment whose identifier is in the http request
-     *
-     * @param request
-     *            The Http request
-     * @return the html code to confirm
-     */
-    @Action( ACTION_CONFIRM_REMOVE_COMMENT )
-    public String getConfirmRemoveComment( HttpServletRequest request )
-    {
-        int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String strReferer = request.getHeader( REFERER );
+	/**
+	 * Process the data capture form of a new comment
+	 *
+	 * @param request
+	 *            The Http Request
+	 * @return The Jsp URL of the process result
+	 */
+	@Action( ACTION_DO_ADD_COMMENT )
+	public String doAddComment( HttpServletRequest request )
+	{
+		User user = (User) getUser( );
+		int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+		String strReferer = request.getHeader( REFERER );
+		// Get all the week definitions
+        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
+        List<WeekDefinition> listWeekDefinition = new ArrayList<>( mapWeekDefinition.values( ) );
+		// Get the min time of all the week definitions
+        LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
+        // Get the max time of all the week definitions
+        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
 
-        UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
-        url.addParameter( PARAMETER_ID_COMMENT, nId );
-        url.addParameter( REFERER, strReferer );
+		_comment = (_comment == null )? new Comment():_comment;
+
+		_comment.setIdForm( nIdForm );
+		_comment.setCreationDate( LocalDate.now( ) );
+		_comment.setCreatorUserName( user.getAccessCode( ) );
+		_comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
+		_comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
+				.atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+		_comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
+				.atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+		if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) ) 
+		{
+			if ( minStartingTime == null || !LocalTime.parse(request.getParameter( PARAMETER_ENDING_VALIDITY_TIME )).isBefore( minStartingTime ) )
+			{
+			    _comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
+			}
+		}
+
+		if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
+		{
+			if ( maxEndingTime == null || !LocalTime.parse(request.getParameter( PARAMETER_ENDING_VALIDITY_TIME )).isAfter( maxEndingTime ) )
+			{
+				_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
+			}
+		}
 
 
-        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+		// Check constraints
+		if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
+		{
+			addError( INFO_COMMENT_ERROR, getLocale( ) );
 
-        return redirect( request, strMessageUrl );
-    }
+		}else {
 
-    /**
-     * Do remove a comment
-     * 
-     * @param request
-     *            the request
-     * @return to the page of the comment
-     * @throws AccessDeniedException 
-     */
-    @Action( ACTION_DO_REMOVE_COMMENT )
-    public String doRemoveComment( HttpServletRequest request ) throws AccessDeniedException
-    {
-        User user = (User) getUser( );
-        int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String strReferer = request.getParameter( REFERER );
-        UrlItem url = new UrlItem(  strReferer  );
-        url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
-        
-        _comment = CommentHome.findByPrimaryKey( nIdComment );
+			addInfo( INFO_COMMENT_CREATED, getLocale( ) );
+			CommentHome.create( _comment );
+		}
 
-        if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
-        {
-            CommentHome.remove( nIdComment );
-            addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
-        }
-        else
-        {
-        	throw new AccessDeniedException( INFO_COMMENT_RIGHTS );
-        }
-        if ( StringUtils.isNotBlank( strReferer ) )
-        {
-            return redirect( request, url.getUrl( ) );
-        }
-        
-        return redirect( request, VIEW_MANAGE_COMMENT); 
-    }
-    /**
-     * build The infos/warnings/Errors
-     * @return The infos/warnings/Errors
-     */
-    public String getCommentInfos() {
-    	
-        Map<String, Object> model = getModel( );
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_COMMENT_INFO , getLocale( ), model );
-        
-    	return template.getHtml( );
-    }
-    
+		if ( StringUtils.isNotBlank( strReferer ) )
+		{
+			return redirect( request, strReferer);
+		}
+
+		return redirect( request, VIEW_MANAGE_COMMENT); 
+	}
+
+	/**
+	 * Returns the form to modify a comment
+	 *
+	 * @param request
+	 *            The Http request
+	 * @return the html code of the comment form
+	 */
+	@View( VIEW_MODIFY_COMMENT )
+	public String getViewModifyComment( HttpServletRequest request )
+	{
+		User user = (User) getUser( );
+		int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+		_comment = CommentHome.findByPrimaryKey( nIdComment );
+		// Get all the week definitions
+        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( _comment.getIdForm( ) );
+        List<WeekDefinition> listWeekDefinition = new ArrayList<>( mapWeekDefinition.values( ) );
+		// Get the min time of all the week definitions
+        LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
+        // Get the max time of all the week definitions
+        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
+
+		if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+		{
+			Map<String, Object> model = getModel( );
+			model.put( MARK_COMMENT, _comment );
+			model.put( MARK_LOCALE, getLocale( ) );
+			model.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
+			model.put( PARAMETER_MIN_TIME, minStartingTime );
+			model.put( PARAMETER_MAX_TIME, maxEndingTime);
+			return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT, model );
+		}
+
+		return getPage( MESSAGE_COMMENT_PAGE_TITLE, VIEW_CALENDAR_MANAGE_APPOINTMENTS );
+
+
+	}
+
+	/**
+	 * Process the data capture form of comment modification
+	 *
+	 * @param request
+	 *            The Http Request
+	 * @return The Jsp URL of the process result
+	 * @throws AccessDeniedException 
+	 */
+	@Action( ACTION_DO_MODIFY_COMMENT )
+	public String doModifyComment( HttpServletRequest request ) throws AccessDeniedException
+	{
+		User user = (User) getUser( );
+		int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+		String strReferer = request.getHeader( REFERER );
+		
+		if ( _comment == null || _comment.getId( ) != nIdComment)
+		{
+			_comment = CommentHome.findByPrimaryKey( nIdComment );
+		}
+		// Get all the week definitions
+        HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( _comment.getIdForm( ) );
+        List<WeekDefinition> listWeekDefinition = new ArrayList<>( mapWeekDefinition.values( ) );
+		// Get the min time of all the week definitions
+        LocalTime minStartingTime = WeekDefinitionService.getMinStartingTimeOfAListOfWeekDefinition( listWeekDefinition );
+        // Get the max time of all the week definitions
+        LocalTime maxEndingTime = WeekDefinitionService.getMaxEndingTimeOfAListOfWeekDefinition( listWeekDefinition );
+
+		_comment.setComment( request.getParameter( PARAMETER_COMMENT ) );
+		_comment.setStartingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_STARTING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
+				.atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+		_comment.setEndingValidityDate( DateUtil.formatDate( request.getParameter( PARAMETER_ENDING_VALIDITY_DATE ), getLocale( ) ).toInstant( )
+				.atZone( ZoneId.systemDefault( ) ).toLocalDate( ) );
+		if ( !request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ).isEmpty( ) ) 
+		{
+			if ( minStartingTime == null || !LocalTime.parse(request.getParameter( PARAMETER_ENDING_VALIDITY_TIME )).isBefore( minStartingTime ) )
+			{
+			    _comment.setStartingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_STARTING_VALIDITY_TIME ) ) );
+			}
+		}
+
+		if ( !request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ).isEmpty( ) )
+		{
+			if ( maxEndingTime == null || !LocalTime.parse(request.getParameter( PARAMETER_ENDING_VALIDITY_TIME )).isAfter( maxEndingTime ) )
+			{
+				_comment.setEndingValidityTime( LocalTime.parse( request.getParameter( PARAMETER_ENDING_VALIDITY_TIME ) ) );
+			}
+		}
+
+		// Check constraints
+		if ( !validateBean( _comment, VALIDATION_ATTRIBUTES_PREFIX ) )
+		{
+			addError( INFO_COMMENT_ERROR, getLocale( ) );
+		}
+
+		else if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+		{
+			CommentHome.update( _comment );
+			addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
+		}else {
+
+			throw new AccessDeniedException( INFO_COMMENT_RIGHTS );
+
+		}
+
+		if ( StringUtils.isNotBlank( strReferer ) )
+		{
+			return redirect( request, strReferer);
+		}
+
+		return redirect( request, VIEW_MANAGE_COMMENT); 
+
+	}
+
+	/**
+	 * Manages the removal form of a comment whose identifier is in the http request
+	 *
+	 * @param request
+	 *            The Http request
+	 * @return the html code to confirm
+	 */
+	@Action( ACTION_CONFIRM_REMOVE_COMMENT )
+	public String getConfirmRemoveComment( HttpServletRequest request )
+	{
+		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+		String strReferer = request.getHeader( REFERER );
+
+		UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
+		url.addParameter( PARAMETER_ID_COMMENT, nId );
+		url.addParameter( REFERER, strReferer );
+
+
+		String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
+
+		return redirect( request, strMessageUrl );
+	}
+
+	/**
+	 * Do remove a comment
+	 * 
+	 * @param request
+	 *            the request
+	 * @return to the page of the comment
+	 * @throws AccessDeniedException 
+	 */
+	@Action( ACTION_DO_REMOVE_COMMENT )
+	public String doRemoveComment( HttpServletRequest request ) throws AccessDeniedException
+	{
+		User user = (User) getUser( );
+		int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
+		String strReferer = request.getParameter( REFERER );
+		UrlItem url = new UrlItem(  strReferer  );
+		url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
+
+		_comment = CommentHome.findByPrimaryKey( nIdComment );
+
+		if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
+		{
+			CommentHome.remove( nIdComment );
+			addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
+		}
+		else
+		{
+			throw new AccessDeniedException( INFO_COMMENT_RIGHTS );
+		}
+		if ( StringUtils.isNotBlank( strReferer ) )
+		{
+			return redirect( request, url.getUrl( ) );
+		}
+
+		return redirect( request, VIEW_MANAGE_COMMENT); 
+	}
+	/**
+	 * build The infos/warnings/Errors
+	 * @return The infos/warnings/Errors
+	 */
+	public String getCommentInfos() {
+
+		Map<String, Object> model = getModel( );
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_COMMENT_INFO , getLocale( ), model );
+
+		return template.getHtml( );
+	}
+
 }
