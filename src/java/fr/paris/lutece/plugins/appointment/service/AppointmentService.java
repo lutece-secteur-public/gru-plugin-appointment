@@ -36,6 +36,7 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -80,21 +81,9 @@ public final class AppointmentService
      */
     public static List<Appointment> findListAppointmentByListSlot( List<Slot> listSlot )
     {
-        List<Appointment> listAppointment = new ArrayList<>( );
-        for ( Slot slot : listSlot )
-        {
-            List<Appointment> tempAppointment = AppointmentService.findListAppointmentBySlot( slot.getIdSlot( ) );
-            for ( Appointment tmp : tempAppointment )
-            {
-
-                if ( listAppointment.stream( ).noneMatch( p -> p.getIdAppointment( ) == tmp.getIdAppointment( ) ) )
-                {
-
-                    listAppointment.add( tmp );
-                }
-            }
-        }
-        return listAppointment;
+        List<Integer> listIdSlot =  listSlot.stream().map( Slot::getIdSlot ).collect(Collectors.toList());
+            
+        return AppointmentHome.findByListIdSlot( listIdSlot );
     }
 
     /**

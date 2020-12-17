@@ -117,6 +117,20 @@ public interface ISlotDAO
      * @return a list of slots whose dates are included in the given period
      */
     List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin );
+    /**
+     * Returns all the slot containing an appointment for the date range
+     * 
+     * @param nIdForm
+     *            the Form Id
+     * @param startingDateTime
+     *            the starting date
+     * @param endingDateTime
+     *            the ending date
+     * @param plugin
+     *            the plugin
+     * @return a list of slots whose dates are included in the given period and is containing an appointment
+     */
+    List<Slot> findSlotWithAppointmentByDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin );
 
     /**
      * Returns all the specific slot for the form

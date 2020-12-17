@@ -160,6 +160,20 @@ public final class AppointmentHome
     }
 
     /**
+     * Returns the list of appointments of a slot
+     * 
+     * @param listIdSlot
+     *            the list Slot Id
+     * @param plugin
+     *            the plugin
+     * @return a list of the appointments
+     */
+    public static List<Appointment> findByListIdSlot( List<Integer> listIdSlot ){
+        
+    	return _dao.findByListIdSlot( listIdSlot, _plugin );
+
+    }
+    /**
      * Return a list of appointment of a form
      * 
      * @param nIdForm

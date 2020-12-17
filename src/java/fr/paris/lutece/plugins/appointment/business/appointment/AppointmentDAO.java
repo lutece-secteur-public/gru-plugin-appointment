@@ -38,8 +38,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
@@ -85,6 +88,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_QUERY_DELETE_APPT_SLT = "DELETE FROM appointment_appointment_slot WHERE id_appointment = ?";
     private static final String SQL_QUERY_SELECT_APPT_SLT = "SELECT id_appointment, id_slot, nb_places FROM appointment_appointment_slot where id_appointment = ?";
 
+    private static final String SQL_QUERY_SELECT_BY_LIST_ID_SLOT = SQL_QUERY_SELECT_COLUMNS
+            + ",appt_slot.nb_places FROM appointment_appointment appointment INNER JOIN appointment_appointment_slot appt_slot on ( appt_slot.id_appointment = appointment.id_appointment ) where appt_slot.id_slot IN(";
     private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
     private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
     private static final String SQL_FILTER_EMAIL = "UPPER(user.email) LIKE ?";
@@ -264,6 +269,37 @@ public final class AppointmentDAO implements IAppointmentDAO
             }
         }
         return listAppointment;
+    }
+    @Override
+    public List<Appointment> findByListIdSlot( List<Integer> listIdSlot, Plugin plugin )
+    {
+        List<Appointment> list = new ArrayList<>( );
+        
+        if(CollectionUtils.isEmpty(listIdSlot)) {
+        	
+        	return list;
+        }
+        String query = SQL_QUERY_SELECT_BY_LIST_ID_SLOT + listIdSlot.stream( ).distinct( ).map( i -> "?" ).collect( Collectors.joining( "," ) ) + " )";
+
+        try ( DAOUtil daoUtil = new DAOUtil( query, plugin ) )
+        {
+            for ( int i = 0; i < listIdSlot.size( ); i++ )
+            {
+                daoUtil.setInt( i + 1, listIdSlot.get( i ) );
+            }
+            daoUtil.executeQuery( );
+
+            while ( daoUtil.next( ) )
+            {
+            	Appointment appointment = buildAppointment( daoUtil );
+            	if( list.stream().noneMatch( appt -> appt.getIdAppointment() == appointment.getIdAppointment( ))) {
+            		
+	                appointment.setListAppointmentSlot( selectAppointmentSlot( appointment.getIdAppointment( ), plugin ) );
+	                list.add( appointment );
+            	}
+            }
+        }
+        return list;
     }
 
     @Override

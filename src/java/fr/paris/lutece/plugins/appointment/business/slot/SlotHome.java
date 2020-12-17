@@ -138,6 +138,25 @@ public final class SlotHome
     {
         return _dao.findByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
     }
+    
+    /**
+     * Returns all the slot containing an appointment for the date range
+     * 
+     * @param nIdForm
+     *            the Form Id
+     * @param startingDateTime
+     *            the starting date
+     * @param endingDateTime
+     *            the ending date
+     * @param plugin
+     *            the plugin
+     * @return a list of slots whose dates are included in the given period and is containing an appointment
+     */
+    public static List<Slot> findSlotWithAppointmentByDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime ){
+        
+    	return _dao.findSlotWithAppointmentByDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
+	
+    }
 
     /**
      * Returns a list of specific slots for a form

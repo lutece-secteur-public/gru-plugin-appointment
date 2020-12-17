@@ -125,6 +125,18 @@ public interface IAppointmentDAO
      * @return a list of the appointments
      */
     List<Appointment> findByIdSlot( int nIdSlot, Plugin plugin );
+    
+    /**
+     * Returns the list of appointments of a slot
+     * 
+     * @param listIdSlot
+     *            the list Slot Id
+     * @param plugin
+     *            the plugin
+     * @return a list of the appointments
+     */
+    List<Appointment> findByListIdSlot( List<Integer> listIdSlot, Plugin plugin );
+
 
     /**
      * Returns the appointment with its reference
