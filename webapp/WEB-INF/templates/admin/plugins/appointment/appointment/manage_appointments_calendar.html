@@ -289,3 +289,13 @@
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />
+<script>
+$(document).ready(function() {
+	var btnAddComment = $('#toggle-add-comment').clone();
+    $("#calendar button").each(function() {
+        $(this).on("click", function() {
+            $(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis").append(btnAddComment);
+        });
+    });
+});
+</script>
