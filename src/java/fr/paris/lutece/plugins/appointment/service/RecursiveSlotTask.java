@@ -68,14 +68,13 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>{
 		    		subtask = new RecursiveSlotTask( nIdForm, mapReservationRule, tmpDate, tmpCompareDate, nNbPlaces ); 
 		
 		    	}
+		    	
+		    	subtask.fork();
 		        forks.add( subtask );		
 		    	tmpDate= tmpCompareDate;
 		    	tmpCompareDate= tmpCompareDate.plusMonths(1);
 	        } 		
-	        for (RecursiveSlotTask task : forks) {	
-	        	
-	        	task.fork();
-	        }
+	 
 	        for (RecursiveSlotTask task : forks) {	
 	        	
 	        	listSlot.addAll(task.join( ));

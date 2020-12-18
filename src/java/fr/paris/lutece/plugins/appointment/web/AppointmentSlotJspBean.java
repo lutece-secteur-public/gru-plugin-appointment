@@ -799,7 +799,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 					
 	                Slot slot = SlotService.findSlotById( slt.getIdSlot( ) );
 	                slt.setNbPlacestaken( slot.getNbPlacesTaken( ) );
-	                slt.setNbRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) );
+	                slt.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) );
 	                slt.setNbPotentialRemainingPlaces(slot.getNbPotentialRemainingPlaces( ));
 				}
 
@@ -996,9 +996,9 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 		            }else {
 		            	
 		                SlotSafeService.updateSlot( slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
-		                if( !appointmentsImpacted ) {
+		                if( !appointmentsImpacted && slot.getNbPlacesTaken() > 0 ) {
 		                	
-		                	appointmentsImpacted= !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slot );
+		                	appointmentsImpacted= true;
 		                }
 			            AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, String.valueOf( slot.getIdSlot( )), getUser( ) ) );
 		
@@ -1027,7 +1027,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
          
          if ( appointmentsImpacted && bOpeningHasChanged )
          {
-             addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+        	 addWarning( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
          }
          
          if ( !StringUtils.isEmpty( sbAlert.toString( )) )
@@ -1035,7 +1035,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
              Object [ ] args = {
              		sbAlert.toString( )
              };            
-             addInfo( I18nService.getLocalizedString( MESSAGE_INFO_MULTI_SURBOOKING, args, getLocale( ) ) );
+             addWarning( I18nService.getLocalizedString( MESSAGE_INFO_MULTI_SURBOOKING, args, getLocale( ) ) );
          }
     }
     /**

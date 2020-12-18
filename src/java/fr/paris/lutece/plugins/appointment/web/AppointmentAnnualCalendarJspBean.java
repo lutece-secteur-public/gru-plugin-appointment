@@ -48,6 +48,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
@@ -56,6 +57,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
+import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
@@ -96,11 +98,8 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     private static final String MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED = "appointment.modifyCalendarSlots.messageValidatedAppointmentsImpacted";
     private static final String INFO_PARAMETER_REMOVED = "appointment.info.advancedparameters.removed";
     private static final String INFO_ADVANCED_PARAMETERS_UPDATED = "appointment.info.advancedparameters.updated";
-
-
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
    
-
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_WEEK_DEFINITION = "id_week_definition";
@@ -108,21 +107,16 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     private static final String PARAMETER_DATE_END_OF_APPLY = "ending_date_of_apply";
     private static final String PARAMETER_ID_RESERVATION_RULE = "id_reservation_rule";
     private static final String PARAMETER_START_YEAR= "start_year";
-
-
-
+    // Mrker
+    private static final String MARK_APPOINTMENT_FORM = "appointmentform";
     private static final String MARK_LIST_RESERVATION_RULE = "listReservationRule";
     private static final String MARK_LIST_WEEK_DEFINITION = "listWeekDefinition";
     private static final String MARK_ID_FORM = "id_form";
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_START_YEAR= "start_year";
-
-
     // Views
     private static final String VIEW_MANAGE_ANNUAL_CALENDAR = "manageAnnualCalendar";
-   
     // Actions
-   
     private static final String ACTION_UNASSIGN_WEEK = "doUnssignWeek";
     private static final String ACTION_ASSIGN_WEEK = "doAssignWeek";
 
@@ -146,6 +140,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     public String getViewManageAnnualCalendar( HttpServletRequest request )
     {
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
+        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         String strStartYear = request.getParameter( PARAMETER_START_YEAR );
         int nStartYear;
         List<WeekDefinition> listWeek= WeekDefinitionService.findListWeekDefinition( nIdForm );
@@ -164,6 +159,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         model.put( MARK_LIST_WEEK_DEFINITION, listWeek );
         model.put( MARK_LIST_RESERVATION_RULE, listRule );
         model.put( MARK_ID_FORM,  nIdForm );
+        model.put( MARK_APPOINTMENT_FORM, form );
         model.put(MARK_START_YEAR, nStartYear);
         model.put(MARK_LOCALE_TINY, getLocale( ) );
 

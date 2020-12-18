@@ -7,7 +7,7 @@
 </style>
 <@row>
 	<@columns>
-        <@messages infos=infos errors=errors />
+		<@messages errors=errors warnings=warnings infos=infos />
         <@tabs params=' style="margin-top:15px"'>
             <@tabList>
                 <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}' title='#i18n{appointment.typicalWeek.pageTitle}' active=false />
@@ -171,4 +171,5 @@ $(function() {
         ]
     });
 });
+$('.content-header > h1 > small').html( "${appointmentform.title}" );
 </script>

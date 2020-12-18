@@ -244,7 +244,7 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 		</#if>
 	</@tabList>
 	<@tabContent>
-		<@messages errors=errors infos=infos />
+		<@messages errors=errors warnings=warnings infos=infos />
 		<#nested>
 		<#if formCalendarErrors??>
 			<div class="layout-wrapper"></div>
