@@ -303,7 +303,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) )
             {
             	
-                if ( !AppointmentUtilities.checkNoAppointmentsImpacted( listSlotsImpactedWithAppointment, _appointmentForm.getIdReservationRule( ) ) )
+                if ( !AppointmentUtilities.checkNoAppointmentsImpacted( listSlotsImpactedWithAppointment, _appointmentForm ) )
                 {
                     addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
                     return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ), PARAMETER_ID_RULE, _appointmentForm.getIdReservationRule( ) );

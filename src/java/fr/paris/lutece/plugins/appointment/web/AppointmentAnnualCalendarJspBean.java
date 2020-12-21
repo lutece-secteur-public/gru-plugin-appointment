@@ -245,7 +245,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
             // if there are appointments impacted            
             if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) )
             {
-                addError( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+                addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
                 return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, week.getDateOfApply().getYear() );
             }   
             SlotService.deleteListSlots( listSlotsImpacted );

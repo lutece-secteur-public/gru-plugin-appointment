@@ -745,7 +745,7 @@ public final class AppointmentUtilities
      *            the appointment form
      * @return true if there are appointments impacted
      */
-    public static boolean checkNoAppointmentsImpacted( List<Appointment> listAppointment, int nIdForm,int nIdreservationRule,
+    public static boolean checkNoAppointmentsImpacted( List<Appointment> listAppointment, int nIdForm, int nIdreservationRule,
             AppointmentFormDTO appointmentForm )
     {
         boolean bNoAppointmentsImpacted = true;
@@ -804,6 +804,62 @@ public final class AppointmentUtilities
         }
 
         return bNoAppointmentsImpacted;
+    }
+    
+    /**
+     * Check if there are appointments impacted by the new week definition
+     * @param listSlotsImpacted the list of slot impacted
+     * @param appointmentForm
+     *            the appointment form
+     * @return true if there are appointments impacted
+     */
+    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotWithAppointment, AppointmentFormDTO appointmentForm )
+    {
+        // Build the previous appointment form with the previous week
+        // definition and the previous reservation rule
+        AppointmentFormDTO previousAppointmentForm = FormService.buildAppointmentForm( appointmentForm.getIdForm( ), appointmentForm.getIdReservationRule( ) );
+        // Need to check if the new definition week has more open days.
+        List<DayOfWeek> previousOpenDays = WorkingDayService.getOpenDays( previousAppointmentForm );
+        List<DayOfWeek> newOpenDays = WorkingDayService.getOpenDays( appointmentForm );
+        // If new open days
+        if ( newOpenDays.containsAll( previousOpenDays ) )
+        {
+            // Nothing to check
+        }
+        else
+        {
+            // Else we remove all the corresponding days
+            previousOpenDays.removeAll( newOpenDays );
+            // For the remaining days
+            // for each appointment, need to check if the appointment is
+            // not in the remaining open days
+           
+            for ( Slot tempSlot : listSlotWithAppointment )
+            {
+              if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
+              {
+                  return false;
+               }
+             }
+                
+        }
+        LocalTime newStartingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
+        LocalTime newEndingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
+        LocalTime oldStartingTime = LocalTime.parse( previousAppointmentForm.getTimeStart( ) );
+        LocalTime oldEndingTime = LocalTime.parse( previousAppointmentForm.getTimeEnd( ) );
+        // If we have changed the duration of an appointment
+        if ( appointmentForm.getDurationAppointments( ) != previousAppointmentForm.getDurationAppointments( ) )
+        {
+            return false;
+        }
+        // If we have change the open hours
+    
+        if ( !newStartingTime.equals( oldStartingTime )  || !newEndingTime.equals( oldEndingTime )  )
+        {
+            return false;
+        }
+
+        return true;
     }
     
     /**
