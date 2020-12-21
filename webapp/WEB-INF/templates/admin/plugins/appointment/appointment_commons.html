@@ -216,14 +216,12 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 </#macro>
 
 <#macro btnComment >
-<div id="btn-comment-main">
-	<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=['all'] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
-		<@iconStack class='fa-sm'>
-			<@icon style='plus' class='fa-stack-1x' />
-			<@icon prefix='far fa-'style='comment' class='fa-stack-2x' />
-		</@iconStack>
-	</@button>
-</div>
+<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
+	<@iconStack class='fa-sm'>
+		<@icon style='plus' class='fa-stack-1x' />
+		<@icon prefix='far fa-'style='comment' class='fa-stack-2x' />
+	</@iconStack>
+</@button>
 </#macro>
 
 <#macro appointmentTabs tab form>
@@ -250,7 +248,9 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 		<#if formCalendarErrors??>
 			<div class="layout-wrapper"></div>
 		<#else>
-			<@btnComment />
+			<div id="btn-comment-main">
+				<@btnComment />
+			</div>
 			<div id="calendar"></div>
 		</#if>
 	</@tabContent>
