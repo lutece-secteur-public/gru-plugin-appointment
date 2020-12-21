@@ -42,15 +42,14 @@
     </@columns>
 </@row>
 
-
 <div id="context-menu"></div>
-<@modal id='event-modal'  size='md' >
+<@modal id='event-modal' size='md' >
 	<@modalHeader modalTitle='#i18n{appointment.assign.typicalWeek.defaultTitle}' />
 	<@modalBody>
-		<p id="loader" class="text-center">#i18n{appointment.assign.typicalWeek.defaultTitle}</p>
 		<@tform id='form-validate' action='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp' params='enctype="multipart/form-data"'>
 			<@input type='hidden' name='action' value='doAssignWeek' />
 			<@input type='hidden' name='id_form' value='${id_form}' />
+			<@input type='hidden' name='id_week_definition' value='' />
 			<@formGroup labelFor='date_of_apply' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
 				<@inputGroup>
 					<@input type='text' name='date_of_apply' id='date_of_apply' value="" />
@@ -59,7 +58,6 @@
 					</@inputGroupItem>
 				</@inputGroup>
 			</@formGroup>
-	
 			<@formGroup labelFor='endingDate' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
 				<@inputGroup>
 					<@input type='text' name='ending_date_of_apply' id='ending_date_of_apply' value="" />
@@ -69,21 +67,20 @@
 				</@inputGroup>
 			</@formGroup>	
 			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}'>
-				<select name="id_reservation_rule" id="id_reservation_rule">
+				<select name="id_reservation_rule" id="id_reservation_rule" class="form-control">
                 <#list listReservationRule as rule>
 				    <option value="${rule.idReservationRule}">${rule.name}</option>
                 </#list>
 				</select>
 			</@formGroup>		
 			<@formGroup rows=2 class="text-center">
-				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-                <@button type='submit' name='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
-                <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
+                <@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
+                <@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger'  />
+                 <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
 			</@formGroup>	
 		</@tform>
 	</@modalBody>
 </@modal>
-
 </div>
 
 <script src="js/plugins/appointment/js-year-calendar.js"></script>
@@ -92,9 +89,10 @@
 <script src="js/locales/bootstrap-datepicker.fr.js" ></script>
 <script>
 let calendar = null;
-
 function editEvent(event) {
-  
+    if( event.weekDef != undefined  ){
+        $('#event-modal input[name="id_week_definition"]').val( event.weekDef );
+    }
     $('#event-modal input[name="date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.startDate : '');
     $('#event-modal input[name="ending_date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.endDate : '');
     $('#event-modal').modal();
@@ -104,12 +102,11 @@ function deleteEvent(event) {
    location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doUnssignWeek&id_week_definition='+event.idweekdef+'&id_form=${id_form}';
 }
 
-
 $(function() {
     calendar = new Calendar('#calendar', { 
         language: 'fr',
-         startYear: ${start_year},
-         enableContextMenu: true,
+        startYear: ${start_year},
+        enableContextMenu: true,
         enableRangeSelection: true,
         contextMenuItems:[
             {
@@ -122,27 +119,27 @@ $(function() {
             }
         ],
         selectRange: function(e) {
-            editEvent({ startDate: e.startDate, endDate: e.endDate });
+            if ( e.events.length > 0 ){
+                editEvent({ startDate: e.startDate, endDate: e.endDate, weekDef: e.events[0].idweekdef });
+            } else {
+                editEvent({ startDate: e.startDate, endDate: e.endDate });
+            }
         },
-
         mouseOnDay: function(e) {
             if(e.events.length > 0) {
                 var content = '';
-            
                 for(var i in e.events) {
                     content += '<div class="event-tooltip-content">'
                             + '<div class="event-name" style="color:' + e.events[i].color + '">' + e.events[i].name + '</div>'
                             + '<div class="event-location">' + e.events[i].location + '</div>'
                             + '</div>';
                 }
-            
                 $(e.element).popover({ 
                     trigger: 'manual',
                     container: 'body',
                     html:true,
                     content: content
                 });
-                
                 $(e.element).popover('show');
             }
         },
@@ -170,6 +167,10 @@ $(function() {
             </#list>
         ]
     });
+
+    $('#event-modal #delete').click(function( em ) {
+        $('#event-modal input[name="action"]').val( 'doUnssignWeek' );
+    })
 });
 $('.content-header > h1 > small').html( "${appointmentform.title}" );
 </script>
