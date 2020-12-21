@@ -86,6 +86,9 @@ let calendar = null;
 function editEvent(event) {
     if( event.weekDef != undefined  ){
         $('#event-modal input[name="id_week_definition"]').val( event.weekDef );
+        $('#event-modal #delete').show();
+    } else {
+        $('#event-modal #delete').hide();
     }
     $('#event-modal input[name="date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.startDate : '');
     $('#event-modal input[name="ending_date_of_apply"]').datepicker({'language':'fr'}).datepicker('update', event ? event.endDate : '');
