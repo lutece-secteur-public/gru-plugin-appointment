@@ -812,18 +812,18 @@ public final class AppointmentUtilities
      * @param newReservationRule the reservation rule
      * @return true if there are no appointments impacted
      */
-    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotsImpacted, ReservationRule newReservationRule  )
+    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotsImpacted, int idReservationRule  )
     {
     	
-    	  List<WorkingDay> listWorkingDay=  WorkingDayService.findListWorkingDayByWeekDefinitionRule( newReservationRule.getIdReservationRule( ) );
+    	  List<WorkingDay> listWorkingDay=  WorkingDayService.findListWorkingDayByWeekDefinitionRule( idReservationRule );
           for ( Slot slot : listSlotsImpacted )
           {        	  
         	  WorkingDay workingDay= listWorkingDay.stream().filter(day -> day.getDayOfWeek() == slot.getDate().getDayOfWeek().getValue( ) ).findFirst().orElse(null);
         	  if (workingDay != null ) {
         		  
-        		 if( !workingDay.getListTimeSlot().stream().anyMatch(  time -> slot.getStartingTime().equals(time.getStartingTime()) && slot.getEndingTime().equals(time.getEndingTime()))){
+        		 if( workingDay.getListTimeSlot().stream().noneMatch(  time -> slot.getStartingTime().equals(time.getStartingTime()) && slot.getEndingTime().equals(time.getEndingTime()))){
         	  		  
-        		  return false;
+        		   return false;
         		 }
         	  
         	  }else {

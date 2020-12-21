@@ -308,6 +308,7 @@ public final class SlotSafeService
                 int nNewPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( ) + nbPotentialRemainingPlaces;
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
                 SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, nIdSlot );
+                SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
 
             }
         }
@@ -339,6 +340,8 @@ public final class SlotSafeService
                 int nNewPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( ) - nbPotentialRemainingPlaces;
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
                 SlotHome.updatePotentialRemainingPlaces( nNewPotentialRemainingPlaces, nIdSlot );
+                SlotListenerManager.notifyListenersSlotChange( slot.getIdSlot( ) );
+
             }
 
         }

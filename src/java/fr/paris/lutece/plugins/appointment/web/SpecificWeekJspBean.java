@@ -40,7 +40,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -56,22 +55,17 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
-import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
-import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Period;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
-import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.log.LogUtilities;
-import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
@@ -80,21 +74,15 @@ import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
-import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
-import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.message.AdminMessage;
-import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-import fr.paris.lutece.util.url.UrlItem;
 
 /**
  * JspBean to manage calendar slots
@@ -102,13 +90,13 @@ import fr.paris.lutece.util.url.UrlItem;
  * @author Laurent Payen
  *
  */
-@Controller( controllerJsp = AppointmentSlotJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
-public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBean
+@Controller( controllerJsp = SpecificWeekJspBean.JSP_MANAGE_APPOINTMENT_SLOTS, controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentFormJspBean.RIGHT_MANAGEAPPOINTMENTFORM )
+public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     /**
      * JSP of this JSP Bean
      */
-    public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageAppointmentSlots.jsp";
+    public static final String JSP_MANAGE_APPOINTMENT_SLOTS = "ManageSpecificWeek.jsp";
 
     /**
      * Serial version UID
@@ -117,10 +105,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
 
     // Messages
     private static final String MESSAGE_SPECIFIC_WEEK_PAGE_TITLE = "appointment.specificWeek.pageTitle";
-    private static final String MESSAGE_TYPICAL_WEEK_PAGE_TITLE = "appointment.typicalWeek.pageTitle";
     private static final String MESSAGE_MODIFY_SLOT_PAGE_TITLE = "appointment.modifyCalendarSlots.pageTitle";
-    private static final String MESSAGE_MODIFY_TIME_SLOT_PAGE_TITLE = "appointment.modifyCalendarSlots.pageTitle";
-    private static final String MESSAGE_WARNING_CHANGES_APPLY_TO_ALL = "appointment.modifyCalendarSlots.warningModifiyingEndingTime";
     private static final String MESSAGE_ERROR_TIME_END_BEFORE_TIME_START = "appointment.modifyCalendarSlots.errorTimeEndBeforeTimeStart";
     private static final String MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM = "appointment.message.error.slotCanNotEndAfterDayOrForm";
     private static final String MESSAGE_ERROR_APPOINTMENT_ON_SLOT = "appointment.message.error.appointmentOnSlot";
@@ -130,24 +115,17 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_INFO_MULTI_SURBOOKING = "appointment.modifyCalendarMultiSlots.messageSurbooking";
 
     private static final String MESSAGE_INFO_OVERLOAD = "appointment.modifyCalendarSlots.messageOverload";
-    private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
-    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
-    private static final String MESSAGE_CONFIRM_REMOVE_WEEK_DEFINITION = "appointment.message.confirmRemoveWeekDefinition";
     private static final String MESSAGE_ERROR_PARSING_JSON = "appointment.message.error.parsing.json";
-    private static final String MESSAGE_ERROR_RULE_ASSIGNED = "appointment.message.error.rule.assigned";
-
 
     // Parameters
     private static final String PARAMETER_ENDING_DATE_TO_APPLY = "ending_date_apply";
     private static final String PARAMETER_STARTING_DATE_TO_APPLY = "starting_date_apply";
     private static final String PARAMETER_ENDING_DATE_OF_DISPLAY = "ending_date_of_display";
     private static final String PARAMETER_DATE_OF_DISPLAY = "date_of_display";
-    private static final String PARAMETER_ERROR_MODIFICATION = "error_modification";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_SLOT = "id_slot";
     private static final String PARAMETER_STARTING_DATE_TIME = "starting_date_time";
     private static final String PARAMETER_ENDING_DATE_TIME = "ending_date_time";
-    private static final String PARAMETER_ID_TIME_SLOT = "id_time_slot";
     private static final String PARAMETER_EVENTS_COMMENTS = "comment_events";
     private static final String PARAMETER_DAY_OF_WEEK = "dow";
     private static final String PARAMETER_EVENTS = "events";
@@ -158,381 +136,39 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String PARAMETER_IS_SPECIFIC = "is_specific";
     private static final String PARAMETER_ENDING_TIME = "ending_time";
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
-    private static final String PARAMETER_ID_RULE = "id_reservation_rule";
 
     private static final String PARAMETER_SHIFT_SLOT = "shift_slot";
     private static final String PARAMETER_DATA = "slotsData";
     private static final String PARAMETER_IDENTICAL = "identical";
     private static final String PARAMETER_CAPACITY_MOD = "capacity";
+    // Constantes
+    private static final String VAR_CAP= "var_cap";
+    private static final String NEW_CAP= "new_cap";
 
     // Marks
-    private static final String MARK_TIME_SLOT = "timeSlot";
     private static final String MARK_SLOT = "slot";
     private static final String MARK_LOCALE_TINY = "locale";
-    private static final String MARK_LIST_RESERVATION_RULE = "listReservationRule";
-    private static final String MARK_ID_RULE = "id_reservation_rule";
     // Views
     private static final String VIEW_MANAGE_SPECIFIC_WEEK = "manageSpecificWeek";
-    private static final String VIEW_MANAGE_TYPICAL_WEEK = "manageTypicalWeek";
-    private static final String VIEW_MODIFY_TIME_SLOT = "viewModifyTimeSlot";
     private static final String VIEW_MODIFY_SLOT = "viewModifySlot";
 
     // Actions
-    private static final String ACTION_DO_MODIFY_TIME_SLOT = "doModifyTimeSlot";
     private static final String ACTION_DO_MODIFY_SLOT = "doModifySlot";
-    private static final String ACTION_MODIFY_ADVANCED_PARAMETERS = "modifyAdvancedParameters";
-    private static final String ACTION_CONFIRM_REMOVE_PARAMETER = "confirmRemoveParameter";
-    private static final String ACTION_REMOVE_PARAMETER = "doRemoveParameter";
     private static final String ACTION_DO_MODIFY_LIST_SLOT = "doModifyListSlot";
-    private static final String ACTION_CREATE_ADVANCED_PARAMETERS = "createAdvancedParameters";
 
     // Templates
     private static final String TEMPLATE_MANAGE_SPECIFIC_WEEK = "admin/plugins/appointment/slots/manage_specific_week.html";
-    private static final String TEMPLATE_MANAGE_TYPICAL_WEEK = "admin/plugins/appointment/slots/manage_typical_week.html";
-    private static final String TEMPLATE_MODIFY_TIME_SLOT = "admin/plugins/appointment/slots/modify_time_slot.html";
     private static final String TEMPLATE_MODIFY_SLOT = "admin/plugins/appointment/slots/modify_slot.html";
-
-    // Session variable to store working values
-    private static final String SESSION_ATTRIBUTE_TIME_SLOT = "appointment.session.timeSlot";
-    private static final String SESSION_ATTRIBUTE_SLOT = "appointment.session.slot";
-    private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
 
     // Porperties
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
 
     // Infos
-    private static final String INFO_ADVANCED_PARAMETERS_UPDATED = "appointment.info.advancedparameters.updated";
-    private static final String INFO_PARAMETER_REMOVED = "appointment.info.advancedparameters.removed";
+    
+    private AppointmentFormDTO _appointmentForm;
+    private Slot _slot;
 
-    /**
-     * Get the view of the typical week
-     * 
-     * @param request
-     *            the request
-     * @return the page
-     */
-    @View( value = VIEW_MANAGE_TYPICAL_WEEK )
-    public String getViewManageTypicalWeek( HttpServletRequest request )
-    {
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
-        int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        String strIdReservationRule = request.getParameter( PARAMETER_ID_RULE );
-
-        int nIdReservationRule = 0;
-        if ( StringUtils.isNotEmpty( strIdReservationRule ) )
-        {
-        	nIdReservationRule = Integer.parseInt( strIdReservationRule );
-        }
-        LocalDate dateOfApply = LocalDate.now( );
-        ReservationRule reservationRule;
-        if ( nIdReservationRule != 0 )
-        {
-        	reservationRule = ReservationRuleService.findReservationRuleById( nIdReservationRule );
-        }
-        else
-        {
-        	reservationRule = new ReservationRule( );
-        }
-        Map<String, Object> model = getModel( );
-        AppointmentFormDTO appointmentForm = null;
-       
-        List<String> listDayOfWeek = new ArrayList<>( );
-        List<TimeSlot> listTimeSlot = new ArrayList<>( );
-        LocalTime minStartingTime = LocalTime.MIN;
-        LocalTime maxEndingTime = LocalTime.MAX;
-        if ( nIdReservationRule == 0 )
-        {
-            appointmentForm = FormService.buildAppointmentFormLight( nIdForm );            
-
-        }
-        else
-        {
-           
-            appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule );
-            List<WorkingDay> listWorkingDay = reservationRule.getListWorkingDay( );
-            listDayOfWeek = new ArrayList<>( WorkingDayService.getSetDaysOfWeekOfAListOfWorkingDayForFullCalendar( listWorkingDay ) );
-            listTimeSlot = TimeSlotService.getListTimeSlotOfAListOfWorkingDay( listWorkingDay, dateOfApply );
-            minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
-            maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
-        }
-           
-        model.put( PARAMETER_DAY_OF_WEEK, listDayOfWeek );
-        model.put( PARAMETER_EVENTS, listTimeSlot );
-        model.put( PARAMETER_MIN_TIME, minStartingTime );
-        model.put( PARAMETER_MAX_TIME, maxEndingTime );
-        model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
-        model.put( MARK_ID_RULE, nIdReservationRule );
-        model.put( MARK_LIST_RESERVATION_RULE, ReservationRuleService.findListReservationRule( nIdForm ));
-        AppointmentFormJspBean.addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
-        return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model );
-    }
-    @Action( ACTION_CREATE_ADVANCED_PARAMETERS )
-    public String doCreateAdvancedParameters( HttpServletRequest request ) throws AccessDeniedException
-    {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        int nIdForm = Integer.parseInt( strIdForm );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                (User) getUser( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
-        }
-        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        populate( appointmentForm, request );
-        appointmentForm.setCalendarTemplateId( 1 );
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX )|| !checkConstraints( appointmentForm ) )
-        {
-        	addError( PARAMETER_ERROR_MODIFICATION );
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, appointmentForm.getIdReservationRule( ) );
-        }
-       
-       
-        int nIdreservationRule= ReservationRuleService.createAdvancedParameters( appointmentForm );
-
-        AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        addInfo( INFO_ADVANCED_PARAMETERS_UPDATED, getLocale( ) );
-        return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdreservationRule );
-    }
-
-    @Action( ACTION_MODIFY_ADVANCED_PARAMETERS )
-    public String doModifyAdvancedParameters( HttpServletRequest request ) throws AccessDeniedException
-    {
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        int nIdForm = Integer.parseInt( strIdForm );
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                (User) getUser( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
-        }
-        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        populate( appointmentForm, request );
-        if ( !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX ) ||!validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
-        {
-        	addError( PARAMETER_ERROR_MODIFICATION );
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, appointmentForm.getIdReservationRule( ) );
-        }
-        List<Slot> listSlotsImpacted= new ArrayList<>();        
-		List<WeekDefinition> listWeekDefinition= WeekDefinitionService.findByReservationRule(appointmentForm.getIdReservationRule( ));
-       
-		for( WeekDefinition week: listWeekDefinition ) {
-        	
-            listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, week.getDateOfApply( ).atStartOfDay( ), week.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));
-
-        }
-        
-        List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
-        // if there are slots impacted
-        if ( CollectionUtils.isNotEmpty( listSlotsImpacted ) )
-        {
-            // if there are appointments impacted
-            if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
-            {
-                if ( !AppointmentUtilities.checkNoAppointmentsImpacted( listAppointmentsImpacted, nIdForm, appointmentForm.getIdReservationRule( ), appointmentForm ) )
-                {
-                    request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
-                    addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
-                    return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, appointmentForm.getIdReservationRule( ) );
-                }
-                manageTheSlotsAndAppointmentsImpacted( listAppointmentsImpacted, listSlotsImpacted, Boolean.TRUE, appointmentForm.getMaxCapacityPerSlot( ),
-                        Boolean.FALSE, Boolean.FALSE );
-            }
-            else
-            {
-                // No check, delete all the slots
-                SlotService.deleteListSlots( listSlotsImpacted );
-            }
-        }
-        ReservationRuleService.updateAdvancedParameters( appointmentForm );
-
-        AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        addInfo( INFO_ADVANCED_PARAMETERS_UPDATED, getLocale( ) );
-        return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, appointmentForm.getIdReservationRule( ) );
-    }
-
-    /**
-     * Manages the removal form of a appointment whose identifier is in the HTTP request
-     * 
-     * @param request
-     *            The HTTP request
-     * @return the HTML code to confirm
-     */
-    @Action( ACTION_CONFIRM_REMOVE_PARAMETER )
-    public String getConfirmRemoveParameter( HttpServletRequest request )
-    {
-        UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_PARAMETER ) );       
-        url.addParameter( PARAMETER_ID_RULE, request.getParameter( PARAMETER_ID_RULE ) );
-        url.addParameter( PARAMETER_ID_FORM, request.getParameter( PARAMETER_ID_FORM ) );
-        
-        String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_WEEK_DEFINITION, url.getUrl( ),
-                AdminMessage.TYPE_CONFIRMATION );
-        return redirect( request, strMessageUrl );
-    }
-    /**
-     * Handles the removal form of a week rul
-     * 
-     * @param request
-     *            The HTTP request
-     * @throws AccessDeniedException
-     *             If the user is not authorized to access this feature
-     */
-    @Action( ACTION_REMOVE_PARAMETER )
-    public String doRemoveParameter( HttpServletRequest request ) throws AccessDeniedException
-    {
-    	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        int nIdReservationRule = Integer.parseInt( request.getParameter( PARAMETER_ID_RULE ) );
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findByReservationRule( nIdReservationRule );
-        if( CollectionUtils.isNotEmpty( listWeekDefinition)) {
-        	
-            return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_RULE_ASSIGNED, AdminMessage.TYPE_STOP ) );
-        }
-        
-        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
-                (User) getUser( ) ) )
-        {
-            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
-        }
-        ReservationRuleService.removeReservationRule( nIdReservationRule );
-        addInfo( INFO_PARAMETER_REMOVED, getLocale( ) );
-        return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, Integer.parseInt( strIdForm ) );        
-    }
-    /**
-     * Get the view to modify a time slot
-     * 
-     * @param request
-     *            the request
-     * @return the page
-     */
-    @View( VIEW_MODIFY_TIME_SLOT )
-    public String getViewModifyTimeSlot( HttpServletRequest request )
-    {
-        int nIdTimeSlot = Integer.parseInt( request.getParameter( PARAMETER_ID_TIME_SLOT ) );
-        TimeSlot timeSlot = (TimeSlot) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
-        if ( ( timeSlot == null ) || ( nIdTimeSlot != timeSlot.getIdTimeSlot( ) ) )
-        {
-            timeSlot = TimeSlotService.findTimeSlotById( nIdTimeSlot );
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_TIME_SLOT, timeSlot );
-        }
-        addInfo( MESSAGE_WARNING_CHANGES_APPLY_TO_ALL, getLocale( ) );
-        Map<String, Object> model = getModel( );
-        model.put( PARAMETER_ID_FORM, request.getParameter( PARAMETER_ID_FORM ) );
-        model.put( MARK_ID_RULE, request.getParameter( PARAMETER_ID_RULE ) );
-        model.put( MARK_TIME_SLOT, timeSlot );
-        return getPage( MESSAGE_MODIFY_TIME_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_TIME_SLOT, model );
-    }
-
-    /**
-     * Do modify a time slot
-     * 
-     * @param request
-     *            the request
-     * @return to the page of the typical week
-     */
-    @Action( ACTION_DO_MODIFY_TIME_SLOT )
-    public String doModifyTimeSlot( HttpServletRequest request )
-    {
-        TimeSlot timeSlotFromSession = (TimeSlot) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
-        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-        int nIdForm = Integer.parseInt( strIdForm );
-        String strIdReservationRule = request.getParameter( PARAMETER_ID_RULE );
-        int nIdReservationRule = Integer.parseInt( strIdReservationRule );
-        
-        String strIdTimeSlot = request.getParameter( PARAMETER_ID_TIME_SLOT );
-        int nIdTimeSlot = Integer.parseInt( strIdTimeSlot );
-    	TimeSlot oldTimeSlot = TimeSlotService.findTimeSlotById( nIdTimeSlot );
-
-        if ( timeSlotFromSession == null || nIdTimeSlot != timeSlotFromSession.getIdTimeSlot( ) )
-        {
-            timeSlotFromSession = oldTimeSlot; 
-        }
-        boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
-        boolean bOpeningHasChanged = false;
-        int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-        LocalTime endingTime = LocalTime.parse( request.getParameter( PARAMETER_ENDING_TIME ) );
-        boolean bShiftSlot = Boolean.parseBoolean( request.getParameter( PARAMETER_SHIFT_SLOT ) );
-        boolean bEndingTimeHasChanged = false;
-        boolean bMaxCapacityHasChanged = false;
-        if ( bIsOpen != timeSlotFromSession.getIsOpen( ) )
-        {
-            timeSlotFromSession.setIsOpen( bIsOpen );
-            bOpeningHasChanged = true;
-        }
-        if ( nMaxCapacity != oldTimeSlot.getMaxCapacity( ) )
-        {
-            timeSlotFromSession.setMaxCapacity( nMaxCapacity );
-            bMaxCapacityHasChanged = true;
-        }
-        LocalTime previousEndingTime = oldTimeSlot.getEndingTime( );
-        if ( !endingTime.equals( previousEndingTime ) )
-        {
-            timeSlotFromSession.setEndingTime( endingTime );
-            if ( !checkEndingTimeOfTimeSlot( endingTime, timeSlotFromSession ) )
-            {
-                Map<String, String> additionalParameters = new HashMap<>( );
-                additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
-                additionalParameters.put( PARAMETER_ID_RULE, strIdReservationRule );
-                additionalParameters.put( PARAMETER_ID_TIME_SLOT, strIdTimeSlot );
-                request.getSession( ).setAttribute( SESSION_ATTRIBUTE_TIME_SLOT, timeSlotFromSession );
-                return redirect( request, VIEW_MODIFY_TIME_SLOT, additionalParameters );
-            }
-            bEndingTimeHasChanged = true;
-        }
-        List<Slot> listSlotsImpacted= new ArrayList<>();
-        
-        List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findByReservationRule( nIdReservationRule );
-        for( WeekDefinition week: listWeekDefinition ) {
-        	
-        	listSlotsImpacted.addAll( AppointmentUtilities.findSlotsImpactedByThisTimeSlot( timeSlotFromSession, nIdForm, week.getIdWeekDefinition( ), bShiftSlot ));
-
-        }
-        List<Appointment> listAppointmentsImpacted = AppointmentService.findListAppointmentByListSlot( listSlotsImpacted );
-        // If there are slots impacted
-        if ( CollectionUtils.isNotEmpty( listSlotsImpacted ) )
-        {
-            // if there are appointments impacted
-            if ( CollectionUtils.isNotEmpty( listAppointmentsImpacted ) )
-            {
-                // If the ending time of the time slot has changed or if the max
-                // capacity has decreased
-                if ( bEndingTimeHasChanged || nMaxCapacity < oldTimeSlot.getMaxCapacity( ) )
-                {
-                    // Error, the time slot can't be changed
-                    addError( MESSAGE_ERROR_APPOINTMENT_ON_SLOT, getLocale( ) );
-                    addError( listAppointmentsImpacted.size( ) + " rendez-vous impacté(s)" );
-                    Map<String, String> additionalParameters = new HashMap<>( );
-                    additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
-                    additionalParameters.put( PARAMETER_ID_RULE, strIdReservationRule );
-                    additionalParameters.put( PARAMETER_ID_TIME_SLOT, strIdTimeSlot );
-                    request.getSession( ).setAttribute( SESSION_ATTRIBUTE_TIME_SLOT, timeSlotFromSession );
-                    return redirect( request, VIEW_MODIFY_TIME_SLOT, additionalParameters );
-                }
-                // Get the validated appointment (the appointments that are not
-                // cancelled)
-                List<Appointment> listValidatedAppointments = listAppointmentsImpacted.stream( ).filter( appointment -> !appointment.getIsCancelled( ) )
-                        .collect( Collectors.toList( ) );
-                if ( bOpeningHasChanged && CollectionUtils.isNotEmpty( listValidatedAppointments ) )
-                {
-                    addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
-                }
-                manageTheSlotsAndAppointmentsImpacted( listAppointmentsImpacted, listSlotsImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged,
-                        bIsOpen );
-            }
-            else
-            {
-                // no need to check appointments, delete all the slots
-                SlotService.deleteListSlots( listSlotsImpacted );
-            }
-        }
-        TimeSlotService.updateTimeSlot( timeSlotFromSession, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
-
-        AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_TIME_SLOT, strIdTimeSlot, getUser( ) ) );
-        addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_TIME_SLOT );
-        return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
-    }
-
+   
     /**
      * Get the view of the specific week
      * 
@@ -543,21 +179,20 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     @View( defaultView = true, value = VIEW_MANAGE_SPECIFIC_WEEK )
     public String getViewManageSpecificWeek( HttpServletRequest request )
     {
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
+    	_slot = null;
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         // Get the nb weeks to display
         Display display = DisplayService.findDisplayWithFormId( nIdForm );
         int nNbWeeksToDisplay = AppPropertiesService.getPropertyInt( PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO, display.getNbWeeksToDisplay( ) );
-        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
+        if ( ( _appointmentForm == null ) || ( nIdForm != _appointmentForm.getIdForm( ) ) )
         {
-            appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
+            _appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
         }
         LocalDate dateOfDisplay = LocalDate.now( );
-        if ( appointmentForm.getDateStartValidity( ) != null && appointmentForm.getDateStartValidity( ).toLocalDate( ).isAfter( dateOfDisplay ) )
+        if ( _appointmentForm.getDateStartValidity( ) != null && _appointmentForm.getDateStartValidity( ).toLocalDate( ).isAfter( dateOfDisplay ) )
         {
-            dateOfDisplay = appointmentForm.getDateStartValidity( ).toLocalDate( );
+            dateOfDisplay = _appointmentForm.getDateStartValidity( ).toLocalDate( );
         }
         LocalDate endingDateOfDisplay = LocalDate.now( ).plusWeeks( nNbWeeksToDisplay );
         LocalDate endingValidityDate = form.getEndingValidityDate( );
@@ -596,7 +231,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( PARAMETER_EVENTS_COMMENTS,
                 CommentHome.selectCommentsList( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) );
-        AppointmentFormJspBean.addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
+        AppointmentFormJspBean.addElementsToModel( request, _appointmentForm, getUser( ), getLocale( ), model );
         model.put(MARK_LOCALE_TINY, getLocale( ) );
         return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, model );
     }
@@ -613,8 +248,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
-        Slot slot = (Slot) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_SLOT );
-        if ( slot == null )
+        if ( _slot == null )
         {
             int nIdSlot = Integer.parseInt( request.getParameter( PARAMETER_ID_SLOT ) );
             // If nIdSlot == 0, the slot has not been created yet
@@ -626,18 +260,17 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
                 boolean bIsSpecific = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_SPECIFIC ) );
                 int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
-                slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
+                _slot = SlotService.buildSlot( nIdForm, new Period( startingDateTime, endingDateTime ), nMaxCapacity, nMaxCapacity, nMaxCapacity, 0, bIsOpen,
                         bIsSpecific );
             }
             else
             {
-                slot = SlotService.findSlotById( nIdSlot );
+                _slot = SlotService.findSlotById( nIdSlot );
             }
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_SLOT, slot );
         }
         Map<String, Object> model = getModel( );
-        model.put( PARAMETER_DATE_OF_DISPLAY, slot.getDate( ) );
-        model.put( MARK_SLOT, slot );
+        model.put( PARAMETER_DATE_OF_DISPLAY, _slot.getDate( ) );
+        model.put( MARK_SLOT, _slot );
         return getPage( MESSAGE_MODIFY_SLOT_PAGE_TITLE, TEMPLATE_MODIFY_SLOT, model );
     }
 
@@ -652,7 +285,6 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
     public String doModifySlot( HttpServletRequest request )
     {
         boolean bOpeningHasChanged = false;
-        Slot slotFromSessionOrFromDb = null;
         String strIdSlot = request.getParameter( PARAMETER_ID_SLOT );
         LocalTime endingTime = LocalTime.parse( request.getParameter( PARAMETER_ENDING_TIME ) );
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
@@ -667,23 +299,19 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             if ( nIdSlot != 0 )
             {
-                slotFromSessionOrFromDb = SlotService.findSlotById( nIdSlot );
+            	_slot = SlotService.findSlotById( nIdSlot );
             }
-            else
+            
+            if ( bIsOpen != _slot.getIsOpen( ) )
             {
-                slotFromSessionOrFromDb = (Slot) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_SLOT );
-            }
-
-            if ( bIsOpen != slotFromSessionOrFromDb.getIsOpen( ) )
-            {
-                slotFromSessionOrFromDb.setIsOpen( bIsOpen );
+            	_slot.setIsOpen( bIsOpen );
                 bOpeningHasChanged = true;
             }
 
             // If we edit the slot, we need to check if this slot is not a closing
             // day
-            ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( slotFromSessionOrFromDb.getIdForm( ),
-                    slotFromSessionOrFromDb.getDate( ) );
+            ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( _slot.getIdForm( ),
+            		_slot.getDate( ) );
             if ( closingDay != null )
             {
                 // If the slot is a closing day, we need to remove it from the table
@@ -691,31 +319,30 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
                 // definition of the closing days
                 ClosingDayService.removeClosingDay( closingDay );
             }
-            if ( nMaxCapacity != slotFromSessionOrFromDb.getMaxCapacity( ) )
+            if ( nMaxCapacity != _slot.getMaxCapacity( ) )
             {
-                slotFromSessionOrFromDb.setMaxCapacity( nMaxCapacity );
+            	_slot.setMaxCapacity( nMaxCapacity );
                 // Need to set also the nb remaining places and the nb potential
                 // remaining places
                 // If the slot already exist, the good values will be set at the
                 // update of the slot with taking the old values
                 // If it is a new slot, the value set here will be good
-                slotFromSessionOrFromDb.setNbRemainingPlaces( nMaxCapacity );
-                slotFromSessionOrFromDb.setNbPotentialRemainingPlaces( nMaxCapacity );
+            	_slot.setNbRemainingPlaces( nMaxCapacity );
+            	_slot.setNbPotentialRemainingPlaces( nMaxCapacity );
             }
-            LocalTime previousEndingTime = slotFromSessionOrFromDb.getEndingTime( );
+            LocalTime previousEndingTime = _slot.getEndingTime( );
             if ( !endingTime.equals( previousEndingTime ) )
             {
-                slotFromSessionOrFromDb.setEndingTime( endingTime );
-                slotFromSessionOrFromDb.setEndingDateTime( slotFromSessionOrFromDb.getDate( ).atTime( endingTime ) );
+            	_slot.setEndingTime( endingTime );
+            	_slot.setEndingDateTime( _slot.getDate( ).atTime( endingTime ) );
                 bEndingTimeHasChanged = true;
             }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-            if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( slotFromSessionOrFromDb, bShiftSlot ) )
-                    || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, slotFromSessionOrFromDb ) ) )
+            if ( ( bEndingTimeHasChanged && !checkNoAppointmentsOnThisSlotOrOnTheSlotsImpacted( _slot, bShiftSlot ) )
+                    || ( bEndingTimeHasChanged && !checkEndingTimeOfSlot( endingTime, _slot ) ) )
             {
-                request.getSession( ).setAttribute( SESSION_ATTRIBUTE_SLOT, slotFromSessionOrFromDb );
-                return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, slotFromSessionOrFromDb.getIdForm( ) );
+                return redirect( request, VIEW_MODIFY_SLOT, PARAMETER_ID_FORM, _slot.getIdForm( ) );
             }
-            SlotSafeService.updateSlot( slotFromSessionOrFromDb, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
+            SlotSafeService.updateSlot( _slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
 
         }
         finally
@@ -725,20 +352,19 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, strIdSlot, getUser( ) ) );
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
-        boolean appointmentsImpacted = !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( slotFromSessionOrFromDb );
+        boolean appointmentsImpacted = !AppointmentUtilities.checkNoValidatedAppointmentsOnThisSlot( _slot );
         if ( appointmentsImpacted && bOpeningHasChanged )
         {
             addInfo( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
         }
-        if ( appointmentsImpacted && nMaxCapacity < slotFromSessionOrFromDb.getNbPlacesTaken( ) )
+        if ( appointmentsImpacted && nMaxCapacity < _slot.getNbPlacesTaken( ) )
         {
             addInfo( MESSAGE_INFO_SURBOOKING, getLocale( ) );
         }
 
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_SLOT );
         Map<String, String> additionalParameters = new HashMap<>( );
-        additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( slotFromSessionOrFromDb.getIdForm( ) ) );
-        additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, slotFromSessionOrFromDb.getDate( ).toString( ) );
+        additionalParameters.put( PARAMETER_ID_FORM, Integer.toString( _slot.getIdForm( ) ) );
+        additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, _slot.getDate( ).toString( ) );
         return redirect( request, VIEW_MANAGE_SPECIFIC_WEEK, additionalParameters );
     }
   
@@ -766,11 +392,11 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );        
         String strCap = request.getParameter(PARAMETER_CAPACITY_MOD);
         
-        if( strCap.equals("var_cap")) {     	
+        if( strCap.equals( VAR_CAP )) {     	
         
         	nVarMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
        
-        }else if ( strCap.equals("new_cap")){
+        }else if ( strCap.equals( NEW_CAP )){
         	
             nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
 
@@ -827,32 +453,7 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         return redirect( request, VIEW_MANAGE_SPECIFIC_WEEK, additionalParameters );
     }
  
-    /**
-     * Check the ending time of a time slot
-     * 
-     * @param endingTime
-     *            the new ending time
-     * @param timeSlot
-     *            the time slot
-     * @return false if there is an error
-     */
-    private boolean checkEndingTimeOfTimeSlot( LocalTime endingTime, TimeSlot timeSlot )
-    {
-        boolean bReturn = true;
-        WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
-        if ( endingTime.isAfter( WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay ) ) )
-        {
-            bReturn = false;
-            addError( MESSAGE_SLOT_CAN_NOT_END_AFTER_DAY_OR_FORM, getLocale( ) );
-        }
-        if ( endingTime.isBefore( timeSlot.getStartingTime( ) ) || endingTime.equals( timeSlot.getStartingTime( ) ) )
-        {
-            bReturn = false;
-            addError( MESSAGE_ERROR_TIME_END_BEFORE_TIME_START, getLocale( ) );
-        }
-        return bReturn;
-    }
-
+  
     /**
      * Check the ending time of a slot
      * 
@@ -1062,107 +663,5 @@ public class AppointmentSlotJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
     	
         return listBuilded;
-    }
-    
-    /**
-     * Update the slots with appointments impacted by a modification of a typical week or a modification of a timeSlot Delete the slots with no appointments
-     * 
-     * @param listAppointmentsImpacted
-     *            the appointments impacted
-     * @param listSlotsImpacted
-     *            the slots impacted
-     * @param bMaxCapacityHasChanged
-     *            True if the capacity has changed
-     * @param nMaxCapacity
-     *            the max capacity
-     * @param bOpeningHasChanged
-     *            true if the opening has changed
-     * @param bIsOpen
-     *            the new boolean opening value
-     */
-    private void manageTheSlotsAndAppointmentsImpacted( List<Appointment> listAppointmentsImpacted, List<Slot> listSlotsImpacted,
-            boolean bMaxCapacityHasChanged, int nMaxCapacity, boolean bOpeningHasChanged, boolean bIsOpen )
-    {
-        // Need to delete the slots that are impacted but with no
-        // appointments
-        HashSet<Integer> setSlotsImpactedWithAppointments = new HashSet<>( );
-        for ( Appointment appointment : listAppointmentsImpacted )
-        {
-            for ( AppointmentSlot apptSlot : appointment.getListAppointmentSlot( ) )
-            {
-                setSlotsImpactedWithAppointments.add( apptSlot.getIdSlot( ) );
-            }
-        }
-        List<Slot> listSlotsImpactedWithoutAppointments = listSlotsImpacted.stream( )
-                .filter( slot -> !setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
-        List<Slot> listSlotsImpactedWithAppointments = listSlotsImpacted.stream( )
-                .filter( slot -> setSlotsImpactedWithAppointments.contains( slot.getIdSlot( ) ) ).collect( Collectors.toList( ) );
-
-        SlotService.deleteListSlots( listSlotsImpactedWithoutAppointments );
-
-        for ( Slot slotImpacted : listSlotsImpactedWithAppointments )
-        {
-            Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot( ) );
-
-            lock.lock( );
-            try
-            {
-            	slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
-                SlotSafeService.updateSlot( slotImpacted );
-            }
-            finally
-            {
-                lock.unlock( );
-            }
-        }
-    }
-    /**
-     * Update the capacity of the slot
-     * 
-     * @param slot
-     *            the slot to update
-      * @param bMaxCapacityHasChanged
-     *            True if the capacity has changed
-     * @param nMaxCapacity
-     *            the max capacity
-     * @param bOpeningHasChanged
-     *            true if the opening has changed
-     * @param bIsOpen
-     *            the new boolean opening value
-     * Return the slot updated          
-     */
-    private static Slot updateRemainingPlaces( Slot slot, boolean bMaxCapacityHasChanged, int nNewNbMaxCapacity, boolean bOpeningHasChanged, boolean bIsOpen )
-    {
-        slot = SlotHome.findByPrimaryKey( slot.getIdSlot( ) );
-        // If the max capacity has been modified
-        if ( bMaxCapacityHasChanged )
-        {
-            int nOldBnMaxCapacity = slot.getMaxCapacity( );            
-
-            // Need to add the diff between the old value and the new value
-            // to the remaining places (if the new is higher)
-            if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
-            {
-                int nValueToAdd = nNewNbMaxCapacity - nOldBnMaxCapacity;
-                slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) + nValueToAdd );
-                slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) + nValueToAdd );
-            }
-            else
-            {
-                // the new value is lower than the previous capacity
-                // !!!! If there are appointments on this slot and if the
-                // slot is already full, the slot will be surbooked !!!!
-                int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                slot.setNbPotentialRemainingPlaces(  slot.getNbPotentialRemainingPlaces( ) - nValueToSubstract  );
-                slot.setNbRemainingPlaces(  slot.getNbRemainingPlaces( ) - nValueToSubstract  );
-            }
-        }
-        if ( bOpeningHasChanged )
-        {
-        	slot.setIsSpecific( bIsOpen );
-        }
-        slot.setMaxCapacity(nNewNbMaxCapacity);
-
-        return slot;
-    }
+    }   
 }

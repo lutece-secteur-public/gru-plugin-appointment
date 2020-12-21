@@ -92,6 +92,26 @@ public final class SlotService
         }
         return listSlots;
     }
+    /**
+     * Find slots with appointment of a form on a given period of time
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @param startingDateTime
+     *            the starting date time to search
+     * @param endingDateTime
+     *            the ending date time to search
+     * @return a list of the slots found
+     */
+    public static List<Slot> findSlotWithAppointmentByDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime )
+    {
+        List<Slot> listSlots = SlotHome.findSlotWithAppointmentByDateRange( nIdForm, startingDateTime, endingDateTime );
+        for ( Slot slot : listSlots )
+        {
+            addDateAndTimeToSlot( slot );
+        }
+        return listSlots;
+    }
 
     /**
      * Find specific slots of a form

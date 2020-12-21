@@ -470,10 +470,10 @@ public final class WeekDefinitionService
         LocalDate endingDate=	newWeek.getEndingDateOfApply( );	
         List<WeekDefinition> listWeek= WeekDefinitionService.findListWeekDefinition( nIdForm );
         
-        List<WeekDefinition> listWeekTodRemove= listWeek.stream().filter(week -> (week.getDateOfApply().isAfter( startingDate ) || week.getDateOfApply().isEqual( startingDate ))
+        List<WeekDefinition> listWeekToRemove= listWeek.stream().filter(week -> (week.getDateOfApply().isAfter( startingDate ) || week.getDateOfApply().isEqual( startingDate ))
        		                   &&( week.getEndingDateOfApply().isBefore( endingDate ) || week.getEndingDateOfApply().isEqual( endingDate ) )).collect( Collectors.toList( ));
       
-        listWeek.removeAll( listWeekTodRemove );
+        listWeek.removeAll( listWeekToRemove );
         
         listWeek = listWeek.stream().filter(p -> ( (p.getDateOfApply( ).isBefore( startingDate) || p.getDateOfApply( ).isEqual( startingDate))
        		&& p.getEndingDateOfApply().isAfter( startingDate ) ||  p.getEndingDateOfApply().isEqual( startingDate ) ) ||        		
@@ -511,11 +511,11 @@ public final class WeekDefinitionService
        }
        buildListWeekToEdit.add( newWeek );
 
-       assignWeekDefintion( listWeekTodRemove, buildListWeekToEdit );
+       assignWeekDefintion( listWeekToRemove, buildListWeekToEdit,  nIdForm );
     }
     
     
-    private static void assignWeekDefintion( List<WeekDefinition> listWeekTodRemove , List<WeekDefinition> listWeekToEdit) {
+    private static void assignWeekDefintion( List<WeekDefinition> listWeekTodRemove , List<WeekDefinition> listWeekToEdit, int nIdForm) {
     	
 
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
@@ -523,15 +523,17 @@ public final class WeekDefinitionService
 	    {
 	    	for(WeekDefinition week: listWeekTodRemove) {
 	    		
-	    		WeekDefinitionHome.delete( week.getIdWeekDefinition( ));
+	    		removeWeekDefinition(week.getIdWeekDefinition( ), nIdForm);
 	    	}
 	    	for( WeekDefinition week: listWeekToEdit ) {
 	    		if( week.getIdWeekDefinition() != 0 ) {
-	    			
-	    			WeekDefinitionHome.delete( week.getIdWeekDefinition( ));
+
+	    			removeWeekDefinition(week.getIdWeekDefinition( ), nIdForm);
+
 	    		}
+	    		
 	    		WeekDefinitionHome.create( week );
-	
+	            WeekDefinitionManagerListener.notifyListenersWeekDefinitionCreation( week.getIdWeekDefinition( ) );
 	    	}
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
 

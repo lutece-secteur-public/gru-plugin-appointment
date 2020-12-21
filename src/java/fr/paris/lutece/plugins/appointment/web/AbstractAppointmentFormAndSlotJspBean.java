@@ -219,7 +219,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      * @param appointmentForm the appointmentForm DTO
      * @return false if the form type is "multi-slot" and Max people Per Slot is not set to 1
      */
-    private boolean checkMultiSlotFormTypeBookablePlaces( AppointmentFormDTO appointmentForm )
+    protected boolean checkMultiSlotFormTypeBookablePlaces( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
         if ( appointmentForm.getIsMultislotAppointment( ) && appointmentForm.getMaxPeoplePerAppointment( ) != 1 )

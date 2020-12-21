@@ -50,7 +50,6 @@ import org.apache.commons.lang3.StringUtils;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
-import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
@@ -93,7 +92,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     private static final String MESSAGE_ANNUAL_CALENDAR_PAGE_TITLE = "appointment.annual.calendar.pageTitle";
     private static final String MESSAGE_ERROR_REMOVE_WEEK = "appointment.message.error.removeWeek";
     private static final String MESSAGE_ERROR_MODIFICATION = "appointment.message.error.errorModification";
-
+    private static final String MESSAGE_ERROR_REMOVE_WEEK_DATE_PASSED ="appointment.message.error.removeWeek.date.passed";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
     private static final String MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED = "appointment.modifyCalendarSlots.messageValidatedAppointmentsImpacted";
     private static final String INFO_PARAMETER_REMOVED = "appointment.info.advancedparameters.removed";
@@ -200,13 +199,13 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
 
         listSlotsImpacted.addAll( SlotHome.findByIdFormAndDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));
       
-        List<Slot> listSlotsImpactedWithAppointment= SlotHome.findSlotWithAppointmentByDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
+        List<Slot> listSlotsImpactedWithAppointment= SlotService.findSlotWithAppointmentByDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
       
         if ( CollectionUtils.isNotEmpty( listSlotsImpacted ) )
         {
             // if there are appointments impacted
             
-            if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) && !AppointmentUtilities.checkNoAppointmentsImpacted( listSlotsImpactedWithAppointment, reservationRule ) )
+            if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) && !AppointmentUtilities.checkNoAppointmentsImpacted( listSlotsImpactedWithAppointment, reservationRule.getIdReservationRule( ) ) )
             {
                 addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
                 return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
@@ -249,6 +248,13 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
              return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );
 
         }
+        LocalDate dateNow= LocalDate.now( );
+        if( weekToDelete.getDateOfApply().isBefore( dateNow )) {
+        	
+        	 addError( MESSAGE_ERROR_REMOVE_WEEK_DATE_PASSED, getLocale() );
+             return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );
+
+        }
         List<Slot> listSlotsImpactedWithAppointment= SlotHome.findSlotWithAppointmentByDateRange(nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
         
         if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ))
@@ -260,7 +266,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));
         
         SlotService.deleteListSlots( listSlotsImpacted );
-		WeekDefinitionHome.delete( weekToDelete.getIdWeekDefinition( ));      
+		WeekDefinitionService.removeWeekDefinition(weekToDelete.getIdWeekDefinition( ), nIdForm);      
         addInfo(INFO_PARAMETER_REMOVED,getLocale( ));
 
         return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );

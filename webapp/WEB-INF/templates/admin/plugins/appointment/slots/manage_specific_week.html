@@ -27,7 +27,7 @@
 
 <@modal id='updatePlanningSlot'>
     <@modalBody>
-        <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>					
+        <@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp'>					
             <input type="hidden" name="action" value="doModifyListSlot" >
             <input type="hidden" name="id_form" value="${appointmentform.idForm}">
             <input type="hidden" id="date_of_display" name="date_of_display" value="${date_of_display}" >
@@ -67,7 +67,7 @@
 
 <@modal id='updatePlanningMultiSlot'>
     <@modalBody>
-        <@tform action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
+        <@tform action="jsp/admin/plugins/appointment/ManageSpecificWeek.jsp">
             <input type="hidden" name="action" value="doModifyListSlot" >
             <input type="hidden" name="id_form" value="${appointmentform.idForm}">
             <input type="hidden" id="slotsData" name="slotsData" value=''>
@@ -116,7 +116,7 @@
     var maxTime = '${max_time}';
     var endingDateOfDisplay = '${ending_date_of_display}';
     var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
-    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}';
+    var eventUrl = 'jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=viewModifySlot&id_form=${appointmentform.idForm}';
     var events = [
     <#if events??>
         <#list events as event>
