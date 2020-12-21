@@ -117,6 +117,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     private static final String VIEW_MANAGE_ANNUAL_CALENDAR = "manageAnnualCalendar";
     // Actions
     private static final String ACTION_UNASSIGN_WEEK = "doUnssignWeek";
+    private static final String ACTION_REMOVE_WEEK_FROM_CALENDAR = "doRemoveWeekFromCalendar";
     private static final String ACTION_ASSIGN_WEEK = "doAssignWeek";
 
     // Templates
@@ -144,16 +145,12 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         int nStartYear;
         List<WeekDefinition> listWeek= WeekDefinitionService.findListWeekDefinition( nIdForm );
         List<ReservationRule> listRule= ReservationRuleHome.findByIdForm( nIdForm );
-        if( StringUtils.isNotEmpty( strStartYear) && StringUtils.isNumeric( strStartYear )) {
-        	
-        	nStartYear= Integer.parseInt(strStartYear);
-        
+        if( StringUtils.isNotEmpty( strStartYear) && StringUtils.isNumeric( strStartYear )) {        	
+        	nStartYear= Integer.parseInt(strStartYear);        
         }else {
         	
         	nStartYear= LocalDate.now( ).getYear();
-
-        }
-        
+        }        
         Map<String, Object> model = getModel( );
         model.put( MARK_LIST_WEEK_DEFINITION, listWeek );
         model.put( MARK_LIST_RESERVATION_RULE, listRule );
@@ -161,7 +158,6 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         model.put( MARK_APPOINTMENT_FORM, form );
         model.put(MARK_START_YEAR, nStartYear);
         model.put(MARK_LOCALE_TINY, getLocale( ) );
-
 
         return getPage( MESSAGE_ANNUAL_CALENDAR_PAGE_TITLE, TEMPLATE_MANAGE_ANNUAL_CALENDAR, model );
     	
@@ -175,8 +171,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     @Action( ACTION_ASSIGN_WEEK)
     public String doAssignWeek( HttpServletRequest request ) throws AccessDeniedException
     {
-    	 String strIdForm = request.getParameter( PARAMETER_ID_FORM );
-    	 
+    	 String strIdForm = request.getParameter( PARAMETER_ID_FORM );    	 
          int nIdForm = Integer.parseInt( strIdForm );
          List<Slot> listSlotsImpacted= new ArrayList<>();        
 
@@ -185,35 +180,29 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
-    	WeekDefinition newWeek= new WeekDefinition( );
-    	
+    	WeekDefinition newWeek= new WeekDefinition( );   	
         populate(newWeek, request);
-     	
+        
         if ( !validateBean( newWeek, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( newWeek )  )
-        {
-        	
+        {       	
         	addError( MESSAGE_ERROR_MODIFICATION, getLocale( ) );
             return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
         }
+        
         ReservationRule reservationRule= ReservationRuleService.findReservationRuleById( newWeek.getIdReservationRule( ));
-
-        listSlotsImpacted.addAll( SlotHome.findByIdFormAndDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));
-      
+        listSlotsImpacted.addAll( SlotHome.findByIdFormAndDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));    
         List<Slot> listSlotsImpactedWithAppointment= SlotService.findSlotWithAppointmentByDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
       
         if ( CollectionUtils.isNotEmpty( listSlotsImpacted ) )
         {
-            // if there are appointments impacted
-            
+            // if there are appointments impacted           
             if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) && !AppointmentUtilities.checkNoAppointmentsImpacted( listSlotsImpactedWithAppointment, reservationRule.getIdReservationRule( ) ) )
             {
                 addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
                 return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
-            }
-   
+            }   
             updateSlotImpacted( listSlotsImpacted, listSlotsImpactedWithAppointment,reservationRule.getMaxCapacityPerSlot( ) );
-        }
-        
+        }        
         WeekDefinitionService.assignWeekDefinition( nIdForm, newWeek );
         addInfo(INFO_ADVANCED_PARAMETERS_UPDATED,getLocale( ));
 
@@ -230,11 +219,57 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     public String doUnassignWeek( HttpServletRequest request ) throws AccessDeniedException
     {
     	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
+        List<Slot> listSlotsImpacted= new ArrayList<>();                		
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
+        
+        WeekDefinition week= new WeekDefinition( );    	
+        populate(week, request);
+        week.setIdReservationRule( 0 );
+        
+        if ( !checkConstraints( week )  )
+        {        	
+        	addError( MESSAGE_ERROR_REMOVE_WEEK_DATE_PASSED, getLocale( ) );
+            return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, week.getDateOfApply().getYear() );
+        }
+        
+        listSlotsImpacted.addAll( SlotHome.findByIdFormAndDateRange( nIdForm, week.getDateOfApply( ).atStartOfDay( ), week.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));    
+        List<Slot> listSlotsImpactedWithAppointment= SlotService.findSlotWithAppointmentByDateRange( nIdForm, week.getDateOfApply( ).atStartOfDay( ), week.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
+      
+        if ( CollectionUtils.isNotEmpty( listSlotsImpacted ) )
+        {
+            // if there are appointments impacted            
+            if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ) )
+            {
+                addError( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+                return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, week.getDateOfApply().getYear() );
+            }   
+            SlotService.deleteListSlots( listSlotsImpacted );
+        }
+        
+        WeekDefinitionService.assignWeekDefinition( nIdForm, week );      
+        addInfo(INFO_PARAMETER_REMOVED,getLocale( ));
+
+        return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, week.getDateOfApply().getYear() );
+
+    }
+    /**
+     * Unassign a week
+     * @param request the request
+     * @return the page
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_REMOVE_WEEK_FROM_CALENDAR )
+    public String doRemoveWeekFromCalendar( HttpServletRequest request ) throws AccessDeniedException
+    {
+    	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
     	String strIdWeekDefinition = request.getParameter( PARAMETER_ID_WEEK_DEFINITION );
         int nIdForm = Integer.parseInt( strIdForm );
-        List<Slot> listSlotsImpacted= new ArrayList<>();        
-
-        		
+        List<Slot> listSlotsImpacted= new ArrayList<>();               		
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 (User) getUser( ) ) )
         {
@@ -262,9 +297,9 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
             addError( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale() );
             return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );
 
-        }        
-        listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));
+        }     
         
+        listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));       
         SlotService.deleteListSlots( listSlotsImpacted );
 		WeekDefinitionService.removeWeekDefinition(weekToDelete.getIdWeekDefinition( ), nIdForm);      
         addInfo(INFO_PARAMETER_REMOVED,getLocale( ));
@@ -355,8 +390,5 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
    	 	week.setDateOfApply(DateUtil.formatDate( dateOfApplay , getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ));
    	 	week.setEndingDateOfApply(DateUtil.formatDate( dateEndOfApplay , getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ));
    	 	week.setIdReservationRule(Integer.parseInt( idReservationRule ));
-
-    }
-    
-    
+    }    
 }

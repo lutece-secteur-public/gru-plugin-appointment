@@ -153,7 +153,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
     // Infos
     private static final String INFO_ADVANCED_PARAMETERS_UPDATED = "appointment.info.advancedparameters.updated";
-    private static final String INFO_GLOBAL_PARAMETERS_UPDATED = "info.globalparameters.updated";
+    private static final String INFO_GLOBAL_PARAMETERS_UPDATED = "appointment.info.globalparameters.updated";
 
     private static final String INFO_PARAMETER_REMOVED = "appointment.info.advancedparameters.removed";
     

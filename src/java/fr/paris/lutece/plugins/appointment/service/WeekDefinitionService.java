@@ -48,7 +48,6 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
-import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -509,15 +508,16 @@ public final class WeekDefinitionService
        	buildListWeekToEdit.add( week );
 
        }
-       buildListWeekToEdit.add( newWeek );
+       if(newWeek.getIdReservationRule( ) != 0 ) {
+    	   
+    	   buildListWeekToEdit.add( newWeek );
+       }
 
        assignWeekDefintion( listWeekToRemove, buildListWeekToEdit,  nIdForm );
     }
     
     
-    private static void assignWeekDefintion( List<WeekDefinition> listWeekTodRemove , List<WeekDefinition> listWeekToEdit, int nIdForm) {
-    	
-
+    private static void assignWeekDefintion( List<WeekDefinition> listWeekTodRemove , List<WeekDefinition> listWeekToEdit, int nIdForm) {    	
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
         try
 	    {
@@ -526,10 +526,9 @@ public final class WeekDefinitionService
 	    		removeWeekDefinition(week.getIdWeekDefinition( ), nIdForm);
 	    	}
 	    	for( WeekDefinition week: listWeekToEdit ) {
+	    		
 	    		if( week.getIdWeekDefinition() != 0 ) {
-
 	    			removeWeekDefinition(week.getIdWeekDefinition( ), nIdForm);
-
 	    		}
 	    		
 	    		WeekDefinitionHome.create( week );
