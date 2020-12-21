@@ -44,7 +44,7 @@
 
 
 <div id="context-menu"></div>
-<@modal id='event-modal'>
+<@modal id='event-modal'  size='md' >
 	<@modalHeader modalTitle='#i18n{appointment.assign.typicalWeek.defaultTitle}' />
 	<@modalBody>
 		<p id="loader" class="text-center">#i18n{appointment.assign.typicalWeek.defaultTitle}</p>
@@ -70,15 +70,15 @@
 			</@formGroup>	
 			<@formGroup labelFor='type' labelKey='#i18n{appointment.week.toApplay}'>
 				<select name="id_reservation_rule" id="id_reservation_rule">
-				    <#list listReservationRule as rule>
+                <#list listReservationRule as rule>
 				    <option value="${rule.idReservationRule}">${rule.name}</option>
-				    </#list>
+                </#list>
 				</select>
 			</@formGroup>		
-			<@formGroup>
+			<@formGroup rows=2 class="text-center">
 				<@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
-		                <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-
+                <@button type='submit' name='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' />
+                <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
 			</@formGroup>	
 		</@tform>
 	</@modalBody>
