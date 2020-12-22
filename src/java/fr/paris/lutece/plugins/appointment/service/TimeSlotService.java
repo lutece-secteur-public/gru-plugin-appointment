@@ -448,6 +448,22 @@ public final class TimeSlotService
             }
         }
     }
+    /**
+     * Create in database the slots given
+     * 
+     * @param listSlotToCreate
+     *            the list of slots to create in database
+     */
+    public static void updateListTimeSlot( List<TimeSlot> listTimeSlotToCUpdate )
+    {
+        if ( CollectionUtils.isNotEmpty( listTimeSlotToCUpdate ) )
+        {
+            for ( TimeSlot timeSlotTemp : listTimeSlotToCUpdate )
+            {
+                TimeSlotHome.update( timeSlotTemp );
+            }
+        }
+    }
 
     /**
      * Find the next time slots of a given time slot

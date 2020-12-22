@@ -929,45 +929,15 @@ public final class AppointmentUtilities
      */
     public static List<Slot> findSlotsImpactedByThisTimeSlot( TimeSlot timeSlot, int nIdForm, int nIdWeekDefinition, boolean bShiftSlot )
     {
-        List<Slot> listSlotsImpacted = new ArrayList<>( );
-        LocalDate maxDate = null;
+        List<Slot> listSlotsImpacted = null;
         // Get the weekDefinition that is currently modified
-        WeekDefinition currentModifiedWeekDefinition = WeekDefinitionService.findWeekDefinitionById( nIdWeekDefinition );
-        // Find the next weekDefinition, if exist, to have the max date to
-        // search slots with appointments
-        WeekDefinition nextWeekDefinition = WeekDefinitionService.findNextWeekDefinition( nIdForm, currentModifiedWeekDefinition.getDateOfApply( ) );
-        if ( nextWeekDefinition != null )
-        {
-            maxDate = nextWeekDefinition.getDateOfApply( );
-        }
-        else
-        {
-            // If there is no next weekDefinition
-            // Get the ending validity date of the form
-            Form form = FormService.findFormLightByPrimaryKey( nIdForm );
-            if ( form.getEndingValidityDate( ) != null )
-            {
-                maxDate = form.getEndingValidityDate( );
-            }
-            else
-            {
-                // If there is no ending validity date
-                // Find the slot with the max date
-                Slot slotWithMaxDate = SlotService.findSlotWithMaxDate( nIdForm );
-                if ( slotWithMaxDate != null && slotWithMaxDate.getStartingDateTime( ) != null )
-                {
-                    maxDate = slotWithMaxDate.getStartingDateTime( ).toLocalDate( );
-                }
-            }
-        }
-        if ( maxDate != null )
-        {
-            // We have an upper bound to search with
-            List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, currentModifiedWeekDefinition.getDateOfApply( ).atStartOfDay( ),
-                    maxDate.atTime( LocalTime.MAX ) );
+        WeekDefinition currentModifiedWeekDefinition = WeekDefinitionService.findWeekDefinitionById( nIdWeekDefinition );    
+       // We have an upper bound to search with
+        List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, currentModifiedWeekDefinition.getDateOfApply( ).atStartOfDay( ),
+            		currentModifiedWeekDefinition.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
             // Need to check if the modification of the time slot or the typical
             // week impacts these slots
-            WorkingDay workingDay = WorkingDayService.findWorkingDayLightById( timeSlot.getIdWorkingDay( ) );
+        WorkingDay workingDay = WorkingDayService.findWorkingDayLightById( timeSlot.getIdWorkingDay( ) );
             // Filter all the slots with the working day and the starting time
             // ending time of the time slot
             // The begin time of the slot can be before or after the begin time
@@ -977,17 +947,17 @@ public final class AppointmentUtilities
 
             // If shiftTimeSlot is checked, need to check all the slots impacted
             // until the end of the day
-            if ( bShiftSlot )
-            {
-                listSlotsImpacted = listSlots.stream( )
+        if ( bShiftSlot )
+        {
+           listSlotsImpacted = listSlots.stream( )
                         .filter( slot -> ( ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
                                 && ( !slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
                                         || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
                                                 && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) ) ) ) )
                         .collect( Collectors.toList( ) );
-            }
-            else
-            {
+        }
+        else
+        {
                 listSlotsImpacted = listSlots.stream( )
                         .filter( slot -> ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
                                 && ( slot.getStartingTime( ).equals( timeSlot.getStartingTime( ) )
@@ -996,8 +966,8 @@ public final class AppointmentUtilities
                                         || ( slot.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) )
                                                 && ( !slot.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ) ) ) )
                         .collect( Collectors.toList( ) );
-            }
         }
+        
         return listSlotsImpacted;
     }
 

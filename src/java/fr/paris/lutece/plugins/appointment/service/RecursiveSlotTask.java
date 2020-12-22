@@ -71,7 +71,7 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>{
 		    	
 		    	subtask.fork();
 		        forks.add( subtask );		
-		    	tmpDate= tmpCompareDate;
+		    	tmpDate= tmpCompareDate.plusDays( 1 );
 		    	tmpCompareDate= tmpCompareDate.plusMonths(1);
 	        } 		
 	 
