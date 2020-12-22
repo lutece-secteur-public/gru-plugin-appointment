@@ -1,1 +1,17 @@
-.alert-success, .alert-info, .alert-warning, .alert-danger {background-image:none;}
+.alert-success, .alert-info, .alert-warning, .alert-danger{ background-image:none; }
+
+.content-header > h1 > small{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.content-header > h1 > small::before{
+    content: ' - ';
+    padding: 0 5px;
+}
+
+/* Year Calendar */
+.calendar-context-menu .item .content {
+    min-height: auto;
+ }

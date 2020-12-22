@@ -1,10 +1,5 @@
-<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
 <link rel="stylesheet" href="js/plugins/appointment/js-year-calendar.min.css">
-<style>  
-.calendar-context-menu .item .content {
-   min-height: auto;
-}
-</style>
+
 <@row>
 	<@columns>
 		<@messages errors=errors warnings=warnings infos=infos />
@@ -21,14 +16,13 @@
                         <div id="calendar"></div>
                     </@columns>
                     <@columns sm=2>
-                        <ul class="list-unstyled">
+                        <@ul class="list-unstyled">
                             <#list listReservationRule as rule>
-                                <li>
+                                <@li>
                                     <span style="display:inline-block; background-color: ${rule.color};width:20px;height:12px"></span> ${rule.name} <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}"><i class="fas fa-eye fa-fw"></i></a> 
-                                </li>
+                                </@li>
                             </#list>
-                        </ul>
-                        
+                        </@ul>
                     </@columns>
                 </@row>
             </@tabContent>
@@ -75,18 +69,30 @@
 		</@tform>
 	</@modalBody>
 </@modal>
-</div>
 
 <script src="js/plugins/appointment/js-year-calendar.js"></script>
 <script src="js/plugins/appointment/locales/js-year-calendar.fr.js"></script>
 <script src="js/bootstrap-datepicker.min.js"></script>
 <script src="js/locales/bootstrap-datepicker.fr.js" ></script>
 <script>
+function isOlderThanToday( dtCompare ) {    
+    var dateToday = new Date().setUTCHours( 0, 0, 0, 0); // Today
+    console.log( dateToday );
+    var isOlder=dtCompare.setUTCHours( 24, 0, 0, 0) >= dateToday ? true : false; 
+    console.log( dtCompare.setUTCHours( 0, 0, 0, 0) );
+    return isOlder;   
+}    
+
 let calendar = null;
-function editEvent(event) {
+function editEvent( event) {
     if( event.weekDef != undefined  ){
         $('#event-modal input[name="id_week_definition"]').val( event.weekDef );
         $('#event-modal #delete').show();
+        if( !isOlderThanToday( event.startDate ) ){
+            $('#event-modal #delete').attr('disabled','disabled');
+        } else {
+            $('#event-modal #delete').removeAttr('disabled');
+        }
     } else {
         $('#event-modal #delete').hide();
     }
