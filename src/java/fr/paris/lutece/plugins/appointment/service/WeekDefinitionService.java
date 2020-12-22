@@ -84,7 +84,7 @@ public final class WeekDefinitionService
         WeekDefinition weekDefinition = new WeekDefinition( );
         fillInWeekDefinition( weekDefinition, nIdReservationRule, dateOfApply, endingDateOfApply );
         WeekDefinitionHome.create( weekDefinition );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionCreation( weekDefinition.getIdWeekDefinition( ) );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
         return weekDefinition;
     }
 
@@ -94,10 +94,10 @@ public final class WeekDefinitionService
      * @param nIdWeekDefinition
      *            the id of the week definition to delete
      */
-    public static void removeWeekDefinition( int nIdWeekDefinition, int nIdForm )
+    public static void removeWeekDefinition( int nIdWeekDefinition )
     {
         WeekDefinitionHome.delete( nIdWeekDefinition );
-        WeekDefinitionManagerListener.notifyListenersWeekDefinitionRemoval( nIdForm );
+        WeekDefinitionManagerListener.notifyListenersWeekDefinitionUnassigned( nIdWeekDefinition );
     }
 
     /**
@@ -109,32 +109,9 @@ public final class WeekDefinitionService
      */
     public static WeekDefinition saveWeekDefinition( WeekDefinition weekDefinition )
     {
-        return WeekDefinitionHome.create( weekDefinition );
-    }
-
-    /**
-     * Update in database a week definition
-     * 
-     * @param nIdReservationRule
-     *            the ReservationRule id
-     * @param dateOfApply
-     *            the date of the week definition
-     * @return the week definition updated
-     */
-    public static WeekDefinition updateWeekDefinition( int nIdReservationRule, LocalDate dateOfApply,  LocalDate endingDateOfApply )
-    {
-        WeekDefinition weekDefinition = WeekDefinitionHome.findByIdReservationRuleAndDateOfApply( nIdReservationRule, dateOfApply );
-        if ( weekDefinition == null )
-        {
-            weekDefinition = createWeekDefinition( nIdReservationRule, dateOfApply, endingDateOfApply );
-        }
-        else
-        {
-            fillInWeekDefinition( weekDefinition, nIdReservationRule, dateOfApply, endingDateOfApply );
-            WeekDefinitionHome.update( weekDefinition );
-            WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( weekDefinition.getIdWeekDefinition( ) );
-        }
-        return weekDefinition;
+         WeekDefinitionHome.create( weekDefinition );
+         WeekDefinitionManagerListener.notifyListenersWeekDefinitionAssigned( weekDefinition.getIdWeekDefinition( ) );
+         return weekDefinition;
     }
 
     /**
@@ -522,19 +499,19 @@ public final class WeekDefinitionService
         try
 	    {
 	    	for(WeekDefinition week: listWeekTodRemove) {
-	    		
-	    		removeWeekDefinition(week.getIdWeekDefinition( ), nIdForm);
+	            WeekDefinitionHome.delete( week.getIdWeekDefinition( ) );
 	    	}
 	    	for( WeekDefinition week: listWeekToEdit ) {
 	    		
 	    		if( week.getIdWeekDefinition() != 0 ) {
-	    			removeWeekDefinition(week.getIdWeekDefinition( ), nIdForm);
+	    			
+		            WeekDefinitionHome.delete( week.getIdWeekDefinition( ) );
 	    		}
 	    		
 	    		WeekDefinitionHome.create( week );
-	            WeekDefinitionManagerListener.notifyListenersWeekDefinitionCreation( week.getIdWeekDefinition( ) );
 	    	}
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm );
 
         }
         catch( Exception e )

@@ -71,6 +71,7 @@ import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
 import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
+import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -651,6 +652,10 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         
         TimeSlotService.updateListTimeSlot( listTimeSlot );
+        if( CollectionUtils.isNotEmpty(listTimeSlot)  && CollectionUtils.isNotEmpty( listWeekDefinition )) {
+        	
+        	WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm);
+        }
 
         addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );

@@ -50,30 +50,30 @@ public final class WeekDefinitionManagerListener
      * Notify listeners that a week definition has been created
      * 
      * @param nIdWeekDefinition
-     *            The id of the week definition that has been created
+     *            The id of the week definition that has been assigned
      */
-    public static void notifyListenersWeekDefinitionCreation( int nIdWeekDefinition )
+    public static void notifyListenersWeekDefinitionAssigned( int nIdWeekDefinition )
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
-                weekDefinitionListener.notifyWeekDefinitionCreation( nIdWeekDefinition );
+                weekDefinitionListener.notifyWeekAssigned( nIdWeekDefinition );
             }
         } ).start( );
     }
 
     /**
-     * Notify listeners that a Week Definition has been changed
+     * Notify listeners that a list of Week Definition has been changed (assign and unasign)
      * 
-     * @param nIdWeekDefinition
-     *            The id of the WeekDefinition that has been changed
+     * @param nIdForm
+     *            The id of the form where the Week Definition has been changed
      */
-    public static void notifyListenersWeekDefinitionChange( int nIdWeekDefinition )
+    public static void notifyListenersListWeekDefinitionChanged( int nIdForm )
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
-                weekDefinitionListener.notifyWeekDefinitionChange( nIdWeekDefinition );
+                weekDefinitionListener.notifyListWeeksChanged( nIdForm );
             }
         } ).start( );
     }
@@ -81,15 +81,15 @@ public final class WeekDefinitionManagerListener
     /**
      * Notify listeners that a Week Definition is about to be removed
      * 
-     * @param nIdForm
-     *            The id of the form where the Week Definition has been removed
+     * @param nIdWeekDefinition
+     *            The id of the week definition that has been assigned
      */
-    public static void notifyListenersWeekDefinitionRemoval( int nIdForm )
+    public static void notifyListenersWeekDefinitionUnassigned( int nIdWeekDefinition )
     {
         new Thread( ( ) -> {
             for ( IWeekDefinitionListener weekDefinitionListener : SpringContextService.getBeansOfType( IWeekDefinitionListener.class ) )
             {
-                weekDefinitionListener.notifyWeekDefinitionRemoval( nIdForm );
+                weekDefinitionListener.notifyWeekUnassigned( nIdWeekDefinition );
             }
         } ).start( );
     }

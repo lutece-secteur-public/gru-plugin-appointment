@@ -301,7 +301,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         
         listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));       
         SlotService.deleteListSlots( listSlotsImpacted );
-		WeekDefinitionService.removeWeekDefinition(weekToDelete.getIdWeekDefinition( ), nIdForm);      
+		WeekDefinitionService.removeWeekDefinition( weekToDelete.getIdWeekDefinition( ) );      
         addInfo(INFO_PARAMETER_REMOVED,getLocale( ));
 
         return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );

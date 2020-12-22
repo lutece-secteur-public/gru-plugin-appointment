@@ -41,28 +41,27 @@ package fr.paris.lutece.plugins.appointment.service.listeners;
  */
 public interface IWeekDefinitionListener
 {
-
     /**
-     * Notify the listener that a week definition has been changed
+     * Notify the listener that a week definition has been assigned
      * 
      * @param nIdWeekDefinition
      *            The id of the weekDefinition
      */
-    void notifyWeekDefinitionChange( int nIdWeekDefinition );
+    void notifyWeekAssigned( int nIdWeekDefinition );
 
     /**
-     * Notify the listener that a new week definition has been created
+     * Notify the listener that a week definition has been Unassigned from the calendar
      * 
      * @param nIdWeekDefinition
      *            The id of the weekDefinition
      */
-    void notifyWeekDefinitionCreation( int nIdWeekDefinition );
-
+    void notifyWeekUnassigned( int nIdWeekDefinition );
     /**
-     * Notify the listener that a week definition has been deleted
+     * Notify the listener that a list of week definition has been changed (assign and unassign)
      * 
      * @param nIdForm
-     *            the id of the form where a weekDefinition has been removed
+     *            The id of the form
      */
-    void notifyWeekDefinitionRemoval( int nIdForm );
+    void notifyListWeeksChanged( int nIdForm );
+    
 }

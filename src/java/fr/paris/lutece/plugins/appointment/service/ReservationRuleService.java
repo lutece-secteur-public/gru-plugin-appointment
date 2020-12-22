@@ -52,6 +52,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
+import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.util.ReferenceList;
 
@@ -140,6 +141,10 @@ public final class ReservationRuleService
         for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
         {
             WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
+        }
+        if(CollectionUtils.isNotEmpty( WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( )))) {
+        	
+        	WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ) );
         }
     }
 

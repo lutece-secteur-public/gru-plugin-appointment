@@ -229,9 +229,9 @@ public final class TimeSlotService
             saveTimeSlot( timeSlot );
         }
 
-        for( WeekDefinition week:listWeek ) {
+        if( CollectionUtils.isNotEmpty( listWeek ) ) {
         	
-        	WeekDefinitionManagerListener.notifyListenersWeekDefinitionChange( week.getIdWeekDefinition( ) );
+        	WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( reservationRule.getIdForm( ));
         }
     }
 
