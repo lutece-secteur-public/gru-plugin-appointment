@@ -161,8 +161,7 @@ public final class FormService
         {
             copyWeekDefinition = weekDefinition;
             copyWeekDefinition.setIdWeekDefinition( 0 );
-            WeekDefinitionHome.create( copyWeekDefinition );
-            
+            WeekDefinitionHome.create( copyWeekDefinition );           
         }
         // Copy the messages of the original form and add them to the copy
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );

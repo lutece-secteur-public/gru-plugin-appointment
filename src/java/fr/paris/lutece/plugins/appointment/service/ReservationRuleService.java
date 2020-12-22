@@ -239,7 +239,6 @@ public final class ReservationRuleService
     	   
    	   	reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
      }
-
 	   return reservationRule;
     }
 

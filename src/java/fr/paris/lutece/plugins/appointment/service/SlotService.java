@@ -224,11 +224,8 @@ public final class SlotService
     public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
     {
         Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, mapWeekDefinition.values( ) );
-
     	return buildListSlot( nIdForm, mapReservationRule, startingDate, endingDate, 0 );
     }
-
-
 	 /**
 	  * Build all the slot for a period with all the rules (open hours ...) to apply on each day, for each slot
 	  * 

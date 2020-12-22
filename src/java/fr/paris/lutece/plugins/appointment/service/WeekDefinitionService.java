@@ -449,8 +449,7 @@ public final class WeekDefinitionService
         List<WeekDefinition> listWeekToRemove= listWeek.stream().filter(week -> (week.getDateOfApply().isAfter( startingDate ) || week.getDateOfApply().isEqual( startingDate ))
        		                   &&( week.getEndingDateOfApply().isBefore( endingDate ) || week.getEndingDateOfApply().isEqual( endingDate ) )).collect( Collectors.toList( ));
       
-        listWeek.removeAll( listWeekToRemove );
-        
+        listWeek.removeAll( listWeekToRemove );        
         listWeek = listWeek.stream().filter(p -> ( (p.getDateOfApply( ).isBefore( startingDate) || p.getDateOfApply( ).isEqual( startingDate))
        		&& p.getEndingDateOfApply().isAfter( startingDate ) ||  p.getEndingDateOfApply().isEqual( startingDate ) ) ||        		
        		( p.getDateOfApply( ).isBefore( endingDate ) || p.getDateOfApply( ).isEqual( endingDate)) 
@@ -460,16 +459,13 @@ public final class WeekDefinitionService
        for( WeekDefinition week: listWeek) {
        	
 	       	if( week.getDateOfApply().isBefore( startingDate ) && week.getEndingDateOfApply().isAfter( endingDate )) {
-	       		
-	       		
+	       			       		
 	       		WeekDefinition weekToAdd= new WeekDefinition( );
 	       		weekToAdd.setDateOfApply(endingDate.plusDays( 1 ));
 	       		weekToAdd.setEndingDateOfApply(week.getEndingDateOfApply( ));
 	       		weekToAdd.setIdReservationRule(week.getIdReservationRule( ));	       		
-	       		buildListWeekToEdit.add( weekToAdd );
-	       		
+	       		buildListWeekToEdit.add( weekToAdd );	       		
 	       		week.setEndingDateOfApply(startingDate.minusDays( 1 ));
-
 	               
 	       	}else if( week.getDateOfApply().isEqual( startingDate ) || ( week.getDateOfApply().isAfter( startingDate ) && week.getEndingDateOfApply().isAfter( endingDate ) )) {
 	       		
@@ -512,7 +508,6 @@ public final class WeekDefinitionService
 	    	}
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
             WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( nIdForm );
-
         }
         catch( Exception e )
         {

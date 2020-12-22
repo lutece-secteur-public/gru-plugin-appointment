@@ -255,7 +255,6 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         addInfo(INFO_PARAMETER_REMOVED,getLocale( ));
 
         return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, week.getDateOfApply().getYear() );
-
     }
     /**
      * Unassign a week
@@ -270,6 +269,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     	String strIdWeekDefinition = request.getParameter( PARAMETER_ID_WEEK_DEFINITION );
         int nIdForm = Integer.parseInt( strIdForm );
         List<Slot> listSlotsImpacted= new ArrayList<>();               		
+
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 (User) getUser( ) ) )
         {
@@ -306,6 +306,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
 
         return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );
 
+
     }
     /**
      * Update the slots with appointments impacted by a modification of a typical week or a modification of a timeSlot Delete the slots with no appointments
@@ -314,8 +315,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      *            the slots impacted
      * @param nMaxCapacity
      *            the max capacity
-     */
-  
+     */  
     private void updateSlotImpacted( List<Slot> listSlotsImpacted, List<Slot> listSlotsImpactedWithAppointments,int nMaxCapacity )
     {
         // Need to delete the slots that are impacted but with no appointments
@@ -391,4 +391,5 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
    	 	week.setEndingDateOfApply(DateUtil.formatDate( dateEndOfApplay , getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ));
    	 	week.setIdReservationRule(Integer.parseInt( idReservationRule ));
     }    
+
 }

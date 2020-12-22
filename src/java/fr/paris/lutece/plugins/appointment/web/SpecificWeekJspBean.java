@@ -137,6 +137,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PARAMETER_ENDING_TIME = "ending_time";
     private static final String PARAMETER_MAX_CAPACITY = "max_capacity";
 
+
     private static final String PARAMETER_SHIFT_SLOT = "shift_slot";
     private static final String PARAMETER_DATA = "slotsData";
     private static final String PARAMETER_IDENTICAL = "identical";
@@ -163,12 +164,9 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     // Porperties
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
 
-    // Infos
-    
+    // Infos    
     private AppointmentFormDTO _appointmentForm;
     private Slot _slot;
-
-   
     /**
      * Get the view of the specific week
      * 

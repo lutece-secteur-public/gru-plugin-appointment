@@ -23,7 +23,7 @@
 					<@formGroup labelFor='description' labelKey='#i18n{appointment.labelDescription}' mandatory=true>
 						<@input type='textarea' name='description' id='description' maxlength=255 >${appointmentform.description!}</@input>
 					</@formGroup>
-                                       <@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
+                        <@formGroup labelFor='date_start_validity' labelKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity}' helpKey='#i18n{appointment.createAppointmentForm.labelDateStartValidity.help}'>
 						<@inputGroup>
 							<@input type='text' name='date_start_validity' id='date_start_validity' value=appointmentform.dateStartValidity!'' />
 							<@inputGroupItem type='text'>
@@ -122,8 +122,7 @@
 					 <@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
 						<@input type='text' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
 					</@formGroup>
-					
-					
+										
 					</fieldset>
 				</@boxBody>
 			</@box>
@@ -156,9 +155,7 @@
 						<@formGroup>
 							<@checkBox name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' />
 						</@formGroup>
-						
-						
-					
+																	
 						<#if listWorkflows??>
 							<@formGroup labelFor='idWorkflow' labelKey='#i18n{appointment.createAppointmentForm.labelWorkflow}'>
 								<@select name='idWorkflow' id='idWorkflow' items=listWorkflows default_value='${appointmentform.idWorkflow!}' />
@@ -171,11 +168,7 @@
 
 						<@formGroup labelFor='calendarTemplateId' labelKey='#i18n{appointment.createAppointmentForm.labelCalendarTemplate}' mandatory=true>
 							<@select name='calendarTemplateId' id='calendarTemplateId' items=refListCalendarTemplates default_value='${appointmentform.calendarTemplateId!}' />
-						</@formGroup>
-						
-			
-						
-						
+						</@formGroup>						
 						<#if isCaptchaEnabled>
 							<@formGroup>
 								<@checkBox name='enableCaptcha' id='enableCaptcha' value='true' checked=appointmentform.enableCaptcha!false labelFor='enableCaptcha' labelKey='#i18n{appointment.createAppointmentForm.labelEnableCaptcha}' />
