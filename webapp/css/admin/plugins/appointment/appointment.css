@@ -10,3 +10,8 @@
     content: ' - ';
     padding: 0 5px;
 }
+
+/* Year Calendar */
+.calendar-context-menu .item .content {
+    min-height: auto;
+ }
