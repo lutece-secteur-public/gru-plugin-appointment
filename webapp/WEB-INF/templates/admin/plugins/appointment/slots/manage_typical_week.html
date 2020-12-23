@@ -175,7 +175,8 @@
         <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>
             <@messages errors=errors infos=infos/>					
             <input type="hidden" name="action" value="doModifyTimeSlot">
-            <input type="hidden" id="timeSlotId" name="id_time_slot" value="">
+            <input type="hidden" id="idTimeSlot" name="id_time_slot" value="">
+            <input type="hidden" id="idWorkingDay" name="id_working_day" value="">
             <input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}">
             <input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}">
             <@formGroup labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
@@ -210,10 +211,10 @@
 <@modal id='updatePlanningMultiSlot'>
     <@modalBody>
         <@tform action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
-            <input type="hidden" name="action" value="doModifyListSlot" >
+            <input type="hidden" name="action" value="doModifyListTimeSlot" >
             <input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}">
             <input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}">
-            <input type="hidden" id="slotsData" name="slotsData" value="">
+            <input type="hidden" id="timeSlotData" name="timeSlotData" value="">
             <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
                 <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
             </@formGroup>
@@ -305,6 +306,7 @@ function validateQty(event) {
                     start : '${event.startingDateTime}',
                     end : '${event.endingDateTime}',
                     id : '${event.idTimeSlot}',
+		    idWorkingDay: '${event.idWorkingDay}',
                     color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
                     textColor: '#2c2c2d',
                     backgroundColor : <#if event.isOpen>'white'<#else>'#bebebe'</#if>,
@@ -359,7 +361,7 @@ function validateQty(event) {
             eventRender: function(event, element) {
                 var $title = element.find( '.fc-title' );
                 $(element).addClass( event.customClass );
-                $(element).attr( 'data-event', '"timeSlotId":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' +  event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
+                $(element).attr( 'data-event', '"idTimeSlot":"' + event.id + '","idWorkingDay":"' + event.idWorkingDay+ '","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' +  event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
            
                 if ( event.customStyle !='' ){
                     $(element).css( 'background', event.customStyle );
@@ -413,7 +415,7 @@ function validateQty(event) {
                 });
                 
                 /* Event selection          */ 
-                var eventIdx=0, eventData='';
+                var eventIdx=0, eventData='',evtData='';
                 
                 $( ".fc-content-skeleton" ).selectable({
                     filter: ".fc-time-grid-event.fc-v-event",
@@ -429,17 +431,19 @@ function validateQty(event) {
                             console.log( eventData );
                             if ( eventIdx > 1 ){
                                 // FIXME: Porblème de parse
-                                // eventData += '{' + $(this).data('event') + '};' ;
-                                // const events =  JSON.stringify( eventData );
-                                // $('#slotsData').val( '[' + events + ']' );
-                                // $('#updatePlanningMultiSlot').modal('show');
-                                return true;
+                                 eventData += '{' + $(this).data('event') + '},' ;
+                                 const events =  JSON.stringify( eventData );
+ 				 evtData='['+eventData.slice(0, -1)+']'
+                                 $('#timeSlotData').val( evtData );
+                                 $('#updatePlanningMultiSlot').modal('show');
+                                //return true;
                                 
                             } else {
                                 eventData ='{' + $(this).data('event') + '}';                       
                                 const evt = JSON.parse(eventData); 
                                 $('#timeIsOpen').prop( "checked", evt.isOpen );
-                                $('#timeSlotId').val( evt.timeSlotId );
+                                $('#idTimeSlot').val( evt.idTimeSlot );
+                                $('#idWorkingDay').val( evt.idWorkingDay );
                                 $('#timeMaxCapacity').val( evt.maxCapacity );
                                 $('#timeStart').text( evt.startingTime );
                                 $('#timeEnd').val( evt.endingTime );
