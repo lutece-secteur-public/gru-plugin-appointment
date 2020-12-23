@@ -273,7 +273,7 @@ public final class SlotSafeService
             editSlot.setMaxCapacity( editSlot.getMaxCapacity( ) + nIncrementingValue );
             editSlot.setNbPotentialRemainingPlaces( editSlot.getNbPotentialRemainingPlaces( ) + nIncrementingValue );
             editSlot.setNbRemainingPlaces( editSlot.getNbRemainingPlaces( ) + nIncrementingValue );
-
+            editSlot.setIsSpecific( SlotService.isSpecificSlot( editSlot ) );
             saveSlot( editSlot );
         }
         finally

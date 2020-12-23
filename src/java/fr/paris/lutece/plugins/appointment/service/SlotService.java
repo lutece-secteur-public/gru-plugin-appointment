@@ -309,8 +309,7 @@ public final class SlotService
      */
     public static boolean isSpecificSlot( Slot slot )
     {
-        LocalDate dateOfSlot = slot.getDate( );
-        //WeekDefinition weekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
+        LocalDate dateOfSlot = slot.getStartingDateTime( ).toLocalDate( );
         ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( slot.getIdForm( ), dateOfSlot );
         WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRule.getListWorkingDay( ), dateOfSlot.getDayOfWeek( ) );
         List<TimeSlot> listTimeSlot = null;
