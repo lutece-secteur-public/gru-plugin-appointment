@@ -37,6 +37,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -75,6 +76,25 @@ public class ReservationRuleDTO  implements Serializable
     
     private boolean _bEnable = true;
 
+    /**
+     * The starting time of a working day
+     */
+    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
+    private String _strTimeStart;
+
+    /**
+     * The ending time of a working day
+     */
+    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
+    private String _strTimeEnd;
+
+    /**
+     * The duration of an appointment
+     */
+    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
+    private int _nDurationAppointments;
+    
     /**
      * Maximum capacity for a slot
      */
@@ -188,6 +208,68 @@ public class ReservationRuleDTO  implements Serializable
      public void setEnable( boolean bEnable )
      {
          _bEnable = bEnable;
+     }
+     /**
+      * Returns the starting time of the working day of the form
+      * 
+      * @return The starting time
+      */
+     public String getTimeStart( )
+     {
+         return _strTimeStart;
+     }
+
+     /**
+      * Sets the starting time of the working day of the form
+      * 
+      * @param the
+      *            starting time to set The TimeStart
+      */
+     public void setTimeStart( String timeStart )
+     {
+         _strTimeStart = timeStart;
+     }
+
+     /**
+      * Returns the ending time of the working day of the form
+      * 
+      * @return The ending time
+      */
+     public String getTimeEnd( )
+     {
+         return _strTimeEnd;
+     }
+
+     /**
+      * Sets the ending time of the working day of the form
+      * 
+      * @param the
+      *            ending time to set
+      */
+     public void setTimeEnd( String timeEnd )
+     {
+         _strTimeEnd = timeEnd;
+     }
+
+     /**
+      * Returns the duration of an appointment
+      * 
+      * @return The duration of an appointment
+      */
+     public int getDurationAppointments( )
+     {
+         return _nDurationAppointments;
+     }
+
+     /**
+      * Sets the duration of an appointment
+      * 
+      * @param nDurationAppointments
+      *            The Duration of an Appointments
+      */
+     public void setDurationAppointments( int nDurationAppointments )
+     {
+         _nDurationAppointments = nDurationAppointments;
      }
 
     /**

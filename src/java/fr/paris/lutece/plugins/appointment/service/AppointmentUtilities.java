@@ -41,7 +41,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -61,11 +60,9 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
-import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
-import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
@@ -74,6 +71,7 @@ import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
+import fr.paris.lutece.plugins.appointment.web.dto.ReservationRuleDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.ResponseRecapDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Entry;
 import fr.paris.lutece.plugins.genericattributes.business.EntryFilter;
@@ -1017,5 +1015,28 @@ public final class AppointmentUtilities
             slot = nextSlot;
         }
         return true;
+    }
+    
+    /**
+     * Fill the reservation rule object with the corresponding values of an appointmentForm DTO
+     * 
+     * @param reservationRuleDTO
+     *            the reservation rule object to fill in
+     * @param appointmentForm
+     *            the appointmentForm DTO
+
+     */
+    public static void fillInReservationRuleAdvancedParam( ReservationRuleDTO reservationRuleDTO, AppointmentFormDTO appointmentForm )
+    {
+    	reservationRuleDTO.setMaxCapacityPerSlot( appointmentForm.getMaxCapacityPerSlot( ) );
+    	reservationRuleDTO.setMaxPeoplePerAppointment( appointmentForm.getMaxPeoplePerAppointment( ) );
+    	reservationRuleDTO.setName( appointmentForm.getName( ));
+    	reservationRuleDTO.setDescriptionRule( appointmentForm.getDescriptionRule( ));
+    	reservationRuleDTO.setColor( appointmentForm.getColor( ));
+    	reservationRuleDTO.setDurationAppointments(appointmentForm.getDurationAppointments( ));
+    	reservationRuleDTO.setTimeEnd(appointmentForm.getTimeEnd( ));
+    	reservationRuleDTO.setTimeStart(appointmentForm.getTimeStart( ));
+    	
+    	reservationRuleDTO.setIdForm( appointmentForm.getIdForm( ) );
     }
 }

@@ -292,7 +292,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         	return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, AdminMessage.TYPE_STOP ) );
 		}
 		
-        if ( !validateBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( _appointmentForm ) )
+        if ( !validateReservationRuleBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !validateBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( _appointmentForm ) )
         {
         	addError( PARAMETER_ERROR_MODIFICATION );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ), PARAMETER_ID_RULE, _appointmentForm.getIdReservationRule( ) );
@@ -350,8 +350,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         reservationRule.setIdReservationRule( _appointmentForm.getIdReservationRule( ) );
         populate( _appointmentForm, request );
         ReservationRuleService.fillInReservationRule( reservationRule, _appointmentForm, _appointmentForm.getIdForm( ) );
-
-        if ( !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX ) || !checkMultiSlotFormTypeBookablePlaces( _appointmentForm ))
+                
+        if ( !validateReservationRuleBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkMultiSlotFormTypeBookablePlaces( _appointmentForm ))
         {
         	addError( PARAMETER_ERROR_MODIFICATION );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ), PARAMETER_ID_RULE, _appointmentForm.getIdReservationRule( ) );

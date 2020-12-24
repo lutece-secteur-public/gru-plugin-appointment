@@ -722,7 +722,8 @@ public final class FormService
 	        LocalizationHome.deleteByIdForm( nIdForm );
 	        FormMessageHome.deleteByIdForm( nIdForm );
 	        FormHome.delete( nIdForm );
-	
+	        EntryService.getService( ).removeEntriesByIdAppointmentForm( nIdForm );
+	        
 	        FormListenerManager.notifyListenersFormRemoval( nIdForm );
 	        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
 	        

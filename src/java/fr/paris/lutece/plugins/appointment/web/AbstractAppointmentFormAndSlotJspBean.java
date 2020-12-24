@@ -40,6 +40,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.ReservationRuleDTO;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -238,6 +239,21 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     	
         ReservationRuleDTO rule= new ReservationRuleDTO( );
         populate( rule, request);
+        return validateBean( rule, strPrefix );
+    	 
+    }
+    
+   /**
+    * Valdate rule bean
+    * @param appointmentForm
+    * @param strPrefix
+    * @return true if validated otherwise false
+    */
+    protected boolean validateReservationRuleBean( AppointmentFormDTO appointmentForm, String strPrefix) {
+    	
+        ReservationRuleDTO rule= new ReservationRuleDTO( );
+        AppointmentUtilities.fillInReservationRuleAdvancedParam( rule, appointmentForm );
+        
         return validateBean( rule, strPrefix );
     	 
     }

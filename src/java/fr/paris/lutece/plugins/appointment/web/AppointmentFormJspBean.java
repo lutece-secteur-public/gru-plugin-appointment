@@ -45,8 +45,6 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
@@ -65,7 +63,6 @@ import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
-import fr.paris.lutece.plugins.appointment.service.EntryService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
@@ -113,9 +110,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      */
     public static final String RIGHT_MANAGEAPPOINTMENTFORM = "APPOINTMENT_FORM_MANAGEMENT";
     private static final long serialVersionUID = -615061018633136997L;
-    private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService( );
-    private final EntryService _entryService = EntryService.getService( );
-    private int _nDefaultItemsPerPage;
+
 
     // templates
     private static final String TEMPLATE_MANAGE_APPOINTMENTFORMS = "/admin/plugins/appointment/appointmentform/manage_appointmentforms.html";
@@ -125,7 +120,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
 
     // Parameters
     private static final String PARAMETER_ID_FORM = "id_form";
-    private static final String PARAMETER_ERROR = "error";
     private static final String PARAMETER_BACK = "back";
     private static final String PARAMETER_PAGE_INDEX = "page_index";
     private static final String PARAMETER_FROM_DASHBOARD = "fromDashboard";
@@ -200,12 +194,15 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String INFO_APPOINTMENTFORM_REMOVED = "appointment.info.appointmentform.removed";
     private static final String INFO_APPOINTMENTFORM_MESSAGES_MODIFIED = "appointment.info.appointmentFormMessages.updated";
     private static final String ERROR_APPOINTMENTFORM_ENDING_VALIDITY_DATE_BEFORE_NOW = "appointment.error.appointmentform.endingValidityDateBeforeNow";
+   
+    private static final String DEFAULT_CURRENT_PAGE = "1";
 
     // Session variable to store working values
-    private static final String SESSION_ATTRIBUTE_APPOINTMENT_FORM = "appointment.session.appointmentForm";
-    private static final String SESSION_CURRENT_PAGE_INDEX = "appointment.session.appointmentForm.currentPageIndex";
-    private static final String SESSION_ITEMS_PER_PAGE = "appointment.session.appointmentForm.itemsPerPage";
-    private static final String DEFAULT_CURRENT_PAGE = "1";
+    private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService( );
+    private int _nDefaultItemsPerPage;
+    private AppointmentFormDTO _appointmentFormDTO;
+    private String _strCurrentPageIndex;
+    private int _nItemsPerPage;
 
     /**
      * Default constructor
@@ -226,27 +223,24 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     public String getManageAppointmentForms( HttpServletRequest request )
     {
         AdminUser adminUser = getUser( );
-        String strCurrentPageIndex = AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX,
-                (String) request.getSession( ).getAttribute( SESSION_CURRENT_PAGE_INDEX ) );
-        if ( strCurrentPageIndex == null )
+        _appointmentFormDTO= null;
+        _strCurrentPageIndex= AbstractPaginator.getPageIndex( request, AbstractPaginator.PARAMETER_PAGE_INDEX, _strCurrentPageIndex );
+        if ( _strCurrentPageIndex == null )
         {
-            strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
+        	_strCurrentPageIndex = DEFAULT_CURRENT_PAGE;
         }
-        request.getSession( ).setAttribute( SESSION_CURRENT_PAGE_INDEX, strCurrentPageIndex );
-        int nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE,
-                getIntSessionAttribute( request.getSession( ), SESSION_ITEMS_PER_PAGE ), _nDefaultItemsPerPage );
-        request.getSession( ).setAttribute( SESSION_ITEMS_PER_PAGE, nItemsPerPage );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        _nItemsPerPage = AbstractPaginator.getItemsPerPage( request, AbstractPaginator.PARAMETER_ITEMS_PER_PAGE, _nItemsPerPage, _nDefaultItemsPerPage );
+
         UrlItem url = new UrlItem( JSP_MANAGE_APPOINTMENTFORMS );
         String strUrl = url.getUrl( );
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllAppointmentFormLight( );
         listAppointmentForm = (List<AppointmentFormDTO>) AdminWorkgroupService.getAuthorizedCollection( listAppointmentForm, (User) adminUser );
         listAppointmentForm = listAppointmentForm.stream( ).sorted( ( a1, a2 ) -> a1.getTitle( ).compareTo( a2.getTitle( ) ) ).collect( Collectors.toList( ) );
-        LocalizedPaginator<AppointmentFormDTO> paginator = new LocalizedPaginator<>( listAppointmentForm, nItemsPerPage, strUrl,
-                PARAMETER_PAGE_INDEX, strCurrentPageIndex, getLocale( ) );
+        LocalizedPaginator<AppointmentFormDTO> paginator = new LocalizedPaginator<>( listAppointmentForm, _nItemsPerPage, strUrl,
+                PARAMETER_PAGE_INDEX, _strCurrentPageIndex, getLocale( ) );
         AdminUser user = AdminUserService.getAdminUser( request );
         Map<String, Object> model = getModel( );
-        model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( nItemsPerPage ) );
+        model.put( MARK_NB_ITEMS_PER_PAGE, Integer.toString( _nItemsPerPage ) );
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( paginator.getPageItems( ), AppointmentResourceIdService.PERMISSION_VIEW_FORM,
                 (User) AdminUserService.getAdminUser( request ) ) );
@@ -273,18 +267,13 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
-        AppointmentFormDTO appointmentForm = null;
-        String strError = request.getParameter( PARAMETER_ERROR );
-        if ( StringUtils.isNotEmpty( strError ) )
+        if ( _appointmentFormDTO == null || _appointmentFormDTO.getIdForm( ) != 0 )
         {
-            appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
+        	_appointmentFormDTO = new AppointmentFormDTO( );
         }
-        if ( appointmentForm == null )
-        {
-            appointmentForm = new AppointmentFormDTO( );
-        }
+       
         Map<String, Object> model = getModel( );
-        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
+        addElementsToModel( request, _appointmentFormDTO, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model );
     }
 
@@ -305,21 +294,19 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CREATE_FORM );
         }
-        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( appointmentForm == null )
+        if ( _appointmentFormDTO == null )
         {
-            appointmentForm = new AppointmentFormDTO( );
+        	_appointmentFormDTO = new AppointmentFormDTO( );
         }
-        populate( appointmentForm, request );
-        populateAddress( appointmentForm, request );
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX )|| !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( appointmentForm ) )
+        populate( _appointmentFormDTO, request );
+        populateAddress( _appointmentFormDTO, request );
+        if ( !validateBean( _appointmentFormDTO, VALIDATION_ATTRIBUTES_PREFIX )|| !validateReservationRuleBean( request, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( _appointmentFormDTO ) )
         {
-            return redirect( request, VIEW_CREATE_APPOINTMENTFORM, PARAMETER_ID_FORM, appointmentForm.getIdForm( ), PARAMETER_ERROR, 1 );
+            return redirectView( request, VIEW_CREATE_APPOINTMENTFORM );
         }
-        appointmentForm.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
-        int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        _appointmentFormDTO.setIcon( buildImageResource( (MultipartHttpServletRequest) request ) );
+        int nIdForm = FormService.createAppointmentForm( _appointmentFormDTO );
         AppLogService.info( LogUtilities.buildLog( ACTION_CREATE_APPOINTMENTFORM, Integer.toString( nIdForm ), getUser( ) ) );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_CREATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
@@ -392,7 +379,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         
         FormService.removeForm( nIdForm );
         AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENTFORM, strIdForm, getUser( ) ) );
-        _entryService.removeEntriesByIdAppointmentForm( nIdForm );
         addInfo( INFO_APPOINTMENTFORM_REMOVED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_APPOINTMENTFORMS );
     }
@@ -416,13 +402,12 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
+        if ( ( _appointmentFormDTO == null ) || ( nIdForm != _appointmentFormDTO.getIdForm( ) ) )
         {
-            appointmentForm = FormService.buildAppointmentForm( nIdForm, 0 );
+        	_appointmentFormDTO = FormService.buildAppointmentForm( nIdForm, 0 );
         }
         Map<String, Object> model = getModel( );
-        addElementsToModel( request, appointmentForm, getUser( ), getLocale( ), model );
+        addElementsToModel( request, _appointmentFormDTO, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
 
@@ -445,43 +430,41 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_FORM );
         }
         int nIdForm = Integer.parseInt( strIdForm );
-        AppointmentFormDTO appointmentForm = (AppointmentFormDTO) request.getSession( ).getAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
-        if ( ( appointmentForm == null ) || ( nIdForm != appointmentForm.getIdForm( ) ) )
+        if ( ( _appointmentFormDTO == null ) || ( nIdForm != _appointmentFormDTO.getIdForm( ) ) )
         {
-            appointmentForm = FormService.buildAppointmentFormLight( nIdForm );
+        	_appointmentFormDTO = FormService.buildAppointmentFormLight( nIdForm );
         }
-        populate( appointmentForm, request );
-        populateAddress( appointmentForm, request );
+        populate( _appointmentFormDTO, request );
+        populateAddress( _appointmentFormDTO, request );
         AppointmentFormDTO appointmentFormDb = FormService.buildAppointmentForm( nIdForm, 0 );
         String strDeleteIcon = ( request.getParameter( PARAMETER_DELETE_ICON ) == null ) ? MARK_FALSE : request.getParameter( PARAMETER_DELETE_ICON );
         MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
-        if ( Boolean.parseBoolean( strDeleteIcon ) && ( appointmentForm.getIcon( ).getImage( ) != null ) )
+        if ( Boolean.parseBoolean( strDeleteIcon ) && ( _appointmentFormDTO.getIcon( ).getImage( ) != null ) )
         {
             ImageResource img = new ImageResource( );
             img.setImage( null );
             img.setMimeType( null );
-            appointmentForm.setIcon( img );
+            _appointmentFormDTO.setIcon( img );
         }
         else
         {
             ImageResource imageResource = buildImageResource( mRequest );
             if ( !StringUtils.equals( MARK_NULL, imageResource.getMimeType( ) ) )
             {
-                appointmentForm.setIcon( imageResource );
+            	_appointmentFormDTO.setIcon( imageResource );
             }
         }
         // Import of the closing days file
         importClosingDayFile( mRequest, nIdForm );
-        setParametersDays( appointmentForm, appointmentFormDb );
-        if ( !validateBean( appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkStartingAndEndingValidityDate( appointmentForm ) )
+        setParametersDays( _appointmentFormDTO, appointmentFormDb );
+        if ( !validateBean( _appointmentFormDTO, VALIDATION_ATTRIBUTES_PREFIX ) || !checkStartingAndEndingValidityDate( _appointmentFormDTO ) )
         {
-            request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
         }
-        appointmentForm.setIsActive( appointmentFormDb.getIsActive( ) );
-        FormService.updateGlobalParameters( appointmentForm );
+        _appointmentFormDTO.setIsActive( appointmentFormDb.getIsActive( ) );
+        FormService.updateGlobalParameters( _appointmentFormDTO );
+        _appointmentFormDTO= null;
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_APPOINTMENTFORM, strIdForm, getUser( ) ) );
-        request.getSession( ).removeAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM );
         addInfo( INFO_APPOINTMENTFORM_UPDATED, getLocale( ) );
         return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
     }
@@ -685,28 +668,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
 
         ReferenceList listRoles = RoleHome.getRolesList( user );
         model.put( MARK_REF_LIST_ROLES, listRoles );
-        request.getSession( ).setAttribute( SESSION_ATTRIBUTE_APPOINTMENT_FORM, appointmentForm );
     }
-
-    /**
-     * Get an integer attribute from the session
-     * 
-     * @param session
-     *            The session
-     * @param strSessionKey
-     *            The session key of the item
-     * @return The value of the attribute, or 0 if the key is not associated with any value
-     */
-    private int getIntSessionAttribute( HttpSession session, String strSessionKey )
-    {
-        Integer nAttr = (Integer) session.getAttribute( strSessionKey );
-        if ( nAttr != null )
-        {
-            return nAttr;
-        }
-        return 0;
-    }
-
     /**
      * Build an image resource (icon)
      * 

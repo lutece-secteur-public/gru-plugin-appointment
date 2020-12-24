@@ -86,20 +86,16 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * The starting time of a working day
      */
-    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeStart;
 
     /**
      * The ending time of a working day
      */
-    @NotBlank( message = "#i18n{portal.validation.message.notEmpty}" )
     private String _strTimeEnd;
 
     /**
      * The duration of an appointment
      */
-    @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
-    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nDurationAppointments;
 
     /**
