@@ -44,14 +44,12 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
-import fr.paris.lutece.plugins.appointment.service.listeners.FormListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.WeekDefinitionManagerListener;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.util.ReferenceList;
@@ -156,7 +154,6 @@ public final class ReservationRuleService
      */
     public static void removeReservationRule( int nIdReservationRule )
     {
-        //FormListenerManager.notifyListenersFormChange( reservationRule.getIdForm( ) );
         ReservationRule rule= findReservationRuleById( nIdReservationRule );
         for( WorkingDay day: rule.getListWorkingDay( ) ) {
         	

@@ -681,7 +681,7 @@ public final class SlotSafeService
             // with the new end of the current slot
             if ( CollectionUtils.isNotEmpty( listSlotToShift ) )
             {
-                Slot nextSlot = listSlotToShift.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) ).get( );
+                Slot nextSlot = listSlotToShift.stream( ).min( ( s1, s2 ) -> s1.getStartingDateTime( ).compareTo( s2.getStartingDateTime( ) ) ).orElse( slot );
                 if ( slot.getEndingDateTime( ).isAfter( nextSlot.getStartingDateTime( ) ) )
                 {
                     timeToAdd = nextSlot.getStartingDateTime( ).until( slot.getEndingDateTime( ), ChronoUnit.MINUTES );
@@ -1015,7 +1015,6 @@ public final class SlotSafeService
                 if ( ( appointmentDTO.getIdAppointment( ) != 0 && ( appointmentDTO.getNbBookedSeats( ) > nbRemainingPlaces + oldAppointment.getNbPlaces( )
                         && !appointmentDTO.getOverbookingAllowed( ) ) ) || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) )
                 {
-
                     throw new SlotFullException( "ERROR SLOT FULL" );
                 }
 
@@ -1026,6 +1025,7 @@ public final class SlotSafeService
                             || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) ) )
 
                     {
+                        AppLogService.error( "ERROR SLOT FULL, ID SLOT: "+ slt.getDate().toString( ) );
                         throw new SlotFullException( "ERROR SLOT FULL" );
 
                     }

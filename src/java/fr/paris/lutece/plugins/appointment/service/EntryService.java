@@ -98,8 +98,6 @@ public final class EntryService extends RemovalListenerService implements Serial
     // Templates
     private static final String TEMPLATE_DIV_CONDITIONAL_ENTRY = "skin/plugins/appointment/html_code_div_conditional_entry.html";
 
-    private static final String SESSION_NOT_VALIDATED_APPOINTMENT = "appointment.appointmentFormService.notValidatedAppointment";
-
     /**
      * Get an instance of the service
      * 

@@ -469,8 +469,6 @@ public class AppointmentFormEntryJspBean extends MVCAdminJspBean
                 // conditional questions
                 EntryHome.decrementOrderByOne( entry.getPosition( ), entry.getFieldDepend( ).getIdField( ), entry.getIdResource( ), entry.getResourceType( ) );
             }
-            // TODO
-            // OldAppointmentHome.removeResponsesByIdEntry(nIdEntry);
             EntryHome.remove( nIdEntry );
             if ( entry.getFieldDepend( ) != null )
             {

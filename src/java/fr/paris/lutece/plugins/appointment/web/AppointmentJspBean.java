@@ -773,7 +773,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
             model.put( MARK_RESOURCE_HISTORY, WorkflowService.getInstance( ).getDisplayDocumentHistory( nIdAppointment, Appointment.APPOINTMENT_RESOURCE_TYPE,
-                    form.getIdWorkflow( ), request, getLocale( )) );
+                    form.getIdWorkflow( ), request, getLocale( ), (User) getUser( ) ));
         }
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
@@ -1205,6 +1205,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 slot = SlotService.findSlotById( slot.getIdSlot( ) );
             }
 
+            if ( bool )
+            {
+                appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
+                ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
+                form = FormService.buildAppointmentForm( nIdForm, reservationRule );
+                bool = false;
+            }
             // Need to check competitive access
             // May be the slot is already taken at the same time
             if ( slot.getNbPotentialRemainingPlaces( ) <= 0 && ( !form.getBoOverbooking( ) || !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE,
@@ -1216,13 +1223,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
             appointmentDTO.addSlot( slot );
 
-            if ( bool )
-            {
-                appointmentDTO.setDateOfTheAppointment( slot.getDate( ).format( Utilities.getFormatter( ) ) );
-                ReservationRule reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, slot.getDate( ) );
-                form = FormService.buildAppointmentForm( nIdForm, reservationRule );
-                bool = false;
-            }
+            
             AppointmentUtilities.putTimerInSession( request, slot.getIdSlot( ), appointmentDTO, form.getMaxPeoplePerAppointment( ) );
         }
 
@@ -1352,7 +1353,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         if ( appointmentDTO.getIdAppointment( ) != 0 )
         {
             // If it's a modification of the date of the appointment
-            if ( isEquals( appointmentDTO.getSlot( ), listSlot ) /* appointmentDTO.getSlot( ).getIdSlot( ) != appointmentDTO.getIdSlot( ) */ )
+            if ( isEquals( appointmentDTO.getSlot( ), listSlot )  )
             {
                 List<String> listMessages = AppointmentListenerManager.notifyListenersAppointmentDateChanged( appointmentDTO.getIdAppointment( ),
                         appointmentDTO.getListAppointmentSlot( ).stream( ).map( AppointmentSlot::getIdSlot ).collect( Collectors.toList( ) ), getLocale( ) );
@@ -1363,10 +1364,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
             }
             Appointment oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
 
-            if ( isEqualSlot( oldAppointment.getListAppointmentSlot( ), appointmentDTO.getSlot( ) )/*
-                                                                                                    * oldAppointment.getIdSlot( ) == appointmentDTO.getSlot(
-                                                                                                    * ).getIdSlot( )
-                                                                                                    */
+            if ( isEqualSlot( oldAppointment.getListAppointmentSlot( ), appointmentDTO.getSlot( ) )
                     && appointmentDTO.getNbBookedSeats( ) > ( nbRemainingPlaces + oldAppointment.getNbPlaces( ) ) && !overbookingAllowed )
             {
                 addError( ERROR_MESSAGE_SLOT_FULL, getLocale( ) );

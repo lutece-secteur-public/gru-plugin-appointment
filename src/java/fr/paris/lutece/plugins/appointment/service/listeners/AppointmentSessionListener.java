@@ -31,7 +31,7 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.appointment.web;
+package fr.paris.lutece.plugins.appointment.service.listeners;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;

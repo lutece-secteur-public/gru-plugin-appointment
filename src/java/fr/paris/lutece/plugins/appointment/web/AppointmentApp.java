@@ -215,7 +215,6 @@ public class AppointmentApp extends MVCApplication
     private static final String PARAMETER_MODIF_DATE = "modif_date";
 
     // Mark
-
     private static final String MARK_MODIFICATION_DATE_APPOINTMENT = "modifDateAppointment";
     private static final String MARK_NBPLACESTOTAKE = "nbPlacesToTake";
     private static final String MARK_INFOS = "infos";
@@ -382,7 +381,6 @@ public class AppointmentApp extends MVCApplication
             dateOfDisplay = LocalDate.parse( strDateOfDisplay );
         }
         // Get all the week definitions
-        //Map<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         // Filter on the list of weekdefinition on the starting date and the
         // ending date of display
@@ -492,8 +490,8 @@ public class AppointmentApp extends MVCApplication
         // Get the min and max date of the open days (for the week navigation on
         // open days calendar templates)
         Set<Integer> setOpenDays = WeekDefinitionService.getOpenDaysOfWeek( listReservationRules );
-        LocalDate minDateOfOpenDay = LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).get( ) ) );
-        LocalDate maxDateOfOpenDay = endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).get( ) ) );
+        LocalDate minDateOfOpenDay = LocalDate.now( ).with( DayOfWeek.of( setOpenDays.stream( ).min( Comparator.naturalOrder( ) ).orElse( 1 ) ) );
+        LocalDate maxDateOfOpenDay = endingDateOfDisplay.with( DayOfWeek.of( setOpenDays.stream( ).max( Comparator.naturalOrder( ) ).orElse( 1 ) ) );
         model.put( PARAMETER_MIN_DATE_OF_OPEN_DAY, minDateOfOpenDay );
         model.put( PARAMETER_MAX_DATE_OF_OPEN_DAY, maxDateOfOpenDay );
         model.put( MARK_FORM, appointmentForm );
@@ -525,6 +523,7 @@ public class AppointmentApp extends MVCApplication
                 listHiddenDays.clear( );
                 dayView = BASIC_DAY;
                 weekView = BASIC_WEEK;
+                break;
             case CalendarTemplate.FREE_SLOTS_GROUPED:
                 // Keep only the available slots
                 listHiddenDays.clear( );
