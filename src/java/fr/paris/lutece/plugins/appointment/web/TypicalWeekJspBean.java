@@ -153,6 +153,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String ACTION_CONFIRM_REMOVE_PARAMETER = "confirmRemoveParameter";
     private static final String ACTION_REMOVE_PARAMETER = "doRemoveParameter";
     private static final String ACTION_CREATE_ADVANCED_PARAMETERS = "createAdvancedParameters";
+    private static final String ACTION_DO_COPY_WEEK ="copyTypicalWeek";
 
     // Templates
     private static final String TEMPLATE_MANAGE_TYPICAL_WEEK = "admin/plugins/appointment/slots/manage_typical_week.html";
@@ -408,6 +409,28 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         addInfo( INFO_PARAMETER_REMOVED, getLocale( ) );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, Integer.parseInt( strIdForm ) );        
     }
+    /**
+     * Copy typical week
+     * @param request the request
+     * @return Html Page
+     * @throws AccessDeniedException
+     */
+    @Action( ACTION_DO_COPY_WEEK )
+    public String doCopyWeek( HttpServletRequest request ) throws AccessDeniedException
+    {
+        String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+        int nIdForm = Integer.parseInt( strIdForm );
+        int nIdReservationRule = Integer.parseInt( request.getParameter( PARAMETER_ID_RULE ) );
+
+        if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
+                (User) getUser( ) ) )
+        {
+            throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
+        }
+        ReservationRuleService.copyReservationRule( nIdReservationRule );
+        return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule  );        
+
+    }     
     /**
      * Get the view to modify a time slot
      * 
