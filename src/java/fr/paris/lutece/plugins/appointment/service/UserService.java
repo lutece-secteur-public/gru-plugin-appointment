@@ -34,9 +34,6 @@
 package fr.paris.lutece.plugins.appointment.service;
 
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
@@ -64,25 +61,16 @@ public final class UserService
      *            the appointment DTO
      * @return the user saved
      */
-    public static synchronized User saveUser( AppointmentDTO appointment )
-    {
-    	User user= null;
-        String strFirstName = appointment.getFirstName( );
-        String strLastName = appointment.getLastName( );
-        String strEmail = appointment.getEmail( );       
-        user = UserHome.findByFirstNameLastNameAndEmail( strFirstName, strLastName, strEmail );
+    public static User saveUser( AppointmentDTO appointment )
+    {    	
+        User user = new User( );
+        user.setGuid( appointment.getGuid( ) );
+        user.setFirstName( appointment.getFirstName( ) );
+        user.setLastName( appointment.getLastName( ) );
+        user.setEmail( appointment.getEmail( ) );
+        user.setPhoneNumber( appointment.getPhoneNumber( ) );
+        return  UserHome.create( user );
         
-        if ( user == null )
-        {
-            user = new User( );
-            user.setGuid( appointment.getGuid( ) );
-            user.setFirstName( strFirstName );
-            user.setLastName( strLastName );
-            user.setEmail( strEmail );
-            user.setPhoneNumber( appointment.getPhoneNumber( ) );
-            user = UserHome.create( user );
-        }
-        return user;
     }
 
     /**

@@ -45,6 +45,7 @@ import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
+import fr.paris.lutece.plugins.appointment.business.user.UserHome;
 import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFilterDTO;
@@ -334,7 +335,7 @@ public final class AppointmentService
             // Need to delete also the responses linked to this appointment
             AppointmentResponseService.removeResponsesByIdAppointment( nIdAppointment );
             AppointmentService.deleteAppointment( appointmentToDelete );
-
+            UserHome.delete( appointmentToDelete.getIdUser( ) );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
         }
         catch( Exception e )

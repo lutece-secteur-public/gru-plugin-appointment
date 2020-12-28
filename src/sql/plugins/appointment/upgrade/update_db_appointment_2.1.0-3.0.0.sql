@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS appointment_appointment_slot (
     CONSTRAINT fk_appointment_appointment_slot_slot
     FOREIGN KEY (id_slot)
     REFERENCES appointment_slot (id_slot)
-
 );
 INSERT INTO appointment_calendar_template (id_calendar_template, title, description, template_path) VALUES (5,'Liste des creneaux disponible regroupés','Liste des creneaux disponible regroupés','skin/plugins/appointment/calendar/appointment_form_list_open_slots_grouped.html' );
 --
@@ -35,10 +34,9 @@ comment_creation_date date NOT NULL,
 comment_user_creator VARCHAR(255) NOT NULL, 
 PRIMARY KEY (id_comment), 
 CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form) REFERENCES appointment_form (id_form) 
-)
-ENGINE = InnoDB;
-ALTER TABLE appointment_form ADD role_fo varchar(255);
+);
 
+ALTER TABLE appointment_form ADD role_fo varchar(255);
 SET FOREIGN_KEY_CHECKS = 0;
 ALTER TABLE appointment_appointment MODIFY id_appointment INT NOT NULL;
 ALTER TABLE appointment_appointment DROP PRIMARY KEY, ADD PRIMARY KEY (id_appointment);
@@ -119,5 +117,6 @@ CREATE INDEX fk_appointment_working_day_appointment_reservation_rule_idx ON appo
 CREATE UNIQUE INDEX appointment_working_day_unique ON appointment_working_day (id_reservation_rule,day_of_week);
 
 
+DROP INDEX IF EXISTS appointment_user_unique_email ON appointment_user ;
 
 SET FOREIGN_KEY_CHECKS = 1;

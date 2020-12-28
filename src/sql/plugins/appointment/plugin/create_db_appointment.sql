@@ -368,15 +368,18 @@ CREATE UNIQUE INDEX appointment_closing_day_unique ON appointment_closing_day (i
 --
 -- Structure for table appointment_comment
 --
-CREATE TABLE appointment_comment (
-id_comment int AUTO_INCREMENT,
-id_form int default '0' NOT NULL,
-starting_validity_date date NOT NULL,
+
+CREATE TABLE appointment_comment ( 
+id_comment int AUTO_INCREMENT, 
+id_form int default '0' NOT NULL, 
+starting_validity_date date NOT NULL, 
+starting_validity_time TIME,
 ending_validity_date date NOT NULL,
-comment long varchar NOT NULL,
-comment_creation_date date NOT NULL,
-comment_user_creator VARCHAR(255) NOT NULL,
-PRIMARY KEY (id_comment),
-CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form)
-    REFERENCES appointment_form (id_form)
+ending_validity_time TIME, 
+comment long varchar NOT NULL, 
+comment_creation_date date NOT NULL, 
+comment_user_creator VARCHAR(255) NOT NULL, 
+PRIMARY KEY (id_comment), 
+CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form) 
+	REFERENCES appointment_form (id_form) 
 );
