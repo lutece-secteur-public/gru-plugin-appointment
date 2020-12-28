@@ -141,10 +141,6 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PARAMETER_SHIFT_SLOT = "shift_slot";
     private static final String PARAMETER_DATA = "slotsData";
     private static final String PARAMETER_IDENTICAL = "identical";
-    private static final String PARAMETER_CAPACITY_MOD = "capacity";
-    // Constantes
-    private static final String VAR_CAP= "var_cap";
-    private static final String NEW_CAP= "new_cap";
 
     // Marks
     private static final String MARK_SLOT = "slot";

@@ -581,9 +581,12 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     public String doModifyListTimeSlot( HttpServletRequest request )
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
+		String strCap = request.getParameter(PARAMETER_CAPACITY_MOD);
         int nIdForm = Integer.parseInt( strIdForm );
         String strIdReservationRule = request.getParameter( PARAMETER_ID_RULE );
         int nIdReservationRule = Integer.parseInt( strIdReservationRule );
+        int nVarMaxCapacity= 0;
+        int nMaxCapacity= -1; 
         
         String strJson= request.getParameter( PARAMETER_TIME_SLOT_DATA );
         AppLogService.debug( "slot - Received strJson : " + strJson); 
@@ -604,11 +607,20 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             addError( MESSAGE_ERROR_PARSING_JSON, getLocale( ) );
 
 		}
-        
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
-        int nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
         boolean bMaxCapacityIsLower= false;
         LocalDate dateNow= LocalDate.now( );
+                
+        if( strCap.equals( VAR_CAP )) {     	
+        
+        	nVarMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+       
+        }else if ( strCap.equals( NEW_CAP )){
+        	
+            nMaxCapacity = Integer.parseInt( request.getParameter( PARAMETER_MAX_CAPACITY ) );
+
+        }
+        
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findByReservationRule( nIdReservationRule );
         
         if(listWeekDefinition.stream().anyMatch( week -> week.getDateOfApply().isBefore( dateNow ))) {
@@ -622,14 +634,22 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
  	        {
         		 timeSlot.setIsOpen( bIsOpen );
  	        }
- 	        if ( nMaxCapacity != timeSlot.getMaxCapacity( ) )
+ 	        if ( nMaxCapacity != -1 && nMaxCapacity != timeSlot.getMaxCapacity( ) )
  	        {
  	        	timeSlot.setMaxCapacity( nMaxCapacity );
  	        	if( nMaxCapacity < timeSlot.getMaxCapacity( ) ) {
  	    	        
  		        	bMaxCapacityIsLower = true;
  		        } 		       
- 	        }	 
+ 	        }
+ 	        else {
+ 	        	
+ 	        	timeSlot.setMaxCapacity( timeSlot.getMaxCapacity( ) + nVarMaxCapacity );
+ 	        	if( nVarMaxCapacity < 0 ) {
+ 	    	        
+ 		        	bMaxCapacityIsLower = true;
+ 		        } 	
+ 	        }
  	       listTimeSlot.add( timeSlot );
         }
                 
@@ -664,7 +684,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 	                return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters );
 	              }
             	                
-                manageTheSlotsAndAppointmentsImpacted( listSlotsImpactedWithAppointment, listSlotsImpacted, nMaxCapacity,
+                manageTheSlotsAndAppointmentsImpacted( listSlotsImpactedWithAppointment, listSlotsImpacted, nMaxCapacity, nVarMaxCapacity,
                         bIsOpen );
             }
             else
@@ -761,7 +781,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param bIsOpen
      *            the new boolean opening value
      */
-    private void manageTheSlotsAndAppointmentsImpacted( List<Slot> listSlotsImpactedWithAppointments, List<Slot> listSlotsImpacted, int nMaxCapacity,  boolean bIsOpen )
+    private void manageTheSlotsAndAppointmentsImpacted( List<Slot> listSlotsImpactedWithAppointments, List<Slot> listSlotsImpacted, int nMaxCapacity, int nVarMaxCapacity,  boolean bIsOpen )
     {
     	boolean bOpeningHasChanged= false;
     	boolean binfoOpeningHasChanged= false;
@@ -781,9 +801,14 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             lock.lock( );
             try
             {
-            	if( slotImpacted.getMaxCapacity() != nMaxCapacity ) {
+            	if( ( nMaxCapacity != -1 && slotImpacted.getMaxCapacity() != nMaxCapacity) ) {
             		
             		bMaxCapacityHasChanged= true;
+            	}else if( nVarMaxCapacity != 0 ) {
+            		
+            		nMaxCapacity= slotImpacted.getMaxCapacity() + nVarMaxCapacity;
+            		bMaxCapacityHasChanged= true;
+
             	}
             	if( slotImpacted.getIsOpen( ) != bIsOpen ) {
             		

@@ -64,10 +64,13 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
     private static final String MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.multiSlot.numberOfSeatsBookedAndConcurrentAppointments";
 
-
+    // Constantes
+    protected static final String VAR_CAP= "var_cap";
+    protected static final String NEW_CAP= "new_cap";
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "appointment.listItems.itemsPerPage";
+    protected static final String PARAMETER_CAPACITY_MOD = "capacity";
 
     // Parameters
     private static final String PARAMETER_PAGE_INDEX = "page_index";
