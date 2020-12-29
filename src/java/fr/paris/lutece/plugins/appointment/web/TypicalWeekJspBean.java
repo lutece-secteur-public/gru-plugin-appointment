@@ -634,7 +634,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
  	        {
         		 timeSlot.setIsOpen( bIsOpen );
  	        }
- 	        if ( nMaxCapacity != -1 && nMaxCapacity != timeSlot.getMaxCapacity( ) )
+ 	        if ( nMaxCapacity >= 0 && nMaxCapacity != timeSlot.getMaxCapacity( ) )
  	        {
  	        	timeSlot.setMaxCapacity( nMaxCapacity );
  	        	if( nMaxCapacity < timeSlot.getMaxCapacity( ) ) {
@@ -643,8 +643,14 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
  		        } 		       
  	        }
  	        else {
+ 	        	if( timeSlot.getMaxCapacity( ) + nVarMaxCapacity  > 0 ) {
+ 	        		
+ 	        		timeSlot.setMaxCapacity( timeSlot.getMaxCapacity( ) + nVarMaxCapacity );
  	        	
- 	        	timeSlot.setMaxCapacity( timeSlot.getMaxCapacity( ) + nVarMaxCapacity );
+ 	        	}else {
+ 	        		
+ 	        		timeSlot.setMaxCapacity( 0 );
+ 	        	}
  	        	if( nVarMaxCapacity < 0 ) {
  	    	        
  		        	bMaxCapacityIsLower = true;
@@ -815,6 +821,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             		bOpeningHasChanged= true;
             		binfoOpeningHasChanged= true;
             	}
+            	nMaxCapacity= nMaxCapacity > 0 ? nMaxCapacity:0 ;
             	slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
                 SlotSafeService.updateSlot( slotImpacted );
             }
