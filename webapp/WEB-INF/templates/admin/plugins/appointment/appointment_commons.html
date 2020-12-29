@@ -234,7 +234,9 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 			<#if tab="specificWeek"><#assign active = true /><#else><#assign active = false /></#if>
 			<@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificWeek.pageTitle}' active=active /> 			 
 			<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${appointmentform.idForm}' title='#i18n{appointment.annual.calendar.pageTitle}' active=false />  			
-			<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+			<#if isDeskInstalled?? && isDeskInstalled>
+				<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+			</#if>
 		<#else>
 			<#if tab="calendar"><#assign active = true /><#else><#assign active = false /></#if>
 			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active />

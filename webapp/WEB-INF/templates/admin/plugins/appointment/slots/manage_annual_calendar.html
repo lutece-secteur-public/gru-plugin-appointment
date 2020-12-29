@@ -8,7 +8,9 @@
                 <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}' title='#i18n{appointment.typicalWeek.pageTitle}' active=false />
                 <@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${id_form}' title='#i18n{appointment.specificWeek.pageTitle}' active=false /> 			 
                 <@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${id_form}' title='#i18n{appointment.annual.calendar.pageTitle}' active=true />  			
-                <@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${id_form}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+                <#if isDeskInstalled?? && isDeskInstalled>                
+                	<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${id_form}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+           		</#if>
             </@tabList>
             <@tabContent>
                 <@row>

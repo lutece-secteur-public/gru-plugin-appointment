@@ -140,7 +140,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     public String getViewManageAnnualCalendar( HttpServletRequest request )
     {
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        Form form = FormService.findFormLightByPrimaryKey( nIdForm );
+        AppointmentFormDTO form = FormService.buildAppointmentFormLight(nIdForm) ;
         String strStartYear = request.getParameter( PARAMETER_START_YEAR );
         int nStartYear;
         List<WeekDefinition> listWeek= WeekDefinitionService.findListWeekDefinition( nIdForm );
@@ -155,9 +155,9 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         model.put( MARK_LIST_WEEK_DEFINITION, listWeek );
         model.put( MARK_LIST_RESERVATION_RULE, listRule );
         model.put( MARK_ID_FORM,  nIdForm );
-        model.put( MARK_APPOINTMENT_FORM, form );
         model.put(MARK_START_YEAR, nStartYear);
         model.put(MARK_LOCALE_TINY, getLocale( ) );
+        AppointmentFormJspBean.addElementsToModel( request, form, getUser( ), getLocale( ), model );
 
         return getPage( MESSAGE_ANNUAL_CALENDAR_PAGE_TITLE, TEMPLATE_MANAGE_ANNUAL_CALENDAR, model );
     	

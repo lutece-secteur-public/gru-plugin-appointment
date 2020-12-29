@@ -154,6 +154,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_FILE_CLOSING_DAYS = "fileClosingDays";
     private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
+    private static final String MARK_APPOINTMENT_DESK_ENABLED = "isDeskInstalled";
+
     private static final String MARK_PERMISSION_CREATE = "permission_create";
 
     // Jsp
@@ -164,6 +166,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     public static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
     private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
+    private static final String PROPERTY_MODULE_APPOINTMENT_DESK_NAME = "appointment.moduleAppointmentDesk.name";
 
     private static final String PROPERTY_COPY_OF_FORM = "appointment.manageAppointmentForms.Copy";
     private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
@@ -656,6 +659,9 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     public static void addElementsToModel( HttpServletRequest request, AppointmentFormDTO appointmentForm, AdminUser user, Locale locale,
             Map<String, Object> model )
     {
+  	    Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
+        Plugin moduleAppointmentDesk = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_DESK_NAME ) );
+        ReferenceList listRoles = RoleHome.getRolesList( user ); 
         model.put( MARK_APPOINTMENT_FORM, appointmentForm );
         model.put( MARK_LOCALE, locale );
         model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( (User) user, locale ) );
@@ -663,10 +669,8 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
         model.put( MARK_LIST_CATEGORIES, CategoryService.findAllInReferenceList( ) );
         model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
-        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
         model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
-
-        ReferenceList listRoles = RoleHome.getRolesList( user );
+        model.put( MARK_APPOINTMENT_DESK_ENABLED, ( moduleAppointmentDesk != null ) && moduleAppointmentDesk.isInstalled( ) );
         model.put( MARK_REF_LIST_ROLES, listRoles );
     }
     /**
