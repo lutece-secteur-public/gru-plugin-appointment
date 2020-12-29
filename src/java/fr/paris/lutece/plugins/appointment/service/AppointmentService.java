@@ -36,13 +36,17 @@ package fr.paris.lutece.plugins.appointment.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.business.user.UserHome;
@@ -54,6 +58,8 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.business.user.AdminUserHome;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.util.CryptoService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.sql.TransactionManager;
 
@@ -65,7 +71,16 @@ import fr.paris.lutece.util.sql.TransactionManager;
  */
 public final class AppointmentService
 {
-
+	
+	 private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
+	 private static final String CONSTANT_SHA256 = "SHA-256";
+	 private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
+	 private static final String CONSTANT_SEPARATOR = "$";
+	 /**
+	  * Get the number of characters of the random part of appointment reference
+	 */
+	 private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
+	
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -173,17 +188,28 @@ public final class AppointmentService
         }
         appointment.setListAppointmentSlot( appointmentDTO.getListAppointmentSlot( ) );
         appointment.setNbPlaces( appointmentDTO.getNbBookedSeats( ) );
-
         appointment.setIdUser( user.getIdUser( ) );
 
         if ( appointment.getIdAppointment( ) == 0 )
         {
+        	String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR )
+                    .add( user.getLastName( ) ).add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
+        	String strReference = appointment.getIdAppointment( ) + CryptoService
+                     .encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
+                             AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) )
+                     .substring( 0, AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
+
+            Form form = FormService.findFormLightByPrimaryKey( appointmentDTO.getIdForm( ) );
+            if ( StringUtils.isNotEmpty( form.getReference( ) ) )
+            {
+                strReference = form.getReference( ) + strReference;
+            }
+            appointment.setReference( strReference );             
             appointment = AppointmentHome.create( appointment );
             AppointmentListenerManager.notifyListenersAppointmentCreated( appointment.getIdAppointment( ) );
         }
         else
         {
-            AppLogService.info( "Update Appointment: " + appointment.getIdAppointment( ) );
             appointment = AppointmentHome.update( appointment );
             AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
 
@@ -454,9 +480,22 @@ public final class AppointmentService
      * @return the id of the appointment saved
      * @throws Exception
      */
-    public static synchronized int saveAppointment( AppointmentDTO appointmentDTO )
+    public static int saveAppointment( AppointmentDTO appointmentDTO )
     {
         return SlotSafeService.saveAppointment( appointmentDTO, null );
+
+    }
+    /**
+     * Save an appointment in database
+     * 
+     * @param appointmentDTO
+     *            the appointment dto
+     * @return the id of the appointment saved
+     * @throws Exception
+     */
+    public static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request )
+    {
+        return SlotSafeService.saveAppointment( appointmentDTO, request );
 
     }
 

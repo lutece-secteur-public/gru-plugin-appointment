@@ -44,7 +44,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -53,12 +52,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
-import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentHome;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
@@ -71,7 +66,6 @@ import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
-import fr.paris.lutece.plugins.appointment.service.listeners.AppointmentListenerManager;
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
 import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
@@ -79,23 +73,11 @@ import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.util.CryptoService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.sql.TransactionManager;
 
 public final class SlotSafeService
 {
-
-    private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
-    private static final String CONSTANT_SHA256 = "SHA-256";
-    private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
-    private static final String CONSTANT_SEPARATOR = "$";
-
-    /**
-     * Get the number of characters of the random part of appointment reference
-     */
-    private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
 
     private static final ConcurrentMap<Integer, Lock> _listSlot = new ConcurrentHashMap<>( );
     private static final ConcurrentMap<Integer, Object> _lockFormId = new ConcurrentHashMap<>( );
@@ -370,37 +352,14 @@ public final class SlotSafeService
         }
 
         AppointmentService.buildListAppointmentSlot( appointmentDTO );
-        User user = UserService.saveUser( appointmentDTO );
-
         TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
         try
         {
-
-            List<Slot> listSlot = saveSlots( appointmentDTO, bIsUpdate );
-
+            User user = UserService.saveUser( appointmentDTO );
+            saveSlots( appointmentDTO, bIsUpdate );
             // Create or update the appointment
-            Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );
-            String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR )
-                    .add( user.getLastName( ) ).add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
-            // Create a unique reference for a new appointment
-            if ( appointmentDTO.getIdAppointment( ) == 0 )
-            {
-                String strReference = appointment.getIdAppointment( ) + CryptoService
-                        .encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
-                                AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) )
-                        .substring( 0, AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
-
-                Form form = FormService.findFormLightByPrimaryKey( appointmentDTO.getIdForm( ) );
-                if ( StringUtils.isNotEmpty( form.getReference( ) ) )
-                {
-                    strReference = form.getReference( ) + strReference;
-                }
-                appointment.setReference( strReference );
-                AppointmentHome.update( appointment );
-                AppointmentListenerManager.notifyListenersAppointmentUpdated( appointment.getIdAppointment( ) );
-
-            }
-            else
+            Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );                       
+            if( appointmentDTO.getIdAppointment( ) != 0 )
             {
                 AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
             }
@@ -413,15 +372,13 @@ public final class SlotSafeService
                 }
             }
 
-            Form form = FormService.findFormLightByPrimaryKey( listSlot.get( 0 ).getIdForm( ) );
+            Form form = FormService.findFormLightByPrimaryKey( appointmentDTO.getIdForm( ) );
             if ( form.getIdWorkflow( ) > 0 )
             {
-
                 WorkflowService.getInstance( ).getState( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE, form.getIdWorkflow( ),
                         form.getIdForm( ) );
                 WorkflowService.getInstance( ).executeActionAutomatic( appointment.getIdAppointment( ), Appointment.APPOINTMENT_RESOURCE_TYPE,
                         form.getIdWorkflow( ), form.getIdForm( ), null );
-
             }
 
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
@@ -926,7 +883,6 @@ public final class SlotSafeService
             Slot slot = SlotService.findSlotById( idSlot );
             if ( slot == null || slot.getStartingDateTime( ).isBefore( LocalDateTime.now( ) ) || slot.getMaxCapacity( ) <= slot.getNbPlacesTaken( ) )
             {
-
                 _listSlot.remove( idSlot );
             }
 
@@ -985,17 +941,12 @@ public final class SlotSafeService
 
         if ( appointmentDTO.getIdAppointment( ) != 0 )
         {
-
             oldAppointment = AppointmentService.findAppointmentById( appointmentDTO.getIdAppointment( ) );
-
         }
-
         try
         {
-
             lockSlot( appointmentDTO, listLock );
             int nbRemainingPlaces = listSlotToUpdate.stream( ).map( Slot::getNbRemainingPlaces ).reduce( 0, Integer::sum );
-
             for ( AppointmentSlot appSlot : appointmentDTO.getListAppointmentSlot( ) )
             {
 
@@ -1062,8 +1013,8 @@ public final class SlotSafeService
                         && oldAppointment.getListAppointmentSlot( ).stream( ).anyMatch( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ) )
                 {
                     // It is an update of the appointment
-                    int nOldTakenPlaces = oldAppointment.getListAppointmentSlot( ).stream( ).filter( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ).findAny( )
-                            .get( ).getNbPlaces( );
+                	AppointmentSlot oldApptSlot=  oldAppointment.getListAppointmentSlot( ).stream( ).filter( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ).findAny( ).orElse( null );
+                    int nOldTakenPlaces = (oldApptSlot != null)?oldApptSlot.getNbPlaces():0;                    		
                     newNbRemainingPlaces = oldNbRemainingPLaces + nOldTakenPlaces - effectiveBookedSeats;
                     newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
                     newNbPlacesTaken = oldNbPlacesTaken - nOldTakenPlaces + effectiveBookedSeats;
