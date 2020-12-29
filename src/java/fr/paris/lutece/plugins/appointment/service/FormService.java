@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -140,6 +141,7 @@ public final class FormService
             ReservationRuleService.saveReservationRule( copyReservationRule );
             listWorkingDays = copyReservationRule.getListWorkingDay( );
             idCopyReservationRule = copyReservationRule.getIdReservationRule( );
+          
             for ( WorkingDay workingDay : listWorkingDays )
             {
                 copyWorkingDay = workingDay;
@@ -156,13 +158,19 @@ public final class FormService
                     TimeSlotService.saveTimeSlot( copyTimeSlot );
                 }
             }
+            List<WeekDefinition> listWeekDef = listWeekDefinitions.stream().filter(week -> week.getIdReservationRule( ) == reservationRule.getIdReservationRule( )).collect(Collectors.toList( ));
+            if( CollectionUtils.isNotEmpty( listWeekDef )) {
+            	
+            	for ( WeekDefinition weekDefinition : listWeekDef )
+                {
+                    copyWeekDefinition = weekDefinition;
+                    copyWeekDefinition.setIdWeekDefinition( 0 );
+                    copyWeekDefinition.setIdReservationRule( idCopyReservationRule );
+                    WeekDefinitionHome.create( copyWeekDefinition );           
+                }
+            }
         }
-        for ( WeekDefinition weekDefinition : listWeekDefinitions )
-        {
-            copyWeekDefinition = weekDefinition;
-            copyWeekDefinition.setIdWeekDefinition( 0 );
-            WeekDefinitionHome.create( copyWeekDefinition );           
-        }
+        
         // Copy the messages of the original form and add them to the copy
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
         FormMessage copyFormMessage = formMessage;
