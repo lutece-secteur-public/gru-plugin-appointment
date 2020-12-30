@@ -135,6 +135,7 @@ public final class FormService
         List<ReservationRule> listReservationRules = ReservationRuleService.findListReservationRule( nIdForm );
         for ( ReservationRule reservationRule : listReservationRules )
         {
+        	int nOldReservationRule= reservationRule.getIdReservationRule( );
             copyReservationRule = reservationRule;
             copyReservationRule.setIdReservationRule( 0 );
             copyReservationRule.setIdForm( nIdNewForm );
@@ -158,7 +159,7 @@ public final class FormService
                     TimeSlotService.saveTimeSlot( copyTimeSlot );
                 }
             }
-            List<WeekDefinition> listWeekDef = listWeekDefinitions.stream().filter(week -> week.getIdReservationRule( ) == reservationRule.getIdReservationRule( )).collect(Collectors.toList( ));
+            List<WeekDefinition> listWeekDef = listWeekDefinitions.stream().filter(week -> week.getIdReservationRule( ) == nOldReservationRule ).collect(Collectors.toList( ));
             if( CollectionUtils.isNotEmpty( listWeekDef )) {
             	
             	for ( WeekDefinition weekDefinition : listWeekDef )
@@ -444,7 +445,7 @@ public final class FormService
      * @param reservationRule
      *            the reservation rule
      */
-    private static void fillAppointmentFormWithReservationRulePart( AppointmentFormDTO appointmentForm, ReservationRule reservationRule )
+    public static void fillAppointmentFormWithReservationRulePart( AppointmentFormDTO appointmentForm, ReservationRule reservationRule )
     {
     	 List<WorkingDay> listWorkingDay = reservationRule.getListWorkingDay( );
          if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
