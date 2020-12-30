@@ -45,23 +45,26 @@ public class ReservationRuleServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
+        appointmentForm.setName("appointment_form");
         appointmentForm.setDurationAppointments( 30 );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
+        appointmentForm2.setName("appointment_form");
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setDurationAppointments( 20 );
         LocalDate dateOfModification = LocalDate.parse( "2028-06-20" );
-        FormService.updateAdvancedParameters( appointmentForm2, dateOfModification );
+        FormService.updateGlobalParameters( appointmentForm2 );
 
         AppointmentFormDTO appointmentForm3 = FormServiceTest.buildAppointmentForm( );
+        appointmentForm3.setName("appointment_form");
         appointmentForm3.setIdForm( nIdForm );
         appointmentForm3.setDurationAppointments( 10 );
         LocalDate dateOfModification2 = LocalDate.parse( "2028-06-22" );
-        FormService.updateAdvancedParameters( appointmentForm3, dateOfModification2 );
+        FormService.updateGlobalParameters( appointmentForm3 );
 
         assertEquals( dateOfModification,
-                ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, LocalDate.parse( "2028-06-21" ) ).getDateOfApply( ) );
+                ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, LocalDate.parse( "2028-06-21" ) ) );
 
         FormServiceTest.cleanForm( nIdForm );
     }

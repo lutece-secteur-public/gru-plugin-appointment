@@ -105,6 +105,6 @@ public interface IWorkingDayDAO
      *            the Plugin
      * @return the list of all the working days of the weekdefinition
      */
-    List<WorkingDay> findByIdWeekDefinitionRule( int nIdWeekDefinitionRule, Plugin plugin );
+    List<WorkingDay> findByIdReservationRule( int nIdWeekDefinitionRule, Plugin plugin );
 
 }

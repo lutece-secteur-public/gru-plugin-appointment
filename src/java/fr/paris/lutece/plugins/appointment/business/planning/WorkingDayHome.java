@@ -123,15 +123,15 @@ public final class WorkingDayHome
     }
 
     /**
-     * Find the Working Day of the weekDefinition
+     * Find the Working Day of the Reservation Rule
      * 
-     * @param nIdWeekDefinitionRule
-     *            the WeekDefinition Id Rule
+     * @param nIdReservationRule
+     *            the Reservation Id Rule
      * @return a list of the workingDay defined rule
      */
-    public static List<WorkingDay> findByIdWeekDefinitionRule( int nIdWeekDefinitionRule )
+    public static List<WorkingDay> findByIdReservationRule( int nIdReservationRule )
     {
-        return _dao.findByIdWeekDefinitionRule( nIdWeekDefinitionRule, _plugin );
+        return _dao.findByIdReservationRule( nIdReservationRule, _plugin );
     }
-
+    
 }

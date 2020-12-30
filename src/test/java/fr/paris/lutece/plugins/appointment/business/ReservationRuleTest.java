@@ -70,6 +70,8 @@ public final class ReservationRuleTest extends LuteceTestCase
         // Initialize a ReservationRule
         ReservationRule reservationRule = buildReservationRule( );
         reservationRule.setIdForm( form.getIdForm( ) );
+        reservationRule.setName( "Reservation Rule Name" );
+        reservationRule.setDescriptionRule( "Reservation Rule Generated" );
         // Create the ReservationRule in database
         ReservationRuleHome.create( reservationRule );
         // Find the ReservationRule created in database
@@ -78,7 +80,7 @@ public final class ReservationRuleTest extends LuteceTestCase
         checkAsserts( reservationRuleStored, reservationRule );
 
         // Update the ReservationRule
-        reservationRule.setDateOfApply( DATE_OF_APPLY_2 );
+        //reservationRule.setDateOfApply( DATE_OF_APPLY_2 );
         reservationRule.setMaxCapacityPerSlot( MAX_CAPACITY_PER_SLOT_2 );
         reservationRule.setMaxPeoplePerAppointment( MAX_PEOPLE_PER_APPOINTMENT_2 );
         // Update the ReservationRule in database
@@ -109,6 +111,8 @@ public final class ReservationRuleTest extends LuteceTestCase
         // Initialize a ReservationRule
         ReservationRule reservationRule = buildReservationRule( );
         reservationRule.setIdForm( form.getIdForm( ) );
+        reservationRule.setName( "Name");
+        reservationRule.setDescriptionRule( "description");
         // Create the ReservationRule in database
         ReservationRuleHome.create( reservationRule );
         // Find the ReservationRule created in database
@@ -151,7 +155,7 @@ public final class ReservationRuleTest extends LuteceTestCase
     public ReservationRule buildReservationRule( )
     {
         ReservationRule reservationRule = new ReservationRule( );
-        reservationRule.setDateOfApply( DATE_OF_APPLY_1 );
+        //reservationRule.setDateOfApply( DATE_OF_APPLY_1 );
         reservationRule.setMaxCapacityPerSlot( MAX_CAPACITY_PER_SLOT_1 );
         reservationRule.setMaxPeoplePerAppointment( MAX_PEOPLE_PER_APPOINTMENT_1 );
         return reservationRule;
@@ -165,7 +169,6 @@ public final class ReservationRuleTest extends LuteceTestCase
     public ReservationRule buildReservationRule2( )
     {
         ReservationRule reservationRule = new ReservationRule( );
-        reservationRule.setDateOfApply( DATE_OF_APPLY_2 );
         reservationRule.setMaxCapacityPerSlot( MAX_CAPACITY_PER_SLOT_2 );
         reservationRule.setMaxPeoplePerAppointment( MAX_PEOPLE_PER_APPOINTMENT_2 );
         return reservationRule;
@@ -181,7 +184,6 @@ public final class ReservationRuleTest extends LuteceTestCase
      */
     public void checkAsserts( ReservationRule reservationRuleStored, ReservationRule reservationRule )
     {
-        assertEquals( reservationRuleStored.getDateOfApply( ), reservationRule.getDateOfApply( ) );
         assertEquals( reservationRuleStored.getMaxCapacityPerSlot( ), reservationRule.getMaxCapacityPerSlot( ) );
         assertEquals( reservationRuleStored.getMaxPeoplePerAppointment( ), reservationRule.getMaxPeoplePerAppointment( ) );
         assertEquals( reservationRuleStored.getIdForm( ), reservationRule.getIdForm( ) );

@@ -168,7 +168,7 @@ public final class WorkingDayService
      */
     public static List<WorkingDay> findListWorkingDayByWeekDefinitionRule( int nIdWeekDefinitionRule )
     {
-        List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdWeekDefinitionRule( nIdWeekDefinitionRule );
+        List<WorkingDay> listWorkingDay = WorkingDayHome.findByIdReservationRule( nIdWeekDefinitionRule );
         for ( WorkingDay workingDay : listWorkingDay )
         {
             workingDay.setListTimeSlot( TimeSlotService.findListTimeSlotByWorkingDay( workingDay.getIdWorkingDay( ) ) );
@@ -242,10 +242,9 @@ public final class WorkingDayService
         for ( WorkingDay workingDay : listWorkingDay )
         {
             LocalTime endingTimeTemp = getMaxEndingTimeOfAWorkingDay( workingDay );
-            if ( maxEndingTime == null || endingTimeTemp.isAfter( maxEndingTime ) )
-            {
+
                 maxEndingTime = endingTimeTemp;
-            }
+            
         }
         return maxEndingTime;
     }

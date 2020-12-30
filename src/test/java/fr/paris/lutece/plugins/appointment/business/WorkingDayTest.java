@@ -41,6 +41,8 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -63,11 +65,15 @@ public final class WorkingDayTest extends LuteceTestCase
         // Initialize a WorkingDay
         Form form = FormTest.buildForm1( );
         FormHome.create( form );
-        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
+        
+        ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
+        ReservationRuleHome.create( reservationRule1 );
+        
+        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( reservationRule1.getIdReservationRule( ) );
+        //weekDefinition.setIdForm( form.getIdForm( ) );
         WeekDefinitionHome.create( weekDefinition );
         WorkingDay workingDay = buildWorkingDay( );
-        workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
+        workingDay.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
         // Insert the WorkingDay in database
         WorkingDayHome.create( workingDay );
         // Find the workingDay created in database
@@ -92,6 +98,7 @@ public final class WorkingDayTest extends LuteceTestCase
 
         // Clean
         WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
+        ReservationRuleHome.delete( reservationRule1.getIdReservationRule( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 
@@ -103,15 +110,19 @@ public final class WorkingDayTest extends LuteceTestCase
         // Initialize a WorkingDay
         Form form = FormTest.buildForm1( );
         FormHome.create( form );
-        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
+        
+        ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
+        ReservationRuleHome.create( reservationRule1 );
+        
+        WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( reservationRule1.getIdReservationRule( ) );
+        //weekDefinition.setIdForm( form.getIdForm( ) );
         WeekDefinitionHome.create( weekDefinition );
         WorkingDay workingDay = buildWorkingDay( );
-        workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
+        workingDay.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
         // Insert the WorkingDay in database
         WorkingDayHome.create( workingDay );
         // Find the workingDay created in database
-        List<WorkingDay> listWorkingDayStored = WorkingDayHome.findByIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
+        List<WorkingDay> listWorkingDayStored = WorkingDayHome.findByIdReservationRule( reservationRule1.getIdReservationRule() );
         // Check Asserts
         assertEquals( listWorkingDayStored.size( ), 1 );
         checkAsserts( listWorkingDayStored.get( 0 ), workingDay );
@@ -119,6 +130,7 @@ public final class WorkingDayTest extends LuteceTestCase
         // Clean
         WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
         WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
+        ReservationRuleHome.delete( reservationRule1.getIdReservationRule( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 
@@ -145,6 +157,6 @@ public final class WorkingDayTest extends LuteceTestCase
     public static void checkAsserts( WorkingDay workingDayStored, WorkingDay workingDay )
     {
         assertEquals( workingDayStored.getDayOfWeek( ), workingDay.getDayOfWeek( ) );
-        assertEquals( workingDayStored.getIdWeekDefinition( ), workingDay.getIdWeekDefinition( ) );
+        assertEquals( workingDayStored.getIdReservationRule( ), workingDay.getIdReservationRule( ) );
     }
 }

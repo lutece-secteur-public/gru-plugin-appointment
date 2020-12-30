@@ -213,7 +213,7 @@ public final class WeekDefinitionService
      */
     public static WeekDefinition findNextWeekDefinition( int nIdForm, LocalDate previousDateOfApply )
     {
-        WeekDefinition nextWeekDefinition = null;
+        WeekDefinition nextWeekDefinition = new WeekDefinition();
         List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( nIdForm );
         if ( CollectionUtils.isNotEmpty( listWeekDefinition ) )
         {

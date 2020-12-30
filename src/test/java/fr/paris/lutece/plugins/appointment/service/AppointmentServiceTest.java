@@ -69,6 +69,7 @@ public class AppointmentServiceTest extends LuteceTestCase
 
         // Build the form
         AppointmentFormDTO app = FormServiceTest.buildAppointmentForm( );
+        app.setName("appointment_form");
         int nIdForm = FormService.createAppointmentForm( app );
 
         Slot slot = SlotTest.buildSlot( nIdForm, _slotStart, _slotEnd, 1, 1, 0, 1, Boolean.TRUE, Boolean.TRUE );

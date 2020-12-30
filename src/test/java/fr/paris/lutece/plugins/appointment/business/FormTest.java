@@ -44,6 +44,8 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -110,15 +112,22 @@ public final class FormTest extends LuteceTestCase
     {
         Form form = buildForm1( );
         FormHome.create( form );
+        
+        ReservationRule reservationRule = buildReservationRule( form.getIdForm() );
+        ReservationRuleHome.create( reservationRule );
+        
+        ReservationRule reservationRule2 = buildReservationRule( form.getIdForm() );
+        ReservationRuleHome.create( reservationRule2 );
 
         WeekDefinition weekDefinition1 = new WeekDefinition( );
         weekDefinition1.setDateOfApply( WeekDefinitionTest.DATE_OF_APPLY_1 );
-        weekDefinition1.setIdForm( form.getIdForm( ) );
+        weekDefinition1.setEndingDateOfApply( WeekDefinitionTest.DATE_OF_APPLY_2 );
+        weekDefinition1.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         WeekDefinitionHome.create( weekDefinition1 );
 
         WorkingDay workingDay1 = new WorkingDay( );
         workingDay1.setDayOfWeek( WorkingDayTest.DAY_OF_WEEK_1 );
-        workingDay1.setIdWeekDefinition( weekDefinition1.getIdWeekDefinition( ) );
+        workingDay1.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         WorkingDayHome.create( workingDay1 );
 
         TimeSlot timeSlot1 = new TimeSlot( );
@@ -137,7 +146,7 @@ public final class FormTest extends LuteceTestCase
 
         WorkingDay workingDay2 = new WorkingDay( );
         workingDay2.setDayOfWeek( WorkingDayTest.DAY_OF_WEEK_2 );
-        workingDay2.setIdWeekDefinition( weekDefinition1.getIdWeekDefinition( ) );
+        workingDay2.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         WorkingDayHome.create( workingDay2 );
 
         TimeSlot timeSlot3 = new TimeSlot( );
@@ -155,13 +164,15 @@ public final class FormTest extends LuteceTestCase
         TimeSlotHome.create( timeSlot4 );
 
         WeekDefinition weekDefinition2 = new WeekDefinition( );
+        weekDefinition2.setIdWeekDefinition( 0 );
         weekDefinition2.setDateOfApply( WeekDefinitionTest.DATE_OF_APPLY_2 );
-        weekDefinition2.setIdForm( form.getIdForm( ) );
+        weekDefinition2.setEndingDateOfApply( WeekDefinitionTest.DATE_OF_APPLY_2 );
+        weekDefinition2.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         WeekDefinitionHome.create( weekDefinition2 );
 
         WorkingDay workingDay3 = new WorkingDay( );
         workingDay3.setDayOfWeek( WorkingDayTest.DAY_OF_WEEK_1 );
-        workingDay3.setIdWeekDefinition( weekDefinition2.getIdWeekDefinition( ) );
+        workingDay3.setIdReservationRule( reservationRule2.getIdReservationRule( ) );
         WorkingDayHome.create( workingDay3 );
 
         TimeSlot timeSlot5 = new TimeSlot( );
@@ -180,7 +191,7 @@ public final class FormTest extends LuteceTestCase
 
         WorkingDay workingDay4 = new WorkingDay( );
         workingDay4.setDayOfWeek( WorkingDayTest.DAY_OF_WEEK_2 );
-        workingDay4.setIdWeekDefinition( weekDefinition2.getIdWeekDefinition( ) );
+        workingDay4.setIdReservationRule( reservationRule2.getIdReservationRule( ) );
         WorkingDayHome.create( workingDay4 );
 
         TimeSlot timeSlot7 = new TimeSlot( );
@@ -197,7 +208,7 @@ public final class FormTest extends LuteceTestCase
         timeSlot8.setIdWorkingDay( workingDay4.getIdWorkingDay( ) );
         TimeSlotHome.create( timeSlot8 );
 
-        List<WeekDefinition> listWeekDefinition = FormHome.getListWeekDefinition( form.getIdForm( ) );
+        List<WeekDefinition> listWeekDefinition = WeekDefinitionHome.findByIdForm( form.getIdForm( ) );
         assertEquals( listWeekDefinition.size( ), 2 );
 
         // Clean
@@ -215,6 +226,8 @@ public final class FormTest extends LuteceTestCase
         WorkingDayHome.delete( workingDay4.getIdWorkingDay( ) );
         WeekDefinitionHome.delete( weekDefinition1.getIdWeekDefinition( ) );
         WeekDefinitionHome.delete( weekDefinition2.getIdWeekDefinition( ) );
+        ReservationRuleHome.delete( reservationRule.getIdReservationRule( ) );
+        ReservationRuleHome.delete( reservationRule2.getIdReservationRule( ) );
         FormHome.delete( form.getIdForm( ) );
 
     }
@@ -234,6 +247,20 @@ public final class FormTest extends LuteceTestCase
         form.setIsActive( IS_ACTIVE1 );
         form.setIdWorkflow( ID_WORKFLOW_1 );
         return form;
+    }
+    
+    /**
+     * Build a Reservation Rule
+     * 
+     * @return a Reservation Rule
+     */
+    public static ReservationRule buildReservationRule( int nIdForm )
+    {
+    	ReservationRule reservationRule = new ReservationRule( );
+    	reservationRule.setName( "ReservationRule" );
+    	reservationRule.setDescriptionRule( "A built reservation Rule" );
+    	reservationRule.setIdForm( nIdForm );
+    	return reservationRule;
     }
 
     /**

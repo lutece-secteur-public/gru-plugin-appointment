@@ -51,6 +51,7 @@ public class ClosingDayServiceTest extends LuteceTestCase
     {
         // Build the form
         AppointmentFormDTO formDto = FormServiceTest.buildAppointmentForm( );
+        formDto.setName("appointment_form");
         int nIdForm = FormService.createAppointmentForm( formDto );
         List<LocalDate> listClosingDays = new ArrayList<>( );
         listClosingDays.add( LocalDate.parse( "2018-05-01" ) );
