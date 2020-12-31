@@ -64,7 +64,7 @@ public final class AppointmentFormListPortlet extends PortletHtmlContent
     {
         if ( request != null )
         {
-            return AppointmentApp.getFormListHtml( request, request.getLocale( ) );
+            return AppointmentApp.getFormListHtml( request, request.getLocale( ), null );
         }
 
         return StringUtils.EMPTY;
