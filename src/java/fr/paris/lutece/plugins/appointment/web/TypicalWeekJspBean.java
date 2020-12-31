@@ -812,7 +812,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             		bMaxCapacityHasChanged= true;
             	}else if( nVarMaxCapacity != 0 ) {
             		
-            		nMaxCapacity= slotImpacted.getMaxCapacity() + nVarMaxCapacity;
+            		nMaxCapacity= (slotImpacted.getMaxCapacity() + nVarMaxCapacity) >= 0? slotImpacted.getMaxCapacity() + nVarMaxCapacity:0 ;
             		bMaxCapacityHasChanged= true;
 
             	}
@@ -821,7 +821,6 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             		bOpeningHasChanged= true;
             		binfoOpeningHasChanged= true;
             	}
-            	nMaxCapacity= nMaxCapacity > 0 ? nMaxCapacity:0 ;
             	slotImpacted = updateRemainingPlaces( slotImpacted, bMaxCapacityHasChanged, nMaxCapacity, bOpeningHasChanged, bIsOpen );
                 SlotSafeService.updateSlot( slotImpacted );
             }
@@ -860,7 +859,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         if ( bMaxCapacityHasChanged )
         {
             int nOldBnMaxCapacity = slot.getMaxCapacity( );            
-
+            nNewNbMaxCapacity= (nNewNbMaxCapacity >= 0)? nNewNbMaxCapacity:0;
             // Need to add the diff between the old value and the new value
             // to the remaining places (if the new is higher)
             if ( nNewNbMaxCapacity > nOldBnMaxCapacity )
@@ -878,12 +877,12 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 slot.setNbPotentialRemainingPlaces(  slot.getNbPotentialRemainingPlaces( ) - nValueToSubstract  );
                 slot.setNbRemainingPlaces(  slot.getNbRemainingPlaces( ) - nValueToSubstract  );
             }
+            slot.setMaxCapacity(nNewNbMaxCapacity);
         }
         if ( bOpeningHasChanged )
         {
         	slot.setIsSpecific( bIsOpen );
         }
-        slot.setMaxCapacity(nNewNbMaxCapacity);
 
         return slot;
     }
