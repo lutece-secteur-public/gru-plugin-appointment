@@ -1,4 +1,5 @@
 <#include "/admin/util/editor/editor.html" />
+<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 <@row>
 	<@columns>
 		<@box color='primary'>
@@ -70,3 +71,12 @@
 	</@columns>
 </@row>
 <@initEditor />
+${formMessage.getCalendarTitle()!}
+<script>
+$(function(){
+/* Add Form title */
+$('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointmentForms.jsp\" title=\"#i18n{appointment.adminFeature.ManageAppointmentForm.name}\">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${formMessage.calendarTitle!}</small>"); 
+});
+</script>
+<#import "dump.ftl" as dumper>
+<pre><@dumper.dump .data_model /></pre>

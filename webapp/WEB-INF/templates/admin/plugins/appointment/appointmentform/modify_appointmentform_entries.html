@@ -174,17 +174,18 @@
 </#macro>
 
 <script>
-/* Add Form title */
-$('.content-header > h1 > small').html( "${appointmentform.title}" );
-$("#selectAll").click(function(event) {  //on click
-	if ( this.checked ){ // check select status
+$(function(){
+	<@headerTitle form=appointmentform />
+	$("#selectAll").click(function(event) {  //on click
+		if ( this.checked ){ // check select status
 			$("input[name='entry_id_move']").each(function() { //loop through each checkbox
-					this.checked = true;  //select all checkboxes with class "checkbox1"
+				this.checked = true;  //select all checkboxes with class "checkbox1"
 			});
-	} else {
+		} else {
 			$("input[name='entry_id_move']").each(function() { //loop through each checkbox
-					this.checked = false; //deselect all checkboxes with class "checkbox1"
+				this.checked = false; //deselect all checkboxes with class "checkbox1"
 			});
-	}
+		}
+	});
 });
 </script>

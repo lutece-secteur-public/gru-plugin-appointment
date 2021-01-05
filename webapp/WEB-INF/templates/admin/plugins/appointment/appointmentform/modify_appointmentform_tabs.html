@@ -1,10 +1,10 @@
+<link rel="stylesheet" href="css/datepicker.css">
+<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 <script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<link href="css/datepicker.css" rel="stylesheet">
 
 <#macro appointmentTabs tab appointmentform>
 	<@tabs>
 		<@tabList>
-			
 			<#if tab="params"><#assign active = true /><#else><#assign active = false /></#if>
 			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentForms.jsp?view=modifyAppointmentForm&id_form=${appointmentform.idForm}' title='	#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}' active=active />
 			<#if tab="entries"><#assign active = true /><#else><#assign active = false /></#if>
@@ -16,7 +16,6 @@
 		</@tabList>
 		<@tabContent>
 			<@messages infos=infos errors=errors />
-			<!-- <h3>#i18n{appointment.modifyAppointmentForm.title} : <strong>${appointmentform.title}</strong></h3> -->
 			<#nested>
 		</@tabContent>
 	</@tabs>

@@ -1,470 +1,459 @@
-<#macro commonsAppJS>
-<script src="js/plugins/appointment/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/fullcalendar.min.js"></script>
-<script src="js/plugins/appointment/locale-all.js"></script>
-<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' >
-<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
-<link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
-</#macro>
-
-<#--
--- Check if the checkbox must be checked or not
--- @param code the checkbox code
--- @param referecen_list the default values list
--- @return the String 'checked="checked" if the checkbox must be checked, an empty String otherwise
--->
-<#function getChecked code reference_list>
-	<#if reference_list?has_content>
-		<#list reference_list as reference_item>
-			<#if reference_item.code = code>
-				<#if reference_item.checked>
-  					<#return "checked='checked'">
-  				<#else>
-  					<#return "">
-  				</#if>
-  			</#if>
-  		</#list>
-	</#if>
-	<#return "">
-</#function>
-
-<#--
--- Get the value of the parameter
--- @param code the code of the parameter
--- @param referecen_list the default values list
--- @return the value of the parameter
--->
-<#function getName code reference_list>
-	<#if reference_list?has_content>
-		<#list reference_list as reference_item>
-			<#if reference_item.code = code>
-  				<#return reference_item.name>
-  			</#if>
-  		</#list>
-	</#if>
-	<#return "">
-</#function>
-
-<#--
--- Get the field from a given title
--- @param entry the entry
--- @param fieldTitle the title
--- @return the field
--->
-<#function getField entry fieldTitle>
-	<#if entry.fields?? && entry.fields?has_content>
-		<#list entry.fields as field>
-			<#if field?? && field.title?? && field.title == fieldTitle>
-				<#return field>
-			</#if>
-		</#list>
-	</#if>
-</#function>
-
-<#-- 
--- Get the field value from a given entry and a given title
--- @param entry the entry
--- @param fieldTitle the title
--- @return the field
--->
-<#function getFieldValue entry fieldTitle>
-	<#if getField( entry, fieldTitle )??>
-		<#assign field = getField( entry, fieldTitle )>
-		<#return field.value>
-	</#if>
-	<#return "">
-</#function>
-
-<#-- 
--- Get the max files value of an entry
--- @param entry the entry
--- @return the number of max authorized uploaded files
--->
-<#function getMaxFiles entry>
-	<#assign fieldMaxFiles = getFieldValueByCode( entry, "max_files" )>
-	<#if fieldMaxFiles?? && fieldMaxFiles != "">
-		<#return fieldMaxFiles>
-	</#if>
-	<#return "1">
-</#function>
-
-<#-- 
--- Get the max size an uploaded file is authorized to have
--- @param entry the entry
--- @return the max size
--->
-<#function getFileMaxSize entry>
-	<#assign fieldFileMaxSize = getFieldValueByCode( entry, "file_max_size" )>
-	<#if fieldFileMaxSize?? && fieldFileMaxSize != "">
-		<#return fieldFileMaxSize>
-	<#else>
-		<#if getField( entry, "option" )??>
-			<#assign fieldFileMaxSize = getFieldValueByCode( entry, "option" )>
-			<#return fieldFileMaxSize.width> 
-		</#if>
-	</#if>
-	<#return "5242880">
-</#function>
-
-<#--
--- Check if the given entry must export the binary
--- @param entry the entry
--- @return true if it must export the binaries, false otherwise
--->
-<#function exportBinary entry>
-	<#assign field = getFieldValue( entry, "export_binary" ) />
-	<#if field?? && field = "true">
-		<#return true />
-	</#if>
-	<#return false />
-</#function>
-
-<#-- 
--- Get the field value from a given entry and a given title
--- @param entry the entry
--- @param fieldTitle the title
--- @return the field
--->
-<#function getFieldValueByCode entry fieldCode>
-	<#if getFieldByCode( entry, fieldCode )??>
-		<#assign field = getFieldByCode( entry, fieldCode )>
-		<#return field.value>
-	</#if>
-	<#return "">
-</#function>
-
-<#--
--- Get the field from a given code
--- @param entry the entry
--- @param fieldCode the code
--- @return the field
--->
-<#function getFieldByCode entry fieldCode>
-    <#if entry.fields?? && entry.fields?has_content>
-        <#list entry.fields as field>
-            <#if field?? && field.code?? && field.code == fieldCode>
-                <#return field>
-            </#if>
-        </#list>
-    </#if>
-</#function>
-
-<#macro getCommentForm idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm locale=locale>
-<@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
-    <@input type='hidden' name='action' value='${action}' />
-    <@input type='hidden' name='id_form' value='${idForm}' />
-	<#if comment??><#assign value="${comment.id!''}" /><#else><#assign value='' /></#if>
-    <@input type='hidden' name='id_comment' value=value />
-	
-	<@fieldSet>
-		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
-			<@input type='textarea' name='comment' id=idComment richtext=true />
-		</@formGroup>
-		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' mandatory=true rows=2>
-			<@inputGroup>
-				<@input type='text' name='startingValidityDate' id=idStartingDate />
-				<@inputGroupItem type='text'>
-				<@icon style='calendar' />
-				</@inputGroupItem>
-			</@inputGroup>
-		</@formGroup>
-		
-		<@formGroup labelFor='startingValidityTime' labelKey='#i18n{appointment.create_comment.labelStartingValidityTime}' rows=2>
-	        <@inputGroup>
-	            <@input type='text' name='startingValidityTime' id=idStartingTime />
-	            <@inputGroupItem type='addon'>
-	            <@icon style='calendar' />
-	            </@inputGroupItem>
-	        </@inputGroup>
-	    </@formGroup>
-	    
-		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
-			<@inputGroup>
-				<@input type='text' name='endingValidityDate' id=idEndingDate />
-				<@inputGroupItem type='text'>
-				<@icon style='calendar' />
-				</@inputGroupItem>
-			</@inputGroup>
-		</@formGroup>
-		
-		<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=2>
-	        <@inputGroup>
-	            <@input type='text' name='endingValidityTime' id=idEndingTime />
-	            <@inputGroupItem type='addon'>
-	            <@icon style='calendar' />
-	            </@inputGroupItem>
-	        </@inputGroup>
-	    </@formGroup>
-	    
-		<@formGroup rows=2>
-			<@button type='submit' name='action_${action}' buttonIcon='save' title='Enregistrer' />   
-		</@formGroup>
-	</@fieldSet>
-
-</@tform>
-<script>
-$('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
-$('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
-$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
-</script>
-</#macro>
-
-<#macro btnComment >
-	<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
-		<@iconStack class='fa-sm'>
-			<@icon style='plus' class='fa-stack-1x' />
-			<@icon prefix='far fa-'style='comment' class='fa-stack-2x' />
-		</@iconStack>
-	</@button>
-</#macro>
-
-<#macro appointmentTabs tab form>
-<@commonsAppJS />
-<@tabs params=' style="margin-top:15px"'>
-	<@tabList>
-		<#if tab?ends_with("Week")>
-			<#if tab="typicalWeek"><#assign active = true /><#else><#assign active = false /></#if>
-			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.typicalWeek.pageTitle}' active=active />
-			<#if tab="specificWeek"><#assign active = true /><#else><#assign active = false /></#if>
-			<@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificWeek.pageTitle}' active=active /> 			 
-			<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${appointmentform.idForm}' title='#i18n{appointment.annual.calendar.pageTitle}' active=false />  			
-			<#if isDeskInstalled?? && isDeskInstalled>
-				<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
-			</#if>
-		<#else>
-			<#if tab="calendar"><#assign active = true /><#else><#assign active = false /></#if>
-			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active />
-			<#if tab="filter"><#assign active = true /><#else><#assign active = false /></#if>
-			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' title='#i18n{appointment.manageAppointments.pageTitle}' active=active />
-		</#if>
-	</@tabList>
-	<@tabContent>
-		<@messages errors=errors warnings=warnings infos=infos />
-		<#nested>
-		<#if formCalendarErrors??>
-			<div class="layout-wrapper"></div>
-		<#else>			<#if tab != 'filter'>
-			<div id="btn-comment-main">
-				<@btnComment />
-			</div>			</#if>	
-			<div id="calendar"></div>
-		</#if>
-	</@tabContent>
-</@tabs>
-<script>
-/* Add Form title */
-$('.content-header > h1 > small').html( "${form.title}" );
-</script>
-</#macro>
-
-<#macro modifyAppointmentFormLeftColumn appointmentform >
-<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
-<@getDatePickerBootstrap idField="date_start_validity" language=language />
-<@getDatePickerBootstrap idField="date_end_validity"   language=language />
-<@getDatePickerBootstrap idField="time_start_validity" language=language />
-<@getDatePickerBootstrap idField="time_end_validity"   language=language />
-<script type="text/javascript">
-	function validateQty(event) {
-		var key = window.event ? event.keyCode : event.which;
-	
-	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-	 || event.keyCode == 37 || event.keyCode == 39) {
-		return true;
-	}
-	else if ( key < 48 || key > 57 ) {
-		return false;
-	}
-	else return true;
-	};
-	$('#date_start_validity').datepicker({
-    	language:		"${language}",
-    	weekStart: 1,
-    	todayBtn: true,
-    	todayHighLight: true,
-    	autoclose: true
-	});
-	$('#date_end_validity').datepicker({
-	    language:		"${language}",
-	    weekStart: 1,
-	    todayBtn: true,
-	    todayHighLight: true,
-	    autoclose: true
-	});
-	$(function () {
-        $('#time_start').datetimepicker({
-          format: 'HH:mm',
-          stepping: 5
-        });
-        $('#time_end').datetimepicker({
-          format: 'HH:mm',
-          stepping: 5
-        });     
-    });
-</script>
-</#macro> 
-
-<#macro fullCalendarScript locale=locale>
-$('#calendar').fullCalendar({
-	displayEventTime: false, 
-	buttonText : {
-		prev : '#i18n{appointment.appointmentApp.previousWeek}',
-		next : '#i18n{appointment.appointmentApp.nextWeek}',
-	}, 
-	themeSystem: 'jquery-ui',
-	navLinks: true, 
-	navLinkDayClick: function( date, jsEvent ) {
-		var  el = '.' + jsEvent.currentTarget.offsetParent.className.replace(/\s/g,'.')+ ' a';
-		console.log( el );
-		$(el).append('<a href=""><li>TEST</li><li>TEST</li></ul>');
-		// location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
-		// location.href = 'jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=' + idForm;
-	}, 
-	defaultDate: defaultDate,
-	defaultView: 'agendaWeek',
-	height: 'auto',
-	locale: '${locale}',
-	nowIndicator: true,
-	editable: false,
-	customButtons: {
-		datePicker: {
-			text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
-			click: function () {
-				var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
-				$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
-				$("#hiddenDate").datepicker({
-					showOn: "button",
-					language:'fr',
-					autoclose: true,
-					orientation: "bottom"
-				});
-				var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
-				//Below are required for manipulating dynamically created datepicker on custom button click
-				$("#hiddenDate").focus().hide();
-				$btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
-				$btnDatepicker.hide();
-				$btnDatepicker.remove();
-				$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
-				$("#hiddenDate").change(function () {
-					$('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
-				});
-			}
-		}
-	},
-	header: {
-		left: 'prev',
-		center: 'today, datePicker, title',
-		right: 'next'
-	},
-	columnHeaderHtml: function(mom) {
-		return mom.format('dddd') + '</br>' + mom.format('LL');
-	},
-	slotLabelFormat: 'H:mm',
-	slotLabelInterval: slotDuration,
-	slotDuration: slotDuration,
-	minTime: minTime,
-	maxTime: maxTime,
-	businessHours: {
-		start: minTime,
-		end: maxTime,
-		dow: dow
-	},
-	events: events,
-	viewRender: function(view, element) {
-		var minDate = moment(startingDateOfDisplay);
-		var maxDate = moment(endingDateOfDisplay);
-		// Past 
-		if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
-			$(".fc-prev-button").prop('disabled', true);
-			$(".fc-prev-button").addClass('fc-state-disabled');
-		} else {
-			$(".fc-prev-button").removeClass('fc-state-disabled');
-			$(".fc-prev-button").prop('disabled', false); 
-		}
-		// Future
-		if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
-			$(".fc-next-button").prop('disabled', true);
-			$(".fc-next-button").addClass('fc-state-disabled');
-		} else {
-			$(".fc-next-button").removeClass('fc-state-disabled');
-			$(".fc-next-button").prop('disabled', false); 
-		}
-	},
-	eventAfterAllRender: function(view) {
-		$('.fc-event').css('cursor', 'pointer');
-		$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
-		$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
-		$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
-		$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
-		$(".open-AddBookDialog").click( function () {
-			$('#starting_date_time').val($(this).data('starting_date_time'));
-			$('#starting_date_time_span').val($(this).data('starting_date_time'));
-			$('#addbook_modal').modal('show');
-		});
-		
-		$(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-		$('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
-		$('#toggle-add-comment').remove();
-		var tgc = $('#toggle-add-comment').find('body');
-		tgc.click(function(ev) {
-			$( "#commentModal" ).modal('show');
-		});		
-		$('.toggle-modify-comment').click(function(ev) {
-			ev.preventDefault();
-			var formValues = JSON.parse( $(this).attr( "data-json" ) );
-			$("#modify-comment input[name='id_comment']").val( formValues.id_comment );
-			tinyMCE.activeEditor.setContent( formValues.comment_text );
-			$( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
-			$( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
-			$( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
-			$( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
-			$( "#modify-comment" ).modal('show');
-		});
-	},
-	eventRender: function( event, element, view ) {
-		var $title = element.find( '.fc-title' ), createSlot='';
-		$(element).addClass( event.customClass );
-		
-		if ( event.customStyle !='' ){
-			$(element).css( 'background', event.customStyle );
-		}
-
-		$title.html( $title.text() );
-		$(element).contextmenu(function() {
-			return false;
-		});
-
-		var json = {
-				"container": "body",
-				"placement" : "bottom",
-				"html" : true,
-				"trigger" : "hover"
-			};
-		if( event.type == "comment" ){
-			if ( event.validity_end == null || event.validity_end == undefined ){
-				labelEventDate='Le ' + event.start.format('ddd DD/MM');
-			} else {
-				moment.locale("${locale}");
-				labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
-			}
-			json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
-		} else {
-			json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-		}
-
-		$(element).popover( json );
-		
-		if(event.type == "comment" ){
-			var fcTitle = element.find('.fc-title p');
-			fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-			element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-edit fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon'><i class='fas fa-trash fa-fw text-danger'></i></a></div>" );
-		}
-		
-	}
-});
+<#macro commonsAppJS>
+<script src="js/plugins/appointment/jquery.min.js"></script>
+<script src="js/plugins/appointment/moment.min.js" ></script>
+<script src="js/plugins/appointment/fullcalendar.min.js"></script>
+<script src="js/plugins/appointment/locale-all.js"></script>
+<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
+<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
+<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' >
+<link rel="stylesheet" href="js/plugins/appointment/fullcalendar.min.css" >
+<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
+<link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
 </#macro>
+<#--
+-- Check if the checkbox must be checked or not
+-- @param code the checkbox code
+-- @param referecen_list the default values list
+-- @return the String 'checked="checked" if the checkbox must be checked, an empty String otherwise
+-->
+<#function getChecked code reference_list>
+	<#if reference_list?has_content>
+		<#list reference_list as reference_item>
+			<#if reference_item.code = code>
+				<#if reference_item.checked>
+  					<#return "checked='checked'">
+  				<#else>
+  					<#return "">
+  				</#if>
+  			</#if>
+  		</#list>
+	</#if>
+	<#return "">
+</#function>
+<#--
+-- Get the value of the parameter
+-- @param code the code of the parameter
+-- @param referecen_list the default values list
+-- @return the value of the parameter
+-->
+<#function getName code reference_list>
+	<#if reference_list?has_content>
+		<#list reference_list as reference_item>
+			<#if reference_item.code = code>
+  				<#return reference_item.name>
+  			</#if>
+  		</#list>
+	</#if>
+	<#return "">
+</#function>
+<#--
+-- Get the field from a given title
+-- @param entry the entry
+-- @param fieldTitle the title
+-- @return the field
+-->
+<#function getField entry fieldTitle>
+	<#if entry.fields?? && entry.fields?has_content>
+		<#list entry.fields as field>
+			<#if field?? && field.title?? && field.title == fieldTitle>
+				<#return field>
+			</#if>
+		</#list>
+	</#if>
+</#function>
+<#-- 
+-- Get the field value from a given entry and a given title
+-- @param entry the entry
+-- @param fieldTitle the title
+-- @return the field
+-->
+<#function getFieldValue entry fieldTitle>
+	<#if getField( entry, fieldTitle )??>
+		<#assign field = getField( entry, fieldTitle )>
+		<#return field.value>
+	</#if>
+	<#return "">
+</#function>
+<#-- 
+-- Get the max files value of an entry
+-- @param entry the entry
+-- @return the number of max authorized uploaded files
+-->
+<#function getMaxFiles entry>
+	<#assign fieldMaxFiles = getFieldValueByCode( entry, "max_files" )>
+	<#if fieldMaxFiles?? && fieldMaxFiles != "">
+		<#return fieldMaxFiles>
+	</#if>
+	<#return "1">
+</#function>
+<#-- 
+-- Get the max size an uploaded file is authorized to have
+-- @param entry the entry
+-- @return the max size
+-->
+<#function getFileMaxSize entry>
+	<#assign fieldFileMaxSize = getFieldValueByCode( entry, "file_max_size" )>
+	<#if fieldFileMaxSize?? && fieldFileMaxSize != "">
+		<#return fieldFileMaxSize>
+	<#else>
+		<#if getField( entry, "option" )??>
+			<#assign fieldFileMaxSize = getFieldValueByCode( entry, "option" )>
+			<#return fieldFileMaxSize.width> 
+		</#if>
+	</#if>
+	<#return "5242880">
+</#function>
+<#--
+-- Check if the given entry must export the binary
+-- @param entry the entry
+-- @return true if it must export the binaries, false otherwise
+-->
+<#function exportBinary entry>
+	<#assign field = getFieldValue( entry, "export_binary" ) />
+	<#if field?? && field = "true">
+		<#return true />
+	</#if>
+	<#return false />
+</#function>
+<#-- 
+-- Get the field value from a given entry and a given title
+-- @param entry the entry
+-- @param fieldTitle the title
+-- @return the field
+-->
+<#function getFieldValueByCode entry fieldCode>
+	<#if getFieldByCode( entry, fieldCode )??>
+		<#assign field = getFieldByCode( entry, fieldCode )>
+		<#return field.value>
+	</#if>
+	<#return "">
+</#function>
+<#--
+-- Get the field from a given code
+-- @param entry the entry
+-- @param fieldCode the code
+-- @return the field
+-->
+<#function getFieldByCode entry fieldCode>
+    <#if entry.fields?? && entry.fields?has_content>
+        <#list entry.fields as field>
+            <#if field?? && field.code?? && field.code == fieldCode>
+                <#return field>
+            </#if>
+        </#list>
+    </#if>
+</#function>
+<#macro getCommentForm idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm locale=locale>
+<@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
+    <@input type='hidden' name='action' value='${action}' />
+    <@input type='hidden' name='id_form' value='${idForm}' />
+	<#if comment??><#assign value="${comment.id!''}" /><#else><#assign value='' /></#if>
+    <@input type='hidden' name='id_comment' value=value />
+	
+	<@fieldSet>
+		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
+			<@input type='textarea' name='comment' id=idComment richtext=true />
+		</@formGroup>
+		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' mandatory=true rows=2>
+			<@inputGroup>
+				<@input type='text' name='startingValidityDate' id=idStartingDate />
+				<@inputGroupItem type='text'>
+				<@icon style='calendar' />
+				</@inputGroupItem>
+			</@inputGroup>
+		</@formGroup>
+		
+		<@formGroup labelFor='startingValidityTime' labelKey='#i18n{appointment.create_comment.labelStartingValidityTime}' rows=2>
+	        <@inputGroup>
+	            <@input type='text' name='startingValidityTime' id=idStartingTime />
+	            <@inputGroupItem type='addon'>
+	            <@icon style='calendar' />
+	            </@inputGroupItem>
+	        </@inputGroup>
+	    </@formGroup>
+	    
+		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
+			<@inputGroup>
+				<@input type='text' name='endingValidityDate' id=idEndingDate />
+				<@inputGroupItem type='text'>
+				<@icon style='calendar' />
+				</@inputGroupItem>
+			</@inputGroup>
+		</@formGroup>
+		
+		<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=2>
+	        <@inputGroup>
+	            <@input type='text' name='endingValidityTime' id=idEndingTime />
+	            <@inputGroupItem type='addon'>
+	            <@icon style='calendar' />
+	            </@inputGroupItem>
+	        </@inputGroup>
+	    </@formGroup>
+	    
+		<@formGroup rows=2>
+			<@button type='submit' name='action_${action}' buttonIcon='save' title='Enregistrer' />   
+		</@formGroup>
+	</@fieldSet>
+</@tform>
+<script>
+$('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
+$('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
+$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
+$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
+</script>
+</#macro>
+<#macro btnComment >
+	<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
+		<@iconStack class='fa-sm'>
+			<@icon style='plus' class='fa-stack-1x' />
+			<@icon prefix='far fa-'style='comment' class='fa-stack-2x' />
+		</@iconStack>
+	</@button>
+</#macro>
+<#macro appointmentTabs tab form>
+<@commonsAppJS />
+<@tabs params=' style="margin-top:15px"'>
+	<@tabList>
+		<#if tab?ends_with("Week")>
+			<#if tab="typicalWeek"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.typicalWeek.pageTitle}' active=active />
+			<#if tab="specificWeek"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificWeek.pageTitle}' active=active /> 			 
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${appointmentform.idForm}' title='#i18n{appointment.annual.calendar.pageTitle}' active=false />  			
+			<#if isDeskInstalled?? && isDeskInstalled>
+				<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${appointmentform.idForm}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+			</#if>
+		<#else>
+			<#if tab="calendar"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active />
+			<#if tab="filter"><#assign active = true /><#else><#assign active = false /></#if>
+			<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}' title='#i18n{appointment.manageAppointments.pageTitle}' active=active />
+		</#if>
+	</@tabList>
+	<@tabContent>
+		<@messages errors=errors warnings=warnings infos=infos />
+		<#nested>
+		<#if formCalendarErrors??>
+			<div class="layout-wrapper"></div>
+		<#else>
+			<#if tab != 'filter'>
+			<div id="btn-comment-main">
+				<@btnComment />
+			</div>
+			</#if>	
+			<div id="calendar"></div>
+		</#if>
+	</@tabContent>
+</@tabs>
+<script>
+/* Add Form title */
+$('.content-header > h1 > small').html( "${form.title}" );
+</script>
+</#macro>
+<#macro modifyAppointmentFormLeftColumn appointmentform >
+<script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
+<@getDatePickerBootstrap idField="date_start_validity" language=language />
+<@getDatePickerBootstrap idField="date_end_validity"   language=language />
+<@getDatePickerBootstrap idField="time_start_validity" language=language />
+<@getDatePickerBootstrap idField="time_end_validity"   language=language />
+<script type="text/javascript">
+	function validateQty(event) {
+		var key = window.event ? event.keyCode : event.which;
+	
+	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+	 || event.keyCode == 37 || event.keyCode == 39) {
+		return true;
+	}
+	else if ( key < 48 || key > 57 ) {
+		return false;
+	}
+	else return true;
+	};
+	$('#date_start_validity').datepicker({
+    	language:		"${language}",
+    	weekStart: 1,
+    	todayBtn: true,
+    	todayHighLight: true,
+    	autoclose: true
+	});
+	$('#date_end_validity').datepicker({
+	    language:		"${language}",
+	    weekStart: 1,
+	    todayBtn: true,
+	    todayHighLight: true,
+	    autoclose: true
+	});
+	$(function () {
+        $('#time_start').datetimepicker({
+          format: 'HH:mm',
+          stepping: 5
+        });
+        $('#time_end').datetimepicker({
+          format: 'HH:mm',
+          stepping: 5
+        });     
+    });
+</script>
+</#macro> 
+<#macro fullCalendarScript locale=locale>
+$('#calendar').fullCalendar({
+	displayEventTime: false, 
+	buttonText : {
+		prev : '#i18n{appointment.appointmentApp.previousWeek}',
+		next : '#i18n{appointment.appointmentApp.nextWeek}',
+	}, 
+	themeSystem: 'jquery-ui',
+	navLinks: true, 
+	navLinkDayClick: function( date, jsEvent ) {
+		var  el = '.' + jsEvent.currentTarget.offsetParent.className.replace(/\s/g,'.')+ ' a';
+		console.log( el );
+		$(el).append('<a href=""><li>TEST</li><li>TEST</li></ul>');
+		// location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
+		// location.href = 'jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=' + idForm;
+	}, 
+	defaultDate: defaultDate,
+	defaultView: 'agendaWeek',
+	height: 'auto',
+	locale: '${locale}',
+	nowIndicator: true,
+	editable: false,
+	customButtons: {
+		datePicker: {
+			text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
+			click: function () {
+				var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
+				$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
+				$("#hiddenDate").datepicker({
+					showOn: "button",
+					language:'fr',
+					autoclose: true,
+					orientation: "bottom"
+				});
+				var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
+				//Below are required for manipulating dynamically created datepicker on custom button click
+				$("#hiddenDate").focus().hide();
+				$btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
+				$btnDatepicker.hide();
+				$btnDatepicker.remove();
+				$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
+				$("#hiddenDate").change(function () {
+					$('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
+				});
+			}
+		}
+	},
+	header: {
+		left: 'prev',
+		center: 'today, datePicker, title',
+		right: 'next'
+	},
+	columnHeaderHtml: function(mom) {
+		return mom.format('dddd') + '</br>' + mom.format('LL');
+	},
+	slotLabelFormat: 'H:mm',
+	slotLabelInterval: slotDuration,
+	slotDuration: slotDuration,
+	minTime: minTime,
+	maxTime: maxTime,
+	businessHours: {
+		start: minTime,
+		end: maxTime,
+		dow: dow
+	},
+	events: events,
+	viewRender: function(view, element) {
+		var minDate = moment(startingDateOfDisplay);
+		var maxDate = moment(endingDateOfDisplay);
+		// Past 
+		if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
+			$(".fc-prev-button").prop('disabled', true);
+			$(".fc-prev-button").addClass('fc-state-disabled');
+		} else {
+			$(".fc-prev-button").removeClass('fc-state-disabled');
+			$(".fc-prev-button").prop('disabled', false); 
+		}
+		// Future
+		if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
+			$(".fc-next-button").prop('disabled', true);
+			$(".fc-next-button").addClass('fc-state-disabled');
+		} else {
+			$(".fc-next-button").removeClass('fc-state-disabled');
+			$(".fc-next-button").prop('disabled', false); 
+		}
+	},
+	eventAfterAllRender: function(view) {
+		$('.fc-event').css('cursor', 'pointer');
+		$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
+		$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
+		$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
+		$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+		$(".open-AddBookDialog").click( function () {
+			$('#starting_date_time').val($(this).data('starting_date_time'));
+			$('#starting_date_time_span').val($(this).data('starting_date_time'));
+			$('#addbook_modal').modal('show');
+		});
+		
+		$(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+		$('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
+		$('#toggle-add-comment').remove();
+		var tgc = $('#toggle-add-comment').find('body');
+		tgc.click(function(ev) {
+			$( "#commentModal" ).modal('show');
+		});		
+		$('.toggle-modify-comment').click(function(ev) {
+			ev.preventDefault();
+			var formValues = JSON.parse( $(this).attr( "data-json" ) );
+			$("#modify-comment input[name='id_comment']").val( formValues.id_comment );
+			tinyMCE.activeEditor.setContent( formValues.comment_text );
+			$( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
+			$( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
+			$( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
+			$( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
+			$( "#modify-comment" ).modal('show');
+		});
+	},
+	eventRender: function( event, element, view ) {
+		var $title = element.find( '.fc-title' ), createSlot='';
+		$(element).addClass( event.customClass );
+		
+		if ( event.customStyle !='' ){
+			$(element).css( 'background', event.customStyle );
+		}
+		$title.html( $title.text() );
+		$(element).contextmenu(function() {
+			return false;
+		});
+		var json = {
+				"container": "body",
+				"placement" : "bottom",
+				"html" : true,
+				"trigger" : "hover"
+			};
+		if( event.type == "comment" ){
+			if ( event.validity_end == null || event.validity_end == undefined ){
+				labelEventDate='Le ' + event.start.format('ddd DD/MM');
+			} else {
+				moment.locale("${locale}");
+				labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
+			}
+			json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+		} else {
+			json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+		}
+		$(element).popover( json );
+		
+		if(event.type == "comment" ){
+			var fcTitle = element.find('.fc-title p');
+			fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
+			element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-edit fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon'><i class='fas fa-trash fa-fw text-danger'></i></a></div>" );
+		}
+		
+	}
+});
+</#macro>
+
+<#macro headerTitle form>
+/* Add Form title */
+$('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointmentForms.jsp\" title=\"#i18n{appointment.adminFeature.ManageAppointmentForm.name}\">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${form.title!}</small>");
+</#macro> 

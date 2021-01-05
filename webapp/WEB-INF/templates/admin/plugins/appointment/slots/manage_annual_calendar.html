@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="js/plugins/appointment/js-year-calendar.min.css">
-
+<link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 <@row>
 	<@columns>
 		<@messages errors=errors warnings=warnings infos=infos />
@@ -108,6 +108,8 @@ function deleteEvent(event) {
 }
 
 $(function() {
+    <@headerTitle form=appointmentform />
+    	
     calendar = new Calendar('#calendar', { 
         language: 'fr',
         startYear: ${start_year},
@@ -177,5 +179,4 @@ $(function() {
         $('#event-modal input[name="action"]').val( 'doUnssignWeek' );
     })
 });
-$('.content-header > h1 > small').html( "${appointmentform.title}" );
 </script>
