@@ -1,224 +1,3 @@
-<#include "/admin/plugins/appointment/appointment/appointment_export.html" />
-<!-- <link href="css/datepicker.css" rel="stylesheet">
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' />
-<script src="js/plugins/appointment/moment.min.js"></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script> -->
-
-<@row>
-    <@columns>
-		<@appointmentTabs tab='filter' form=form>
-			
-			<@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>
-				<@input type='hidden' name='view' value='manageAppointments' />    
-				<@input type='hidden' name='id_form' value='${form.idForm}' />
-				
-				<@div align='right'>
-					<@button style='card-control collapse' buttonTargetId='#searchAppointment' title='#i18n{appointment.manageAppointments.labelSearch}' hideTitle=['xs','sm'] buttonIcon='search' />
-					<#if rightDelete?? && rightDelete>
-						<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='danger' />
-					</#if>
-					<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' />
-				</@div>
-				
-				<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}' fieldsetId='searchAppointment'>
-					<@formGroup labelFor='lastName' labelKey='${formMessages.fieldLastNameTitle}'>
-						<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />
-					</@formGroup>
-					
-					<@formGroup labelFor='firstName' labelKey='${formMessages.fieldFirstNameTitle}'>
-						<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>
-					</@formGroup>
-					
-					<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle}'>
-						<@input type='text' id='email' name='email' value='${filter.email!}' />
-					</@formGroup>
-					
-					<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'>
-						<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />
-					</@formGroup>
-					
-					<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'>
-						<@inputGroup>
-							<@input type='text' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />
-							<@inputGroupItem type='text'>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'>
-						<@inputGroup>
-							<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />
-							<@inputGroupItem type='text'>
-								<@icon style='clock-o' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-
-					<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'>
-						<@inputGroup>
-							<@input type='text' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />
-							<@inputGroupItem type='text'>
-								<@icon style='calendar' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-
-					<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'>
-						<@inputGroup>
-							<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />
-							<@inputGroupItem type='text'>
-								<@icon style='clock-o' />
-							</@inputGroupItem>
-						</@inputGroup>
-					</@formGroup>
-					
-					<@actionButtons button1Name='Search' i18nValue1Key='appointment.manageAppointments.labelSearch' icon1='fa fa-search' button2Name='Reset' i18nValue2Key='appointment.displayAppointmentForm.labelReset' url2='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' icon2='fa fa-refresh' />
-					<!-- button title : title='#i18n{appointment.manageAppointments.labelSearch}' -->
-					<!-- aButton title : title='#i18n{appointment.displayAppointmentForm.labelReset}' -->
-					<hr>
-				</@fieldSet>
-
-				<@div align='right'>
-					<@paginationAdmin paginator=paginator form=0 />
-				</@div>
-				
-				<#if appointment_list?? && appointment_list?size &gt; 0>
-					<@table>
-						<tr>
-							<th>
-								<@checkBox name='allcheck' id='allCheck' title='#i18n{appointment.appointmentApp.infos}' />
-							</th>
-							<th>#i18n{appointment.manageAppointments.columnLastName} 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							</th>
-							<th>#i18n{appointment.manageAppointments.columnFirstName}
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							</th>                                
-							<th>#i18n{appointment.manageAppointments.columnEmail} 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							<th>#i18n{appointment.manageAppointments.columnNbBookedSeats} 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							<th>#i18n{appointment.dateAppointment.title} 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							</th>
-							<th>#i18n{appointment.manageAppointments.columnAdmin} 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							</th>
-							<th>#i18n{appointment.labelStatus} 
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							</th>
-							<th>#i18n{appointment.manageAppointments.columnState}
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />
-								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />
-							</th>
-							<th>#i18n{portal.util.labelActions}</th>
-						</tr>
-						<#list appointment_list as appointment >
-							<tr>
-								<td><@checkBox name='apmt' id='apmt' value='${appointment.idAppointment}' /></td>
-								<td>${appointment.lastName}</td>
-								<td>${appointment.firstName}</td>
-								<td>${appointment.email}</td>
-								<td>${appointment.nbBookedSeats}</td>
-								<td>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</td>
-								<td>${appointment.adminUser}</td>
-								<td>
-									<#if appointment.isCancelled>
-										<@tag color='important'>#i18n{appointment.message.labelStatusUnreserved}</@tag>
-									<#else>
-										<@tag color='success'>#i18n{appointment.message.labelStatusReserved}</@tag>
-									</#if>
-								</td>
-								<td>
-									<#if appointment.state?? && appointment.state.name??> 
-										${appointment.state.name!}
-									</#if>
-								</td>
-								<td>
-									<#if rightChangeDate?? && rightChangeDate && !appointment.isCancelled>
-										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}&nbPlacesToTake=${appointment.nbBookedSeats!}' title='#i18n{appointment.manageAppointments.labelModifyDateAppointment}' hideTitle=['all'] buttonIcon='calendar' size='sm' /> 
-									</#if>  
-									<#if rightView?? && rightView> 
-										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelViewAppointment}' hideTitle=['all'] buttonIcon='eye' size='sm' />
-									</#if> 
-									<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 
-										<#list appointment.listWorkflowActions as action> 
-											<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}' size='sm'>
-												<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />
-											</@aButton> 
-										</#list>
-									</#if> 
-									<#if activateWorkflow == "true" > 
-										<#if rightChangeStatus> 
-											<#if appointment.isCancelled>
-												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' hideTitle=['all'] buttonIcon='check' size='sm' />
-											</#if> 
-											<#if !appointment.isCancelled> 
-												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' hideTitle=['all'] buttonIcon='close' size='sm' />
-											</#if> 
-										</#if> 
-									</#if> 
-									<#if rightDelete?? && rightDelete> 
-										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' size='sm' color='danger' />
-									</#if>
-								</td>
-							</tr>
-						</#list>
-					</@table>
-				<#else>#i18n{portal.util.labelNoItem}</#if>
-
-				<@paginationAdmin paginator=paginator combo=1 form=0 />
-			</@tform>
-		</@appointmentTabs>
-	</@columns>
-</@row>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<@getDatePickerBootstrap idField="dateAppointment" language=language />
-<script type="text/javascript">
-    $(function () {
-        $('#startingTimeOfSearch').datetimepicker({
-            format: 'HH:mm',
-            stepping: 1
-        });
-        $('#endingTimeOfSearch').datetimepicker({
-            format: 'HH:mm',
-            stepping: 1
-        });
-    });
-    $('#allCheck').click(function() {
-        var etat = this.checked;
-        $("input[name='apmt']").each(function() {
-            this.checked = etat;
-        });
-        $('#eraseAll').prop("disabled", !etat);
-    });
-    $("input[name='apmt']").change(function() {
-        $('#eraseAll').prop("disabled", true);
-        $("input[name='apmt']").each(function() {
-            if (this.checked) {
-                $('#eraseAll').prop("disabled", !this.checked);
-            }
-        });
-    });
-    $('#startingDateOfSearch').datepicker({
-        language : "${language}",
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    });
-    $('#endingDateOfSearch').datepicker({
-        language : "${language}",
-        weekStart : 1,
-        todayBtn : true,
-        todayHighLight : true,
-        autoclose : true
-    });    
-</script>
+<#include "/admin/plugins/appointment/appointment/appointment_export.html" /><!-- <link href="css/datepicker.css" rel="stylesheet"><link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' /><script src="js/plugins/appointment/moment.min.js"></script><script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script> --><@row>    <@columns>		<@appointmentTabs tab='filter' form=form>			<@tform name='form' id='form' action='jsp/admin/plugins/appointment/ManageAppointments.jsp'>				<@input type='hidden' name='view' value='manageAppointments' />    				<@input type='hidden' name='id_form' value='${form.idForm}' />				<@div align='right'>					<@button style='card-control collapse' buttonTargetId='#searchAppointment' title='#i18n{appointment.manageAppointments.labelSearch}' hideTitle=['xs','sm'] buttonIcon='search' />					<#if rightDelete?? && rightDelete>						<@button type='submit' id='eraseAll' name='eraseAll' value='eraseAll' disabled=true buttonIcon='trash' title='#i18n{appointment.permission.label.deleteMassAppointment}' color='danger' />					</#if>					<@aButton params='data-toggle="modal" data-target="#export_modal"' buttonIcon='download' title='#i18n{appointment.permission.label.exportMassAppointment}' />				</@div>				<@fieldSet legend='#i18n{appointment.manageAppointments.labelSearch}' fieldsetId='searchAppointment'>					<@row>						<@columns sm=2>							<@formGroup labelFor='lastName' labelKey='${formMessages.fieldLastNameTitle}' rows=2>								<@input type='text' id='lastName' name='lastName' value='${filter.lastName!}' />							</@formGroup>						</@columns>
+						<@columns sm=2>
+							<@formGroup labelFor='firstName' labelKey='${formMessages.fieldFirstNameTitle}' rows=2>								<@input type='text' id='firstName' name='firstName' value='${filter.firstName!}'/>							</@formGroup>						</@columns>						<@columns  sm=2>							<@formGroup labelFor='email' labelKey='${formMessages.fieldEmailTitle}'  rows=2>								<@input type='text' id='email' name='email' value='${filter.email!}' />							</@formGroup>						</@columns>						<@columns sm=1>							<@formGroup labelFor='status' labelKey='#i18n{appointment.labelStatus}'  rows=2>								<@select name='status' id='status' items=listStatus default_value='${filter.status!}' />							</@formGroup>						</@columns>						<@columns sm=3>							<@formGroup labelKey='' rows=2>								<@actionButtons button1Name='Search' i18nValue1Key='appointment.manageAppointments.labelSearch' icon1='fa fa-search' button2Name='Reset' i18nValue2Key='appointment.displayAppointmentForm.labelReset' url2='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&reset=\'true\'' icon2='fa fa-refresh' />							</@formGroup>						</@columns>					</@row>					<@row>						<@columns sm=2>							<@formGroup labelFor='startingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.startingDateOfSearch}'  rows=2>								<@inputGroup>									<@input type='text' name='startingDateOfSearch' id='startingDateOfSearch' value='${filter.startingDateOfSearch!}' />									<@inputGroupItem type='text'>										<@icon style='calendar' />									</@inputGroupItem>								</@inputGroup>							</@formGroup>						</@columns>						<@columns sm=2>							<@formGroup labelFor='startingTimeOfSearch' labelKey='#i18n{appointment.labelTo}' rows=2>								<@inputGroup>									<@input type='text' name='startingTimeOfSearch' id='startingTimeOfSearch' value='${filter.startingTimeOfSearch!\'\'}' />									<@inputGroupItem type='text'>										<@icon style='clock-o' />									</@inputGroupItem>								</@inputGroup>							</@formGroup>						</@columns>						<@columns sm=2>							<@formGroup labelFor='endingDateOfSearch' labelKey='#i18n{appointment.manageAppointments.endingDateOfSearch}'  rows=2>								<@inputGroup>									<@input type='text' name='endingDateOfSearch' id='endingDateOfSearch' value='${filter.endingDateOfSearch!}' />									<@inputGroupItem type='text'>										<@icon style='calendar' />									</@inputGroupItem>								</@inputGroup>							</@formGroup>						</@columns>						<@columns sm=2>							<@formGroup labelFor='endingTimeOfSearch' labelKey='#i18n{appointment.labelTo}'  rows=2>								<@inputGroup>									<@input type='text' name='endingTimeOfSearch' id='endingTimeOfSearch' value='${filter.endingTimeOfSearch!\'\'}' />									<@inputGroupItem type='text'>										<@icon style='clock-o' />									</@inputGroupItem>								</@inputGroup>							</@formGroup>						</@columns>					</@row>					<!-- button title : title='#i18n{appointment.manageAppointments.labelSearch}' -->					<!-- aButton title : title='#i18n{appointment.displayAppointmentForm.labelReset}' -->					<hr>				</@fieldSet>				<@div align='right'>					<@paginationAdmin paginator=paginator form=0 />				</@div>								<#if appointment_list?? && appointment_list?size &gt; 0>					<@table>						<tr>							<th>								<@checkBox name='allcheck' id='allCheck' title='#i18n{appointment.appointmentApp.infos}' />							</th>							<th>#i18n{appointment.manageAppointments.columnLastName} 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=last_name&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							</th>							<th>#i18n{appointment.manageAppointments.columnFirstName}								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=first_name&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							</th>                                							<th>#i18n{appointment.manageAppointments.columnEmail} 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=email&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							<th>#i18n{appointment.manageAppointments.columnNbBookedSeats} 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=nbBookedSeats&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							<th>#i18n{appointment.dateAppointment.title} 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=date_appointment&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							</th>							<th>#i18n{appointment.manageAppointments.columnAdmin} 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=admin&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							</th>							<th>#i18n{appointment.labelStatus} 								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=status&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							</th>							<th>#i18n{appointment.manageAppointments.columnState}								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=true' buttonIcon='chevron-up' size='xs' color='default' />								<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=manageAppointments&id_form=${form.idForm}&orderBy=state&orderAsc=false' buttonIcon='chevron-down' size='xs' color='default' />							</th>							<th>#i18n{portal.util.labelActions}</th>						</tr>						<#list appointment_list as appointment >							<tr>								<td><@checkBox name='apmt' id='apmt' value='${appointment.idAppointment}' /></td>								<td>${appointment.lastName}</td>								<td>${appointment.firstName}</td>								<td>${appointment.email}</td>								<td>${appointment.nbBookedSeats}</td>								<td>${appointment.dateOfTheAppointment} #i18n{appointment.labelFrom} ${appointment.startingTime} #i18n{appointment.labelTo} ${appointment.endingTime}</td>								<td>${appointment.adminUser}</td>								<td>									<#if appointment.isCancelled>										<@tag color='important'>#i18n{appointment.message.labelStatusUnreserved}</@tag>									<#else>										<@tag color='success'>#i18n{appointment.message.labelStatusReserved}</@tag>									</#if>								</td>								<td>									<#if appointment.state?? && appointment.state.name??> 										${appointment.state.name!}									</#if>								</td>								<td>									<#if rightChangeDate?? && rightChangeDate && !appointment.isCancelled>										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}&nbPlacesToTake=${appointment.nbBookedSeats!}' title='#i18n{appointment.manageAppointments.labelModifyDateAppointment}' hideTitle=['all'] buttonIcon='calendar' size='sm' /> 									</#if>  									<#if rightView?? && rightView> 										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{appointment.manageAppointments.labelViewAppointment}' hideTitle=['all'] buttonIcon='eye' size='sm' />									</#if> 									<#if appointment.listWorkflowActions?? && appointment.listWorkflowActions?size &gt; 0> 										<#list appointment.listWorkflowActions as action> 											<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewWorkflowActionForm&id_action=${action.id}&amp;id_appointment=${appointment.idAppointment}' size='sm'>												<img src="image?resource_type=workflow_icon_img&id=${action.icon.id}"<#if action.icon.width!=-1> width="${action.icon.width}" </#if><#if action.icon.height!=-1> height="${action.icon.height}"</#if>title="${action.name}" alt="${action.name}" />											</@aButton> 										</#list>									</#if> 									<#if activateWorkflow == "true" > 										<#if rightChangeStatus> 											<#if appointment.isCancelled>												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.manageAppointments.labelValidateAppointment}' hideTitle=['all'] buttonIcon='check' size='sm' />											</#if> 											<#if !appointment.isCancelled> 												<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=doChangeAppointmentStatus&id_appointment=${appointment.idAppointment}&status_cancelled=true' title='#i18n{appointment.labelCancelAppointment}' hideTitle=['all'] buttonIcon='close' size='sm' />											</#if> 										</#if> 									</#if> 									<#if rightDelete?? && rightDelete> 										<@aButton href='jsp/admin/plugins/appointment/ManageAppointments.jsp?action=confirmRemoveAppointment&id_form=${form.idForm}&id_appointment=${appointment.idAppointment}' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash' size='sm' color='danger' />									</#if>								</td>							</tr>						</#list>					</@table>				<#else>#i18n{portal.util.labelNoItem}</#if>				<@paginationAdmin paginator=paginator combo=1 form=0 />			</@tform>		</@appointmentTabs>	</@columns></@row><script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script><@getDatePickerBootstrap idField="dateAppointment" language=language /><script type="text/javascript">    $(function () {        $('#startingTimeOfSearch').datetimepicker({            format: 'HH:mm',            stepping: 1        });        $('#endingTimeOfSearch').datetimepicker({            format: 'HH:mm',            stepping: 1        });    });    $('#allCheck').click(function() {        var etat = this.checked;        $("input[name='apmt']").each(function() {            this.checked = etat;        });        $('#eraseAll').prop("disabled", !etat);    });    $("input[name='apmt']").change(function() {        $('#eraseAll').prop("disabled", true);        $("input[name='apmt']").each(function() {            if (this.checked) {                $('#eraseAll').prop("disabled", !this.checked);            }        });    });    $('#startingDateOfSearch').datepicker({        language : "${language}",        weekStart : 1,        todayBtn : true,        todayHighLight : true,        autoclose : true    });    $('#endingDateOfSearch').datepicker({        language : "${language}",        weekStart : 1,        todayBtn : true,        todayHighLight : true,        autoclose : true    });    </script>
