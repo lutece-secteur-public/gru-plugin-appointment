@@ -58,7 +58,6 @@
 					<@formGroup labelFor='noAvailableSlot' labelKey='#i18n{appointment.modifyAppointmentFormMessages.labelNoAvailableSlot}'>
 						<@input type='text' maxlength=255 name='noAvailableSlot' value='${formMessage.noAvailableSlot}' />
 					</@formGroup>
-					
 					<@formGroup>
 						<input type='hidden' name='action' value='doModifyAppointmentFormMessages' />
 						<input type='hidden' name='id_form' value='${formMessage.idForm}' />
@@ -71,7 +70,7 @@
 	</@columns>
 </@row>
 <@initEditor />
-${formMessage.getCalendarTitle()!}
+
 <script>
 $(function(){
 /* Add Form title */
