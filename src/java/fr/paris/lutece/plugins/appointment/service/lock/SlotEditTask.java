@@ -61,20 +61,24 @@ public final class SlotEditTask extends TimerTask implements Serializable
      * Id of the slot on which the user is taking an appointment
      */
     private int _idSlot;
+    /**
+     * Is Cancelled
+     */
+    private boolean _bIsCancelled;
+    
 
-    private TimerForLockOnSlot _timer;
-
-    public SlotEditTask( TimerForLockOnSlot timer )
+    public SlotEditTask( )
     {
-
         super( );
-        _timer = timer;
     }
 
     @Override
     public void run( )
     {
-        SlotSafeService.incrementPotentialRemainingPlaces( _nbPlacesTaken, _idSlot, _timer );
+        SlotSafeService.incrementPotentialRemainingPlaces( _nbPlacesTaken, _idSlot, _bIsCancelled );
+        this.cancel( );
+        _bIsCancelled = true;
+                
     }
 
     /**
@@ -116,6 +120,23 @@ public final class SlotEditTask extends TimerTask implements Serializable
     public void setIdSlot( int nIdSlot )
     {
         this._idSlot = nIdSlot;
+    }
+    /**
+     * If the task is cancelled
+     * @return true if task is cancelled
+     */
+    public boolean isCancelled( ){
+    	
+    	return _bIsCancelled;
+    	
+    }
+    /**
+     * set If the task is cancelled
+     * @param isCancelled
+     */
+    public void setIsCancelled( boolean isCancelled){
+    	
+    	_bIsCancelled= isCancelled;
     }
 
 }

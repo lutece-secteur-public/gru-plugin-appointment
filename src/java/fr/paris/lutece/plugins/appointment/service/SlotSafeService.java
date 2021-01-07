@@ -67,11 +67,9 @@ import fr.paris.lutece.plugins.appointment.business.user.User;
 import fr.paris.lutece.plugins.appointment.exception.AppointmentSavedException;
 import fr.paris.lutece.plugins.appointment.exception.SlotFullException;
 import fr.paris.lutece.plugins.appointment.service.listeners.SlotListenerManager;
-import fr.paris.lutece.plugins.appointment.service.lock.TimerForLockOnSlot;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentDTO;
 import fr.paris.lutece.plugins.genericattributes.business.Response;
 import fr.paris.lutece.plugins.genericattributes.business.ResponseHome;
-import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.util.sql.TransactionManager;
@@ -113,7 +111,7 @@ public final class SlotSafeService
         {
             return new ReentrantLock( );
         }
-        _listSlot.putIfAbsent( nIdSlot, new ReentrantLock( ) );
+         _listSlot.putIfAbsent( nIdSlot, new ReentrantLock( ) );
         return _listSlot.get( nIdSlot );
     }
 
@@ -138,7 +136,7 @@ public final class SlotSafeService
      */
     private static Object getLockOnForm( int nIdform )
     {
-        _lockFormId.putIfAbsent( nIdform, new Object( ) );
+         _lockFormId.putIfAbsent( nIdform, new Object( ) );
         return _lockFormId.get( nIdform );
     }
 
@@ -196,10 +194,6 @@ public final class SlotSafeService
         listSlot = listSlot.stream( )
                 .filter( slt -> slt.getEndingDateTime( ).isBefore( endingDateTime ) && slt.getEndingDateTime( ).isAfter( startindDateTime ) )
                 .collect( Collectors.toList( ) );
-
-        TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
-        try
-        {
             for ( Slot slot : listSlot )
             {
                 if ( !lace )
@@ -214,16 +208,7 @@ public final class SlotSafeService
                     }
                     index++;
                 }
-            }
-            TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-        }
-        catch( Exception e )
-        {
-            TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-            AppLogService.error( "Error update max capacity " + e.getMessage( ), e );
-            throw new AppException( e.getMessage( ), e );
-        }
-
+            }       
     }
 
     /**
@@ -273,10 +258,10 @@ public final class SlotSafeService
      *            the nbPotentialRemainingPlaces
      * @param nIdSlot
      *            the is Slot
-     * @param timer
-     *            the timer
+     * @param bIsCancelled
+     *            the state of the task timer
      */
-    public static void incrementPotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, TimerForLockOnSlot timer )
+    public static void incrementPotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, boolean bIsCancelled )
     {
 
         Lock lock = getLockOnSlot( nIdSlot );
@@ -284,7 +269,7 @@ public final class SlotSafeService
         try
         {
             Slot slot = SlotService.findSlotById( nIdSlot );
-            if ( timer != null && !timer.isCancelled( ) && slot != null )
+            if ( slot != null && !bIsCancelled )
             {
 
                 int nNewPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( ) + nbPotentialRemainingPlaces;
@@ -296,8 +281,8 @@ public final class SlotSafeService
         }
         finally
         {
-
             lock.unlock( );
+        	
         }
     }
 
@@ -345,6 +330,8 @@ public final class SlotSafeService
     public static int saveAppointment( AppointmentDTO appointmentDTO, HttpServletRequest request )
     {
         boolean bIsUpdate = false;
+        List<Lock> listLock = new ArrayList<>( );
+
         if ( appointmentDTO.getIsSaved( ) )
         {
 
@@ -356,6 +343,7 @@ public final class SlotSafeService
         try
         {
             User user = UserService.saveUser( appointmentDTO );
+            lockSlot( appointmentDTO, listLock );
             saveSlots( appointmentDTO, bIsUpdate );
             // Create or update the appointment
             Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );                       
@@ -389,7 +377,7 @@ public final class SlotSafeService
                 for ( AppointmentSlot apptSlot : appointmentDTO.getListAppointmentSlot( ) )
                 {
 
-                    AppointmentUtilities.killTimer( request, apptSlot.getIdSlot( ) );
+                    AppointmentUtilities.cancelTaskTimer( request, apptSlot.getIdSlot( ) );
                 }
             }
             return appointment.getIdAppointment( );
@@ -400,6 +388,12 @@ public final class SlotSafeService
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
             AppLogService.error( "Error Save appointment " + e.getMessage( ), e );
             throw new SlotFullException( e.getMessage( ), e );
+        }finally{
+        	
+        	for ( Lock lk : listLock )
+             {
+                 lk.unlock( );
+             }
         }
     }
 
@@ -937,7 +931,6 @@ public final class SlotSafeService
         List<Slot> listSlotToUpdate = appointmentDTO.getSlot( );
         Appointment oldAppointment = null;
         List<Slot> listSlot = new ArrayList<>( );
-        List<Lock> listLock = new ArrayList<>( );
 
         if ( appointmentDTO.getIdAppointment( ) != 0 )
         {
@@ -945,7 +938,6 @@ public final class SlotSafeService
         }
         try
         {
-            lockSlot( appointmentDTO, listLock );
             int nbRemainingPlaces = listSlotToUpdate.stream( ).map( Slot::getNbRemainingPlaces ).reduce( 0, Integer::sum );
             for ( AppointmentSlot appSlot : appointmentDTO.getListAppointmentSlot( ) )
             {
@@ -1036,10 +1028,7 @@ public final class SlotSafeService
                 }
 
                 listSlot.add( slt );
-                slt = saveSlot( slt );
-                Lock lock = getLockOnSlot( slt.getIdSlot( ) );
-                lock.unlock( );
-                listLock.remove( lock );
+                saveSlot( slt );
             }
 
             return listSlot;
@@ -1051,16 +1040,7 @@ public final class SlotSafeService
             throw new SlotFullException( e.getMessage( ), e );
 
         }
-        finally
-        {
-
-            for ( Lock lk : listLock )
-            {
-
-                lk.unlock( );
-            }
-
-        }
+       
     }
 
 }

@@ -33,20 +33,10 @@
  */
 package fr.paris.lutece.plugins.appointment.service.lock;
 
-import java.io.Serializable;
 import java.util.Timer;
 
-public final class TimerForLockOnSlot extends Timer implements Serializable
+public final class TimerForLockOnSlot extends Timer
 {
-
-    /**
-     * UID
-     */
-    private static final long serialVersionUID = -5582069386646092271L;
-    /**
-     * Is Cancelled
-     */
-    private boolean _bIsCancelled;
 
     /**
      * Constructor
@@ -56,17 +46,5 @@ public final class TimerForLockOnSlot extends Timer implements Serializable
         super( );
     }
 
-    public boolean isCancelled( )
-    {
-
-        return _bIsCancelled;
-
-    }
-
-    public void setIsCancelled( boolean isCancelled )
-    {
-
-        _bIsCancelled = isCancelled;
-    }
 
 }

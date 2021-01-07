@@ -733,10 +733,10 @@ public final class FormService
 	        FormHome.delete( nIdForm );
 	        EntryService.getService( ).removeEntriesByIdAppointmentForm( nIdForm );
 	        
+            TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+	        
 	        FormListenerManager.notifyListenersFormRemoval( nIdForm );
 	        AppointmentListenerManager.notifyListenersAppointmentFormRemoval( nIdForm );
-	        
-            TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
 
 	    }
         catch( Exception e )

@@ -38,7 +38,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -321,18 +323,20 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
     {
-        List<Appointment> listAppointment = new ArrayList<>( );
+        Map<Integer, Appointment> mapAppointment = new HashMap< >();
         boolean isFirst= true;
         try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin ) )
         {
             addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
             daoUtil.executeQuery( );
+            
             while ( daoUtil.next( ) )
             {
                 Appointment appt = buildAppointment( daoUtil );
 
                 Slot slot = builSlot( daoUtil, 17 );
                 User user = buildUser( daoUtil, 11 );
+
                 
                 if( isFirst || daoUtil.isLast( ) ) {
                 	
@@ -344,10 +348,10 @@ public final class AppointmentDAO implements IAppointmentDAO
                 }
                 appt.setUser( user );
 
-                Appointment apptAdded = listAppointment.stream( ).filter( p -> appt.getIdAppointment( ) == p.getIdAppointment( ) ).findAny( ).orElse( null );
+                Appointment apptAdded = mapAppointment.get(appt.getIdAppointment( ));
                 if ( apptAdded == null )
                 {
-                    listAppointment.add( appt );
+                	mapAppointment.put(appt.getIdAppointment( ), appt);
                 }
                 else
                 {
@@ -356,8 +360,10 @@ public final class AppointmentDAO implements IAppointmentDAO
                 
                 isFirst= false;
             }
+            
+            
         }
-        return listAppointment;
+        return new ArrayList< >( mapAppointment.values( ));
     }
 
     /**
