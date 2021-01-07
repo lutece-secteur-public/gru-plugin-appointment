@@ -421,6 +421,10 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 	                slt.setNbPlacestaken( slot.getNbPlacesTaken( ) );
 	                slt.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) );
 	                slt.setNbPotentialRemainingPlaces(slot.getNbPotentialRemainingPlaces( ));
+				}else {
+					
+	                slt.setNbRemainingPlaces( slt.getMaxCapacity( ));
+	                slt.setNbPotentialRemainingPlaces( slt.getMaxCapacity( ) );
 				}
 
 			}
