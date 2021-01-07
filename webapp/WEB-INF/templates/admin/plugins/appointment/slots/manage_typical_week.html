@@ -1,4 +1,3 @@
-<!-- TODO : Ajouter color au model listReservationRule -->
 <@row>
 	<@columns>
 		<@appointmentTabs tab='typicalWeek' form=appointmentform>
@@ -32,9 +31,9 @@
                     </@tform>
                 </@tabList>
                 <@tabContent params=' style="flex:1"'>
-		<!-- Modifay Global Parameters-->
-		<div id='appointment_search' >
-		<#if id_reservation_rule != 0 >
+                <!-- Modify Global Parameters-->
+                <div id="appointment_search">
+                <#if id_reservation_rule != 0 >
                     <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' >
                     <@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
                     <@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}'>
@@ -59,35 +58,33 @@
                                 <@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
                         </@formGroup>                  
                     </@tform>
-		</#if>
-		<!-- Modifay Advanced Parameters-->
-		<#if canUpdateAdvancedParam >
+                </#if>
+                <!-- Modify Advanced Parameters-->
+                <#if canUpdateAdvancedParam >
                     <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"'>
-		    <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
+		            <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
                     <@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
                     <@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
                     <@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
-		    <#if id_reservation_rule == 0 >
+		            <#if id_reservation_rule == 0 >
                         <@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
                             <@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
                         </@formGroup>
                         <@formGroup labelFor='descriptionRule' labelKey='#i18n{appointment.createAppointmentForm.labelDescriptionRule}' mandatory=true>
                             <@input type='textarea' name='description_rule' id='description_rule' maxlength=255 >${appointmentform.descriptionRule!}</@input>
                         </@formGroup>
-
-			<#if !appointmentform.isMultislotAppointment >
-			  <@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
-			        <@input type='text' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
-         		  </@formGroup>
-			</#if>
-			<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
-                            <@input type='text' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+                        <#if !appointmentform.isMultislotAppointment >
+                        <@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
+                                <@input type='text' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
+                            </@formGroup>
+                        </#if>
+			            <@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
+                            <@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' params='onkeypress="return validateQty(event);"' maxlength=3 />
                         </@formGroup>                       
-			<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
+			            <@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
                             <input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}"> 
                         </@formGroup>
-		    </#if>
-
+		            </#if>
                         <@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
                             <@inputGroup>
                                 <@inputGroupItem type='text'>
@@ -129,7 +126,6 @@
                             <@checkBox labelFor='is_open_sunday' labelKey='#i18n{appointment.label.OpenSunday}' name='is_open_sunday' id='is_open_sunday' value='true' checked=appointmentform.isOpenSunday!false />
                         </@formGroup>
                     </@fieldSet>
-                   
                         <@formGroup>
                             <#if id_reservation_rule != 0 >
                                 <@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
@@ -138,17 +134,12 @@
                             </#if>
                                 <@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
                         </@formGroup>
-                   
                     </@tform>
-		   </#if>
-		    </div>
-                    <@fieldSet legend=''>
-                         <div id="calendar"></div>                        
-                    </@fieldSet>
-
+		        </#if>
+		        </div>
+                <div id="calendar"></div>
                 </@tabContent>
             </@tabs>
-
 		</@appointmentTabs>
     </@columns>
 </@row>
@@ -184,22 +175,22 @@
                 <@checkBox labelFor='is_open' name='is_open' id='timeIsOpen' value='true' checked=true />
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
-                <@input type='text' name='max_capacity' id='timeMaxCapacity' value='' params='onkeypress="return validateQty(event);"' maxlength=3 />
+                <@input type='number' name='max_capacity' id='timeMaxCapacity' value='' params='onkeypress="return validateQty(event);"' maxlength=3 />
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
                 <@staticText id='timeStart'></@staticText>
             </@formGroup>
-            <@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
-                <@inputGroup id='ending_time'>
-                    <@input type='text' id='timeEnd' name='ending_time' value='' />
+            <@formGroup labelFor='ending_time' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
+                <@inputGroup>
+                    <@input type='text' id='ending_time' name='ending_time' value='' />
                     <@inputGroupItem type='text'>
                         <@icon style='clock-o' />
                     </@inputGroupItem>
                 </@inputGroup>
             </@formGroup>
             <@formGroup labelFor='shift_slot'>
-                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' value='false' checked=true />
-                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' value='true' />
+                <@radioButton labelFor='shift_slotok' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' id='shift_slotok' name='shift_slot' value='false' checked=true />
+                <@radioButton labelFor='shift_slotnok' labelKey='#i18n{appointment.modifySlot.shiftSlot}' id='shift_slotnok' name='shift_slot' value='true' />
             </@formGroup>
             <@formGroup>
                 <@button type='submit' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
@@ -238,19 +229,80 @@
 
 <@getDatePickerBootstrap idField="date_of_modification" language=language />
 <script type="text/javascript">
-$('#date_of_modification').datepicker({
-        language:        "${language}",
-        startDate:         new Date(),
+function validateQty(event) {
+        var key = window.event ? event.keyCode : event.which;
+    if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
+     || event.keyCode == 37 || event.keyCode == 39) {
+        return true;
+    }
+    else if ( key < 48 || key > 57 ) {
+        return false;
+    }
+    else return true;
+};
+
+var slotDuration = '${min_duration}';
+var minTime = '${min_time}';
+var maxTime = '${max_time}';
+var dow = [
+    <#if dow??>
+        <#list dow as day>
+            '${day}',
+        </#list>
+    </#if>
+];
+var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}&id_time_slot=';
+var columnFormat = 'dddd';
+var events = [
+    <#if events??>
+        <#list events as event>
+            {
+                title : 'Capacit\u00e9 max : ' + '${event.maxCapacity}',
+                start : '${event.startingDateTime}',
+                end : '${event.endingDateTime}',
+                id : '${event.idTimeSlot}',
+        idWorkingDay: '${event.idWorkingDay}',
+                color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
+                textColor: '#2c2c2d',
+                backgroundColor : <#if event.isOpen>'white'<#else>'#bebebe'</#if>,
+                borderColor : '#bebebe',
+                isOpen: ${event.isOpen?c},
+                maxCapacity: '${event.maxCapacity!}',
+                idForm: '${appointmentform.idForm!}',
+            },
+        </#list>
+    </#if>
+    <#if comment_events??>
+        <#list comment_events as comment_event>
+        {
+            "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
+            "start" : "${comment_event.startingValidityDate}",
+            "end" : "${comment_event.calendarAllDaySlotEnd}",
+            "validity_end" : "${comment_event.endingValidityDate}",
+            "id" : "${comment_event.id}",
+            "creator_user" : "${comment_event.creatorUserName!''}",
+            "creation_date" : "${comment_event.creationDate?date.xs!''}",
+            "type": "comment"
+        },
+        </#list>
+    </#if>
+];
+
+$(function () {
+    $('#date_of_modification').datepicker({
+        language: "${language}",
+        startDate: new Date(),
         weekStart: 1,
         todayBtn: true,
         todayHighLight: true,
         autoclose: true
     });
-$(function () {
+
     $('#datetimepicker').datetimepicker({
         format: 'HH:mm',
         stepping: 5
     });
+
     $('#time_start').datetimepicker({
         format: 'HH:mm',
         stepping: 5
@@ -273,199 +325,12 @@ $(function () {
     $("#time_start_new").on("dp.change", function (e) {
         $('#time_end_new').data("DateTimePicker").date( e.date.add(1, 'hour') );
     });
-
-});
-
-function validateQty(event) {
-        var key = window.event ? event.keyCode : event.which;
-    if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-     || event.keyCode == 37 || event.keyCode == 39) {
-        return true;
-    }
-    else if ( key < 48 || key > 57 ) {
-        return false;
-    }
-    else return true;
-    };
-    var slotDuration = '${min_duration}';
-    var minTime = '${min_time}';
-    var maxTime = '${max_time}';
-    var dow = [
-        <#if dow??>
-            <#list dow as day>
-                '${day}',
-            </#list>
-        </#if>
-    ];
-    var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}&id_time_slot=';
-    var columnFormat = 'dddd';
-    var events = [
-        <#if events??>
-            <#list events as event>
-                {
-                    title : 'Capacit\u00e9 max : ' + '${event.maxCapacity}',
-                    start : '${event.startingDateTime}',
-                    end : '${event.endingDateTime}',
-                    id : '${event.idTimeSlot}',
-		    idWorkingDay: '${event.idWorkingDay}',
-                    color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
-                    textColor: '#2c2c2d',
-                    backgroundColor : <#if event.isOpen>'white'<#else>'#bebebe'</#if>,
-                    borderColor : '#bebebe',
-                    isOpen: ${event.isOpen?c},
-					maxCapacity: '${event.maxCapacity!}',
-                    idForm: '${appointmentform.idForm!}',
-                },
-            </#list>
-        </#if>
-        <#if comment_events??>
-            <#list comment_events as comment_event>
-            {
-                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
-                "start" : "${comment_event.startingValidityDate}",
-                "end" : "${comment_event.calendarAllDaySlotEnd}",
-                "validity_end" : "${comment_event.endingValidityDate}",
-                "id" : "${comment_event.id}",
-                "creator_user" : "${comment_event.creatorUserName!''}",
-                "creation_date" : "${comment_event.creationDate?date.xs!''}",
-                "type": "comment"
-            },
-            </#list>
-        </#if>
-    ];
-    $( function() {
-        $('#calendar').fullCalendar({
-            allDaySlot: true,
-            displayEventTime: false,
-            defaultView: 'agendaWeek',
-            height: 'auto',
-            locale: 'fr',
-            themeSystem: 'jquery-ui',
-            editable: false,
-            header: false,
-            columnFormat: columnFormat,
-            slotLabelFormat: 'H:mm',
-            slotLabelInterval: slotDuration,
-            slotDuration: slotDuration,
-            minTime: minTime,
-            maxTime: maxTime,
-            businessHours: {
-                start: minTime,
-                end: maxTime,
-                dow: dow
-            },
-            eventClick: function(calEvent, jsEvent, view) {
-                location.href = eventUrl + calEvent.id;
-            },
-            events: events,
-            
-            eventRender: function(event, element) {
-                var $title = element.find( '.fc-title' );
-                $(element).addClass( event.customClass );
-                $(element).attr( 'data-event', '"idTimeSlot":"' + event.id + '","idWorkingDay":"' + event.idWorkingDay+ '","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' +  event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
-           
-                if ( event.customStyle !='' ){
-                    $(element).css( 'background', event.customStyle );
-                }
-                
-                $title.html( $title.text() );
-                
-                $(element).contextmenu(function() {
-                    return false;
-                });
-
-                var json = {
-                    "container": "body",
-                    "placement" : "bottom",
-                    "html" : true,
-                    "trigger" : "hover"
-                };
-
-                if( event.type == "comment" ){
-                    if ( event.validity_end == null || event.validity_end == undefined ){
-                        labelEventDate='Le ' + event.start.format('ddd DD/MM');
-                    } else {
-                        moment.locale("fr");
-                        labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
-                    }
-                    json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
-                } else {
-                    json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-                }
-
-                $(element).popover( json );
-                
-                if(event.type == "comment" ){
-                    var fcTitle = element.find('.fc-title p');
-                    fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
-                    element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
-                }
-            },
-            eventAfterAllRender: function(view) {
-                $('.fc-event').css('cursor', 'pointer');
-                $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-                
-                $('.toggle-modify-comment').click(function(ev) {
-                    ev.preventDefault();
-                    var formValues = JSON.parse( $(this).attr( "data-json" ) );
-                    $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
-                    tinyMCE.activeEditor.setContent( formValues.comment_text );
-                    $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
-                    $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
-                    $( "#modify-comment" ).modal('show');
-                });
-                
-                /* Event selection          */ 
-                var eventIdx=0, eventData='',evtData='';
-                
-                $( ".fc-content-skeleton" ).selectable({
-                    filter: ".fc-time-grid-event.fc-v-event",
-                    selecting: function( event, ui ) {
-                        eventIdx++;
-                    },
-                    unselecting: function( event, ui ) {
-                        eventIdx--;
-                    },
-                    stop: function() {
-                        console.log(  eventIdx  );   
-                        $( ".ui-selected", this ).each( function() {
-                            console.log( eventData );
-                            if ( eventIdx > 1 ){
-                                // FIXME: Porblème de parse
-                                 eventData += '{' + $(this).data('event') + '},' ;
-                                 const events =  JSON.stringify( eventData );
- 				 evtData='['+eventData.slice(0, -1)+']'
-                                 $('#timeSlotData').val( evtData );
-                                 $('#updatePlanningMultiSlot').modal('show');
-                                //return true;
-                                
-                            } else {
-                                eventData ='{' + $(this).data('event') + '}';                       
-                                const evt = JSON.parse(eventData); 
-                                $('#timeIsOpen').prop( "checked", evt.isOpen );
-                                $('#idTimeSlot').val( evt.idTimeSlot );
-                                $('#idWorkingDay').val( evt.idWorkingDay );
-                                $('#timeMaxCapacity').val( evt.maxCapacity );
-                                $('#timeStart').text( evt.startingTime );
-                                $('#timeEnd').val( evt.endingTime );
-                                $('#updatePlanningSlot').modal('show');
-                                // location.href = eventUrl + idSlot;
-                            }
-                        
-                        });
-                        eventData='';
-                    }
-                });
-            },
-        });
-		
-    });
-
+    
     $('#ending_time').datetimepicker({
         format: 'HH:mm',
         stepping: 5
     });
-    
+
     $('#new_cap').click(function(){
         $('#newCapacity').attr('min','0');
         if( $('#newCapacity').val() < 0 ){
@@ -476,6 +341,132 @@ function validateQty(event) {
     $('#var_cap').click(function(){
         $('#newCapacity').attr('min','-99');
     });
+
+    $('#calendar').fullCalendar({
+        allDaySlot: true,
+        displayEventTime: false,
+        defaultView: 'agendaWeek',
+        height: 'auto',
+        locale: 'fr',
+        themeSystem: 'jquery-ui',
+        editable: false,
+        header: false,
+        columnFormat: columnFormat,
+        slotLabelFormat: 'H:mm',
+        slotLabelInterval: slotDuration,
+        slotDuration: slotDuration,
+        minTime: minTime,
+        maxTime: maxTime,
+        businessHours: {
+            start: minTime,
+            end: maxTime,
+            dow: dow
+        },
+        eventClick: function(calEvent, jsEvent, view) {
+            location.href = eventUrl + calEvent.id;
+        },
+        events: events,
+        
+        eventRender: function(event, element) {
+            var $title = element.find( '.fc-title' );
+            $(element).addClass( event.customClass );
+            $(element).attr( 'data-event', '"idTimeSlot":"' + event.id + '","idWorkingDay":"' + event.idWorkingDay+ '","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' +  event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
+        
+            if ( event.customStyle !='' ){
+                $(element).css( 'background', event.customStyle );
+            }
+            
+            $title.html( $title.text() );
+            
+            $(element).contextmenu(function() {
+                return false;
+            });
+
+            var json = {
+                "container": "body",
+                "placement" : "bottom",
+                "html" : true,
+                "trigger" : "hover"
+            };
+
+            if( event.type == "comment" ){
+                if ( event.validity_end == null || event.validity_end == undefined ){
+                    labelEventDate='Le ' + event.start.format('ddd DD/MM');
+                } else {
+                    moment.locale("fr");
+                    labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
+                }
+                json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
+            } else {
+                json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+            }
+
+            $(element).popover( json );
+            
+            if(event.type == "comment" ){
+                var fcTitle = element.find('.fc-title p');
+                fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
+                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
+            }
+        },
+        eventAfterAllRender: function(view) {
+            $('.fc-event').css('cursor', 'pointer');
+            $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+            
+            $('.toggle-modify-comment').click(function(ev) {
+                ev.preventDefault();
+                var formValues = JSON.parse( $(this).attr( "data-json" ) );
+                $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
+                tinyMCE.activeEditor.setContent( formValues.comment_text );
+                $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
+                $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
+                $( "#modify-comment" ).modal('show');
+            });
+            
+            /* Event selection          */ 
+            var eventIdx=0, eventData='',evtData='';
+            
+            $( ".fc-content-skeleton" ).selectable({
+                filter: ".fc-time-grid-event.fc-v-event",
+                selecting: function( event, ui ) {
+                    eventIdx++;
+                },
+                unselecting: function( event, ui ) {
+                    eventIdx--;
+                },
+                stop: function() {
+                    console.log(  eventIdx  );   
+                    $( ".ui-selected", this ).each( function() {
+                        console.log( eventData );
+                        if ( eventIdx > 1 ){
+                            // FIXME: Porblème de parse
+                            eventData += '{' + $(this).data('event') + '},' ;
+                            const events =  JSON.stringify( eventData );
+                            evtData='['+eventData.slice(0, -1)+']'
+                            $('#timeSlotData').val( evtData );
+                            $('#updatePlanningMultiSlot').modal('show');
+                            //return true;
+                        } else {
+                            eventData ='{' + $(this).data('event') + '}';                       
+                            const evt = JSON.parse(eventData); 
+                            $('#timeIsOpen').prop( "checked", evt.isOpen );
+                            $('#idTimeSlot').val( evt.idTimeSlot );
+                            $('#idWorkingDay').val( evt.idWorkingDay );
+                            $('#timeMaxCapacity').val( evt.maxCapacity );
+                            $('#timeStart').text( evt.startingTime );
+                            $('#timeEnd').val( evt.endingTime );
+                            $('#updatePlanningSlot').modal('show');
+                            // location.href = eventUrl + idSlot;
+                        }
+                    });
+                    eventData='';
+                }
+            });
+        },
+    });
+    
+});
+
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />

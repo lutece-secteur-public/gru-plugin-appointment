@@ -11,6 +11,12 @@
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
 </#macro>
+
+<#macro headerTitle form=form >
+/* Add Form title */
+$('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointmentForms.jsp\" title=\"#i18n{appointment.adminFeature.ManageAppointmentForm.name}\">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${form.title!}</small>");
+</#macro> 
+
 <#--
 -- Check if the checkbox must be checked or not
 -- @param code the checkbox code
@@ -31,6 +37,7 @@
 	</#if>
 	<#return "">
 </#function>
+
 <#--
 -- Get the value of the parameter
 -- @param code the code of the parameter
@@ -47,6 +54,7 @@
 	</#if>
 	<#return "">
 </#function>
+
 <#--
 -- Get the field from a given title
 -- @param entry the entry
@@ -75,6 +83,7 @@
 	</#if>
 	<#return "">
 </#function>
+
 <#-- 
 -- Get the max files value of an entry
 -- @param entry the entry
@@ -87,6 +96,7 @@
 	</#if>
 	<#return "1">
 </#function>
+
 <#-- 
 -- Get the max size an uploaded file is authorized to have
 -- @param entry the entry
@@ -104,6 +114,7 @@
 	</#if>
 	<#return "5242880">
 </#function>
+
 <#--
 -- Check if the given entry must export the binary
 -- @param entry the entry
@@ -116,6 +127,7 @@
 	</#if>
 	<#return false />
 </#function>
+
 <#-- 
 -- Get the field value from a given entry and a given title
 -- @param entry the entry
@@ -129,6 +141,7 @@
 	</#if>
 	<#return "">
 </#function>
+
 <#--
 -- Get the field from a given code
 -- @param entry the entry
@@ -144,6 +157,7 @@
         </#list>
     </#if>
 </#function>
+
 <#macro getCommentForm idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm locale=locale>
 <@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
     <@input type='hidden' name='action' value='${action}' />
@@ -203,6 +217,7 @@ $('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 </script>
 </#macro>
+
 <#macro btnComment >
 	<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
 		<@iconStack class='fa-sm'>
@@ -211,6 +226,7 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 		</@iconStack>
 	</@button>
 </#macro>
+
 <#macro appointmentTabs tab form>
 <@commonsAppJS />
 <@tabs params=' style="margin-top:15px"'>
@@ -247,10 +263,10 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	</@tabContent>
 </@tabs>
 <script>
-/* Add Form title */
-$('.content-header > h1 > small').html( "${form.title}" );
+<@headerTitle form=form />
 </script>
 </#macro>
+
 <#macro modifyAppointmentFormLeftColumn appointmentform >
 <script src="js/jquery/plugins/ui/​jquery-ui-1.9.2.custom.min.js"></script>
 <@getDatePickerBootstrap idField="date_start_validity" language=language />
@@ -296,6 +312,7 @@ $('.content-header > h1 > small').html( "${form.title}" );
     });
 </script>
 </#macro> 
+
 <#macro fullCalendarScript locale=locale>
 $('#calendar').fullCalendar({
 	displayEventTime: false, 
@@ -452,8 +469,3 @@ $('#calendar').fullCalendar({
 	}
 });
 </#macro>
-
-<#macro headerTitle form>
-/* Add Form title */
-$('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppointmentForms.jsp\" title=\"#i18n{appointment.adminFeature.ManageAppointmentForm.name}\">#i18n{appointment.adminFeature.ManageAppointmentForm.name}</a> <small>${form.title!}</small>");
-</#macro> 
