@@ -253,12 +253,16 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 		<#if formCalendarErrors??>
 			<div class="layout-wrapper"></div>
 		<#else>
-			<#if tab != 'filter'>
-			<div id="btn-comment-main">
-				<@btnComment />
-			</div>
+			<#if !tab?contains("filter")>
+				<#if !tab?contains("typicalWeek")>
+				<div id="btn-comment-main">
+					<@btnComment /> 
+				</div>
+				</#if>	
 			</#if>	
-			<div id="calendar"></div>
+			<#if tab != 'typicalWeek'>
+				<div id="calendar"></div>
+			</#if>
 		</#if>
 	</@tabContent>
 </@tabs>
