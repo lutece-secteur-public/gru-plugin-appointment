@@ -8,19 +8,18 @@
                         <#assign idx=0 >
                         <#list listReservationRule as item>
                             <#if id_reservation_rule?number=item.idReservationRule?number><#assign active=true ><#else><#assign active=false ></#if>
-                                <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${item.idReservationRule}' title='${item.name}' params='  style="display:flex;justify-content:space-between;align-items:center;"' active=active >
-                                </@tabLink>
-                                    <#if active=true>
+                                <@tabLink class='tablink-actions' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${appointmentform.idForm}&id_reservation_rule=${item.idReservationRule}' title='${item.name}' active=active >
+	                                    <#if active=true>
                                         <@tform type='inline' action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek' id='listOfDates' params=' enctype="multipart/form-data"'>
                                             <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
                                             <@input type='hidden' name='id_reservation_rule' value='${item.idReservationRule}' />
-                                            <span class="fas fa-square fa-fw" style="color:${item.color!};transform:translateY(2px)"></span>
                                             <@button type='submit' name='action_confirmRemoveParameter' title='#i18n{portal.util.labelDelete}' hideTitle=['all'] buttonIcon='trash text-danger' size='xs' color='link' />
                                             <@button style='card-control collapse' buttonTargetId='#appointment_search' hideTitle=['all'] buttonIcon='pencil' size='xs' color='link'  title='#i18n{portal.util.labelModify}' />
                                         	<@button type='submit' name='action_copyTypicalWeek' title='#i18n{appointment.manageAppointmentForms.labelCopy}' hideTitle=['all'] buttonIcon='copy' size='xs' color='link' />                                        	
                                         </@tform>
                                     </#if>
-
+									<@icon prefix='fas fa-' style='square fa-fw' params=' style="color:${item.color!};"' />
+								</@tabLink>
                             <#assign idx++ >
                         </#list>
                     </#if> 

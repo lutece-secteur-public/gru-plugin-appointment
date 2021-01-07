@@ -11,7 +11,16 @@
     padding: 0 5px;
 }
 
+.tablink-actions > a{
+	display: flex !important;
+	justify-content: space-between;
+}
+
 /* Year Calendar */
+.calendar{
+    overflow: hidden;
+}
+
 .calendar-context-menu .item .content {
     min-height: auto;
  }
