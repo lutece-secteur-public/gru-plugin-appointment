@@ -50,6 +50,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,11 +105,12 @@ public final class AppointmentUtilities
     public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
 
-    public static final String SESSION_TIMER_SLOT = "appointment.session.timer.slot";
+    public static final String SESSION_TASK_TIMER_SLOT = "appointment.session.task.timer.slot";
 
     public static final String PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT = "appointment.edit.expired.time";
 
     public static final int THIRTY_MINUTES = 30;
+    private static TimerForLockOnSlot _timer;
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -581,19 +583,19 @@ public final class AppointmentUtilities
     }
 
     /**
-     * Kill the lock timer on a slot
+     * cancel the task timer on a slot
      * 
      * @param request
      *            the request
      */
-    public static void killTimer( HttpServletRequest request, int idSlot )
+    public static void cancelTaskTimer( HttpServletRequest request, int idSlot )
     {
-        TimerForLockOnSlot timer = (TimerForLockOnSlot) request.getSession( ).getAttribute( SESSION_TIMER_SLOT + idSlot );
-        if ( timer != null )
+    	SlotEditTask task = (SlotEditTask) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+        if ( task != null )
         {
-            timer.setIsCancelled( true );
-            timer.cancel( );
-            request.getSession( ).removeAttribute( SESSION_TIMER_SLOT + idSlot );
+        	task.cancel( );
+        	task.setIsCancelled( true );
+            request.getSession( ).removeAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         }
     }
 
@@ -608,30 +610,46 @@ public final class AppointmentUtilities
      *            the max people per appointment
      * @return the timer
      */
-    public static synchronized Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
+    public static Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
     {
-        Slot slot = SlotService.findSlotById( nIdSlot );
+    	 Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
+         lock.lock( );
+         try
+         {
+	        Slot slot = SlotService.findSlotById( nIdSlot );
+	
+	        int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
+	        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
+	        int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
+	
+	        if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
+	        {
+		
+	            _timer = (_timer != null )?_timer:new TimerForLockOnSlot( );
+	            _timer.purge();
+	            SlotEditTask slotEditTask = new SlotEditTask( );
+	            slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
+	            slotEditTask.setIdSlot( slot.getIdSlot( ) );
+	            long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
+	            _timer.schedule( slotEditTask, delay );
+	            
+	            appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
+	            SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
+	            
+	            request.getSession( ).setAttribute( SESSION_TASK_TIMER_SLOT + slotEditTask.getIdSlot( ), slotEditTask );
+	            return _timer;
+	        }
+	        appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
+         }catch ( IllegalStateException e){  
+        	 
+        	 _timer= new TimerForLockOnSlot( );
+        	 throw e;
+         }
+         finally
+         {
 
-        int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
-        int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
-
-        if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
-        {
-
-            appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
-            SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
-
-            TimerForLockOnSlot timer = new TimerForLockOnSlot( );
-            SlotEditTask slotEditTask = new SlotEditTask( timer );
-            slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
-            slotEditTask.setIdSlot( slot.getIdSlot( ) );
-            long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
-            timer.schedule( slotEditTask, delay );
-            request.getSession( ).setAttribute( AppointmentUtilities.SESSION_TIMER_SLOT + slotEditTask.getIdSlot( ), timer );
-            return timer;
-        }
-        appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
+             lock.unlock( );
+         }
         return null;
     }
 

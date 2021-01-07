@@ -683,7 +683,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_DELETE_APPOINTMENT );
         }
-        ArrayList<String> listStringIdAppointment = new ArrayList<>( );
         if ( tabIdAppointmentToDelete != null )
         {
             for ( String strIdAppointment : tabIdAppointmentToDelete )
@@ -692,7 +691,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppLogService.info( LogUtilities.buildLog( ACTION_REMOVE_APPOINTMENT, strIdAppointment, getUser( ) ) );
             }
             addInfo( INFO_APPOINTMENT_MASSREMOVED, getLocale( ) );
-            listStringIdAppointment.addAll( Arrays.asList( tabIdAppointmentToDelete ) );
         }
         
         return redirect( request, VIEW_MANAGE_APPOINTMENTS, PARAMETER_ID_FORM, idForm );

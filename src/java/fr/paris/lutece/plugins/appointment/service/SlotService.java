@@ -262,7 +262,9 @@ public final class SlotService
     {
     	ForkJoinPool fjp = new ForkJoinPool(); 
         RecursiveSlotTask task= new RecursiveSlotTask(nIdForm, mapReservationRule, startingDate, endingDate, nNbPlaces);
-        return fjp.invoke(task);
+        List<Slot> listSlot= fjp.invoke(task);
+        fjp.shutdownNow( );
+        return listSlot;
     }
 
     /**
@@ -451,21 +453,15 @@ public final class SlotService
      */
     public static void deleteListSlots( List<Slot> listSlotToDelete )
     {
-    	 TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
-         try
-         {
-	        for ( Slot slotToDelete : listSlotToDelete )
-	        {
-	            SlotService.deleteSlot( slotToDelete );
-	        }
-           TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-         }
-         catch( Exception e )
-         {
-        	 TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-        	 AppLogService.error( "Error delete slot " + e.getMessage( ), e );
-        	 throw new AppException( e.getMessage( ), e );
-         }
+
+	   for ( Slot slotToDelete : listSlotToDelete )
+	   {
+	       SlotSafeService.removeSlotInMemory( slotToDelete.getIdSlot() );
+	       SlotHome.delete( slotToDelete.getIdSlot()  );
+	       SlotListenerManager.notifyListenersSlotRemoval( slotToDelete.getIdSlot()  );
+       }
+         
+        
     }
 
     /**
@@ -477,9 +473,9 @@ public final class SlotService
     public static void deleteSlot( Slot slot )
     {
         int nIdSlot = slot.getIdSlot( );
-        SlotListenerManager.notifyListenersSlotRemoval( nIdSlot );
         SlotSafeService.removeSlotInMemory( nIdSlot );
         SlotHome.delete( nIdSlot );
+        SlotListenerManager.notifyListenersSlotRemoval( nIdSlot );
     }
 
     /**
