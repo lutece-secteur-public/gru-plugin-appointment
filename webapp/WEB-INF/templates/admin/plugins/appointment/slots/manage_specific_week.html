@@ -40,10 +40,10 @@
                 <@checkBox name='is_open' id='is_open' value='true' checked=true />
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
-                <@input type='number' id='max_capacity' name='max_capacity' value='' params='onkeypress="return validateQty(event);"' maxlength=3 />	
+                <@input type='number' id='max_capacity' name='max_capacity' value='' maxlength=3 />	
             </@formGroup>
-            <@formGroup labelFor='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
-                <@staticText id="timeStart"></@staticText>
+            <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
+                <@staticText id='timeStart'></@staticText>
             </@formGroup>
             <@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
                 <@inputGroup>
@@ -54,8 +54,8 @@
                 </@inputGroup>
             </@formGroup>
             <@formGroup labelFor='shift_slot'>
-                <@radioButton labelFor='shift_slotok' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' id='shift_slotok' name='shift_slot' checked=true value='false' />
-                <@radioButton labelFor='shift_slotnok' labelKey='#i18n{appointment.modifySlot.shiftSlot}' id='shift_slotnok' name='shift_slot' value='true' />
+                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot' checked=true value='false' />
+                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' value='true' />
             </@formGroup>
             <@formGroup>
                 <@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
@@ -78,7 +78,7 @@
             <@row>
             <@columns>
                 <@formGroup labelFor='shift_slot'>
-                    <@radioButton labelFor='var_cap' labelKey='Variation de capacité}' name='capacity' id='var_cap' checked=true value='var_cap' />
+                    <@radioButton labelFor='var_cap' labelKey='Variation de capacité' name='capacity' id='var_cap' checked=true value='var_cap' />
                     <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
                     <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
                 </@formGroup>
@@ -364,22 +364,7 @@
         $('#var_cap').click(function(){
             $('#newCapacity').attr('min','-99');
         });
-
-        
   });
-  		
-function validateQty(event) {
-    var key = window.event ? event.keyCode : event.which;
-
-if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-    || event.keyCode == 37 || event.keyCode == 39) {
-    return true;
-}
-else if ( key < 48 || key > 57 ) {
-    return false;
-}
-else return true;
-};
 
 $('#ending_time').datetimepicker({
     format: 'HH:mm',
