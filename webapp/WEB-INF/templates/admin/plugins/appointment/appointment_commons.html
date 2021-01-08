@@ -327,11 +327,7 @@ $('#calendar').fullCalendar({
 	themeSystem: 'jquery-ui',
 	navLinks: true, 
 	navLinkDayClick: function( date, jsEvent ) {
-		var  el = '.' + jsEvent.currentTarget.offsetParent.className.replace(/\s/g,'.')+ ' a';
-		console.log( el );
-		$(el).append('<a href=""><li>TEST</li><li>TEST</li></ul>');
-		// location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
-		// location.href = 'jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=' + idForm;
+		location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
 	}, 
 	defaultDate: defaultDate,
 	defaultView: 'agendaWeek',
@@ -466,10 +462,9 @@ $('#calendar').fullCalendar({
 		
 		if(event.type == "comment" ){
 			var fcTitle = element.find('.fc-title p');
-			fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
+			fcTitle.prepend( '[' + event.creator_user + '] ');
 			element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-edit fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon'><i class='fas fa-trash fa-fw text-danger'></i></a></div>" );
 		}
-		
 	}
 });
 </#macro>
