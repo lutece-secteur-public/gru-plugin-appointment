@@ -7,12 +7,28 @@
     font-weight: normal;
 }
 
+.fc-agenda-view .fc-day-grid .fc-row .fc-content-skeleton {
+    padding-bottom: 0;
+}
+
+.fc-agenda-view .fc-day-grid .fc-row {
+    min-height: 2em;
+}
+
 #toggle-add-comment{
-    margin: 5px 5px -5px  5px;
+    padding: 0;
+    position: absolute;
+    top: 2px;
+    left: 22%;
     background-color: rgb(233, 250, 0);
     border-color:rgb(233, 250, 0);
     color: rgb(0, 0, 0);
     display: block;
+    height: auto;
+}
+
+#toggle-add-comment .fa-stack{
+    padding: 2px;
 }
 
 th.fc-day-header {

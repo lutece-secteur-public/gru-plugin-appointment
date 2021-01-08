@@ -164,7 +164,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
     <@input type='hidden' name='id_form' value='${idForm}' />
 	<#if comment??><#assign value="${comment.id!''}" /><#else><#assign value='' /></#if>
     <@input type='hidden' name='id_comment' value=value />
-	
 	<@fieldSet>
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 			<@input type='textarea' name='comment' id=idComment richtext=true />
@@ -177,7 +176,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
-		
 		<@formGroup labelFor='startingValidityTime' labelKey='#i18n{appointment.create_comment.labelStartingValidityTime}' rows=2>
 	        <@inputGroup>
 	            <@input type='text' name='startingValidityTime' id=idStartingTime />
@@ -186,7 +184,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 	            </@inputGroupItem>
 	        </@inputGroup>
 	    </@formGroup>
-	    
 		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
 			<@inputGroup>
 				<@input type='text' name='endingValidityDate' id=idEndingDate />
@@ -195,7 +192,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 				</@inputGroupItem>
 			</@inputGroup>
 		</@formGroup>
-		
 		<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=2>
 	        <@inputGroup>
 	            <@input type='text' name='endingValidityTime' id=idEndingTime />
@@ -204,7 +200,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 	            </@inputGroupItem>
 	        </@inputGroup>
 	    </@formGroup>
-	    
 		<@formGroup rows=2>
 			<@button type='submit' name='action_${action}' buttonIcon='save' title='Enregistrer' />   
 		</@formGroup>
@@ -220,7 +215,7 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 
 <#macro btnComment >
 	<@button id='toggle-add-comment' style='none' class='btn btn-link' title='#i18n{appointment.create_comment.pageTitle}' hideTitle=[''] params=' data-toggle="modal" data-target="#commentModal" ' buttonNested=true>
-		<@iconStack class='fa-sm'>
+		<@iconStack class='fa-xs'>
 			<@icon style='plus' class='fa-stack-1x' />
 			<@icon prefix='far fa-'style='comment' class='fa-stack-2x' />
 		</@iconStack>
@@ -278,18 +273,6 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 <@getDatePickerBootstrap idField="time_start_validity" language=language />
 <@getDatePickerBootstrap idField="time_end_validity"   language=language />
 <script type="text/javascript">
-	function validateQty(event) {
-		var key = window.event ? event.keyCode : event.which;
-	
-	if (event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 46
-	 || event.keyCode == 37 || event.keyCode == 39) {
-		return true;
-	}
-	else if ( key < 48 || key > 57 ) {
-		return false;
-	}
-	else return true;
-	};
 	$('#date_start_validity').datepicker({
     	language:		"${language}",
     	weekStart: 1,
@@ -412,7 +395,8 @@ $('#calendar').fullCalendar({
 		});
 		
 		$(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-		$('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
+		$('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first");
+		$('.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first').css('position', 'relative');
 		$('#toggle-add-comment').remove();
 		var tgc = $('#toggle-add-comment').find('body');
 		tgc.click(function(ev) {
