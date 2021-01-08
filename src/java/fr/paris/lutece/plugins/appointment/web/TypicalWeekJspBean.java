@@ -489,7 +489,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         
         if(listWeekDefinition.stream().anyMatch( week -> week.getDateOfApply().isBefore( dateNow ))) {
 
-        	return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, AdminMessage.TYPE_STOP ) );
+        	 addError( MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, getLocale( ) );
+             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
 		}
 	
         if ( bIsOpen != _timeSlot.getIsOpen( ) )
@@ -605,6 +606,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
 	    	AppLogService.error( MESSAGE_ERROR_PARSING_JSON + e.getMessage(), e );
             addError( MESSAGE_ERROR_PARSING_JSON, getLocale( ) );
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
 
 		}
         boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
@@ -624,8 +626,9 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findByReservationRule( nIdReservationRule );
         
         if(listWeekDefinition.stream().anyMatch( week -> week.getDateOfApply().isBefore( dateNow ))) {
-
-        	return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, AdminMessage.TYPE_STOP ) );
+        	
+            addError( MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, getLocale( ) );
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
 		}	
         for( TimeSlot time: listTimeSlotJson ) {
         	
