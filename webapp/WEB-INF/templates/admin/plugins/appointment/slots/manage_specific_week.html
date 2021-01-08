@@ -260,7 +260,7 @@
                 
                 if(event.type == "comment" ){
                     var fcTitle = element.find('.fc-title p');
-                    fcTitle.prepend( '[' + event.creator_user + ' | ' + event.creation_date + '] ');
+                    fcTitle.prepend( '[' + event.creator_user + '] ');
                     element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
                 }
             },
@@ -292,6 +292,8 @@
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
                 
                 $('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
+                $('.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first').css('position', 'relative');
+		
                 $('#toggle-add-comment').remove();
                 $('#toggle-add-comment > span').removeClass('hidden');
                 var tgc = $('#toggle-add-comment').find('body');
@@ -364,12 +366,14 @@
         $('#var_cap').click(function(){
             $('#newCapacity').attr('min','-99');
         });
+
+        $('#ending_time').datetimepicker({
+            format: 'HH:mm',
+            stepping: 5
+        });
   });
 
-$('#ending_time').datetimepicker({
-    format: 'HH:mm',
-    stepping: 5
-});
+
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />
