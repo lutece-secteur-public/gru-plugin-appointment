@@ -881,8 +881,9 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         if ( bOpeningHasChanged )
         {
-        	slot.setIsSpecific( bIsOpen );
+        	slot.setIsOpen( bIsOpen );
         }
+        slot.setIsSpecific( false );
 
         return slot;
     }
