@@ -48,8 +48,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
-import fr.paris.lutece.plugins.appointment.business.form.Form;
+import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.business.slot.Slot;
@@ -60,9 +61,12 @@ import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
+import fr.paris.lutece.plugins.appointment.service.TimeSlotService;
 import fr.paris.lutece.plugins.appointment.service.WeekDefinitionService;
+import fr.paris.lutece.plugins.appointment.service.WorkingDayService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -95,6 +99,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     private static final String MESSAGE_ERROR_REMOVE_WEEK_DATE_PASSED ="appointment.message.error.removeWeek.date.passed";
     private static final String MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION = "appointment.message.error.refreshDays.modifyFormHasAppointments";
     private static final String MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED = "appointment.modifyCalendarSlots.messageValidatedAppointmentsImpacted";
+    private static final String MESSAGE_INFO_MULTI_SURBOOKING = "appointment.modifyCalendarMultiSlots.messageSurbooking";
     private static final String INFO_PARAMETER_REMOVED = "appointment.info.advancedparameters.removed";
     private static final String INFO_ADVANCED_PARAMETERS_UPDATED = "appointment.info.advancedparameters.updated";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
@@ -107,7 +112,6 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     private static final String PARAMETER_ID_RESERVATION_RULE = "id_reservation_rule";
     private static final String PARAMETER_START_YEAR= "start_year";
     // Mrker
-    private static final String MARK_APPOINTMENT_FORM = "appointmentform";
     private static final String MARK_LIST_RESERVATION_RULE = "listReservationRule";
     private static final String MARK_LIST_WEEK_DEFINITION = "listWeekDefinition";
     private static final String MARK_ID_FORM = "id_form";
@@ -201,7 +205,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
                 addError( MESSAGE_ERROR_MODIFY_FORM_HAS_APPOINTMENTS_AFTER_DATE_OF_MODIFICATION, getLocale( ) );
                 return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
             }   
-            updateSlotImpacted( listSlotsImpacted, listSlotsImpactedWithAppointment,reservationRule.getMaxCapacityPerSlot( ) );
+            updateSlotImpacted( listSlotsImpacted, listSlotsImpactedWithAppointment,reservationRule );
         }        
         WeekDefinitionService.assignWeekDefinition( nIdForm, newWeek );
         addInfo(INFO_ADVANCED_PARAMETERS_UPDATED,getLocale( ));
@@ -316,16 +320,23 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
      * @param nMaxCapacity
      *            the max capacity
      */  
-    private void updateSlotImpacted( List<Slot> listSlotsImpacted, List<Slot> listSlotsImpactedWithAppointments,int nMaxCapacity )
+    private void updateSlotImpacted( List<Slot> listSlotsImpacted, List<Slot> listSlotsImpactedWithAppointments, ReservationRule reservationRule )
     {
         // Need to delete the slots that are impacted but with no appointments
     	List<Integer> listIdSlotsImpactedWithAppointments = listSlotsImpactedWithAppointments.stream().map( Slot::getIdSlot).collect(Collectors.toList());    	
         List<Slot> listslotImpactedWithoutAppointments =  listSlotsImpacted.stream().filter( p -> !listIdSlotsImpactedWithAppointments.contains( p.getIdSlot( ) ) ).collect(Collectors.toList());
-    
+        int nMaxCapacity= reservationRule.getMaxCapacityPerSlot( );
+        WorkingDay workingDay= null;
+        TimeSlot timeSlot= null;
+    	StringBuilder sbAlert = new StringBuilder( );
+        boolean bOpeningHasChanged = false;
         SlotService.deleteListSlots( listslotImpactedWithoutAppointments );
 
         for ( Slot slotImpacted : listSlotsImpactedWithAppointments )
         {
+        	workingDay= WorkingDayService.getWorkingDayOfDayOfWeek( reservationRule.getListWorkingDay( ), slotImpacted.getStartingDateTime().getDayOfWeek( ) );
+        	timeSlot= TimeSlotService.getTimeSlotInListOfTimeSlotWithStartingTime( workingDay.getListTimeSlot( ), slotImpacted.getStartingTime( ));
+        	nMaxCapacity= timeSlot.getMaxCapacity( );
             Lock lock = SlotSafeService.getLockOnSlot( slotImpacted.getIdSlot( ) );
             lock.lock( );
             try
@@ -355,8 +366,21 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
                        slotImpacted.setNbRemainingPlaces(  slotImpacted.getNbRemainingPlaces( ) - nValueToSubstract  );
                     }
                     }
+	                if( slotImpacted.getIsOpen( ) && !timeSlot.getIsOpen( )) {
+	                	 
+	                	bOpeningHasChanged= true;
+	                }
+                    slotImpacted.setIsOpen(timeSlot.getIsOpen( ));
+                    slotImpacted.setIsSpecific( false );
                     slotImpacted.setMaxCapacity( nMaxCapacity );
-                
+                    
+                    if( slotImpacted.getMaxCapacity( ) < slotImpacted.getNbPlacesTaken( ) ) {		            	
+		            	sbAlert.append( slotImpacted.getStartingDateTime() );
+		            	sbAlert.append( "-" );
+		            	sbAlert.append( slotImpacted.getEndingDateTime() );
+		            	sbAlert.append( ", " );
+		            }
+                    
                 SlotSafeService.updateSlot( slotImpacted );
             }
             finally
@@ -364,6 +388,18 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
                 lock.unlock( );
             }
         }
+        if ( bOpeningHasChanged )
+        {
+       	 	addWarning( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale( ) );
+        }
+        if ( !StringUtils.isEmpty( sbAlert.toString( )) )
+        { 
+            Object [ ] args = {
+            		sbAlert.toString( )
+            };            
+            addWarning( I18nService.getLocalizedString( MESSAGE_INFO_MULTI_SURBOOKING, args, getLocale( ) ) );
+        }
+
     }  
 	/**
 	 * Check Constraints
