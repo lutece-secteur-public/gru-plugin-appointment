@@ -33,8 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
-import static java.lang.Math.toIntExact;
-
+import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -203,12 +202,12 @@ public final class AppointmentUtilities
                 listSlots = listSlots.stream( ).filter( s -> s.getIdForm( ) == form.getIdForm( ) ).collect( Collectors.toList( ) );
                 if ( CollectionUtils.isNotEmpty( listSlots ) )
                 {
-                    LocalDate dateOfTheLastAppointment = listSlots.stream( ).map( Slot::getStartingDateTime ).max( LocalDateTime::compareTo ).get( )
-                            .toLocalDate( );
+                    LocalDateTime dateOfTheLastAppointment = listSlots.stream( ).map( Slot::getStartingDateTime ).max( LocalDateTime::compareTo ).orElse( null );
+                    
                     // Check the number of days between this appointment and
                     // the last appointment the user has taken
                     LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
-                    if ( Math.abs( dateOfTheLastAppointment.until( dateOfTheAppointment, ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                    if ( dateOfTheLastAppointment!=null && Math.abs( dateOfTheLastAppointment.toLocalDate( ).until( dateOfTheAppointment, ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
                     {
                         bCheckPassed = false;
                     }
@@ -244,8 +243,7 @@ public final class AppointmentUtilities
             // appointment that we currently edit
             if ( appointmentDTO.getIdAppointment( ) != 0 )
             {
-                listAppointment = listAppointment.stream( ).filter( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) )
-                        .collect( Collectors.toList( ) );
+               listAppointment.removeIf( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
             }
 
             if ( CollectionUtils.isNotEmpty( listAppointment ) )
@@ -349,71 +347,47 @@ public final class AppointmentUtilities
      */
     public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form )
     {
-        boolean bCheckPassed = true;
-        int nbMaxAppointmentsPerUser = form.getNbMaxAppointmentsPerUser( );
-        int nbDaysForMaxAppointmentsPerUser = form.getNbDaysForMaxAppointmentsPerUser( );
-        if ( nbMaxAppointmentsPerUser != 0 )
+    	if ( form.getNbMaxAppointmentsPerUser() > 0 )
         {
-            List<Slot> listSlots = getSlotsByEmail( strEmail, appointmentDTO.getIdAppointment( ) );
-            if ( CollectionUtils.isNotEmpty( listSlots ) )
-            {
-                // Filter fot the good form
-                listSlots = listSlots.stream( ).filter( s -> s.getIdForm( ) == form.getIdForm( ) ).collect( Collectors.toList( ) );
-                if ( CollectionUtils.isNotEmpty( listSlots ) )
-                {
-                    // Get the date of the future appointment
-                    LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
-                    // Min starting date of the period
-                    LocalDate minStartingDateOfThePeriod = dateOfTheAppointment.minusDays( nbDaysForMaxAppointmentsPerUser );
-                    // Max ending date of the period
-                    LocalDate maxEndingDateOfThePeriod = dateOfTheAppointment.plusDays( nbDaysForMaxAppointmentsPerUser );
-                    // Keep only the slots that are in the min-max period
-                    listSlots = listSlots.stream( )
-                            .filter( s -> s.getStartingDateTime( ).toLocalDate( ).isEqual( minStartingDateOfThePeriod )
-                                    || s.getStartingDateTime( ).toLocalDate( ).isAfter( minStartingDateOfThePeriod ) )
-                            .filter( s -> s.getStartingDateTime( ).toLocalDate( ).isEqual( maxEndingDateOfThePeriod )
-                                    || s.getStartingDateTime( ).toLocalDate( ).isBefore( maxEndingDateOfThePeriod ) )
-                            .collect( Collectors.toList( ) );
-                    LocalDate startingDateOfThePeriod = null;
-                    LocalDate endingDateOfThePeriod = null;
-                    // For each slot
-                    for ( Slot slot : listSlots )
-                    {
-                        if ( slot.getStartingDateTime( ).toLocalDate( ).isBefore( dateOfTheAppointment ) )
-                        {
-                            startingDateOfThePeriod = slot.getStartingDateTime( ).toLocalDate( );
-                            endingDateOfThePeriod = startingDateOfThePeriod.plusDays( nbDaysForMaxAppointmentsPerUser );
-                        }
-                        if ( slot.getStartingDateTime( ).toLocalDate( ).isAfter( dateOfTheAppointment ) )
-                        {
-                            endingDateOfThePeriod = slot.getStartingDateTime( ).toLocalDate( );
-                            startingDateOfThePeriod = endingDateOfThePeriod.minusDays( nbDaysForMaxAppointmentsPerUser );
-                        }
-                        if ( slot.getStartingDateTime( ).toLocalDate( ).isEqual( dateOfTheAppointment ) )
-                        {
-                            startingDateOfThePeriod = endingDateOfThePeriod = slot.getStartingDateTime( ).toLocalDate( );
-                        }
-                        // Check the number of slots on the period
-                        final LocalDate startingDateOfPeriodToSearch = startingDateOfThePeriod;
-                        final LocalDate endingDateOfPeriodToSearch = endingDateOfThePeriod;
-                        int nbSlots = toIntExact( listSlots.stream( )
-                                .filter( s -> ( s.getStartingDateTime( ).toLocalDate( ).equals( startingDateOfPeriodToSearch )
-                                        || s.getStartingDateTime( ).toLocalDate( ).isAfter( startingDateOfPeriodToSearch ) )
-                                        && ( s.getStartingDateTime( ).toLocalDate( ).equals( endingDateOfPeriodToSearch )
-                                                || s.getStartingDateTime( ).toLocalDate( ).isBefore( endingDateOfPeriodToSearch ) ) )
-                                .count( ) );
-                        if ( nbSlots >= nbMaxAppointmentsPerUser )
-                        {
-                            bCheckPassed = false;
-                            break;
-                        }
-                    }
-                }
-            }
+	        // Get the date of the future appointment
+	        LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );        
+	        AppointmentFilterDTO filter= new AppointmentFilterDTO();
+	        filter.setEmail(strEmail);
+	        filter.setIdForm( form.getIdForm( ) );
+	        filter.setStatus( 0 );
+	        if( form.getNbDaysForMaxAppointmentsPerUser( ) > 0 ) {
+	        	
+	        	filter.setStartingDateOfSearch(Date.valueOf( dateOfTheAppointment.minusDays( form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )));
+	        	filter.setEndingDateOfSearch(Date.valueOf( dateOfTheAppointment.plusDays( form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )) );
+	        }
+	        List<AppointmentDTO>  listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
+	        // If we modify an appointment, we remove the
+	        // appointment that we currently edit
+	        if( appointmentDTO.getIdAppointment( ) != 0 ) {
+	        	
+	        	listAppointmentsDTO.removeIf(appt -> appt.getIdAppointment() != appointmentDTO.getIdAppointment( ) );
+	        }
+	        
+	        if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) )
+	        {
+	        	if( form.getNbDaysForMaxAppointmentsPerUser( ) > 0) {
+	        		
+			        List<AppointmentDTO>  listAppointmentsBefore= listAppointmentsDTO.stream().filter(appt -> appt.getStartingDateTime( ).toLocalDate( ).isBefore( dateOfTheAppointment ) || appt.getStartingDateTime( ).toLocalDate( ).isEqual( dateOfTheAppointment )).collect(Collectors.toList( ));
+			        List<AppointmentDTO>  listAppointmentsAfter= listAppointmentsDTO.stream().filter(appt -> appt.getStartingDateTime( ).toLocalDate( ).isAfter( dateOfTheAppointment ) || appt.getStartingDateTime( ).toLocalDate( ).isEqual( dateOfTheAppointment )).collect(Collectors.toList( ));
+			        
+			        if ( listAppointmentsBefore.size( ) >= form.getNbMaxAppointmentsPerUser( ) || listAppointmentsAfter.size( ) >= form.getNbMaxAppointmentsPerUser( ) )
+			        {
+			                return false;
+			        }
+	        	}else if(listAppointmentsDTO.size( ) >= form.getNbMaxAppointmentsPerUser( ) ) {
+	        		
+	        		return false;
+	        	}
+	        }
         }
-        return bCheckPassed;
+       return true;
+        
     }
-
     /**
      * Check and validate all the rules for the number of booked seats asked
      * 
