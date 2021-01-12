@@ -292,7 +292,12 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 			
         	return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, AdminMessage.TYPE_STOP ) );
 		}
-		
+		if( AppointmentUtilities.weekIsOpenInFO(_appointmentForm, listWeekDefinition, getLocale())) {
+			
+			addError( ERROR_MESSAGE_WEEK_IS_OPEN_FO , getLocale( ));
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ), PARAMETER_ID_RULE, _appointmentForm.getIdReservationRule( ) );
+   
+		}
         if ( !validateReservationRuleBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !validateBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkConstraints( _appointmentForm ) )
         {
         	addError( PARAMETER_ERROR_MODIFICATION );
@@ -405,6 +410,11 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
             throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM );
         }
+        if( AppointmentUtilities.weekIsOpenInFO(_appointmentForm, listWeekDefinition, getLocale())) {
+			
+            return redirect( request, AdminMessageService.getMessageUrl( request, ERROR_MESSAGE_WEEK_IS_OPEN_FO, AdminMessage.TYPE_STOP ) );
+   
+		}
         ReservationRuleService.removeReservationRule( nIdReservationRule );
         addInfo( INFO_PARAMETER_REMOVED, getLocale( ) );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, Integer.parseInt( strIdForm ) );        
@@ -492,7 +502,12 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         	 addError( MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, getLocale( ) );
              return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
 		}
-	
+        if( AppointmentUtilities.weekIsOpenInFO(_appointmentForm, listWeekDefinition, getLocale())) {
+			
+			addError( ERROR_MESSAGE_WEEK_IS_OPEN_FO , getLocale( ));
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
+   
+		}
         if ( bIsOpen != _timeSlot.getIsOpen( ) )
         {
             _timeSlot.setIsOpen( bIsOpen );
@@ -629,7 +644,13 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         	
             addError( MESSAGE_ERROR_MODIFICATION_WEEK_ASSIGNED_IN_PAST, getLocale( ) );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
-		}	
+		}
+        if( AppointmentUtilities.weekIsOpenInFO(_appointmentForm, listWeekDefinition, getLocale())) {
+			
+			addError( ERROR_MESSAGE_WEEK_IS_OPEN_FO , getLocale( ));
+            return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
+   
+		}
         for( TimeSlot time: listTimeSlotJson ) {
         	
         	TimeSlot timeSlot= TimeSlotService.findTimeSlotById( time.getIdTimeSlot( ) );

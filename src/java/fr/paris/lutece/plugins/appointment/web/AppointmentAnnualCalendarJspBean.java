@@ -48,6 +48,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
@@ -57,6 +58,7 @@ import fr.paris.lutece.plugins.appointment.business.slot.Slot;
 import fr.paris.lutece.plugins.appointment.business.slot.SlotHome;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
+import fr.paris.lutece.plugins.appointment.service.DisplayService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.ReservationRuleService;
 import fr.paris.lutece.plugins.appointment.service.SlotSafeService;
@@ -144,7 +146,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     public String getViewManageAnnualCalendar( HttpServletRequest request )
     {
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
-        AppointmentFormDTO form = FormService.buildAppointmentFormLight(nIdForm) ;
+        AppointmentFormDTO form = buildAppointmentFormLight( nIdForm );
         String strStartYear = request.getParameter( PARAMETER_START_YEAR );
         int nStartYear;
         List<WeekDefinition> listWeek= WeekDefinitionService.findListWeekDefinition( nIdForm );
@@ -177,7 +179,9 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     {
     	 String strIdForm = request.getParameter( PARAMETER_ID_FORM );    	 
          int nIdForm = Integer.parseInt( strIdForm );
-         List<Slot> listSlotsImpacted= new ArrayList<>();        
+         List<Slot> listSlotsImpacted= new ArrayList<>();  
+         List<WeekDefinition> listWeek= new ArrayList<>();        
+         AppointmentFormDTO form = buildAppointmentFormLight( nIdForm );
 
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 (User) getUser( ) ) )
@@ -192,7 +196,13 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         	addError( MESSAGE_ERROR_MODIFICATION, getLocale( ) );
             return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
         }
-        
+        listWeek.add( newWeek );
+        if( AppointmentUtilities.weekIsOpenInFO( form, listWeek , getLocale( ))) {
+			
+			addError( ERROR_MESSAGE_WEEK_IS_OPEN_FO , getLocale( ));
+            return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, newWeek.getDateOfApply().getYear() );
+   
+		}
         ReservationRule reservationRule= ReservationRuleService.findReservationRuleById( newWeek.getIdReservationRule( ));
         listSlotsImpacted.addAll( SlotHome.findByIdFormAndDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));    
         List<Slot> listSlotsImpactedWithAppointment= SlotService.findSlotWithAppointmentByDateRange( nIdForm, newWeek.getDateOfApply( ).atStartOfDay( ), newWeek.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
@@ -224,7 +234,9 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     {
     	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
-        List<Slot> listSlotsImpacted= new ArrayList<>();                		
+        AppointmentFormDTO form = buildAppointmentFormLight( nIdForm ) ;
+        List<Slot> listSlotsImpacted= new ArrayList<>();     
+        List<WeekDefinition> listWeek= new ArrayList<>();        
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
                 (User) getUser( ) ) )
         {
@@ -240,7 +252,12 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         	addError( MESSAGE_ERROR_REMOVE_WEEK_DATE_PASSED, getLocale( ) );
             return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, week.getDateOfApply().getYear() );
         }
-        
+        listWeek.add( week );
+        if( AppointmentUtilities.weekIsOpenInFO( form, listWeek , getLocale( ))) {
+        	
+			addError( ERROR_MESSAGE_WEEK_IS_OPEN_FO , getLocale( ));
+            return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, week.getDateOfApply().getYear() );
+		}
         listSlotsImpacted.addAll( SlotHome.findByIdFormAndDateRange( nIdForm, week.getDateOfApply( ).atStartOfDay( ), week.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));    
         List<Slot> listSlotsImpactedWithAppointment= SlotService.findSlotWithAppointmentByDateRange( nIdForm, week.getDateOfApply( ).atStartOfDay( ), week.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
       
@@ -272,6 +289,8 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
     	String strIdForm = request.getParameter( PARAMETER_ID_FORM );
     	String strIdWeekDefinition = request.getParameter( PARAMETER_ID_WEEK_DEFINITION );
         int nIdForm = Integer.parseInt( strIdForm );
+        AppointmentFormDTO form = buildAppointmentFormLight( nIdForm ) ;
+        List<WeekDefinition> listWeek= new ArrayList<>();        
         List<Slot> listSlotsImpacted= new ArrayList<>();               		
 
         if ( !RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, strIdForm, AppointmentResourceIdService.PERMISSION_MODIFY_ADVANCED_SETTING_FORM,
@@ -294,15 +313,19 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
              return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );
 
         }
+        listWeek.add( weekToDelete );
+        if( AppointmentUtilities.weekIsOpenInFO( form, listWeek , getLocale( ))) {
+        	
+			addError( ERROR_MESSAGE_WEEK_IS_OPEN_FO , getLocale( ));
+            return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );
+		}
         List<Slot> listSlotsImpactedWithAppointment= SlotHome.findSlotWithAppointmentByDateRange(nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
         
         if ( CollectionUtils.isNotEmpty( listSlotsImpactedWithAppointment ))
         {
             addError( MESSAGE_INFO_VALIDATED_APPOINTMENTS_IMPACTED, getLocale() );
             return redirect( request, VIEW_MANAGE_ANNUAL_CALENDAR, PARAMETER_ID_FORM, nIdForm, PARAMETER_START_YEAR, weekToDelete.getDateOfApply().getYear() );
-
-        }     
-        
+        }             
         listSlotsImpacted.addAll( SlotService.findSlotsByIdFormAndDateRange( nIdForm, weekToDelete.getDateOfApply( ).atStartOfDay( ), weekToDelete.getEndingDateOfApply( ).atTime( LocalTime.MAX ) ));       
         SlotService.deleteListSlots( listSlotsImpacted );
 		WeekDefinitionService.removeWeekDefinition( weekToDelete.getIdWeekDefinition( ) );      
@@ -426,6 +449,20 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
    	 	week.setDateOfApply(DateUtil.formatDate( dateOfApplay , getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ));
    	 	week.setEndingDateOfApply(DateUtil.formatDate( dateEndOfApplay , getLocale( ) ).toInstant( ).atZone( ZoneId.systemDefault( ) ).toLocalDate( ));
    	 	week.setIdReservationRule(Integer.parseInt( idReservationRule ));
-    }    
+    } 
+    /**
+     * Build an appointmentForm light
+     * 
+     * @param nIdForm
+     *            the form Id
+     * @return the appointmentForm DTO
+     */
+    private AppointmentFormDTO buildAppointmentFormLight( int nIdForm ) {
+    	
+        AppointmentFormDTO form = FormService.buildAppointmentFormLight(nIdForm) ;
+        Display display = DisplayService.findDisplayWithFormId( form.getIdForm( ) );
+        form.setNbWeeksToDisplay( display.getNbWeeksToDisplay( ) );
+        return form;
+    }
 
 }

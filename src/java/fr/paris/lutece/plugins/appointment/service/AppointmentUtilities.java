@@ -39,6 +39,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -357,8 +359,8 @@ public final class AppointmentUtilities
 	        filter.setStatus( 0 );
 	        if( form.getNbDaysForMaxAppointmentsPerUser( ) > 0 ) {
 	        	
-	        	filter.setStartingDateOfSearch(Date.valueOf( dateOfTheAppointment.minusDays( form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )));
-	        	filter.setEndingDateOfSearch(Date.valueOf( dateOfTheAppointment.plusDays( form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )) );
+	        	filter.setStartingDateOfSearch(Date.valueOf( dateOfTheAppointment.minusDays((long)  form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )));
+	        	filter.setEndingDateOfSearch(Date.valueOf( dateOfTheAppointment.plusDays((long)  form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )) );
 	        }
 	        List<AppointmentDTO>  listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
 	        // If we modify an appointment, we remove the
@@ -1030,5 +1032,51 @@ public final class AppointmentUtilities
     	reservationRuleDTO.setTimeStart(appointmentForm.getTimeStart( ));
     	
     	reservationRuleDTO.setIdForm( appointmentForm.getIdForm( ) );
+    }
+    /**
+     * check if one of the weeks in the list is open on the FO calendar 
+     * @param appointmentFormDTO the appointment form
+     * @param listWeek the list of weekDefinition
+     * @param locale the locale 
+     * @return true if one of the weeks in the list is open on the FO calendar 
+     */
+    public static boolean weekIsOpenInFO( AppointmentFormDTO appointmentFormDTO, List<WeekDefinition> listWeek, Locale locale) {
+    	        
+       	if( appointmentFormDTO.getIsActive( ) ) 
+       	{
+	        LocalDate startingValidityDate = appointmentFormDTO.getDateStartValidity().toLocalDate( );
+	    	LocalDate startingDateOfDisplay = LocalDate.now( );
+	    		
+	         if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
+	         {
+	             startingDateOfDisplay = startingValidityDate;
+	         }
+	         // Calculate the ending date of display with the nb weeks to display
+	         // since today
+	         // We calculate the number of weeks including the current week, so it
+	         // will end to the (n) next sunday
+	         LocalDate dateOfSunday = startingDateOfDisplay.with( WeekFields.of( locale ).dayOfWeek( ), DayOfWeek.SUNDAY.getValue( ) );
+	         LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) appointmentFormDTO.getNbWeeksToDisplay() - 1 );
+	         LocalDate endingValidityDate = appointmentFormDTO.getDateEndValidity().toLocalDate( );
+	         if (endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate ) )
+	         {
+	             endingDateOfDisplay = endingValidityDate;
+	         }
+	         if( startingDateOfDisplay.isAfter(endingDateOfDisplay)) {
+	        	 
+	        	 return false;
+	         }
+	    			    	
+		    for( WeekDefinition week:listWeek ) {
+		    		
+		    	if( (week.getDateOfApply().isBefore( endingDateOfDisplay ) || week.getDateOfApply().isEqual( endingDateOfDisplay ))
+		    		&& (week.getEndingDateOfApply().isAfter( startingDateOfDisplay ) || week.getEndingDateOfApply().isEqual( startingDateOfDisplay ))) {
+		    			
+		    		return true;
+		    	}
+		    }
+    	  }
+       	 	
+       	return false;
     }
 }
