@@ -39,7 +39,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -1044,12 +1043,12 @@ public final class AppointmentUtilities
     	        
        	if( appointmentFormDTO.getIsActive( ) ) 
        	{
-	        LocalDate startingValidityDate = appointmentFormDTO.getDateStartValidity().toLocalDate( );
+	        Date startingValidityDate = appointmentFormDTO.getDateStartValidity( );
 	    	LocalDate startingDateOfDisplay = LocalDate.now( );
 	    		
-	         if ( startingValidityDate != null && startingValidityDate.isAfter( startingDateOfDisplay ) )
+	         if ( startingValidityDate != null && startingValidityDate.toLocalDate( ).isAfter( startingDateOfDisplay ) )
 	         {
-	             startingDateOfDisplay = startingValidityDate;
+	             startingDateOfDisplay = startingValidityDate.toLocalDate( );
 	         }
 	         // Calculate the ending date of display with the nb weeks to display
 	         // since today
@@ -1057,10 +1056,10 @@ public final class AppointmentUtilities
 	         // will end to the (n) next sunday
 	         LocalDate dateOfSunday = startingDateOfDisplay.with( WeekFields.of( locale ).dayOfWeek( ), DayOfWeek.SUNDAY.getValue( ) );
 	         LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) appointmentFormDTO.getNbWeeksToDisplay() - 1 );
-	         LocalDate endingValidityDate = appointmentFormDTO.getDateEndValidity().toLocalDate( );
-	         if (endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate ) )
+	         Date endingValidityDate = appointmentFormDTO.getDateEndValidity( );
+	         if (endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate.toLocalDate( ) ) )
 	         {
-	             endingDateOfDisplay = endingValidityDate;
+	             endingDateOfDisplay = endingValidityDate.toLocalDate( );
 	         }
 	         if( startingDateOfDisplay.isAfter(endingDateOfDisplay)) {
 	        	 
