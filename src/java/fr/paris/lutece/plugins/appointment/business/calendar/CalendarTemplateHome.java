@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ import fr.paris.lutece.util.ReferenceList;
 public final class CalendarTemplateHome
 {
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
-    private static ICalendarTemplateDAO _dao = SpringContextService.getBean( ICalendarTemplateDAO.BEAN_NAME );
+    private static ICalendarTemplateDAO _dao = SpringContextService.getBean( "appointment.calendarTemplateDAO" );
 
     /**
      * Default constructor

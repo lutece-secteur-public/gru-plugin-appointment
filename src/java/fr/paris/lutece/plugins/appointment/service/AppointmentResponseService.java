@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -189,11 +189,11 @@ public final class AppointmentResponseService
             AppointmentResponseService.removeResponseById( response.getIdResponse( ) );
         }
     }
-    
+
     /**
      * Remove the response of an appointment
      * 
-     * @param deleteBoOnly 
+     * @param deleteBoOnly
      * @param nIdAppointment
      *            the id of the appointment
      */

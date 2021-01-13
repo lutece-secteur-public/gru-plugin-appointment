@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -125,12 +125,9 @@ public final class AppointmentExportService
         List<List<Object>> linesValues = new ArrayList<>( );
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
-        List<Entry> listEntry = EntryHome.getEntryList( entryFilter )
-                .stream( )
-                .filter( e -> entryList.contains( e.getIdEntry( ) ) )
-                .map( Entry::getIdEntry ).map( EntryHome::findByPrimaryKey )
-                .collect( Collectors.toList( ) );
-        
+        List<Entry> listEntry = EntryHome.getEntryList( entryFilter ).stream( ).filter( e -> entryList.contains( e.getIdEntry( ) ) ).map( Entry::getIdEntry )
+                .map( EntryHome::findByPrimaryKey ).collect( Collectors.toList( ) );
+
         if ( tmpForm == null )
         {
             return;
@@ -148,8 +145,7 @@ public final class AppointmentExportService
             }
             for ( AppointmentDTO appointmentDTO : listAppointmentsDTO )
             {
-                linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry,
-                        stateService, locale ) );
+                linesValues.add( createLineContent( appointmentDTO, tmpForm.getIdWorkflow( ), defaultColumnList, listEntry, stateService, locale ) );
             }
         }
         writeWorkbook( linesValues, excelFile, locale );
@@ -322,11 +318,10 @@ public final class AppointmentExportService
         Integer key = e.getIdEntry( );
         StringBuilder strValue = new StringBuilder( );
         String strPrefix = StringUtils.EMPTY;
-        
+
         List<Response> listResponsesForEntry = listResponses.stream( ).filter( resp -> key.equals( resp.getEntry( ).getIdEntry( ) ) )
-                .filter( resp -> StringUtils.isNotEmpty( resp.getResponseValue( ) ) )
-                .collect( Collectors.toList( ) );
-        
+                .filter( resp -> StringUtils.isNotEmpty( resp.getResponseValue( ) ) ).collect( Collectors.toList( ) );
+
         for ( Response resp : listResponsesForEntry )
         {
             Field f = resp.getField( );
@@ -334,9 +329,8 @@ public final class AppointmentExportService
             {
                 resp.setField( FieldHome.findByPrimaryKey( f.getIdField( ) ) );
             }
-            
-            String valueExport = EntryTypeServiceManager.getEntryTypeService( e ).getResponseValueForExport( e, null, resp,
-                    locale );
+
+            String valueExport = EntryTypeServiceManager.getEntryTypeService( e ).getResponseValueForExport( e, null, resp, locale );
             if ( StringUtils.isNotEmpty( valueExport ) )
             {
                 strValue.append( strPrefix + valueExport );

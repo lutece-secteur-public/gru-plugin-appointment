@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,12 +64,12 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     protected static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
     private static final String MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.multiSlot.numberOfSeatsBookedAndConcurrentAppointments";
-    private static final String MESSAGE_ERROR_NUMBER_DAY_BETWEEN_TWO_APPOINTMENTS= "appointment.message.error.nbDaysBetweenTwoAppointments";
+    private static final String MESSAGE_ERROR_NUMBER_DAY_BETWEEN_TWO_APPOINTMENTS = "appointment.message.error.nbDaysBetweenTwoAppointments";
     private static final String MESSAGE_ERROR_MAX_APPOINTMENTS_PER_USER = "appointment.message.error.nbMaxAppointmentsPerUser";
 
     // Constantes
-    protected static final String VAR_CAP= "var_cap";
-    protected static final String NEW_CAP= "new_cap";
+    protected static final String VAR_CAP = "var_cap";
+    protected static final String NEW_CAP = "new_cap";
 
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "appointment.listItems.itemsPerPage";
@@ -95,7 +95,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     protected boolean checkConstraints( AppointmentFormDTO appointmentForm )
     {
         return checkStartingAndEndingTime( appointmentForm ) && checkStartingAndEndingValidityDate( appointmentForm )
-                && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm ) && checkMultiSlotFormTypeBookablePlaces( appointmentForm ) && checkControlMaxAppointmentsPerUser( appointmentForm );
+                && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm )
+                && checkMultiSlotFormTypeBookablePlaces( appointmentForm ) && checkControlMaxAppointmentsPerUser( appointmentForm );
     }
 
     /**
@@ -193,8 +194,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     protected boolean checkStartingAndEndingValidityDate( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
-        if ( appointmentForm.getDateStartValidity( ) != null 
-                && appointmentForm.getDateEndValidity( ) != null 
+        if ( appointmentForm.getDateStartValidity( ) != null && appointmentForm.getDateEndValidity( ) != null
                 && appointmentForm.getDateStartValidity( ).toLocalDate( ).isAfter( appointmentForm.getDateEndValidity( ).toLocalDate( ) ) )
         {
             bReturn = false;
@@ -220,9 +220,12 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         }
         return bReturn;
     }
+
     /**
-     * check the number of bookable places will be set to 1 and cann't be modified, when creating a "multi-slot form" 
-     * @param appointmentForm the appointmentForm DTO
+     * check the number of bookable places will be set to 1 and cann't be modified, when creating a "multi-slot form"
+     * 
+     * @param appointmentForm
+     *            the appointmentForm DTO
      * @return false if the form type is "multi-slot" and Max people Per Slot is not set to 1
      */
     protected boolean checkMultiSlotFormTypeBookablePlaces( AppointmentFormDTO appointmentForm )
@@ -235,52 +238,63 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         }
         return bReturn;
     }
+
     /**
-     * Check that the email is required if the value of max appointments on a defined period or delay between two appointments for the same use is not equal to 0
-     * @param appointmentForm the appointmentForm DTO
-     * @return false if email is not required and the value of max appointments on a defined period or delay between two appointments for the same use is not equal to 0
+     * Check that the email is required if the value of max appointments on a defined period or delay between two appointments for the same use is not equal to
+     * 0
+     * 
+     * @param appointmentForm
+     *            the appointmentForm DTO
+     * @return false if email is not required and the value of max appointments on a defined period or delay between two appointments for the same use is not
+     *         equal to 0
      */
     protected boolean checkControlMaxAppointmentsPerUser( AppointmentFormDTO appointmentForm )
     {
         boolean bReturn = true;
-        if ( appointmentForm.getNbDaysBeforeNewAppointment( ) != 0 && !appointmentForm.getEnableMandatoryEmail( ))
+        if ( appointmentForm.getNbDaysBeforeNewAppointment( ) != 0 && !appointmentForm.getEnableMandatoryEmail( ) )
         {
             bReturn = false;
             addError( MESSAGE_ERROR_NUMBER_DAY_BETWEEN_TWO_APPOINTMENTS, getLocale( ) );
         }
-        if( appointmentForm.getNbMaxAppointmentsPerUser( ) != 0 && !appointmentForm.getEnableMandatoryEmail( ) ) {
-        	bReturn = false;
+        if ( appointmentForm.getNbMaxAppointmentsPerUser( ) != 0 && !appointmentForm.getEnableMandatoryEmail( ) )
+        {
+            bReturn = false;
             addError( MESSAGE_ERROR_MAX_APPOINTMENTS_PER_USER, getLocale( ) );
         }
         return bReturn;
     }
+
     /**
      * Valdate rule bean
+     * 
      * @param request
      * @param strPrefix
      * @return true if validated otherwise false
      */
-    protected boolean validateReservationRuleBean( HttpServletRequest request,  String strPrefix) {
-    	
-        ReservationRuleDTO rule= new ReservationRuleDTO( );
-        populate( rule, request);
+    protected boolean validateReservationRuleBean( HttpServletRequest request, String strPrefix )
+    {
+
+        ReservationRuleDTO rule = new ReservationRuleDTO( );
+        populate( rule, request );
         return validateBean( rule, strPrefix );
-    	 
+
     }
-    
-   /**
-    * Valdate rule bean
-    * @param appointmentForm
-    * @param strPrefix
-    * @return true if validated otherwise false
-    */
-    protected boolean validateReservationRuleBean( AppointmentFormDTO appointmentForm, String strPrefix) {
-    	
-        ReservationRuleDTO rule= new ReservationRuleDTO( );
+
+    /**
+     * Valdate rule bean
+     * 
+     * @param appointmentForm
+     * @param strPrefix
+     * @return true if validated otherwise false
+     */
+    protected boolean validateReservationRuleBean( AppointmentFormDTO appointmentForm, String strPrefix )
+    {
+
+        ReservationRuleDTO rule = new ReservationRuleDTO( );
         AppointmentUtilities.fillInReservationRuleAdvancedParam( rule, appointmentForm );
-        
+
         return validateBean( rule, strPrefix );
-    	 
+
     }
-    
+
 }

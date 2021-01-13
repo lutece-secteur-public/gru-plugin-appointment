@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,9 +48,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class WorkingDayHome
 {
-
     // Static variable pointed at the DAO instance
-    private static IWorkingDayDAO _dao = SpringContextService.getBean( IWorkingDayDAO.BEAN_NAME );
+    private static IWorkingDayDAO _dao = SpringContextService.getBean( "appointment.workingDayDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -98,16 +97,18 @@ public final class WorkingDayHome
     {
         _dao.delete( nKey, _plugin );
     }
-    /**
-     * Delete the working day  whose id reservation rule is specified in parameter
-     * 
-     * @param nIdReservationRule the reservation rule id
-     */
-    public static void deleteByIdReservationRule( int nIdReservationRule ) {
-    	
-    	_dao.deleteByIdReservationRule(nIdReservationRule, _plugin);
-    }
 
+    /**
+     * Delete the working day whose id reservation rule is specified in parameter
+     * 
+     * @param nIdReservationRule
+     *            the reservation rule id
+     */
+    public static void deleteByIdReservationRule( int nIdReservationRule )
+    {
+
+        _dao.deleteByIdReservationRule( nIdReservationRule, _plugin );
+    }
 
     /**
      * Returns an instance of the WorkingDay whose identifier is specified in parameter

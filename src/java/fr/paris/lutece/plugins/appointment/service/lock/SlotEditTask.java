@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,6 @@ public final class SlotEditTask extends TimerTask implements Serializable
      * Is Cancelled
      */
     private boolean _bIsCancelled;
-    
 
     public SlotEditTask( )
     {
@@ -78,7 +77,7 @@ public final class SlotEditTask extends TimerTask implements Serializable
         SlotSafeService.incrementPotentialRemainingPlaces( _nbPlacesTaken, _idSlot, _bIsCancelled );
         this.cancel( );
         _bIsCancelled = true;
-                
+
     }
 
     /**
@@ -121,22 +120,28 @@ public final class SlotEditTask extends TimerTask implements Serializable
     {
         this._idSlot = nIdSlot;
     }
+
     /**
      * If the task is cancelled
+     * 
      * @return true if task is cancelled
      */
-    public boolean isCancelled( ){
-    	
-    	return _bIsCancelled;
-    	
+    public boolean isCancelled( )
+    {
+
+        return _bIsCancelled;
+
     }
+
     /**
      * set If the task is cancelled
+     * 
      * @param isCancelled
      */
-    public void setIsCancelled( boolean isCancelled){
-    	
-    	_bIsCancelled= isCancelled;
+    public void setIsCancelled( boolean isCancelled )
+    {
+
+        _bIsCancelled = isCancelled;
     }
 
 }

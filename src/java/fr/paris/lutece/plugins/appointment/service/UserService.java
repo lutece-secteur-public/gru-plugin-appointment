@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,15 +62,15 @@ public final class UserService
      * @return the user saved
      */
     public static User saveUser( AppointmentDTO appointment )
-    {    	
+    {
         User user = new User( );
         user.setGuid( appointment.getGuid( ) );
         user.setFirstName( appointment.getFirstName( ) );
         user.setLastName( appointment.getLastName( ) );
         user.setEmail( appointment.getEmail( ) );
         user.setPhoneNumber( appointment.getPhoneNumber( ) );
-        return  UserHome.create( user );
-        
+        return UserHome.create( user );
+
     }
 
     /**

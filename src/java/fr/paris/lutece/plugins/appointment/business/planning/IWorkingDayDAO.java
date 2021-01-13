@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,12 +45,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface IWorkingDayDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.workingDayDAO";
-
     /**
      * Insert a new record in the table
      * 
@@ -80,11 +74,14 @@ public interface IWorkingDayDAO
      *            the plugin
      */
     void delete( int nIdWorkingDay, Plugin plugin );
-    
+
     /**
      * Delete a working day by id reservation rule
-     * @param nIdReservationRule the reservation rule id
-     * @param plugin the plugin
+     * 
+     * @param nIdReservationRule
+     *            the reservation rule id
+     * @param plugin
+     *            the plugin
      */
     void deleteByIdReservationRule( int nIdReservationRule, Plugin plugin );
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -243,6 +243,7 @@ public class Appointment extends User
     {
         this._nIdAppointment = nIdAppointment;
     }
+
     /**
      * get the admin user assigned to the appointment
      * 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -506,7 +506,7 @@ public final class EntryService extends RemovalListenerService implements Serial
      * @param request
      */
     public static void getHtmlEntry( Map<String, Object> model, int nIdEntry, StringBuilder stringBuffer, Locale locale, boolean bDisplayFront,
-             AppointmentDTO appointmentDTO )
+            AppointmentDTO appointmentDTO )
     {
         StringBuilder strConditionalQuestionStringBuffer = null;
         HtmlTemplate template;
@@ -540,7 +540,7 @@ public final class EntryService extends RemovalListenerService implements Serial
                     StringBuilder strGroupStringBuffer = new StringBuilder( );
                     for ( Entry entryConditional : field.getConditionalQuestions( ) )
                     {
-                        getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO);
+                        getHtmlEntry( model, entryConditional.getIdEntry( ), strGroupStringBuffer, locale, bDisplayFront, appointmentDTO );
                     }
                     model.put( MARK_STR_LIST_CHILDREN, strGroupStringBuffer.toString( ) );
                     model.put( MARK_FIELD, field );
@@ -556,7 +556,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         {
             List<Response> listResponses = appointmentDTO.getMapResponsesByIdEntry( ).get( entry.getIdEntry( ) );
             model.put( MARK_LIST_RESPONSES, listResponses );
-        
+
         }
         IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( entry );
         // If the entry type is a file, we add the

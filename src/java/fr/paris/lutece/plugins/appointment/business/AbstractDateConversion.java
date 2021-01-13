@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,7 @@ public class AbstractDateConversion
      * Ending date of apply
      */
     private LocalDate _endingDateOfApply;
+
     /**
      * Get the date from which the week definition has to be applied
      * 
@@ -101,52 +102,58 @@ public class AbstractDateConversion
             _dateOfApply = null;
         }
     }
-    
+
     /**
      * Returns the EndingDateOfApply
+     * 
      * @return The EndingDateOfApply
-     */ 
-     public LocalDate getEndingDateOfApply()
-     {
-         return _endingDateOfApply;
-     }
-     
-     /**
-      * Returns the EndingDateOfApply
-      * @return The EndingDateOfApply
-      */ 
-      public Date getSqlEndingDateOfApply()
-      {
-    	  Date date = null;
-          if ( _endingDateOfApply != null )
-          {
-              date = Date.valueOf( _endingDateOfApply );
-          }
-          return date;
-      }
- 
+     */
+    public LocalDate getEndingDateOfApply( )
+    {
+        return _endingDateOfApply;
+    }
+
+    /**
+     * Returns the EndingDateOfApply
+     * 
+     * @return The EndingDateOfApply
+     */
+    public Date getSqlEndingDateOfApply( )
+    {
+        Date date = null;
+        if ( _endingDateOfApply != null )
+        {
+            date = Date.valueOf( _endingDateOfApply );
+        }
+        return date;
+    }
+
     /**
      * Sets the EndingDateOfApply
-     * @param endingDateOfApply The EndingDateOfApply
-     */ 
-     public void setEndingDateOfApply( LocalDate endingDateOfApply )
-     {
-         _endingDateOfApply = endingDateOfApply;
-     }
-     
-     /**
-      * Sets the EndingDateOfApply
-      * @param endingDateOfApply The EndingDateOfApply
-      */ 
-      public void setSqlEndingDateOfApply( Date endingDateOfApply )
-      {
-    	  if ( endingDateOfApply != null )
-          {
-              _endingDateOfApply = endingDateOfApply.toLocalDate( );
-          }
-          else
-          {
-              _endingDateOfApply = null;
-          }
-      }
+     * 
+     * @param endingDateOfApply
+     *            The EndingDateOfApply
+     */
+    public void setEndingDateOfApply( LocalDate endingDateOfApply )
+    {
+        _endingDateOfApply = endingDateOfApply;
+    }
+
+    /**
+     * Sets the EndingDateOfApply
+     * 
+     * @param endingDateOfApply
+     *            The EndingDateOfApply
+     */
+    public void setSqlEndingDateOfApply( Date endingDateOfApply )
+    {
+        if ( endingDateOfApply != null )
+        {
+            _endingDateOfApply = endingDateOfApply.toLocalDate( );
+        }
+        else
+        {
+            _endingDateOfApply = null;
+        }
+    }
 }

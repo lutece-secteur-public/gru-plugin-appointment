@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class FormMessageHome
 {
-
     // Static variable pointed at the DAO instance
-    private static IFormMessageDAO _dao = SpringContextService.getBean( IFormMessageDAO.BEAN_NAME );
+    private static IFormMessageDAO _dao = SpringContextService.getBean(  "appointment.formMessageDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -90,11 +89,12 @@ public final class FormMessageHome
     {
         _dao.delete( nFormMessageId, _plugin );
     }
+
     /**
      * Delete a form message whose id from is specified in the param
      * 
      * @param nIForm
-     *            The id of the form 
+     *            The id of the form
      */
     public static void deleteByIdForm( int nForm )
     {

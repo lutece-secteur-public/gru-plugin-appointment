@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,7 @@ public final class SlotSafeService
         {
             return new ReentrantLock( );
         }
-         _listSlot.putIfAbsent( nIdSlot, new ReentrantLock( ) );
+        _listSlot.putIfAbsent( nIdSlot, new ReentrantLock( ) );
         return _listSlot.get( nIdSlot );
     }
 
@@ -136,7 +136,7 @@ public final class SlotSafeService
      */
     private static Object getLockOnForm( int nIdform )
     {
-         _lockFormId.putIfAbsent( nIdform, new Object( ) );
+        _lockFormId.putIfAbsent( nIdform, new Object( ) );
         return _lockFormId.get( nIdform );
     }
 
@@ -190,25 +190,25 @@ public final class SlotSafeService
         int index = 0;
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
-           List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startindDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
+        List<Slot> listSlot = SlotService.buildListSlot( nIdForm, mapReservationRule, startindDateTime.toLocalDate( ), endingDateTime.toLocalDate( ) );
         listSlot = listSlot.stream( )
                 .filter( slt -> slt.getEndingDateTime( ).isBefore( endingDateTime ) && slt.getEndingDateTime( ).isAfter( startindDateTime ) )
                 .collect( Collectors.toList( ) );
-            for ( Slot slot : listSlot )
+        for ( Slot slot : listSlot )
+        {
+            if ( !lace )
             {
-                if ( !lace )
+                incrementMaxCapacity( nIncrementingValue, slot );
+            }
+            else
+            {
+                if ( index % 2 == 0 )
                 {
                     incrementMaxCapacity( nIncrementingValue, slot );
                 }
-                else
-                {
-                    if ( index % 2 == 0 )
-                    {
-                        incrementMaxCapacity( nIncrementingValue, slot );
-                    }
-                    index++;
-                }
-            }       
+                index++;
+            }
+        }
     }
 
     /**
@@ -282,7 +282,7 @@ public final class SlotSafeService
         finally
         {
             lock.unlock( );
-        	
+
         }
     }
 
@@ -346,8 +346,8 @@ public final class SlotSafeService
             lockSlot( appointmentDTO, listLock );
             saveSlots( appointmentDTO, bIsUpdate );
             // Create or update the appointment
-            Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );                       
-            if( appointmentDTO.getIdAppointment( ) != 0 )
+            Appointment appointment = AppointmentService.buildAndCreateAppointment( appointmentDTO, user );
+            if ( appointmentDTO.getIdAppointment( ) != 0 )
             {
                 AppointmentResponseService.removeResponsesByIdAppointment( appointment.getIdAppointment( ) );
             }
@@ -388,12 +388,14 @@ public final class SlotSafeService
             TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
             AppLogService.error( "Error Save appointment " + e.getMessage( ), e );
             throw new SlotFullException( e.getMessage( ), e );
-        }finally{
-        	
-        	for ( Lock lk : listLock )
-             {
-                 lk.unlock( );
-             }
+        }
+        finally
+        {
+
+            for ( Lock lk : listLock )
+            {
+                lk.unlock( );
+            }
         }
     }
 
@@ -575,7 +577,7 @@ public final class SlotSafeService
         LocalDate dateOfSlot = slot.getDate( );
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( slot.getIdForm( ) );
         Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( slot.getIdForm( ), listWeekDefinition );
-       
+
         // Build or get all the slots of the day
         List<Slot> listAllSlotsOfThisDayToBuildOrInDb = SlotService.buildListSlot( slot.getIdForm( ), mapReservationRule, dateOfSlot, dateOfSlot );
         // Remove the current slot and all the slot before it
@@ -800,13 +802,15 @@ public final class SlotSafeService
                 // !!!! If there are appointments on this slot and if the
                 // slot is already full, the slot will be surbooked !!!!
                 int nValueToSubstract = nOldBnMaxCapacity - nNewNbMaxCapacity;
-                slot.setNbPotentialRemainingPlaces(  oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract  );
-                slot.setNbRemainingPlaces(  oldSlot.getNbRemainingPlaces( ) - nValueToSubstract  );
+                slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) - nValueToSubstract );
+                slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) - nValueToSubstract );
             }
-        }else {
-        	
-        	slot.setNbPotentialRemainingPlaces(  oldSlot.getNbPotentialRemainingPlaces( )  );
-            slot.setNbRemainingPlaces(  oldSlot.getNbRemainingPlaces( ) );
+        }
+        else
+        {
+
+            slot.setNbPotentialRemainingPlaces( oldSlot.getNbPotentialRemainingPlaces( ) );
+            slot.setNbRemainingPlaces( oldSlot.getNbRemainingPlaces( ) );
         }
     }
 
@@ -968,7 +972,7 @@ public final class SlotSafeService
                             || slt.getEndingDateTime( ).isBefore( LocalDateTime.now( ) ) ) )
 
                     {
-                        AppLogService.error( "ERROR SLOT FULL, ID SLOT: "+ slt.getDate().toString( ) );
+                        AppLogService.error( "ERROR SLOT FULL, ID SLOT: " + slt.getDate( ).toString( ) );
                         throw new SlotFullException( "ERROR SLOT FULL" );
 
                     }
@@ -1005,8 +1009,9 @@ public final class SlotSafeService
                         && oldAppointment.getListAppointmentSlot( ).stream( ).anyMatch( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ) )
                 {
                     // It is an update of the appointment
-                	AppointmentSlot oldApptSlot=  oldAppointment.getListAppointmentSlot( ).stream( ).filter( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) ).findAny( ).orElse( null );
-                    int nOldTakenPlaces = (oldApptSlot != null)?oldApptSlot.getNbPlaces():0;                    		
+                    AppointmentSlot oldApptSlot = oldAppointment.getListAppointmentSlot( ).stream( ).filter( p -> p.getIdSlot( ) == appSlot.getIdSlot( ) )
+                            .findAny( ).orElse( null );
+                    int nOldTakenPlaces = ( oldApptSlot != null ) ? oldApptSlot.getNbPlaces( ) : 0;
                     newNbRemainingPlaces = oldNbRemainingPLaces + nOldTakenPlaces - effectiveBookedSeats;
                     newPotentialRemaningPlaces = oldNbPotentialRemaningPlaces + nbMaxPotentialBookedSeats - effectiveBookedSeats;
                     newNbPlacesTaken = oldNbPlacesTaken - nOldTakenPlaces + effectiveBookedSeats;
@@ -1040,7 +1045,7 @@ public final class SlotSafeService
             throw new SlotFullException( e.getMessage( ), e );
 
         }
-       
+
     }
 
 }

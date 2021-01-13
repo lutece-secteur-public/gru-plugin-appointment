@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,16 +71,16 @@ import fr.paris.lutece.util.sql.TransactionManager;
  */
 public final class AppointmentService
 {
-	
-	 private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
-	 private static final String CONSTANT_SHA256 = "SHA-256";
-	 private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
-	 private static final String CONSTANT_SEPARATOR = "$";
-	 /**
-	  * Get the number of characters of the random part of appointment reference
-	 */
-	 private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
-	
+
+    private static final String PROPERTY_REF_ENCRYPTION_ALGORITHM = "appointment.refEncryptionAlgorithm";
+    private static final String CONSTANT_SHA256 = "SHA-256";
+    private static final String PROPERTY_REF_SIZE_RANDOM_PART = "appointment.refSizeRandomPart";
+    private static final String CONSTANT_SEPARATOR = "$";
+    /**
+     * Get the number of characters of the random part of appointment reference
+     */
+    private static final int CONSTANT_REF_SIZE_RANDOM_PART = 5;
+
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -97,8 +97,8 @@ public final class AppointmentService
      */
     public static List<Appointment> findListAppointmentByListSlot( List<Slot> listSlot )
     {
-        List<Integer> listIdSlot =  listSlot.stream().map( Slot::getIdSlot ).collect(Collectors.toList());
-            
+        List<Integer> listIdSlot = listSlot.stream( ).map( Slot::getIdSlot ).collect( Collectors.toList( ) );
+
         return AppointmentHome.findByListIdSlot( listIdSlot );
     }
 
@@ -139,9 +139,9 @@ public final class AppointmentService
         List<Appointment> listAppointment = AppointmentHome.findByGuidUser( strGuidUser );
         for ( Appointment appointment : listAppointment )
         {
-                List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
-                appointment.setSlot( listSlot );
-            
+            List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
+            appointment.setSlot( listSlot );
+
         }
         return listAppointment;
 
@@ -192,19 +192,19 @@ public final class AppointmentService
 
         if ( appointment.getIdAppointment( ) == 0 )
         {
-        	String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR )
+            String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR )
                     .add( user.getLastName( ) ).add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
-        	String strReference = appointment.getIdAppointment( ) + CryptoService
-                     .encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
-                             AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) )
-                     .substring( 0, AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
+            String strReference = appointment.getIdAppointment( ) + CryptoService
+                    .encrypt( appointment.getIdAppointment( ) + strEmailLastNameFirstName,
+                            AppPropertiesService.getProperty( PROPERTY_REF_ENCRYPTION_ALGORITHM, CONSTANT_SHA256 ) )
+                    .substring( 0, AppPropertiesService.getPropertyInt( PROPERTY_REF_SIZE_RANDOM_PART, CONSTANT_REF_SIZE_RANDOM_PART ) );
 
             Form form = FormService.findFormLightByPrimaryKey( appointmentDTO.getIdForm( ) );
             if ( StringUtils.isNotEmpty( form.getReference( ) ) )
             {
                 strReference = form.getReference( ) + strReference;
             }
-            appointment.setReference( strReference );             
+            appointment.setReference( strReference );
             appointment = AppointmentHome.create( appointment );
             AppointmentListenerManager.notifyListenersAppointmentCreated( appointment.getIdAppointment( ) );
         }
@@ -371,7 +371,7 @@ public final class AppointmentService
             throw new AppException( e.getMessage( ), e );
         }
     }
-    
+
     private static void deleteWorkflowResource( int nIdAppointment )
     {
         if ( WorkflowService.getInstance( ).isAvailable( ) )
@@ -432,7 +432,7 @@ public final class AppointmentService
         List<Slot> listSlot = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
         appointment.setSlot( listSlot );
         appointment.setUser( user );
-        
+
         return buildAppointmentDTO( appointment );
     }
 
@@ -485,6 +485,7 @@ public final class AppointmentService
         return SlotSafeService.saveAppointment( appointmentDTO, null );
 
     }
+
     /**
      * Save an appointment in database
      * 

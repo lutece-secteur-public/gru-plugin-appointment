@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,12 +46,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface ISlotDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.slotDAO";
-
     /**
      * Insert a new record in the table
      * 
@@ -117,6 +111,7 @@ public interface ISlotDAO
      * @return a list of slots whose dates are included in the given period
      */
     List<Slot> findByIdFormAndDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin );
+
     /**
      * Returns all the slot containing an appointment for the date range
      * 
@@ -190,7 +185,7 @@ public interface ISlotDAO
      * @return the slot
      */
     Slot findSlotWithMaxDate( int nIdForm, Plugin plugin );
-    
+
     /**
      * Returns all the slots of a form
      * 
@@ -201,7 +196,7 @@ public interface ISlotDAO
      * @return a list of all the slots of the form
      */
     List<Slot> findByIdAppointment( int nIdAppointment, Plugin plugin );
-   
+
     /**
      * update Potential Remaining Places
      * 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,12 +43,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface IDisplayDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.displayDAO";
-
     /**
      * Insert a new record in the table.
      * 
@@ -78,6 +72,7 @@ public interface IDisplayDAO
      *            the Plugin
      */
     void delete( int nIdDisplay, Plugin plugin );
+
     /**
      * Delete a record from the table
      * 
@@ -87,6 +82,7 @@ public interface IDisplayDAO
      *            the Plugin
      */
     void deleteByIdForm( int nIdForm, Plugin plugin );
+
     /**
      * Load the data from the table
      * 

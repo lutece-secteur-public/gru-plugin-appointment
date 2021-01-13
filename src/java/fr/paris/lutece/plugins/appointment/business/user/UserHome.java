@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,9 +48,9 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class UserHome
 {
-
+	
     // Static variable pointed at the DAO instance
-    private static IUserDAO _dao = SpringContextService.getBean( IUserDAO.BEAN_NAME );
+    private static IUserDAO _dao = SpringContextService.getBean( "appointment.userDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

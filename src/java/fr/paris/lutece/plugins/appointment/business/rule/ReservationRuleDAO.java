@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,9 +58,9 @@ public final class ReservationRuleDAO implements IReservationRuleDAO
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_reservation_rule WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS_JOIN = " SELECT appr.id_reservation_rule, appr.name, appr.description, appr.color, appr.enable, appr.max_capacity_per_slot, appr.max_people_per_appointment, appr.id_form from appointment_reservation_rule appr INNER JOIN appointment_week_definition weekd on ( appr.id_reservation_rule = weekd.id_reservation_rule ) where appr.id_form= ? ";
-    private static final String	SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_COLUMNS_JOIN + " AND weekd.date_of_apply = ? ";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_COLUMNS_JOIN + " AND weekd.date_of_apply = ? ";
     private static final String SQL_QUERY_SELECT_BY_DATE = SQL_QUERY_SELECT_COLUMNS_JOIN + " AND weekd.date_of_apply <= ? AND weekd.ending_date_of_apply >= ? ";
-   
+
     @Override
     public void insert( ReservationRule reservationRule, Plugin plugin )
     {
@@ -125,7 +125,7 @@ public final class ReservationRuleDAO implements IReservationRuleDAO
         return listReservationRule;
     }
 
-  @Override
+    @Override
     public ReservationRule findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin )
     {
         ReservationRule reservationRule = null;
@@ -141,24 +141,24 @@ public final class ReservationRuleDAO implements IReservationRuleDAO
         }
         return reservationRule;
     }
-  
-  @Override
-  public ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin )
-  {
-      ReservationRule reservationRule = null;
-      try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DATE, plugin ) )
-      {
-          daoUtil.setInt( 1, nIdForm );
-          daoUtil.setDate( 2, Date.valueOf( dateOfApply ) );
-          daoUtil.setDate( 3, Date.valueOf( dateOfApply ) );
-          daoUtil.executeQuery( );
-          if ( daoUtil.next( ) )
-          {
-              reservationRule = buildReservationRule( daoUtil );
-          }
-      }
-      return reservationRule;
-  }
+
+    @Override
+    public ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin )
+    {
+        ReservationRule reservationRule = null;
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_DATE, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdForm );
+            daoUtil.setDate( 2, Date.valueOf( dateOfApply ) );
+            daoUtil.setDate( 3, Date.valueOf( dateOfApply ) );
+            daoUtil.executeQuery( );
+            if ( daoUtil.next( ) )
+            {
+                reservationRule = buildReservationRule( daoUtil );
+            }
+        }
+        return reservationRule;
+    }
 
     /**
      * Build a ReservationRule business object from the resultset
@@ -173,9 +173,9 @@ public final class ReservationRuleDAO implements IReservationRuleDAO
         ReservationRule reservationRule = new ReservationRule( );
         reservationRule.setIdReservationRule( daoUtil.getInt( nIndex++ ) );
         reservationRule.setName( daoUtil.getString( nIndex++ ) );
-        reservationRule.setDescriptionRule( daoUtil.getString( nIndex++ )  );
+        reservationRule.setDescriptionRule( daoUtil.getString( nIndex++ ) );
         reservationRule.setColor( daoUtil.getString( nIndex++ ) );
-        reservationRule.setEnable(daoUtil.getBoolean( nIndex++ ) );
+        reservationRule.setEnable( daoUtil.getBoolean( nIndex++ ) );
         reservationRule.setMaxCapacityPerSlot( daoUtil.getInt( nIndex++ ) );
         reservationRule.setMaxPeoplePerAppointment( daoUtil.getInt( nIndex++ ) );
         reservationRule.setIdForm( daoUtil.getInt( nIndex ) );
@@ -208,10 +208,10 @@ public final class ReservationRuleDAO implements IReservationRuleDAO
         {
             daoUtil = new DAOUtil( query, plugin );
         }
-        daoUtil.setString(nIndex++ , reservationRule.getName( ) );
-        daoUtil.setString(nIndex++ , reservationRule.getDescriptionRule( ) );
-        daoUtil.setString(nIndex++ , reservationRule.getColor( ) );
-        daoUtil.setBoolean(nIndex++, reservationRule.getEnable( ) );
+        daoUtil.setString( nIndex++, reservationRule.getName( ) );
+        daoUtil.setString( nIndex++, reservationRule.getDescriptionRule( ) );
+        daoUtil.setString( nIndex++, reservationRule.getColor( ) );
+        daoUtil.setBoolean( nIndex++, reservationRule.getEnable( ) );
         daoUtil.setInt( nIndex++, reservationRule.getMaxCapacityPerSlot( ) );
         daoUtil.setInt( nIndex++, reservationRule.getMaxPeoplePerAppointment( ) );
         daoUtil.setInt( nIndex++, reservationRule.getIdForm( ) );

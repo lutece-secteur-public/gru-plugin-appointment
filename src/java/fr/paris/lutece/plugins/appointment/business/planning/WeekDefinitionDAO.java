@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,9 +59,10 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = " SELECT appw.id_week_definition, appw.date_of_apply, appw.ending_date_of_apply, appw.id_reservation_rule FROM appointment_week_definition appw INNER JOIN appointment_reservation_rule rule on ( rule.id_reservation_rule = appw.id_reservation_rule ) where rule.id_form= ? ";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND appw.date_of_apply = ? ";
-    private static final String SQL_QUERY_SELECT_BY_ID_RESERVATION_RULE_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_COLUMNS + " where id_reservation_rule = ? AND date_of_apply = ? ";
+    private static final String SQL_QUERY_SELECT_BY_ID_RESERVATION_RULE_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_COLUMNS
+            + " where id_reservation_rule = ? AND date_of_apply = ? ";
     private static final String SQL_SELECT_BY_RULE = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
-    
+
     @Override
     public void insert( WeekDefinition weekDefinition, Plugin plugin )
     {
@@ -93,6 +94,7 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
             daoUtil.executeUpdate( );
         }
     }
+
     @Override
     public void deleteByIdReservationRule( int nIdReservationRule, Plugin plugin )
     {
@@ -134,6 +136,7 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
         }
         return listWeekDefinition;
     }
+
     @Override
     public List<WeekDefinition> findByReservationRule( int nIdReservationRule, Plugin plugin )
     {
@@ -166,11 +169,12 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
         }
         return weekDefinition;
     }
-    
+
     @Override
-    public WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply, Plugin plugin ) {
-    	
-    	WeekDefinition weekDefinition = null;
+    public WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply, Plugin plugin )
+    {
+
+        WeekDefinition weekDefinition = null;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_RESERVATION_RULE_AND_DATE_OF_APPLY, plugin ) )
         {
             daoUtil.setInt( 1, nIdReservationRule );
@@ -182,7 +186,7 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
             }
         }
         return weekDefinition;
-    	
+
     }
 
     /**

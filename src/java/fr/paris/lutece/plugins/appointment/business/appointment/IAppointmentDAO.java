@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,11 +46,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface IAppointmentDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.appointmentDAO";
 
     /**
      * Insert a new record in the table
@@ -125,7 +120,7 @@ public interface IAppointmentDAO
      * @return a list of the appointments
      */
     List<Appointment> findByIdSlot( int nIdSlot, Plugin plugin );
-    
+
     /**
      * Returns the list of appointments of a slot
      * 
@@ -136,7 +131,6 @@ public interface IAppointmentDAO
      * @return a list of the appointments
      */
     List<Appointment> findByListIdSlot( List<Integer> listIdSlot, Plugin plugin );
-
 
     /**
      * Returns the appointment with its reference

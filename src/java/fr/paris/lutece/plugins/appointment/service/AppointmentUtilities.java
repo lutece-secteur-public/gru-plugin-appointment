@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -97,7 +97,7 @@ import fr.paris.lutece.util.beanvalidation.BeanValidationUtil;
 public final class AppointmentUtilities
 {
 
-	public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
+    public static final String ERROR_MESSAGE_EMPTY_CONFIRM_EMAIL = "appointment.validation.appointment.EmailConfirmation.email";
     public static final String ERROR_MESSAGE_CONFIRM_EMAIL = "appointment.message.error.confirmEmail";
     public static final String ERROR_MESSAGE_DATE_APPOINTMENT = "appointment.message.error.dateAppointment";
     public static final String ERROR_MESSAGE_EMPTY_EMAIL = "appointment.validation.appointment.Email.notEmpty";
@@ -203,12 +203,14 @@ public final class AppointmentUtilities
                 listSlots = listSlots.stream( ).filter( s -> s.getIdForm( ) == form.getIdForm( ) ).collect( Collectors.toList( ) );
                 if ( CollectionUtils.isNotEmpty( listSlots ) )
                 {
-                    LocalDateTime dateOfTheLastAppointment = listSlots.stream( ).map( Slot::getStartingDateTime ).max( LocalDateTime::compareTo ).orElse( null );
-                    
+                    LocalDateTime dateOfTheLastAppointment = listSlots.stream( ).map( Slot::getStartingDateTime ).max( LocalDateTime::compareTo )
+                            .orElse( null );
+
                     // Check the number of days between this appointment and
                     // the last appointment the user has taken
                     LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
-                    if ( dateOfTheLastAppointment!=null && Math.abs( dateOfTheLastAppointment.toLocalDate( ).until( dateOfTheAppointment, ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                    if ( dateOfTheLastAppointment != null && Math
+                            .abs( dateOfTheLastAppointment.toLocalDate( ).until( dateOfTheAppointment, ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
                     {
                         bCheckPassed = false;
                     }
@@ -233,7 +235,7 @@ public final class AppointmentUtilities
     {
         boolean bCheckPassed = true;
         int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
-        if ( nbDaysBetweenTwoAppointments != 0 && StringUtils.isNotEmpty( strEmail ))
+        if ( nbDaysBetweenTwoAppointments != 0 && StringUtils.isNotEmpty( strEmail ) )
         {
             AppointmentFilterDTO filter = new AppointmentFilterDTO( );
             filter.setEmail( strEmail );
@@ -244,7 +246,7 @@ public final class AppointmentUtilities
             // appointment that we currently edit
             if ( appointmentDTO.getIdAppointment( ) != 0 )
             {
-               listAppointment.removeIf( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
+                listAppointment.removeIf( a -> a.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
             }
 
             if ( CollectionUtils.isNotEmpty( listAppointment ) )
@@ -253,7 +255,8 @@ public final class AppointmentUtilities
                 LocalDateTime dateOfTheLastAppointmentTaken = listAppointment.stream( ).map( Appointment::getDateAppointmentTaken )
                         .max( LocalDateTime::compareTo ).orElse( null );
 
-                if ( dateOfTheLastAppointmentTaken != null && Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
+                if ( dateOfTheLastAppointmentTaken != null
+                        && Math.abs( dateOfTheLastAppointmentTaken.until( LocalDateTime.now( ), ChronoUnit.DAYS ) ) <= nbDaysBetweenTwoAppointments )
                 {
                     bCheckPassed = false;
                 }
@@ -325,7 +328,7 @@ public final class AppointmentUtilities
                 {
                     if ( !appointment.getIsCancelled( ) )
                     {
-                    	   listSlots = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
+                        listSlots = SlotService.findListSlotByIdAppointment( appointment.getIdAppointment( ) );
                     }
                 }
 
@@ -348,47 +351,61 @@ public final class AppointmentUtilities
      */
     public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form )
     {
-    	if ( form.getNbMaxAppointmentsPerUser() > 0 && StringUtils.isNotEmpty( strEmail ))
+        if ( form.getNbMaxAppointmentsPerUser( ) > 0 && StringUtils.isNotEmpty( strEmail ) )
         {
-	        // Get the date of the future appointment
-	        LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );        
-	        AppointmentFilterDTO filter= new AppointmentFilterDTO();
-	        filter.setEmail(strEmail);
-	        filter.setIdForm( form.getIdForm( ) );
-	        filter.setStatus( 0 );
-	        if( form.getNbDaysForMaxAppointmentsPerUser( ) > 0 ) {
-	        	
-	        	filter.setStartingDateOfSearch(Date.valueOf( dateOfTheAppointment.minusDays((long)  form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )));
-	        	filter.setEndingDateOfSearch(Date.valueOf( dateOfTheAppointment.plusDays((long)  form.getNbDaysForMaxAppointmentsPerUser( ) - 1 )) );
-	        }
-	        List<AppointmentDTO>  listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
-	        // If we modify an appointment, we remove the
-	        // appointment that we currently edit
-	        if( appointmentDTO.getIdAppointment( ) != 0 ) {
-	        	
-	        	listAppointmentsDTO.removeIf(appt -> appt.getIdAppointment() != appointmentDTO.getIdAppointment( ) );
-	        }
-	        
-	        if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) )
-	        {
-	        	if( form.getNbDaysForMaxAppointmentsPerUser( ) > 0) {
-	        		
-			        List<AppointmentDTO>  listAppointmentsBefore= listAppointmentsDTO.stream().filter(appt -> appt.getStartingDateTime( ).toLocalDate( ).isBefore( dateOfTheAppointment ) || appt.getStartingDateTime( ).toLocalDate( ).isEqual( dateOfTheAppointment )).collect(Collectors.toList( ));
-			        List<AppointmentDTO>  listAppointmentsAfter= listAppointmentsDTO.stream().filter(appt -> appt.getStartingDateTime( ).toLocalDate( ).isAfter( dateOfTheAppointment ) || appt.getStartingDateTime( ).toLocalDate( ).isEqual( dateOfTheAppointment )).collect(Collectors.toList( ));
-			        
-			        if ( listAppointmentsBefore.size( ) >= form.getNbMaxAppointmentsPerUser( ) || listAppointmentsAfter.size( ) >= form.getNbMaxAppointmentsPerUser( ) )
-			        {
-			                return false;
-			        }
-	        	}else if(listAppointmentsDTO.size( ) >= form.getNbMaxAppointmentsPerUser( ) ) {
-	        		
-	        		return false;
-	        	}
-	        }
+            // Get the date of the future appointment
+            LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );
+            AppointmentFilterDTO filter = new AppointmentFilterDTO( );
+            filter.setEmail( strEmail );
+            filter.setIdForm( form.getIdForm( ) );
+            filter.setStatus( 0 );
+            if ( form.getNbDaysForMaxAppointmentsPerUser( ) > 0 )
+            {
+
+                filter.setStartingDateOfSearch( Date.valueOf( dateOfTheAppointment.minusDays( (long) form.getNbDaysForMaxAppointmentsPerUser( ) - 1 ) ) );
+                filter.setEndingDateOfSearch( Date.valueOf( dateOfTheAppointment.plusDays( (long) form.getNbDaysForMaxAppointmentsPerUser( ) - 1 ) ) );
+            }
+            List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
+            // If we modify an appointment, we remove the
+            // appointment that we currently edit
+            if ( appointmentDTO.getIdAppointment( ) != 0 )
+            {
+
+                listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
+            }
+
+            if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) )
+            {
+                if ( form.getNbDaysForMaxAppointmentsPerUser( ) > 0 )
+                {
+
+                    List<AppointmentDTO> listAppointmentsBefore = listAppointmentsDTO.stream( )
+                            .filter( appt -> appt.getStartingDateTime( ).toLocalDate( ).isBefore( dateOfTheAppointment )
+                                    || appt.getStartingDateTime( ).toLocalDate( ).isEqual( dateOfTheAppointment ) )
+                            .collect( Collectors.toList( ) );
+                    List<AppointmentDTO> listAppointmentsAfter = listAppointmentsDTO.stream( )
+                            .filter( appt -> appt.getStartingDateTime( ).toLocalDate( ).isAfter( dateOfTheAppointment )
+                                    || appt.getStartingDateTime( ).toLocalDate( ).isEqual( dateOfTheAppointment ) )
+                            .collect( Collectors.toList( ) );
+
+                    if ( listAppointmentsBefore.size( ) >= form.getNbMaxAppointmentsPerUser( )
+                            || listAppointmentsAfter.size( ) >= form.getNbMaxAppointmentsPerUser( ) )
+                    {
+                        return false;
+                    }
+                }
+                else
+                    if ( listAppointmentsDTO.size( ) >= form.getNbMaxAppointmentsPerUser( ) )
+                    {
+
+                        return false;
+                    }
+            }
         }
-       return true;
-        
+        return true;
+
     }
+
     /**
      * Check and validate all the rules for the number of booked seats asked
      * 
@@ -482,7 +499,8 @@ public final class AppointmentUtilities
      * @param listFormErrors
      *            the list of errors that can be fill with the errors found at the validation
      */
-    public static void validateFormAndEntries( AppointmentDTO appointmentDTO, HttpServletRequest request, List<GenericAttributeError> listFormErrors, boolean allEntries )
+    public static void validateFormAndEntries( AppointmentDTO appointmentDTO, HttpServletRequest request, List<GenericAttributeError> listFormErrors,
+            boolean allEntries )
     {
         Set<ConstraintViolation<AppointmentDTO>> listErrors = BeanValidationUtil.validate( appointmentDTO );
         if ( CollectionUtils.isNotEmpty( listErrors ) )
@@ -544,8 +562,7 @@ public final class AppointmentUtilities
                 IEntryTypeService entryTypeService = EntryTypeServiceManager.getEntryTypeService( response.getEntry( ) );
                 ResponseRecapDTO responseRecapDTO = new ResponseRecapDTO( response,
                         entryTypeService.getResponseValueForRecap( response.getEntry( ), request, response, locale ) );
-                
-                
+
                 List<ResponseRecapDTO> listResponse = mapResponse.computeIfAbsent( nIndex, ArrayList::new );
                 listResponse.add( responseRecapDTO );
             }
@@ -565,11 +582,11 @@ public final class AppointmentUtilities
      */
     public static void cancelTaskTimer( HttpServletRequest request, int idSlot )
     {
-    	SlotEditTask task = (SlotEditTask) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
+        SlotEditTask task = (SlotEditTask) request.getSession( ).getAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         if ( task != null )
         {
-        	task.cancel( );
-        	task.setIsCancelled( true );
+            task.cancel( );
+            task.setIsCancelled( true );
             request.getSession( ).removeAttribute( SESSION_TASK_TIMER_SLOT + idSlot );
         }
     }
@@ -587,44 +604,46 @@ public final class AppointmentUtilities
      */
     public static Timer putTimerInSession( HttpServletRequest request, int nIdSlot, AppointmentDTO appointmentDTO, int maxPeoplePerAppointment )
     {
-    	 Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
-         lock.lock( );
-         try
-         {
-	        Slot slot = SlotService.findSlotById( nIdSlot );
-	
-	        int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
-	        int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
-	        int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
-	
-	        if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
-	        {
-		
-	            _timer = (_timer != null )?_timer:new TimerForLockOnSlot( );
-	            _timer.purge();
-	            SlotEditTask slotEditTask = new SlotEditTask( );
-	            slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
-	            slotEditTask.setIdSlot( slot.getIdSlot( ) );
-	            long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
-	            _timer.schedule( slotEditTask, delay );
-	            
-	            appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
-	            SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
-	            
-	            request.getSession( ).setAttribute( SESSION_TASK_TIMER_SLOT + slotEditTask.getIdSlot( ), slotEditTask );
-	            return _timer;
-	        }
-	        appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
-         }catch ( IllegalStateException e){  
-        	 
-        	 _timer= new TimerForLockOnSlot( );
-        	 throw e;
-         }
-         finally
-         {
+        Lock lock = SlotSafeService.getLockOnSlot( nIdSlot );
+        lock.lock( );
+        try
+        {
+            Slot slot = SlotService.findSlotById( nIdSlot );
 
-             lock.unlock( );
-         }
+            int nbPotentialRemainingPlaces = slot.getNbPotentialRemainingPlaces( );
+            int nbPotentialPlacesTaken = Math.min( nbPotentialRemainingPlaces, maxPeoplePerAppointment );
+            int nNewNbMaxPotentialBookedSeats = Math.min( nbPotentialPlacesTaken + appointmentDTO.getNbMaxPotentialBookedSeats( ), maxPeoplePerAppointment );
+
+            if ( slot.getNbPotentialRemainingPlaces( ) > 0 )
+            {
+
+                _timer = ( _timer != null ) ? _timer : new TimerForLockOnSlot( );
+                _timer.purge( );
+                SlotEditTask slotEditTask = new SlotEditTask( );
+                slotEditTask.setNbPlacesTaken( nbPotentialPlacesTaken );
+                slotEditTask.setIdSlot( slot.getIdSlot( ) );
+                long delay = TimeUnit.MINUTES.toMillis( AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_EXPIRED_TIME_EDIT_APPOINTMENT, 1 ) );
+                _timer.schedule( slotEditTask, delay );
+
+                appointmentDTO.setNbMaxPotentialBookedSeats( nNewNbMaxPotentialBookedSeats );
+                SlotSafeService.decrementPotentialRemainingPlaces( nbPotentialPlacesTaken, slot.getIdSlot( ) );
+
+                request.getSession( ).setAttribute( SESSION_TASK_TIMER_SLOT + slotEditTask.getIdSlot( ), slotEditTask );
+                return _timer;
+            }
+            appointmentDTO.setNbMaxPotentialBookedSeats( 0 );
+        }
+        catch( IllegalStateException e )
+        {
+
+            _timer = new TimerForLockOnSlot( );
+            throw e;
+        }
+        finally
+        {
+
+            lock.unlock( );
+        }
         return null;
     }
 
@@ -642,7 +661,7 @@ public final class AppointmentUtilities
 
         for ( AppointmentFormDTO tmpForm : listForms )
         {
-            
+
             String [ ] strRetour = new String [ 7];
             strRetour [0] = String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf( tmpForm.getIdForm( ) ),
                     AppointmentResourceIdService.PERMISSION_VIEW_APPOINTMENT, (fr.paris.lutece.api.user.User) user ) );
@@ -720,9 +739,10 @@ public final class AppointmentUtilities
     public static boolean checkNoAppointmentsImpacted( List<Appointment> listAppointment, int nIdForm, LocalDate dateOfModification,
             AppointmentFormDTO appointmentForm )
     {
-    	ReservationRule previousReservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
-    	return checkNoAppointmentsImpacted (listAppointment, nIdForm,previousReservationRule.getIdReservationRule( ), appointmentForm );
+        ReservationRule previousReservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfModification );
+        return checkNoAppointmentsImpacted( listAppointment, nIdForm, previousReservationRule.getIdReservationRule( ), appointmentForm );
     }
+
     /**
      * Check if there are appointments impacted by the new week definition
      * 
@@ -788,18 +808,20 @@ public final class AppointmentUtilities
             bNoAppointmentsImpacted = false;
         }
         // If we have change the open hours
-    
-        if ( !newStartingTime.equals( oldStartingTime )  || !newEndingTime.equals( oldEndingTime )  )
+
+        if ( !newStartingTime.equals( oldStartingTime ) || !newEndingTime.equals( oldEndingTime ) )
         {
             bNoAppointmentsImpacted = false;
         }
 
         return bNoAppointmentsImpacted;
     }
-    
+
     /**
      * Check if there are appointments impacted by the new week definition
-     * @param listSlotsImpacted the list of slot impacted
+     * 
+     * @param listSlotsImpacted
+     *            the list of slot impacted
      * @param appointmentForm
      *            the appointment form
      * @return true if there are appointments impacted
@@ -824,15 +846,15 @@ public final class AppointmentUtilities
             // For the remaining days
             // for each appointment, need to check if the appointment is
             // not in the remaining open days
-           
+
             for ( Slot tempSlot : listSlotWithAppointment )
             {
-              if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
-              {
-                  return false;
-               }
-             }
-                
+                if ( previousOpenDays.contains( tempSlot.getStartingDateTime( ).getDayOfWeek( ) ) )
+                {
+                    return false;
+                }
+            }
+
         }
         LocalTime newStartingTime = LocalTime.parse( appointmentForm.getTimeStart( ) );
         LocalTime newEndingTime = LocalTime.parse( appointmentForm.getTimeEnd( ) );
@@ -844,45 +866,53 @@ public final class AppointmentUtilities
             return false;
         }
         // If we have change the open hours
-    
-        if ( !newStartingTime.equals( oldStartingTime )  || !newEndingTime.equals( oldEndingTime )  )
+
+        if ( !newStartingTime.equals( oldStartingTime ) || !newEndingTime.equals( oldEndingTime ) )
         {
             return false;
         }
 
         return true;
     }
-    
+
     /**
      * Check if there are appointments impacted by the new week definition
-     * @param listSlotsImpacted the list of slot impacted
-     * @param newReservationRule the reservation rule
+     * 
+     * @param listSlotsImpacted
+     *            the list of slot impacted
+     * @param newReservationRule
+     *            the reservation rule
      * @return true if there are no appointments impacted
      */
-    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotsImpacted, int idReservationRule  )
+    public static boolean checkNoAppointmentsImpacted( List<Slot> listSlotsImpacted, int idReservationRule )
     {
-    	
-    	  List<WorkingDay> listWorkingDay=  WorkingDayService.findListWorkingDayByWeekDefinitionRule( idReservationRule );
-          for ( Slot slot : listSlotsImpacted )
-          {        	  
-        	  WorkingDay workingDay= listWorkingDay.stream().filter(day -> day.getDayOfWeek() == slot.getDate().getDayOfWeek().getValue( ) ).findFirst().orElse(null);
-        	  if (workingDay != null ) {
-        		  
-        		 if( workingDay.getListTimeSlot().stream().noneMatch(  time -> slot.getStartingTime().equals(time.getStartingTime()) && slot.getEndingTime().equals(time.getEndingTime()))){
-        	  		  
-        		   return false;
-        		 }
-        	  
-        	  }else {
-        		  
-        		  return false;
-        	  }         	 
-          }
 
-       
+        List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinitionRule( idReservationRule );
+        for ( Slot slot : listSlotsImpacted )
+        {
+            WorkingDay workingDay = listWorkingDay.stream( ).filter( day -> day.getDayOfWeek( ) == slot.getDate( ).getDayOfWeek( ).getValue( ) ).findFirst( )
+                    .orElse( null );
+            if ( workingDay != null )
+            {
+
+                if ( workingDay.getListTimeSlot( ).stream( ).noneMatch(
+                        time -> slot.getStartingTime( ).equals( time.getStartingTime( ) ) && slot.getEndingTime( ).equals( time.getEndingTime( ) ) ) )
+                {
+
+                    return false;
+                }
+
+            }
+            else
+            {
+
+                return false;
+            }
+        }
+
         return true;
     }
-   
+
     /**
      * Check that there is no validated appointments on a slot
      * 
@@ -922,43 +952,43 @@ public final class AppointmentUtilities
     {
         List<Slot> listSlotsImpacted = null;
         // Get the weekDefinition that is currently modified
-        WeekDefinition currentModifiedWeekDefinition = WeekDefinitionService.findWeekDefinitionById( nIdWeekDefinition );    
-       // We have an upper bound to search with
+        WeekDefinition currentModifiedWeekDefinition = WeekDefinitionService.findWeekDefinitionById( nIdWeekDefinition );
+        // We have an upper bound to search with
         List<Slot> listSlots = SlotService.findSlotsByIdFormAndDateRange( nIdForm, currentModifiedWeekDefinition.getDateOfApply( ).atStartOfDay( ),
-            		currentModifiedWeekDefinition.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
-            // Need to check if the modification of the time slot or the typical
-            // week impacts these slots
+                currentModifiedWeekDefinition.getEndingDateOfApply( ).atTime( LocalTime.MAX ) );
+        // Need to check if the modification of the time slot or the typical
+        // week impacts these slots
         WorkingDay workingDay = WorkingDayService.findWorkingDayLightById( timeSlot.getIdWorkingDay( ) );
-            // Filter all the slots with the working day and the starting time
-            // ending time of the time slot
-            // The begin time of the slot can be before or after the begin time
-            // of the time slot
-            // and the ending time of the slot can be before or after the ending
-            // time of the time slot (specific slot)
+        // Filter all the slots with the working day and the starting time
+        // ending time of the time slot
+        // The begin time of the slot can be before or after the begin time
+        // of the time slot
+        // and the ending time of the slot can be before or after the ending
+        // time of the time slot (specific slot)
 
-            // If shiftTimeSlot is checked, need to check all the slots impacted
-            // until the end of the day
+        // If shiftTimeSlot is checked, need to check all the slots impacted
+        // until the end of the day
         if ( bShiftSlot )
         {
-           listSlotsImpacted = listSlots.stream( )
-                        .filter( slot -> ( ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
-                                && ( !slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
-                                        || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
-                                                && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) ) ) ) )
-                        .collect( Collectors.toList( ) );
+            listSlotsImpacted = listSlots.stream( )
+                    .filter( slot -> ( ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
+                            && ( !slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
+                                    || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
+                                            && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) ) ) ) )
+                    .collect( Collectors.toList( ) );
         }
         else
         {
-                listSlotsImpacted = listSlots.stream( )
-                        .filter( slot -> ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
-                                && ( slot.getStartingTime( ).equals( timeSlot.getStartingTime( ) )
-                                        || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
-                                                && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) )
-                                        || ( slot.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) )
-                                                && ( !slot.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ) ) ) )
-                        .collect( Collectors.toList( ) );
+            listSlotsImpacted = listSlots.stream( )
+                    .filter( slot -> ( slot.getStartingDateTime( ).getDayOfWeek( ) == DayOfWeek.of( workingDay.getDayOfWeek( ) ) )
+                            && ( slot.getStartingTime( ).equals( timeSlot.getStartingTime( ) )
+                                    || ( slot.getStartingTime( ).isBefore( timeSlot.getStartingTime( ) )
+                                            && ( slot.getEndingTime( ).isAfter( timeSlot.getStartingTime( ) ) ) )
+                                    || ( slot.getStartingTime( ).isAfter( timeSlot.getStartingTime( ) )
+                                            && ( !slot.getEndingTime( ).isAfter( timeSlot.getEndingTime( ) ) ) ) ) )
+                    .collect( Collectors.toList( ) );
         }
-        
+
         return listSlotsImpacted;
     }
 
@@ -1009,7 +1039,7 @@ public final class AppointmentUtilities
         }
         return true;
     }
-    
+
     /**
      * Fill the reservation rule object with the corresponding values of an appointmentForm DTO
      * 
@@ -1017,65 +1047,74 @@ public final class AppointmentUtilities
      *            the reservation rule object to fill in
      * @param appointmentForm
      *            the appointmentForm DTO
-
+     * 
      */
     public static void fillInReservationRuleAdvancedParam( ReservationRuleDTO reservationRuleDTO, AppointmentFormDTO appointmentForm )
     {
-    	reservationRuleDTO.setMaxCapacityPerSlot( appointmentForm.getMaxCapacityPerSlot( ) );
-    	reservationRuleDTO.setMaxPeoplePerAppointment( appointmentForm.getMaxPeoplePerAppointment( ) );
-    	reservationRuleDTO.setName( appointmentForm.getName( ));
-    	reservationRuleDTO.setDescriptionRule( appointmentForm.getDescriptionRule( ));
-    	reservationRuleDTO.setColor( appointmentForm.getColor( ));
-    	reservationRuleDTO.setDurationAppointments(appointmentForm.getDurationAppointments( ));
-    	reservationRuleDTO.setTimeEnd(appointmentForm.getTimeEnd( ));
-    	reservationRuleDTO.setTimeStart(appointmentForm.getTimeStart( ));
-    	
-    	reservationRuleDTO.setIdForm( appointmentForm.getIdForm( ) );
+        reservationRuleDTO.setMaxCapacityPerSlot( appointmentForm.getMaxCapacityPerSlot( ) );
+        reservationRuleDTO.setMaxPeoplePerAppointment( appointmentForm.getMaxPeoplePerAppointment( ) );
+        reservationRuleDTO.setName( appointmentForm.getName( ) );
+        reservationRuleDTO.setDescriptionRule( appointmentForm.getDescriptionRule( ) );
+        reservationRuleDTO.setColor( appointmentForm.getColor( ) );
+        reservationRuleDTO.setDurationAppointments( appointmentForm.getDurationAppointments( ) );
+        reservationRuleDTO.setTimeEnd( appointmentForm.getTimeEnd( ) );
+        reservationRuleDTO.setTimeStart( appointmentForm.getTimeStart( ) );
+
+        reservationRuleDTO.setIdForm( appointmentForm.getIdForm( ) );
     }
+
     /**
-     * check if one of the weeks in the list is open on the FO calendar 
-     * @param appointmentFormDTO the appointment form
-     * @param listWeek the list of weekDefinition
-     * @param locale the locale 
-     * @return true if one of the weeks in the list is open on the FO calendar 
+     * check if one of the weeks in the list is open on the FO calendar
+     * 
+     * @param appointmentFormDTO
+     *            the appointment form
+     * @param listWeek
+     *            the list of weekDefinition
+     * @param locale
+     *            the locale
+     * @return true if one of the weeks in the list is open on the FO calendar
      */
-    public static boolean weekIsOpenInFO( AppointmentFormDTO appointmentFormDTO, List<WeekDefinition> listWeek, Locale locale) {
-    	        
-       	if( appointmentFormDTO.getIsActive( ) ) 
-       	{
-	        Date startingValidityDate = appointmentFormDTO.getDateStartValidity( );
-	    	LocalDate startingDateOfDisplay = LocalDate.now( );
-	    		
-	         if ( startingValidityDate != null && startingValidityDate.toLocalDate( ).isAfter( startingDateOfDisplay ) )
-	         {
-	             startingDateOfDisplay = startingValidityDate.toLocalDate( );
-	         }
-	         // Calculate the ending date of display with the nb weeks to display
-	         // since today
-	         // We calculate the number of weeks including the current week, so it
-	         // will end to the (n) next sunday
-	         LocalDate dateOfSunday = startingDateOfDisplay.with( WeekFields.of( locale ).dayOfWeek( ), DayOfWeek.SUNDAY.getValue( ) );
-	         LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) appointmentFormDTO.getNbWeeksToDisplay() - 1 );
-	         Date endingValidityDate = appointmentFormDTO.getDateEndValidity( );
-	         if (endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate.toLocalDate( ) ) )
-	         {
-	             endingDateOfDisplay = endingValidityDate.toLocalDate( );
-	         }
-	         if( startingDateOfDisplay.isAfter(endingDateOfDisplay)) {
-	        	 
-	        	 return false;
-	         }
-	    			    	
-		    for( WeekDefinition week:listWeek ) {
-		    		
-		    	if( (week.getDateOfApply().isBefore( endingDateOfDisplay ) || week.getDateOfApply().isEqual( endingDateOfDisplay ))
-		    		&& (week.getEndingDateOfApply().isAfter( startingDateOfDisplay ) || week.getEndingDateOfApply().isEqual( startingDateOfDisplay ))) {
-		    			
-		    		return true;
-		    	}
-		    }
-    	  }
-       	 	
-       	return false;
+    public static boolean weekIsOpenInFO( AppointmentFormDTO appointmentFormDTO, List<WeekDefinition> listWeek, Locale locale )
+    {
+
+        if ( appointmentFormDTO.getIsActive( ) )
+        {
+            Date startingValidityDate = appointmentFormDTO.getDateStartValidity( );
+            LocalDate startingDateOfDisplay = LocalDate.now( );
+
+            if ( startingValidityDate != null && startingValidityDate.toLocalDate( ).isAfter( startingDateOfDisplay ) )
+            {
+                startingDateOfDisplay = startingValidityDate.toLocalDate( );
+            }
+            // Calculate the ending date of display with the nb weeks to display
+            // since today
+            // We calculate the number of weeks including the current week, so it
+            // will end to the (n) next sunday
+            LocalDate dateOfSunday = startingDateOfDisplay.with( WeekFields.of( locale ).dayOfWeek( ), DayOfWeek.SUNDAY.getValue( ) );
+            LocalDate endingDateOfDisplay = dateOfSunday.plusWeeks( (long) appointmentFormDTO.getNbWeeksToDisplay( ) - 1 );
+            Date endingValidityDate = appointmentFormDTO.getDateEndValidity( );
+            if ( endingValidityDate != null && endingDateOfDisplay.isAfter( endingValidityDate.toLocalDate( ) ) )
+            {
+                endingDateOfDisplay = endingValidityDate.toLocalDate( );
+            }
+            if ( startingDateOfDisplay.isAfter( endingDateOfDisplay ) )
+            {
+
+                return false;
+            }
+
+            for ( WeekDefinition week : listWeek )
+            {
+
+                if ( ( week.getDateOfApply( ).isBefore( endingDateOfDisplay ) || week.getDateOfApply( ).isEqual( endingDateOfDisplay ) )
+                        && ( week.getEndingDateOfApply( ).isAfter( startingDateOfDisplay ) || week.getEndingDateOfApply( ).isEqual( startingDateOfDisplay ) ) )
+                {
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

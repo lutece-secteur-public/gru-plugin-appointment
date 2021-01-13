@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ public class AppointmentFormDashboardComponent extends DashboardComponent
         Map<String, Object> model = new HashMap<>( );
         Plugin plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
         model.put( MARK_APPOINTMENTFORM_LIST, RBACService.getAuthorizedCollection( listAppointmentForm, AppointmentResourceIdService.PERMISSION_VIEW_FORM,
-               (User) AdminUserService.getAdminUser( request ) ) );
+                (User) AdminUserService.getAdminUser( request ) ) );
         model.put( MARK_ICON, plugin.getIconUrl( ) );
         model.put( MARK_URL, AppointmentFormJspBean.getURLManageAppointmentForms( request ) );
         model.put( MARK_PERMISSION_CREATE, String.valueOf(

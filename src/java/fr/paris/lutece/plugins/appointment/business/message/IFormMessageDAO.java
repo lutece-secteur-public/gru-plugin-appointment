@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,12 +42,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface IFormMessageDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.formMessageDAO";
-
     /**
      * Create a form message
      * 
@@ -77,8 +71,9 @@ public interface IFormMessageDAO
      *            The plugin
      */
     void delete( int nAppointmentFormId, Plugin plugin );
+
     /**
-     * Remove a form message from 
+     * Remove a form message from
      * 
      * @param nFormId
      *            The id of the form
@@ -86,7 +81,6 @@ public interface IFormMessageDAO
      *            The plugin
      */
     void deleteByIdForm( int nIdForm, Plugin plugin );
-
 
     /**
      * Get a form message from its primary key

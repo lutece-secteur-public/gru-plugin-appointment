@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
  * @author Laurent Payen
  *
  */
-public class ReservationRule  implements Serializable
+public class ReservationRule implements Serializable
 {
 
     /**
@@ -60,7 +60,7 @@ public class ReservationRule  implements Serializable
      * Name of the rule
      */
     private String _strName;
-   
+
     /**
      * description of the rule
      */
@@ -89,7 +89,7 @@ public class ReservationRule  implements Serializable
      * The Form Id the Reservation Rule belongs to (foreign key)
      */
     private int _nIdForm;
-    
+
     /**
      * List of the working days that define the week definition
      */
@@ -115,78 +115,90 @@ public class ReservationRule  implements Serializable
     {
         this._nIdReservationRule = nIdReservationRule;
     }
-    
+
     /**
      * Returns the Name
+     * 
      * @return The Name
-     */ 
-     public String getName()
-     {
-         return _strName;
-     }
- 
+     */
+    public String getName( )
+    {
+        return _strName;
+    }
+
     /**
      * Sets the Name
-     * @param strName The Name
-     */ 
-     public void setName( String strName )
-     {
-         _strName = strName;
-     }
- 
+     * 
+     * @param strName
+     *            The Name
+     */
+    public void setName( String strName )
+    {
+        _strName = strName;
+    }
+
     /**
      * Returns the Description
+     * 
      * @return The Description
-     */ 
-     public String getDescriptionRule()
-     {
-         return _strDescriptionRule;
-     }
- 
+     */
+    public String getDescriptionRule( )
+    {
+        return _strDescriptionRule;
+    }
+
     /**
      * Sets the Description
-     * @param strDescription The Description
-     */ 
-     public void setDescriptionRule( String strDescription )
-     {
-    	 _strDescriptionRule = strDescription;
-     }
- 
+     * 
+     * @param strDescription
+     *            The Description
+     */
+    public void setDescriptionRule( String strDescription )
+    {
+        _strDescriptionRule = strDescription;
+    }
+
     /**
      * Returns the Color
+     * 
      * @return The Color
-     */ 
-     public String getColor()
-     {
-         return _strColor;
-     }
- 
+     */
+    public String getColor( )
+    {
+        return _strColor;
+    }
+
     /**
      * Sets the Color
-     * @param strColor The Color
-     */ 
-     public void setColor( String strColor )
-     {
-         _strColor = strColor;
-     }
- 
+     * 
+     * @param strColor
+     *            The Color
+     */
+    public void setColor( String strColor )
+    {
+        _strColor = strColor;
+    }
+
     /**
      * Returns the Enable
+     * 
      * @return The Enable
-     */ 
-     public boolean getEnable()
-     {
-         return _bEnable;
-     }
- 
+     */
+    public boolean getEnable( )
+    {
+        return _bEnable;
+    }
+
     /**
      * Sets the Enable
-     * @param bEnable The Enable
-     */ 
-     public void setEnable( boolean bEnable )
-     {
-         _bEnable = bEnable;
-     }
+     * 
+     * @param bEnable
+     *            The Enable
+     */
+    public void setEnable( boolean bEnable )
+    {
+        _bEnable = bEnable;
+    }
 
     /**
      * Get the maximum capacity for a slot
@@ -249,7 +261,8 @@ public class ReservationRule  implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }  
+    }
+
     /**
      * Get the list of the working days of the week
      * 

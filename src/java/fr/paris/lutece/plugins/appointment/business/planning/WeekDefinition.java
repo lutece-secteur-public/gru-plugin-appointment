@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,6 @@ import fr.paris.lutece.plugins.appointment.business.AbstractDateConversion;
 public final class WeekDefinition extends AbstractDateConversion implements Serializable
 {
 
-	
     /**
      * Serial version UID
      */
@@ -55,12 +54,11 @@ public final class WeekDefinition extends AbstractDateConversion implements Seri
     /**
      * Id of the week definition
      */
-    private int _nIdWeekDefinition;   
+    private int _nIdWeekDefinition;
     /**
      * Id of the reservation rule.
      */
     private int _nIdReservationRule;
- 
 
     /**
      * Get the id of the week definition
@@ -103,6 +101,5 @@ public final class WeekDefinition extends AbstractDateConversion implements Seri
     {
         this._nIdReservationRule = nIdReservationRule;
     }
-    
 
 }

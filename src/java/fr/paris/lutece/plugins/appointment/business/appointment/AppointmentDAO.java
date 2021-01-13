@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -271,14 +271,16 @@ public final class AppointmentDAO implements IAppointmentDAO
         }
         return listAppointment;
     }
+
     @Override
     public List<Appointment> findByListIdSlot( List<Integer> listIdSlot, Plugin plugin )
     {
         List<Appointment> list = new ArrayList<>( );
-        
-        if(CollectionUtils.isEmpty(listIdSlot)) {
-        	
-        	return list;
+
+        if ( CollectionUtils.isEmpty( listIdSlot ) )
+        {
+
+            return list;
         }
         String query = SQL_QUERY_SELECT_BY_LIST_ID_SLOT + listIdSlot.stream( ).distinct( ).map( i -> "?" ).collect( Collectors.joining( "," ) ) + " )";
 
@@ -292,12 +294,13 @@ public final class AppointmentDAO implements IAppointmentDAO
 
             while ( daoUtil.next( ) )
             {
-            	Appointment appointment = buildAppointment( daoUtil );
-            	if( list.stream().noneMatch( appt -> appt.getIdAppointment() == appointment.getIdAppointment( ))) {
-            		
-	                appointment.setListAppointmentSlot( selectAppointmentSlot( appointment.getIdAppointment( ), plugin ) );
-	                list.add( appointment );
-            	}
+                Appointment appointment = buildAppointment( daoUtil );
+                if ( list.stream( ).noneMatch( appt -> appt.getIdAppointment( ) == appointment.getIdAppointment( ) ) )
+                {
+
+                    appointment.setListAppointmentSlot( selectAppointmentSlot( appointment.getIdAppointment( ), plugin ) );
+                    list.add( appointment );
+                }
             }
         }
         return list;
@@ -323,13 +326,13 @@ public final class AppointmentDAO implements IAppointmentDAO
     @Override
     public List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin )
     {
-        Map<Integer, Appointment> mapAppointment = new HashMap< >();
-        boolean isFirst= true;
+        Map<Integer, Appointment> mapAppointment = new HashMap<>( );
+        boolean isFirst = true;
         try ( DAOUtil daoUtil = new DAOUtil( getSqlQueryFromFilter( appointmentFilter ), plugin ) )
         {
             addFilterParametersToDAOUtil( appointmentFilter, daoUtil );
             daoUtil.executeQuery( );
-            
+
             while ( daoUtil.next( ) )
             {
                 Appointment appt = buildAppointment( daoUtil );
@@ -337,33 +340,34 @@ public final class AppointmentDAO implements IAppointmentDAO
                 Slot slot = builSlot( daoUtil, 17 );
                 User user = buildUser( daoUtil, 11 );
 
-                
-                if( isFirst || daoUtil.isLast( ) ) {
-                	
-                	appt.setSlot(SlotHome.findByIdAppointment( appt.getIdAppointment() ));
-                	
-                }else {
-                
-                	appt.addSlot( slot );
+                if ( isFirst || daoUtil.isLast( ) )
+                {
+
+                    appt.setSlot( SlotHome.findByIdAppointment( appt.getIdAppointment( ) ) );
+
+                }
+                else
+                {
+
+                    appt.addSlot( slot );
                 }
                 appt.setUser( user );
 
-                Appointment apptAdded = mapAppointment.get(appt.getIdAppointment( ));
+                Appointment apptAdded = mapAppointment.get( appt.getIdAppointment( ) );
                 if ( apptAdded == null )
                 {
-                	mapAppointment.put(appt.getIdAppointment( ), appt);
+                    mapAppointment.put( appt.getIdAppointment( ), appt );
                 }
                 else
                 {
                     apptAdded.addSlot( slot );
                 }
-                
-                isFirst= false;
+
+                isFirst = false;
             }
-            
-            
+
         }
-        return new ArrayList< >( mapAppointment.values( ));
+        return new ArrayList<>( mapAppointment.values( ) );
     }
 
     /**

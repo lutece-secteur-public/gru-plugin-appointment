@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,9 +49,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class WeekDefinitionHome
 {
-
     // Static variable pointed at the DAO instance
-    private static IWeekDefinitionDAO _dao = SpringContextService.getBean( IWeekDefinitionDAO.BEAN_NAME );
+    private static IWeekDefinitionDAO _dao = SpringContextService.getBean( "appointment.weekDefinitionDAO");
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -99,18 +98,19 @@ public final class WeekDefinitionHome
     {
         _dao.delete( nKey, _plugin );
     }
+
     /**
      * Delete the WeekDefinition whose identifier is specified in parameter
      * 
      * @param nIdReservationRule
      *            The reservation rule Id
      */
-   public static void deleteByIdReservationRule( int nIdReservationRule ) {
-	
-       _dao.deleteByIdReservationRule(nIdReservationRule, _plugin);
+    public static void deleteByIdReservationRule( int nIdReservationRule )
+    {
 
-   }
+        _dao.deleteByIdReservationRule( nIdReservationRule, _plugin );
 
+    }
 
     /**
      * Returns an instance of the WeekDefinition whose identifier is specified in parameter
@@ -135,12 +135,13 @@ public final class WeekDefinitionHome
     {
         return _dao.findByIdForm( nIdForm, _plugin );
     }
-    
+
     /**
-     * Get  the week definitions of a form for reservation rule
+     * Get the week definitions of a form for reservation rule
+     * 
      * @param nIdReservationRule
      * @param plugin
-     *             the plugin  
+     *            the plugin
      * @return list of week definition
      */
     public static List<WeekDefinition> findByReservationRule( int nIdReservationRule )
@@ -161,6 +162,7 @@ public final class WeekDefinitionHome
     {
         return _dao.findByIdFormAndDateOfApply( nIdForm, dateOfApply, _plugin );
     }
+
     /**
      * Get week definition for the form id and the date of apply given
      * 
@@ -170,9 +172,9 @@ public final class WeekDefinitionHome
      *            the date of apply
      * @return the week definition
      */
-    public static WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply ) 
+    public static WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply )
     {
-    	return _dao.findByIdReservationRuleAndDateOfApply( nIdReservationRule, dateOfApply, _plugin);
+        return _dao.findByIdReservationRuleAndDateOfApply( nIdReservationRule, dateOfApply, _plugin );
     }
 
 }

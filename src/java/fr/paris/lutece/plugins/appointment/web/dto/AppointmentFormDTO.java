@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,6 @@ import org.hibernate.validator.constraints.NotBlank;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.portal.service.image.ImageResource;
 import fr.paris.lutece.portal.service.rbac.RBACResource;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
 /**
@@ -53,7 +52,7 @@ import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
  * @author Laurent Payen
  *
  */
-public final class AppointmentFormDTO extends ReservationRule implements RBACResource, AdminWorkgroupResource, Cloneable
+public final class AppointmentFormDTO extends ReservationRule implements RBACResource, AdminWorkgroupResource
 {
     /**
      * Name of the resource type of Appointment Forms

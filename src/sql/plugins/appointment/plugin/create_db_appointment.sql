@@ -98,6 +98,7 @@ CREATE INDEX starting_date_time_idx ON appointment_slot (starting_date_time ASC)
 CREATE INDEX ending_date_time_idx ON appointment_slot (ending_date_time ASC);
 CREATE UNIQUE INDEX appointment_slot_unique_starting ON appointment_slot (id_form,starting_date_time);
 CREATE UNIQUE INDEX appointment_slot_unique_ending ON appointment_slot (id_form,ending_date_time);
+
 -- -----------------------------------------------------
 -- Table appointment_appointment
 -- -----------------------------------------------------

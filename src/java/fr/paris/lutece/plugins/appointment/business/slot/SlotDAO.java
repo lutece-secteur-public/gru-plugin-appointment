@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,11 +70,11 @@ public final class SlotDAO implements ISlotDAO
             + " WHERE id_form = ? AND is_open = 1";
     private static final String SQL_QUERY_SELECT_SLOT_WITH_MAX_DATE = SQL_QUERY_SELECT_COLUMNS + "FROM appointment_slot slot"
             + " WHERE slot.id_form = ? ORDER BY slot.starting_date_time DESC LIMIT 1";
-    private static final String SQL_QUERY_SELECT_BY_ID_APPOINTMENT = "SELECT slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form " 
-    		+ " FROM appointment_slot slot INNER JOIN appointment_appointment_slot appt_slot ON (slot.id_slot = appt_slot.id_slot) "
-    		+ " INNER JOIN appointment_appointment appt ON (appt_slot.id_appointment = appt.id_appointment ) WHERE appt.id_appointment = ?";
-    
-    private static final String SQL_QUERY_SELECT_SLOT_WITH_APPOINTMNT_BY_ID_FORM_AND_DATE_RANGE= "SELECT distinct slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form  from appointment_slot slot JOIN appointment_appointment_slot appt_slot on ( slot.id_slot = appt_slot.id_slot ) WHERE slot.id_form = ? AND slot.starting_date_time >= ? AND slot.ending_date_time <= ? ";
+    private static final String SQL_QUERY_SELECT_BY_ID_APPOINTMENT = "SELECT slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form "
+            + " FROM appointment_slot slot INNER JOIN appointment_appointment_slot appt_slot ON (slot.id_slot = appt_slot.id_slot) "
+            + " INNER JOIN appointment_appointment appt ON (appt_slot.id_appointment = appt.id_appointment ) WHERE appt.id_appointment = ?";
+
+    private static final String SQL_QUERY_SELECT_SLOT_WITH_APPOINTMNT_BY_ID_FORM_AND_DATE_RANGE = "SELECT distinct slot.id_slot, slot.starting_date_time, slot.ending_date_time, slot.is_open, slot.is_specific, slot.max_capacity, slot.nb_remaining_places, slot.nb_potential_remaining_places, slot.nb_places_taken, slot.id_form  from appointment_slot slot JOIN appointment_appointment_slot appt_slot on ( slot.id_slot = appt_slot.id_slot ) WHERE slot.id_form = ? AND slot.starting_date_time >= ? AND slot.ending_date_time <= ? ";
 
     @Override
     public void insert( Slot slot, Plugin plugin )
@@ -107,6 +107,7 @@ public final class SlotDAO implements ISlotDAO
             daoUtil.executeUpdate( );
         }
     }
+
     @Override
     public void deleteByIdForm( int nIdForm, Plugin plugin )
     {
@@ -150,6 +151,7 @@ public final class SlotDAO implements ISlotDAO
         }
         return listSlots;
     }
+
     @Override
     public List<Slot> findSlotWithAppointmentByDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime, Plugin plugin )
     {
