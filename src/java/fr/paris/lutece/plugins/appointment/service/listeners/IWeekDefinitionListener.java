@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,6 +56,7 @@ public interface IWeekDefinitionListener
      *            The id of the weekDefinition
      */
     void notifyWeekUnassigned( int nIdWeekDefinition );
+
     /**
      * Notify the listener that a list of week definition has been changed (assign and unassign)
      * 
@@ -63,5 +64,5 @@ public interface IWeekDefinitionListener
      *            The id of the form
      */
     void notifyListWeeksChanged( int nIdForm );
-    
+
 }

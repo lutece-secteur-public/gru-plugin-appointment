@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,12 +43,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface ILocalizationDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.localizationDAO";
-
     /**
      * Insert a new record in the table.
      * 
@@ -78,11 +72,12 @@ public interface ILocalizationDAO
      *            the Plugin
      */
     void delete( int nIdLocalization, Plugin plugin );
+
     /**
      * Delete a record from the table
      * 
      * @param nIdForm
-     *            identifier of the id form 
+     *            identifier of the id form
      * @param plugin
      *            the Plugin
      */

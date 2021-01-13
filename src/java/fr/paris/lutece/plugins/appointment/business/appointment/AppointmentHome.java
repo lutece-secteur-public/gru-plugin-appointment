@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ public final class AppointmentHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IAppointmentDAO _dao = SpringContextService.getBean( IAppointmentDAO.BEAN_NAME );
+    private static IAppointmentDAO _dao = SpringContextService.getBean( "appointment.appointmentDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -168,11 +168,13 @@ public final class AppointmentHome
      *            the plugin
      * @return a list of the appointments
      */
-    public static List<Appointment> findByListIdSlot( List<Integer> listIdSlot ){
-        
-    	return _dao.findByListIdSlot( listIdSlot, _plugin );
+    public static List<Appointment> findByListIdSlot( List<Integer> listIdSlot )
+    {
+
+        return _dao.findByListIdSlot( listIdSlot, _plugin );
 
     }
+
     /**
      * Return a list of appointment of a form
      * 

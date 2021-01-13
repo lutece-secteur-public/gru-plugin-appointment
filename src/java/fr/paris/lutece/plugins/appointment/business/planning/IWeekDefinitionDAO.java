@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,11 +46,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface IWeekDefinitionDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.weekDefinitionDAO";
 
     /**
      * Insert a new record in the table
@@ -113,12 +108,13 @@ public interface IWeekDefinitionDAO
      * @return a list of all the weekdefinitions of the form given
      */
     List<WeekDefinition> findByIdForm( int nIdForm, Plugin plugin );
-   
+
     /**
-     * Get  the week definitions of a form for reservation rule
+     * Get the week definitions of a form for reservation rule
+     * 
      * @param nIdReservationRule
      * @param plugin
-     *             the plugin  
+     *            the plugin
      * @return list of week definition
      */
     List<WeekDefinition> findByReservationRule( int nIdReservationRule, Plugin plugin );
@@ -135,17 +131,18 @@ public interface IWeekDefinitionDAO
      * @return the week definition
      */
     WeekDefinition findByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply, Plugin plugin );
+
     /**
-    * Get the week definitions of a form for the date of apply
-    * 
-    * @param nIdReservationRule
-    *            the reservationRule id
-    * @param dateOfApply
-    *            the date of apply
-    * @param plugin
-    *            the plugin
-    * @return the week definition
-    */
-   WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply, Plugin plugin );
+     * Get the week definitions of a form for the date of apply
+     * 
+     * @param nIdReservationRule
+     *            the reservationRule id
+     * @param dateOfApply
+     *            the date of apply
+     * @param plugin
+     *            the plugin
+     * @return the week definition
+     */
+    WeekDefinition findByIdReservationRuleAndDateOfApply( int nIdReservationRule, LocalDate dateOfApply, Plugin plugin );
 
 }

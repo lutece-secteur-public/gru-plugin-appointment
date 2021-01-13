@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,9 +48,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class TimeSlotHome
 {
-
     // Static variable pointed at the DAO instance
-    private static ITimeSlotDAO _dao = SpringContextService.getBean( ITimeSlotDAO.BEAN_NAME );
+    private static ITimeSlotDAO _dao = SpringContextService.getBean( "appointment.timeSlotDAO");
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -98,15 +97,17 @@ public final class TimeSlotHome
     {
         _dao.delete( nKey, _plugin );
     }
+
     /**
      * Delete TimeSlot whose id working day is specified in parameter
      * 
      * @param nIdWorkingDay
-     *            identifier of the working day 
+     *            identifier of the working day
      */
-    public static void deleteByIdWorkingDay( int nIdWorkingDay ) {
-    	
-    	_dao.deleteByIdWorkingDay( nIdWorkingDay, _plugin );
+    public static void deleteByIdWorkingDay( int nIdWorkingDay )
+    {
+
+        _dao.deleteByIdWorkingDay( nIdWorkingDay, _plugin );
     }
 
     /**

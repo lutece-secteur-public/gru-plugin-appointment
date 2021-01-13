@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ public final class DisplayService
      */
     public static Display createDisplay( AppointmentFormDTO appointmentForm, int nIdForm )
     {
-        Display display =  new Display( );
+        Display display = new Display( );
         fillInDisplayWithAppointmentForm( display, appointmentForm, nIdForm );
         DisplayHome.create( display );
         return display;

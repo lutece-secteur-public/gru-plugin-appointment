@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ public final class FormRuleHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IFormRuleDAO _dao = SpringContextService.getBean( IFormRuleDAO.BEAN_NAME );
+    private static IFormRuleDAO _dao = SpringContextService.getBean(  "appointment.formRuleDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -96,6 +96,7 @@ public final class FormRuleHome
     {
         _dao.delete( nKey, _plugin );
     }
+
     /**
      * Delete the FormRule whose id form is specified in parameter
      * 
@@ -104,7 +105,7 @@ public final class FormRuleHome
      */
     public static void deleteByIdFom( int nIdForm )
     {
-        _dao.deleteByIdFom(nIdForm, _plugin);
+        _dao.deleteByIdFom( nIdForm, _plugin );
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ public final class WorkingDayDAO implements IWorkingDayDAO
             daoUtil.executeUpdate( );
         }
     }
-    
+
     @Override
     public void deleteByIdReservationRule( int nIdReservationRule, Plugin plugin )
     {
@@ -175,7 +175,7 @@ public final class WorkingDayDAO implements IWorkingDayDAO
             daoUtil = new DAOUtil( query, plugin );
         }
         daoUtil.setInt( nIndex++, workingDay.getDayOfWeek( ) );
-        daoUtil.setInt( nIndex++, workingDay.getIdReservationRule( )  );
+        daoUtil.setInt( nIndex++, workingDay.getIdReservationRule( ) );
         if ( !isInsert )
         {
             daoUtil.setInt( nIndex, workingDay.getIdWorkingDay( ) );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,7 +51,7 @@ public final class ReservationRuleHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IReservationRuleDAO _dao = SpringContextService.getBean( IReservationRuleDAO.BEAN_NAME );
+    private static IReservationRuleDAO _dao = SpringContextService.getBean( "appointment.reservationRuleDAO");
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -137,7 +137,7 @@ public final class ReservationRuleHome
     {
         return _dao.findByIdFormAndDateOfApply( nIdForm, dateOfApply, _plugin );
     }
-    
+
     /**
      * Find in database a reservation rule of a form closest to a date
      * 

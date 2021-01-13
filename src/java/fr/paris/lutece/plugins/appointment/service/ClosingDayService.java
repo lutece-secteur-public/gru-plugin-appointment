@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -211,8 +211,7 @@ public final class ClosingDayService
             return new ArrayList<>( );
         }
         // Using XSSF for xlsx format, for xls use HSSF
-        try ( FileInputStream fis = (FileInputStream) item.getInputStream( ); 
-                Workbook workbook = new XSSFWorkbook( fis ) )
+        try ( FileInputStream fis = (FileInputStream) item.getInputStream( ) ; Workbook workbook = new XSSFWorkbook( fis ) )
         {
             int numberOfSheets = workbook.getNumberOfSheets( );
             // looping over each workbook sheet

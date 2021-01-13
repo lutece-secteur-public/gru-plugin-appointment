@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -106,9 +106,9 @@ public final class UserDAO implements IUserDAO
         }
         return user;
     }
-    
+
     @Override
-    public User selectByGuid ( String strGuid , Plugin plugin )
+    public User selectByGuid( String strGuid, Plugin plugin )
     {
         User user = null;
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_GUID, plugin ) )

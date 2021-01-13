@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,6 +91,7 @@ public final class Utilities
     {
         return listDate.stream( ).filter( x -> x.isBefore( dateToSearch ) || x.isEqual( dateToSearch ) ).max( LocalDate::compareTo ).orElse( null );
     }
+
     /**
      * Return the closest Week in past a list of date with the given date
      * 
@@ -102,9 +103,11 @@ public final class Utilities
      */
     public static WeekDefinition getClosestWeekDefinitionInPast( List<WeekDefinition> listWeek, LocalDate dateToSearch )
     {
-    	return listWeek.stream().filter(p -> (p.getDateOfApply( ).isBefore( dateToSearch) || p.getDateOfApply().isEqual( dateToSearch )) 
-        		&& (p.getEndingDateOfApply().isAfter( dateToSearch ) || p.getEndingDateOfApply().isEqual( dateToSearch ))).findFirst().orElse( null );
-        
+        return listWeek.stream( )
+                .filter( p -> ( p.getDateOfApply( ).isBefore( dateToSearch ) || p.getDateOfApply( ).isEqual( dateToSearch ) )
+                        && ( p.getEndingDateOfApply( ).isAfter( dateToSearch ) || p.getEndingDateOfApply( ).isEqual( dateToSearch ) ) )
+                .findFirst( ).orElse( null );
+
     }
 
     /**

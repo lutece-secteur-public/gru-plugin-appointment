@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,22 +69,22 @@ public final class CommentDAO implements ICommentDAO
             int nIndex = 1;
             daoUtil.setInt( nIndex++, comment.getIdForm( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getStartingValidityDate( ) ) );
-            if (comment.getStartingValidityTime() != null)
+            if ( comment.getStartingValidityTime( ) != null )
             {
-            	daoUtil.setTime( nIndex++, Time.valueOf( comment.getStartingValidityTime( ) ) );
+                daoUtil.setTime( nIndex++, Time.valueOf( comment.getStartingValidityTime( ) ) );
             }
             else
             {
-            	daoUtil.setTime( nIndex++, null );
+                daoUtil.setTime( nIndex++, null );
             }
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getEndingValidityDate( ) ) );
-            if (comment.getEndingValidityTime() != null)
+            if ( comment.getEndingValidityTime( ) != null )
             {
-            	daoUtil.setTime( nIndex++, Time.valueOf( comment.getEndingValidityTime( ) ) );
+                daoUtil.setTime( nIndex++, Time.valueOf( comment.getEndingValidityTime( ) ) );
             }
             else
             {
-            	daoUtil.setTime( nIndex++, null );
+                daoUtil.setTime( nIndex++, null );
             }
             daoUtil.setString( nIndex++, comment.getComment( ) );
             daoUtil.setDate( nIndex++, Date.valueOf( comment.getCreationDate( ) ) );
@@ -120,15 +120,15 @@ public final class CommentDAO implements ICommentDAO
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time startingTime = daoUtil.getTime( nIndex++ );
-                if (startingTime != null )
+                if ( startingTime != null )
                 {
-                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                    comment.setStartingValidityTime( startingTime.toLocalTime( ) );
                 }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time endingTime = daoUtil.getTime( nIndex++ );
                 if ( endingTime != null )
                 {
-                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                    comment.setEndingValidityTime( endingTime.toLocalTime( ) );
                 }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
@@ -197,15 +197,15 @@ public final class CommentDAO implements ICommentDAO
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time startingTime = daoUtil.getTime( nIndex++ );
-                if (startingTime != null )
+                if ( startingTime != null )
                 {
-                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                    comment.setStartingValidityTime( startingTime.toLocalTime( ) );
                 }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time endingTime = daoUtil.getTime( nIndex++ );
                 if ( endingTime != null )
                 {
-                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                    comment.setEndingValidityTime( endingTime.toLocalTime( ) );
                 }
                 comment.setComment( daoUtil.getString( nIndex ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
@@ -242,15 +242,15 @@ public final class CommentDAO implements ICommentDAO
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time startingTime = daoUtil.getTime( nIndex++ );
-                if (startingTime != null )
+                if ( startingTime != null )
                 {
-                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                    comment.setStartingValidityTime( startingTime.toLocalTime( ) );
                 }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time endingTime = daoUtil.getTime( nIndex++ );
                 if ( endingTime != null )
                 {
-                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                    comment.setEndingValidityTime( endingTime.toLocalTime( ) );
                 }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
@@ -262,7 +262,7 @@ public final class CommentDAO implements ICommentDAO
             return commentList;
         }
     }
-    
+
     /**
      * {@inheritDoc }
      */
@@ -287,15 +287,15 @@ public final class CommentDAO implements ICommentDAO
                 comment.setIdForm( daoUtil.getInt( nIndex++ ) );
                 comment.setStartingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time startingTime = daoUtil.getTime( nIndex++ );
-                if (startingTime != null )
+                if ( startingTime != null )
                 {
-                	comment.setStartingValidityTime( startingTime.toLocalTime( ) );
+                    comment.setStartingValidityTime( startingTime.toLocalTime( ) );
                 }
                 comment.setEndingValidityDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
                 Time endingTime = daoUtil.getTime( nIndex++ );
                 if ( endingTime != null )
                 {
-                	comment.setEndingValidityTime( endingTime.toLocalTime( ) );
+                    comment.setEndingValidityTime( endingTime.toLocalTime( ) );
                 }
                 comment.setComment( daoUtil.getString( nIndex++ ) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );

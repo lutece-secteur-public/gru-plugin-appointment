@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,6 @@ public final class ReservationRuleService
 {
     private static final String CONST_COPY_OF_WEEK = "Copy ";
 
-
     /**
      * Private constructor - this class does not need to be instantiated
      */
@@ -93,18 +92,18 @@ public final class ReservationRuleService
         ReservationRuleHome.create( reservationRule );
         return reservationRule;
     }
-    
+
     /**
      * Create in database a reservation rule object from an appointmentForm DTO
      * 
      * @param appointmentForm
      *            the appointmentForm DTO
-    
+     * 
      * @return the Reservation Rule id
      */
     public static int createAdvancedParameters( AppointmentFormDTO appointmentForm )
     {
-       
+
         int nIdForm = appointmentForm.getIdForm( );
         ReservationRule reservationRule = createReservationRule( appointmentForm, nIdForm );
         int nMaxCapacity = reservationRule.getMaxCapacityPerSlot( );
@@ -113,10 +112,12 @@ public final class ReservationRuleService
         int nDuration = appointmentForm.getDurationAppointments( );
         for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
         {
-            WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingTime, endingTime, nDuration, nMaxCapacity );
+            WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingTime, endingTime, nDuration,
+                    nMaxCapacity );
         }
         return reservationRule.getIdReservationRule( );
     }
+
     /**
      * Make a copy of typical week, with all its values
      * 
@@ -124,45 +125,50 @@ public final class ReservationRuleService
      *            the reservationRule Id to copy
      * @return the id of the reservation rule created
      */
-    
+
     public static int copyReservationRule( int nIdReservationRule )
-    {       
-    	ReservationRule reservationRule= findReservationRuleById( nIdReservationRule ); 
-    	if( reservationRule != null ) {
-    		
-    		reservationRule.setName( CONST_COPY_OF_WEEK + reservationRule.getName() );
+    {
+        ReservationRule reservationRule = findReservationRuleById( nIdReservationRule );
+        if ( reservationRule != null )
+        {
+
+            reservationRule.setName( CONST_COPY_OF_WEEK + reservationRule.getName( ) );
             TransactionManager.beginTransaction( AppointmentPlugin.getPlugin( ) );
-	        try {
-	            ReservationRuleHome.create( reservationRule );	
-		        for ( WorkingDay workingDay : reservationRule.getListWorkingDay( ) )
-		        {
-		        	workingDay.setIdReservationRule( reservationRule.getIdReservationRule( ) );
-		        	WorkingDayHome.create( workingDay );
-		        	for( TimeSlot timeSlotTemp: workingDay.getListTimeSlot( )) {
-		        		
-		        		timeSlotTemp.setIdWorkingDay(workingDay.getIdWorkingDay( ));
-		        		TimeSlotHome.create( timeSlotTemp );
-		        	}
-		        }
-		        TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
-		        return reservationRule.getIdReservationRule( );
-	       } catch( Exception e )
-	       {
-	            TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
-	            AppLogService.error( "Error copy typical week" + e.getMessage( ), e );
-	            return 0;
-	       }      
-    	}
-    	
-    	return 0;
+            try
+            {
+                ReservationRuleHome.create( reservationRule );
+                for ( WorkingDay workingDay : reservationRule.getListWorkingDay( ) )
+                {
+                    workingDay.setIdReservationRule( reservationRule.getIdReservationRule( ) );
+                    WorkingDayHome.create( workingDay );
+                    for ( TimeSlot timeSlotTemp : workingDay.getListTimeSlot( ) )
+                    {
+
+                        timeSlotTemp.setIdWorkingDay( workingDay.getIdWorkingDay( ) );
+                        TimeSlotHome.create( timeSlotTemp );
+                    }
+                }
+                TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
+                return reservationRule.getIdReservationRule( );
+            }
+            catch( Exception e )
+            {
+                TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
+                AppLogService.error( "Error copy typical week" + e.getMessage( ), e );
+                return 0;
+            }
+        }
+
+        return 0;
     }
+
     /**
      * Update a form with the new values of an appointmentForm DTO Advanced Parameters (with a date of application) --> new Typical Week
      * 
      * @param appointmentForm
      *            the appointmentForm DTO
      */
-    public static void updateAdvancedParameters( AppointmentFormDTO appointmentForm  )
+    public static void updateAdvancedParameters( AppointmentFormDTO appointmentForm )
     {
         int nIdForm = appointmentForm.getIdForm( );
         ReservationRule reservationRule = updateReservationRule( appointmentForm, nIdForm );
@@ -171,22 +177,24 @@ public final class ReservationRuleService
 
         if ( CollectionUtils.isNotEmpty( listWorkingDay ) )
         {
-        	for ( WorkingDay workingDay : listWorkingDay )
+            for ( WorkingDay workingDay : listWorkingDay )
             {
-            	TimeSlotHome.deleteByIdWorkingDay(workingDay.getIdWorkingDay( ));
+                TimeSlotHome.deleteByIdWorkingDay( workingDay.getIdWorkingDay( ) );
             }
-        	WorkingDayHome.deleteByIdReservationRule(reservationRule.getIdReservationRule( ));
+            WorkingDayHome.deleteByIdReservationRule( reservationRule.getIdReservationRule( ) );
         }
         LocalTime startingHour = LocalTime.parse( appointmentForm.getTimeStart( ) );
         LocalTime endingHour = LocalTime.parse( appointmentForm.getTimeEnd( ) );
         int nDuration = appointmentForm.getDurationAppointments( );
         for ( DayOfWeek dayOfWeek : WorkingDayService.getOpenDays( appointmentForm ) )
         {
-            WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingHour, endingHour, nDuration, nMaxCapacity );
+            WorkingDayService.generateWorkingDayAndListTimeSlot( reservationRule.getIdReservationRule( ), dayOfWeek, startingHour, endingHour, nDuration,
+                    nMaxCapacity );
         }
-        if(CollectionUtils.isNotEmpty( WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( )))) {
-        	
-        	WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ) );
+        if ( CollectionUtils.isNotEmpty( WeekDefinitionService.findByReservationRule( appointmentForm.getIdReservationRule( ) ) ) )
+        {
+
+            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( appointmentForm.getIdForm( ) );
         }
     }
 
@@ -198,15 +206,16 @@ public final class ReservationRuleService
      */
     public static void removeReservationRule( int nIdReservationRule )
     {
-        ReservationRule rule= findReservationRuleById( nIdReservationRule );
-        for( WorkingDay day: rule.getListWorkingDay( ) ) {
-        	
+        ReservationRule rule = findReservationRuleById( nIdReservationRule );
+        for ( WorkingDay day : rule.getListWorkingDay( ) )
+        {
+
             TimeSlotHome.deleteByIdWorkingDay( day.getIdWorkingDay( ) );
-            WorkingDayHome.delete(day.getIdWorkingDay( ));
+            WorkingDayHome.delete( day.getIdWorkingDay( ) );
 
         }
         ReservationRuleHome.delete( rule.getIdReservationRule( ) );
-        
+
     }
 
     /**
@@ -231,7 +240,7 @@ public final class ReservationRuleService
      */
     public static ReservationRule updateReservationRule( AppointmentFormDTO appointmentForm, int nIdForm )
     {
-        ReservationRule reservationRule = ReservationRuleService.findReservationRuleById( appointmentForm.getIdReservationRule( )  );
+        ReservationRule reservationRule = ReservationRuleService.findReservationRuleById( appointmentForm.getIdReservationRule( ) );
         if ( reservationRule == null )
         {
             reservationRule = createReservationRule( appointmentForm, nIdForm );
@@ -258,9 +267,9 @@ public final class ReservationRuleService
     {
         reservationRule.setMaxCapacityPerSlot( appointmentForm.getMaxCapacityPerSlot( ) );
         reservationRule.setMaxPeoplePerAppointment( appointmentForm.getMaxPeoplePerAppointment( ) );
-        reservationRule.setName( appointmentForm.getName( ));
-        reservationRule.setDescriptionRule( appointmentForm.getDescriptionRule( ));
-        reservationRule.setColor( appointmentForm.getColor( ));
+        reservationRule.setName( appointmentForm.getName( ) );
+        reservationRule.setDescriptionRule( appointmentForm.getDescriptionRule( ) );
+        reservationRule.setColor( appointmentForm.getColor( ) );
         reservationRule.setIdForm( nIdForm );
     }
 
@@ -273,14 +282,15 @@ public final class ReservationRuleService
      *            the date
      * @return the reservation rule to apply at this date
      */
-   public static ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
+    public static ReservationRule findReservationRuleByIdFormAndClosestToDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
-	   ReservationRule reservationRule= ReservationRuleHome.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply);
-      if( reservationRule != null ) {
-    	   
-   	   	reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
-     }
-	   return reservationRule;
+        ReservationRule reservationRule = ReservationRuleHome.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
+        if ( reservationRule != null )
+        {
+
+            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+        }
+        return reservationRule;
     }
 
     /**
@@ -294,12 +304,13 @@ public final class ReservationRuleService
      */
     public static ReservationRule findReservationRuleByIdFormAndDateOfApply( int nIdForm, LocalDate dateOfApply )
     {
-    	
-    	ReservationRule reservationRule = ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );  
-    	if( reservationRule != null ) {
-    		   
-    		reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
-    	}
+
+        ReservationRule reservationRule = ReservationRuleHome.findByIdFormAndDateOfApply( nIdForm, dateOfApply );
+        if ( reservationRule != null )
+        {
+
+            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+        }
         return reservationRule;
     }
 
@@ -312,12 +323,13 @@ public final class ReservationRuleService
      */
     public static ReservationRule findReservationRuleById( int nIdReservationRule )
     {
-         ReservationRule reservationRule= ReservationRuleHome.findByPrimaryKey( nIdReservationRule );
-         if( reservationRule != null ) {
-  		   
-     		reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
-     	 }
-         return reservationRule;
+        ReservationRule reservationRule = ReservationRuleHome.findByPrimaryKey( nIdReservationRule );
+        if ( reservationRule != null )
+        {
+
+            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+        }
+        return reservationRule;
     }
 
     /**
@@ -333,10 +345,11 @@ public final class ReservationRuleService
         List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         for ( ReservationRule reservationRule : listReservationRule )
         {
-        	listRule.addItem( reservationRule.getIdReservationRule( ), reservationRule.getName( ) );
+            listRule.addItem( reservationRule.getIdReservationRule( ), reservationRule.getName( ) );
         }
         return listRule;
     }
+
     /**
      * Find all the reservation rule of a form
      * 
@@ -344,17 +357,18 @@ public final class ReservationRuleService
      *            the form Id
      * @return an HashMap with the date of apply in key and the reservation rule in value
      */
-    public static Map<WeekDefinition, ReservationRule> findAllReservationRule( int nIdForm,  Collection<WeekDefinition> listWeekDefinition )
+    public static Map<WeekDefinition, ReservationRule> findAllReservationRule( int nIdForm, Collection<WeekDefinition> listWeekDefinition )
     {
-    	
+
         Map<WeekDefinition, ReservationRule> mapReservationRule = new HashMap<>( );
-        List<ReservationRule> listReservationRule= ReservationRuleHome.findByIdForm( nIdForm );
+        List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         for ( WeekDefinition weekDefinition : listWeekDefinition )
         {
-        	 	ReservationRule reservationRule = listReservationRule.stream().filter( p ->p.getIdReservationRule() == weekDefinition.getIdReservationRule( )).findAny().orElse( null );        	 	
-        	    reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
-        		mapReservationRule.put(weekDefinition , reservationRule);
-        	
+            ReservationRule reservationRule = listReservationRule.stream( ).filter( p -> p.getIdReservationRule( ) == weekDefinition.getIdReservationRule( ) )
+                    .findAny( ).orElse( null );
+            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+            mapReservationRule.put( weekDefinition, reservationRule );
+
         }
         return mapReservationRule;
     }
@@ -368,38 +382,38 @@ public final class ReservationRuleService
      */
     public static List<ReservationRule> findListReservationRule( int nIdForm )
     {
-    	
-    	List<ReservationRule> listReservationRule= ReservationRuleHome.findByIdForm( nIdForm );
+
+        List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         for ( ReservationRule reservationRule : listReservationRule )
         {
-        	reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+            reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
         }
         return listReservationRule;
     }
+
     /**
      * Returns a list of the reservation rules of a form
      * 
      * @param nIdForm
      *            the form id
      * @param listWeekDefinition
-     * 			  the week definition list
+     *            the week definition list
      * @return a list of reservation rules of the form
      */
     public static List<ReservationRule> findListReservationRule( int nIdForm, Collection<WeekDefinition> listWeekDefinition )
     {
-    	
-    	List<ReservationRule> listReservationRule= new ArrayList<>( );
+
+        List<ReservationRule> listReservationRule = new ArrayList<>( );
         for ( ReservationRule reservationRule : ReservationRuleHome.findByIdForm( nIdForm ) )
         {
-        	if( listWeekDefinition.stream().anyMatch( p -> p.getIdReservationRule() == reservationRule.getIdReservationRule( ))) {
-        		
-        		reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
-        		listReservationRule.add(reservationRule);
-        	}
+            if ( listWeekDefinition.stream( ).anyMatch( p -> p.getIdReservationRule( ) == reservationRule.getIdReservationRule( ) ) )
+            {
+
+                reservationRule.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( reservationRule.getIdReservationRule( ) ) );
+                listReservationRule.add( reservationRule );
+            }
         }
         return listReservationRule;
     }
-    
-    
 
 }

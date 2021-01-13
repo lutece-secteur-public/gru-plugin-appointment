@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ public final class AppointmentResponseHome
 {
 
     // Static variable pointed at the DAO instance
-    private static IAppointmentResponseDAO _dao = SpringContextService.getBean( IAppointmentResponseDAO.BEAN_NAME );
+    private static IAppointmentResponseDAO _dao = SpringContextService.getBean( "appointment.appointmentResponseDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**

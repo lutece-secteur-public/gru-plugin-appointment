@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,8 +50,14 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 public final class SlotHome
 {
 
+    /**
+     * The name of the bean of the DAO
+     */
+    static String BEAN_NAME = ;
+
+
     // Static variable pointed at the DAO instance
-    private static ISlotDAO _dao = SpringContextService.getBean( ISlotDAO.BEAN_NAME );
+    private static ISlotDAO _dao = SpringContextService.getBean( "appointment.slotDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -99,16 +105,17 @@ public final class SlotHome
     {
         _dao.delete( nKey, _plugin );
     }
-    
+
     /**
      * Delete a appointment from the table
      * 
      * @param nIdForm
      *            identifier of the form
      */
-    public static void deleteByIdForm( int nIdForm ) {
-    	
-    	_dao.deleteByIdForm( nIdForm, _plugin );
+    public static void deleteByIdForm( int nIdForm )
+    {
+
+        _dao.deleteByIdForm( nIdForm, _plugin );
     }
 
     /**
@@ -138,7 +145,7 @@ public final class SlotHome
     {
         return _dao.findByIdFormAndDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
     }
-    
+
     /**
      * Returns all the slot containing an appointment for the date range
      * 
@@ -152,10 +159,11 @@ public final class SlotHome
      *            the plugin
      * @return a list of slots whose dates are included in the given period and is containing an appointment
      */
-    public static List<Slot> findSlotWithAppointmentByDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime ){
-        
-    	return _dao.findSlotWithAppointmentByDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
-	
+    public static List<Slot> findSlotWithAppointmentByDateRange( int nIdForm, LocalDateTime startingDateTime, LocalDateTime endingDateTime )
+    {
+
+        return _dao.findSlotWithAppointmentByDateRange( nIdForm, startingDateTime, endingDateTime, _plugin );
+
     }
 
     /**
@@ -233,6 +241,7 @@ public final class SlotHome
     {
         return _dao.findByIdAppointment( nIdAppointment, _plugin );
     }
+
     /**
      * Update Potential Remaining Places
      * 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,11 +47,6 @@ public interface ITimeSlotDAO
 {
 
     /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = "appointment.timeSlotDAO";
-
-    /**
      * Insert a new record in the table
      * 
      * @param timeSlot
@@ -80,8 +75,9 @@ public interface ITimeSlotDAO
      *            the plugin
      */
     void delete( int nIdTimeSlot, Plugin plugin );
+
     /**
-     * Delete a record from the table  by working day
+     * Delete a record from the table by working day
      * 
      * @param nIdTimeSlot
      *            identifier of the timeSlot to delete

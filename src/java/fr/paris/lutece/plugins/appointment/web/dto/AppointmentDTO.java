@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -274,6 +274,7 @@ public final class AppointmentDTO extends Appointment
     {
         this._endingTime = endingTime;
     }
+
     /**
      * Get the date of the appointment
      * 

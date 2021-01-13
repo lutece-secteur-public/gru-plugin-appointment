@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class DisplayHome
 {
-
     // Static variable pointed at the DAO instance
-    private static IDisplayDAO _dao = SpringContextService.getBean( IDisplayDAO.BEAN_NAME );
+    private static IDisplayDAO _dao = SpringContextService.getBean( "appointment.displayDAO");
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -96,6 +95,7 @@ public final class DisplayHome
     {
         _dao.delete( nKey, _plugin );
     }
+
     /**
      * Delete the Display whose id form is specified in parameter
      * 
@@ -104,7 +104,7 @@ public final class DisplayHome
      */
     public static void deleteByIdForm( int nIdForm )
     {
-        _dao.deleteByIdForm(nIdForm, _plugin);
+        _dao.deleteByIdForm( nIdForm, _plugin );
     }
 
     /**

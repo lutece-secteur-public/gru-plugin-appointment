@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,9 +48,8 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class FormHome
 {
-
     // Static variable pointed at the DAO instance
-    private static IFormDAO _dao = SpringContextService.getBean( IFormDAO.BEAN_NAME );
+    private static IFormDAO _dao = SpringContextService.getBean( "appointment.formDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );
 
     /**
@@ -156,5 +155,4 @@ public final class FormHome
 
     }
 
-    
 }

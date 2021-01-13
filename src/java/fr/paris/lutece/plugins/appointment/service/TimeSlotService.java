@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -209,7 +209,7 @@ public final class TimeSlotService
     {
         WorkingDay workingDay = WorkingDayService.findWorkingDayById( timeSlot.getIdWorkingDay( ) );
         ReservationRule reservationRule = ReservationRuleHome.findByPrimaryKey( workingDay.getIdReservationRule( ) );
-        List<WeekDefinition> listWeek= WeekDefinitionHome.findByReservationRule( reservationRule.getIdReservationRule( ) );
+        List<WeekDefinition> listWeek = WeekDefinitionHome.findByReservationRule( reservationRule.getIdReservationRule( ) );
 
         int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
         if ( bEndingTimeHasChanged )
@@ -229,9 +229,10 @@ public final class TimeSlotService
             saveTimeSlot( timeSlot );
         }
 
-        if( CollectionUtils.isNotEmpty( listWeek ) ) {
-        	
-        	WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( reservationRule.getIdForm( ));
+        if ( CollectionUtils.isNotEmpty( listWeek ) )
+        {
+
+            WeekDefinitionManagerListener.notifyListenersListWeekDefinitionChanged( reservationRule.getIdForm( ) );
         }
     }
 
@@ -448,6 +449,7 @@ public final class TimeSlotService
             }
         }
     }
+
     /**
      * Create in database the slots given
      * 

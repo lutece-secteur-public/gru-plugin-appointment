@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2020, City of Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
  * @author Laurent Payen
  *
  */
-public class ReservationRuleDTO  implements Serializable
+public class ReservationRuleDTO implements Serializable
 {
 
     /**
@@ -61,19 +61,19 @@ public class ReservationRuleDTO  implements Serializable
      * Id of the reservation rule.
      */
     private int _nIdReservationRule;
-    
+
     @NotBlank( message = "#i18n{appointment.validation.week.name.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.week.Title.size}" )
     private String _strName;
-    
+
     @NotBlank( message = "#i18n{appointment.validation.week.description.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.week.description.size}" )
     private String _strDescriptionRule;
-    
+
     @NotBlank( message = "#i18n{appointment.validation.week.color.notEmpty}" )
     @Size( max = 255, message = "#i18n{appointment.validation.week.color.size}" )
     private String _strColor;
-    
+
     private boolean _bEnable = true;
 
     /**
@@ -94,7 +94,7 @@ public class ReservationRuleDTO  implements Serializable
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
     @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
     private int _nDurationAppointments;
-    
+
     /**
      * Maximum capacity for a slot
      */
@@ -111,7 +111,7 @@ public class ReservationRuleDTO  implements Serializable
      * The Form Id the Reservation Rule belongs to (foreign key)
      */
     private int _nIdForm;
-    
+
     /**
      * List of the working days that define the week definition
      */
@@ -137,140 +137,153 @@ public class ReservationRuleDTO  implements Serializable
     {
         this._nIdReservationRule = nIdReservationRule;
     }
-    
+
     /**
      * Returns the Name
+     * 
      * @return The Name
-     */ 
-     public String getName()
-     {
-         return _strName;
-     }
- 
+     */
+    public String getName( )
+    {
+        return _strName;
+    }
+
     /**
      * Sets the Name
-     * @param strName The Name
-     */ 
-     public void setName( String strName )
-     {
-         _strName = strName;
-     }
- 
+     * 
+     * @param strName
+     *            The Name
+     */
+    public void setName( String strName )
+    {
+        _strName = strName;
+    }
+
     /**
      * Returns the Description
+     * 
      * @return The Description
-     */ 
-     public String getDescriptionRule()
-     {
-         return _strDescriptionRule;
-     }
- 
+     */
+    public String getDescriptionRule( )
+    {
+        return _strDescriptionRule;
+    }
+
     /**
      * Sets the Description
-     * @param strDescription The Description
-     */ 
-     public void setDescriptionRule( String strDescription )
-     {
-    	 _strDescriptionRule = strDescription;
-     }
- 
+     * 
+     * @param strDescription
+     *            The Description
+     */
+    public void setDescriptionRule( String strDescription )
+    {
+        _strDescriptionRule = strDescription;
+    }
+
     /**
      * Returns the Color
+     * 
      * @return The Color
-     */ 
-     public String getColor()
-     {
-         return _strColor;
-     }
- 
+     */
+    public String getColor( )
+    {
+        return _strColor;
+    }
+
     /**
      * Sets the Color
-     * @param strColor The Color
-     */ 
-     public void setColor( String strColor )
-     {
-         _strColor = strColor;
-     }
- 
+     * 
+     * @param strColor
+     *            The Color
+     */
+    public void setColor( String strColor )
+    {
+        _strColor = strColor;
+    }
+
     /**
      * Returns the Enable
+     * 
      * @return The Enable
-     */ 
-     public boolean getEnable()
-     {
-         return _bEnable;
-     }
- 
+     */
+    public boolean getEnable( )
+    {
+        return _bEnable;
+    }
+
     /**
      * Sets the Enable
-     * @param bEnable The Enable
-     */ 
-     public void setEnable( boolean bEnable )
-     {
-         _bEnable = bEnable;
-     }
-     /**
-      * Returns the starting time of the working day of the form
-      * 
-      * @return The starting time
-      */
-     public String getTimeStart( )
-     {
-         return _strTimeStart;
-     }
+     * 
+     * @param bEnable
+     *            The Enable
+     */
+    public void setEnable( boolean bEnable )
+    {
+        _bEnable = bEnable;
+    }
 
-     /**
-      * Sets the starting time of the working day of the form
-      * 
-      * @param the
-      *            starting time to set The TimeStart
-      */
-     public void setTimeStart( String timeStart )
-     {
-         _strTimeStart = timeStart;
-     }
+    /**
+     * Returns the starting time of the working day of the form
+     * 
+     * @return The starting time
+     */
+    public String getTimeStart( )
+    {
+        return _strTimeStart;
+    }
 
-     /**
-      * Returns the ending time of the working day of the form
-      * 
-      * @return The ending time
-      */
-     public String getTimeEnd( )
-     {
-         return _strTimeEnd;
-     }
+    /**
+     * Sets the starting time of the working day of the form
+     * 
+     * @param the
+     *            starting time to set The TimeStart
+     */
+    public void setTimeStart( String timeStart )
+    {
+        _strTimeStart = timeStart;
+    }
 
-     /**
-      * Sets the ending time of the working day of the form
-      * 
-      * @param the
-      *            ending time to set
-      */
-     public void setTimeEnd( String timeEnd )
-     {
-         _strTimeEnd = timeEnd;
-     }
+    /**
+     * Returns the ending time of the working day of the form
+     * 
+     * @return The ending time
+     */
+    public String getTimeEnd( )
+    {
+        return _strTimeEnd;
+    }
 
-     /**
-      * Returns the duration of an appointment
-      * 
-      * @return The duration of an appointment
-      */
-     public int getDurationAppointments( )
-     {
-         return _nDurationAppointments;
-     }
+    /**
+     * Sets the ending time of the working day of the form
+     * 
+     * @param the
+     *            ending time to set
+     */
+    public void setTimeEnd( String timeEnd )
+    {
+        _strTimeEnd = timeEnd;
+    }
 
-     /**
-      * Sets the duration of an appointment
-      * 
-      * @param nDurationAppointments
-      *            The Duration of an Appointments
-      */
-     public void setDurationAppointments( int nDurationAppointments )
-     {
-         _nDurationAppointments = nDurationAppointments;
-     }
+    /**
+     * Returns the duration of an appointment
+     * 
+     * @return The duration of an appointment
+     */
+    public int getDurationAppointments( )
+    {
+        return _nDurationAppointments;
+    }
+
+    /**
+     * Sets the duration of an appointment
+     * 
+     * @param nDurationAppointments
+     *            The Duration of an Appointments
+     */
+    public void setDurationAppointments( int nDurationAppointments )
+    {
+        _nDurationAppointments = nDurationAppointments;
+    }
 
     /**
      * Get the maximum capacity for a slot
@@ -333,7 +346,8 @@ public class ReservationRuleDTO  implements Serializable
     public void setIdForm( int nIdForm )
     {
         this._nIdForm = nIdForm;
-    }  
+    }
+
     /**
      * Get the list of the working days of the week
      * 
