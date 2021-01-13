@@ -1253,7 +1253,7 @@ public class AppointmentApp extends MVCApplication
             {
                 model.put( MARK_APPOINTMENT_PASSED, Boolean.TRUE );
             }
-            model.put( MARK_DATE_APPOINTMENT, appointmentDto.getDateAppointmentTaken( ).format( Utilities.getFormatter( ) ) );
+            model.put( MARK_DATE_APPOINTMENT, appointmentDto.getDateOfTheAppointment( ) );
             model.put( MARK_STARTING_TIME_APPOINTMENT, appointmentDto.getStartingTime( ) );
             model.put( MARK_ENDING_TIME_APPOINTMENT, appointmentDto.getEndingTime( ) );
             model.put( MARK_PLACES, appointment.getNbPlaces( ) );
