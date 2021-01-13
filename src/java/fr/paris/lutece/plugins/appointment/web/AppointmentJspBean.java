@@ -805,7 +805,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
         }
         Locale locale = getLocale( );
         List<AppointmentDTO>  listAppointmentsDTO= new ArrayList<>( );
-        if(_filter != null && _filter.getIdForm() != Integer.parseInt( strIdForm )  ) {
+        if(_filter != null && _filter.getIdForm() == Integer.parseInt( strIdForm )  ) {
         	
         	listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( _filter );
         }
