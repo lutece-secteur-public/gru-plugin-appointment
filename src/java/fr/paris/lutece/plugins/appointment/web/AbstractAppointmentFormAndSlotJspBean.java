@@ -64,6 +64,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     protected static final String MESSAGE_ERROR_DAY_DURATION_APPOINTMENT_NOT_MULTIPLE_FORM = "appointment.message.error.durationAppointmentDayNotMultipleForm";
     private static final String MESSAGE_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.numberOfSeatsBookedAndConcurrentAppointments";
     private static final String MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED = "appointment.message.error.multiSlot.numberOfSeatsBookedAndConcurrentAppointments";
+    private static final String MESSAGE_ERROR_NUMBER_DAY_BETWEEN_TWO_APPOINTMENTS= "appointment.message.error.nbDaysBetweenTwoAppointments";
+    private static final String MESSAGE_ERROR_MAX_APPOINTMENTS_PER_USER = "appointment.message.error.nbMaxAppointmentsPerUser";
 
     // Constantes
     protected static final String VAR_CAP= "var_cap";
@@ -93,7 +95,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     protected boolean checkConstraints( AppointmentFormDTO appointmentForm )
     {
         return checkStartingAndEndingTime( appointmentForm ) && checkStartingAndEndingValidityDate( appointmentForm )
-                && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm ) && checkMultiSlotFormTypeBookablePlaces( appointmentForm );
+                && checkSlotCapacityAndPeoplePerAppointment( appointmentForm ) && checkAtLeastOneWorkingDayOpen( appointmentForm ) && checkMultiSlotFormTypeBookablePlaces( appointmentForm ) && checkControlMaxAppointmentsPerUser( appointmentForm );
     }
 
     /**
@@ -230,6 +232,25 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
         {
             bReturn = false;
             addError( MESSAGE_MULTI_SLOT_ERROR_NUMBER_OF_SEATS_BOOKED, getLocale( ) );
+        }
+        return bReturn;
+    }
+    /**
+     * Check that the email is required if the value of max appointments on a defined period or delay between two appointments for the same use is not equal to 0
+     * @param appointmentForm the appointmentForm DTO
+     * @return false if email is not required and the value of max appointments on a defined period or delay between two appointments for the same use is not equal to 0
+     */
+    protected boolean checkControlMaxAppointmentsPerUser( AppointmentFormDTO appointmentForm )
+    {
+        boolean bReturn = true;
+        if ( appointmentForm.getNbDaysBeforeNewAppointment( ) != 0 && !appointmentForm.getEnableMandatoryEmail( ))
+        {
+            bReturn = false;
+            addError( MESSAGE_ERROR_NUMBER_DAY_BETWEEN_TWO_APPOINTMENTS, getLocale( ) );
+        }
+        if( appointmentForm.getNbMaxAppointmentsPerUser( ) != 0 && !appointmentForm.getEnableMandatoryEmail( ) ) {
+        	bReturn = false;
+            addError( MESSAGE_ERROR_MAX_APPOINTMENTS_PER_USER, getLocale( ) );
         }
         return bReturn;
     }

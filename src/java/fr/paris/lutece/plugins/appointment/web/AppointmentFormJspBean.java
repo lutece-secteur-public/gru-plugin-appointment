@@ -460,7 +460,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         // Import of the closing days file
         importClosingDayFile( mRequest, nIdForm );
         setParametersDays( _appointmentFormDTO, appointmentFormDb );
-        if ( !validateBean( _appointmentFormDTO, VALIDATION_ATTRIBUTES_PREFIX ) || !checkStartingAndEndingValidityDate( _appointmentFormDTO ) )
+        if ( !validateBean( _appointmentFormDTO, VALIDATION_ATTRIBUTES_PREFIX ) || !checkStartingAndEndingValidityDate( _appointmentFormDTO ) || checkControlMaxAppointmentsPerUser( _appointmentFormDTO ))
         {
             return redirect( request, VIEW_MODIFY_APPOINTMENTFORM, PARAMETER_ID_FORM, nIdForm );
         }

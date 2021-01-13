@@ -233,7 +233,7 @@ public final class AppointmentUtilities
     {
         boolean bCheckPassed = true;
         int nbDaysBetweenTwoAppointments = form.getNbDaysBeforeNewAppointment( );
-        if ( nbDaysBetweenTwoAppointments != 0 )
+        if ( nbDaysBetweenTwoAppointments != 0 && StringUtils.isNotEmpty( strEmail ))
         {
             AppointmentFilterDTO filter = new AppointmentFilterDTO( );
             filter.setEmail( strEmail );
@@ -348,7 +348,7 @@ public final class AppointmentUtilities
      */
     public static boolean checkNbMaxAppointmentsOnAGivenPeriod( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form )
     {
-    	if ( form.getNbMaxAppointmentsPerUser() > 0 )
+    	if ( form.getNbMaxAppointmentsPerUser() > 0 && StringUtils.isNotEmpty( strEmail ))
         {
 	        // Get the date of the future appointment
 	        LocalDate dateOfTheAppointment = getStartingDateTime( appointmentDTO ).toLocalDate( );        
