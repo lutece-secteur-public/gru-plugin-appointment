@@ -33,10 +33,16 @@
  */
 package fr.paris.lutece.plugins.appointment.business.appointment;
 
-public class AppointmentSlot
+import java.io.Serializable;
+
+public class AppointmentSlot implements Serializable
 {
 
-    // Variables declarations
+	/**
+     * Serial version UID
+     */
+	private static final long serialVersionUID = 2706298728160930488L;
+	// Variables declarations
     private int _nIdAppointment;
     private int _nIdSlot;
     private int _nNbPlaces;

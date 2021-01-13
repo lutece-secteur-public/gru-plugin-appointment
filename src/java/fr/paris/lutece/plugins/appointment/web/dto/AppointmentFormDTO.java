@@ -1035,24 +1035,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
         return Integer.toString( getIdForm( ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object clone( )
-    {
-        try
-        {
-            return super.clone( );
-        }
-        catch( CloneNotSupportedException e )
-        {
-            AppLogService.error( e.getMessage( ), e );
-
-            return null;
-        }
-    }
-
     @Override
     public String getWorkgroup( )
     {

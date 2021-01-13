@@ -100,11 +100,6 @@ public class Appointment extends User
     private String _strAdminUserCreate;
 
     /**
-     * User id
-     */
-    private int _nIdUser;
-
-    /**
      * The slots on which the appointment is
      */
     private List<Slot> _listSlot;
@@ -248,28 +243,6 @@ public class Appointment extends User
     {
         this._nIdAppointment = nIdAppointment;
     }
-
-    /**
-     * Get the User Id of the Appointment
-     * 
-     * @return the User Id of the Appointment
-     */
-    public int getIdUser( )
-    {
-        return _nIdUser;
-    }
-
-    /**
-     * Set the User Id of the Appointment
-     * 
-     * @param nIdUser
-     *            the User Id of the Appointment
-     */
-    public void setIdUser( int nIdUser )
-    {
-        this._nIdUser = nIdUser;
-    }
-
     /**
      * get the admin user assigned to the appointment
      * 

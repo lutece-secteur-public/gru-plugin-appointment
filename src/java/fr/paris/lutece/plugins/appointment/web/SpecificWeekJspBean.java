@@ -225,7 +225,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         model.put( PARAMETER_ID_FORM, nIdForm );
         model.put( PARAMETER_EVENTS_COMMENTS,
                 CommentHome.selectCommentsList( Date.valueOf( dateOfDisplay ), Date.valueOf( endingDateOfDisplay ), nIdForm ) );
-        AppointmentFormJspBean.addElementsToModel( request, _appointmentForm, getUser( ), getLocale( ), model );
+        AppointmentFormJspBean.addElementsToModel( _appointmentForm, getUser( ), getLocale( ), model );
         model.put(MARK_LOCALE_TINY, getLocale( ) );
         return getPage( MESSAGE_SPECIFIC_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_SPECIFIC_WEEK, model );
     }

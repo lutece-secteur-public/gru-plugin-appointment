@@ -1213,7 +1213,7 @@ public class AppointmentApp extends MVCApplication
         Locale locale = getLocale( request );
         _appointmentForm= null;
         _validatedAppointment= null;
-        String strHtmlContent = getFormListHtml( request, locale, getModel( ) );
+        String strHtmlContent = getFormListHtml( locale, getModel( ) );
         XPage xpage = new XPage( );
         xpage.setContent( strHtmlContent );
         xpage.setPathLabel( getDefaultPagePath( locale ) );
@@ -1438,7 +1438,7 @@ public class AppointmentApp extends MVCApplication
      *            The locale
      * @return The HTML content to display
      */
-    public static String getFormListHtml( HttpServletRequest request, Locale locale, Map<String, Object>  model )
+    public static String getFormListHtml(  Locale locale, Map<String, Object>  model )
     {
     	model = (model == null) ?new HashMap<>( ):model;
         List<AppointmentFormDTO> listAppointmentForm = FormService.buildAllActiveAndDisplayedOnPortletAppointmentForm( );

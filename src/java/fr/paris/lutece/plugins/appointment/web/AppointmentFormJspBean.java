@@ -276,7 +276,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
        
         Map<String, Object> model = getModel( );
-        addElementsToModel( request, _appointmentFormDTO, getUser( ), getLocale( ), model );
+        addElementsToModel( _appointmentFormDTO, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_APPOINTMENTFORM, TEMPLATE_CREATE_APPOINTMENTFORM, model );
     }
 
@@ -410,7 +410,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         	_appointmentFormDTO = FormService.buildAppointmentForm( nIdForm, 0 );
         }
         Map<String, Object> model = getModel( );
-        addElementsToModel( request, _appointmentFormDTO, getUser( ), getLocale( ), model );
+        addElementsToModel( _appointmentFormDTO, getUser( ), getLocale( ), model );
         return getPage( PROPERTY_PAGE_TITLE_GENERAL_SETTINGS, TEMPLATE_MODIFY_APPOINTMENTFORM, model );
     }
 
@@ -656,7 +656,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      * @param model
      *            the model to add elements in
      */
-    public static void addElementsToModel( HttpServletRequest request, AppointmentFormDTO appointmentForm, AdminUser user, Locale locale,
+    public static void addElementsToModel( AppointmentFormDTO appointmentForm, AdminUser user, Locale locale,
             Map<String, Object> model )
     {
   	    Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );

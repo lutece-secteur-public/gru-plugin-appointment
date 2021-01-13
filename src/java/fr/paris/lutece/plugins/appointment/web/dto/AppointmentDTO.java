@@ -107,11 +107,6 @@ public final class AppointmentDTO extends Appointment
     private LocalTime _endingTime;
 
     /**
-     * Tell if the appointment has been cancelled or not
-     */
-    private boolean _isCancelled;
-
-    /**
      * The state of the appointment
      */
     private transient State _state;
@@ -279,28 +274,6 @@ public final class AppointmentDTO extends Appointment
     {
         this._endingTime = endingTime;
     }
-
-    /**
-     * Tell if the appointment is cancelled
-     * 
-     * @return true if the appointment is cancelled
-     */
-    public boolean getIsCancelled( )
-    {
-        return _isCancelled;
-    }
-
-    /**
-     * Set if the appointment is cancelled
-     * 
-     * @param isCancelled
-     *            the boolean value
-     */
-    public void setIsCancelled( boolean isCancelled )
-    {
-        this._isCancelled = isCancelled;
-    }
-
     /**
      * Get the date of the appointment
      * 
