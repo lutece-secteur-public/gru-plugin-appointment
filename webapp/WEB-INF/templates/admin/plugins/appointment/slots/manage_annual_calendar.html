@@ -104,7 +104,7 @@ function editEvent( event) {
 }
 
 function deleteEvent(event) {
-   location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doUnssignWeek&id_week_definition='+event.idweekdef+'&id_form=${id_form}';
+   location.href= 'jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?action=doRemoveWeekFromCalendar&id_week_definition='+event.idweekdef+'&id_form=${id_form}';
 }
 
 $(function() {
