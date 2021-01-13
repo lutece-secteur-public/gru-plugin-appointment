@@ -49,13 +49,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
  */
 public final class SlotHome
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    static String BEAN_NAME = ;
-
-
     // Static variable pointed at the DAO instance
     private static ISlotDAO _dao = SpringContextService.getBean( "appointment.slotDAO" );
     private static Plugin _plugin = PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME );

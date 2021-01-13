@@ -189,7 +189,7 @@ public final class AppointmentUtilities
      *            the form
      * @return false if the delay is not respected
      */
-    public static boolean checkNbDaysBetweenTwoAppointments( AppointmentDTO appointmentDTO, String strFirstName, String strLastName, String strEmail,
+    public static boolean checkNbDaysBetweenTwoAppointments( AppointmentDTO appointmentDTO, String strEmail,
             AppointmentFormDTO form )
     {
         boolean bCheckPassed = true;

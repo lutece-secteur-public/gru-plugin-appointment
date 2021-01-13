@@ -912,7 +912,6 @@ public final class SlotSafeService
             }
             else
             {
-
                 throw new SlotFullException( "ERROR SLOT LOCKED" );
             }
 
