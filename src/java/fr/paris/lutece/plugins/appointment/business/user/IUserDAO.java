@@ -45,12 +45,6 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
  */
 public interface IUserDAO
 {
-
-    /**
-     * The name of the bean of the DAO
-     */
-    String BEAN_NAME = "appointment.userDAO";
-
     /**
      * Insert a new record in the table.
      * 

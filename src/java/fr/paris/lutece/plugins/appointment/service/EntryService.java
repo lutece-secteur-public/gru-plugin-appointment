@@ -643,7 +643,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
                     if ( formError != null )
                     {
-                        formError.setUrl( getEntryUrl( entry, appointment.getIdForm( ) ) );
+                        formError.setUrl( getEntryUrl( entry ) );
                     }
                 }
                 else
@@ -707,11 +707,9 @@ public final class EntryService extends RemovalListenerService implements Serial
      * 
      * @param entry
      *            the entry
-     * @param nIdform
-     *            the form id
      * @return the url
      */
-    public static String getEntryUrl( Entry entry, int nIdform )
+    public static String getEntryUrl( Entry entry)
     {
         UrlItem url = new UrlItem( AppPathService.getPortalUrl( ) );
         url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppointmentPlugin.PLUGIN_NAME );
