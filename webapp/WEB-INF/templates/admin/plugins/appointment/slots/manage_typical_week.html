@@ -63,6 +63,7 @@
                             <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
                             <@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/> 
                             <@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
+                            <@input type='hidden' id='enableMandatoryEmail' name='enableMandatoryEmail' value='${appointmentform.enableMandatoryEmail?then("true", "false")}'/>                        
                             <@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleStructuralsParameters}'>
                             <#if id_reservation_rule == 0 >
                                 <@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
@@ -434,8 +435,9 @@ $(function () {
                             //return true;
                         } else {
                             eventData ='{' + $(this).data('event') + '}';                       
-                            const evt = JSON.parse(eventData); 
-                            $('#timeIsOpen').prop( "checked", evt.isOpen );
+                            const evt = JSON.parse(eventData);
+                            const isOpen = JSON.parse( evt.isOpen )
+                            $('#timeIsOpen').prop( "checked", isOpen );
                             $('#idTimeSlot').val( evt.idTimeSlot );
                             $('#idWorkingDay').val( evt.idWorkingDay );
                             $('#timeMaxCapacity').val( evt.maxCapacity );

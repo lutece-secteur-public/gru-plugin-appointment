@@ -56,6 +56,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      * 
      */
     private static final long serialVersionUID = 7709182167218092169L;
+    protected static final String PARAMETER_ERROR_MODIFICATION = "error_modification";
     protected static final String ERROR_MESSAGE_TIME_START_AFTER_TIME_END = "appointment.message.error.timeStartAfterTimeEnd";
     protected static final String ERROR_MESSAGE_TIME_START_AFTER_DATE_END = "appointment.message.error.dateStartAfterTimeEnd";
     protected static final String ERROR_MESSAGE_NO_WORKING_DAY_CHECKED = "appointment.message.error.noWorkingDayChecked";

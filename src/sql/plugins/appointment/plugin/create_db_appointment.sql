@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS appointment_user (
   PRIMARY KEY (id_user)
 );
 CREATE INDEX email_idx ON appointment_user (email ASC);
-CREATE UNIQUE INDEX appointment_user_unique_email ON appointment_user (first_name, last_name, email);
 
 -- -----------------------------------------------------
 -- Table appointment_form

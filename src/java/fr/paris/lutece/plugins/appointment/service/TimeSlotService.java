@@ -338,6 +338,7 @@ public final class TimeSlotService
                     if ( timeSlotToShift.getEndingTime( ).plus( timeToAdd, ChronoUnit.MINUTES ).isAfter( endingTimeOfTheDay ) )
                     {
                         timeSlotToShift.setEndingTime( endingTimeOfTheDay );
+                        timeSlotToShift.setIsOpen( false );
                     }
                     else
                     {

@@ -120,7 +120,6 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String MESSAGE_ERROR_PARSING_JSON = "appointment.message.error.parsing.json";
 
     // Parameters
-    private static final String PARAMETER_ERROR_MODIFICATION = "error_modification";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String PARAMETER_ID_TIME_SLOT = "id_time_slot";
     private static final String PARAMETER_DAY_OF_WEEK = "dow";

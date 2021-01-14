@@ -60,6 +60,7 @@ import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
 import fr.paris.lutece.plugins.appointment.business.display.Display;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.planning.ClosingDay;
+import fr.paris.lutece.plugins.appointment.business.planning.ClosingDayHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
@@ -553,6 +554,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         boolean appointmentsImpacted = false;
         boolean bEndingTimeHasChanged = false;
         boolean bNoApptImpacted = true;
+        LocalDate dateSlot= null;
         StringBuilder sbAlert = new StringBuilder( );
 
         for ( Slot slot : listSlot )
@@ -568,20 +570,19 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     slot.setIsOpen( bIsOpen );
                     bOpeningHasChanged = true;
                 }
-
-                // If we edit the slot, we need to check if this slot is not a closing
-                // day
-                ClosingDay closingDay = ClosingDayService.findClosingDayByIdFormAndDateOfClosingDay( slot.getIdForm( ), slot.getDate( ) );
-                if ( closingDay != null )
+                if( dateSlot == null || !dateSlot.isEqual(slot.getDate( ))) 
                 {
-                    // If the slot is a closing day, we need to remove it from the table
-                    // closing day so that the slot is not in conflict with the
-                    // definition of the closing days
-                    ClosingDayService.removeClosingDay( closingDay );
+	                dateSlot= slot.getDate( );
+	                // If we edit the slot, we need to check if this slot is not a closing day
+	                // If the slot is a closing day, we need to remove it from the table
+	                // closing day so that the slot is not in conflict with the
+	                // definition of the closing days
+	                ClosingDayHome.deleteByIdFormAndDateOfClosingDay( slot.getIdForm( ), dateSlot );
+	                
                 }
                 if ( nVarMaxCapacity != 0 || ( nMaxCapacity >= 0 && nMaxCapacity != slot.getMaxCapacity( ) ) )
                 {
-                    nNewMaxCapacity = ( nVarMaxCapacity != 0 ) ? slot.getMaxCapacity( ) + nVarMaxCapacity : nMaxCapacity;
+                    nNewMaxCapacity = ( nVarMaxCapacity != 0 ) ? (slot.getMaxCapacity( ) + nVarMaxCapacity ): nMaxCapacity;
                     if ( nNewMaxCapacity < 0 )
                     {
 
