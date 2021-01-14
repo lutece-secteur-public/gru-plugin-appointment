@@ -47,7 +47,6 @@ import fr.paris.lutece.plugins.appointment.business.localization.Localization;
 import fr.paris.lutece.plugins.appointment.business.localization.LocalizationHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessageHome;
-import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlotHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
@@ -79,7 +78,9 @@ public class FormServiceTest extends LuteceTestCase
      */
     public void testCreateAppointmentForm( )
     {
-
+    	//Remove all former forms with same title mistaking this test
+    	cleanFormByTitle( TITLE_FORM );
+    	
         int nIdForm = FormService.createAppointmentForm( buildAppointmentForm( ) );
 
         List<Form> listForms = FormService.findFormsByTitle( TITLE_FORM );
@@ -102,9 +103,11 @@ public class FormServiceTest extends LuteceTestCase
     {
         AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
 
+        appointmentForm.setName( "appointment_form" );
         appointmentForm.setTitle( TITLE_FORM );
-        // appointmentForm.setIdCategory(nIdCategory);
+        appointmentForm.setColor( "gray" );
         appointmentForm.setDescription( "Description Form" );
+        appointmentForm.setDescriptionRule( "Description Rule" );
 
         appointmentForm.setTimeStart( "09:00" );
         appointmentForm.setTimeEnd( "18:00" );
@@ -134,8 +137,7 @@ public class FormServiceTest extends LuteceTestCase
         appointmentForm.setIsOpenFriday( Boolean.TRUE );
         appointmentForm.setIsOpenSaturday( Boolean.FALSE );
         appointmentForm.setIsOpenSunday( Boolean.FALSE );
-
-        // appointmentForm.setCalendarTemplateId(nCalendarTemplateId);
+        appointmentForm.setListWorkingDay( WorkingDayService.findListWorkingDayByWeekDefinitionRule( appointmentForm.getIdReservationRule( ) ) );
 
         appointmentForm.setEnableCaptcha( Boolean.TRUE );
         appointmentForm.setEnableMandatoryEmail( Boolean.TRUE );
@@ -172,7 +174,7 @@ public class FormServiceTest extends LuteceTestCase
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         int nIdCopyForm = FormService.copyForm( nIdForm, "Copie" );
         List<DayOfWeek> listopenDays = WorkingDayService.getOpenDays( appointmentForm );
-        AppointmentFormDTO copyAppointmentForm = FormService.buildAppointmentForm( nIdCopyForm, 0, 0 );
+        AppointmentFormDTO copyAppointmentForm = FormService.buildAppointmentForm( nIdCopyForm, 0 );
         assertEquals( WeekDefinitionService.findListWeekDefinition( nIdForm ).size( ), WeekDefinitionService.findListWeekDefinition( nIdCopyForm ).size( ) );
         assertEquals( WorkingDayService.getOpenDays( appointmentForm ), WorkingDayService.getOpenDays( copyAppointmentForm ) );
         assertEquals( "Copie", copyAppointmentForm.getTitle( ) );
@@ -188,6 +190,12 @@ public class FormServiceTest extends LuteceTestCase
         {
             for ( Slot s : SlotService.findListSlot( nIdForm ) )
             {
+            	try ( DAOUtil daoUtil = new DAOUtil( "DELETE FROM appointment_appointment_slot WHERE id_appointment = ?" ) )
+                {
+                    daoUtil.setInt( 1, s.getIdSlot( ) );
+                    daoUtil.executeUpdate( );
+                }
+            	//AppointmentDAO.deleteAppointmentSlot( AppointmentHome.findByIdSlot( s.getIdSlot( ) ), PluginService.getPlugin( AppointmentPlugin.PLUGIN_NAME)  );
                 SlotService.deleteSlot( s );
             }
             Display display = DisplayHome.findByIdForm( nIdForm );
@@ -225,24 +233,33 @@ public class FormServiceTest extends LuteceTestCase
             {
                 FormRuleHome.delete( formRule.getIdFormRule( ) );
             }
+           
             for ( ReservationRule rr : ReservationRuleHome.findByIdForm( nIdForm ) )
-            {
-                ReservationRuleHome.delete( rr.getIdReservationRule( ) );
-            }
+            {    
             for ( WeekDefinition wd : WeekDefinitionHome.findByIdForm( nIdForm ) )
             {
-                for ( WorkingDay wda : WorkingDayHome.findByIdWeekDefinition( wd.getIdWeekDefinition( ) ) )
+                for ( WorkingDay wda : WorkingDayHome.findByIdReservationRule( rr.getIdReservationRule( ) ) )
                 {
-                    for ( TimeSlot ts : TimeSlotHome.findByIdWorkingDay( wda.getIdWorkingDay( ) ) )
-                    {
-                        TimeSlotHome.delete( ts.getIdTimeSlot( ) );
-                    }
-                    WorkingDayHome.delete( wda.getIdWorkingDay( ) );
+                    TimeSlotHome.deleteByIdWorkingDay( wda.getIdWorkingDay( ) );
+                    
                 }
-                WeekDefinitionHome.delete( wd.getIdWeekDefinition( ) );
+                
             }
-
+           
+            WeekDefinitionHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
+            WorkingDayHome.deleteByIdReservationRule( rr.getIdReservationRule( ) );
+            ReservationRuleHome.delete( rr.getIdReservationRule( ) );
+            }
             FormService.removeForm( nIdForm );
         }
+    }
+    
+    public static void cleanFormByTitle( String strFormsTitle )
+    {
+    	List<Form> formsByTitle = FormService.findFormsByTitle( strFormsTitle );
+    	for(Form form : formsByTitle)
+    	{
+    		cleanForm( form.getIdForm( ) );
+    	}
     }
 }

@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.business;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -44,6 +45,8 @@ import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinitionHome;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 /**
@@ -55,7 +58,9 @@ import fr.paris.lutece.test.LuteceTestCase;
 public final class TimeSlotTest extends LuteceTestCase
 {
 
-    public final static LocalTime STARTING_TIME_1 = LocalTime.parse( "09:00" );
+	public final static LocalDate STARTING_DATE_1 = LocalDate.parse( "2021-01-01" );
+    public final static LocalDate ENDING_DATE_1 = LocalDate.parse( "2021-01-15" );
+	public final static LocalTime STARTING_TIME_1 = LocalTime.parse( "09:00" );
     public final static LocalTime STARTING_TIME_2 = LocalTime.parse( "09:30" );
     public final static LocalTime ENDING_TIME_1 = LocalTime.parse( "09:30" );
     public final static LocalTime ENDING_TIME_2 = LocalTime.parse( "10:00" );
@@ -73,11 +78,17 @@ public final class TimeSlotTest extends LuteceTestCase
         FormHome.create( form );
 
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
+        ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
+        ReservationRuleHome.create( reservationRule1 );
+        weekDefinition.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
+        weekDefinition.setDateOfApply( STARTING_DATE_1 );
+        weekDefinition.setEndingDateOfApply( ENDING_DATE_1);
+        //weekDefinition.setIdForm( form.getIdForm( ) );
         WeekDefinitionHome.create( weekDefinition );
 
         WorkingDay workingDay = WorkingDayTest.buildWorkingDay( );
-        workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
+        workingDay.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
+        //workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
         WorkingDayHome.create( workingDay );
 
         // Initialize a TimeSlot
@@ -111,6 +122,7 @@ public final class TimeSlotTest extends LuteceTestCase
         // Clean
         WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
         WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
+        ReservationRuleHome.delete( reservationRule1.getIdReservationRule( ) );
         FormHome.delete( form.getIdForm( ) );
     }
 
@@ -123,11 +135,13 @@ public final class TimeSlotTest extends LuteceTestCase
         FormHome.create( form );
 
         WeekDefinition weekDefinition = WeekDefinitionTest.buildWeekDefinition( );
-        weekDefinition.setIdForm( form.getIdForm( ) );
+        ReservationRule reservationRule1 = Commons.buildReservationRule( form.getIdForm( ) );
+        ReservationRuleHome.create( reservationRule1 );
+        weekDefinition.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
         WeekDefinitionHome.create( weekDefinition );
 
         WorkingDay workingDay = WorkingDayTest.buildWorkingDay( );
-        workingDay.setIdWeekDefinition( weekDefinition.getIdWeekDefinition( ) );
+        workingDay.setIdReservationRule( reservationRule1.getIdReservationRule( ) );
         WorkingDayHome.create( workingDay );
 
         // Initialize a TimeSlot
@@ -144,6 +158,7 @@ public final class TimeSlotTest extends LuteceTestCase
         TimeSlotHome.delete( timeSlot.getIdTimeSlot( ) );
         WorkingDayHome.delete( workingDay.getIdWorkingDay( ) );
         WeekDefinitionHome.delete( weekDefinition.getIdWeekDefinition( ) );
+        ReservationRuleHome.delete( reservationRule1.getIdReservationRule( ) );
         FormHome.delete( form.getIdForm( ) );
 
     }

@@ -116,12 +116,12 @@ public final class WorkingDayDAO implements IWorkingDayDAO
     }
 
     @Override
-    public List<WorkingDay> findByIdWeekDefinitionRule( int nIdWeekDefinitionRule, Plugin plugin )
+    public List<WorkingDay> findByIdReservationRule( int nIdReservationRuleRule, Plugin plugin )
     {
         List<WorkingDay> listWorkingDays = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_WEEK_DEFINITION_RULE, plugin ) )
         {
-            daoUtil.setInt( 1, nIdWeekDefinitionRule );
+            daoUtil.setInt( 1, nIdReservationRuleRule );
             daoUtil.executeQuery( );
             while ( daoUtil.next( ) )
             {

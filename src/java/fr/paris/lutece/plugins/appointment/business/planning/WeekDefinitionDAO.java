@@ -57,7 +57,7 @@ public final class WeekDefinitionDAO implements IWeekDefinitionDAO
     private static final String SQL_QUERY_DELETE_BY_ID_RESERVATION_RULE = "DELETE FROM appointment_week_definition WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_week_definition, date_of_apply, ending_date_of_apply, id_reservation_rule FROM appointment_week_definition ";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_week_definition = ?";
-    private static final String SQL_QUERY_SELECT_BY_ID_FORM = " SELECT appw.id_week_definition, appw.date_of_apply, appw.ending_date_of_apply, appw.id_reservation_rule FROM appointment_week_definition appw INNER JOIN appointment_reservation_rule rule on ( rule.id_reservation_rule = appw.id_reservation_rule ) where rule.id_form= ? ";
+    private static final String SQL_QUERY_SELECT_BY_ID_FORM = " SELECT appw.id_week_definition, appw.date_of_apply, appw.ending_date_of_apply, appw.id_reservation_rule FROM appointment_week_definition appw INNER JOIN appointment_reservation_rule rule on ( rule.id_reservation_rule = appw.id_reservation_rule ) where rule.id_form = ? ";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_BY_ID_FORM + " AND appw.date_of_apply = ? ";
     private static final String SQL_QUERY_SELECT_BY_ID_RESERVATION_RULE_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_COLUMNS
             + " where id_reservation_rule = ? AND date_of_apply = ? ";
