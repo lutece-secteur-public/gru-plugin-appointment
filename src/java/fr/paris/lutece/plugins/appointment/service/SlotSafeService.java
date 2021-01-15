@@ -678,7 +678,6 @@ public final class SlotSafeService
                     if ( slotToShift.getEndingDateTime( ).plus( timeToAdd, ChronoUnit.MINUTES ).isAfter( endingDateTimeOfTheDay ) )
                     {
                         slotToShift.setEndingDateTime( endingDateTimeOfTheDay );
-                        slotToShift.setIsOpen(false);
                     }
                     else
                     {
