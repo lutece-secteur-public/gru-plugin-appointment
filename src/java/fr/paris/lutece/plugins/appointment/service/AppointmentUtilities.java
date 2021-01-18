@@ -61,6 +61,7 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
+import fr.paris.lutece.plugins.appointment.business.category.Category;
 import fr.paris.lutece.plugins.appointment.business.planning.TimeSlot;
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
@@ -361,7 +362,6 @@ public final class AppointmentUtilities
             filter.setStatus( 0 );
             if ( form.getNbDaysForMaxAppointmentsPerUser( ) > 0 )
             {
-
                 filter.setStartingDateOfSearch( Date.valueOf( dateOfTheAppointment.minusDays( (long) form.getNbDaysForMaxAppointmentsPerUser( ) - 1 ) ) );
                 filter.setEndingDateOfSearch( Date.valueOf( dateOfTheAppointment.plusDays( (long) form.getNbDaysForMaxAppointmentsPerUser( ) - 1 ) ) );
             }
@@ -405,6 +405,52 @@ public final class AppointmentUtilities
         return true;
 
     }
+    
+    /**
+     * Check that the number of appointments on a defined category is not above the maximum authorized
+     * 
+     * @param appointmentDTO
+     *            the appointment
+     * @param strEmail
+     *            the email of the user
+     * @param form
+     *            the form
+     * @return false if the number of appointments is above the maximum authorized on the defined category
+     */
+    public static boolean checkNbMaxAppointmentsDefinedOnCategory( AppointmentDTO appointmentDTO, String strEmail, AppointmentFormDTO form, List<AppointmentDTO> listAppointments )
+    {
+        if ( form.getIdCategory( ) != 0 && StringUtils.isNotEmpty( strEmail ) )
+        {
+        	Category category= CategoryService.findCategoryById(form.getIdCategory( ));
+        	if( category != null && category.getNbMaxAppointmentsPerUser( ) > 0 ) 
+        	{
+        		LocalDateTime now= LocalDateTime.now( );
+	            // Get the date of the future appointment
+	            AppointmentFilterDTO filter = new AppointmentFilterDTO( );
+	            filter.setEmail( strEmail );
+	            filter.setStatus( 0 );
+	            filter.setStartingDateOfSearch( Date.valueOf( now.toLocalDate( ) ) );
+	            filter.setStartingTimeOfSearch(now.toLocalTime( ).toString( ));
+	            List<AppointmentDTO> listAppointmentsDTO = AppointmentService.findListAppointmentsDTOByFilter( filter );
+	            // If we modify an appointment, we remove the
+	            // appointment that we currently edit
+	            if ( appointmentDTO.getIdAppointment( ) != 0 )
+	            {
+	
+	                listAppointmentsDTO.removeIf( appt -> appt.getIdAppointment( ) != appointmentDTO.getIdAppointment( ) );
+	            }
+                listAppointments.addAll( listAppointmentsDTO );
+	            if ( CollectionUtils.isNotEmpty( listAppointmentsDTO ) && listAppointmentsDTO.size() >= category.getNbMaxAppointmentsPerUser( ))
+	            {
+	                return false;
+	                  
+	            }
+        	}
+        }
+        return true;
+
+    }
+
 
     /**
      * Check and validate all the rules for the number of booked seats asked

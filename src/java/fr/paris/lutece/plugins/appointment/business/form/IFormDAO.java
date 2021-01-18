@@ -79,6 +79,17 @@ public interface IFormDAO
     /**
      * Load the data from the table
      * 
+     * @param nIdCategory
+     *            the identifier of the category
+     * @param plugin
+     *            the plugin
+     * @return the instance of the Form
+     */
+    List<Form> selectByCategory( int nIdCategory, Plugin plugin );
+    
+    /**
+     * Load the data from the table
+     * 
      * @param nIdForm
      *            the identifier of the form
      * @param plugin

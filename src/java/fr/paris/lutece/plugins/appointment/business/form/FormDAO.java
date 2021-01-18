@@ -59,6 +59,7 @@ public final class FormDAO implements IFormDAO
     private static final String SQL_QUERY_SELECT_ACTIVE_FORMS = SQL_QUERY_SELECT_COLUMNS + " WHERE is_active = 1";
     private static final String SQL_QUERY_SELECT_ACTIVE_AND_DISPLAYED_ON_PORTLET_FORMS = SQL_QUERY_SELECT_COLUMNS
             + " INNER JOIN appointment_display display ON form.id_form = display.id_form WHERE form.is_active = 1 AND display.is_displayed_on_portlet = 1";
+    private static final String SQL_QUERY_SELECT_BY_CATEGORY = SQL_QUERY_SELECT_COLUMNS + " WHERE id_category = ?";
 
     @Override
     public void insert( Form form, Plugin plugin )
@@ -106,6 +107,21 @@ public final class FormDAO implements IFormDAO
             }
         }
         return form;
+    }
+    @Override
+    public List<Form> selectByCategory( int nIdCategory, Plugin plugin )
+    {
+    	List<Form> listForms = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_CATEGORY, plugin ) )
+        {
+            daoUtil.setInt( 1, nIdCategory );
+            daoUtil.executeQuery( );
+            while ( daoUtil.next( ) )
+            {
+                listForms.add( buildForm( daoUtil ) );
+            }
+        }
+        return listForms;
     }
 
     @Override

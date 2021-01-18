@@ -10,6 +10,10 @@
 						<@formGroup labelFor='label' labelKey='#i18n{appointment.createCategory.label}' mandatory=true>
 							<@input type='text' name='label' id='label' value=category.label!'' maxlength=255 />
 						</@formGroup>
+						<@formGroup labelFor='nb_max_appointments_per_user' labelKey='#i18n{appointment.createCategory.labelNbMaxAppointments}' helpKey='#i18n{appointment.createCategory.labelNbMaxAppointments.help}' mandatory=true>
+							<@input type='number' name='nb_max_appointments_per_user' id='nb_max_appointments_per_user' value=category.nbMaxAppointmentsPerUser!'' maxlength=3 />
+						</@formGroup>
+				
 					</fieldset>
 					<@formGroup>
 						<@button type='submit' name='action_createCategory' buttonIcon='check' title='#i18n{portal.util.labelCreate}' />

@@ -33,23 +33,22 @@
  */
 package fr.paris.lutece.plugins.appointment.web;
 
+import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.category.Category;
+import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-import fr.paris.lutece.util.datatable.DataTableManager;
 import fr.paris.lutece.util.url.UrlItem;
 
 /**
@@ -59,7 +58,7 @@ import fr.paris.lutece.util.url.UrlItem;
  * 
  */
 @Controller( controllerJsp = "ManageAppointmentCategory.jsp", controllerPath = "jsp/admin/plugins/appointment/", right = AppointmentCategoryJspBean.RIGHT_MANAGECATEGORY )
-public class AppointmentCategoryJspBean extends MVCAdminJspBean
+public class AppointmentCategoryJspBean extends AbstractAppointmentFormAndSlotJspBean
 {
     private static final long serialVersionUID = 5438468406405679511L;
 
@@ -67,6 +66,7 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
      * Right to manage appointment category
      */
     public static final String RIGHT_MANAGECATEGORY = "APPOINTMENT_CATEGORY_MANAGEMENT";
+    private static final String JSP_MANAGE_CATEGORY = "jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp";
 
     // templates
     private static final String TEMPLATE_MANAGE_CATEGORY = "/admin/plugins/appointment/category/manage_category.html";
@@ -80,19 +80,18 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     private static final String PROPERTY_PAGE_TITLE_MANAGE_CATEGORY = "appointment.adminFeature.manageCategories.name";
     private static final String PROPERTY_PAGE_TITLE_CREATE_CATEGORY = "appointment.create.category.title";
     private static final String PROPERTY_PAGE_TITLE_MODIFY_CATEGORY = "appointment.modify.category.title";
-    private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
-    private static final String PROPERTY_ID = "idCategory";
-    private static final String PROPERTY_LABEL = "label";
 
+    // Validations
+    private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.category.attribute.";
+
+  
     // Markers
     private static final String MARK_CATEGORY = "category";
-    private static final String MARK_DATA_TABLE_MANAGER = "dataTableManager";
+    private static final String MARK_LIST_CATEGORY = "category_list";
 
     // Properties
     private static final String MESSAGE_CONFIRM_REMOVE_CATEGORY = "appointment.message.confirmRemoveCategory";
-    private static final String MESSAGE_COLUMN_TITLE_ID = "appointment.manageCategory.columnId";
-    private static final String MESSAGE_COLUMN_TITLE_LABEL = "appointment.manageCategory.columnLabel";
-    private static final String MESSAGE_COLUMN_TITLE_ACTIONS = "portal.util.labelActions";
+    private static final String MESSAGE_ERROR_REMOVE_CATEGORY = "appointment.message.categoryIsAffected.errorRemoveCategory";
 
     // Views
     private static final String VIEW_MANAGE_CATEGORY = "manageCategory";
@@ -111,7 +110,7 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     private static final String INFO_CATEGORY_REMOVED = "appointment.info.category.removed";
 
     // Session variables
-    private DataTableManager<Category> _dataTableManager;
+    private Category _category;
 
     /**
      * Get the page to manage appointment categories
@@ -123,21 +122,11 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     @View( value = VIEW_MANAGE_CATEGORY, defaultView = true )
     public String getManageCategory( HttpServletRequest request )
     {
-        if ( _dataTableManager == null )
-        {
-            _dataTableManager = new DataTableManager<>( getViewFullUrl( VIEW_MANAGE_CATEGORY ), null,
-                    AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 ), true );
-            _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_ID, PROPERTY_ID, true );
-            _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_LABEL, PROPERTY_LABEL, true );
-            _dataTableManager.addActionColumn( MESSAGE_COLUMN_TITLE_ACTIONS );
-        }
-        _dataTableManager.filterSortAndPaginate( request, CategoryService.findAllCategories( ) );
-        Map<String, Object> model = getModel( );
-        model.put( MARK_DATA_TABLE_MANAGER, _dataTableManager );
-        String strContent = getPage( PROPERTY_PAGE_TITLE_MANAGE_CATEGORY, TEMPLATE_MANAGE_CATEGORY, model );
-        _dataTableManager.clearItems( );
-        return strContent;
+    	_category = null;
+        List<Category> listCategory = CategoryService.findAllCategories( );
+        Map<String, Object> model = getPaginatedListModel( request, MARK_LIST_CATEGORY, listCategory, JSP_MANAGE_CATEGORY );
 
+        return getPage( PROPERTY_PAGE_TITLE_MANAGE_CATEGORY, TEMPLATE_MANAGE_CATEGORY, model );
     }
 
     /**
@@ -150,7 +139,7 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
      *             If the user is not authorized
      */
     @Action( ACTION_CONFIRM_REMOVE_CATEGORY )
-    public String getConfirmRemoveAppointmentForm( HttpServletRequest request )
+    public String getConfirmRemoveCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
         if ( StringUtils.isEmpty( strIdCategory ) )
@@ -177,8 +166,9 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     public String doRemoveCategory( HttpServletRequest request )
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
-        if ( StringUtils.isEmpty( strIdCategory ) )
+        if ( CollectionUtils.isNotEmpty( FormHome.findByCategory(Integer.parseInt( strIdCategory )) ))
         {
+        	addError( MESSAGE_ERROR_REMOVE_CATEGORY ,getLocale( ) );
             return redirectView( request, VIEW_MANAGE_CATEGORY );
         }
         int nIdCategory = Integer.parseInt( strIdCategory );
@@ -200,7 +190,8 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     public String getCreateCategory( HttpServletRequest request )
     {
         Map<String, Object> model = getModel( );
-        model.put( MARK_CATEGORY, new Category( ) );
+        _category= (_category == null )?new Category( ):_category;
+        model.put( MARK_CATEGORY, _category );
         return getPage( PROPERTY_PAGE_TITLE_CREATE_CATEGORY, TEMPLATE_CREATE_CATEGORY, model );
     }
 
@@ -216,9 +207,14 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     @Action( ACTION_CREATE_CATEGORY )
     public String doCreateCategory( HttpServletRequest request )
     {
-        Category category = new Category( );
-        populate( category, request );
-        CategoryService.saveCategory( category );
+        populate( _category, request );
+      // Check constraints
+        if ( !validateBean( _category, VALIDATION_ATTRIBUTES_PREFIX ) )
+        {
+            return redirectView( request, VIEW_CREATE_CATEGORY );
+        }
+
+        CategoryService.saveCategory( _category );
         addInfo( INFO_CATEGORY_CREATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_CATEGORY );
     }
@@ -237,9 +233,9 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
         int nIdCategory = Integer.parseInt( strIdCategory );
-        Category category = CategoryService.findCategoryById( nIdCategory );
+        _category = CategoryService.findCategoryById( nIdCategory );
         Map<String, Object> model = getModel( );
-        model.put( MARK_CATEGORY, category );
+        model.put( MARK_CATEGORY, _category );
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_CATEGORY, TEMPLATE_MODIFY_CATEGORY, model );
     }
 
@@ -257,12 +253,16 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     {
         String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
         int nIdCategory = Integer.parseInt( strIdCategory );
-        Category category = new Category( );
-        category.setIdCategory( nIdCategory );
-        populate( category, request );
-        CategoryService.updateCategory( category );
+        _category=(_category== null || _category.getIdCategory( ) != nIdCategory )?new Category( ): _category;
+        _category.setIdCategory( nIdCategory );
+        populate( _category, request );
+        //Check constraints
+        if ( !validateBean( _category, VALIDATION_ATTRIBUTES_PREFIX ) )
+        {
+            return redirectView( request, VIEW_MODIFY_CATEGORY );
+        }
+        CategoryService.updateCategory( _category );
         addInfo( INFO_CATEGORY_UPDATED, getLocale( ) );
         return redirectView( request, VIEW_MANAGE_CATEGORY );
     }
-
 }

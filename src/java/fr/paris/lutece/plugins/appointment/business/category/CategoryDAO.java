@@ -49,10 +49,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class CategoryDAO implements ICategoryDAO
 {
 
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_category ( label) VALUES ( ?)";
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_category SET label = ? WHERE id_category = ?";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_category ( label, nb_max_appointments_per_user) VALUES (?, ?)";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_category SET label = ?, nb_max_appointments_per_user = ? WHERE id_category = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_category WHERE id_category = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_category, label FROM appointment_category";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_category, label, nb_max_appointments_per_user FROM appointment_category";
     private static final String SQL_QUERY_SELECT_ALL = SQL_QUERY_SELECT_COLUMNS;
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_category = ?";
     private static final String SQL_QUERY_SELECT_BY_LABEL = SQL_QUERY_SELECT_COLUMNS + " WHERE label = ?";
@@ -149,6 +149,8 @@ public final class CategoryDAO implements ICategoryDAO
         Category category = new Category( );
         category.setIdCategory( daoUtil.getInt( ++nIndex ) );
         category.setLabel( daoUtil.getString( ++nIndex ) );
+        category.setNbMaxAppointmentsPerUser( daoUtil.getInt( ++nIndex ) );
+
         return category;
     }
 
@@ -181,6 +183,8 @@ public final class CategoryDAO implements ICategoryDAO
         }
 
         daoUtil.setString( nIndex++, category.getLabel( ) );
+        daoUtil.setInt( nIndex++, category.getNbMaxAppointmentsPerUser( ) );
+
         if ( !isInsert )
         {
             daoUtil.setInt( nIndex, category.getIdCategory( ) );

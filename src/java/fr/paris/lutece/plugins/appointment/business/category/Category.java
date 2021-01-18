@@ -58,6 +58,12 @@ public final class Category implements Serializable
      * Label of the category
      */
     private String _strLabel;
+   
+    /**
+     * Maximum appointments for a same user
+     */
+    private int _nNbMaxAppointmentsPerUser;
+
 
     /**
      * Get the id of the category
@@ -101,4 +107,24 @@ public final class Category implements Serializable
         this._strLabel = strLabel;
     }
 
+    /**
+     * Get the maximum number of appointments authorized for a same user
+     * 
+     * @return the maximum number
+     */
+    public int getNbMaxAppointmentsPerUser( )
+    {
+        return _nNbMaxAppointmentsPerUser;
+    }
+
+    /**
+     * Set the maximum number of appointments authorized for a same user
+     * 
+     * @param nNbMaxAppointmentsPerUser
+     *            the maximum number of appointments to set
+     */
+    public void setNbMaxAppointmentsPerUser( int nNbMaxAppointmentsPerUser )
+    {
+        this._nNbMaxAppointmentsPerUser = nNbMaxAppointmentsPerUser;
+    }
 }

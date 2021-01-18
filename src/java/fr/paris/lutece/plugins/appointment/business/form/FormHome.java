@@ -109,6 +109,17 @@ public final class FormHome
     {
         return _dao.select( nKey, _plugin );
     }
+    /**
+     * Returns an instance of the Form whose identifier category is specified in parameter
+     * 
+     * @param nIdCategor
+     *            The id category
+     * @return an instance of the Form
+     */
+    public static List<Form> findByCategory( int nIdCategor )
+    {
+        return _dao.selectByCategory( nIdCategor, _plugin );
+    }
 
     /**
      * Returns an instance of the Form by its title

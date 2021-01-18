@@ -119,4 +119,7 @@ CREATE UNIQUE INDEX appointment_working_day_unique ON appointment_working_day (i
 
 DROP INDEX IF EXISTS appointment_user_unique_email ON appointment_user ;
 
+ALTER  TABLE appointment_category  ADD  nb_max_appointments_per_user INT DEFAULT 0 NOT NULL;
+
+
 SET FOREIGN_KEY_CHECKS = 1;

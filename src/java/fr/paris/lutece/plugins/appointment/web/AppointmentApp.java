@@ -47,13 +47,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
 import fr.paris.lutece.plugins.appointment.business.appointment.AppointmentSlot;
@@ -261,6 +262,7 @@ public class AppointmentApp extends MVCApplication
     private static final String ERROR_MESSAGE_CAPTCHA = "portal.admin.message.wrongCaptcha";
     private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
     private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD = "appointment.validation.appointment.NbMaxAppointmentsOnAPeriod.error";
+    private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_CATEGORY = "appointment.validation.appointment.NbMaxAppointmentsOnCategory.error";
     private static final String ERROR_MESSAGE_FORM_NOT_ACTIVE = "appointment.validation.appointment.formNotActive";
     private static final String ERROR_MESSAGE_NO_STARTING_VALIDITY_DATE = "appointment.validation.appointment.noStartingValidityDate";
     private static final String ERROR_MESSAGE_FORM_NO_MORE_VALID = "appointment.validation.appointment.formNoMoreValid";
@@ -848,6 +850,28 @@ public class AppointmentApp extends MVCApplication
                 && !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( _notValidatedAppointment, strEmail, _appointmentForm ) )
         {
             addError( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
+            bErrors = true;
+        }
+        List<AppointmentDTO> listAppointments= new ArrayList< > ();
+        if ( _appointmentForm.getEnableMandatoryEmail( )
+                && !AppointmentUtilities.checkNbMaxAppointmentsDefinedOnCategory( _notValidatedAppointment, strEmail, _appointmentForm, listAppointments ))
+        {
+            StringJoiner builder = new StringJoiner( StringUtils.SPACE );
+            String lf = System.getProperty( "line.separator" ); 
+        	for(AppointmentDTO appt: listAppointments) 
+        	{        		
+        		builder.add(appt.getLastName( ));
+        		builder.add(appt.getFirstName( ));
+        		builder.add(appt.getDateOfTheAppointment( ));
+        		builder.add(appt.getStartingTime( ).toString( ));
+        		builder.add( lf );	
+        	}
+        	Object [ ] tabAppointment = {
+        			builder.toString( )
+            };
+        	   
+            String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_CATEGORY, tabAppointment, locale );
+            addError( strErrorMessageDateWithAppointments );
             bErrors = true;
         }
         if ( CollectionUtils.isNotEmpty( listFormErrors ) )

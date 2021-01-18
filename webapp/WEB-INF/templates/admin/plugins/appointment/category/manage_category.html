@@ -1,91 +1,42 @@
 <@row>
 	<@columns>
-		<@box color='primary'>
+		<@box>
 			<@boxHeader title='#i18n{appointment.adminFeature.manageCategories.name}'>
-				<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=createCategory' buttonIcon='plus' title='#i18n{appointment.manageCategory.buttonAdd}' />
+				<@tform name='manage_blogs' action='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp'>
+					<@button type='submit' name='view_createCategory' buttonIcon='plus' title='#i18n{appointment.manageCategory.buttonAdd}' />
+				</@tform>
 			</@boxHeader>
 			<@boxBody>
-				<@messages infos=infos errors=errors />
-				
-				<#if 0 < dataTableManager.items?size >
-					<#if dataTableManager.enablePaginator>
-						<@tform type='inline' align='right' method='post' action='${dataTableManager.sortUrl}'>
-							<#if (dataTableManager.paginator.pagesCount > 1) >
-								<@paginationPageLinks paginator=dataTableManager.paginator />
-							</#if>
-							<@paginationItemCount paginator=dataTableManager.paginator combo=1 nb_items_per_page=dataTableManager.paginator.itemsPerPage?string />
-							<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
-						</@tform>
-					</#if>
-					<@table params='summary="data table"'>
-						<caption>&nbsp;</caption>
+				 <@messages infos=infos errors=errors />
+					<@table>
+					<thead>
 						<tr>
-							<#list dataTableManager.listColumn as column>
-								<th scope="col">
-									#i18n{${column.titleKey}}
-									<#if !(column.typeColumn = "ACTION") && column.sortable>
-										<@sort jsp_url=dataTableManager.sortUrl attribute=column.parameterName />
-									</#if>
-								</th>
-							</#list>
+							<th>#i18n{appointment.manageCategory.columnLabel}</th>
+							<th>#i18n{appointment.manageCategory.columnLabelNbMaxAppointments}</th>
+							<th>#i18n{portal.util.labelActions}</th>
 						</tr>
-						<#list dataTableManager.items as item>
-							<tr>
-								<#list dataTableManager.listColumn as column>
-									<#if column.typeColumn = "STRING">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<td>${value!}</td>
-									<#elseif column.typeColumn = "LABEL">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<td>#i18n{${value!}}</td>
-									<#elseif column.typeColumn = "BOOLEAN">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<#if value?? && value>
-											<td><@tag color='success' title='#i18n{${column.labelTrue!}}' tagIcon='check'>#i18n{${column.labelTrue!}}</@tag></td>
-										<#else>
-											<td><@tag color='danger' title='#i18n{${column.labelFalse!}}' tagIcon='times'>#i18n{${column.labelFalse!}}</@tag></td>
-										</#if>
-									<#elseif column.typeColumn = "EMAIL">
-										<#assign propName = "item." + column.parameterName>
-										<#assign value = propName?eval>
-										<td><#if value?? && value != ""><a href="mailto:${value}" title="${value}" >${value}</a></#if></td>
-									<#elseif column.typeColumn = "ACTION">
-										<#if column.parameterName?? && column.parameterName != "">
-											<#assign macroName = column.parameterName>
-										<#else>
-											<#assign macroName = 'actionColumnCategory'>
-										</#if>
-										<#if macroName?? && macroName != "">
-											<td><@.vars[macroName] item=item /></td>
-										</#if>
-									</#if>
-								</#list>
-							</tr>
+					</thead>
+					<tbody>
+						<#list category_list as category >
+						<tr>
+							<td>
+								${category.label}
+							</td>
+							<td>
+								${category.nbMaxAppointmentsPerUser}
+							</td>
+							<td>
+
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelModify}' buttonIcon='pencil' size='sm' hideTitle=['all']/>
+								<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${category.idCategory}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger' size='sm' hideTitle=['all']/>
+
+							</td>
+						</tr>
 						</#list>
+					</tbody>
 					</@table>
-					<#if dataTableManager.enablePaginator>
-						<@tform type='inline' method='post' action='${dataTableManager.sortUrl}'>
-							<#if (dataTableManager.paginator.pagesCount > 1) >
-								<@paginationPageLinks paginator=dataTableManager.paginator />
-							</#if>
-							<@div align='right'>
-								<@paginationItemCount paginator=dataTableManager.paginator combo=0 nb_items_per_page=dataTableManager.paginator.itemsPerPage?string />
-							</@div>
-							<@input type='hidden' name='${dataTableManager.id}' id='${dataTableManager.id}' value='${dataTableManager.id}' />
-						</@tform>
-					</#if>
-				<#else>
-					#i18n{portal.util.labelNoItem}
-				</#if>
+				<@paginationAdmin paginator=paginator combo=1 />
 			</@boxBody>
 		</@box>
 	</@columns>
 </@row>
-
-<#macro actionColumnCategory item>
-	<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?view=modifyCategory&id_category=${item.idCategory}' buttonIcon='edit' size='sm' />
-	<@aButton href='jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp?action=confirmRemoveCategory&id_category=${item.idCategory}' buttonIcon='trash' color='danger' size='sm' />
-</#macro>

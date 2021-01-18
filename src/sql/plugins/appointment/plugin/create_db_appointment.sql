@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS appointment_comment;
 CREATE TABLE appointment_category (
   id_category INT AUTO_INCREMENT,
   label VARCHAR(255) NOT NULL,
+  nb_max_appointments_per_user INT DEFAULT 0 NOT NULL,
   PRIMARY KEY (id_category)
 );
 CREATE UNIQUE INDEX appointment_category_unique_label ON appointment_category (label);
