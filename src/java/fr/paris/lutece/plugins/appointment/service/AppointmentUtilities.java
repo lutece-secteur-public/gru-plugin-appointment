@@ -1117,4 +1117,33 @@ public final class AppointmentUtilities
 
         return false;
     }
+    /**
+     * Check if list of slot is builded correctly
+     * @param nIdForm the id form
+     * @param listSlots the list of slot to check
+     * @return true if the listSlots is builded correctly
+     */
+    public static boolean checkListSlotIsBuildedCorrectly(int nIdForm, List<Slot> listSlots) 
+    { 	
+    	if( !CollectionUtils.isEmpty( listSlots )) 
+    	{
+    		
+    		LocalDateTime minDate= listSlots.stream( ).map( Slot::getStartingDateTime ).min( LocalDateTime::compareTo ).orElse( null );
+    		LocalDateTime maxDate= listSlots.stream( ).map( Slot::getStartingDateTime ).max( LocalDateTime::compareTo ).orElse( null );
+    		if( minDate!= null && maxDate!= null )
+    		{		
+	    		List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
+	    	    Map<WeekDefinition, ReservationRule> mapReservationRule = ReservationRuleService.findAllReservationRule( nIdForm, listWeekDefinition );
+	            List<Slot> listSlotBuilded = SlotService.buildListSlot( nIdForm, mapReservationRule, minDate.toLocalDate( ), maxDate.toLocalDate( ) );            
+	            for(Slot slt: listSlots) 
+	            {
+	            	if(listSlotBuilded.stream().noneMatch(slot -> slt.getStartingDateTime().isEqual(slot.getStartingDateTime()) && slt.getEndingDateTime().isEqual(slot.getEndingDateTime( ))))
+	            	{
+	            		return false;
+	            	}
+	            }
+    		}
+    	}
+    	return true;
+    }
 }

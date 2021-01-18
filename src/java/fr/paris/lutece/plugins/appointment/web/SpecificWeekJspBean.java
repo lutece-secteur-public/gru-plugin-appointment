@@ -455,9 +455,17 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             addError( MESSAGE_ERROR_PARSING_JSON, getLocale( ) );
 
         }
+       
+        if( !AppointmentUtilities.checkListSlotIsBuildedCorrectly(Integer.parseInt( strIdForm ), listSlot) ) {
+        	
+            addError( MESSAGE_ERROR_PARSING_JSON, getLocale( ) );
 
-        updateListSlots( listSlot, nVarMaxCapacity, nMaxCapacity, bIsOpen, bShiftSlot, endingTime );
-
+        }
+        else 
+        {
+        	
+        	updateListSlots( listSlot, nVarMaxCapacity, nMaxCapacity, bIsOpen, bShiftSlot, endingTime );
+        }
         Map<String, String> additionalParameters = new HashMap<>( );
         additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
         additionalParameters.put( PARAMETER_DATE_OF_DISPLAY, strDateOfDisplay );
@@ -677,7 +685,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private List<Slot> buildListSlotsToUpdate( List<Slot> listSlotSelected, int nIdForm, LocalDate startingDate, LocalDate endingDate )
     {
 
-        List<Slot> listBuilded = new ArrayList<>( );
+    	List<Slot> listBuilded = new ArrayList<>( );
         listBuilded.addAll( listSlotSelected );
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDate, endingDate );
