@@ -64,7 +64,7 @@ public class SlotServiceTest extends LuteceTestCase
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
         appointmentForm.setName("appointment_form");
         appointmentForm.setDateStartValidity( Date.valueOf( _nextMonday ) );
-        appointmentForm.setDateStartValidity( Date.valueOf( _sundayTwoWeeks ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( _sundayTwoWeeks ) );
 
         appointmentForm.setIsOpenMonday( Boolean.TRUE );
         appointmentForm.setIsOpenTuesday( Boolean.TRUE );
@@ -90,7 +90,7 @@ public class SlotServiceTest extends LuteceTestCase
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
         appointmentForm.setName("appointment_form");
         appointmentForm.setDateStartValidity( Date.valueOf( _nextMonday ) );
-        appointmentForm.setDateStartValidity( Date.valueOf( _sundayTwoWeeks ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( _sundayTwoWeeks ) );
 
         appointmentForm.setIsOpenMonday( Boolean.TRUE );
         appointmentForm.setIsOpenTuesday( Boolean.TRUE );
@@ -127,7 +127,7 @@ public class SlotServiceTest extends LuteceTestCase
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
         appointmentForm.setName("appointment_form");
         appointmentForm.setDateStartValidity( Date.valueOf( _nextMonday ) );
-        appointmentForm.setDateStartValidity( Date.valueOf( _sundayTwoWeeks ) );
+        appointmentForm.setDateEndValidity( Date.valueOf( _sundayTwoWeeks ) );
 
         appointmentForm.setIsOpenMonday( Boolean.TRUE );
         appointmentForm.setIsOpenTuesday( Boolean.TRUE );
