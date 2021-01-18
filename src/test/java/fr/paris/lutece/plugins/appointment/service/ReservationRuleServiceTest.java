@@ -33,8 +33,11 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
+import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
+import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.test.LuteceTestCase;
 
@@ -48,23 +51,36 @@ public class ReservationRuleServiceTest extends LuteceTestCase
         appointmentForm.setName("appointment_form");
         appointmentForm.setDurationAppointments( 30 );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        appointmentForm.setIdForm( nIdForm );
+        ReservationRuleHome.create( appointmentForm );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm2.setName("appointment_form");
+        appointmentForm2.setName("appointment_form 2");
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setDurationAppointments( 20 );
         LocalDate dateOfModification = LocalDate.parse( "2028-06-20" );
+        appointmentForm2.setIdForm( nIdForm );
+        appointmentForm2.setDateStartValidity(Date.valueOf( dateOfModification ) );
+        appointmentForm2.setDateEndValidity(Date.valueOf( dateOfModification ) );
         FormService.updateGlobalParameters( appointmentForm2 );
+        
+        WeekDefinition weekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 );
+        
+        appointmentForm2.setIdReservationRule( ReservationRuleService.findReservationRuleByIdFormAndDateOfApply(nIdForm, weekDefinition.getDateOfApply( ) ).getIdReservationRule( ) );
 
         AppointmentFormDTO appointmentForm3 = FormServiceTest.buildAppointmentForm( );
-        appointmentForm3.setName("appointment_form");
+        appointmentForm3.setName("appointment_form 3");
         appointmentForm3.setIdForm( nIdForm );
         appointmentForm3.setDurationAppointments( 10 );
         LocalDate dateOfModification2 = LocalDate.parse( "2028-06-22" );
+        appointmentForm3.setDateStartValidity(Date.valueOf( dateOfModification2 ) );
+        appointmentForm3.setDateEndValidity(Date.valueOf( dateOfModification2 ) );
         FormService.updateGlobalParameters( appointmentForm3 );
+        
+        WeekDefinition weekDefinition2 = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 );
 
-        assertEquals( dateOfModification,
-                ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, LocalDate.parse( "2028-06-21" ) ) );
+        assertEquals( appointmentForm2.getIdReservationRule( ) ,
+                ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, weekDefinition2.getDateOfApply() ).getIdReservationRule( ) );
 
         FormServiceTest.cleanForm( nIdForm );
     }
