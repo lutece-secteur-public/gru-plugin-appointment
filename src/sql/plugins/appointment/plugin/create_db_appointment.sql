@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
     REFERENCES appointment_user (id_user)
    );
 CREATE INDEX fk_appointment_appointment_appointment_user_idx ON appointment_appointment (id_user ASC);
-CREATE INDEX reference_idx ON appointment_appointment (reference ASC);
+CREATE UNIQUE INDEX reference_idx ON appointment_appointment (reference ASC);
 
 -- -----------------------------------------------------
 -- Table appointment_appointment_slot

@@ -192,6 +192,7 @@ public final class AppointmentService
 
         if ( appointment.getIdAppointment( ) == 0 )
         {
+            appointment = AppointmentHome.create( appointment );
             String strEmailLastNameFirstName = new StringJoiner( StringUtils.SPACE ).add( user.getEmail( ) ).add( CONSTANT_SEPARATOR )
                     .add( user.getLastName( ) ).add( CONSTANT_SEPARATOR ).add( user.getFirstName( ) ).toString( );
             String strReference = appointment.getIdAppointment( ) + CryptoService
@@ -205,7 +206,7 @@ public final class AppointmentService
                 strReference = form.getReference( ) + strReference;
             }
             appointment.setReference( strReference );
-            appointment = AppointmentHome.create( appointment );
+            appointment = AppointmentHome.update( appointment );
             AppointmentListenerManager.notifyListenersAppointmentCreated( appointment.getIdAppointment( ) );
         }
         else
