@@ -84,9 +84,11 @@ public class TimeSlotServiceTest extends LuteceTestCase
         appointmentForm.setTimeEnd( "18:00" );
         appointmentForm.setDurationAppointments( 30 );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
+        appointmentForm.setIdReservationRule( nIdReservationRule );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
-        List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinitionRule( listWeekDefinition.get( 0 ).getIdWeekDefinition( ) );
+        List<WorkingDay> listWorkingDay = WorkingDayService.findListWorkingDayByWeekDefinitionRule( listWeekDefinition.get( 0 ).getIdReservationRule( ) );
         List<TimeSlot> listTimeSlot = TimeSlotService.findListTimeSlotByWorkingDay( listWorkingDay.get( 0 ).getIdWorkingDay( ) );
 
         List<TimeSlot> listNextTimeSlots = TimeSlotService.getNextTimeSlotsInAListOfTimeSlotAfterALocalTime( listTimeSlot, LocalTime.parse( "17:10" ) );
