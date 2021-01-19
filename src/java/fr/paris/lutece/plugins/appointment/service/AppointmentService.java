@@ -460,6 +460,14 @@ public final class AppointmentService
                     SlotSafeService.updateRemaningPlacesWithAppointmentMovedDeletedOrCanceled( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
                 }
             }
+            else if( oldAppointment.getIsCancelled( ) && !appointment.getIsCancelled( ))
+            {
+            	for ( AppointmentSlot appSlot : appointment.getListAppointmentSlot( ) )
+                {
+                    // Need to update the nb remaining places of the related slot
+                    SlotSafeService.updateRemaningPlacesWithAppointmentReactivated( appSlot.getNbPlaces( ), appSlot.getIdSlot( ) );
+                }
+            }
             AppointmentHome.update( appointment );
             TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
         }

@@ -431,7 +431,7 @@ public final class SlotSafeService
                 // value between :
                 // - the minimal value between the potentially new max capacity and the old remaining places plus the number of places released by the
                 // appointment
-                // - and the capacity of the slot minus the new places taken on the slot (0 if negative)
+                // - and the capacity of the slot minus the new places taken on the slot
                 int nNewRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldRemainingPlaces + nbPlaces ), ( nMaxCapacity - nNewPlacesTaken ) );
 
                 int nNewPotentialRemainingPlaces = Math.min( Math.min( nMaxCapacity, nOldPotentialRemaningPlaces + nbPlaces ),
@@ -440,6 +440,37 @@ public final class SlotSafeService
                 slot.setNbRemainingPlaces( nNewRemainingPlaces );
                 slot.setNbPotentialRemainingPlaces( nNewPotentialRemainingPlaces );
                 slot.setNbPlacestaken( nNewPlacesTaken );
+                updateSlot( slot );
+            }
+        }
+        finally
+        {
+
+            lock.unlock( );
+        }
+
+    }
+    /**
+     * Set the new number of remaining places (and potential) when an appointment is reactivated(not reserved to reserved) This new value must take in account the capacity of
+     * the slot, in case of the slot was already over booked
+     * 
+     * @param nbPlaces the nb places taken of the appointment on the slot
+     * @param nIdSlot the id slot to update
+     */
+    public static void updateRemaningPlacesWithAppointmentReactivated( int nbPlaces, int nIdSlot )
+    {
+        // The capacity of the slot (that can be less than the number of places
+        // taken on the slot --> overbook)
+        Lock lock = getLockOnSlot( nIdSlot );
+        lock.lock( );
+        try
+        {
+            Slot slot = SlotService.findSlotById( nIdSlot );
+            if ( slot != null )
+            {
+                slot.setNbRemainingPlaces( slot.getNbRemainingPlaces( ) - nbPlaces  );
+                slot.setNbPotentialRemainingPlaces( slot.getNbPotentialRemainingPlaces( ) - nbPlaces );
+                slot.setNbPlacestaken( slot.getNbPlacesTaken( ) + nbPlaces );
                 updateSlot( slot );
             }
         }
