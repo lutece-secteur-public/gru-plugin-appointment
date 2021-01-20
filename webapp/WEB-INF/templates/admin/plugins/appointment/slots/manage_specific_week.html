@@ -1,9 +1,6 @@
+<@coreAdminCSSLinks />
 
-<@row>
-    <@columns>
-        <@appointmentTabs tab="specificWeek" form=appointmentform />
-    </@columns>
-</@row>
+<@appointmentTabs tab="specificWeek" form=appointmentform />
 
 <@modal id='commentModal'>
     <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
@@ -165,7 +162,7 @@
             },
             defaultDate: defaultDate,
             defaultView: 'agendaWeek',
-            height: 'auto',
+            height: 'parent',
             locale: 'fr',
             themeSystem: 'jquery-ui',
             customButtons: {
@@ -291,11 +288,11 @@
                 $('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
                 $('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
                 
-                $('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis");
-                $('.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first').css('position', 'relative');
+                $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+		        $('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first");
+		        $('.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first').css('position', 'relative');
 		
-                $('#toggle-add-comment').remove();
-                $('#toggle-add-comment > span').removeClass('hidden');
+                 $('#toggle-add-comment > span').removeClass('hidden');
                 var tgc = $('#toggle-add-comment').find('body');
                 tgc.click(function(ev) {
                     $( "#commentModal" ).modal('show');
