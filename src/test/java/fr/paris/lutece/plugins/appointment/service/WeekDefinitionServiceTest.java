@@ -90,7 +90,7 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         WeekDefinitionService.assignWeekDefinition( nIdForm, weekDefinition );
 
         foundWeekDefinition = WeekDefinitionService.findWeekDefinitionByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
-        assertEquals( appointmentForm3.getDateStartValidity( ), Date.valueOf( foundWeekDefinition.getDateOfApply( ) ) );
+        assertEquals( appointmentForm2.getDateStartValidity( ), Date.valueOf( foundWeekDefinition.getDateOfApply( ) ) );
         FormServiceTest.cleanForm( nIdForm );
     }
 
