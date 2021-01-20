@@ -1,22 +1,36 @@
 <link rel="stylesheet" href="js/plugins/appointment/js-year-calendar.min.css">
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
-
-<@appointmentTabs tab='year' form=appointmentform >
-    <@row>
-        <@columns sm=10>
-            <div id="calendar"></div>
-        </@columns>
-        <@columns sm=2>
-            <@ul class="list-unstyled">
-                <#list listReservationRule as rule>
-                    <@li>
-                        <span style="display:inline-block; background-color: ${rule.color};width:20px;height:12px"></span> ${rule.name} <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}"><i class="fas fa-eye fa-fw"></i></a> 
-                    </@li>
-                </#list>
-            </@ul>
-        </@columns>
-    </@row>
-</@appointmentTabs>
+<@row>
+	<@columns>
+		<@messages errors=errors warnings=warnings infos=infos />
+        <@tabs params=' style="margin-top:15px"'>
+            <@tabList>
+                <@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}' title='#i18n{appointment.typicalWeek.pageTitle}' active=false />
+                <@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${id_form}' title='#i18n{appointment.specificWeek.pageTitle}' active=false /> 			 
+                <@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${id_form}' title='#i18n{appointment.annual.calendar.pageTitle}' active=true />  			
+                <#if isDeskInstalled?? && isDeskInstalled>                
+                	<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${id_form}' title='#i18n{appointment.specificDay.pageTitle}' active=false />  
+           		</#if>
+            </@tabList>
+            <@tabContent>
+                <@row>
+                    <@columns sm=10>
+                        <div id="calendar"></div>
+                    </@columns>
+                    <@columns sm=2>
+                        <@ul class="list-unstyled">
+                            <#list listReservationRule as rule>
+                                <@li>
+                                    <span style="display:inline-block; background-color: ${rule.color};width:20px;height:12px"></span> ${rule.name} <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}"><i class="fas fa-eye fa-fw"></i></a> 
+                                </@li>
+                            </#list>
+                        </@ul>
+                    </@columns>
+                </@row>
+            </@tabContent>
+        </@tabs>
+    </@columns>
+</@row>
 
 <div id="context-menu"></div>
 <@modal id='event-modal' size='md' >
@@ -94,7 +108,7 @@ function deleteEvent(event) {
 }
 
 $(function() {
-    // <@headerTitle form=appointmentform />
+    <@headerTitle form=appointmentform />
     	
     calendar = new Calendar('#calendar', { 
         language: 'fr',
@@ -166,4 +180,3 @@ $(function() {
     })
 });
 </script>
-
