@@ -145,8 +145,10 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         AppointmentFormDTO appointmentForm = FormServiceTest.buildAppointmentForm( );
         appointmentForm.setTimeStart( "09:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
-        WeekDefinition weekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 );
-        assertEquals( LocalTime.parse( "09:00" ), WeekDefinitionService.getMinStartingTimeOfAWeekDefinition( appointmentForm ) );
+        appointmentForm.setIdForm( nIdForm );
+        int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
+        appointmentForm.setIdReservationRule( nIdReservationRule );
+        assertEquals( LocalTime.parse( "09:00" ), WeekDefinitionService.getMinStartingTimeOfAWeekDefinition( ReservationRuleService.findReservationRuleById( nIdReservationRule ) ) );
         FormServiceTest.cleanForm( nIdForm );
     }
 
@@ -217,23 +219,31 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm.setDurationAppointments( 30 );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
         appointmentForm.setIdForm( nIdForm );
-        openDays.add( appointmentForm );
+        int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
+        appointmentForm.setIdReservationRule( nIdReservationRule );
+        openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
         appointmentForm2.setName("appointment_form");
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setDurationAppointments( 20 );
+        appointmentForm2.setIdReservationRule( nIdReservationRule );
         LocalDate dateOfModification = LocalDate.parse( "2028-06-20" );
-        FormService.updateGlobalParameters( appointmentForm2 );
-        openDays.add( appointmentForm2 );
+        appointmentForm2.setDateStartValidity( Date.valueOf( dateOfModification ) );
+        appointmentForm2.setDateEndValidity( Date.valueOf( dateOfModification ) );
+        ReservationRuleService.updateAdvancedParameters( appointmentForm2 );
+        openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
         AppointmentFormDTO appointmentForm3 = FormServiceTest.buildAppointmentForm( );
         appointmentForm3.setName("appointment_form");
         appointmentForm3.setIdForm( nIdForm );
         appointmentForm3.setDurationAppointments( 10 );
+        appointmentForm3.setIdReservationRule( nIdReservationRule );
         LocalDate dateOfModification2 = LocalDate.parse( "2028-06-21" );
-        FormService.updateGlobalParameters( appointmentForm3 );
-        openDays.add( appointmentForm3 );
+        appointmentForm3.setDateStartValidity( Date.valueOf( dateOfModification2 ) );
+        appointmentForm3.setDateEndValidity( Date.valueOf( dateOfModification2 ) );
+        ReservationRuleService.updateAdvancedParameters( appointmentForm3 );
+        openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
 
@@ -258,15 +268,16 @@ public class WeekDefinitionServiceTest extends LuteceTestCase
         appointmentForm.setIsOpenSaturday( Boolean.FALSE );
         appointmentForm.setIsOpenSunday( Boolean.FALSE );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
-        
+        int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
+        appointmentForm.setIdReservationRule( nIdReservationRule );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
         
         
         List<ReservationRule> openDays = new ArrayList<>();
-        openDays.add( appointmentForm );
+        openDays.add( ReservationRuleService.findReservationRuleById( nIdReservationRule ) );
 
-        assertEquals( 5, WeekDefinitionService.getOpenDaysOfWeek( openDays ) );
+        assertEquals( 5, WeekDefinitionService.getOpenDaysOfWeek( openDays ).size( ) );
         FormServiceTest.cleanForm( nIdForm );
     }
 }
