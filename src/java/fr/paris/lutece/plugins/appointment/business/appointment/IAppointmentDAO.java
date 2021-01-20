@@ -164,4 +164,11 @@ public interface IAppointmentDAO
      * @return a list of appointments
      */
     List<Appointment> findByFilter( AppointmentFilterDTO appointmentFilter, Plugin plugin );
+    
+    /**
+     * returns a list of all appointment ids.
+     * @param plugin
+     * @return
+     */
+    List<Integer> selectAllAppointmentId( Plugin plugin );
 }

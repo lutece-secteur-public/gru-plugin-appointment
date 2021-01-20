@@ -34,6 +34,8 @@
 package fr.paris.lutece.plugins.appointment.web.dto;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.user.User;
 
@@ -79,6 +81,8 @@ public final class AppointmentFilterDTO extends User
      * The status
      */
     private int _status = -1;
+    
+    private List<Integer> _listIdAppointment = new ArrayList<>( );
 
     /**
      * Get the form id
@@ -254,6 +258,22 @@ public final class AppointmentFilterDTO extends User
     public void setStatus( int status )
     {
         this._status = status;
+    }
+
+    /**
+     * @return the listIdAppointment
+     */
+    public List<Integer> getListIdAppointment( )
+    {
+        return new ArrayList<>( _listIdAppointment );
+    }
+
+    /**
+     * @param listIdAppointment the listIdAppointment to set
+     */
+    public void setListIdAppointment( List<Integer> listIdAppointment )
+    {
+        _listIdAppointment = new ArrayList<>( listIdAppointment );
     }
 
 }

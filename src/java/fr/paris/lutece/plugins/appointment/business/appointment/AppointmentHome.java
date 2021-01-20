@@ -198,4 +198,14 @@ public final class AppointmentHome
     {
         return _dao.findByFilter( appointmentFilter, _plugin );
     }
+    
+    /**
+     * returns a list of all appointment ids.
+     * @param plugin
+     * @return
+     */
+    public static List<Integer> selectAllAppointmentId( )
+    {
+        return _dao.selectAllAppointmentId( _plugin );
+    }
 }
