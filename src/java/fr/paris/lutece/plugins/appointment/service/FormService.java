@@ -407,6 +407,31 @@ public final class FormService
      */
     public static AppointmentFormDTO buildAppointmentForm( int nIdForm, ReservationRule reservationRule )
     {
+        AppointmentFormDTO appointmentForm = buildAppointmentFormWithoutReservationRule( nIdForm );
+        LocalDate dateOfApply = LocalDate.now( );
+        if ( reservationRule == null )
+        {
+            reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( nIdForm, dateOfApply );
+        }
+
+        if ( reservationRule != null )
+        {
+            fillAppointmentFormWithReservationRulePart( appointmentForm, reservationRule );
+        }
+
+        return appointmentForm;
+    }
+
+    /**
+     * Build an appointmentForm DTO
+     * 
+     * @param form
+     *            the Form object
+     * 
+     * @return the apointmentForm DTO built
+     */
+    public static AppointmentFormDTO buildAppointmentFormWithoutReservationRule( int nIdForm )
+    {
         AppointmentFormDTO appointmentForm = new AppointmentFormDTO( );
         Form form = FormService.findFormLightByPrimaryKey( nIdForm );
         fillAppointmentFormWithFormPart( appointmentForm, form );
@@ -425,17 +450,7 @@ public final class FormService
         {
             fillAppointmentFormWithFormRulePart( appointmentForm, formRule );
         }
-        LocalDate dateOfApply = LocalDate.now( );
-        if ( reservationRule == null )
-        {
-            reservationRule = ReservationRuleService.findReservationRuleByIdFormAndClosestToDateOfApply( form.getIdForm( ), dateOfApply );
-        }
-
-        if ( reservationRule != null )
-        {
-            fillAppointmentFormWithReservationRulePart( appointmentForm, reservationRule );
-        }
-
+        
         return appointmentForm;
     }
 
@@ -484,11 +499,10 @@ public final class FormService
             // hours (it can be modified after)
             LocalTime minStartingTime = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( listWorkingDay );
             LocalTime maxEndingTime = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay );
-            int nDurationAppointment = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( listWorkingDay );
             appointmentForm.setTimeStart( minStartingTime.toString( ) );
             appointmentForm.setTimeEnd( maxEndingTime.toString( ) );
-            appointmentForm.setDurationAppointments( nDurationAppointment );
         }
+        appointmentForm.setDurationAppointments( reservationRule.getDurationAppointments( ) );
         appointmentForm.setIdReservationRule( reservationRule.getIdReservationRule( ) );
         appointmentForm.setMaxCapacityPerSlot( reservationRule.getMaxCapacityPerSlot( ) );
         appointmentForm.setMaxPeoplePerAppointment( reservationRule.getMaxPeoplePerAppointment( ) );

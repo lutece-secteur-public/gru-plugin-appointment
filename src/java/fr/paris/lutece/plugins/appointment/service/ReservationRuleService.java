@@ -101,7 +101,7 @@ public final class ReservationRuleService
      * 
      * @return the Reservation Rule id
      */
-    public static int createAdvancedParameters( AppointmentFormDTO appointmentForm )
+    public static int createTypicalWeek( AppointmentFormDTO appointmentForm )
     {
 
         int nIdForm = appointmentForm.getIdForm( );
@@ -151,7 +151,7 @@ public final class ReservationRuleService
                 TransactionManager.commitTransaction( AppointmentPlugin.getPlugin( ) );
                 return reservationRule.getIdReservationRule( );
             }
-            catch( Exception e )
+            catch( RuntimeException e )
             {
                 TransactionManager.rollBack( AppointmentPlugin.getPlugin( ) );
                 AppLogService.error( "Error copy typical week" + e.getMessage( ), e );
@@ -269,6 +269,7 @@ public final class ReservationRuleService
         reservationRule.setMaxPeoplePerAppointment( appointmentForm.getMaxPeoplePerAppointment( ) );
         reservationRule.setName( appointmentForm.getName( ) );
         reservationRule.setDescriptionRule( appointmentForm.getDescriptionRule( ) );
+        reservationRule.setDurationAppointments(appointmentForm.getDurationAppointments( ));
         reservationRule.setColor( appointmentForm.getColor( ) );
         reservationRule.setIdForm( nIdForm );
     }

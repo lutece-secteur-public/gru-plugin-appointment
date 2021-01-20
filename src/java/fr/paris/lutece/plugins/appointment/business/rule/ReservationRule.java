@@ -84,6 +84,10 @@ public class ReservationRule implements Serializable
      * Maximum number of people authorized for an appointment
      */
     private int _nMaxPeoplePerAppointment = 1;
+    /**
+     * The duration of an appointment
+     */
+    private int _nDurationAppointments;
 
     /**
      * The Form Id the Reservation Rule belongs to (foreign key)
@@ -240,6 +244,26 @@ public class ReservationRule implements Serializable
     public void setMaxPeoplePerAppointment( int nMaxPeoplePerAppointment )
     {
         this._nMaxPeoplePerAppointment = nMaxPeoplePerAppointment;
+    }
+    /**
+     * Returns the duration of an appointment
+     * 
+     * @return The duration of an appointment
+     */
+    public int getDurationAppointments( )
+    {
+        return _nDurationAppointments;
+    }
+
+    /**
+     * Sets the duration of an appointment
+     * 
+     * @param nDurationAppointments
+     *            The Duration of an Appointments
+     */
+    public void setDurationAppointments( int nDurationAppointments )
+    {
+        _nDurationAppointments = nDurationAppointments;
     }
 
     /**

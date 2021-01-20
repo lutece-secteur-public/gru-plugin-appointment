@@ -211,7 +211,7 @@ public final class TimeSlotService
         ReservationRule reservationRule = ReservationRuleHome.findByPrimaryKey( workingDay.getIdReservationRule( ) );
         List<WeekDefinition> listWeek = WeekDefinitionHome.findByReservationRule( reservationRule.getIdReservationRule( ) );
 
-        int nDuration = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
+        int nDuration = reservationRule.getDurationAppointments( );
         if ( bEndingTimeHasChanged )
         {
             if ( !bShifSlot )

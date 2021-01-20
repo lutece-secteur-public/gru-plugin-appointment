@@ -151,7 +151,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String ACTION_MODIFY_GLOBAL_PARAM = "modifyGlobalParameters";
     private static final String ACTION_CONFIRM_REMOVE_PARAMETER = "confirmRemoveParameter";
     private static final String ACTION_REMOVE_PARAMETER = "doRemoveParameter";
-    private static final String ACTION_CREATE_ADVANCED_PARAMETERS = "createAdvancedParameters";
+    private static final String ACTION_CREATE_TYPICAL_WEEK = "createTypicalWeek";
     private static final String ACTION_DO_COPY_WEEK = "copyTypicalWeek";
 
     // Templates
@@ -212,12 +212,13 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
         LocalTime minStartingTime = LocalTime.MIN;
         LocalTime maxEndingTime = LocalTime.MAX;
-        if ( nIdReservationRule == 0 )
+        
+        if ( nIdReservationRule == 0 && (_appointmentForm == null || _appointmentForm.getIdReservationRule() != 0 ||_appointmentForm.getIdForm( ) != nIdForm ) )
         {
-            _appointmentForm = FormService.buildAppointmentFormLight( nIdForm );
+            _appointmentForm = FormService.buildAppointmentFormWithoutReservationRule( nIdForm );
 
         }
-        else
+        else if(  nIdReservationRule != 0 )
         {
             _appointmentForm = FormService.buildAppointmentForm( nIdForm, nIdReservationRule );
             List<WorkingDay> listWorkingDay = reservationRule.getListWorkingDay( );
@@ -247,8 +248,8 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @return Html Page
      * @throws AccessDeniedException
      */
-    @Action( ACTION_CREATE_ADVANCED_PARAMETERS )
-    public String doCreateAdvancedParameters( HttpServletRequest request ) throws AccessDeniedException
+    @Action( ACTION_CREATE_TYPICAL_WEEK )
+    public String doCreateTypicalWeek( HttpServletRequest request ) throws AccessDeniedException
     {
         String strIdForm = request.getParameter( PARAMETER_ID_FORM );
         int nIdForm = Integer.parseInt( strIdForm );
@@ -266,7 +267,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, _appointmentForm.getIdReservationRule( ) );
         }
 
-        int nIdreservationRule = ReservationRuleService.createAdvancedParameters( _appointmentForm );
+        int nIdreservationRule = ReservationRuleService.createTypicalWeek( _appointmentForm );
         AppLogService.info( LogUtilities.buildLog( ACTION_MODIFY_ADVANCED_PARAMETERS, strIdForm, getUser( ) ) );
         addInfo( INFO_ADVANCED_PARAMETERS_UPDATED, getLocale( ) );
         return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdreservationRule );
@@ -377,7 +378,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         populate( _appointmentForm, request );
         ReservationRuleService.fillInReservationRule( reservationRule, _appointmentForm, _appointmentForm.getIdForm( ) );
 
-        if ( !validateReservationRuleBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkMultiSlotFormTypeBookablePlaces( _appointmentForm ) )
+        if ( !validateReservationRuleBean( _appointmentForm, VALIDATION_ATTRIBUTES_PREFIX ) || !checkMultiSlotFormTypeBookablePlaces( _appointmentForm ) || !checkSlotCapacityAndPeoplePerAppointment( _appointmentForm ))
         {
             addError( PARAMETER_ERROR_MODIFICATION );
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, _appointmentForm.getIdForm( ), PARAMETER_ID_RULE,
