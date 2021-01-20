@@ -189,6 +189,7 @@ public final class AppointmentService
         appointment.setListAppointmentSlot( appointmentDTO.getListAppointmentSlot( ) );
         appointment.setNbPlaces( appointmentDTO.getNbBookedSeats( ) );
         appointment.setIdUser( user.getIdUser( ) );
+        appointment.setIsSurbooked( appointmentDTO.getIsSurbooked( ) );
 
         if ( appointment.getIdAppointment( ) == 0 )
         {

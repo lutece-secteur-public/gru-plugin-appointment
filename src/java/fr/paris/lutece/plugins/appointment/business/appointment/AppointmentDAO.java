@@ -62,7 +62,7 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class AppointmentDAO implements IAppointmentDAO
 {
 
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (reference, nb_places, is_cancelled, id_action_cancelled, notification, id_admin_user, admin_access_code_create, id_user, date_appointment_create) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_appointment (reference, nb_places, is_cancelled, id_action_cancelled, notification, id_admin_user, admin_access_code_create, id_user, date_appointment_create, is_surbooked) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_QUERY_UPDATE = "UPDATE appointment_appointment SET reference = ?, nb_places = ?, is_cancelled = ?, id_action_cancelled = ?, notification = ?, id_admin_user = ?, admin_access_code_create = ?, id_user = ?, date_appointment_create = ? WHERE id_appointment = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_appointment WHERE id_appointment = ?";
     private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT appointment.id_appointment, appointment.reference, appointment.nb_places, appointment.is_cancelled, appointment.id_action_cancelled, appointment.notification, appointment.id_admin_user, appointment.admin_access_code_create, appointment.id_user, appointment.date_appointment_create ";
@@ -607,6 +607,11 @@ public final class AppointmentDAO implements IAppointmentDAO
         daoUtil.setString( nIndex++, appointment.getAdminUserCreate( ) );
         daoUtil.setInt( nIndex++, appointment.getIdUser( ) );
         daoUtil.setTimestamp( nIndex++, appointment.getAppointmentTakenSqlDate( ) );
+
+        if ( isInsert ) 
+        {
+            daoUtil.setBoolean( nIndex++, appointment.getIsSurbooked( ) );
+        }
 
         if ( !isInsert )
         {

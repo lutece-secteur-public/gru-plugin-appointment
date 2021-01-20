@@ -119,6 +119,11 @@ public class Appointment extends User
     private List<AppointmentSlot> _listAppointmentSlot;
 
     /**
+     * Tell if the appointment is surbooked or not
+     */
+    private boolean _bIsSurbooked;
+
+    /**
      * Get the reference of the appointment
      * 
      * @return the reference
@@ -427,5 +432,26 @@ public class Appointment extends User
         {
             this._dateAppointmentTaken = null;
         }
+    }
+    
+    /**
+     * Get if the appointment is surbooked
+     * 
+     * @return true if the appointment is surbooked
+     */
+    public boolean getIsSurbooked( )
+    {
+        return _bIsSurbooked;
+    }
+
+    /**
+     * Set if the appointment is surbooked
+     * 
+     * @param bIsSurbooked
+     *            the boolean value to set
+     */
+    public void setIsSurbooked( boolean bIsSurbooked )
+    {
+        this._bIsSurbooked = bIsSurbooked;
     }
 }

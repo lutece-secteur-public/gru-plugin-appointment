@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS appointment_appointment (
   date_appointment_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   admin_access_code_create VARCHAR(100) ,
   id_user INT NOT NULL,
+  is_surbooked BOOLEAN DEFAULT FALSE NOT NULL,
   PRIMARY KEY (id_appointment ),  
   CONSTRAINT fk_appointment_appointment_appointment_user
     FOREIGN KEY (id_user)
