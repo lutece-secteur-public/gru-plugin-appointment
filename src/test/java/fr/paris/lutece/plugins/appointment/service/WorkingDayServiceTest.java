@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
+import java.sql.Date;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -41,7 +42,6 @@ import java.util.List;
 
 import fr.paris.lutece.plugins.appointment.business.planning.WeekDefinition;
 import fr.paris.lutece.plugins.appointment.business.planning.WorkingDay;
-import fr.paris.lutece.plugins.appointment.business.planning.WorkingDayHome;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRule;
 import fr.paris.lutece.plugins.appointment.business.rule.ReservationRuleHome;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
@@ -63,18 +63,21 @@ public class WorkingDayServiceTest extends LuteceTestCase
         appointmentForm.setName("appointment_form");
         appointmentForm.setTimeEnd( "18:00" );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        appointmentForm.setIdForm( nIdForm );
+        int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
+        appointmentForm.setIdReservationRule( nIdReservationRule );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setTimeEnd( "20:00" );
-        appointmentForm2.setName("appointment_form");
+        appointmentForm2.setIdReservationRule( nIdReservationRule );
         LocalDate dateOfModification = LocalDate.parse( "2018-06-20" );
-        FormService.updateGlobalParameters( appointmentForm2 );
+        appointmentForm2.setDateStartValidity( Date.valueOf( dateOfModification ) );
+        appointmentForm2.setDateEndValidity( Date.valueOf( dateOfModification ) );
+        ReservationRuleService.updateAdvancedParameters( appointmentForm2 );
 
         List<WeekDefinition> listWeekDefinition = WeekDefinitionService.findListWeekDefinition( nIdForm );
-        for(WeekDefinition weekDefinition : listWeekDefinition ) {
-        	listWorkingDay.addAll(WorkingDayHome.findByIdReservationRule( weekDefinition.getIdWeekDefinition( ) ) );
-        }
+        listWorkingDay.addAll( ReservationRuleService.findReservationRuleById( listWeekDefinition.get( 0 ).getIdReservationRule( ) ).getListWorkingDay() );
         
 
         assertEquals( LocalTime.parse( "20:00" ), WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( listWorkingDay ) );
@@ -115,13 +118,19 @@ public class WorkingDayServiceTest extends LuteceTestCase
         appointmentForm.setName("appointment_form");
         appointmentForm.setDurationAppointments( 30 );
         int nIdForm = FormService.createAppointmentForm( appointmentForm );
+        appointmentForm.setIdForm( nIdForm );
+        int nIdReservationRule = WeekDefinitionService.findListWeekDefinition( nIdForm ).get( 0 ).getIdReservationRule( );
+        appointmentForm.setIdReservationRule( nIdReservationRule );
 
         AppointmentFormDTO appointmentForm2 = FormServiceTest.buildAppointmentForm( );
         appointmentForm2.setName("appointment_form");
         appointmentForm2.setIdForm( nIdForm );
         appointmentForm2.setDurationAppointments( 10 );
+        appointmentForm2.setIdReservationRule( nIdReservationRule );
         LocalDate dateOfModification = LocalDate.parse( "2028-06-20" );
-        FormService.updateGlobalParameters( appointmentForm2 );
+        appointmentForm2.setDateStartValidity( Date.valueOf( dateOfModification ) );
+        appointmentForm2.setDateEndValidity( Date.valueOf( dateOfModification ) );
+        ReservationRuleService.updateAdvancedParameters( appointmentForm2 );
 
         List<ReservationRule> listReservationRule = ReservationRuleHome.findByIdForm( nIdForm );
         List<WorkingDay> listWorkingDay = new ArrayList<>( );
