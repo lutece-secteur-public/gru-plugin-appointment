@@ -255,7 +255,7 @@ public class RecursiveSlotTask extends RecursiveTask<List<Slot>>
                 {
                     minTimeForThisDay = WorkingDayService.getMinStartingTimeOfAListOfWorkingDay( reservationRuleToApply.getListWorkingDay( ) );
                     maxTimeForThisDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( reservationRuleToApply.getListWorkingDay( ) );
-                    int nDuration = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( reservationRuleToApply.getListWorkingDay( ) );
+                    int nDuration = reservationRuleToApply.getDurationAppointments( );
                     if ( minTimeForThisDay != null && maxTimeForThisDay != null )
                     {
                         timeTemp = minTimeForThisDay;

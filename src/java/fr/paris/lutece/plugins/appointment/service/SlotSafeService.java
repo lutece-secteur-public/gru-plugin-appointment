@@ -762,17 +762,15 @@ public final class SlotSafeService
         WorkingDay workingDay = WorkingDayService.getWorkingDayOfDayOfWeek( reservationRule.getListWorkingDay( ), dateOfCreation.getDayOfWeek( ) );
         LocalTime endingTimeOfTheDay = null;
         List<TimeSlot> listTimeSlot = new ArrayList<>( );
-        int nDurationSlot = 0;
+        int nDurationSlot = reservationRule.getDurationAppointments( );
         if ( workingDay != null )
         {
             endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAWorkingDay( workingDay );
-            nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAWorkingDay( workingDay );
             listTimeSlot = TimeSlotService.findListTimeSlotByWorkingDay( workingDay.getIdWorkingDay( ) );
         }
         else
         {
             endingTimeOfTheDay = WorkingDayService.getMaxEndingTimeOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
-            nDurationSlot = WorkingDayService.getMinDurationTimeSlotOfAListOfWorkingDay( reservationRule.getListWorkingDay( ) );
         }
         LocalDateTime endingDateTimeOfTheDay = endingTimeOfTheDay.atDate( dateOfCreation );
         LocalDateTime startingDateTime = dateTimeToStartCreation;

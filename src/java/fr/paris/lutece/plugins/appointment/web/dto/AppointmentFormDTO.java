@@ -93,11 +93,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     private String _strTimeEnd;
 
     /**
-     * The duration of an appointment
-     */
-    private int _nDurationAppointments;
-
-    /**
      * The minimum time from now before a user can take an appointment
      */
     @NotNull( message = "#i18n{portal.validation.message.notEmpty}" )
@@ -447,28 +442,6 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     {
         _strTimeEnd = timeEnd;
     }
-
-    /**
-     * Returns the duration of an appointment
-     * 
-     * @return The duration of an appointment
-     */
-    public int getDurationAppointments( )
-    {
-        return _nDurationAppointments;
-    }
-
-    /**
-     * Sets the duration of an appointment
-     * 
-     * @param nDurationAppointments
-     *            The Duration of an Appointments
-     */
-    public void setDurationAppointments( int nDurationAppointments )
-    {
-        _nDurationAppointments = nDurationAppointments;
-    }
-
     /**
      * Get the minimum time from now before a user can take an appointment
      * 

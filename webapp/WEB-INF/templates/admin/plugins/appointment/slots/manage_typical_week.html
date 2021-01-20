@@ -35,6 +35,7 @@
                     <#if id_reservation_rule != 0 >
                         <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp' params='enctype="multipart/form-data"' >
                         <@input type='hidden' id='is_multislot_appointment' name='is_multislot_appointment' value='${appointmentform.isMultislotAppointment?then("true", "false")}'/>
+                        <@input type='hidden' id='bo_overbooking' name='bo_overbooking' value='${appointmentform.boOverbooking?then("true", "false")}'/>                    
                         <@fieldSet legend='#i18n{appointment.modifyAppointmentForm.titleAlterablesParameters}'>
                             <@formGroup labelFor='name' labelKey='#i18n{appointment.createAppointmentForm.labelName}' mandatory=true>
                                 <@input type='text' name='name' id='name' value='${appointmentform.name!\'\'}' maxlength=50 />
@@ -77,13 +78,13 @@
                                         <@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' maxlength=3 />
                                     </@formGroup>
                                 </#if>
-                                <@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
-                                    <@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' maxlength=3 />
-                                </@formGroup>                       
                                 <@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
                                     <input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}"> 
                                 </@formGroup>
                             </#if>
+                            <@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
+                                    <@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' maxlength=3 />
+                            </@formGroup>                                                
                             <@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
                                 <@inputGroup>
                                     <@inputGroupItem type='text'>
@@ -129,7 +130,7 @@
                             <#if id_reservation_rule != 0 >
                                 <@button type='submit' name='action_modifyAdvancedParameters' title='#i18n{portal.util.labelModify}' buttonIcon='check' />
                             <#else>
-                                <@button type='submit' name='action_createAdvancedParameters' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
+                                <@button type='submit' name='action_createTypicalWeek' title='#i18n{portal.util.labelCreate}' buttonIcon='check' />
                             </#if>
                                 <@button type='submit' name='view_manageAppointmentForms' title='#i18n{portal.util.labelCancel}' buttonIcon='times' cancel=true />
                             </@formGroup>

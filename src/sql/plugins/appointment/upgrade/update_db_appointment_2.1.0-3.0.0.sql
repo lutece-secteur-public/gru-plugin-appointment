@@ -105,6 +105,7 @@ ALTER  TABLE appointment_reservation_rule  ADD name VARCHAR(255) NOT NULL;
 ALTER  TABLE appointment_reservation_rule  ADD description VARCHAR(255) NOT NULL;
 ALTER  TABLE appointment_reservation_rule  ADD color VARCHAR(255) NOT NULL;
 ALTER  TABLE appointment_reservation_rule  ADD is_actif BOOLEAN DEFAULT TRUE NOT NULL; 
+ALTER  TABLE appointment_reservation_rule  ADD duration_appointments int DEFAULT 15 NOT NULL;
 ALTER  TABLE appointment_reservation_rule  DROP COLUMN date_of_apply;
 
 ALTER  TABLE appointment_working_day DROP CONSTRAINT fk_appointment_working_day_appointment_week_definition;
@@ -120,6 +121,5 @@ CREATE UNIQUE INDEX appointment_working_day_unique ON appointment_working_day (i
 DROP INDEX IF EXISTS appointment_user_unique_email ON appointment_user ;
 
 ALTER  TABLE appointment_category  ADD  nb_max_appointments_per_user INT DEFAULT 0 NOT NULL;
-
 
 SET FOREIGN_KEY_CHECKS = 1;

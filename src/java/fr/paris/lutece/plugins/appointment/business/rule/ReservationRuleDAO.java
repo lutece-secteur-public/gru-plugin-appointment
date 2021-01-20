@@ -51,13 +51,13 @@ import fr.paris.lutece.util.sql.DAOUtil;
 public final class ReservationRuleDAO implements IReservationRuleDAO
 {
 
-    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_reservation_rule SET name = ?, description = ?, color = ?, enable = ?,  max_capacity_per_slot = ?, max_people_per_appointment =?, id_form = ? WHERE id_reservation_rule = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_reservation_rule, name, description, color, enable, max_capacity_per_slot, max_people_per_appointment, id_form FROM appointment_reservation_rule";
-    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_reservation_rule ( name, description, color, enable, max_capacity_per_slot, max_people_per_appointment, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+    private static final String SQL_QUERY_UPDATE = "UPDATE appointment_reservation_rule SET name = ?, description = ?, color = ?, enable = ?,  max_capacity_per_slot = ?, max_people_per_appointment =?, duration_appointments = ?, id_form = ? WHERE id_reservation_rule = ?";
+    private static final String SQL_QUERY_SELECT_COLUMNS = "SELECT id_reservation_rule, name, description, color, enable, max_capacity_per_slot, max_people_per_appointment, duration_appointments, id_form FROM appointment_reservation_rule";
+    private static final String SQL_QUERY_INSERT = "INSERT INTO appointment_reservation_rule ( name, description, color, enable, max_capacity_per_slot, max_people_per_appointment, duration_appointments, id_form) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
     private static final String SQL_QUERY_SELECT = SQL_QUERY_SELECT_COLUMNS + " WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_DELETE = "DELETE FROM appointment_reservation_rule WHERE id_reservation_rule = ?";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM = SQL_QUERY_SELECT_COLUMNS + " WHERE id_form = ?";
-    private static final String SQL_QUERY_SELECT_COLUMNS_JOIN = " SELECT appr.id_reservation_rule, appr.name, appr.description, appr.color, appr.enable, appr.max_capacity_per_slot, appr.max_people_per_appointment, appr.id_form from appointment_reservation_rule appr INNER JOIN appointment_week_definition weekd on ( appr.id_reservation_rule = weekd.id_reservation_rule ) where appr.id_form= ? ";
+    private static final String SQL_QUERY_SELECT_COLUMNS_JOIN = " SELECT appr.id_reservation_rule, appr.name, appr.description, appr.color, appr.enable, appr.max_capacity_per_slot, appr.max_people_per_appointment, appr.duration_appointments, appr.id_form from appointment_reservation_rule appr INNER JOIN appointment_week_definition weekd on ( appr.id_reservation_rule = weekd.id_reservation_rule ) where appr.id_form= ? ";
     private static final String SQL_QUERY_SELECT_BY_ID_FORM_AND_DATE_OF_APPLY = SQL_QUERY_SELECT_COLUMNS_JOIN + " AND weekd.date_of_apply = ? ";
     private static final String SQL_QUERY_SELECT_BY_DATE = SQL_QUERY_SELECT_COLUMNS_JOIN + " AND weekd.date_of_apply <= ? AND weekd.ending_date_of_apply >= ? ";
 
@@ -178,6 +178,7 @@ public final class ReservationRuleDAO implements IReservationRuleDAO
         reservationRule.setEnable( daoUtil.getBoolean( nIndex++ ) );
         reservationRule.setMaxCapacityPerSlot( daoUtil.getInt( nIndex++ ) );
         reservationRule.setMaxPeoplePerAppointment( daoUtil.getInt( nIndex++ ) );
+        reservationRule.setDurationAppointments( daoUtil.getInt( nIndex++ ) );
         reservationRule.setIdForm( daoUtil.getInt( nIndex ) );
         return reservationRule;
     }
@@ -214,6 +215,7 @@ public final class ReservationRuleDAO implements IReservationRuleDAO
         daoUtil.setBoolean( nIndex++, reservationRule.getEnable( ) );
         daoUtil.setInt( nIndex++, reservationRule.getMaxCapacityPerSlot( ) );
         daoUtil.setInt( nIndex++, reservationRule.getMaxPeoplePerAppointment( ) );
+        daoUtil.setInt( nIndex++, reservationRule.getDurationAppointments( ) );
         daoUtil.setInt( nIndex++, reservationRule.getIdForm( ) );
         if ( !isInsert )
         {

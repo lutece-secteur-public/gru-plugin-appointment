@@ -225,6 +225,7 @@ CREATE TABLE IF NOT EXISTS appointment_reservation_rule (
   enable BOOLEAN DEFAULT TRUE NOT NULL, 
   max_capacity_per_slot INT DEFAULT 0 NOT NULL,
   max_people_per_appointment INT DEFAULT 0 NOT NULL,
+  duration_appointments int DEFAULT 15 NOT NULL,
   id_form INT NOT NULL,
   PRIMARY KEY (id_reservation_rule),
   CONSTRAINT fk_appointment_reservation_rule_appointment_form
