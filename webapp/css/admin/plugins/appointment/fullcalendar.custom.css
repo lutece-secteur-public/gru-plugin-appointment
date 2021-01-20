@@ -1,5 +1,41 @@
-/* 12/11/2020 - CUSTOM styles for fullCalendar in appointment plugin */
+/*--------------------------------------------------------------------- */
+/* 12/11/2020 - CUSTOM styles for fullCalendar in appointment plugin    */
+/* FiXES HEADER                                                         */
+/*--------------------------------------------------------------------- */
+#calendar {
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+  
+.fc-view-container {
+    flex-direction:row;
+    justify-content:flex-start;
+    align-items:stretch;
+    align-content:stretch;
+    flex:1;
+    overflow:hidden;
+}
 
+.fc-scroller.fc-time-grid-container{
+    height: 50vh !important;
+}
+
+.fc-event .fc-content{
+    position: sticky;
+    top: 0;
+}
+
+/* Message */
+#messages_infos_div{
+    position: absolute;
+    right: 30px;
+    top: 0;
+    width: 50%;
+}
+
+/* Aspet graphique */
 .ui-widget-header {
     border: 1px solid #aaa;
     background: none;
@@ -31,9 +67,15 @@
     padding: 2px;
 }
 
+
 th.fc-day-header {
     height: auto !important;
     padding: 5px 20px !important;
+
+}
+
+#btn-comment-main{
+    display: none;
 }
 
 .btn-comments{ 
@@ -50,7 +92,7 @@ th.fc-day-header {
     align-items: center;
     justify-content: center;
     position: relative;
-}
+} 
 
 .fc-content .fc-title .badge{
     position: absolute;
@@ -69,6 +111,7 @@ th.fc-day-header {
 } 
 
 /* Begin From fullcalendar_ow_bo.css */
+
 .fc-time-grid .fc-slats td, th.fc-day-header, .fc-axis.fc-time {    
     height: 40px ; 
 }
@@ -85,8 +128,6 @@ td.fc-axis.fc-time {
 
 .hover{
     background-color: rgba(255, 136, 0, 0.295) !important;
-    /* background-color:rgb(233, 250, 0) !important; */
-    /* border-color: #000 !important; */
 }
 
 .fc-event, .fc-event p{
@@ -115,7 +156,6 @@ th.fc-day-header {
 
 .fc-title a{
     display: inline-block;
-    /* padding-top: 5px; */
     font-weight: 700;
     color: #000
 }
@@ -127,7 +167,7 @@ th.fc-day-header {
   	text-overflow: ellipsis;
     margin: 0;
     text-align: left;
-}
+} 
 
 .fc-title p:not(:first-child){
    display: none;
