@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS appointment_form (
   workgroup varchar(255) NULL,
   is_multislot_appointment BOOLEAN DEFAULT FALSE NOT NULL,
   role_fo varchar(255),
+  capacity_per_slot INT DEFAULT 0 NOT NULL,
   PRIMARY KEY (id_form),
    CONSTRAINT fk_appointment_form_appointment_category
     FOREIGN KEY (id_category)

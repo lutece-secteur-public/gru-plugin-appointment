@@ -259,7 +259,12 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
      * Role FO
      */
     private String _strRole;
-
+    
+    /**
+     * theoretical capacity per slot
+     */
+    private int _nCapacityPerSlot;
+    
     /**
      * Get the maximum number of appointments authorized for a same user
      * 
@@ -1082,4 +1087,22 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     {
         _strRole = strRole;
     }
+    /**
+     * Returns the theoretical capacity per slot
+     * @return The theoretical capacity per slot
+     */ 
+     public int getCapacityPerSlot()
+     {
+         return _nCapacityPerSlot;
+     }
+ 
+    /**
+     * Sets the theoretical capacity per slot
+     * @param nCapacityPerSlot The theoretical capacity per slot
+     */ 
+     public void setCapacityPerSlot( int nCapacityPerSlot )
+     {
+         _nCapacityPerSlot = nCapacityPerSlot;
+     }
+
 }

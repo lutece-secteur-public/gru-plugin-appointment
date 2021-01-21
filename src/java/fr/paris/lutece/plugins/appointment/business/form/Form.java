@@ -134,6 +134,10 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
      * Role FO
      */
     private String _strRole;
+    /**
+     * theoretical capacity per slot
+     */
+    private int _nCapacityPerSlot;
 
     /**
      * Get the form Id
@@ -456,5 +460,23 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     {
         _strRole = StringUtils.isEmpty( strRole ) ? ROLE_NONE : strRole;
     }
+
+    /**
+     * Returns the theoretical capacity per slot
+     * @return The theoretical capacity per slot
+     */ 
+     public int getCapacityPerSlot()
+     {
+         return _nCapacityPerSlot;
+     }
+ 
+    /**
+     * Sets the theoretical capacity per slot
+     * @param nCapacityPerSlot The theoretical capacity per slot
+     */ 
+     public void setCapacityPerSlot( int nCapacityPerSlot )
+     {
+         _nCapacityPerSlot = nCapacityPerSlot;
+     }
 
 }
