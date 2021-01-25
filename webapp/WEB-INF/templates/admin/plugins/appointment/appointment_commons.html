@@ -163,11 +163,10 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 <@modal id=modalId >
 	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
 	<@modalBody>
-		<@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
+		<@tform action='jsp/admin/plugins/appointment/Comments.jsp' id='commentUpdate'>
     	<@input type='hidden' name='action' value='${action!}' />
 		<@input type='hidden' name='id_form' value='${idForm!}' />
-		<#if comment??><#assign value="${comment.id!''}" /><#else><#assign value='' /></#if>
-		<@input type='hidden' name='id_comment' value=value />
+		<@input type='hidden' name='id_comment' id='id_comment' />
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 			<@input type='textarea' name='comment' id=idComment richtext=true />
 		</@formGroup>
@@ -217,14 +216,11 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 			</@row>
 			<@row>
 				<@columns sm=12 params=' style="display:flex;justify-content: space-around" '>
-					<@button type='submit' name='action_${action}' buttonIcon='save' title='Enregistrer' /> 
-					<a href="jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=${value!}" class="btn btn-danger">
-						<i class='fas fa-trash fa-fw'></i> #i18n{portal.util.labelDelete}
-					</a>  
+					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
+					<@button type='submit' id='commentDelete' params=' formaction="jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment"' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' class="btn btn-danger" />
 					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
 				</@columns>
 			</@row>
-		
 		</@tform>
 	</@modalBody>
 </@modal>
@@ -234,6 +230,7 @@ $('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
+
 </script>
 </#macro>
 
