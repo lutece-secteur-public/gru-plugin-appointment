@@ -1,16 +1,12 @@
 <#include "/admin/util/editor/editor.html" />
 <@initEditor />
-<span class="close">&times;</span>
+
 <@row>
     <@columns>
     <@box color='primary'>
             <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
             <@boxBody>
-            
-                <fieldset>
-                <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idStartingTime" "idEndingTime" "doModifyComment" id_form mailing_list />
-                </fieldset>
+                <@getCommentModal "modify-comment" "#i18n{appointment.createField.title}" "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idStartingTime" "idEndingTime" "doModifyComment" id_form mailing_list />
             </@boxBody>
         </@box>
     </@columns>
@@ -18,12 +14,12 @@
 
 <@getDatePickerBootstrap idField="modifyStartingValidityDate" language=locale />
 <@getDatePickerBootstrap idField="modifyEndingValidityDate" language=locale />
-<script defer>
-$(document).ready( function( ) {
-    $(window).load(function( ) {
+<script>
+$( function( ) {
         $( "input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( "${comment.startingValidityDate}" ) );
         $( "input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( "${comment.endingValidityDate}" ) );
         tinyMCE.activeEditor.setContent( "${comment.comment}" );
-    });
 });
 </script>
+<#include "/admin/util/editor/editor.html" />
+<@initEditor type='comment' />
