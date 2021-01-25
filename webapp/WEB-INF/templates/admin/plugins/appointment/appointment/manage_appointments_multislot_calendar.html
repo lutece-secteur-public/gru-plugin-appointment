@@ -4,25 +4,9 @@
     </@columns>
 </@row>
 
-<@modal id='commentModal'>
-    <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
-	<@modalBody>
-		<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form />
-	</@modalBody>
-	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
+<@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form />
 
-<@modal id='modify-comment'>
-	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
-	<@modalBody>
-		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form />
-	</@modalBody>
-	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
+<@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form />
 
 <@modal id='addbook_modal' params='aria-labelledby="qModalLabel"'>
     <@modalHeader id='qModalLabel' modalTitle='#i18n{appointment.appointmentApp.defaultTitle}' />
@@ -49,10 +33,8 @@
     Possible values: dotted, bordered , bg-full,  bg-grad    
 */
 <#assign typeClass=''>
-<#assign titleSlot=true >
 var bgOpenColor = '#fff;'
 var bgClosedColor = '#bebebe;'
-/* ********************************************************* */
 var slotDuration = '${min_duration}';
 var minTime = '${min_time}';
 var maxTime = '${max_time}';
@@ -64,8 +46,8 @@ var strEndingDateOfDisplay = '${str_ending_date_of_display}';
 var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointments.jsp?view=';
 var idForm = '${id_form}';
 var columnFormat = 'dddd DD/MM/YYYY';
+var defaultDate = '${date_of_display}';
 var events = [
-
 <#if events??>
     <#list events as event>
         <#assign nbAppointments = event.nbPlacesTaken>
@@ -116,28 +98,14 @@ var events = [
     </#list>
 </#if>
 <#if comment_events??>
-    <#list comment_events as comment_event>
-    {
-        "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
-        "start" : "${comment_event.startingValidityDate}",
-        "end" : "${comment_event.calendarAllDaySlotEnd}",
-        "validity_end" : "${comment_event.endingValidityDate}",
-        "start_time" : "${comment_event.startingValidityTime!}",
-        "end_time" : "${comment_event.endingValidityTime!}",
-        "id" : "${comment_event.id}",
-        "creator_user" : "${comment_event.creatorUserName!''}",
-        "creation_date" : "${comment_event.creationDate?date.xs!''}",
-        "type": "comment"
-    },
-    </#list>
+    <@getComments comment_events />
 </#if>
 ];
 
-var defaultDate = '${date_of_display}';
-var calendar = $('#calendar');
 $( function() {
+    
+    var calendar = $('#calendar');
     <@fullCalendarScript />
-
 });
 </script>
 <#include "/admin/util/editor/editor.html" />

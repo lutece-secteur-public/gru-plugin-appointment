@@ -71,6 +71,13 @@
     color: rgb(233, 250, 0);
 }
 
+.comments{
+    padding-left: 5px;
+}
+
+.comments:hover{
+    font-weight: 700;
+}
 
 th.fc-day-header {
     height: auto !important;

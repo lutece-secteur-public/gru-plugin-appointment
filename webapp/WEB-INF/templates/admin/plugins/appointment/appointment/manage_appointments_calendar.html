@@ -4,42 +4,19 @@
     </@columns>
 </@row>
 
-<@modal id='commentModal'>
-	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
-	<@modalBody>
-		<@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form />
-	</@modalBody>
-	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
+<@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form />
 
-<@modal id='modify-comment'>
-	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
-	<@modalBody>
-		<@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form />
-	</@modalBody>
-	<@modalFooter>
-        <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
+<@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form />
 
 <script>
-    /* ********************************************************* */
-    /*
-        TODO : Add style def to model
-        Possible values: dotted, bordered , bg-full,  bg-grad    
-    */
     <#assign typeClass=''>
-    <#assign titleSlot=true >
     var bgOpenColor = '#fff;'
     var bgClosedColor = '#bebebe;'
-
-    /* ********************************************************* */
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
     var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
+    var defaultDate = '${date_of_display}';
     var startingDateOfDisplay = '${starting_date_of_display}';
     var endingDateOfDisplay = '${ending_date_of_display}';
     var strStartingDateOfDisplay = '${str_starting_date_of_display}';
@@ -118,19 +95,9 @@
         </#if>
 		<#if comment_events??>
             <#list comment_events as comment_event>
-            {
-                "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
-                "start" : "${comment_event.startingValidityDate}",
-                "end" : "${comment_event.calendarAllDaySlotEnd}",
-                "validity_end" : "${comment_event.endingValidityDate}",
-                "start_time" : "${comment_event.startingValidityTime!}",
-                "end_time" : "${comment_event.endingValidityTime!}",
-                "id" : "${comment_event.id}",
-                "creator_user" : "${comment_event.creatorUserName!''}",
-                "creation_date" : "${comment_event.creationDate?date.xs!''}",
-                "type": "comment",
-                "allDay": true
-            },
+                <#if comment_events??>
+                    <@getComments comment_events />
+                </#if>
             </#list>
         </#if>
     ];
@@ -141,7 +108,6 @@
         const commentsList = [<#list comment_events as comment_event><#compress>{"id" : "${comment_event.id}","title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}","start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}","end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}","validity_end" : "${comment_event.endingValidityDate}"}<#if nbComments gt 0>,<#assign nbComments=nbComments-1 ></#if></#compress></#list>];
     </#if>
 
-    var defaultDate = '${date_of_display}';
     $( function(){
         <@fullCalendarScript />
     });

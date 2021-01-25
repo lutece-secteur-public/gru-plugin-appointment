@@ -77,7 +77,7 @@
 							</@formGroup>
 						</#if>
 						<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
-							<input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}"> 
+							<input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}" > 
 						</@formGroup>
 					</#if>
 					<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
@@ -140,33 +140,15 @@
 	</@tabs>
 </@appointmentTabs>
 
-<@modal id='commentModal'>
-    <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
-	<@modalBody>
-	</@modalBody>
-	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
-
-<@modal id='modify-comment'>
-	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
-	<@modalBody>
-	</@modalBody>
-	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
-
 <@modal id='updatePlanningSlot'>
     <@modalBody>
         <@tform action='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp'>
             <@messages errors=errors infos=infos/>					
-            <input type="hidden" name="action" value="doModifyTimeSlot">
-            <input type="hidden" id="idTimeSlot" name="id_time_slot" value="">
-            <input type="hidden" id="idWorkingDay" name="id_working_day" value="">
-            <input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}">
-            <input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}">
+            <@input type="hidden" name="action" value="doModifyTimeSlot" />
+            <@input type="hidden" id="idTimeSlot" name="id_time_slot" value="" />
+            <@input type="hidden" id="idWorkingDay" name="id_working_day" value="" />
+            <@input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}" />
+            <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
             <@formGroup labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
                 <@checkBox labelFor='is_open' name='is_open' id='timeIsOpen' value='true' checked=true />
             </@formGroup>
@@ -199,10 +181,10 @@
 <@modal id='updatePlanningMultiSlot'>
     <@modalBody>
         <@tform action="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp">
-            <input type="hidden" name="action" value="doModifyListTimeSlot" >
-            <input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}">
-            <input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}">
-            <input type="hidden" id="timeSlotData" name="timeSlotData" value="">
+            <@input type="hidden" name="action" value="doModifyListTimeSlot" />
+            <@input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}" />
+            <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
+            <@input type="hidden" id="timeSlotData" name="timeSlotData" value="" />
             <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
                 <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
             </@formGroup>
@@ -232,17 +214,24 @@ var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
 var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}&id_time_slot=';
 var columnFormat = 'dddd';
 var events = [
+    <#assign realCap = appointmentform.capacityPerSlot?number />
     <#if events??>
         <#list events as event>
+            <#assign maxCap = event.maxCapacity?number />
+            <#if maxCap = 0><#assign maxCap = 1></#if>
+            <#assign nbFull = maxCap / realCap  * 100 >
+            <#assign eventTitle='${maxCap} / ${realCap}'>
+            <#assign strCustomColor><#if event.isOpen & ( realCap > maxCap )>rgba(255,165,0,1)<#else>rgba(222,222,222,1)</#if></#assign>
             {
-                title : 'Capacit\u00e9 max : ' + '${event.maxCapacity}',
+                title : '${eventTitle}',
                 start : '${event.startingDateTime}',
                 end : '${event.endingDateTime}',
                 id : '${event.idTimeSlot}',
                 idWorkingDay: '${event.idWorkingDay}',
                 color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
-                textColor: '#2c2c2d',
-                backgroundColor : <#if event.isOpen>'white'<#else>'#bebebe'</#if>,
+                textColor : '#2c2c2d',
+                customStyle : <#if event.isOpen>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
+                backgroundColor : <#if event.isOpen>'#fff'<#else>'#bebebe'</#if>,
                 borderColor : '#bebebe',
                 isOpen: ${event.isOpen?c},
                 maxCapacity: '${event.maxCapacity!}',
@@ -285,6 +274,7 @@ $(function () {
         format: 'HH:mm',
         stepping: 5
     });
+    
     $('#time_end').datetimepicker({
         format: 'HH:mm',
         stepping: 5
@@ -331,7 +321,6 @@ $(function () {
         e.preventDefault();
         $(this).children('.fa').toggleClass('fa-eye');
         $("#appointment_search").toggle();
-        
     });
 
     $('#calendar').fullCalendar({
@@ -371,29 +360,16 @@ $(function () {
             $(element).contextmenu(function() {
                 return false;
             });
+
             var json = {
                 "container": "body",
                 "placement" : "bottom",
                 "html" : true,
                 "trigger" : "hover"
             };
-            if( event.type == "comment" ){
-                if ( event.validity_end == null || event.validity_end == undefined ){
-                    labelEventDate='Le ' + event.start.format('ddd DD/MM');
-                } else {
-                    moment.locale("fr");
-                    labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' au '+ moment(event.validity_end).format('ddd DD/MM');
-                }
-                json.content = '<p>' + labelEventDate +'<p><hr>'+ event.title + '<hr><p><strong>Par ' + event.creator_user + '</strong> le <time>' + event.creation_date + '</time>' ;
-            } else {
-                json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-            }
+            json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
             $(element).popover( json );
-            if(event.type == "comment" ){
-                var fcTitle = element.find('.fc-title p');
-                fcTitle.prepend( '[' + event.creator_user + '] ');
-                element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_end\":\"" + event.validity_end + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
-            }
+           
         },
         eventAfterAllRender: function(view) {
             $('.fc-event').css('cursor', 'pointer');

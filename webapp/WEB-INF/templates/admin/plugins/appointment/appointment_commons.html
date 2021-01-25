@@ -134,6 +134,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 -- @param fieldTitle the title
 -- @return the field
 -->
+
 <#function getFieldValueByCode entry fieldCode>
 	<#if getFieldByCode( entry, fieldCode )??>
 		<#assign field = getFieldByCode( entry, fieldCode )>
@@ -158,59 +159,99 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
     </#if>
 </#function>
 
-<#macro getCommentForm idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm locale=locale>
-<@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
-    <@input type='hidden' name='action' value='${action}' />
-    <@input type='hidden' name='id_form' value='${idForm}' />
-	<#if comment??><#assign value="${comment.id!''}" /><#else><#assign value='' /></#if>
-    <@input type='hidden' name='id_comment' value=value />
-	<@fieldSet>
+<#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm locale=locale>
+<@modal id=modalId >
+	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
+	<@modalBody>
+		<@tform action='jsp/admin/plugins/appointment/Comments.jsp'>
+    	<@input type='hidden' name='action' value='${action!}' />
+		<@input type='hidden' name='id_form' value='${idForm!}' />
+		<#if comment??><#assign value="${comment.id!''}" /><#else><#assign value='' /></#if>
+		<@input type='hidden' name='id_comment' value=value />
 		<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 			<@input type='textarea' name='comment' id=idComment richtext=true />
 		</@formGroup>
-		<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' mandatory=true rows=2>
-			<@inputGroup>
-				<@input type='text' name='startingValidityDate' id=idStartingDate />
-				<@inputGroupItem type='text'>
-				<@icon style='calendar' />
-				</@inputGroupItem>
-			</@inputGroup>
-		</@formGroup>
-		<@formGroup labelFor='startingValidityTime' labelKey='#i18n{appointment.create_comment.labelStartingValidityTime}' rows=2>
-	        <@inputGroup>
-	            <@input type='text' name='startingValidityTime' id=idStartingTime />
-	            <@inputGroupItem type='addon'>
-	            <@icon style='calendar' />
-	            </@inputGroupItem>
-	        </@inputGroup>
-	    </@formGroup>
-		<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
-			<@inputGroup>
-				<@input type='text' name='endingValidityDate' id=idEndingDate />
-				<@inputGroupItem type='text'>
-				<@icon style='calendar' />
-				</@inputGroupItem>
-			</@inputGroup>
-		</@formGroup>
-		<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=2>
-	        <@inputGroup>
-	            <@input type='text' name='endingValidityTime' id=idEndingTime />
-	            <@inputGroupItem type='addon'>
-	            <@icon style='calendar' />
-	            </@inputGroupItem>
-	        </@inputGroup>
-	    </@formGroup>
-		<@formGroup rows=2>
-			<@button type='submit' name='action_${action}' buttonIcon='save' title='Enregistrer' />   
-		</@formGroup>
-	</@fieldSet>
-</@tform>
+		<@row>
+			<@columns offsetSm=2 sm=4>
+				<@formGroup labelFor='startingValidityDate' labelKey='#i18n{appointment.create_comment.labelStartingValidityDate}' mandatory=true rows=2>
+					<@inputGroup>
+						<@input type='text' name='startingValidityDate' id=idStartingDate />
+						<@inputGroupItem type='text'>
+						<@icon style='calendar' />
+						</@inputGroupItem>
+					</@inputGroup>
+				</@formGroup>
+			</@columns>
+			<@columns sm=3>
+				<@formGroup labelFor='startingValidityTime' labelKey='#i18n{create_comment.labelStartingValidityTime}' rows=2>
+					<@inputGroup>
+						<@input type='text' name='startingValidityTime' id=idStartingTime />
+						<@inputGroupItem type='addon'>
+						<@icon style='calendar' />
+						</@inputGroupItem>
+					</@inputGroup>
+				</@formGroup>
+				</@columns>
+			</@row>
+			<@row>
+				<@columns offsetSm=2 sm=4>
+					<@formGroup labelFor='endingValidityDate' labelKey='#i18n{appointment.create_comment.labelEndingValidityDate}' mandatory=true rows=2>
+						<@inputGroup>
+							<@input type='text' name='endingValidityDate' id=idEndingDate />
+							<@inputGroupItem type='text'>
+							<@icon style='calendar' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+				</@columns>
+				<@columns sm=3>
+					<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=0>
+						<@inputGroup>
+							<@input type='text' name='endingValidityTime' id=idEndingTime />
+							<@inputGroupItem type='addon'>
+							<@icon style='calendar' />
+							</@inputGroupItem>
+						</@inputGroup>
+					</@formGroup>
+				</@columns>
+			</@row>
+			<@row>
+				<@columns sm=12 params=' style="display:flex;justify-content: space-around" '>
+					<@button type='submit' name='action_${action}' buttonIcon='save' title='Enregistrer' /> 
+					<a href="jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=${value!}" class="btn btn-danger">
+						<i class='fas fa-trash fa-fw'></i> #i18n{portal.util.labelDelete}
+					</a>  
+					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
+				</@columns>
+			</@row>
+		
+		</@tform>
+	</@modalBody>
+</@modal>
+
 <script>
 $('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 </script>
+</#macro>
+
+<#macro getComments comments_list>
+<#list comments_list as comment_event>
+	{
+		"title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
+		"start" : "${comment_event.startingValidityDate}",
+		"end" : "${comment_event.calendarAllDaySlotEnd}",
+		"validity_end" : "${comment_event.endingValidityDate}",
+		"start_time" : "${comment_event.startingValidityTime!}",
+		"end_time" : "${comment_event.endingValidityTime!}",
+		"id" : "${comment_event.id}",
+		"creator_user" : "${comment_event.creatorUserName!''}",
+		"creation_date" : "${comment_event.creationDate?date.xs!''}",
+		"type": "comment"
+	},
+</#list>
 </#macro>
 
 <#macro btnComment >
@@ -282,7 +323,7 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 <@getDatePickerBootstrap idField="time_end_validity"   language=language />
 <script type="text/javascript">
 	$('#date_start_validity').datepicker({
-    	language:		"${language}",
+    	language: "${language}",
     	weekStart: 1,
     	todayBtn: true,
     	todayHighLight: true,
@@ -308,13 +349,64 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 </script>
 </#macro> 
 
-<#macro fullCalendarScript locale=locale>
+<#macro commentModal update=false>
+<#if update>
+	var formValues = JSON.parse( $(this).attr( "data-json" ) );
+	$("#modify-comment input[name='id_comment']").val( formValues.id_comment );
+	tinyMCE.activeEditor.setContent( formValues.comment_text );
+	$( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
+	$( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
+	$( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
+	$( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
+</#if>
+$( "#modify-comment" ).modal('show');
+</#macro> 
+
+<#macro commentRenderJS >
+$(element).addClass('comments').attr( "id", "comment-"+event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
+if ( event.validity_end == null || event.validity_end == undefined ){
+	labelEventDate='Le ' + event.start.format('ddd DD/MM');
+} else {
+	moment.locale("${locale}");
+	labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
+}
+json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
+	var fcTitle = element.find('.fc-title p');
+	fcTitle.prepend( '[ ' + event.start_time + ' / ' + event.end_time + ' ] ' );
+}
+	/*  Add Comment icon to element   
+	if ( commentsList.length > 0 ) { 
+		var availableComments = commentsList.filter( function (selection){
+		return selection.validity_end <= moment();
+	});
+
+	availableComments.forEach( function( el ){
+		const debut=moment( el.start ), eDebut=event.start;
+		const end=moment( el.end ), eEnd=event.end;
+		let n=0;
+		if( eDebut.diff( debut, 'days' ) > 0 ){
+			if( n === 0){
+				$title.append( '<div class="btn-group"><button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-comment fa-xs"></i></button><div class="dropdown-menu dropdown-menu-right"></div></div>' );
+				n++;
+			}
+			var group=$title.find('.btn-group .dropdown-menu');
+			group.append('<a class="dropdown-item" href="#" id="btn-comment-' + el.id + '">' + el.title + '</a>');
+		}
+	});
+	
+	} 
+	*/
+</#macro> 
+
+<#macro fullCalendarScript isSpecific=false locale=locale>
 $('#calendar').fullCalendar({
 	displayEventTime: false, 
 	buttonText : {
 		prev : '#i18n{appointment.appointmentApp.previousWeek}',
 		next : '#i18n{appointment.appointmentApp.nextWeek}',
 	}, 
+	height: 'parent',
 	themeSystem: 'jquery-ui', 
 	navLinks: true, 
 	navLinkDayClick: function( date, jsEvent ) {
@@ -368,6 +460,15 @@ $('#calendar').fullCalendar({
 		end: maxTime,
 		dow: dow
 	}, 
+	// Ajout Specific week
+	eventClick: function(calEvent, jsEvent, view) {
+		if( calEvent.type != "comment")
+		{
+			location.href = calEvent.url;
+		} else {
+			<@commentModal update=true />
+		}
+	},
 	events: events,
 	viewRender: function(view, element) {
 		var minDate = moment(startingDateOfDisplay);
@@ -395,40 +496,72 @@ $('#calendar').fullCalendar({
 		$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
 		$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
 		$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+
 		$(".open-AddBookDialog").click( function () {
 			$('#starting_date_time').val($(this).data('starting_date_time'));
 			$('#starting_date_time_span').val($(this).data('starting_date_time'));
 			$('#addbook_modal').modal('show');
 		});
-		
+		// Set comments 
 		$(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
 		$('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first");
 		$('.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first').css('position', 'relative');
-		
 		var tgc = $('#toggle-add-comment').find('body');
 		tgc.click(function(ev) {
-			$( "#commentModal" ).modal('show');
-		});		
-		$('.toggle-modify-comment').click(function(ev) {
-			ev.preventDefault();
-			var formValues = JSON.parse( $(this).attr( "data-json" ) );
-			$("#modify-comment input[name='id_comment']").val( formValues.id_comment );
-			tinyMCE.activeEditor.setContent( formValues.comment_text );
-			$( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
-			$( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
-			$( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
-			$( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
-			$( "#modify-comment" ).modal('show');
+			<@commentModal />
+		});	
+		<#if isSpecific>
+		/* Event selection if specific */ 
+		var eventIdx=0, eventData='',evtData='';
+		$( ".fc-content-skeleton" ).not(":has(.comments)").not(":has(.btn-comments)").selectable({
+			filter: ".fc-time-grid-event.fc-v-event",
+			selecting: function( event, ui ) {
+				eventIdx++;
+			},
+			unselecting: function( event, ui ) {
+				eventIdx--;
+			},
+			stop: function() {
+				$( ".ui-selected", this ).each( function() {
+					console.log( eventData );
+					if ( eventIdx > 1 ){
+						eventData += '{' + $(this).data('event') + '},' ;
+						const events =  JSON.stringify( eventData );
+						evtData='['+eventData.slice(0, -1)+']'
+						const evt = JSON.parse(evtData); 
+						$('#slotsData').val( evtData);
+						$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
+						$('#updatePlanningMultiSlot').modal('show');
+					} else {
+						eventData ='{' + $(this).data('event') + '}';  
+						const events = JSON.stringify(eventData); 
+						evtData= '['+eventData+']';
+						$('#slotData').val( evtData );
+						const evt = JSON.parse(eventData); 
+						const isOpen = JSON.parse( evt.isOpen )
+						$('#is_open').prop( "checked", isOpen );
+						$('#max_capacity').val( evt.maxCapacity );
+						$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+						$('#date_of_display').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
+						$('#timeStart').text( evt.startingTime );
+						$('#ending_time').val( evt.endingTime );
+						$('#updatePlanningSlot').modal('show');
+					}
+				});
+				eventData='';
+			}
 		});
+		</#if>
 	},
 	eventRender: function( event, element, view ) {
 		var $title = element.find( '.fc-title' ), createSlot='';
 		$(element).addClass( event.customClass );
-		
+		<#if isSpecific>
+		$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
+        </#if>  
 		if ( event.customStyle !='' ){
 			$(element).css( 'background', event.customStyle );
 		}
-
 		$title.html( $title.text() );
 
 		$(element).contextmenu(function() {
@@ -438,46 +571,13 @@ $('#calendar').fullCalendar({
 		var json = { "container": "body", "placement" : "bottom", "html" : true, "trigger" : "hover" };
 		
 		if( event.type == "comment" ){
-			$(element).attr( "id", "comment-"+event.id );
-			if ( event.validity_end == null || event.validity_end == undefined ){
-				labelEventDate='Le ' + event.start.format('ddd DD/MM');
-			} else {
-				moment.locale("${locale}");
-				labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
-			}
-			json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+			<@commentRenderJS />
 		} else {
-			/*  Add Comment icon to element   
-			if ( commentsList.length > 0 ) { 
-				var availableComments = commentsList.filter( function (selection){
-					return selection.validity_end <= moment();
-				});
-	
-				availableComments.forEach( function( el ){
-					const debut=moment( el.start ), eDebut=event.start;
-					const end=moment( el.end ), eEnd=event.end;
-					let n=0;
-					if( eDebut.diff( debut, 'days' ) > 0 ){
-						if( n === 0){
-							$title.append( '<div class="btn-group"><button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-comment fa-xs"></i></button><div class="dropdown-menu dropdown-menu-right"></div></div>' );
-							n++;
-						}
-						var group=$title.find('.btn-group .dropdown-menu');
-						group.append('<a class="dropdown-item" href="#" id="btn-comment-' + el.id + '">' + el.title + '</a>');
-					}
-				});
-				
-			} 
-			*/
 			json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
 		}
 		$(element).popover( json );
 		
-		if(event.type == "comment" ){
-			var fcTitle = element.find('.fc-title p');
-			fcTitle.prepend( '[' + event.creator_user + '] ');
-			element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-edit fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon'><i class='fas fa-trash fa-fw text-danger'></i></a></div>" );
-		}
+		
 	}
 });
 </#macro>
