@@ -67,6 +67,10 @@
     padding: 2px;
 }
 
+#toggle-add-comment .fa-stack-1x {
+    color: rgb(233, 250, 0);
+}
+
 
 th.fc-day-header {
     height: auto !important;
