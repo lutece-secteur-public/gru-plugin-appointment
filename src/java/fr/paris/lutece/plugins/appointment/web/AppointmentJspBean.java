@@ -114,6 +114,7 @@ import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
+import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
@@ -245,6 +246,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_DEFAULT_FIELD_LIST = "defaultFieldList";
     private static final String MARK_CUSTOM_FIELD_LIST = "customFieldList";
     private static final String MARK_IS_OVERBOOKING = "isOverbooking";
+    private static final String MARK_MAILING_LIST = "mailing_list";
 
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
     private static final String ERROR_MESSAGE_SLOT_FULL = "appointment.message.error.slotFull";
@@ -453,6 +455,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
                 AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) );
         model.put( MARK_LOCALE, getLocale( ) );
+        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( )  ));
+
 
         if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake <= 1 )
         {
@@ -1712,9 +1716,20 @@ public class AppointmentJspBean extends MVCAdminJspBean
             {
                 throw new AccessDeniedException( AppointmentResourceIdService.PERMISSION_CHANGE_APPOINTMENT_STATUS );
             }
-            if ( ( slot.getNbRemainingPlaces( ) == 0 ) && appointment.getIsCancelled( ) && !bStatusCancelled )
+            if( appointment.getIsCancelled( ) && !bStatusCancelled ) 
             {
-                return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_UNVAILABLE_SLOT, AdminMessage.TYPE_STOP ) );
+	            
+            	for(AppointmentSlot apptSlot: appointment.getListAppointmentSlot( )) 
+	            {
+		           
+	                slot = SlotService.findSlotById( idSlot );
+	
+	            	if ( ( apptSlot.getNbPlaces( ) > slot.getNbRemainingPlaces( ) )  )
+		            {
+		                return redirect( request, AdminMessageService.getMessageUrl( request, MESSAGE_UNVAILABLE_SLOT, AdminMessage.TYPE_STOP ) );
+		            }
+	            	
+	            }
             }
             if ( appointment.getIsCancelled( ) != bStatusCancelled )
             {

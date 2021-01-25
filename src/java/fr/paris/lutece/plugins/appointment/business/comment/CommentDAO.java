@@ -207,9 +207,9 @@ public final class CommentDAO implements ICommentDAO
                 {
                     comment.setEndingValidityTime( endingTime.toLocalTime( ) );
                 }
-                comment.setComment( daoUtil.getString( nIndex ) );
+                comment.setComment( daoUtil.getString( nIndex++) );
                 comment.setCreationDate( daoUtil.getDate( nIndex++ ).toLocalDate( ) );
-                comment.setCreatorUserName( daoUtil.getString( nIndex ) );
+                comment.setCreatorUserName( daoUtil.getString( nIndex++ ) );
 
                 commentList.add( comment );
             }

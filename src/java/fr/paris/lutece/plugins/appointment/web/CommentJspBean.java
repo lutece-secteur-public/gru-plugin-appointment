@@ -46,7 +46,9 @@ import org.apache.commons.lang.StringUtils;
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.comment.Comment;
 import fr.paris.lutece.plugins.appointment.business.comment.CommentHome;
+import fr.paris.lutece.plugins.appointment.service.CommentService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
+import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
@@ -96,11 +98,14 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     private static final String PARAMETER_ENDING_VALIDITY_TIME = "endingValidityTime";
     private static final String PARAMETER_ID_FORM = "id_form";
     private static final String REFERER = "referer";
+    private static final String PARAMETER_ID_MAILING_LIST = "idMailingList";
+
 
     // Marks
     private static final String MARK_COMMENT = "comment";
     private static final String MARK_COMMENT_LIST = "comment_list";
     private static final String MARK_LOCALE = "locale";
+    private static final String MARK_MAILING_LIST = "mailing_list";
 
     // Views
     private static final String VIEW_ADD_COMMENT = "viewAddComment";
@@ -135,7 +140,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
      *            The HTTP request
      * @return The page
      */
-    @View( VIEW_MANAGE_COMMENT )
+    @View( value= VIEW_MANAGE_COMMENT , defaultView = true )
     public String getManageComment( HttpServletRequest request )
     {
 
@@ -163,6 +168,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         model.put( MARK_COMMENT, _comment );
         model.put( MARK_LOCALE, getLocale( ) );
         model.put( PARAMETER_ID_FORM, nIdForm );
+        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( )  ));
+
         return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_CREATE_COMMENT, model );
 
     }
@@ -177,9 +184,10 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @Action( ACTION_DO_ADD_COMMENT )
     public String doAddComment( HttpServletRequest request )
     {
-        User user = (User) getUser( );
+        User user = getUser( );
         int nIdForm = Integer.parseInt( request.getParameter( PARAMETER_ID_FORM ) );
         String strReferer = request.getHeader( REFERER );
+        int nIdMailingList= Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ));
 
         _comment = ( _comment == null ) ? new Comment( ) : _comment;
 
@@ -209,9 +217,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         }
         else
         {
-
+            CommentService.createAndNotifyMailingList( _comment, nIdMailingList,  getLocale( ) );
             addInfo( INFO_COMMENT_CREATED, getLocale( ) );
-            CommentHome.create( _comment );
         }
 
         if ( StringUtils.isNotBlank( strReferer ) )
@@ -232,7 +239,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @View( VIEW_MODIFY_COMMENT )
     public String getViewModifyComment( HttpServletRequest request )
     {
-        User user = (User) getUser( );
+        User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         _comment = CommentHome.findByPrimaryKey( nIdComment );
 
@@ -242,6 +249,8 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
             model.put( MARK_COMMENT, _comment );
             model.put( MARK_LOCALE, getLocale( ) );
             model.put( PARAMETER_ID_FORM, _comment.getIdForm( ) );
+            model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( )  ));
+
             return getPage( MESSAGE_COMMENT_PAGE_TITLE, TEMPLATE_MODIFY_COMMENT, model );
         }
 
@@ -260,9 +269,10 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @Action( ACTION_DO_MODIFY_COMMENT )
     public String doModifyComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = (User) getUser( );
+        User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         String strReferer = request.getHeader( REFERER );
+        int nIdMailingList= Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ));
 
         if ( _comment == null || _comment.getId( ) != nIdComment )
         {
@@ -293,7 +303,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
         else
             if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
             {
-                CommentHome.update( _comment );
+                CommentService.updateAndNotifyMailingList(_comment, nIdMailingList, getLocale( ));
                 addInfo( INFO_COMMENT_UPDATED, getLocale( ) );
             }
             else
@@ -345,9 +355,11 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     @Action( ACTION_DO_REMOVE_COMMENT )
     public String doRemoveComment( HttpServletRequest request ) throws AccessDeniedException
     {
-        User user = (User) getUser( );
+        User user = getUser( );
         int nIdComment = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
         String strReferer = request.getParameter( REFERER );
+        int nIdMailingList= Integer.parseInt( request.getParameter( PARAMETER_ID_MAILING_LIST ));
+
         UrlItem url = new UrlItem( strReferer );
         url.addParameter( PARAMETER_ID_FORM, _comment.getIdForm( ) );
 
@@ -355,7 +367,7 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         if ( _comment.getCreatorUserName( ).equals( user.getAccessCode( ) ) )
         {
-            CommentHome.remove( nIdComment );
+            CommentService.removeAndNotifyMailingList( nIdComment, nIdMailingList, getLocale( )  );
             addInfo( INFO_COMMENT_REMOVED, getLocale( ) );
         }
         else

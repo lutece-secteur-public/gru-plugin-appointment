@@ -39,6 +39,14 @@
             <feature-url>jsp/admin/plugins/appointment/ManageAppointmentCategory.jsp</feature-url>
             <feature-icon-url/>
 		</admin-feature>
+		<admin-feature>
+            <feature-id>APPOINTMENT_COMMENT_MANAGEMENT</feature-id>
+            <feature-title>appointment.adminFeature.manageComment.name</feature-title>
+            <feature-description>appointment.adminFeature.manageComment.name</feature-description>
+            <feature-level>2</feature-level>
+            <feature-url>jsp/admin/plugins/appointment/Comments.jsp</feature-url>
+            <feature-icon-url/>
+		</admin-feature>
     </admin-features>
 	<rbac-resource-types>
 		<rbac-resource-type>

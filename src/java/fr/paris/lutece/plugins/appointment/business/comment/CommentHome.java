@@ -122,8 +122,6 @@ public final class CommentHome
     /**
      * Load the data from the table
      * 
-     * @param plugin
-     *            the plugin
      * @param startingDate
      *            the date start
      * @param endingDate
@@ -139,9 +137,6 @@ public final class CommentHome
     /**
      * Load the data from the table
      * 
-     * @param plugin
-     *            the plugin
-     * @param startingDate
      *            the date start
      * @param endingDate
      *            the date end

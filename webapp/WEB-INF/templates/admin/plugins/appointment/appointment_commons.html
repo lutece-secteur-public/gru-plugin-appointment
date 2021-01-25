@@ -158,8 +158,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
         </#list>
     </#if>
 </#function>
-
-<#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm locale=locale>
+<#macro getCommentModal modalId modalTitle idComment idStartingDate idEndingDate idStartingTime idEndingTime action idForm mailingList locale=locale>
 <@modal id=modalId >
 	<@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
 	<@modalBody>
@@ -212,8 +211,14 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 							</@inputGroupItem>
 						</@inputGroup>
 					</@formGroup>
-				</@columns>
+				</@columns>							
 			</@row>
+			<@row>			
+				<@formGroup labelFor='idMailingList' labelKey='#i18n{appointment.create_comment.labelMailingList}' helpKey='#i18n{appointment.create_comment.labelMailingList.help}' mandatory=false>
+					<#assign default='-1'>
+					<@select name="idMailingList" items=mailing_list default_value=default size='sm' />
+				</@formGroup>
+			</@row>		
 			<@row>
 				<@columns sm=12 params=' style="display:flex;justify-content: space-around" '>
 					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
@@ -224,7 +229,6 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 		</@tform>
 	</@modalBody>
 </@modal>
-
 <script>
 $('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});

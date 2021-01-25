@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS appointment_slot ;
 DROP TABLE IF EXISTS appointment_form ;
 DROP TABLE IF EXISTS appointment_category ;
 DROP TABLE IF EXISTS appointment_comment;
+DROP TABLE IF EXISTS appointment_comment_notification_cf;
 
 
 -- -----------------------------------------------------
@@ -386,4 +387,13 @@ comment_user_creator VARCHAR(255) NOT NULL,
 PRIMARY KEY (id_comment), 
 CONSTRAINT fk_appointment_comment FOREIGN KEY (id_form) 
 	REFERENCES appointment_form (id_form) 
+);
+-- -----------------------------------------------------------
+-- Table structure for table appointment_notification_cf --
+-- -----------------------------------------------------------
+CREATE TABLE appointment_comment_notification_cf
+(
+	sender_name VARCHAR(255) DEFAULT NULL, 
+	subject VARCHAR(255) DEFAULT NULL, 
+	message LONG VARCHAR DEFAULT NULL
 );

@@ -83,6 +83,7 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
 
+
     // Variables
     private String _strCurrentPageIndex;
     private int _nItemsPerPage;

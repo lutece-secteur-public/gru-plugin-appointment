@@ -75,6 +75,7 @@ import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
+import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
@@ -154,7 +155,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
     private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
     private static final String MARK_APPOINTMENT_DESK_ENABLED = "isDeskInstalled";
-
+    private static final String MARK_MAILING_LIST = "mailing_list";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
 
     // Jsp
@@ -674,6 +675,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
         model.put( MARK_APPOINTMENT_DESK_ENABLED, ( moduleAppointmentDesk != null ) && moduleAppointmentDesk.isInstalled( ) );
         model.put( MARK_REF_LIST_ROLES, listRoles );
+        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( user ));
     }
 
     /**
