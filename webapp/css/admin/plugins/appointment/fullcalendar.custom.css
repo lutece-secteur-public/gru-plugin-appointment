@@ -51,6 +51,11 @@
     min-height: 2em;
 }
 
+.fc-agenda-view .fc-day-grid .fc-row .fc-content-skeleton tbody td:hover{
+    cursor: pointer;
+}
+
+/* Comments */
 #toggle-add-comment{
     padding: 0;
     position: absolute;
@@ -73,18 +78,26 @@
 
 .comments{
     padding-left: 5px;
+    background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0);
 }
 
 .comments:hover{
     font-weight: 700;
 }
 
-th.fc-day-header {
-    height: auto !important;
-    padding: 5px 20px !important;
-
+/* Comment link*/
+.comment-link{ 
+    position: absolute;
+    top: 40%;
+    right: 5px;
+    color:rgb(0, 0, 0);
 }
 
+.comment-link:hover{ 
+    color:rgb(83, 83, 83);
+}
+/* Button */
 #btn-comment-main{
     display: none;
 }
@@ -93,6 +106,14 @@ th.fc-day-header {
     position:absolute; right:5px; top: 0 ;z-index:99; 
 }
 
+/* Day hover */
+th.fc-day-header {
+    height: auto !important;
+    padding: 5px 20px !important;
+
+}
+
+/* Event Content */
 .fc-content{ 
     text-align:center;
 }
@@ -142,8 +163,8 @@ td.fc-axis.fc-time {
 }
 
 .fc-event, .fc-event p{
-    background-color: rgb(233, 250, 0);
-    border-color:rgb(233, 250, 0);
+    /* background-color: rgb(233, 250, 0);
+    border-color:rgb(233, 250, 0); */
     color: rgb(0, 0, 0);
 }
 
