@@ -130,6 +130,11 @@ var events = [
     <@getComments comment_events />
 </#if>
 ];
+
+/* Set comment list to JS Object */
+<#if comment_events??>
+    <@getCommentsJS comment_events />
+</#if>
    
 $( function() {
     <@fullCalendarScript isSpecific=true />

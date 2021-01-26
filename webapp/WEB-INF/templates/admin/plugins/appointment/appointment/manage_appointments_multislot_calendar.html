@@ -101,9 +101,10 @@ var events = [
     <@getComments comment_events />
 </#if>
 ];
-
+<#if comment_events??>
+    <@getCommentsJS comment_events />
+</#if>
 $( function() {
-    
     var calendar = $('#calendar');
     <@fullCalendarScript />
 });

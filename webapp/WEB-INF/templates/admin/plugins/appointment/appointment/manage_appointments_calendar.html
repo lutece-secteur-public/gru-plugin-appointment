@@ -104,8 +104,7 @@
 
     /* Set comment list to JS Object */
     <#if comment_events??>
-        <#assign nbComments=comment_events?size >
-        const commentsList = [<#list comment_events as comment_event><#compress>{"id" : "${comment_event.id}","title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}","start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}","end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}","validity_end" : "${comment_event.endingValidityDate}"}<#if nbComments gt 0>,<#assign nbComments=nbComments-1 ></#if></#compress></#list>];
+        <@getCommentsJS comment_events />
     </#if>
 
     $( function(){
