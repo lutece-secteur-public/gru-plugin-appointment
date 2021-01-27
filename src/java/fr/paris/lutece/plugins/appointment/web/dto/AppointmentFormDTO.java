@@ -263,7 +263,8 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * theoretical capacity per slot
      */
-    private int _nCapacityPerSlot;
+    @Min( value = 1, message = "#i18n{portal.validation.message.notEmpty}" )
+    private int _nCapacityPerSlot = 1;
     
     /**
      * Get the maximum number of appointments authorized for a same user

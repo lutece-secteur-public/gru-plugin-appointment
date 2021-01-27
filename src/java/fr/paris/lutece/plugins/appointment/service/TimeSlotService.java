@@ -396,16 +396,29 @@ public final class TimeSlotService
         List<TimeSlot> listAllTimeSlotsAfterThisTimeSlot = findListTimeSlotAfterThisTimeSlot( timeSlot );
         // Need to delete all the time slots impacted (the ones with the
         // starting time before the ending time of the new time slot)
-        List<TimeSlot> listAllTimeSlotsToDelete = listAllTimeSlotsAfterThisTimeSlot.stream( )
+        List<TimeSlot> listAllTimeSlotsToUpdate = listAllTimeSlotsAfterThisTimeSlot.stream( )
                 .filter( x -> x.getStartingTime( ).isBefore( timeSlot.getEndingTime( ) ) ).collect( Collectors.toList( ) );
-        deleteListTimeSlot( listAllTimeSlotsToDelete );
+        for ( TimeSlot tSlot : listAllTimeSlotsToUpdate )
+        {
+            listAllTimeSlotsAfterThisTimeSlot.remove( tSlot );
+            // If the new ending time is after the previous time
+            if ( tSlot.getEndingTime().isAfter(timeSlot.getEndingTime( )) )
+            {
+            	tSlot.setStartingTime(timeSlot.getEndingTime( ) );
+                updateTimeSlot( tSlot );
+                listAllTimeSlotsAfterThisTimeSlot.add( tSlot );
+            }
+            else 
+            {
+                deleteTimeSlot( tSlot );
+            }
+        }        
         // Need to find the next time slot (the one with the closest
         // starting time of the ending time of the new time slot)
-        listAllTimeSlotsAfterThisTimeSlot.removeAll( listAllTimeSlotsToDelete );
         TimeSlot nextTimeSlot = null;
         if ( CollectionUtils.isNotEmpty( listAllTimeSlotsAfterThisTimeSlot ) )
         {
-            nextTimeSlot = listAllTimeSlotsAfterThisTimeSlot.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).get( );
+            nextTimeSlot = listAllTimeSlotsAfterThisTimeSlot.stream( ).min( ( t1, t2 ) -> t1.getStartingTime( ).compareTo( t2.getStartingTime( ) ) ).orElse( null );
         }
         if ( nextTimeSlot != null )
         {

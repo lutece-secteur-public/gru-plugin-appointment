@@ -137,7 +137,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * theoretical capacity per slot
      */
-    private int _nCapacityPerSlot;
+    private int _nCapacityPerSlot = 1; 
 
     /**
      * Get the form Id
