@@ -504,7 +504,8 @@ $('#calendar').fullCalendar({
 		$(".open-AddBookDialog").click( function( e ) {
 			e.preventDefault();
 			$('#starting_date_time').val($(this).data('starting_date_time'));
-			$('#starting_date_time_span').val($(this).data('starting_date_time'));
+			var dt = $(this).data('starting_date_time');
+			$('#starting_date_time_span').val( moment(dt).format('DD/MM/YYYY hh:mm') );
 			$('#addbook_modal').modal('show');
 		});
 
