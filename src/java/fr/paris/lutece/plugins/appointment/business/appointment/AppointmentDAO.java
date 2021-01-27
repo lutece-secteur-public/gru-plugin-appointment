@@ -91,6 +91,8 @@ public final class AppointmentDAO implements IAppointmentDAO
 
     private static final String SQL_QUERY_SELECT_BY_LIST_ID_SLOT = SQL_QUERY_SELECT_COLUMNS
             + ",appt_slot.nb_places FROM appointment_appointment appointment INNER JOIN appointment_appointment_slot appt_slot on ( appt_slot.id_appointment = appointment.id_appointment ) where appt_slot.id_slot IN(";
+    
+    private static final String SQL_QUERY_SELECT_ID = "SELECT id_appointment FROM appointment_appointment ";
     private static final String SQL_FILTER_FIRST_NAME = "UPPER(user.first_name) LIKE ?";
     private static final String SQL_FILTER_LAST_NAME = "UPPER(user.last_name) LIKE ?";
     private static final String SQL_FILTER_EMAIL = "UPPER(user.email) LIKE ?";
@@ -99,6 +101,8 @@ public final class AppointmentDAO implements IAppointmentDAO
     private static final String SQL_FILTER_STATUS = "app.is_cancelled = ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MIN = "slot.starting_date_time >= ?";
     private static final String SQL_FILTER_DATE_APPOINTMENT_MAX = "slot.starting_date_time < ?";
+    private static final String SQL_FILTER_ID_LIST_START = "app.id_appointment IN ( ";
+    private static final String SQL_FILTER_ID_LIST_END = " ) ";
 
     private static final String CONSTANT_AND = " AND ";
     private static final String CONSTANT_PERCENT = "%";
@@ -433,6 +437,11 @@ public final class AppointmentDAO implements IAppointmentDAO
             }
             daoUtil.setTimestamp( ++nIndex, endingTimestamp );
         }
+        List<Integer> listId = appointmentFilter.getListIdAppointment( );
+        for ( Integer id : listId )
+        {
+            daoUtil.setInt( ++nIndex, id );
+        }
     }
 
     /**
@@ -486,6 +495,15 @@ public final class AppointmentDAO implements IAppointmentDAO
             sbSql.append( CONSTANT_AND );
             sbSql.append( SQL_FILTER_DATE_APPOINTMENT_MAX );
         }
+        List<Integer> listId = appointmentFilter.getListIdAppointment( );
+        if ( CollectionUtils.isNotEmpty( listId ) )
+        {
+            sbSql.append( CONSTANT_AND );
+            sbSql.append( SQL_FILTER_ID_LIST_START );
+            sbSql.append( listId.stream( ).map( s -> "?").collect( Collectors.joining( "," ) ) );
+            sbSql.append( SQL_FILTER_ID_LIST_END );
+        }
+        
         return sbSql.toString( );
     }
 
@@ -503,6 +521,22 @@ public final class AppointmentDAO implements IAppointmentDAO
             }
         }
         return listAppointment;
+    }
+    
+    @Override
+    public List<Integer> selectAllAppointmentId( Plugin plugin )
+    {
+        List<Integer> list = new ArrayList<>( );
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_ID, plugin ) )
+        {
+            daoUtil.executeQuery( );
+            
+            while ( daoUtil.next( ) )
+            {
+                list.add( daoUtil.getInt( 1 ) ); 
+            }
+        }
+        return list;
     }
 
     /**
