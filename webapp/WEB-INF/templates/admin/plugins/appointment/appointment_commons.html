@@ -1,12 +1,14 @@
 <#macro commonsAppJS>
-<script src="js/plugins/appointment/jquery.min.js"></script>
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<script src="js/plugins/appointment/fullcalendar.min.js"></script>
-<script src="js/plugins/appointment/locale-all.js"></script>
-<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
-<script src="js/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datetimepicker.css' >
+<script src="js/admin/plugins/appointment/jquery.min.js"></script>
+<script src="js/admin/plugins/appointment/moment.min.js" ></script>
+<script src="js/admin/plugins/appointment/fullcalendar.min.js"></script>
+<script src="js/admin/plugins/appointment/locale-all.js"></script>
+<script src="js/admin/bootstrap-datepicker.js" ></script>
+<script src="js/admin/locales/bootstrap-datepicker.fr.js" ></script>
+<script src="js/admin/plugins/appointment/bootstrap-datetimepicker.min.js"></script>
+<script src="js/admin/plugins/appointment/tinycolor-min.js"></script>
+<script src="js/admin/plugins/appointment/appointment.js" ></script>
+<link rel='stylesheet' href='css/admin/plugins/appointment/bootstrap-datetimepicker.css' >
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.min.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css" >
 <link rel="stylesheet" href="css/admin/plugins/appointment/fullcalendar.custom.css" >
@@ -223,7 +225,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 			<@row>
 				<@columns sm=12 params=' style="display:flex;justify-content: space-around" '>
 					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
-					<@button type='submit' id='commentDelete' params=' formaction="jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment"' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' class="btn btn-danger" />
+					<@aButton color='danger' id='commentDelete' href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' class="btn btn-danger" />
 					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
 				</@columns>
 			</@row>
@@ -334,7 +336,7 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 </script>
 </#macro> 
 
-<#macro commentModal update=false>
+<#macro commentModal update=false >
 <#if update>
 	var formValues = JSON.parse( $(this).attr( "data-json" ) );
 	$("#modify-comment input[name='id_comment']").val( formValues.id_comment );
@@ -343,27 +345,42 @@ $('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	$( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
 	$( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
 	$( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
+	var fAction=$( "#commentDelete" ).attr( 'href' ) ;
+	$( "#modify-comment #commentDelete" ).attr( 'href', fAction + formValues.id_comment );
 </#if>
 $( "#modify-comment" ).modal('show');
 </#macro> 
 
 <#macro getComments comments_list>
 <#list comments_list as comment_event>
-	{
-		"title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
-		"start" : "${comment_event.startingValidityDate}",
-		"end" : "${comment_event.calendarAllDaySlotEnd}",
-		"validity_end" : "${comment_event.endingValidityDate}",
-		"start_time" : "${comment_event.startingValidityTime!}",
-		"end_time" : "${comment_event.endingValidityTime!}",
-		"id" : "${comment_event.id}",
-		"creator_user" : "${comment_event.creatorUserName!''}",
-		"creation_date" : "${comment_event.creationDate?date.xs!''}",
-		"type": "comment"
-	},
+{
+	"title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
+	"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
+	"end" : "${comment_event.calendarAllDaySlotEnd}T${comment_event.endingValidityTime!}",
+	"validity_end" : "${comment_event.endingValidityDate}",
+	"start_time" : "${comment_event.startingValidityTime!}",
+	"end_time" : "${comment_event.endingValidityTime!}",
+	"id" : "${comment_event.id}",
+	"creator_user" : "${comment_event.creatorUserName!''}",
+	"creation_date" : "${comment_event.creationDate?date.xs!''}",
+	"type": "comment",
+	"allDay": true
+},
+<#if ( comment_event.startingValidityTime != '00:00' && comment_event.endingValidityTime != '00:00' )>
+{
+	"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
+	"end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}",
+	"type": "hour_comment",
+	"backgroundColor": setNeWcolor(),
+	"className" : ["comment-${comment_event.id!}"],
+	"rendering" : "background",
+	"allDay": false
+},
+</#if>
 </#list>
 </#macro>
 
+<#-- TO REMOVE  -->
 <#macro getCommentsJS comment_events>
 <#if comment_events??>
 /* Set comment list to JS Object */
@@ -372,232 +389,234 @@ let availableComments;
 const commentsList = [<#list comment_events as comment_event><#compress>{"id" : "${comment_event.id}","title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}","start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}","end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}","validity_end" : "${comment_event.endingValidityDate}"}<#if nbComments gt 0>,<#assign nbComments=nbComments-1 ></#if></#compress></#list>];
 </#if>
 </#macro>
+<#-- END TO REMOVE  -->
 
-<#macro commentRenderJS >
-$(element).addClass('comments').attr( "id", "comment-"+event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
-
-if ( event.validity_end == null || event.validity_end == undefined ){
-	labelEventDate='Le ' + event.start.format('ddd DD/MM');
-} else {
-	moment.locale("${locale}");
-	labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
-}
-
-json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
-
-if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
-	var fcTitle = element.find('.fc-title p');
-	fcTitle.prepend( '[ ' + event.start_time + ' / ' + event.end_time + ' ] ' );
-}
-</#macro> 
-
-<#macro setCommentLink >
-/*  Add Comment icon to element   
-if ( commentsList.length > 0 ) { 
-	commentsList.forEach( function( el ){
-		if( ( moment(el.start).isSame(event.start) ) && ( moment(event.end).isSameOrBefore(el.end) ) ){
-			$title.append( '<i class="fas fa-comment comment-link" data-selector="#comment-' + el.id + '"></i>');
-		}
-	});	
-} 
-*/
-</#macro> 
-
-<#macro fullCalendarScript isSpecific=false locale=locale>
-$('#calendar').fullCalendar({
-	displayEventTime: false, 
-	buttonText : {
-		prev : '#i18n{appointment.appointmentApp.previousWeek}',
-		next : '#i18n{appointment.appointmentApp.nextWeek}',
-	}, 
-	height: 'parent',
-	themeSystem: 'jquery-ui', 
-	navLinks: true, 
-	navLinkDayClick: function( date, jsEvent ) {
-		location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
-	}, 
-	dayClick: function( date, jsEvent, view) {
-		alert( 'click ');
-	},
-	defaultDate: defaultDate,
-	defaultView: 'agendaWeek',
-	locale: '${locale}',
-	nowIndicator: true,
-	editable: false,
-	customButtons: {
-		datePicker: {
-			text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
-			click: function () {
-				var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
-				$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
-				$("#hiddenDate").datepicker({
-					showOn: "button",
-					language:'fr',
-					autoclose: true,
-					orientation: "bottom"
-				});
-				var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
-				//Below are required for manipulating dynamically created datepicker on custom button click
-				$("#hiddenDate").focus().hide();
-				$btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
-				$btnDatepicker.hide();
-				$btnDatepicker.remove();
-				$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
-				$("#hiddenDate").change(function () {
-					$('#calendar').fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
-				});
+<#macro fullCalendarScript isSpecific=false showComments=true locale=locale>
+$( function(){
+    var calendar = $('#calendar');
+	calendar.fullCalendar({
+		<#if !showComments>allDaySlot: false,</#if>
+		displayEventTime: false, 
+		buttonText : {
+			prev : '#i18n{appointment.appointmentApp.previousWeek}',
+			next : '#i18n{appointment.appointmentApp.nextWeek}',
+		}, 
+		height: 'parent',
+		themeSystem: 'jquery-ui', 
+		navLinks: true, 
+		navLinkDayClick: function( date, jsEvent ) {
+			location.href = eventUrl + 'manageAppointments&id_form=' + idForm + '&starting_date_time=' + date.format() + 'T00:00&ending_date_time=' + date.format() + 'T23:59';
+		},
+		defaultDate: defaultDate,
+		nowIndicator: true,
+		defaultView: 'agendaWeek',
+		locale: '${locale}',
+		editable: false,
+		customButtons: {
+			datePicker: {
+				text: '#i18n{appointment.appointmentCalendar.labelChooseDate}',
+				click: function () {
+					var $btnCustom = $('.fc-datePicker-button'); // name of custom  button in the generated code
+					$btnCustom.after('<input type="text" id="hiddenDate" class="datepicker"/>');
+					$("#hiddenDate").datepicker({
+						showOn: "button",
+						language:'fr',
+						autoclose: true,
+						orientation: "bottom"
+					});
+					var $btnDatepicker = $(".ui-datepicker-trigger"); // name of the generated datepicker UI 
+					//Below are required for manipulating dynamically created datepicker on custom button click
+					$("#hiddenDate").focus().hide();
+					$btnDatepicker.trigger("click"); //dynamically generated button for datepicker when clicked on input textbox
+					$btnDatepicker.hide();
+					$btnDatepicker.remove();
+					$("input.datepicker").not(":first").remove();//dynamically appended every time on custom button click
+					$("#hiddenDate").change(function () {
+						calendar.fullCalendar('gotoDate', moment($("#hiddenDate").val(),'DD-MM-YYYY'));
+					});
+				}
 			}
-		}
-	},
-	header: {
-		left: 'prev',
-		center: 'today, datePicker, title',
-		right: 'next'
-	},
-	columnHeaderHtml: function(mom) {
-		return mom.format('dddd') + '</br>' + mom.format('LL');
-	},
-	slotLabelFormat: 'H:mm',
-	slotLabelInterval: slotDuration,
-	slotDuration: slotDuration,
-	minTime: minTime,
-	maxTime: maxTime,
-	 businessHours: {
-		start: minTime,
-		end: maxTime,
-		dow: dow
-	}, 
-	// Ajout Specific week
-	eventClick: function( calEvent, jsEvent, view ){
-		if( calEvent.type = "comment" ){
-			<@commentModal update=true />
-		}
-	},
-	events: events,
-	viewRender: function(view, element) {
-		var minDate = moment(startingDateOfDisplay);
-		var maxDate = moment(endingDateOfDisplay);
-		// Past 
-		if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
-			$(".fc-prev-button").prop('disabled', true);
-			$(".fc-prev-button").addClass('fc-state-disabled');
-		} else {
-			$(".fc-prev-button").removeClass('fc-state-disabled');
-			$(".fc-prev-button").prop('disabled', false); 
-		}
-		// Future
-		if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
-			$(".fc-next-button").prop('disabled', true);
-			$(".fc-next-button").addClass('fc-state-disabled');
-		} else {
-			$(".fc-next-button").removeClass('fc-state-disabled');
-			$(".fc-next-button").prop('disabled', false); 
-		}
-	},
-	eventAfterAllRender: function( view ) {
-		$('.fc-event').css('cursor', 'pointer');
-		$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
-		$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
-		$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
-		$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
-
-		$(".open-AddBookDialog").click( function( e ) {
-			e.preventDefault();
-			$('#starting_date_time').val($(this).data('starting_date_time'));
-			var dt = $(this).data('starting_date_time');
-			$('#starting_date_time_span').val( moment(dt).format('DD/MM/YYYY hh:mm') );
-			$('#addbook_modal').modal('show');
-		});
-
-		// Set comments 
-		$(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-		$('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first");
-		$('.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first').css('position', 'relative');
-		
-		var tgc = $('#toggle-add-comment').find('body');
-		tgc.click(function(ev) {
-			<@commentModal />
-		});	
-
-		$('.comment-link').hover(function(){
-			var commentSel = $(this).data('selector');
-			$(commentSel).addClass('hover');
-			$(commentSel).popover("toggle");
-		}, function(){
-			var commentSel = $(this).data('selector');
-			$(commentSel).removeClass('hover');
-			$(commentSel).popover("toggle");
-		});
-
-		<#if isSpecific>
-		/* Event selection if specific */ 
-		var eventIdx=0, eventData='',evtData='';
-		$( ".fc-content-skeleton" ).not(":has(.comments)").not(":has(.btn-comments)").selectable({
-			filter: ".fc-time-grid-event.fc-v-event",
-			selecting: function( event, ui ) {
-				eventIdx++;
-			},
-			unselecting: function( event, ui ) {
-				eventIdx--;
-			},
-			stop: function() {
-				$( ".ui-selected", this ).each( function() {
-					console.log( eventData );
-					if ( eventIdx > 1 ){
-						eventData += '{' + $(this).data('event') + '},' ;
-						const events =  JSON.stringify( eventData );
-						evtData='['+eventData.slice(0, -1)+']'
-						const evt = JSON.parse(evtData); 
-						$('#slotsData').val( evtData);
-						$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
-						$('#updatePlanningMultiSlot').modal('show');
-					} else {
-						eventData ='{' + $(this).data('event') + '}';  
-						const events = JSON.stringify(eventData); 
-						evtData= '['+eventData+']';
-						$('#slotData').val( evtData );
-						const evt = JSON.parse(eventData); 
-						const isOpen = JSON.parse( evt.isOpen )
-						$('#is_open').prop( "checked", isOpen );
-						$('#max_capacity').val( evt.maxCapacity );
-						$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
-						$('#date_of_display').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
-						$('#timeStart').text( evt.startingTime );
-						$('#ending_time').val( evt.endingTime );
-						$('#updatePlanningSlot').modal('show');
-					}
-				});
-				eventData='';
+		},
+		header: {
+			left: 'prev',
+			center: 'today, datePicker, title',
+			right: 'next'
+		},
+		columnHeaderHtml: function(mom) {
+			return mom.format('dddd') + '</br>' + mom.format('LL');
+		},
+		slotLabelFormat: 'H:mm',
+		slotLabelInterval: slotDuration,
+		slotDuration: slotDuration,
+		minTime: minTime,
+		maxTime: maxTime,
+		businessHours: {
+			start: minTime,
+			end: maxTime,
+			dow: dow
+		}, 
+		eventClick: function( calEvent, jsEvent, view ){
+		<#if showComments>
+			// Comments
+			if( calEvent.type = "comment" ){
+				<@commentModal update=true />
 			}
-		});
+		<#else>
+			// Typical week
+			location.href = eventUrl + calEvent.id;
 		</#if>
-	},
-	eventRender: function( event, element, view ) {
-		var $title = element.find( '.fc-title' ), createSlot='';
-		$(element).addClass( event.customClass );
-		<#if isSpecific>
-		$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
-        </#if>  
-		if ( event.customStyle !='' ){
-			$(element).css( 'background', event.customStyle );
-		}
-		$title.html( $title.text() );
+		},
+		events: events,
+		viewRender: function(view, element) {
+			var minDate = moment(startingDateOfDisplay);
+			var maxDate = moment(endingDateOfDisplay);
+			// Past 
+			if (minDate >= view.start && minDate <= view.end || view.end <= minDate) {
+				$(".fc-prev-button").prop('disabled', true);
+				$(".fc-prev-button").addClass('fc-state-disabled');
+			} else {
+				$(".fc-prev-button").removeClass('fc-state-disabled');
+				$(".fc-prev-button").prop('disabled', false); 
+			}
+			// Future
+			if (maxDate >= view.start && maxDate <= view.end || maxDate <= view.start) {
+				$(".fc-next-button").prop('disabled', true);
+				$(".fc-next-button").addClass('fc-state-disabled');
+			} else {
+				$(".fc-next-button").removeClass('fc-state-disabled');
+				$(".fc-next-button").prop('disabled', false); 
+			}
+		},
+		eventAfterAllRender: function( view ) {
+			$('.fc-event').css('cursor', 'pointer');
+			$('.fc-next-button').attr('class', 'fc-next-button btn btn-primary btn-sm');
+			$('.fc-prev-button').attr('class', 'fc-prev-button btn btn-primary btn-sm');
+			$('.fc-today-button').attr('class', 'fc-today-button btn btn-primary btn-sm');
+			$('.fc-datePicker-button').attr('class', 'fc-datePicker-button btn btn-primary btn-sm');
+			$(".open-AddBookDialog").click( function( e ) {
+				e.preventDefault();
+				$('#starting_date_time').val($(this).data('starting_date_time'));
+				var dt = $(this).data('starting_date_time');
+				$('#starting_date_time_span').val( moment(dt).format('DD/MM/YYYY hh:mm') );
+				$('#addbook_modal').modal('show');
+			});
+			<#if showComments>
+			// Set comments 
+			$(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
+			$('#toggle-add-comment').clone().appendTo(".fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first");
+			$('.fc-body .ui-widget-content .fc-day-grid .fc-content-skeleton .fc-axis:first').css('position', 'relative');
+			var tgc = $('#toggle-add-comment').find('body');
+			tgc.click(function(ev) {
+				<@commentModal />
+			});	
 
-		$(element).contextmenu(function() {
-			return false;
-		});
+			// Highlight comment from bg
+			$('.fc-bgevent').hover(function(){
+				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color');
+				var cColor = tinycolor( bgColor ).complement().toHexString();
+				console.log( 'cColor : ' + cColor );
+				var commentSel = classSel.split(' ');
+				$('#'+commentSel[0]).css('background-color', bgColor );
+				$('#'+commentSel[0] + ' p').css('color', cColor );
+				return false;
+			}, function(){
+				var classSel = $(this).attr('class');
+				var commentSel = classSel.split(' ');
+				$('#'+commentSel[0]).css('background-color', 'rgb(233, 250, 0)' )
+				$('#'+commentSel[0] + ' p').css('color', '#000' );
+			});
 
-		var json = { "container": "body", "placement" : "bottom", "html" : true, "trigger" : "hover" };
-		
-		if( event.type == "comment" ){
-			<@commentRenderJS />
-		} else {
-			<@setCommentLink />
+			// Show comment popover
+			$('.fc-bgevent').click(function(e){
+				var classSel = $(this).attr('class');
+				var commentSel = classSel.split(' ');
+				$('#'+commentSel[0]).popover("toggle");
+				return false;
+			});
+			</#if>
+			<#if isSpecific>
+			/* Event selection if specific */ 
+			var eventIdx=0, eventData='',evtData='';
+			$( ".fc-content-skeleton .fc-event-container" ).not(':has(.fc-bgevent-container	)').not(":has(.comments)").not(":has(.btn-comments)").selectable({
+				filter: ".fc-time-grid-event.fc-v-event",
+				selecting: function( event, ui ) {
+					eventIdx++;
+				},
+				unselecting: function( event, ui ) {
+					eventIdx--;
+				},
+				stop: function() {
+					$( ".ui-selected", this ).each( function() {
+						if ( eventIdx > 1 ){
+							eventData += '{' + $(this).data('event') + '},' ;
+							const events =  JSON.stringify( eventData );
+							evtData='['+eventData.slice(0, -1)+']'
+							const evt = JSON.parse(evtData); 
+							$('#slotsData').val( evtData);
+							$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
+							$('#updatePlanningMultiSlot').modal('show');
+						} else {
+							eventData ='{' + $(this).data('event') + '}';  
+							const events = JSON.stringify(eventData); 
+							evtData= '['+eventData+']';
+							$('#slotData').val( evtData );
+							const evt = JSON.parse(eventData); 
+							const isOpen = JSON.parse( evt.isOpen )
+							$('#is_open').prop( "checked", isOpen );
+							$('#max_capacity').val( evt.maxCapacity );
+							$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+							$('#date_of_display').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
+							$('#timeStart').text( evt.startingTime );
+							$('#ending_time').val( evt.endingTime );
+							$('#updatePlanningSlot').modal('show');
+						}
+					});
+					eventData='';
+				}
+			});
+			</#if>
+		},
+		eventRender: function( event, element, view ) {
+			var $title = element.find( '.fc-title' ), createSlot='';
+			$(element).addClass( event.customClass );
+			<#if isSpecific>
+			$(element).attr( 'data-event', '"idSlot":"' + event.id +'","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' + event.idForm +'","date":"' + event.date + '","isSpecific":"' + event.isSpecific + '","maxCapacity":"' + event.maxCapacity + '"' );
+			</#if>  
+			if ( event.customStyle !='' ){
+				$(element).css( 'background', event.customStyle );
+			}
+			$title.html( $title.text() );
+
+			var json = { "container": "body", "placement" : "bottom", "html" : true, "trigger" : "hover" };
+			<#if showComments>
+			if( event.type == "comment" ){
+				$(element).addClass('comments').attr( "id", "comment-"+event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
+				if ( event.validity_end == null || event.validity_end == undefined ){
+					labelEventDate='Le ' + event.start.format('ddd DD/MM');
+				} else {
+					moment.locale("${locale}");
+					labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
+				}
+				json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+				var dateDebut='', dateFin='';
+				if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
+					if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
+						dateDebut=event.start.format('ddd DD/MM à ');
+						dateFin=moment(event.validity_end).format('ddd DD/MM à ')
+					}
+					var fcTitle = element.find('.fc-title p');
+					fcTitle.prepend( '[ ' + dateDebut + event.start_time + ' / ' + dateFin + event.end_time + ' ] ' );
+				}
+			} else {
+				json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+			}
+			<#else>
 			json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
+			</#if>
+			$(element).popover( json );
+			
 		}
-		$(element).popover( json );
-		
-		
-	}
+	});
+	<#nested>
 });
 </#macro>

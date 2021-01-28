@@ -106,13 +106,6 @@
     position:absolute; right:5px; top: 0 ;z-index:99; 
 }
 
-/* Day hover */
-th.fc-day-header {
-    height: auto !important;
-    padding: 5px 20px !important;
-
-}
-
 /* Event Content */
 .fc-content{ 
     text-align:center;
@@ -143,8 +136,7 @@ th.fc-day-header {
 } 
 
 /* Begin From fullcalendar_ow_bo.css */
-
-.fc-time-grid .fc-slats td, th.fc-day-header, .fc-axis.fc-time {    
+.fc-time-grid .fc-slats td, .fc-axis.fc-time {    
     height: 40px ; 
 }
 
@@ -163,28 +155,33 @@ td.fc-axis.fc-time {
 }
 
 .fc-event, .fc-event p{
-    /* background-color: rgb(233, 250, 0);
-    border-color:rgb(233, 250, 0); */
     color: rgb(0, 0, 0);
 }
 
 th.fc-day-header {    
-    padding: 15px 20px;
     text-align: center;
     line-height: 1.42857143;
     margin: 0;
     border-top: 0px solid transparent;
 	font-weight: normal;
-	vertical-align: middle;
+    vertical-align: middle;
+    height: auto;
+    padding: 5px 20px;
+}
+
+/* Add to let space to background comment hovering*/
+.fc-custom{ 
+    width: 95%;
+}
+
+.fc-time-grid .fc-bgevent, .fc-time-grid .fc-event {
+    opacity: .8;
 }
 
 .fc-time-grid-event .fc-time, .fc-time-grid-event .fc-title {
 	padding: 5px; 
 }
 
-.fc-time-grid .fc-bgevent, .fc-time-grid .fc-event {
-    opacity: .7;
-}
 
 .fc-title a{
     display: inline-block;

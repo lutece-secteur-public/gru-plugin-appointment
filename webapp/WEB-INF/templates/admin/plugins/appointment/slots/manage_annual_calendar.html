@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="js/plugins/appointment/js-year-calendar.min.css">
+<link rel="stylesheet" href="css/admin/plugins/appointment/js-year-calendar.min.css">
 <link rel="stylesheet" href="css/admin/plugins/appointment/appointment.css">
 
 <@appointmentTabs tab='year' form=appointmentform >
@@ -10,7 +10,9 @@
             <@ul class="list-unstyled">
                 <#list listReservationRule as rule>
                     <@li>
-                        <span style="display:inline-block; background-color: ${rule.color};width:20px;height:12px"></span> ${rule.name} <a href="jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}"><i class="fas fa-eye fa-fw"></i></a> 
+                        <@aButton color='link' href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${id_form}&id_reservation_rule=${rule.idReservationRule}'>
+                            <@icon prefix='fas fa-' style='circle' params=' style="color:${rule.color!};"' /> ${rule.name} 
+                        </@aButton>
                     </@li>
                 </#list>
             </@ul>
@@ -52,20 +54,19 @@
 			<@formGroup rows=2 class="text-center">
                 <@button type='submit' name='save' id='save' buttonIcon='check' title='#i18n{appointment.labelSave}' />
                 <@button type='submit' name='delete' id='delete' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' color='danger'  />
-                 <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
+                <@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />   
 			</@formGroup>	
 		</@tform>
 	</@modalBody>
 </@modal>
 
-<script src="js/plugins/appointment/js-year-calendar.js"></script>
-<script src="js/plugins/appointment/locales/js-year-calendar.fr.js"></script>
-<script src="js/bootstrap-datepicker.min.js"></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" ></script>
+<script src="js/admin/plugins/appointment/js-year-calendar.min.js"></script>
+<script src="js/admin/plugins/appointment/locales/js-year-calendar.fr.js"></script>
+<script src="js/admin/bootstrap-datepicker.min.js"></script>
+<script src="js/admin/locales/bootstrap-datepicker.fr.js" ></script>
 <script>
 function isOlderThanToday( dtCompare ) {    
     var dateToday = new Date().setUTCHours( 0, 0, 0, 0); // Today
-    console.log( dateToday );
     var isOlder=dtCompare.setUTCHours( 24, 0, 0, 0) >= dateToday ? true : false; 
     console.log( dtCompare.setUTCHours( 0, 0, 0, 0) );
     return isOlder;   
@@ -94,8 +95,6 @@ function deleteEvent(event) {
 }
 
 $(function() {
-    // <@headerTitle form=appointmentform />
-    	
     calendar = new Calendar('#calendar', { 
         language: 'fr',
         startYear: ${start_year},

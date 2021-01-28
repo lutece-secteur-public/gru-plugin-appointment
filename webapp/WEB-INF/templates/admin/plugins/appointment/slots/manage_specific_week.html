@@ -89,7 +89,10 @@
 	</@modalFooter>
 </@modal>
 
-<script type="text/javascript">
+<script src="js/admin/plugins/appointment/selectable.min.js"></script>
+<script src="js/admin/plugins/appointment/selectable.table.min.js"></script>
+
+<script>
 var slotDuration = '${min_duration}';
 var minTime = '${min_time}';
 var maxTime = '${max_time}';
@@ -117,6 +120,7 @@ var events = [
             textColor: '#2c2c2d',
             url     : eventUrl + '&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=<#if event.isOpen>true<#else>false</#if>&is_specific=<#if event.isSpecific>true<#else>false</#if>&max_capacity=${event.maxCapacity}',
             customStyle : <#if event.isOpen>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
+            customClass : 'fc-custom',
             backgroundColor : <#if event.isOpen>'#fff'<#else>'#bebebe'</#if>,
             borderColor : '#bebebe',
             isOpen : '${event.isOpen?c}',
@@ -132,13 +136,7 @@ var events = [
 </#if>
 ];
 
-/* Set comment list to JS Object */
-<#if comment_events??>
-    <@getCommentsJS comment_events />
-</#if>
-   
-$( function() {
-    <@fullCalendarScript isSpecific=true />
+<@fullCalendarScript isSpecific=true >
     $('#new_cap').click(function(){
         $('#newCapacity').attr('min','0');
         if( $('#newCapacity').val() < 0 ){
@@ -154,7 +152,7 @@ $( function() {
         format: 'HH:mm',
         stepping: 5
     });
-});
+</@fullCalendarScript>
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />

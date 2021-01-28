@@ -206,227 +206,115 @@
 </@modal> 
 
 <@getDatePickerBootstrap idField="date_of_modification" language=language />
-<script type="text/javascript">
+
+<script src="js/admin/plugins/appointment/selectable.min.js"></script>
+<script src="js/admin/plugins/appointment/selectable.table.min.js"></script>
+<script>
 var slotDuration = '${min_duration}';
 var minTime = '${min_time}';
 var maxTime = '${max_time}';
 var dow = [<#if dow??><#list dow as day>'${day}',</#list></#if>];
 var eventUrl = 'jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=viewModifyTimeSlot&id_form=${appointmentform.idForm}&id_reservation_rule=${id_reservation_rule}&id_time_slot=';
 var columnFormat = 'dddd';
-var events = [
-    <#if events??>
-        <#list events as event>
-        <#assign maxCap = event.maxCapacity?number />
-        <#if maxCap = 0><#assign maxCap = 1></#if>
-        <#assign realCap = appointmentform.capacityPerSlot?number />
-        <#if realCap = 0><#assign realCap = 1></#if>
-            <#assign nbFull = maxCap / realCap  * 100 >
-            <#assign eventTitle='${maxCap} / ${realCap}'>
-            <#assign strCustomColor><#if event.isOpen & ( maxCap > realCap )>rgba(255,165,0,1)<#elseif event.isOpen &  ( maxCap <= realCap )>rgba(222,222,222,1)<#else>rgba(255,0,0,1)</#if></#assign>
-            {
-                title : '${eventTitle}',
-                start : '${event.startingDateTime}',
-                end : '${event.endingDateTime}',
-                id : '${event.idTimeSlot}',
-                idWorkingDay: '${event.idWorkingDay}',
-                color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
-                textColor : '#2c2c2d',
-                customStyle : <#if event.isOpen>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
-                backgroundColor : <#if event.isOpen>'#fff'<#else>'#bebebe'</#if>,
-                borderColor : '#bebebe',
-                isOpen: ${event.isOpen?c},
-                maxCapacity: '${event.maxCapacity!}',
-                idForm: '${appointmentform.idForm!}',
-            },
-        </#list>
-    </#if>
-    <#if comment_events??>
-        <#list comment_events as comment_event>
-        {
-            "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '\\"')}",
-            "start" : "${comment_event.startingValidityDate}",
-            "end" : "${comment_event.calendarAllDaySlotEnd}",
-            "validity_end" : "${comment_event.endingValidityDate}",
-            "id" : "${comment_event.id}",
-            "creator_user" : "${comment_event.creatorUserName!''}",
-            "creation_date" : "${comment_event.creationDate?date.xs!''}",
-            "type": "comment"
-        },
-        </#list>
-    </#if>
-];
+var events = [<#if events??>
+<#list events as event>
+    <#assign maxCap = event.maxCapacity?number />
+    <#if maxCap = 0><#assign maxCap = 1></#if>
+    <#assign realCap = appointmentform.capacityPerSlot?number />
+    <#if realCap = 0><#assign realCap = 1></#if>
+    <#assign nbFull = maxCap / realCap  * 100 >
+    <#assign eventTitle='${maxCap} / ${realCap}'>
+    <#assign strCustomColor><#if event.isOpen & ( maxCap > realCap )>rgba(255,165,0,1)<#elseif event.isOpen &  ( maxCap <= realCap )>rgba(222,222,222,1)<#else>rgba(255,0,0,1)</#if></#assign>
+    {
+        title : '${eventTitle}',
+        start : '${event.startingDateTime}',
+        end : '${event.endingDateTime}',
+        id : '${event.idTimeSlot}',
+        idWorkingDay: '${event.idWorkingDay}',
+        color : <#if event.isOpen>'transparent'<#else>'#bebebe'</#if>,
+        textColor : '#2c2c2d',
+        customClass : 'fc-custom',
+        customStyle : <#if event.isOpen>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
+        backgroundColor : <#if event.isOpen>'#fff'<#else>'#bebebe'</#if>,
+        borderColor : '#bebebe',
+        isOpen: ${event.isOpen?c},
+        maxCapacity: '${event.maxCapacity!}',
+        idForm: '${appointmentform.idForm!}',
+    },
+</#list>
+</#if>];
 
-$(function () {
-    $('#date_of_modification').datepicker({
-        language: "${language}",
-        startDate: new Date(),
-        weekStart: 1,
-        todayBtn: true,
-        todayHighLight: true,
-        autoclose: true
-    });
-
-    $('#datetimepicker').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-
-    $('#time_start').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-    
-    $('#time_end').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-
-    $('#time_start_new').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-    
-    $('#time_end_new').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-
-    $("#time_start_new").on("dp.change", function (e) {
-        $('#time_end_new').data("DateTimePicker").date( e.date.add(1, 'hour') );
-    });
-    
-    $('#ending_time').datetimepicker({
-        format: 'HH:mm',
-        stepping: 5
-    });
-
-    $('#new_cap').click(function(){
-        $('#newCapacity').attr('min','0');
-        if( $('#newCapacity').val() < 0 ){
-            $('#newCapacity').val(0);
-        }
-    });
-
-    $('#var_cap').click(function(){
-        $('#newCapacity').attr('min','-99');
-    });
-
-    /* Tab management                       */
-    <#if id_reservation_rule?number=0>
-        $("#calendar").toggle();
-    <#else>
-        $("#appointment_search").toggle();
-    </#if>
-
-    $('.btn-editappsearch').click( function(e){
-        e.preventDefault();
-        $(this).children('.fa').toggleClass('fa-eye');
-        $("#appointment_search").toggle();
-    });
-
-    $('#calendar').fullCalendar({
-        allDaySlot: true,
-        displayEventTime: false,
-        defaultView: 'agendaWeek',
-        height: 'parent',
-        locale: 'fr',
-        themeSystem: 'jquery-ui',
-        editable: false,
-        header: false,
-        columnFormat: columnFormat,
-        slotLabelFormat: 'H:mm',
-        slotLabelInterval: slotDuration,
-        slotDuration: slotDuration,
-        minTime: minTime,
-        maxTime: maxTime,
-        businessHours: {
-            start: minTime,
-            end: maxTime,
-            dow: dow
-        },
-        eventClick: function(calEvent, jsEvent, view) {
-            location.href = eventUrl + calEvent.id;
-        },
-        events: events,
-        eventRender: function(event, element) {
-            var $title = element.find( '.fc-title' );
-            $(element).addClass( event.customClass );
-            $(element).attr( 'data-event', '"idTimeSlot":"' + event.id + '","idWorkingDay":"' + event.idWorkingDay+ '","startingDateTime":"' + event.start.toISOString()+ '","startingTime":"' + event.start.format('HH:mm') + '","endingDateTime":"' + event.end.toISOString() + '","endingTime":"' + event.end.format('HH:mm')+ '","isOpen":"' + event.isOpen + '","idForm":"' +  event.idForm +'","maxCapacity":"' + event.maxCapacity + '"' );
-        
-            if ( event.customStyle !='' ){
-                $(element).css( 'background', event.customStyle );
-            }
-            $title.html( $title.text() );
-            
-            $(element).contextmenu(function() {
-                return false;
-            });
-
-            var json = {
-                "container": "body",
-                "placement" : "bottom",
-                "html" : true,
-                "trigger" : "hover"
-            };
-            json.content = event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-            $(element).popover( json );
-           
-        },
-        eventAfterAllRender: function(view) {
-            $('.fc-event').css('cursor', 'pointer');
-            $(".fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content").html( '' );
-            
-            $('.toggle-modify-comment').click(function(ev) {
-                ev.preventDefault();
-                var formValues = JSON.parse( $(this).attr( "data-json" ) );
-                $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
-                tinyMCE.activeEditor.setContent( formValues.comment_text );
-                $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_start ) );
-                $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
-                $( "#modify-comment" ).modal('show');
-            });
-            /* Event selection          */ 
-            var eventIdx=0, eventData='',evtData='';        
-            $( ".fc-content-skeleton" ).selectable({
-                filter: ".fc-time-grid-event.fc-v-event",
-                selecting: function( event, ui ) {
-                    eventIdx++;
-                },
-                unselecting: function( event, ui ) {
-                    eventIdx--;
-                },
-                stop: function() {
-                    console.log(  eventIdx  );   
-                    $( ".ui-selected", this ).each( function() {
-                        console.log( eventData );
-                        if ( eventIdx > 1 ){
-                            // FIXME: Porblème de parse
-                            eventData += '{' + $(this).data('event') + '},' ;
-                            const events =  JSON.stringify( eventData );
-                            evtData='['+eventData.slice(0, -1)+']'
-                            $('#timeSlotData').val( evtData );
-                            $('#updatePlanningMultiSlot').modal('show');
-                            //return true;
-                        } else {
-                            eventData ='{' + $(this).data('event') + '}';                       
-                            const evt = JSON.parse(eventData);
-                            const isOpen = JSON.parse( evt.isOpen )
-                            $('#timeIsOpen').prop( "checked", isOpen );
-                            $('#idTimeSlot').val( evt.idTimeSlot );
-                            $('#idWorkingDay').val( evt.idWorkingDay );
-                            $('#timeMaxCapacity').val( evt.maxCapacity );
-                            $('#timeStart').text( evt.startingTime );
-                            $('#ending_time').val( evt.endingTime );
-                            $('#updatePlanningSlot').modal('show');
-                            // location.href = eventUrl + idSlot;
-                        }
-                    });
-                    eventData='';
-                }
-            });
-        },
-    });
+var defaultDate = moment();
+var startingDateOfDisplay = moment().subtract(1, 'year');
+var endingDateOfDisplay = moment().add(1, 'year');
+<@fullCalendarScript isSpecific=true showComments=false locale='fr'>
+$('#date_of_modification').datepicker({
+    language: "${language}",
+    startDate: new Date(),
+    weekStart: 1,
+    todayBtn: true,
+    todayHighLight: true,
+    autoclose: true
 });
+
+$('#datetimepicker').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
+
+$('#time_start').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
+
+$('#time_end').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
+
+$('#time_start_new').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
+
+$('#time_end_new').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
+
+$("#time_start_new").on("dp.change", function (e) {
+    $('#time_end_new').data("DateTimePicker").date( e.date.add(1, 'hour') );
+});
+
+$('#ending_time').datetimepicker({
+    format: 'HH:mm',
+    stepping: 5
+});
+
+$('#new_cap').click(function(){
+    $('#newCapacity').attr('min','0');
+    if( $('#newCapacity').val() < 0 ){
+        $('#newCapacity').val(0);
+    }
+});
+
+$('#var_cap').click(function(){
+    $('#newCapacity').attr('min','-99');
+});
+
+/* Tab management                       */
+<#if id_reservation_rule?number=0>
+    calendar.toggle();
+<#else>
+    $("#appointment_search").toggle();
+</#if>
+
+$('.btn-editappsearch').click( function(e){
+    e.preventDefault();
+    $(this).children('.fa').toggleClass('fa-eye');
+    $("#appointment_search").toggle();
+});
+</@fullCalendarScript>
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />

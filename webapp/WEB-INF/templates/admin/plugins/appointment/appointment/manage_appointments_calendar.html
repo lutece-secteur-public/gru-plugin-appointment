@@ -81,7 +81,7 @@
                     "id"            : '${event.idSlot}',
                     "textColor"     :  <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
                     "createUrl"     : '<#if eventCreate !='' && nbAppointments !=0>jsp/admin/plugins/appointment/ManageAppointments.jsp?view=${eventCreate}</#if>',
-                    "customClass"   : '${strEventClass!}',
+                    "customClass"   : 'fc-custom ${strEventClass!}',
                     "customStyle"   : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
                     "backgroundColor" : <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
                                         <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
@@ -94,22 +94,11 @@
             </#list>
         </#if>
 		<#if comment_events??>
-            <#list comment_events as comment_event>
-                <#if comment_events??>
-                    <@getComments comment_events />
-                </#if>
-            </#list>
+            <@getComments comment_events />
         </#if>
     ];
 
-    /* Set comment list to JS Object */
-    <#if comment_events??>
-        <@getCommentsJS comment_events />
-    </#if>
-
-    $( function(){
-        <@fullCalendarScript />
-    });
+   <@fullCalendarScript />
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />

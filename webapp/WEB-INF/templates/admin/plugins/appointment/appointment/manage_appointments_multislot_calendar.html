@@ -15,10 +15,10 @@
 			<@input type='hidden' name='view' value='createAppointment' />
             <@input type='hidden' name='id_form' value='${id_form}' />
             <@input type='hidden' id='starting_date_time' name='starting_date_time' value='' />
-            <@formGroup class='${formGroupClass!}' labelFor='starting_date' labelKey='#i18n{appointment.dateAppointment.title}' helpKey='${formGroupHelpKey!}' mandatory=true>
+            <@formGroup labelClass='col-sm-4' class='${formGroupClass!}' labelFor='starting_date' labelKey='#i18n{appointment.dateAppointment.title}' helpKey='${formGroupHelpKey!}' mandatory=true>
                 <@input type='text' name='starting_date_time_span' id='starting_date_time_span' disabled=true />
             </@formGroup>
-            <@formGroup class='${formGroupClass!}' labelFor='nbPlacesToTake' labelKey='#i18n{appointment.createAppointmentForm.labelAppointmentTitlesAsked}' helpKey='${formGroupHelpKey!}' mandatory=true>
+            <@formGroup labelClass='col-sm-4' class='${formGroupClass!}' labelFor='nbPlacesToTake' labelKey='#i18n{appointment.createAppointmentForm.labelAppointmentTitlesAsked}' helpKey='${formGroupHelpKey!}' mandatory=true>
                 <@input type='number' name='nbPlacesToTake' id='nbPlacesToTake' value='1' maxlength=3 params='onkeypress="return validateQty(event);"' min=1 max=10 />
             </@formGroup>
 			<@formGroup>
@@ -85,15 +85,16 @@ var events = [
             "id" :      "${event.idSlot}",
             "url" :     eventUrl + "manageAppointments&id_form=${event.idForm}&id_slot=${event.idSlot}&starting_date_time=${event.startingDateTime}&ending_date_time=${event.endingDateTime}&is_open=${event.isOpen?c}&is_specific=${event.isSpecific?c}&max_capacity=${event.maxCapacity}&modif_date=${modifDateAppointment?c}",                                                      
             "textColor" :   <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>'#000'<#else>'#2c2c2d'</#if>,
-            "customClass" : '${strEventClass!}',
-            "customStyle" : <#if event.isOpen & !event.isPassed>'linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )',<#else>'',</#if>
+            "customClass" : 'fc-custom ${strEventClass!}',
+            "customStyle" : '<#if event.isOpen & !event.isPassed>linear-gradient( 90deg, ${strCustomColor} 0%, ${strCustomColor} ${nbFull?floor}%, rgba(255,255,255,1) ${nbFull?floor}% )<#else></#if>',
             "backgroundColor": <#if event.isOpen & !event.isPassed & (nbAppointments > maxCap)>bgOpenColor
                                 <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbRemainingPlaces = event.nbPotentialRemainingPlaces)>bgOpenColor
                                 <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces > 0) & (event.nbPotentialRemainingPlaces = 0)>bgOpenColor
                                 <#elseif event.isOpen & !event.isPassed & (event.nbRemainingPlaces = 0)>bgOpenColor
                                 <#elseif event.isOpen & event.isPassed>bgClosedColor<#else>bgClosedColor</#if>,
             "borderColor" : bgClosedColor,
-            "type" : "appointment"
+            "type" : "appointment",
+            "allDay": false,
         },
     </#list>
 </#if>
@@ -101,13 +102,9 @@ var events = [
     <@getComments comment_events />
 </#if>
 ];
-<#if comment_events??>
-    <@getCommentsJS comment_events />
-</#if>
-$( function() {
-    var calendar = $('#calendar');
-    <@fullCalendarScript />
-});
+
+<@fullCalendarScript />
+
 </script>
 <#include "/admin/util/editor/editor.html" />
 <@initEditor type='comment' />

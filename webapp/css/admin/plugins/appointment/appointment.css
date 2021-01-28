@@ -1,5 +1,6 @@
 .alert-success, .alert-info, .alert-warning, .alert-danger{ background-image:none; }
 
+/* Header */
 .content-header > h1 > small{
     font-size: 2rem;
     font-weight: 700;
@@ -11,11 +12,32 @@
     padding: 0 5px;
 }
 
+/* Tabs for typical week */
 .tablink-actions > a{
 	display: flex !important;
 	justify-content: space-between;
 }
 
+/* Input Color */
+input[type="color"]{
+    background: transparent;
+    border: 0;
+    padding: 0;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    margin-top: -5px;
+    box-shadow: -2px 1px 13px 3px rgba(0,0,0,0.51);
+    -webkit-box-shadow: -2px 1px 13px 3px rgba(0,0,0,0.51);
+    -moz-box-shadow: -2px 1px 13px 3px rgba(0,0,0,0.51);
+}
+
+input[type="color"]:hover{
+    transition: ;
+    box-shadow: -2px 1px 13px 3px rgba(87, 87, 87, 0.51);
+    -webkit-box-shadow: -2px 1px 13px 3px rgba(0,0,0,0.51);
+    -moz-box-shadow: -2px 1px 13px 3px rgba(0,0,0,0.51);
+}
 
 /* Year Calendar */
 .calendar{
