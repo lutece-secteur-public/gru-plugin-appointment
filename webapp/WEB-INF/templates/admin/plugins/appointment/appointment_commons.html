@@ -186,7 +186,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 			<@columns sm=3>
 				<@formGroup labelFor='startingValidityTime' labelKey='#i18n{create_comment.labelStartingValidityTime}' rows=2>
 					<@inputGroup>
-						<@input type='text' name='startingValidityTime' id=idStartingTime />
+						<@input type='text' name='startingValidityTime' id=idStartingTime value='00:00' />
 						<@inputGroupItem type='addon'>
 						<@icon style='calendar' />
 						</@inputGroupItem>
@@ -208,7 +208,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 				<@columns sm=3>
 					<@formGroup labelFor='endingValidityTime' labelKey='#i18n{appointment.create_comment.labelEndingValidityTime}' rows=0>
 						<@inputGroup>
-							<@input type='text' name='endingValidityTime' id=idEndingTime />
+							<@input type='text' name='endingValidityTime' id=idEndingTime value='00:00' />
 							<@inputGroupItem type='addon'>
 							<@icon style='calendar' />
 							</@inputGroupItem>
@@ -232,6 +232,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 		</@tform>
 	</@modalBody>
 </@modal>
+
 <script>
 $('#${idStartingDate}').datepicker({language: '${locale}', autoclose: true});
 $('#${idEndingDate}').datepicker({language: '${locale}', autoclose: true});
@@ -512,8 +513,10 @@ $( function(){
 
 			// Highlight comment from bg
 			$('.fc-bgevent').hover(function(){
-				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color');
-				var cColor = tinycolor( bgColor ).complement().toHexString();
+				var classSel = $(this).attr('class'), bgColor='#'+rgbToHex($(this).css('background-color'));
+				//var cColor = tinycolor( bgColor ).complement().toHexString();
+				console.log( 'bgColor : ' +  bgColor );
+				var cColor = contrast(bgColor);
 				console.log( 'cColor : ' + cColor );
 				var commentSel = classSel.split(' ');
 				$('#'+commentSel[0]).css('background-color', bgColor );
