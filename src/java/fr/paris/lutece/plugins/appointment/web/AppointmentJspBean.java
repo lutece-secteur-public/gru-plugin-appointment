@@ -47,6 +47,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,8 +56,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
@@ -254,7 +255,10 @@ public class AppointmentJspBean extends MVCAdminJspBean
     // Messages
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENT = "appointment.message.confirmRemoveAppointment";
     private static final String MESSAGE_CONFIRM_REMOVE_MASSAPPOINTMENT = "appointment.message.confirmRemoveMassAppointment";
-
+    private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_CATEGORY = "appointment.validation.appointment.NbMaxAppointmentsOnCategory.error";
+    private static final String ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS = "appointment.validation.appointment.NbMinDaysBetweenTwoAppointments.error";
+    private static final String ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD = "appointment.validation.appointment.NbMaxAppointmentsOnAPeriod.error";
+   
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE = "appointment.listAppointments.itemsPerPage";
     private static final String PROPERTY_NB_WEEKS_TO_DISPLAY_IN_BO = "appointment.nbWeeksToDisplayInBO";
@@ -1083,6 +1087,37 @@ public class AppointmentJspBean extends MVCAdminJspBean
 
         }
 
+        if ( _appointmentForm.getEnableMandatoryEmail( )
+                && !AppointmentUtilities.checkNbDaysBetweenTwoAppointmentsTaken( _notValidatedAppointment, strEmail, _appointmentForm ) )
+        {
+        	addWarning( ERROR_MESSAGE_NB_MIN_DAYS_BETWEEN_TWO_APPOINTMENTS, locale );
+        }
+        if ( _appointmentForm.getEnableMandatoryEmail( )
+                && !AppointmentUtilities.checkNbMaxAppointmentsOnAGivenPeriod( _notValidatedAppointment, strEmail, _appointmentForm ) )
+        {
+        	addWarning( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_PERIOD, locale );
+        }
+        List<AppointmentDTO> listAppointments= new ArrayList< > ();
+        if ( _appointmentForm.getEnableMandatoryEmail( )
+                && !AppointmentUtilities.checkNbMaxAppointmentsDefinedOnCategory( _notValidatedAppointment, strEmail, _appointmentForm, listAppointments ))
+        {
+            StringJoiner builder = new StringJoiner( StringUtils.SPACE );
+            String lf = System.getProperty( "line.separator" ); 
+        	for(AppointmentDTO appt: listAppointments) 
+        	{        		
+        		builder.add(appt.getLastName( ));
+        		builder.add(appt.getFirstName( ));
+        		builder.add(appt.getDateOfTheAppointment( ));
+        		builder.add(appt.getStartingTime( ).toString( ));
+        		builder.add( lf );	
+        	}
+        	Object [ ] tabAppointment = {
+        			builder.toString( )
+            };
+        	   
+            String strErrorMessageDateWithAppointments = I18nService.getLocalizedString( ERROR_MESSAGE_NB_MAX_APPOINTMENTS_ON_A_CATEGORY, tabAppointment, locale );
+            addWarning( strErrorMessageDateWithAppointments );
+        }
         AppointmentUtilities.fillAppointmentDTO( _notValidatedAppointment, nbBookedSeats, strEmail, request.getParameter( PARAMETER_FIRST_NAME ),
                 request.getParameter( PARAMETER_LAST_NAME ) );
         AppointmentUtilities.validateFormAndEntries( _notValidatedAppointment, request, listFormErrors, true );
@@ -1207,7 +1242,7 @@ public class AppointmentJspBean extends MVCAdminJspBean
     public String displayRecapAppointment( HttpServletRequest request )
     {
 
-        Map<String, Object> model = new HashMap<>( );
+        Map<String, Object> model = getModel( );
         String strComeFromCalendar = request.getParameter( PARAMETER_COME_FROM_CALENDAR );
         if ( StringUtils.isNotEmpty( strComeFromCalendar ) )
         {
@@ -1215,7 +1250,6 @@ public class AppointmentJspBean extends MVCAdminJspBean
             model.put( PARAMETER_DATE_OF_DISPLAY, _validatedAppointment.getSlot( ).get( 0 ).getDate( ) );
         }
         model.put( MARK_FORM_MESSAGES, FormMessageService.findFormMessageByIdForm( _validatedAppointment.getIdForm( ) ) );
-        fillCommons( model );
         model.put( MARK_APPOINTMENT, _validatedAppointment );
         Locale locale = getLocale( );
         model.put( MARK_ADDON, AppointmentAddOnManager.getAppointmentAddOn( _validatedAppointment.getIdAppointment( ), getLocale( ) ) );

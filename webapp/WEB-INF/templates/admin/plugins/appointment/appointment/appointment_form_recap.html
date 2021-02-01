@@ -14,7 +14,7 @@
 								#i18n{appointment.appointmentApp.defaultTitle}
 							</#if>
 						</legend>
-						<@messages errors=errors />
+						<@messages infos=infos errors=errors warnings=warnings />
 						<@formGroup labelFor='lastname' labelKey='${formMessages.fieldLastNameTitle!}'>
 							<input type='hidden' name='lastname' value='${appointment.lastName}' />
 							<@staticText>${appointment.lastName}</@staticText>
