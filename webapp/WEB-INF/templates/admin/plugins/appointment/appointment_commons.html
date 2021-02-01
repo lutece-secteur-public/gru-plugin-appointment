@@ -367,16 +367,18 @@ $( "#modify-comment" ).modal('show');
 	"type": "comment",
 	"allDay": true
 },
-<#if ( comment_event.startingValidityTime != '00:00' && comment_event.endingValidityTime != '00:00' )>
-{
-	"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
-	"end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}",
-	"type": "hour_comment",
-	"backgroundColor": setNeWcolor(),
-	"className" : ["comment-${comment_event.id!}"],
-	"rendering" : "background",
-	"allDay": false
-},
+<#if comment_event.startingValidityTime?? && comment_event.endingValidityTime??>
+	<#if ( comment_event.startingValidityTime != '00:00' && comment_event.endingValidityTime != '00:00' )>
+	{
+		"start" : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
+		"end" : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}",
+		"type": "hour_comment",
+		"backgroundColor": setNeWcolor(),
+		"className" : ["comment-${comment_event.id!}"],
+		"rendering" : "background",
+		"allDay": false
+	},
+	</#if>
 </#if>
 </#list>
 </#macro>
