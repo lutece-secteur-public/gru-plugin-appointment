@@ -665,7 +665,15 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
             return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, PARAMETER_ID_FORM, nIdForm, PARAMETER_ID_RULE, nIdReservationRule );
 
         }
-        boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+        boolean bStateHasChanged= false;
+        boolean bIsOpen = false;
+        String strIsOpen= request.getParameter( PARAMETER_IS_OPEN );
+        
+        if(strIsOpen.equalsIgnoreCase("true") || strIsOpen.equalsIgnoreCase("false")) {
+        	
+        	bStateHasChanged = true;
+        	bIsOpen= Boolean.parseBoolean( strIsOpen );
+        }
         boolean bMaxCapacityIsLower = false;
         LocalDate dateNow = LocalDate.now( );
 
@@ -702,7 +710,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         {
 
             TimeSlot timeSlot = TimeSlotService.findTimeSlotById( time.getIdTimeSlot( ) );
-            if ( bIsOpen != timeSlot.getIsOpen( ) )
+            if ( bStateHasChanged && bIsOpen != timeSlot.getIsOpen( ) )
             {
                 timeSlot.setIsOpen( bIsOpen );
             }
@@ -772,7 +780,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                     return redirect( request, VIEW_MANAGE_TYPICAL_WEEK, additionalParameters );
                 }
 
-                manageTheSlotsAndAppointmentsImpacted( listSlotsImpactedWithAppointment, listSlotsImpacted, nMaxCapacity, nVarMaxCapacity, bIsOpen );
+                manageTheSlotsAndAppointmentsImpacted( listSlotsImpactedWithAppointment, listSlotsImpacted, nMaxCapacity, nVarMaxCapacity, bIsOpen, bStateHasChanged );
             }
             else
             {
@@ -873,7 +881,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      *            the new boolean opening value
      */
     private void manageTheSlotsAndAppointmentsImpacted( List<Slot> listSlotsImpactedWithAppointments, List<Slot> listSlotsImpacted, int nMaxCapacity,
-            int nVarMaxCapacity, boolean bIsOpen )
+            int nVarMaxCapacity, boolean bIsOpen, boolean bStateHasChanged )
     {
         boolean bOpeningHasChanged = false;
         boolean binfoOpeningHasChanged = false;
@@ -907,7 +915,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                         bMaxCapacityHasChanged = true;
 
                     }
-                if ( slotImpacted.getIsOpen( ) != bIsOpen )
+                if ( bStateHasChanged && slotImpacted.getIsOpen( ) != bIsOpen )
                 {
 
                     bOpeningHasChanged = true;

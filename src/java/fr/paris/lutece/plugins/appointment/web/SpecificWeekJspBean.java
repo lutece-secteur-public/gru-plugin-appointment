@@ -382,7 +382,16 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         String strDateOfDisplay = request.getParameter( PARAMETER_DATE_OF_DISPLAY );
         String strApplyOnIdentical = request.getParameter( PARAMETER_IDENTICAL );
 
-        boolean bIsOpen = Boolean.parseBoolean( request.getParameter( PARAMETER_IS_OPEN ) );
+        boolean bStateHasChanged= false;
+        boolean bIsOpen = false;
+        String strIsOpen= request.getParameter( PARAMETER_IS_OPEN );
+        
+        if( strIsOpen == null  || strIsOpen.equalsIgnoreCase("true") || strIsOpen.equalsIgnoreCase("false")) {
+        	
+        	bStateHasChanged = true;
+        	bIsOpen= Boolean.parseBoolean( strIsOpen );
+        }
+  
         String strCap = request.getParameter( PARAMETER_CAPACITY_MOD );
 
         if ( strCap.equals( VAR_CAP ) )
@@ -464,7 +473,7 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         else 
         {
         	
-        	updateListSlots( listSlot, nVarMaxCapacity, nMaxCapacity, bIsOpen, bShiftSlot, endingTime );
+        	updateListSlots( listSlot, nVarMaxCapacity, nMaxCapacity, bIsOpen, bStateHasChanged , bShiftSlot, endingTime );
         }
         Map<String, String> additionalParameters = new HashMap<>( );
         additionalParameters.put( PARAMETER_ID_FORM, strIdForm );
@@ -554,9 +563,8 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      * @param endingTime
      *            rhe Ending time
      */
-    private void updateListSlots( List<Slot> listSlot, int nVarMaxCapacity, int nMaxCapacity, boolean bIsOpen, boolean bShiftSlot, LocalTime endingTime )
+    private void updateListSlots( List<Slot> listSlot, int nVarMaxCapacity, int nMaxCapacity, boolean bIsOpen, boolean bStateHasChanged, boolean bShiftSlot, LocalTime endingTime )
     {
-
         int nNewMaxCapacity = 0;
         boolean bOpeningHasChanged = false;
         boolean appointmentsImpacted = false;
@@ -567,13 +575,11 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 
         for ( Slot slot : listSlot )
         {
-
             Lock lock = SlotSafeService.getLockOnSlot( slot.getIdSlot( ) );
             lock.lock( );
             try
             {
-
-                if ( bIsOpen != slot.getIsOpen( ) )
+                if ( bStateHasChanged && bIsOpen != slot.getIsOpen( ) )
                 {
                     slot.setIsOpen( bIsOpen );
                     bOpeningHasChanged = true;
@@ -585,18 +591,15 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
 	                // If the slot is a closing day, we need to remove it from the table
 	                // closing day so that the slot is not in conflict with the
 	                // definition of the closing days
-	                ClosingDayHome.deleteByIdFormAndDateOfClosingDay( slot.getIdForm( ), dateSlot );
-	                
+	                ClosingDayHome.deleteByIdFormAndDateOfClosingDay( slot.getIdForm( ), dateSlot );	                
                 }
                 if ( nVarMaxCapacity != 0 || ( nMaxCapacity >= 0 && nMaxCapacity != slot.getMaxCapacity( ) ) )
                 {
                     nNewMaxCapacity = ( nVarMaxCapacity != 0 ) ? (slot.getMaxCapacity( ) + nVarMaxCapacity ): nMaxCapacity;
                     if ( nNewMaxCapacity < 0 )
                     {
-
                         nNewMaxCapacity = 0;
                     }
-
                     slot.setMaxCapacity( nNewMaxCapacity );
                     // Need to set also the nb remaining places and the nb potential
                     // remaining places
@@ -621,37 +624,30 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
                 }
                 else
                 {
-
                     SlotSafeService.updateSlot( slot, bEndingTimeHasChanged, previousEndingTime, bShiftSlot );
                     if ( !appointmentsImpacted && slot.getNbPlacesTaken( ) > 0 )
                     {
-
                         appointmentsImpacted = true;
                     }
                     AppLogService.info( LogUtilities.buildLog( ACTION_DO_MODIFY_SLOT, String.valueOf( slot.getIdSlot( ) ), getUser( ) ) );
 
                     if ( slot.getMaxCapacity( ) < slot.getNbPlacesTaken( ) )
                     {
-
                         sbAlert.append( slot.getStartingDateTime( ) );
                         sbAlert.append( "-" );
                         sbAlert.append( slot.getEndingDateTime( ) );
                         sbAlert.append( ", " );
-
                     }
                 }
-
             }
             finally
             {
-
                 lock.unlock( );
             }
         }
 
         if ( CollectionUtils.isNotEmpty( listSlot ) )
         {
-
             addInfo( MESSAGE_INFO_SLOT_UPDATED, getLocale( ) );
         }
 
@@ -684,22 +680,18 @@ public class SpecificWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
      */
     private List<Slot> buildListSlotsToUpdate( List<Slot> listSlotSelected, int nIdForm, LocalDate startingDate, LocalDate endingDate )
     {
-
     	List<Slot> listBuilded = new ArrayList<>( );
         listBuilded.addAll( listSlotSelected );
         HashMap<LocalDate, WeekDefinition> mapWeekDefinition = WeekDefinitionService.findAllWeekDefinition( nIdForm );
         List<Slot> listSlots = SlotService.buildListSlot( nIdForm, mapWeekDefinition, startingDate, endingDate );
-
         for ( Slot slot : listSlotSelected )
         {
-
             listBuilded
                     .addAll( listSlots.stream( )
                             .filter( slt -> slt.getStartingTime( ).equals( slot.getStartingTime( ) ) && slt.getEndingTime( ).equals( slot.getEndingTime( ) )
                                     && slt.getDate( ).getDayOfWeek( ).getValue( ) == slot.getDate( ).getDayOfWeek( ).getValue( ) )
                             .collect( Collectors.toList( ) ) );
         }
-
         return listBuilded;
     }
 }
