@@ -1,4 +1,4 @@
-<@appointmentTabs tab="specificWeek" form=appointmentform />
+<@appointmentTabs tab="specificWeek" form=appointmentform context='slot'/>
 
 <@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list />
 
@@ -9,8 +9,8 @@
         <@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp'>						
             <@input type='hidden' name='action' value='doModifyListSlot' />
             <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-            <@input type='hidden' name='slotsData' value='' />
-            <@input type='hidden' name='capacity' value='new_cap' />
+            <@input type='hidden' id='slotData' name='slotsData' value='' />
+            <@input type='hidden' id='capacity' name='capacity' value='new_cap' />
             <@input type='hidden' id='date_of_display_multi' name='date_of_display' value='${date_of_display}' />	
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
@@ -49,7 +49,7 @@
         <@tform action="jsp/admin/plugins/appointment/ManageSpecificWeek.jsp">
             <@input type='hidden' name='action' value='doModifyListSlot' />
             <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-            <@input type='hidden' name='slotsData' value='' />
+            <@input type='hidden' id='slotsData' name='slotsData' value='' />
             <@input type='hidden' id='date_of_display_multi' name='date_of_display' value='${date_of_display}' />
             <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
                 <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
@@ -71,23 +71,6 @@
     </@modalBody>
 </@modal> 
 
-<@modal id='commentModal'>
-    <@modalHeader modalTitle='#i18n{appointment.create_comment.pageTitle}' />
-	<@modalBody>
-	</@modalBody>
-	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
-
-<@modal id='modify-comment'>
-	<@modalHeader modalTitle='#i18n{appointment.modify_comment.pageTitle}' />
-	<@modalBody>
-	</@modalBody>
-	<@modalFooter>
-		<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
-	</@modalFooter>
-</@modal>
 
 <script src="js/admin/plugins/appointment/selectable.min.js"></script>
 <script src="js/admin/plugins/appointment/selectable.table.min.js"></script>
