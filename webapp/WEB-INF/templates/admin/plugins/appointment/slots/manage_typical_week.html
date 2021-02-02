@@ -1,4 +1,4 @@
-<@appointmentTabs tab='typicalWeek' form=appointmentform>
+<@appointmentTabs tab='typicalWeek' form=appointmentform context='slot'>
 	<@tabs params=' style="margin-top:15px;display:flex"'>
 		<@tabList type='pills' vertical=true params=' style="width:15%"'>
 			<#if listReservationRule??>
@@ -247,6 +247,7 @@ var events = [<#if events??>
 var defaultDate = moment();
 var startingDateOfDisplay = moment().subtract(1, 'year');
 var endingDateOfDisplay = moment().add(1, 'year');
+
 <@fullCalendarScript isSpecific=true showComments=false locale='fr'>
 $('#date_of_modification').datepicker({
     language: "${language}",
