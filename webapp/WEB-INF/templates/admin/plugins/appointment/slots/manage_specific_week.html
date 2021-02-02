@@ -15,8 +15,10 @@
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
             </@formGroup>
-            <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
-                <@checkBox name='is_open' id='is_open' value='true' checked=true />
+            <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
+                <@radioButton labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' checked=true value='true' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'/>
+                <@radioButton labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
+                <@radioButton labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='false' />
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
                 <@input type='number' id='max_capacity' name='max_capacity' value='' maxlength=3 />	
@@ -51,8 +53,10 @@
             <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
             <@input type='hidden' id='slotsData' name='slotsData' value='' />
             <@input type='hidden' id='date_of_display_multi' name='date_of_display' value='${date_of_display}' />
-            <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
-                <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
+            <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelSlotStatus}' labelKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
+                <@radioButton labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' checked=true value='true' />
+                <@radioButton labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
+                <@radioButton labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' />
             </@formGroup>
             <@row>
             <@columns>

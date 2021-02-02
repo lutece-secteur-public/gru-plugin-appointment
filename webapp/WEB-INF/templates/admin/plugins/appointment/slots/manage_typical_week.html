@@ -73,15 +73,15 @@
 						</@formGroup>
 						<#if !appointmentform.isMultislotAppointment >
 						<@formGroup labelFor='max_people_per_appointment' mandatory=true labelKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxPeoplePerAppointment.help}' mandatory=true>
-								<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' maxlength=3 />
-							</@formGroup>
+							<@input type='number' name='max_people_per_appointment' id='max_people_per_appointment' value=appointmentform.maxPeoplePerAppointment!'' maxlength=3 />
+						</@formGroup>
 						</#if>
 						<@formGroup labelFor='color' labelKey='#i18n{appointment.createAppointmentForm.labelColor}' mandatory=true>
 							<input type="color" id="color" name="color" value="${appointmentform.color!'#3769D9'}" > 
 						</@formGroup>
 					</#if>
 					<@formGroup labelFor='max_capacity_per_slot' labelKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot}' helpKey='#i18n{appointment.createAppointmentForm.labelMaxCapacityPerSlot.help}' mandatory=true>
-							<@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' maxlength=3 />
+						<@input type='number' name='max_capacity_per_slot' id='max_capacity_per_slot' value=appointmentform.maxCapacityPerSlot!'' maxlength=3 />
 					</@formGroup>                                                
 					<@formGroup labelFor='time_start' labelKey='#i18n{appointment.createAppointmentForm.labelTimeStart}' helpKey='#i18n{appointment.createAppointmentForm.labelTimeStart.help}' mandatory=true>
 						<@inputGroup>
@@ -149,9 +149,11 @@
             <@input type="hidden" id="idWorkingDay" name="id_working_day" value="" />
             <@input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}" />
             <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
-            <@formGroup labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
-                <@checkBox labelFor='is_open' name='is_open' id='timeIsOpen' value='true' checked=true />
-            </@formGroup>
+			<@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
+				<@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' checked=true value='true' />
+				<@radioButton orientation='inline' labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
+				<@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' />
+			</@formGroup>
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
                 <@input type='number' name='max_capacity' id='timeMaxCapacity' value='' maxlength=3 />
             </@formGroup>
@@ -185,12 +187,14 @@
             <@input type="hidden" id="timeForm" name="id_form" value="${appointmentform.idForm}" />
             <@input type="hidden" name="id_reservation_rule" value="${id_reservation_rule}" />
             <@input type="hidden" id="timeSlotData" name="timeSlotData" value="" />
-            <@formGroup labelFor='is_open' labelKey='#i18n{appointment.labelOpen}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}' mandatory=true>
-                <@checkBox name='is_open' id='is_open_multi' value='true' checked=true />
+            <@formGroup labelKey='#i18n{appointment.modifySlot.labelSlotStatus}' helpKey='#i18n{appointment.modifySlot.labelOpenHelp}'>
+                <@radioButton orientation='inline' labelFor='shift_slot_open' id='shift_slot_open' labelKey='#i18n{appointment.modifySlot.labelOpen}' name='is_open' checked=true value='true' />
+                <@radioButton orientation='inline' labelFor='shift_slot_close' id='shift_slot_close' labelKey='#i18n{appointment.modifySlot.labelClose}' name='is_open' value='false' />
+                <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='' />
             </@formGroup>
             <@row>
             <@columns>
-                <@formGroup labelFor='shift_slot'>
+				<@formGroup>
                     <@radioButton labelFor='var_cap' labelKey='Variation de capacité' name='capacity' id='var_cap' checked=true value='var_cap' />
                     <@radioButton labelFor='new_cap' labelKey='Nouvelle capacité' name='capacity' id='new_cap' value='new_cap' />
                     <@input type='number' id='newCapacity' name='max_capacity' value='0' min=-99 max=99 />
