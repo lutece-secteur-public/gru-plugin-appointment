@@ -237,7 +237,7 @@ public final class AppointmentService
         appointmentDTO.setReference( appointment.getReference( ) );
         LocalDateTime startingDateTime = appointment.getSlot( ).getStartingDateTime( );
         appointmentDTO.setStartingDateTime( startingDateTime );
-        appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getFormatter( ) ) );
+        appointmentDTO.setDateOfTheAppointment( startingDateTime.toLocalDate( ).format( Utilities.getDateFormatter( ) ) );
         appointmentDTO.setStartingTime( startingDateTime.toLocalTime( ) );
         appointmentDTO.setEndingTime( appointment.getSlot( ).getEndingDateTime( ).toLocalTime( ) );
         appointmentDTO.setIsCancelled( appointment.getIsCancelled( ) );

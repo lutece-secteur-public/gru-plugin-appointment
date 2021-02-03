@@ -13,8 +13,8 @@
     <name>Lutece appointment plugin</name>
     <properties>  
         <componentName>appointment</componentName>
-        <core.version>[6.0.1,)</core.version>    
-        <genericattributes.version>1.2.1</genericattributes.version>
+        <core.version>7.0.0-SNAPSHOT</core.version>
+        <genericattributes.version>2.1.2</genericattributes.version>
         <jiraComponentId>12273</jiraComponentId>
         <jiraProjectName>RENDEZVOUS</jiraProjectName>
         <regularexpression.version>3.0.3</regularexpression.version>                        
@@ -68,22 +68,8 @@
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
-
-        <!-- Dozer - Java Bean to Java Bean -->
-        <dependency>
-            <groupId>net.sf.dozer</groupId>
-            <artifactId>dozer</artifactId>
-            <version>5.5.1</version>
-            <exclusions>
-                <exclusion>
-                    <!-- Conflicts with the dozen of dependencies requiring commons-logging:commons-logging -->
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
-   
+
     <scm>
         <connection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-secteur-public/gru-plugin-appointment.git</developerConnection>
