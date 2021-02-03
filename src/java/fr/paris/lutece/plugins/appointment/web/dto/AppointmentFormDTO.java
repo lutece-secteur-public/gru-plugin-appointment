@@ -390,8 +390,7 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * Sets the Reference of the form
      * 
-     * @param the
-     *            reference to set
+     * @param strRef the reference to set
      * 
      */
     public void setReference( String strRef )
@@ -412,8 +411,8 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * Sets the starting time of the working day of the form
      * 
-     * @param the
-     *            starting time to set The TimeStart
+     * @param timeStart the starting time to set The TimeStart
+     *
      */
     public void setTimeStart( String timeStart )
     {
@@ -433,8 +432,8 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * Sets the ending time of the working day of the form
      * 
-     * @param the
-     *            ending time to set
+     * @param timeEnd the ending time to set
+     *
      */
     public void setTimeEnd( String timeEnd )
     {
@@ -938,8 +937,8 @@ public final class AppointmentFormDTO extends ReservationRule implements RBACRes
     /**
      * Set the authentication of the form
      * 
-     * @param _bActiveAuthentication
-     *            the boolean value for the authentication
+     * @param bActiveAuthentication  the boolean value for the authentication
+     *
      */
     public void setActiveAuthentication( boolean bActiveAuthentication )
     {

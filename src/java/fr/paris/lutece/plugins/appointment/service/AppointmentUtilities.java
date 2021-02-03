@@ -449,8 +449,8 @@ public final class AppointmentUtilities
      *            the number of booked seats
      * @param form
      *            the form
-     * @param nbRemainingPlaces
-     *            the number of remaining places on the slot asked
+     * @param appointmentDTO
+     *            the appointment DTO
      * @param locale
      *            the locale
      * @param listFormErrors
@@ -517,7 +517,7 @@ public final class AppointmentUtilities
      */
     public static void fillAppointmentDTO( AppointmentDTO appointmentDTO, int nbBookedSeats, String strEmail, String strFirstName, String strLastName )
     {
-        appointmentDTO.setDateOfTheAppointment( appointmentDTO.getSlot( ).getDate( ).format( Utilities.getFormatter( ) ) );
+        appointmentDTO.setDateOfTheAppointment( appointmentDTO.getSlot( ).getDate( ).format( Utilities.getDateFormatter( ) ) );
         appointmentDTO.setNbBookedSeats( nbBookedSeats );
         appointmentDTO.setEmail( strEmail );
         appointmentDTO.setFirstName( strFirstName );
@@ -837,8 +837,10 @@ public final class AppointmentUtilities
 
     /**
      * Create a timer on a slot
-     * 
-     * @param slot
+     *
+     * @param request
+     *            the request
+     * @param nIdSlot
      *            the slot
      * @param appointmentDTO
      *            the appointment
@@ -879,7 +881,7 @@ public final class AppointmentUtilities
      * Get Form Permissions
      * 
      * @param listForms
-     * @param request
+     * @param user
      * @return
      */
     public static String [ ][ ] getPermissions( List<AppointmentFormDTO> listForms, AdminUser user )
