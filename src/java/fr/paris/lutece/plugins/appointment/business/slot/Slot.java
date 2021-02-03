@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -367,7 +367,7 @@ public final class Slot implements Serializable
     /**
      * Set the boolean passed value of the slot
      * 
-     * @param bIsSpecific
+     * @param bIsPassed
      *            the boolean open value to set
      */
     public void setIsPassed( boolean bIsPassed )
@@ -433,9 +433,9 @@ public final class Slot implements Serializable
      * @param nNbPlacesTaken
      *            the number to set
      */
-    public void setNbPlacestaken( int nNbPlacestaken )
+    public void setNbPlacestaken( int nNbPlacesTaken )
     {
-        this._nNbPlacesTaken = nNbPlacestaken;
+        this._nNbPlacesTaken = nNbPlacesTaken;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -117,7 +117,7 @@ public final class CalendarTemplateDAO extends UtilDAO implements ICalendarTempl
     public List<CalendarTemplate> selectAll( Plugin plugin )
     {
         DAOUtil daoUtil = null;
-        List<CalendarTemplate> listTemplates = new ArrayList<CalendarTemplate>( );
+        List<CalendarTemplate> listTemplates = new ArrayList<>();
         try
         {
             daoUtil = new DAOUtil( SQL_QUERY_SELECT_ALL, plugin );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ public interface IReservationRuleDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.reservationRuleDAO";
+    String BEAN_NAME = "appointment.reservationRuleDAO";
 
     /**
      * Insert a new record in the table
@@ -65,8 +65,8 @@ public interface IReservationRuleDAO
     /**
      * Update the record in the table
      * 
-     * @param reservationRule
-     *            the reference of the ReservationRule
+     * @param appointment
+     *            the appointment
      * @param plugin
      *            the plugin
      */

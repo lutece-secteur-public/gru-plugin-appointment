@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,8 +80,8 @@ public final class AppointmentResponseHome
     /**
      * Remove every appointment responses associated with a given entry.
      * 
-     * @param nIdEntry
-     *            The id of the entry
+     * @param nIdResponse
+     *            The id of the response
      */
     public static void removeResponsesById( int nIdResponse )
     {
@@ -99,7 +99,7 @@ public final class AppointmentResponseHome
     public static List<Response> findListResponse( int nIdAppointment )
     {
         List<Integer> listIdResponse = _dao.findListIdResponse( nIdAppointment, _plugin );
-        List<Response> listResponse = new ArrayList<Response>( listIdResponse.size( ) );
+        List<Response> listResponse = new ArrayList<>(listIdResponse.size());
         for ( Integer nIdResponse : listIdResponse )
         {
             Response response = ResponseHome.findByPrimaryKey( nIdResponse );

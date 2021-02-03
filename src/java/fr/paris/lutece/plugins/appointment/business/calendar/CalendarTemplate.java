@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -97,7 +97,7 @@ public final class CalendarTemplate implements Serializable
     /**
      * Set the id of the template
      * 
-     * @param nId
+     * @param nIdCalendarTemplate
      *            The id of the template
      */
     public void setIdCalendarTemplate( int nIdCalendarTemplate )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -206,7 +206,7 @@ public final class ClosingDayService
      */
     public static List<LocalDate> getImportClosingDays( FileItem item ) throws IOException
     {
-        HashSet<LocalDate> listDays = new HashSet<LocalDate>( );
+        HashSet<LocalDate> listDays = new HashSet<>();
         FileInputStream fis = null;
         Workbook workbook = null;
         String strExtension = FilenameUtils.getExtension( item.getName( ) );
@@ -268,7 +268,7 @@ public final class ClosingDayService
                 }
             }
         }
-        return new ArrayList<LocalDate>( listDays );
+        return new ArrayList<>(listDays);
     }
 
 }

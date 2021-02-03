@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -132,8 +132,8 @@ public class AppointmentCategoryJspBean extends MVCAdminJspBean
     {
         if ( _dataTableManager == null )
         {
-            _dataTableManager = new DataTableManager<Category>( getViewFullUrl( VIEW_MANAGE_CATEGORY ), null, AppPropertiesService.getPropertyInt(
-                    PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 ), true );
+            _dataTableManager = new DataTableManager<>(getViewFullUrl(VIEW_MANAGE_CATEGORY), null, AppPropertiesService.getPropertyInt(
+                    PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50), true);
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_ID, PROPERTY_ID, true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_LABEL, PROPERTY_LABEL, true );
             _dataTableManager.addActionColumn( MESSAGE_COLUMN_TITLE_ACTIONS );

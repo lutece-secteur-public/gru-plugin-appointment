@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -139,7 +139,7 @@ public final class AppointmentHome
     /**
      * Return the appointments of a slot
      * 
-     * @param nIdSlot
+     * @param nIdSlot the slot
      * @return a list of the appointments of the slot
      */
     public static List<Appointment> findByIdSlot( int nIdSlot )

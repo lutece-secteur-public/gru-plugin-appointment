@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ public final class EntryTypeService
      */
     public Map<Integer, EntryType> getMapEntryTypes( )
     {
-        return new HashMap<Integer, EntryType>( _mapEntryTypes );
+        return new HashMap<>(_mapEntryTypes);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class EntryTypeService
      */
     private void initMapEntryTypes( )
     {
-        _mapEntryTypes = new HashMap<Integer, EntryType>( );
+        _mapEntryTypes = new HashMap<>();
 
         for ( EntryType entryType : EntryTypeHome.getList( AppointmentPlugin.PLUGIN_NAME ) )
         {

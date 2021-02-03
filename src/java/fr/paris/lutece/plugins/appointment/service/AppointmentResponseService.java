@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,8 +85,8 @@ public final class AppointmentResponseService
     /**
      * Remove the responses for the given entry
      * 
-     * @param nIdEntry
-     *            the entry
+     * @param nIdResponse
+     *            the response
      */
     public static void removeResponseById( int nIdResponse )
     {

@@ -72,7 +72,7 @@ Please, if your development concerns the two parts, mutualize your code in a com
 
 ## License
 
-Copyright (c) 2002-2015, Mairie de Paris
+Copyright (c) 2002-2021, City of Paris
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

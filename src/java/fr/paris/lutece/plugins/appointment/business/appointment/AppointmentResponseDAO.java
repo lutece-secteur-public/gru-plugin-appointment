@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,7 +99,7 @@ public final class AppointmentResponseDAO extends UtilDAO implements IAppointmen
     public List<Integer> findListIdResponse( int nIdAppointment, Plugin plugin )
     {
         DAOUtil daoUtil = null;
-        List<Integer> listIdResponse = new ArrayList<Integer>( );
+        List<Integer> listIdResponse = new ArrayList<>();
         try
         {
             daoUtil = new DAOUtil( SQL_QUERY_SELECT_APPOINTMENT_RESPONSE_LIST, plugin );

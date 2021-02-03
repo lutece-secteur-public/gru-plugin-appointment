@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -185,8 +185,8 @@ public final class SlotService
      *            the map of the week definition
      * @param startingDate
      *            the starting date of the period
-     * @param nNbWeeksToDisplay
-     *            the number of weeks to build
+     * @param endingDate
+     *            the ending date of the period
      * @return a list of all the slots built
      */
     public static List<Slot> buildListSlot( int nIdForm, HashMap<LocalDate, WeekDefinition> mapWeekDefinition, LocalDate startingDate, LocalDate endingDate )
@@ -348,16 +348,18 @@ public final class SlotService
      * 
      * @param nIdForm
      *            the form Id
-     * @param startingDateTime
-     *            the starting date time
-     * @param endingDateTime
-     *            the ending date time
      * @param nMaxCapacity
      *            the maximum capacity for the slot
      * @param nNbRemainingPlaces
      *            the number of remaining places of the slot
+     * @param nNbPotentialRemainingPlaces
+     *            the number of potential remaining places of teh slot
+     * @param nNbPlacesTaken
+     *            the number of places taken
      * @param bIsOpen
      *            true if the slot is open
+     * @param bIsSpecific
+     *            true if the slot is specific
      * @return the slot built
      */
     public static Slot buildSlot( int nIdForm, Period period, int nMaxCapacity, int nNbRemainingPlaces, int nNbPotentialRemainingPlaces, int nNbPlacesTaken,
