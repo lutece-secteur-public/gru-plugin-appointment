@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -153,7 +153,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
             List<Entry> listEntryFirstLevel = EntryHome.findEntriesWithoutParent( entryToChangeOrder.getIdResource( ), entryToChangeOrder.getResourceType( ) );
 
-            List<Integer> orderFirstLevel = new ArrayList<Integer>( );
+            List<Integer> orderFirstLevel = new ArrayList<>();
             initOrderFirstLevel( listEntryFirstLevel, orderFirstLevel );
 
             Integer nbChildEntryToChangeOrder = 0;
@@ -254,7 +254,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         {
             filter.setEntryParentNull( EntryFilter.FILTER_TRUE );
 
-            List<Integer> orderFirstLevel = new ArrayList<Integer>( );
+            List<Integer> orderFirstLevel = new ArrayList<>();
 
             int nNbChild = 0;
             int nNewOrder = nOrderToSet;
@@ -427,8 +427,8 @@ public final class EntryService extends RemovalListenerService implements Serial
         entryFilter.setEntryParentNull( EntryFilter.FILTER_TRUE );
         entryFilter.setFieldDependNull( EntryFilter.FILTER_TRUE );
         List<Entry> listEntryFirstLevel = EntryHome.getEntryList( entryFilter );
-        List<Entry> listEntry = new ArrayList<Entry>( listEntryFirstLevel.size( ) );
-        List<Integer> listOrderFirstLevel = new ArrayList<Integer>( listEntryFirstLevel.size( ) );
+        List<Entry> listEntry = new ArrayList<>(listEntryFirstLevel.size());
+        List<Integer> listOrderFirstLevel = new ArrayList<>(listEntryFirstLevel.size());
         for ( Entry entry : listEntryFirstLevel )
         {
             listEntry.add( entry );
@@ -590,7 +590,7 @@ public final class EntryService extends RemovalListenerService implements Serial
      */
     public static List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry, Locale locale, AppointmentDTO appointment )
     {
-        List<Response> listResponse = new ArrayList<Response>( );
+        List<Response> listResponse = new ArrayList<>();
         appointment.getMapResponsesByIdEntry( ).put( nIdEntry, listResponse );
 
         return getResponseEntry( request, nIdEntry, listResponse, false, locale, appointment );
@@ -616,10 +616,10 @@ public final class EntryService extends RemovalListenerService implements Serial
     private static List<GenericAttributeError> getResponseEntry( HttpServletRequest request, int nIdEntry, List<Response> listResponse, boolean bResponseNull,
             Locale locale, AppointmentDTO appointment )
     {
-        List<GenericAttributeError> listFormErrors = new ArrayList<GenericAttributeError>( );
+        List<GenericAttributeError> listFormErrors = new ArrayList<>();
         Entry entry = EntryHome.findByPrimaryKey( nIdEntry );
 
-        List<Field> listField = new ArrayList<Field>( );
+        List<Field> listField = new ArrayList<>();
 
         for ( Field field : entry.getFields( ) )
         {
@@ -633,7 +633,7 @@ public final class EntryService extends RemovalListenerService implements Serial
         {
             for ( Entry entryChild : entry.getChildren( ) )
             {
-                List<Response> listResponseChild = new ArrayList<Response>( );
+                List<Response> listResponseChild = new ArrayList<>();
                 appointment.getMapResponsesByIdEntry( ).put( entryChild.getIdEntry( ), listResponseChild );
 
                 listFormErrors.addAll( getResponseEntry( request, entryChild.getIdEntry( ), listResponseChild, false, locale, appointment ) );
@@ -674,7 +674,7 @@ public final class EntryService extends RemovalListenerService implements Serial
 
                         for ( Entry conditionalEntry : field.getConditionalQuestions( ) )
                         {
-                            List<Response> listResponseChild = new ArrayList<Response>( );
+                            List<Response> listResponseChild = new ArrayList<>();
                             appointment.getMapResponsesByIdEntry( ).put( conditionalEntry.getIdEntry( ), listResponseChild );
 
                             listFormErrors.addAll( getResponseEntry( request, conditionalEntry.getIdEntry( ), listResponseChild, !bIsFieldInResponseList,

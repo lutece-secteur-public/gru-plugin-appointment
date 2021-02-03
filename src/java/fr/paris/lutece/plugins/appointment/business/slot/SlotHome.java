@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -204,8 +204,6 @@ public final class SlotHome
     
     /**
      * Reset Potential Remaining Places
-     * @param nbPotentialRemainingPlaces
-     * @param nIdSlot
      */
     public static void resetPotentialRemainingPlaces( ){
     	

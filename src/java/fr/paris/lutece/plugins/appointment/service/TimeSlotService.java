@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -430,7 +430,7 @@ public final class TimeSlotService
     /**
      * Create in database the slots given
      * 
-     * @param listSlotToCreate
+     * @param listTimeSlotToCreate
      *            the list of slots to create in database
      */
     public static void createListTimeSlot( List<TimeSlot> listTimeSlotToCreate )

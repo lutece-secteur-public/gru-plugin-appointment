@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -406,7 +406,7 @@ public class Appointment extends User implements Serializable
      /**
       * Set the date appointment taken  (in sql date format)
       * 
-      * @param endingValidityDate
+      * @param dateAppointmentTaken
       *            The DateAppointmentTaken to set (in sql Date format)
       */
      public void setAppointmentTakenSqlDate( Timestamp dateAppointmentTaken )

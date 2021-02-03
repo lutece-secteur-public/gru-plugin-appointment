@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -628,11 +628,11 @@ public final class AppointmentUtilities
         AppointmentFormDTO tmpForm = FormService.buildAppointmentFormLight( Integer.parseInt( strIdForm ) );
         XSSFWorkbook workbook = new XSSFWorkbook( );
         XSSFSheet sheet = workbook.createSheet( I18nService.getLocalizedString( KEY_RESOURCE_TYPE, locale ) );
-        List<Object [ ]> tmpObj = new ArrayList<Object [ ]>( );
+        List<Object [ ]> tmpObj = new ArrayList<>();
         EntryFilter entryFilter = new EntryFilter( );
         entryFilter.setIdResource( Integer.valueOf( strIdForm ) );
         List<Entry> listEntry = EntryHome.getEntryList( entryFilter );
-        Map<Integer, String> mapDefaultValueGenAttBackOffice = new HashMap<Integer, String>( );
+        Map<Integer, String> mapDefaultValueGenAttBackOffice = new HashMap<>();
         for ( Entry e : listEntry )
         {
             if ( e.isOnlyDisplayInBack( ) )
@@ -715,7 +715,7 @@ public final class AppointmentUtilities
                 nIndex = 1;
                 strWriter [9] = Integer.toString( appointmentDTO.getNbBookedSeats( ) );
                 List<Integer> listIdResponse = AppointmentResponseService.findListIdResponse( appointmentDTO.getIdAppointment( ) );
-                List<Response> listResponses = new ArrayList<Response>( );
+                List<Response> listResponses = new ArrayList<>();
                 for ( int nIdResponse : listIdResponse )
                 {
                     Response resp = ResponseHome.findByPrimaryKey( nIdResponse );

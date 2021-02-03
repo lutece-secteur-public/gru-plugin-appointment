@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -130,7 +130,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * The Map of the responses for the additional entries of the form
      */
-    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<Integer, List<Response>>( );
+    private Map<Integer, List<Response>> _mapResponsesByIdEntry = new HashMap<>();
 
     /**
      * The list of the responses for the additional entries of the form
@@ -159,7 +159,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
     /**
      * Set the name of the admin user
      * 
-     * @param _strAdminUser
+     * @param strAdminUser
      *            the admin user name to set
      */
     public void setAdminUser( String strAdminUser )
@@ -450,7 +450,7 @@ public final class AppointmentDTO extends Appointment implements Serializable
      */
     public static List<String> getAllErrors( Locale locale )
     {
-        List<String> listAllErrors = new ArrayList<String>( );
+        List<String> listAllErrors = new ArrayList<>();
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_LAST_NAME, locale ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_EMPTY_FIELD_FIRST_NAME, locale ) );
         listAllErrors.add( I18nService.getLocalizedString( PROPERTY_UNVAILABLE_EMAIL, locale ) );

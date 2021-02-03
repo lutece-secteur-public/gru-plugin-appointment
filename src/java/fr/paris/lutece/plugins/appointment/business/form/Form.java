@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -155,7 +155,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * Set the form title
      * 
-     * @param title
+     * @param strTitle
      *            the Title to set
      */
     public void setTitle( String strTitle )
@@ -176,7 +176,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * Set the description of the form
      * 
-     * @param description
+     * @param strDescription
      *            the description to set
      */
     public void setDescription( String strDescription )
@@ -197,7 +197,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * Set the reference of the form
      * 
-     * @param reference
+     * @param strReference
      *            the reference to set
      */
     public void setReference( String strReference )
@@ -254,7 +254,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * Set the starting date of the validity of the form
      * 
-     * @param startValidity
+     * @param startingValidityDate
      *            the starting validity date to set
      */
     public void setStartingValidityDate( LocalDate startingValidityDate )
@@ -308,7 +308,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * Set the end date of the validity of the form
      * 
-     * @param endValidity
+     * @param endingValidityDate
      *            the end validity date to set
      */
     public void setEndingValidityDate( LocalDate endingValidityDate )
@@ -347,7 +347,7 @@ public final class Form implements RBACResource, AdminWorkgroupResource, Seriali
     /**
      * Set the active boolean value of the form
      * 
-     * @param isActive
+     * @param bIsActive
      *            the boolean active value to set
      */
     public void setIsActive( boolean bIsActive )

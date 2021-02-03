@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,7 +59,8 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
      * Check Constraints
      * 
      * @param appointmentForm
-     * @return
+     *              the appointment form DTO
+     * @return boolean indicating whether constraints are satisfied
      * @throws ParseException
      */
     protected boolean checkConstraints( AppointmentFormDTO appointmentForm )

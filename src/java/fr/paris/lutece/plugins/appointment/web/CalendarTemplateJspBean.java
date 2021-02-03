@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -159,8 +159,8 @@ public class CalendarTemplateJspBean extends MVCAdminJspBean
 
         if ( _dataTableManager == null )
         {
-            _dataTableManager = new DataTableManager<CalendarTemplate>( getViewFullUrl( VIEW_MANAGE_CALENDAR_TEMPLATES ), null,
-                    AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50 ), true );
+            _dataTableManager = new DataTableManager<>(getViewFullUrl(VIEW_MANAGE_CALENDAR_TEMPLATES), null,
+                    AppPropertiesService.getPropertyInt(PROPERTY_DEFAULT_LIST_APPOINTMENT_PER_PAGE, 50), true);
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_TITLE, PROPERTY_TITLE, true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_DESCRIPTION, PROPERTY_DESCRIPTION, true );
             _dataTableManager.addColumn( MESSAGE_COLUMN_TITLE_TEMPLATE_PATH, PROPERTY_TEMPLATE_PATH, true );

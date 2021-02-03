@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -191,7 +191,7 @@ public final class FormRule implements Serializable
     /**
      * Set the number of days the user have to wait before he can take another appointment
      * 
-     * @param _nNbDaysBeforeNewAppointment
+     * @param nNbDaysBeforeNewAppointment
      *            the number of days
      */
     public void setNbDaysBeforeNewAppointment( int nNbDaysBeforeNewAppointment )
@@ -233,7 +233,7 @@ public final class FormRule implements Serializable
     /**
      * Set the maximum number of appointments authorized
      * 
-     * @param _nNbMaxAppointmentsPerUser
+     * @param nNbMaxAppointmentsPerUser
      *            the maximum number of appointments authorized
      */
     public void setNbMaxAppointmentsPerUser( int nNbMaxAppointmentsPerUser )
@@ -254,7 +254,7 @@ public final class FormRule implements Serializable
     /**
      * Set the number of days of the period for the maximum number of appointments authorized
      * 
-     * @param _nNbDaysForMaxAppointmentsPerUser
+     * @param nNbDaysForMaxAppointmentsPerUser
      *            the number of days to set
      */
     public void setNbDaysForMaxAppointmentsPerUser( int nNbDaysForMaxAppointmentsPerUser )

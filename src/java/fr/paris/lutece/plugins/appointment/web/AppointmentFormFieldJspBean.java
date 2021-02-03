@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -132,7 +132,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
         Field field = new Field( );
         field.setParentEntry( entry );
 
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>();
         model.put( MARK_FIELD, field );
 
         return getPage( PROPERTY_CREATE_FIELD_TITLE, TEMPLATE_CREATE_FIELD, model );
@@ -186,7 +186,7 @@ public class AppointmentFormFieldJspBean extends MVCAdminJspBean
 
         field.setParentEntry( entry );
 
-        HashMap<String, Object> model = new HashMap<String, Object>( );
+        HashMap<String, Object> model = new HashMap<>();
         model.put( MARK_FIELD, field );
 
         String strTemplateName;

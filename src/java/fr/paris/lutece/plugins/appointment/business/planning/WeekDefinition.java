@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ public final class WeekDefinition extends AbstractDateConversion implements Seri
     /**
      * Set the id of the week definition
      * 
-     * @param _nIdWeekDefinition
+     * @param nIdWeekDefinition
      *            the id to set
      */
     public void setIdWeekDefinition( int nIdWeekDefinition )
@@ -122,7 +122,7 @@ public final class WeekDefinition extends AbstractDateConversion implements Seri
     /**
      * Set the working days for the week
      * 
-     * @param _listWorkingDays
+     * @param listWorkingDays
      *            the list o f working days to set
      */
     public void setListWorkingDay( List<WorkingDay> listWorkingDays )

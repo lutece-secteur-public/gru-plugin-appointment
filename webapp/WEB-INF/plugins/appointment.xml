@@ -10,7 +10,7 @@
     <provider>appointment.plugin.provider</provider>
     <provider-url>http://dev.lutece.paris.fr</provider-url>
     <icon-url>images/admin/skin/plugins/appointment/appointment.png</icon-url>
-    <copyright>Copyright (c) 2013 Mairie de Paris</copyright>
+    <copyright>Copyright (c) 2013 City of Paris</copyright>
     <db-pool-required>1</db-pool-required>
     
     <!-- Admin features parameters -->

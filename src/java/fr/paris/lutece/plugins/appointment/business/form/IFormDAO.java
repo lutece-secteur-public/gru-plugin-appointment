@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ public interface IFormDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.formDAO";
+    String BEAN_NAME = "appointment.formDAO";
 
     /**
      * 
@@ -75,7 +75,7 @@ public interface IFormDAO
     /**
      * Delete a record from the table
      * 
-     * @param nIdFrom
+     * @param nIdForm
      *            identifier of the form to delete
      * @param plugin
      *            the plugin

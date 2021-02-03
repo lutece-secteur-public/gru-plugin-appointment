@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ public interface ISlotDAO
     /**
      * The name of the bean of the DAO
      */
-    static String BEAN_NAME = "appointment.slotDAO";
+    String BEAN_NAME = "appointment.slotDAO";
 
     /**
      * Insert a new record in the table
@@ -168,14 +168,14 @@ public interface ISlotDAO
     Slot findSlotWithMaxDate( int nIdForm, Plugin plugin );
     /**
      * update Potential Remaining Places
-     * @param nbPotentialRemainingPlaces
-     * @param nIdSlot
-     * @param plugin
+     * @param nbPotentialRemainingPlaces the number of potential remaining places
+     * @param nIdSlot the slot
+     * @param plugin the plugin
      */
     void updatePotentialRemainingPlaces( int nbPotentialRemainingPlaces, int nIdSlot, Plugin plugin  );
     /**
      * update the availabilities metrics 
-     * @param plugin
+     * @param plugin the plugin
      */
     void resetPotentialRemainingPlaces( Plugin plugin );
 

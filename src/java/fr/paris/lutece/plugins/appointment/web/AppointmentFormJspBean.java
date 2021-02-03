@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -591,7 +591,7 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         }
         int nIdForm = Integer.parseInt( strIdForm );
         FormMessage formMessage = FormMessageService.findFormMessageByIdForm( nIdForm );
-        Map<String, Object> model = new HashMap<String, Object>( );
+        Map<String, Object> model = new HashMap<>();
         model.put( MARK_FORM_MESSAGE, formMessage );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put(MARK_LANGUAGE, getLocale( ).getLanguage( ) );
@@ -743,7 +743,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
      *            the request
      * @param nIdForm
      *            the form Id
-     * @return false if there is an error during the import
      */
     private void importClosingDayFile( MultipartHttpServletRequest mRequest, int nIdForm )
     {

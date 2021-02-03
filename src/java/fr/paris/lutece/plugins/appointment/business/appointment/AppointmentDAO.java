@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -431,7 +431,7 @@ public final class AppointmentDAO extends UtilDAO implements IAppointmentDAO
     /**
      * Build a daoUtil object with the query and all the attributes of the Appointment
      * 
-     * @param suery
+     * @param query
      *            the query
      * @param appointment
      *            the Appointment

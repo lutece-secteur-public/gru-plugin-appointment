@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -102,7 +102,7 @@ public final class Display implements Serializable
     /**
      * Set the Display Id
      * 
-     * @param _nIdDisplay
+     * @param nIdDisplay
      *            the Id to set
      */
     public void setIdDisplay( int nIdDisplay )
@@ -133,7 +133,7 @@ public final class Display implements Serializable
     /**
      * Set the boolean value to display or not the form on the portlet
      * 
-     * @param bIsDisplayedOnPortlet
+     * @param bIsDisplayedOnPortlet boolean indicating whether to display
      */
     public void setIsDisplayedOnPortlet( boolean bIsDisplayedOnPortlet )
     {
@@ -143,7 +143,7 @@ public final class Display implements Serializable
     /**
      * Set the display title boolean value
      * 
-     * @param displayTitleFo
+     * @param bIsDisplayTitleFo
      *            the boolean display title value to set
      */
     public void setDisplayTitleFo( boolean bIsDisplayTitleFo )

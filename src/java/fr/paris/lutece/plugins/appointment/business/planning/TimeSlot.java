@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2018, Mairie de Paris
+ * Copyright (c) 2002-2021, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -97,7 +97,7 @@ public final class TimeSlot implements Serializable
     /**
      * Get the id of the time slot
      * 
-     * @return
+     * @return the id of the slot
      */
     public int getIdTimeSlot( )
     {
