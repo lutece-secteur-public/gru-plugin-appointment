@@ -333,11 +333,12 @@ public class CommentJspBean extends AbstractAppointmentFormAndSlotJspBean
     public String getConfirmRemoveComment( HttpServletRequest request )
     {
         int nId = Integer.parseInt( request.getParameter( PARAMETER_ID_COMMENT ) );
-        String strReferer = request.getHeader( REFERER );
+        _comment = CommentHome.findByPrimaryKey( nId );
 
         UrlItem url = new UrlItem( getActionUrl( ACTION_DO_REMOVE_COMMENT ) );
         url.addParameter( PARAMETER_ID_COMMENT, nId );
-        url.addParameter( REFERER, strReferer );
+        url.addParameter( REFERER, request.getHeader( REFERER ) );
+        url.addParameter( PARAMETER_ID_MAILING_LIST, request.getParameter( PARAMETER_ID_MAILING_LIST ) );
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_COMMENT, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
 
