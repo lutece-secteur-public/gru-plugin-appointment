@@ -238,7 +238,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 			<@row>
 				<@columns offsetSm=1 sm=10 params=' style="display:flex;justify-content: space-around" '>
 					<@button type='submit' name='action_${action}' buttonIcon='save' title='#i18n{portal.util.labelValidate}' /> 
-					<@aButton color='danger' id='commentDelete' href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&idMailingList=-1&id_comment=' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' class="btn btn-danger" />
+					<@aButton color='danger' id='commentDelete' href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&idMailingList=0&id_comment=' buttonIcon='trash' title='#i18n{portal.util.labelDelete}' class="btn btn-danger" />
 					<@button type='button' params='data-dismiss="modal"' title='#i18n{portal.util.labelCancel}' buttonIcon='times' color='default' />
 				</@columns>
 			</@row>
@@ -259,6 +259,7 @@ $(function () {
 	$("#${idEndingDate}").on("dp.change", function (e) {
 		$('#${idStartingDate}').data("DateTimePicker").maxDate(e.date);
 	});
+	
 });
 </script>
 </#macro>
@@ -293,9 +294,9 @@ $(function () {
 	<#assign tabparams='data-menu="slot"'>
 	<@tabLink href='jsp/admin/plugins/appointment/modules/desk/ManageAppointmentDesks.jsp?plugin_name=appointment-desk&id_form=${form.idForm}&context=slot' title='#i18n{appointment.specificDay.pageTitle}' active=true params=tabparams />  
 	<#assign active = false />
-	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${form.idForm}' title='#i18n{appointment.typicalWeek.pageTitle}' active=active params=tabparams/>
 	<@tabLink href='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp?view=manageSpecificWeek&id_form=${form.idForm}' title='#i18n{appointment.specificWeek.pageTitle}' active=active params=tabparams/> 			 
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAnnualCalendar.jsp?view=manageAnnualCalendar&id_form=${form.idForm}' title='#i18n{appointment.annual.calendar.pageTitle}' active=active params=tabparams/>  			
+	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointmentSlots.jsp?view=manageTypicalWeek&id_form=${form.idForm}' title='#i18n{appointment.typicalWeek.pageTitle}' active=active params=tabparams/>
 	<#assign tabparams='data-menu="app"'>
 	<#assign active = false />
 	<@tabLink href='jsp/admin/plugins/appointment/ManageAppointments.jsp?view=viewCalendarManageAppointment&id_form=${form.idForm}' title='#i18n{appointment.manageAppointmentCalendar.pageTitle}' active=active params=tabparams/>
@@ -494,7 +495,6 @@ $( function(){
 				$('#starting_date_time_span').val( moment(dt).format('DD/MM/YYYY hh:mm') );
 				$('#addbook_modal').modal('show');
 			});
-
 			<#if showComments>
 			// Set comments 
 			$( '.fc-view.fc-agendaWeek-view.fc-agenda-view .fc-body .ui-widget-content .fc-day-grid .fc-bg .fc-axis.ui-widget-content' ).html( '' );
@@ -508,10 +508,7 @@ $( function(){
 			// Highlight comment from bg
 			$( '.fc-bgevent' ).hover(function(){
 				var classSel = $(this).attr('class'), bgColor='#'+rgbToHex($(this).css('background-color'));
-				// var cColor = tinycolor( bgColor ).complement().toHexString();
-				// console.log( 'bgColor : ' +  bgColor );
 				var cColor = contrast(bgColor);
-				// console.log( 'cColor : ' + cColor );
 				var commentSel = classSel.split(' ');
 				$( '#'+commentSel[0] ).css('background-color', bgColor );
 				$( '#'+commentSel[0] + ' p').css('color', cColor );
@@ -589,27 +586,27 @@ $( function(){
 			var json = { "container": "body", "placement" : "bottom", "html" : true, "trigger" : "hover" };
 			
 			<#if showComments>
-			if( event.type == 'comment' ){
-				$(element).addClass('comments').attr( 'id', 'comment-' + event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
-				if ( event.validity_end == null || event.validity_end == undefined ){
-					labelEventDate='Le ' + event.start.format('ddd DD/MM');
-				} else {
-					moment.locale("${locale}");
-					labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
-				}
-				json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
-				var dateDebut='', dateFin='';
-				if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
-					if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
-						dateDebut=event.start.format('ddd DD/MM à ');
-						dateFin=moment(event.validity_end).format('ddd DD/MM à ')
+				if( event.type == 'comment' ){
+					$(element).addClass('comments').attr( 'id', 'comment-' + event.id ).attr( 'data-json', '{"id_comment":"' + event.id + '", "comment_text":"' + event.title.replace(/"/g,'\\"') + '", "comment_start":"' + event.start.format('YYYY-MM-DD') + '", "comment_start_time":"' + event.start_time + '", "comment_end":"' + event.validity_end + '", "comment_end_time\":"' + event.end_time + '"}' );
+					if ( event.validity_end == null || event.validity_end == undefined ){
+						labelEventDate='Le ' + event.start.format('ddd DD/MM');
+					} else {
+						moment.locale("${locale}");
+						labelEventDate = 'Du ' + event.start.format('ddd DD/MM') + ' ' + event.start_time + ' au '+ moment(event.validity_end).format('ddd DD/MM') + ' ' + event.end_time;
 					}
-					var fcTitle = element.find('.fc-title p');
-					fcTitle.prepend( '[ ' + dateDebut + event.start_time + ' / ' + dateFin + event.end_time + ' ] ' );
+					json.content = '<p>' + labelEventDate +'</p><p>Créé par <em>' + event.creator_user + '</em> le <date>' + event.creation_date + '</date><hr>'+ event.title + '</p>'  ;
+					var dateDebut='', dateFin='';
+					if ( ! ( event.start_time == null || event.start_time == undefined || event.start_time == '00:00' ) ){
+						if( event.start.format('DDMM') != moment(event.validity_end).format('DDMM') ){
+							dateDebut=event.start.format('ddd DD/MM à ');
+							dateFin=moment(event.validity_end).format('ddd DD/MM à ')
+						}
+						var fcTitle = element.find('.fc-title p');
+						fcTitle.prepend( '[ ' + dateDebut + event.start_time + ' / ' + dateFin + event.end_time + ' ] ' );
+					}
+				} else {
+					json.content = "<center>" + event.start.format('ddd DD/MM') + "<b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
 				}
-			} else {
-				json.content = "<center>" + event.start.format('ddd DD/MM') + "<b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-			}
 			<#else>
 				json.content = "<center>" + event.start.format('ddd DD/MM') + "<b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
 			</#if>
