@@ -47,3 +47,13 @@ input[type="color"]:hover{
 .calendar-context-menu .item .content {
     min-height: auto;
  }
+
+.viewTextarea{
+    font-size:14px;
+    font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+    border:0;
+    background-color:transparent;
+    min-height: 34px;
+    padding: 7px 0;
+    margin-bottom: 0
+}
