@@ -1,5 +1,10 @@
 .alert-success, .alert-info, .alert-warning, .alert-danger{ background-image:none; }
 
+.datepicker.datepicker-dropdown.dropdown-menu2.datepicker-orient-left.datepicker-orient-bottom,
+.datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-bottom{
+    top:210px !important;
+}
+
 /* Header */
 .content-header > h1 > small{
     font-size: 2rem;
