@@ -462,14 +462,14 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( )  ));
 
 
-        if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake <= 1 )
+        if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake <= 0 )
         {
 
             return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_MULTI_SLOT, model );
 
         }
         else
-            if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake > 1 )
+            if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake >= 1 )
             {
 
                 return getPage( PROPERTY_PAGE_TITLE_MANAGE_APPOINTMENTS_CALENDAR, TEMPLATE_MANAGE_APPOINTMENTS_CALENDAR_GROUPED, model );

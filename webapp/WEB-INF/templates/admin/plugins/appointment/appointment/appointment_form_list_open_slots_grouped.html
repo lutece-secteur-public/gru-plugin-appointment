@@ -1,62 +1,13 @@
-<@coreAdminCSSLinks />
-<#include "/admin/plugins/appointment/appointment/manage_appointment_tabs.html" />
-<script src="js/plugins/appointment/moment.min.js" ></script>
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar.css' />
-<link rel='stylesheet' href='css/plugins/appointment/fullcalendar_ow_bo.css' />
-<script src='js/plugins/appointment/jquery.min.js' ></script>
-<script src='js/plugins/appointment/fullcalendar.min.js' ></script>
-<script src='js/plugins/appointment/locale-all.js' ></script>
-<script src="js/plugins/appointment/bootstrap-datepicker.js" ></script>
-<script src="js/locales/bootstrap-datepicker.fr.js" charset="utf-8"></script>
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.min.css' />
-<link rel="stylesheet" href="js/jquery/plugins/ui/css/jquery-ui.min.css"  />
-<link rel='stylesheet' href='css/plugins/appointment/bootstrap-datepicker.standalone.css' />
 <@row>
     <@columns>
-        <legend>
-            ${form.title} - #i18n{appointment.manageAppointmentCalendar.pageTitle}
-        </legend>
-        <@appointmentTabs tab="calendar" form=form />
-        <@messages errors=errors infos=infos />
-        <#if formCalendarErrors??>
-            <div class="layout-wrapper"></div>
-        <#else>
-            <@tabContent>
-                <fieldset>
-                    <a href="javascript:void(0)" id="toggle-add-comment">+</a>
-                    <div id="calendar"></div>
-                </fieldset>
-            </@tabContent>
-        </#if>
+        <@appointmentTabs tab="calendar" form=form context='app' />
     </@columns>
 </@row>
 
-<!-- comment form -->
-<div id="comment" style="display:none;">
-    <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.create_comment.pageTitle}' />
-            <@boxBody>
-            
-                <fieldset>
-                <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" mailing_list id_form />
-                </fieldset>
-            </@boxBody>
-        </@box>
-</div>
-<!-- modify-comment form -->
-<div id="modify-comment" style="display:none;">
-    <@box color='primary'>
-            <@boxHeader title='#i18n{appointment.modify_comment.pageTitle}' />
-            <@boxBody>
-            
-                <fieldset>
-                <legend class="hidden">#i18n{appointment.createField.title}</legend>
-                    <@getCommentForm "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list />
-                </fieldset>
-            </@boxBody>
-     </@box>  
-</div>
+<@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list />
+
+<@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list />
+
 <script type="text/javascript">
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
