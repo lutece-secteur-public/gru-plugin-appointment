@@ -560,6 +560,7 @@ $( function(){
 							$('#max_capacity').val( evt.maxCapacity );
 							$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
 							$('#date_of_display').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
+							$('#date_of_display_multi').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
 							$('#timeStart').text( evt.startingTime );
 							$('#ending_time').val( evt.endingTime );
 							$('#updatePlanningSlot').modal('show');
