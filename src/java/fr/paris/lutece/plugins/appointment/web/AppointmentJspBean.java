@@ -239,6 +239,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
     private static final String MARK_ADDON = "addon";
     private static final String MARK_LIST_RESPONSE_RECAP_DTO = "listResponseRecapDTO";
     private static final String MARK_LANGUAGE = "language";
+    private static final String MARK_DATE_START_SEARCH = "date_start_search_str";
+    private static final String MARK_DATE_END_SEARCH = "date_end_search_str";
     private static final String MARK_ACTIVATE_WORKFLOW = "activateWorkflow";
 
     private static final String JSP_MANAGE_APPOINTMENTS = "jsp/admin/plugins/appointment/ManageAppointments.jsp";
@@ -540,6 +542,8 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
         model.put( MARK_LOCALE, getLocale( ) );
+        model.put( MARK_DATE_START_SEARCH, filter.getStartingDateOfSearch( ).toString( ) );
+        model.put( MARK_DATE_END_SEARCH, filter.getEndingDateOfSearch( ).toString( ) );
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
