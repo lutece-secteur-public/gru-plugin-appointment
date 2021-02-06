@@ -542,8 +542,13 @@ public class AppointmentJspBean extends MVCAdminJspBean
         model.put( MARK_PAGINATOR, paginator );
         model.put( MARK_LANGUAGE, getLocale( ).getLanguage( ) );
         model.put( MARK_LOCALE, getLocale( ) );
-        model.put( MARK_DATE_START_SEARCH, filter.getStartingDateOfSearch( ).toString( ) );
-        model.put( MARK_DATE_END_SEARCH, filter.getEndingDateOfSearch( ).toString( ) );
+        if ( filter.getStartingDateOfSearch( ) != null )
+        {
+            model.put(MARK_DATE_START_SEARCH, filter.getStartingDateOfSearch().toString());
+        }
+        if ( filter.getEndingDateOfSearch( ) != null ) {
+            model.put(MARK_DATE_END_SEARCH, filter.getEndingDateOfSearch().toString());
+        }
         model.put( MARK_ACTIVATE_WORKFLOW, ACTIVATEWORKFLOW );
         if ( ( form.getIdWorkflow( ) > 0 ) && WorkflowService.getInstance( ).isAvailable( ) )
         {
