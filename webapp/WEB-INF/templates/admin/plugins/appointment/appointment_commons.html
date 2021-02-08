@@ -543,30 +543,32 @@ $( function(){
 					$( '.ui-selected', this ).each( function() {
 						if ( eventIdx > 1 ){
 							eventData += '{' + $(this).data('event') + '},' ;
-							const events =  JSON.stringify( eventData );
 							evtData='['+eventData.slice(0, -1)+']'
 							const evt = JSON.parse(evtData); 
-							$('#slotsData').val( evtData);
+							$('#timeSlotData').val( evtData );
 							$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
 							$('#updatePlanningMultiSlot').modal('show');
 						} else {
-							eventData ='{' + $(this).data('event') + '}';  
-							const events = JSON.stringify(eventData); 
+							eventData ='{' + $(this).data('event') + '}';                       
 							evtData= '['+eventData+']';
+                            const evt = JSON.parse(eventData);
 							$('#slotData').val( evtData );
-							const evt = JSON.parse(eventData); 
-							const isOpen = JSON.parse( evt.isOpen )
+                            const isOpen = JSON.parse( evt.isOpen );
 							$('#is_open').prop( "checked", isOpen );
-							$('#max_capacity').val( evt.maxCapacity );
+                            
+                            $('#idTimeSlot').val( evt.idSlot );
+                            $('#idWorkingDay').val( evt.idWorkingDay );
+                            $('#timeMaxCapacity').val( evt.maxCapacity );
+                            $('#timeStart').text( evt.startingTime );
+                            $('#ending_time').val( evt.endingTime );
 							$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
 							$('#date_of_display').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
-							$('#date_of_display_multi').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
-							$('#timeStart').text( evt.startingTime );
-							$('#ending_time').val( evt.endingTime );
-							$('#updatePlanningSlot').modal('show');
+                            $('#updatePlanningSlot').modal('show');
+							
 						}
 					});
 					eventData='';
+				}
 				}
 			});
 			</#if>
