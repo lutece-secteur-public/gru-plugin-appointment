@@ -4,21 +4,12 @@
     </@columns>
 </@row>
 
-<@getCommentModal 'commentModal' '#i18n{appointment.create_comment.pageTitle}' "comment" "startingValidityDate" "endingValidityDate" "idStartingTime" "idEndingTime" "doAddComment" id_form mailing_list />
-
-<@getCommentModal 'modify-comment' '#i18n{appointment.modify_comment.pageTitle}' "comment" "modifyStartingValidityDate" "modifyEndingValidityDate" "idModifyStartingTime" "idModifyEndingTime" "doModifyComment" id_form mailing_list />
-
 <script type="text/javascript">
     var slotDuration = '${min_duration}';
     var minTime = '${min_time}';
     var maxTime = '${max_time}';
-    var dow = [
-        <#if dow??>
-            <#list dow as day>
-                '${day}',
-            </#list>
-        </#if>
-    ];
+    var dow = [ <#if dow??>  <#list dow as day> '${day}', </#list> </#if> ];
+	var defaultDate = '${date_of_display}';
     var startingDateOfDisplay = '${starting_date_of_display}';
     var endingDateOfDisplay = '${ending_date_of_display}';
     var strStartingDateOfDisplay = '${str_starting_date_of_display}';
@@ -27,24 +18,6 @@
     var idForm = '${id_form}';
     var columnFormat = 'dddd DD/MM/YYYY';
     var events = [
-        <#if comment_events??>
-        <#list comment_events as comment_event>
-        
-        {
-            "title" : "${comment_event.comment?replace('\n', '')?replace('\r', '')?replace('\rn', '')?replace('\'', '&apos;')?replace('\"', '&quote;')}",
-            "start" : "${comment_event.startingValidityDate}",
-            "end" : "${comment_event.calendarAllDaySlotEnd}",
-            "validity_end" : "${comment_event.endingValidityDate}",
-            "start_time" : "${comment_event.endingValidityTime!}",
-            "end_time" : "${comment_event.startingValidityTime!}",
-            "id" : "${comment_event.id}",
-            "creator_user" : "${comment_event.creatorUserName!''}",
-            "creation_date" : "${comment_event.creationDate!''}",
-            "type": "comment"
-        },
-        
-        </#list>
-        </#if>
         <#if events??>
             <#list events as event>
                 <#assign nbAppointments = event.nbPlacesTaken>
@@ -68,8 +41,8 @@
             </#list>
         </#if>
     ];
-    var defaultDate = '${date_of_display}';
-    $(document).ready(function() {
+ 
+    $( function() {
         $('#calendar').fullCalendar({
             displayEventTime: true,
             displayEventEnd: true,
@@ -185,44 +158,13 @@
                     html : true,
                     trigger : 'hover'
                 };
-                if( event.type == "comment" ){
-                	moment.locale("${locale}");
-                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start_time + "</b> - <b>" + moment(event.validity_end).format('ddd DD/MM')+ " " + event.end_time + "</b></center><center>" + event.title + "</center><center>" + event.creator_user + "</center><center>" + event.creation_date + "</center>";
-                }else{
-                    json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
-                }
+                json.content = "<center>"+event.start.format('ddd DD/MM')+"</center>" + "<center><b>" + event.start.format('HH:mm') + "</b> - <b>" + event.end.format('HH:mm')+"</b></center>";
                 $(element).popover( json );
                 $(element).contextmenu(function() {
                     return false;
                 });
-                if(event.type == "comment" )
-                {
-                	element.append( "<div class='btn-comments'><a href='' class='toggle-modify-comment' data-json='{\"id_comment\": \"" + event.id + "\", \"comment_text\": \"" + event.title.replace(/"/g,'\\"') + "\", \"comment_start\":\"" + event.start.format('YYYY-MM-DD') + "\", \"comment_start_time\":\"" + event.start_time + "\", \"comment_end\":\"" + event.validity_end + "\", \"comment_end_time\":\"" + event.end_time + "\" }' ><i class='fa fa-pencil fa-fw'></i></a><a href='jsp/admin/plugins/appointment/Comments.jsp?action=confirmRemoveComment&id_comment=" + event.id + "' class='closeon text-danger'><i class='fa fa-remove fa-fw'></i></a></div>" );
-                }
+                
             }
         });
     });
-</script>
-<#include "/admin/util/editor/editor.html" />
-<@initEditor />
-<@getDatePickerBootstrap idField="modifyStartingValidityDate" language=locale />
-<@getDatePickerBootstrap idField="modifyEndingValidityDate" language=locale />
-<script type="text/javascript">
-$(document).ready(function() {
-    $("#toggle-add-comment").click(function() {
-        $("#comment").toggle();
-    });
-});
-$(document).ready(function() {
-    $(".toggle-modify-comment").click(function( ) {
-        var formValues = JSON.parse( $(this).attr( "data-json" ) );
-        $("#modify-comment input[name='id_comment']").val( formValues.id_comment );
-        tinyMCE.activeEditor.setContent( formValues.comment_text );
-        $( "#modify-comment input[name='startingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( parseInt( formValues.comment_start ) ) );
-        $( "#modify-comment input[name='endingValidityDate']" ).datepicker().datepicker( 'setDate', new Date( formValues.comment_end ) );
-        $( "#modify-comment input[name='startingValidityTime']" ).val( formValues.comment_start_time );
-        $( "#modify-comment input[name='endingValidityTime']" ).val( formValues.comment_end_time );
-        $( "#modify-comment" ).toggle();
-    });
-});
 </script>
