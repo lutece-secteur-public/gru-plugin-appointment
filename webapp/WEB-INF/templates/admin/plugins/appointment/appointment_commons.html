@@ -389,7 +389,7 @@ $( '#modify-comment' ).modal('show');
 		start : "${comment_event.startingValidityDate}T${comment_event.startingValidityTime!}",
 		end : "${comment_event.endingValidityDate}T${comment_event.endingValidityTime!}",
 		type : "hour_comment",
-		backgroundColor : setNeWcolor(),
+		backgroundColor : 'rgb(233, 250, 0 )',
 		className : ["comment-${comment_event.id!}"],
 		rendering : "background",
 		allDay : false
@@ -520,15 +520,18 @@ $( function(){
 
 			// Highlight comment from bg
 			$( '.fc-bgevent' ).hover(function(){
-				var classSel = $(this).attr('class'), bgColor='#'+rgbToHex($(this).css('background-color'));
-				var cColor = contrast(bgColor);
+				var classSel = $(this).attr('class'), bgColor=$(this).css('background-color');
+				<!-- var cColor = contrast(bgColor); -->
 				var commentSel = classSel.split(' ');
-				$( '#'+commentSel[0] ).css('background-color', bgColor );
-				$( '#'+commentSel[0] + ' p').css('color', cColor );
+				<!-- $( '#'+commentSel[0] ).css('background-color', bgColor ); -->
+				$( this ).css('background-color', 'orange' );
+				$( '#'+commentSel[0] ).css('background-color', 'orange' );
+				$( '#'+commentSel[0] + ' p').css('color', '#fff' );
 				return false;
 			}, function(){
 				var classSel = $(this).attr('class');
 				var commentSel = classSel.split(' ');
+				$( this ).css('background-color', 'rgb(233, 250, 0)' );
 				$( '#'+commentSel[0] ).css('background-color', 'rgb(233, 250, 0)' )
 				$( '#'+commentSel[0] + ' p').css('color', '#000' );
 			});
