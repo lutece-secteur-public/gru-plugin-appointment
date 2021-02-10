@@ -166,7 +166,7 @@ public class AppointmentAnnualCalendarJspBean extends AbstractAppointmentFormAnd
         model.put( MARK_ID_FORM, nIdForm );
         model.put( MARK_START_YEAR, nStartYear );
         model.put( MARK_LOCALE_TINY, getLocale( ) );
-        AppointmentFormJspBean.addElementsToModel( form, getUser( ), getLocale( ), model );
+        addElementsToModel( form, getUser( ), getLocale( ), model );
 
         return getPage( MESSAGE_ANNUAL_CALENDAR_PAGE_TITLE, TEMPLATE_MANAGE_ANNUAL_CALENDAR, model );
 

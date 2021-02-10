@@ -39,7 +39,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -51,7 +50,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.appointment.business.appointment.Appointment;
-import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
 import fr.paris.lutece.plugins.appointment.business.form.Form;
 import fr.paris.lutece.plugins.appointment.business.form.FormHome;
 import fr.paris.lutece.plugins.appointment.business.message.FormMessage;
@@ -61,30 +59,23 @@ import fr.paris.lutece.plugins.appointment.log.LogUtilities;
 import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
-import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.plugins.appointment.service.ClosingDayService;
 import fr.paris.lutece.plugins.appointment.service.FormMessageService;
 import fr.paris.lutece.plugins.appointment.service.FormService;
 import fr.paris.lutece.plugins.appointment.service.SlotService;
 import fr.paris.lutece.plugins.appointment.service.Utilities;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
-import fr.paris.lutece.portal.business.role.RoleHome;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
-import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.image.ImageResource;
-import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.service.workflow.WorkflowService;
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
@@ -92,7 +83,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.utils.MVCUtils;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
-import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.url.UrlItem;
 
@@ -138,24 +128,13 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     // Markers
     private static final String MARK_WEBAPP_URL = "webapp_url";
     private static final String MARK_APPOINTMENTFORM_LIST = "appointmentform_list";
-    private static final String MARK_APPOINTMENT_FORM = "appointmentform";
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
-    private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
-    private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
     private static final String MARK_FORM_MESSAGE = "formMessage";
-    private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
-    private static final String MARK_REF_LIST_ROLES = "refListRoles";
-    private static final String MARK_LIST_CATEGORIES = "listCategories";
     private static final String MARK_NULL = "NULL";
     private static final String MARK_FALSE = "false";
-    private static final String MARK_LOCALE = "language";
     private static final String MARK_LOCALE_TINY = "locale";
     private static final String MARK_FILE_CLOSING_DAYS = "fileClosingDays";
-    private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
-    private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
-    private static final String MARK_APPOINTMENT_DESK_ENABLED = "isDeskInstalled";
-    private static final String MARK_MAILING_LIST = "mailing_list";
     private static final String MARK_PERMISSION_CREATE = "permission_create";
 
     // Jsp
@@ -165,8 +144,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String MESSAGE_CONFIRM_REMOVE_APPOINTMENTFORM = "appointment.message.confirmRemoveAppointmentForm";
     public static final String PROPERTY_DEFAULT_LIST_APPOINTMENTFORM_PER_PAGE = "appointment.listAppointmentForms.itemsPerPage";
     private static final String VALIDATION_ATTRIBUTES_PREFIX = "appointment.model.entity.appointmentform.attribute.";
-    private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
-    private static final String PROPERTY_MODULE_APPOINTMENT_DESK_NAME = "appointment.moduleAppointmentDesk.name";
 
     private static final String PROPERTY_COPY_OF_FORM = "appointment.manageAppointmentForms.Copy";
     private static final String MESSAGE_ERROR_EMPTY_FILE = "appointment.message.error.closingDayErrorImport";
@@ -201,7 +178,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
     private static final String DEFAULT_CURRENT_PAGE = "1";
 
     // Session variable to store working values
-    private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService( );
     private int _nDefaultItemsPerPage;
     private AppointmentFormDTO _appointmentFormDTO;
     private String _strCurrentPageIndex;
@@ -644,38 +620,6 @@ public class AppointmentFormJspBean extends AbstractAppointmentFormAndSlotJspBea
         UrlItem urlItem = new UrlItem( AppPathService.getBaseUrl( request ) + JSP_MANAGE_APPOINTMENTFORMS );
         urlItem.addParameter( MVCUtils.PARAMETER_VIEW, VIEW_MANAGE_APPOINTMENTFORMS );
         return urlItem.getUrl( );
-    }
-
-    /**
-     * Add elements to the model to display the left column to modify an appointment form
-     * 
-     * @param request
-     *            The request to store the appointment form in session
-     * @param appointmentForm
-     *            The appointment form
-     * @param user
-     *            The user
-     * @param locale
-     *            The locale
-     * @param model
-     *            the model to add elements in
-     */
-    public static void addElementsToModel( AppointmentFormDTO appointmentForm, AdminUser user, Locale locale, Map<String, Object> model )
-    {
-        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
-        Plugin moduleAppointmentDesk = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_DESK_NAME ) );
-        ReferenceList listRoles = RoleHome.getRolesList( user );
-        model.put( MARK_APPOINTMENT_FORM, appointmentForm );
-        model.put( MARK_LOCALE, locale );
-        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( (User) user, locale ) );
-        model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
-        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
-        model.put( MARK_LIST_CATEGORIES, CategoryService.findAllInReferenceList( ) );
-        model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
-        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
-        model.put( MARK_APPOINTMENT_DESK_ENABLED, ( moduleAppointmentDesk != null ) && moduleAppointmentDesk.isInstalled( ) );
-        model.put( MARK_REF_LIST_ROLES, listRoles );
-        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( user ));
     }
 
     /**

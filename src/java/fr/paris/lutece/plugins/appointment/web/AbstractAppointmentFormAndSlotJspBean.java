@@ -36,16 +36,31 @@ package fr.paris.lutece.plugins.appointment.web;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.api.user.User;
+import fr.paris.lutece.plugins.appointment.business.calendar.CalendarTemplateHome;
+import fr.paris.lutece.plugins.appointment.service.AppointmentResourceIdService;
 import fr.paris.lutece.plugins.appointment.service.AppointmentUtilities;
+import fr.paris.lutece.plugins.appointment.service.CategoryService;
 import fr.paris.lutece.plugins.appointment.web.dto.AppointmentFormDTO;
 import fr.paris.lutece.plugins.appointment.web.dto.ReservationRuleDTO;
+import fr.paris.lutece.portal.business.role.RoleHome;
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
+import fr.paris.lutece.portal.service.mailinglist.AdminMailingListService;
+import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.service.workflow.WorkflowService;
+import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.web.util.LocalizedPaginator;
+import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.html.AbstractPaginator;
 import fr.paris.lutece.util.url.UrlItem;
 
@@ -75,16 +90,27 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
     // Properties
     private static final String PROPERTY_DEFAULT_LIST_ITEM_PER_PAGE = "appointment.listItems.itemsPerPage";
     protected static final String PARAMETER_CAPACITY_MOD = "capacity";
-
+    private static final String PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME = "appointment.moduleAppointmentResource.name";
+    private static final String PROPERTY_MODULE_APPOINTMENT_DESK_NAME = "appointment.moduleAppointmentDesk.name";
     // Parameters
     private static final String PARAMETER_PAGE_INDEX = "page_index";
 
     // Markers
     private static final String MARK_PAGINATOR = "paginator";
     private static final String MARK_NB_ITEMS_PER_PAGE = "nb_items_per_page";
-
-
+    private static final String MARK_USER_WORKGROUP_REF_LIST = "user_workgroup_list";
+    private static final String MARK_APPOINTMENT_RESOURCE_ENABLED = "isResourceInstalled";
+    private static final String MARK_APPOINTMENT_DESK_ENABLED = "isDeskInstalled";
+    private static final String MARK_MAILING_LIST = "mailing_list";
+    private static final String MARK_APPOINTMENT_FORM = "appointmentform";
+    private static final String MARK_LIST_WORKFLOWS = "listWorkflows";
+    private static final String MARK_IS_CAPTCHA_ENABLED = "isCaptchaEnabled";
+    private static final String MARK_REF_LIST_CALENDAR_TEMPLATES = "refListCalendarTemplates";
+    private static final String MARK_REF_LIST_ROLES = "refListRoles";
+    private static final String MARK_LIST_CATEGORIES = "listCategories";
+    protected static final String MARK_LOCALE = "language";
     // Variables
+    private static final CaptchaSecurityService _captchaSecurityService = new CaptchaSecurityService( );
     private String _strCurrentPageIndex;
     private int _nItemsPerPage;
 
@@ -297,6 +323,43 @@ public abstract class AbstractAppointmentFormAndSlotJspBean extends MVCAdminJspB
 
         return validateBean( rule, strPrefix );
 
+    }
+    
+    /**
+     * Add elements to the model to display the left column to modify an appointment form
+     * 
+     * @param request
+     *            The request to store the appointment form in session
+     * @param appointmentForm
+     *            The appointment form
+     * @param user
+     *            The user
+     * @param locale
+     *            The locale
+     * @param model
+     *            the model to add elements in
+     */
+    public static void addElementsToModel( AppointmentFormDTO appointmentForm, AdminUser user, Locale locale, Map<String, Object> model )
+    {
+        Plugin pluginAppointmentResource = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_RESOURCE_NAME ) );
+        Plugin moduleAppointmentDesk = PluginService.getPlugin( AppPropertiesService.getProperty( PROPERTY_MODULE_APPOINTMENT_DESK_NAME ) );
+        ReferenceList listRoles = RoleHome.getRolesList( user );
+        model.put( MARK_APPOINTMENT_FORM, appointmentForm );
+        model.put( MARK_LOCALE, locale );
+        model.put( MARK_LIST_WORKFLOWS, WorkflowService.getInstance( ).getWorkflowsEnabled( (User) user, locale ) );
+        model.put( MARK_IS_CAPTCHA_ENABLED, _captchaSecurityService.isAvailable( ) );
+        model.put( MARK_REF_LIST_CALENDAR_TEMPLATES, CalendarTemplateHome.findAllInReferenceList( ) );
+        model.put( MARK_LIST_CATEGORIES, CategoryService.findAllInReferenceList( ) );
+        model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( user, locale ) );
+        model.put( MARK_APPOINTMENT_RESOURCE_ENABLED, ( pluginAppointmentResource != null ) && pluginAppointmentResource.isInstalled( ) );
+        model.put( MARK_APPOINTMENT_DESK_ENABLED, ( moduleAppointmentDesk != null ) && moduleAppointmentDesk.isInstalled( ) );
+        model.put( MARK_REF_LIST_ROLES, listRoles );
+        model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( user ));
+        model.put( AppointmentUtilities.MARK_PERMISSION_ADD_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf(appointmentForm.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM, (User) user ) ));
+        model.put( AppointmentUtilities.MARK_PERMISSION_MODERATE_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf(appointmentForm.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) user ) ));
+        model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE , user.getAccessCode( ) );
     }
 
 }

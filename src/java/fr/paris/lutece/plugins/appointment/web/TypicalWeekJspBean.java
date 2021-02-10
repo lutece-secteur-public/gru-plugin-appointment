@@ -236,7 +236,7 @@ public class TypicalWeekJspBean extends AbstractAppointmentFormAndSlotJspBean
         model.put( PARAMETER_MIN_DURATION, LocalTime.MIN.plusMinutes( AppointmentUtilities.THIRTY_MINUTES ) );
         model.put( MARK_ID_RULE, nIdReservationRule );
         model.put( MARK_LIST_RESERVATION_RULE, ReservationRuleService.findListReservationRule( nIdForm ) );
-        AppointmentFormJspBean.addElementsToModel( _appointmentForm, getUser( ), getLocale( ), model );
+        addElementsToModel( _appointmentForm, getUser( ), getLocale( ), model );
         return getPage( MESSAGE_TYPICAL_WEEK_PAGE_TITLE, TEMPLATE_MANAGE_TYPICAL_WEEK, model );
     }
 

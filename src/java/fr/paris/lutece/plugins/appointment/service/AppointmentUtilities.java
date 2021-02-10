@@ -105,6 +105,10 @@ public final class AppointmentUtilities
     public static final String ERROR_MESSAGE_EMPTY_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notEmpty";
     public static final String ERROR_MESSAGE_FORMAT_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.notNumberFormat";
     public static final String ERROR_MESSAGE_ERROR_NB_BOOKED_SEAT = "appointment.validation.appointment.NbBookedSeat.error";
+        
+    public static final String MARK_PERMISSION_ADD_COMMENT = "permission_add_comment";
+    public static final String MARK_PERMISSION_MODERATE_COMMENT = "permission_moderate_comment";
+    public static final String MARK_PERMISSION_ACCESS_CODE = "permission_access_code";
 
     public static final String SESSION_TASK_TIMER_SLOT = "appointment.session.task.timer.slot";
 
