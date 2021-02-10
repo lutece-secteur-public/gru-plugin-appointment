@@ -245,21 +245,34 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 		</@tform>
 	</@modalBody>
 </@modal>
+
 <script>
-$(function () {
+$(function(){
 	$('#${idStartingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY'});
 	$('#${idStartingDate}').val( moment().format('DD/MM/YYYY') );
 	$('#${idEndingDate}').datetimepicker({locale: '${locale}', format: 'DD/MM/YYYY', useCurrent: false});
 	$('#${idEndingDate}').val( moment().format('DD/MM/YYYY') );
 	$('#${idStartingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
 	$('#${idEndingTime}').datetimepicker({format: 'HH:mm', stepping: 5});
+	
 	$("#${idStartingDate}").on("dp.change", function (e) {
 		$('#${idEndingDate}').data("DateTimePicker").minDate(e.date);
 	});
+
 	$("#${idEndingDate}").on("dp.change", function (e) {
 		$('#${idStartingDate}').data("DateTimePicker").maxDate(e.date);
 	});
-	
+
+	if( '${action!}' === 'doAddComment' ){
+		$('#commentDelete').remove()
+	}
+
+	$( '[name="action_${action}"]' ).click( function(e){
+		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
+
+			return false;
+		}
+	});
 });
 </script>
 </#macro>
@@ -540,36 +553,39 @@ $( function(){
 					eventIdx--;
 				},
 				stop: function() {
-					$( '.ui-selected', this ).each( function() {
+					$( '.ui-selected', this ).each( function( index ) {
+						index++;
 						if ( eventIdx > 1 ){
 							eventData += '{' + $(this).data('event') + '},' ;
-							evtData='['+eventData.slice(0, -1)+']'
-							const evt = JSON.parse(evtData); 
-							$('#timeSlotData').val( evtData );
-							$('#date_of_display_multi').val( moment(evt[0].startingDateTime).format('YYYY-MM-DD') );
-							$('#updatePlanningMultiSlot').modal('show');
+							if( index === eventIdx ){
+								evtData='[' + eventData.slice(0, -1) + ']'
+								$('#slotsData').val( evtData );
+								var evt = JSON.parse(evtData); 
+								$('#date_of_display_multi').val( moment( evt[0].startingDateTime).format('YYYY-MM-DD') );
+								$('#updatePlanningMultiSlot').modal('show');
+							}	
+
 						} else {
 							eventData ='{' + $(this).data('event') + '}';                       
 							evtData= '['+eventData+']';
                             const evt = JSON.parse(eventData);
-							$('#slotData').val( evtData );
+							$('#timeSlotData').val( evtData );
                             const isOpen = JSON.parse( evt.isOpen );
-							$('#is_open').prop( "checked", isOpen );
-                            
-                            $('#idTimeSlot').val( evt.idSlot );
-                            $('#idWorkingDay').val( evt.idWorkingDay );
-                            $('#timeMaxCapacity').val( evt.maxCapacity );
-                            $('#timeStart').text( evt.startingTime );
-                            $('#ending_time').val( evt.endingTime );
-							$('#dtSlot').text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
-							$('#date_of_display').val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
-                            $('#updatePlanningSlot').modal('show');
+							$( '[name="is_open"]' ).prop( "checked", isOpen );
+                            $( '#idTimeSlot' ).val( evt.idSlot );
+                            $( '#idWorkingDay' ).val( evt.idWorkingDay );
+                            $( '#maxCapacity' ).val( evt.maxCapacity );
+                            $( '#timeStart' ).text( evt.startingTime );
+                            $( '#timeEnd' ).val( evt.endingTime );
+							$( '#dtSlot' ).text( moment(evt.startingDateTime).format('DD/MM/YYYY') );
+							$( '#date_of_display_slot' ).val( moment(evt.startingDateTime).format('YYYY-MM-DD') );
+                            $( '#updatePlanningSlot' ).modal('show');
 							
 						}
 					});
 					eventData='';
 				}
-				}
+				
 			});
 			</#if>
 		},

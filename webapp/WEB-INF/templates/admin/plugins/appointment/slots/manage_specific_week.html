@@ -9,9 +9,10 @@
         <@tform action='jsp/admin/plugins/appointment/ManageSpecificWeek.jsp'>						
             <@input type='hidden' name='action' value='doModifyListSlot' />
             <@input type='hidden' name='id_form' value='${appointmentform.idForm}' />
-            <@input type='hidden' id='slotData' name='slotsData' value='' />
+            <@input type='hidden' id='timeSlotData' name='slotsData' value='' />
+            <@input type='hidden' id='idWorkingDay' name='workingDay' value='' />
             <@input type='hidden' id='capacity' name='capacity' value='new_cap' />
-            <@input type='hidden' id='date_of_display_multi' name='date_of_display' value='${date_of_display}' />	
+            <@input type='hidden' id='date_of_display_slot' name='date_of_display' value='${date_of_display}' />	
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelDate}'>
                 <@staticText id="dtSlot"></@staticText>
             </@formGroup>
@@ -21,22 +22,22 @@
                 <@radioButton orientation='inline' labelFor='shift_slot_null' id='shift_slot_null' labelKey='#i18n{appointment.modifySlot.labelNoValue}' name='is_open' value='false' />
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.modifySlot.labelMaxCapacityForThisSlot}' mandatory=true>
-                <@input type='number' id='max_capacity' name='max_capacity' value='' maxlength=3 />	
+                <@input type='number' id='maxCapacity' name='max_capacity' value='' maxlength=3 />	
             </@formGroup>
             <@formGroup labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeStart}'>
                 <@staticText id='timeStart'></@staticText>
             </@formGroup>
-            <@formGroup labelFor='time_end' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
+            <@formGroup labelFor='timeEnd' labelKey='#i18n{appointment.model.entity.appointmentform.attribute.timeEnd}' helpKey='#i18n{appointment.modifySlot.helpModifyEndSlot}' mandatory=true>
                 <@inputGroup>
-                    <@input type='text' name='ending_time' id='ending_time' value='' />
+                    <@input type='text' name='ending_time' id='timeEnd' value='' />
                     <@inputGroupItem type='addon'>
                         <@icon style='clock-o' />
                     </@inputGroupItem>
                 </@inputGroup>
             </@formGroup>
             <@formGroup labelFor='shift_slot'>
-                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot' checked=true value='false' />
-                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' value='true' />
+                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.notShiftSlot}' name='shift_slot' id='shift_slot_false' checked=true value='false' />
+                <@radioButton labelFor='shift_slot' labelKey='#i18n{appointment.modifySlot.shiftSlot}' name='shift_slot' id='shift_slot_true' value='true' />
             </@formGroup>
             <@formGroup>
                 <@button type='submit' buttonIcon='check' name='modify' id='modify' title='#i18n{portal.util.labelModify}' />
@@ -135,7 +136,7 @@ var events = [
         $('#newCapacity').attr('min','-99');
     });
 
-    $('#ending_time').datetimepicker({
+    $('#timeEnd').datetimepicker({
         format: 'HH:mm',
         stepping: 5
     });
