@@ -460,8 +460,12 @@ public class AppointmentJspBean extends MVCAdminJspBean
                 AppointmentResourceIdService.PERMISSION_OVERBOOKING_FORM, (User) getUser( ) ) );
         model.put( MARK_LOCALE, getLocale( ) );
         model.put( MARK_MAILING_LIST, AdminMailingListService.getMailingLists( getUser( )  ));
-
-
+        model.put( AppointmentUtilities.MARK_PERMISSION_ADD_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf(appointmentForm.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_ADD_COMMENT_FORM, (User) getUser( ) ) ));
+        model.put( AppointmentUtilities.MARK_PERMISSION_MODERATE_COMMENT, String.valueOf( RBACService.isAuthorized( AppointmentFormDTO.RESOURCE_TYPE, String.valueOf(appointmentForm.getIdForm( ) ),
+                AppointmentResourceIdService.PERMISSION_MODERATE_COMMENT_FORM, (User) getUser( ) ) ));
+        model.put( AppointmentUtilities.MARK_PERMISSION_ACCESS_CODE , getUser( ).getAccessCode( ) );
+        
         if ( appointmentForm.getIsMultislotAppointment( ) && _nNbPlacesToTake <= 0 )
         {
 
