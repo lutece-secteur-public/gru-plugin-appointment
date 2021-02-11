@@ -173,7 +173,7 @@ $('.content-header h1').html("<a href=\"jsp/admin/plugins/appointment/ManageAppo
 		<@input type='hidden' name='id_comment' id='id_comment' />
 		<@row>
 			<@columns offsetSm=1 sm=10>
-				<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
+				<@formGroup labelFor='comment' labelKey='#i18n{appointment.comment.name}' helpKey='#i18n{appointment.comment.name}' mandatory=true rows=2>
 					<@input type='textarea' name='comment' id=idComment richtext=true />
 				</@formGroup>
 			</@columns>
@@ -269,8 +269,9 @@ $(function(){
 
 	$( '[name="action_${action}"]' ).click( function(e){
 		if( tinyMCE.activeEditor.getContent().trim().length === 0 ){
-
-			return false;
+			$('#${idComment}').parents('.form-group').addClass('has-error');
+			$('#${idComment}_help').html('<span class="color-danger">Vous devez saisir un texte !</span>');
+			e.preventDefault();
 		}
 	});
 });
